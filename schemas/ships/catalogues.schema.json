@@ -125,6 +125,8 @@
       "required": [
         "symbol",
         "name",
+        "manufacturer",
+        "size",
         "hullCost",
         "retailCost",
         "hullMass",
@@ -147,6 +149,8 @@
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "name": { "$ref": "#/definitions/nonEmptyString" },
+        "manufacturer": { "$ref": "#/definitions/nonEmptyString" },
+        "size": { "enum": ["small", "medium", "large"] },
         "entitlement": { "$ref": "#/definitions/nonEmptyString" },
 
         "hullCost": { "type": "integer", "minimum": 0 },
@@ -163,10 +167,13 @@
         "heatCapacity": { "type": "number", "minimum": 0 },
         "reserveFuelCapacity": { "type": "number", "minimum": 0 },
         "pitch": { "type": "number", "minimum": 0 },
+        "minPitch": { "type": "number", "minimum": 0 },
         "roll": { "type": "number", "minimum": 0 },
+        "minRoll": { "type": "number", "minimum": 0 },
         "yaw": { "type": "number", "minimum": 0 },
+        "minYaw": { "type": "number", "minimum": 0 },
         "minThrust": { "type": "number", "minimum": 0, "maximum": 100 },
-        "pipSpeed": { "type": "number", "minimum": 0 },
+        "pipSpeed": { "type": "number", "minimum": 0, "maximum": 0.25 },
 
         "core": { "$ref": "#/definitions/coreSlots" },
         "hardpoints": {
@@ -326,6 +333,41 @@
             "passenger"
           ]
         },
+        "exclusionGroup": {
+          "enum": [
+            "cargoScanner",
+            "detailedSurfaceScanner",
+            "discoveryScanner",
+            "dockingComputer",
+            "experimentalModuleStabiliser",
+            "experimentalUtility",
+            "fighterHangar",
+            "frameShiftDriveInterdictor",
+            "frameShiftWakeScanner",
+            "fuelScoop",
+            "guardianFsdBooster",
+            "killWarrantScanner",
+            "multiLimpetController",
+            "pulseWaveAnalyser",
+            "refinery",
+            "shieldGenerator",
+            "supercruiseAssist"
+          ]
+        },
+        "limitGroup": {
+          "description": "Per-ship count-limit family this fitted module consumes.",
+          "enum": ["experimentalWeapon"]
+        },
+        "limitIncrease": {
+          "description": "Increase this fitted module grants to a per-ship count allowance.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["group", "amount"],
+          "properties": {
+            "group": { "enum": ["experimentalWeapon"] },
+            "amount": { "type": "integer", "minimum": 1 }
+          }
+        },
         "mass": { "type": "number", "minimum": 0 },
         "integrity": { "type": "number", "minimum": 0 },
         "powerDraw": { "type": "number", "minimum": 0 },
@@ -336,6 +378,12 @@
         "optMultiplier": { "type": "number" },
         "minMultiplier": { "type": "number" },
         "maxMultiplier": { "type": "number" },
+        "optSpeedMultiplier": { "type": "number" },
+        "minSpeedMultiplier": { "type": "number" },
+        "maxSpeedMultiplier": { "type": "number" },
+        "optRotationMultiplier": { "type": "number" },
+        "minRotationMultiplier": { "type": "number" },
+        "maxRotationMultiplier": { "type": "number" },
         "engineHeatRate": { "type": "number", "minimum": 0 },
         "maxFuel": { "type": "number", "minimum": 0 },
         "fuelMul": { "type": "number", "exclusiveMinimum": 0 },

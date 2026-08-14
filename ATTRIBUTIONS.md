@@ -29,15 +29,16 @@ a verbatim copy produced at build time — edit this file, never the copy.
 - **[EDCD/Coriolis](https://github.com/EDCD/coriolis)** — the Coriolis _application_, by
   the **Coriolis contributors**, whose code is **MIT**-licensed. (Its data repository is a
   separate credit, under Data below.) The **build-metric algorithms** are ported as fact
-  (our own implementation) from it: the power budget and its priority groups, shield
-  strength and its mass curve, armour hit points, resistance stacking with its diminishing
-  returns, and weapon DPS / capacitor draw / heat. It credits the original Frontier-forum
-  research the formulas come from.
-- **The jump-range and fuel algorithm**, the **engineered ammunition rounding** rule and
-  the **build metrics above** are cross-checked against, or ported as fact from, EDSY
-  (credited under Data below). The jump-range model derives from Frontier's "mass effect on
-  hyperspace range" description; Coriolis carries the same maths for the metrics, and a clip
-  round-up that omits EDSY's burst step, where EDSY is followed.
+  (our own implementation) from it: the power budget and its priority groups; loaded speed,
+  boost and rotation through the thruster-mass and ENG-pip curves; shield strength and its
+  mass curve; shield collapse delay, regeneration and SYS-capacitor recovery timing; armour
+  hit points; resistance stacking with its diminishing returns; and weapon DPS / capacitor
+  draw / heat. It credits the original Frontier-forum research the formulas come from.
+- **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, the **engineered
+  ammunition rounding** rule and the **build metrics above** are cross-checked against, or
+  ported as fact from, EDSY (credited under Data below). The jump-range model derives from
+  Frontier's "mass effect on hyperspace range" description; Coriolis carries the same maths
+  for the metrics, and a clip round-up that omits EDSY's burst step, where EDSY is followed.
 - **Galactic codex region lookup** — resolving a region from galactic coordinates or from a
   boxel, ported as fact (our own implementation) from `RegionMap.js` in
   EliteDangerousRegionMap, whose region tables are credited under Data below.
@@ -61,8 +62,10 @@ a verbatim copy produced at build time — edit this file, never the copy.
   `eddb.js` and `edsy.js`. Supplies the values coriolis-data leaves blank or carries
   wrongly (module mass, integrity, power draw, boot time, the base stats engineering
   recipes scale), the experimental-effect modifiers and their recipes, the module-group
-  engineering menus, the journal slot names, and the attribute-to-journal-Label mapping.
-  The values are Elite Dangerous game data — see the Frontier notice below.
+  engineering menus, per-ship module-count limits and fitted stabiliser increases, the
+  Lynx Highliner's hull/slot figures and zero-pip minimum pitch, the journal slot names,
+  and the attribute-to-journal-Label mapping. The values are Elite Dangerous game data —
+  see the Frontier notice below.
 - **[Inara](https://inara.cz/)** — the blueprint and outfitting registries behind the
   Operations pre-engineered blueprints and shop rows, the ship pages used to corroborate
   hull layouts, and the component pages that grade the Thargoid caustic / Titan materials

@@ -332,6 +332,7 @@ test("sumWeaponMetrics totals a build's hardpoints", () => {
         'sustainedDamagePerSecond',
         'sustainedEnergyPerSecond',
         'sustainedHeatPerSecond',
+        'thermalLoad',
     ]);
 });
 
@@ -347,6 +348,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
             sustainedEnergyPerSecond: 4,
             heatPerSecond: 5,
             sustainedHeatPerSecond: 6,
+            thermalLoad: 8,
             powerDraw: 7,
             damageByType: {
                 kinetic: 8,
@@ -376,6 +378,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
             sustainedEnergyPerSecond: 50,
             heatPerSecond: 60,
             sustainedHeatPerSecond: 70,
+            thermalLoad: 90,
             powerDraw: 80,
             damageByType: {
                 kinetic: 90,
@@ -404,6 +407,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
         sustainedEnergyPerSecond: 54,
         heatPerSecond: 65,
         sustainedHeatPerSecond: 76,
+        thermalLoad: 98,
         powerDraw: 87,
         damageByType: {
             kinetic: 98,
@@ -431,6 +435,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
         sustainedEnergyPerSecond: 0,
         heatPerSecond: 0,
         sustainedHeatPerSecond: 0,
+        thermalLoad: 0,
         powerDraw: 0,
         damageByType: zeroSplit,
         sustainedDamageByType: zeroSplit,

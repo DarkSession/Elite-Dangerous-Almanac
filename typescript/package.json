@@ -292,9 +292,17 @@
             "types": "./dist/ships/loadout-validation.d.ts",
             "import": "./dist/ships/loadout-validation.js"
         },
+        "./ships/mobility": {
+            "types": "./dist/ships/mobility.d.ts",
+            "import": "./dist/ships/mobility.js"
+        },
         "./ships/module-capabilities": {
             "types": "./dist/ships/module-capabilities.d.ts",
             "import": "./dist/ships/module-capabilities.js"
+        },
+        "./ships/module-limits": {
+            "types": "./dist/ships/module-limits.d.ts",
+            "import": "./dist/ships/module-limits.js"
         },
         "./ships/modules-all": {
             "types": "./dist/ships/modules-all.d.ts",
@@ -335,6 +343,10 @@
         "./ships/resistances": {
             "types": "./dist/ships/resistances.d.ts",
             "import": "./dist/ships/resistances.js"
+        },
+        "./ships/shield-recovery": {
+            "types": "./dist/ships/shield-recovery.d.ts",
+            "import": "./dist/ships/shield-recovery.js"
         },
         "./ships/shields": {
             "types": "./dist/ships/shields.d.ts",

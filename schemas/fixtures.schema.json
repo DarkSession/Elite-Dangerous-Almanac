@@ -261,6 +261,7 @@
     { "definition": "shipsJumpRange", "files": ["ships/jump-range.jsonc"] },
     { "definition": "shipsModules", "files": ["ships/modules.jsonc"] },
     { "definition": "shipsModuleStats", "files": ["ships/module-stats.jsonc"] },
+    { "definition": "shipsOperations", "files": ["ships/operations.jsonc"] },
     {
       "definition": "shipsPreEngineered",
       "files": ["ships/pre-engineered.jsonc"]
@@ -3853,6 +3854,998 @@
         "withoutIntegrity"
       ]
     },
+    "shipsOperations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cellBanks": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "totalCells": { "type": "integer" },
+                "totalRestorable": { "type": "integer" }
+              },
+              "required": ["totalCells", "totalRestorable"]
+            },
+            "input": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "cells": { "type": "integer" },
+                  "duration": { "type": "integer" },
+                  "heat": { "type": "integer" },
+                  "reinforcementRate": { "type": "integer" },
+                  "slot": { "type": "string" },
+                  "spinUp": { "type": "integer" },
+                  "symbol": { "type": "string" }
+                },
+                "required": [
+                  "cells",
+                  "duration",
+                  "heat",
+                  "reinforcementRate",
+                  "slot",
+                  "spinUp",
+                  "symbol"
+                ]
+              }
+            }
+          },
+          "required": ["expected", "input"]
+        },
+        "diagnostics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "calculation": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "field": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "field": { "type": "string" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": ["field", "slot", "symbol"]
+                    },
+                    "slot": { "type": "string" },
+                    "symbol": { "type": "string" }
+                  },
+                  "required": ["field", "params", "slot", "symbol"]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "mass": { "type": "integer" },
+                    "slot": { "type": "string" },
+                    "symbol": { "type": "string" }
+                  },
+                  "required": ["mass", "slot", "symbol"]
+                }
+              },
+              "required": ["expected", "input"]
+            },
+            "loadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": { "$ref": "#/definitions/shared8d1c2fa65d38" }
+                  },
+                  "required": ["code", "params"]
+                },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" }
+              },
+              "required": ["expected", "input"]
+            },
+            "restrictedLoadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "allowedShipNames": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "allowedShipSymbols": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "constraint": { "type": "string" },
+                        "shipSymbol": { "type": "string" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": [
+                        "allowedShipNames",
+                        "allowedShipSymbols",
+                        "constraint",
+                        "shipSymbol",
+                        "slot",
+                        "symbol"
+                      ]
+                    }
+                  },
+                  "required": ["code", "params"]
+                },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" }
+              },
+              "required": ["expected", "input"]
+            },
+            "slef": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "constraint": { "type": "string" },
+                    "path": { "type": "string" }
+                  },
+                  "required": ["code", "constraint", "path"]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": { "Slot": { "type": "string" } },
+                        "required": ["Slot"]
+                      }
+                    },
+                    "Ship": { "type": "string" }
+                  },
+                  "required": ["Modules", "Ship"]
+                }
+              },
+              "required": ["expected", "input"]
+            },
+            "wrongArmourLoadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "armourShipName": { "type": "string" },
+                        "armourShipSymbol": { "type": "string" },
+                        "constraint": { "type": "string" },
+                        "shipName": { "type": "string" },
+                        "shipSymbol": { "type": "string" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": [
+                        "armourShipName",
+                        "armourShipSymbol",
+                        "constraint",
+                        "shipName",
+                        "shipSymbol",
+                        "slot",
+                        "symbol"
+                      ]
+                    }
+                  },
+                  "required": ["code", "params"]
+                },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" }
+              },
+              "required": ["expected", "input"]
+            }
+          },
+          "required": [
+            "calculation",
+            "loadout",
+            "restrictedLoadout",
+            "slef",
+            "wrongArmourLoadout"
+          ]
+        },
+        "editorErrors": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "duplicateExclusiveModule": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "exclusionGroup": { "type": "string" },
+                        "previousSlot": { "type": "string" },
+                        "previousSymbol": { "type": "string" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": [
+                        "exclusionGroup",
+                        "previousSlot",
+                        "previousSymbol",
+                        "slot",
+                        "symbol"
+                      ]
+                    }
+                  },
+                  "required": ["code", "params"]
+                },
+                "firstSlot": { "type": "string" },
+                "module": { "type": "string" },
+                "secondSlot": { "type": "string" },
+                "ship": { "type": "string" }
+              },
+              "required": [
+                "expected",
+                "firstSlot",
+                "module",
+                "secondSlot",
+                "ship"
+              ]
+            },
+            "immutableSlot": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": { "$ref": "#/definitions/sharedf124e7bd189b" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "ship", "slot"]
+            },
+            "immutableSlotReplacement": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": { "$ref": "#/definitions/sharedf124e7bd189b" },
+                "module": { "type": "string" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "module", "ship", "slot"]
+            },
+            "incompatibleModule": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "constraint": { "type": "string" },
+                    "params": { "$ref": "#/definitions/shared8d1c2fa65d38" }
+                  },
+                  "required": ["code", "constraint", "params"]
+                },
+                "module": { "type": "string" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "module", "ship", "slot"]
+            },
+            "moduleLimitExceeded": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "count": { "type": "integer" },
+                        "group": { "type": "string" },
+                        "limit": { "type": "integer" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": ["count", "group", "limit", "slot", "symbol"]
+                    }
+                  },
+                  "required": ["code", "params"]
+                },
+                "fittedSlots": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "module": { "type": "string" },
+                "ship": { "type": "string" },
+                "targetSlot": { "type": "string" }
+              },
+              "required": [
+                "expected",
+                "fittedSlots",
+                "module",
+                "ship",
+                "targetSlot"
+              ]
+            }
+          },
+          "required": [
+            "duplicateExclusiveModule",
+            "immutableSlot",
+            "immutableSlotReplacement",
+            "incompatibleModule",
+            "moduleLimitExceeded"
+          ]
+        },
+        "exclusivity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expectedCode": { "type": "string" },
+            "group": { "type": "string" }
+          },
+          "required": ["expectedCode", "group"]
+        },
+        "mobility": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "boost": { "type": "integer" },
+                "massCurveMultiplier": { "type": "number" },
+                "pitch": { "type": "integer" },
+                "roll": { "type": "integer" },
+                "rotationMassCurveMultiplier": { "type": "number" },
+                "speed": { "type": "integer" },
+                "yaw": { "type": "integer" }
+              },
+              "required": [
+                "boost",
+                "massCurveMultiplier",
+                "pitch",
+                "roll",
+                "rotationMassCurveMultiplier",
+                "speed",
+                "yaw"
+              ]
+            },
+            "facadeExplicitFuel": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "number" },
+                    "massCurveMultiplier": { "type": "number" },
+                    "pitch": { "type": "number" },
+                    "roll": { "type": "number" },
+                    "rotationMassCurveMultiplier": { "type": "number" },
+                    "speed": { "type": "number" },
+                    "yaw": { "type": "number" }
+                  },
+                  "required": [
+                    "boost",
+                    "massCurveMultiplier",
+                    "pitch",
+                    "roll",
+                    "rotationMassCurveMultiplier",
+                    "speed",
+                    "yaw"
+                  ]
+                },
+                "invalidLoads": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "expectedError": { "type": "string" },
+                      "options": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "cargo": { "type": "integer" },
+                          "fuel": { "type": "integer" }
+                        }
+                      }
+                    },
+                    "required": ["expectedError", "options"]
+                  }
+                },
+                "loadout": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
+                    "Ship": { "type": "string" },
+                    "UnladenMass": { "type": "integer" }
+                  },
+                  "required": ["Modules", "Ship", "UnladenMass"]
+                },
+                "omittedFuelFails": { "type": "boolean" },
+                "options": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": { "fuel": { "type": "integer" } },
+                  "required": ["fuel"]
+                }
+              },
+              "required": [
+                "expected",
+                "invalidLoads",
+                "loadout",
+                "omittedFuelFails",
+                "options"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "boost": { "type": "integer" },
+                "mass": { "type": "integer" },
+                "minThrust": { "type": "integer" },
+                "pitch": { "type": "integer" },
+                "roll": { "type": "integer" },
+                "speed": { "type": "integer" },
+                "thrusters": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxMass": { "type": "integer" },
+                    "maxMultiplier": { "type": "number" },
+                    "minMass": { "type": "integer" },
+                    "minMultiplier": { "type": "number" },
+                    "optMass": { "type": "integer" },
+                    "optMultiplier": { "type": "number" },
+                    "rotationCurve": {
+                      "$ref": "#/definitions/shared28704cd9e15a"
+                    },
+                    "speedCurve": { "$ref": "#/definitions/shared28704cd9e15a" }
+                  },
+                  "required": [
+                    "maxMass",
+                    "maxMultiplier",
+                    "minMass",
+                    "minMultiplier",
+                    "optMass",
+                    "optMultiplier",
+                    "rotationCurve",
+                    "speedCurve"
+                  ]
+                },
+                "yaw": { "type": "integer" }
+              },
+              "required": [
+                "boost",
+                "mass",
+                "minThrust",
+                "pitch",
+                "roll",
+                "speed",
+                "thrusters",
+                "yaw"
+              ]
+            },
+            "invalidPipSpeed": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expectedError": { "type": "string" },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "mass": { "type": "integer" },
+                    "minThrust": { "type": "integer" },
+                    "pipSpeed": { "type": "number" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "integer" },
+                    "speed": { "type": "integer" },
+                    "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
+                    "yaw": { "type": "integer" }
+                  },
+                  "required": [
+                    "boost",
+                    "mass",
+                    "minThrust",
+                    "pipSpeed",
+                    "pitch",
+                    "roll",
+                    "speed",
+                    "thrusters",
+                    "yaw"
+                  ]
+                }
+              },
+              "required": ["expectedError", "input"]
+            },
+            "pipAllocation": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "massCurveMultiplier": { "type": "integer" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "integer" },
+                    "rotationMassCurveMultiplier": { "type": "integer" },
+                    "speed": { "type": "integer" },
+                    "yaw": { "type": "integer" }
+                  },
+                  "required": [
+                    "boost",
+                    "massCurveMultiplier",
+                    "pitch",
+                    "roll",
+                    "rotationMassCurveMultiplier",
+                    "speed",
+                    "yaw"
+                  ]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "enginesPips": { "type": "integer" },
+                    "mass": { "type": "integer" },
+                    "minThrust": { "type": "integer" },
+                    "pipSpeed": { "type": "number" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "integer" },
+                    "speed": { "type": "integer" },
+                    "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
+                    "yaw": { "type": "integer" }
+                  },
+                  "required": [
+                    "boost",
+                    "enginesPips",
+                    "mass",
+                    "minThrust",
+                    "pipSpeed",
+                    "pitch",
+                    "roll",
+                    "speed",
+                    "thrusters",
+                    "yaw"
+                  ]
+                }
+              },
+              "required": ["expected", "input"]
+            },
+            "zeroPipRotation": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "massCurveMultiplier": { "type": "integer" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "number" },
+                    "rotationMassCurveMultiplier": { "type": "integer" },
+                    "speed": { "type": "number" },
+                    "yaw": { "type": "number" }
+                  },
+                  "required": [
+                    "boost",
+                    "massCurveMultiplier",
+                    "pitch",
+                    "roll",
+                    "rotationMassCurveMultiplier",
+                    "speed",
+                    "yaw"
+                  ]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "enginesPips": { "type": "integer" },
+                    "mass": { "type": "integer" },
+                    "minPitch": { "type": "integer" },
+                    "minThrust": { "type": "number" },
+                    "pipSpeed": { "type": "number" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "integer" },
+                    "speed": { "type": "integer" },
+                    "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
+                    "yaw": { "type": "integer" }
+                  },
+                  "required": [
+                    "boost",
+                    "enginesPips",
+                    "mass",
+                    "minPitch",
+                    "minThrust",
+                    "pipSpeed",
+                    "pitch",
+                    "roll",
+                    "speed",
+                    "thrusters",
+                    "yaw"
+                  ]
+                }
+              },
+              "required": ["expected", "input"]
+            }
+          },
+          "required": [
+            "expected",
+            "facadeExplicitFuel",
+            "input",
+            "invalidPipSpeed",
+            "pipAllocation",
+            "zeroPipRotation"
+          ]
+        },
+        "moduleLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "catalogue": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "increases": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "amount": { "type": "integer" },
+                      "symbol": { "type": "string" }
+                    },
+                    "required": ["amount", "symbol"]
+                  }
+                },
+                "limitedCount": { "type": "integer" },
+                "weapon": { "type": "string" }
+              },
+              "required": ["increases", "limitedCount", "weapon"]
+            },
+            "expectedIssue": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "code": { "type": "string" },
+                "params": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "count": { "type": "integer" },
+                    "group": { "type": "string" },
+                    "limit": { "type": "integer" }
+                  },
+                  "required": ["count", "group", "limit"]
+                }
+              },
+              "required": ["code", "params"]
+            },
+            "expectedUsage": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "baseLimit": { "type": "integer" },
+                "count": { "type": "integer" },
+                "excess": { "type": "integer" },
+                "group": { "type": "string" },
+                "increase": { "type": "integer" },
+                "limit": { "type": "integer" }
+              },
+              "required": [
+                "baseLimit",
+                "count",
+                "excess",
+                "group",
+                "increase",
+                "limit"
+              ]
+            },
+            "group": { "type": "string" },
+            "input": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "limitGroup": { "type": "string" },
+                  "limitIncrease": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "amount": { "type": "integer" },
+                      "group": { "type": "string" }
+                    },
+                    "required": ["amount", "group"]
+                  }
+                }
+              }
+            },
+            "removal": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "immovableReason": { "type": "string" },
+                    "key": { "type": "string" },
+                    "removable": { "type": "boolean" }
+                  },
+                  "required": ["immovableReason", "key", "removable"]
+                },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" },
+                "stabiliser": { "type": "string" },
+                "weaponSlots": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "required": [
+                "expected",
+                "ship",
+                "slot",
+                "stabiliser",
+                "weaponSlots"
+              ]
+            }
+          },
+          "required": [
+            "catalogue",
+            "expectedIssue",
+            "expectedUsage",
+            "group",
+            "input",
+            "removal"
+          ]
+        },
+        "retailCredits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "hull": { "type": "integer" },
+                "modules": { "type": "integer" },
+                "rebuy": { "type": "integer" }
+              },
+              "required": ["hull", "modules", "rebuy"]
+            },
+            "ship": { "type": "string" }
+          },
+          "required": ["expected", "ship"]
+        },
+        "shieldRecovery": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "brokenRegenRate": { "type": "integer" },
+                "recoveryTime": { "type": "integer" },
+                "regenRate": { "type": "integer" },
+                "regenTime": { "type": "integer" }
+              },
+              "required": [
+                "brokenRegenRate",
+                "recoveryTime",
+                "regenRate",
+                "regenTime"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "brokenRegenRate": { "type": "integer" },
+                "distributorDraw": { "type": "number" },
+                "regenRate": { "type": "integer" },
+                "strength": { "type": "integer" },
+                "systemsCapacity": { "type": "integer" },
+                "systemsRecharge": { "type": "integer" }
+              },
+              "required": [
+                "brokenRegenRate",
+                "distributorDraw",
+                "regenRate",
+                "strength",
+                "systemsCapacity",
+                "systemsRecharge"
+              ]
+            },
+            "invalidStrength": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expectedError": { "type": "string" },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "brokenRegenRate": { "type": "integer" },
+                    "distributorDraw": { "type": "integer" },
+                    "regenRate": { "type": "integer" },
+                    "strength": { "type": "integer" },
+                    "systemsCapacity": { "type": "integer" },
+                    "systemsRecharge": { "type": "integer" }
+                  },
+                  "required": [
+                    "brokenRegenRate",
+                    "distributorDraw",
+                    "regenRate",
+                    "strength",
+                    "systemsCapacity",
+                    "systemsRecharge"
+                  ]
+                }
+              },
+              "required": ["expectedError", "input"]
+            },
+            "pipAllocation": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "brokenRegenRate": { "type": "integer" },
+                    "recoveryTime": { "type": "number" },
+                    "regenRate": { "type": "integer" },
+                    "regenTime": { "type": "number" }
+                  },
+                  "required": [
+                    "brokenRegenRate",
+                    "recoveryTime",
+                    "regenRate",
+                    "regenTime"
+                  ]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "brokenRegenRate": { "type": "integer" },
+                    "distributorDraw": { "type": "number" },
+                    "regenRate": { "type": "integer" },
+                    "strength": { "type": "integer" },
+                    "systemsCapacity": { "type": "integer" },
+                    "systemsPips": { "type": "integer" },
+                    "systemsRecharge": { "type": "integer" }
+                  },
+                  "required": [
+                    "brokenRegenRate",
+                    "distributorDraw",
+                    "regenRate",
+                    "strength",
+                    "systemsCapacity",
+                    "systemsPips",
+                    "systemsRecharge"
+                  ]
+                }
+              },
+              "required": ["expected", "input"]
+            }
+          },
+          "required": ["expected", "input", "invalidStrength", "pipAllocation"]
+        },
+        "slotRemoval": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "immovableReason": { "type": "string" },
+                "key": { "type": "string" },
+                "kind": { "type": "string" },
+                "removable": { "type": "boolean" },
+                "size": { "type": "integer" }
+              },
+              "required": [
+                "immovableReason",
+                "key",
+                "kind",
+                "removable",
+                "size"
+              ]
+            },
+            "ship": { "type": "string" }
+          },
+          "required": ["expected", "ship"]
+        },
+        "weapons": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expectedThermalLoad": { "type": "integer" },
+            "input": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "thermalLoad": { "type": "integer" } },
+                "required": ["thermalLoad"]
+              }
+            }
+          },
+          "required": ["expectedThermalLoad", "input"]
+        }
+      },
+      "required": [
+        "cellBanks",
+        "diagnostics",
+        "editorErrors",
+        "exclusivity",
+        "mobility",
+        "moduleLimits",
+        "retailCredits",
+        "shieldRecovery",
+        "slotRemoval",
+        "weapons"
+      ]
+    },
     "shipsPreEngineered": {
       "type": "object",
       "additionalProperties": false,
@@ -4398,10 +5391,12 @@
             "additionalProperties": false,
             "properties": {
               "entitlement": { "type": "string" },
+              "manufacturer": { "type": "string" },
               "name": { "type": "string" },
+              "size": { "type": "string" },
               "symbol": { "type": "string" }
             },
-            "required": ["name", "symbol"]
+            "required": ["manufacturer", "name", "size", "symbol"]
           }
         }
       },
@@ -4526,6 +5521,29 @@
       "additionalProperties": false,
       "properties": {
         "count": { "type": "integer" },
+        "minimumRotation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "minPitch": { "type": "integer" },
+            "pipSpeed": { "type": "number" },
+            "pitch": { "type": "integer" },
+            "symbol": { "type": "string" }
+          },
+          "required": ["minPitch", "pipSpeed", "pitch", "symbol"]
+        },
+        "pipSpeedCorrections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "pipSpeed": { "type": "number" },
+              "symbol": { "type": "string" }
+            },
+            "required": ["pipSpeed", "symbol"]
+          }
+        },
         "pricedCount": { "type": "integer" },
         "prices": {
           "type": "array",
@@ -4584,7 +5602,14 @@
           }
         }
       },
-      "required": ["count", "pricedCount", "prices", "spot"]
+      "required": [
+        "count",
+        "minimumRotation",
+        "pipSpeedCorrections",
+        "pricedCount",
+        "prices",
+        "spot"
+      ]
     },
     "shipsSlefEnvelope": {
       "type": "array",
@@ -5612,15 +6637,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "event": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
-                    "Ship": { "type": "string" }
-                  },
-                  "required": ["Modules", "Ship"]
-                },
+                "event": { "$ref": "#/definitions/shared7481e15ca29a" },
                 "note": { "type": "string" },
                 "record": { "type": "null" }
               },
@@ -5867,6 +6884,26 @@
         "UnladenMass"
       ]
     },
+    "shared28704cd9e15a": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxMass": { "type": "integer" },
+        "maxMultiplier": { "type": "number" },
+        "minMass": { "type": "integer" },
+        "minMultiplier": { "type": "number" },
+        "optMass": { "type": "integer" },
+        "optMultiplier": { "type": "number" }
+      },
+      "required": [
+        "maxMass",
+        "maxMultiplier",
+        "minMass",
+        "minMultiplier",
+        "optMass",
+        "optMultiplier"
+      ]
+    },
     "shared2a52d42245cc": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared8064b9491813" }
@@ -6041,6 +7078,15 @@
       },
       "required": ["fuelMul", "fuelPower", "jumpBoost", "maxFuel", "optMass"]
     },
+    "shared7481e15ca29a": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
+        "Ship": { "type": "string" }
+      },
+      "required": ["Modules", "Ship"]
+    },
     "shared748e73bf2157": {
       "type": "object",
       "additionalProperties": false,
@@ -6091,6 +7137,18 @@
         "Slot": { "type": "string" }
       },
       "required": ["Item", "Slot"]
+    },
+    "shared8d1c2fa65d38": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "constraint": { "type": "string" },
+        "moduleClass": { "type": "integer" },
+        "slot": { "type": "string" },
+        "slotSize": { "type": "integer" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["constraint", "moduleClass", "slot", "slotSize", "symbol"]
     },
     "shared900cb4dfedc0": {
       "type": "object",
@@ -6201,6 +7259,26 @@
       "type": "array",
       "items": { "$ref": "#/definitions/shared41cf73923ed3" }
     },
+    "sharedd2bae3acb8dc": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxMass": { "type": "integer" },
+        "maxMultiplier": { "type": "integer" },
+        "minMass": { "type": "integer" },
+        "minMultiplier": { "type": "integer" },
+        "optMass": { "type": "integer" },
+        "optMultiplier": { "type": "integer" }
+      },
+      "required": [
+        "maxMass",
+        "maxMultiplier",
+        "minMass",
+        "minMultiplier",
+        "optMass",
+        "optMultiplier"
+      ]
+    },
     "sharedd522a8014c27": {
       "type": "object",
       "additionalProperties": false,
@@ -6234,6 +7312,15 @@
         "symbol": { "type": "string" }
       },
       "required": ["count", "symbol"]
+    },
+    "sharedf124e7bd189b": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string" },
+        "params": { "$ref": "#/definitions/sharedbb0c12b7a5ac" }
+      },
+      "required": ["code", "params"]
     },
     "sharedf1ce456c98ce": {
       "type": "object",

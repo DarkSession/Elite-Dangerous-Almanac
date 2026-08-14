@@ -2926,6 +2926,465 @@ declare module '*/fixtures/ships/module-stats.jsonc' {
     export default value;
 }
 
+type FixtureShipsOperations = {
+    cellBanks: {
+        expected: {
+            totalCells: number;
+            totalRestorable: number;
+        };
+        input: {
+            cells: number;
+            duration: number;
+            heat: number;
+            reinforcementRate: number;
+            slot: string;
+            spinUp: number;
+            symbol: string;
+        }[];
+    };
+    diagnostics: {
+        calculation: {
+            expected: {
+                field: string;
+                params: {
+                    field: string;
+                    slot: string;
+                    symbol: string;
+                };
+                slot: string;
+                symbol: string;
+            };
+            input: {
+                mass: number;
+                slot: string;
+                symbol: string;
+            };
+        };
+        loadout: {
+            expected: {
+                code: string;
+                params: {
+                    constraint: string;
+                    moduleClass: number;
+                    slot: string;
+                    slotSize: number;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        restrictedLoadout: {
+            expected: {
+                code: string;
+                params: {
+                    allowedShipNames: string[];
+                    allowedShipSymbols: string[];
+                    constraint: string;
+                    shipSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        slef: {
+            expected: {
+                code: string;
+                constraint: string;
+                path: string;
+            };
+            input: {
+                Modules: {
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        wrongArmourLoadout: {
+            expected: {
+                code: string;
+                params: {
+                    armourShipName: string;
+                    armourShipSymbol: string;
+                    constraint: string;
+                    shipName: string;
+                    shipSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+    };
+    editorErrors: {
+        duplicateExclusiveModule: {
+            expected: {
+                code: string;
+                params: {
+                    exclusionGroup: string;
+                    previousSlot: string;
+                    previousSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            firstSlot: string;
+            module: string;
+            secondSlot: string;
+            ship: string;
+        };
+        immutableSlot: {
+            expected: {
+                code: string;
+                params: {
+                    slot: string;
+                };
+            };
+            ship: string;
+            slot: string;
+        };
+        immutableSlotReplacement: {
+            expected: {
+                code: string;
+                params: {
+                    slot: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
+        incompatibleModule: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    constraint: string;
+                    moduleClass: number;
+                    slot: string;
+                    slotSize: number;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
+        moduleLimitExceeded: {
+            expected: {
+                code: string;
+                params: {
+                    count: number;
+                    group: string;
+                    limit: number;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            fittedSlots: string[];
+            module: string;
+            ship: string;
+            targetSlot: string;
+        };
+    };
+    exclusivity: {
+        expectedCode: string;
+        group: string;
+    };
+    mobility: {
+        expected: {
+            boost: number;
+            massCurveMultiplier: number;
+            pitch: number;
+            roll: number;
+            rotationMassCurveMultiplier: number;
+            speed: number;
+            yaw: number;
+        };
+        facadeExplicitFuel: {
+            expected: {
+                boost: number;
+                massCurveMultiplier: number;
+                pitch: number;
+                roll: number;
+                rotationMassCurveMultiplier: number;
+                speed: number;
+                yaw: number;
+            };
+            invalidLoads: {
+                expectedError: string;
+                options: {
+                    cargo?: number;
+                    fuel?: number;
+                };
+            }[];
+            loadout: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+                UnladenMass: number;
+            };
+            omittedFuelFails: boolean;
+            options: {
+                fuel: number;
+            };
+        };
+        input: {
+            boost: number;
+            mass: number;
+            minThrust: number;
+            pitch: number;
+            roll: number;
+            speed: number;
+            thrusters: {
+                maxMass: number;
+                maxMultiplier: number;
+                minMass: number;
+                minMultiplier: number;
+                optMass: number;
+                optMultiplier: number;
+                rotationCurve: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                speedCurve: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+            };
+            yaw: number;
+        };
+        invalidPipSpeed: {
+            expectedError: string;
+            input: {
+                boost: number;
+                mass: number;
+                minThrust: number;
+                pipSpeed: number;
+                pitch: number;
+                roll: number;
+                speed: number;
+                thrusters: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                yaw: number;
+            };
+        };
+        pipAllocation: {
+            expected: {
+                boost: number;
+                massCurveMultiplier: number;
+                pitch: number;
+                roll: number;
+                rotationMassCurveMultiplier: number;
+                speed: number;
+                yaw: number;
+            };
+            input: {
+                boost: number;
+                enginesPips: number;
+                mass: number;
+                minThrust: number;
+                pipSpeed: number;
+                pitch: number;
+                roll: number;
+                speed: number;
+                thrusters: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                yaw: number;
+            };
+        };
+        zeroPipRotation: {
+            expected: {
+                boost: number;
+                massCurveMultiplier: number;
+                pitch: number;
+                roll: number;
+                rotationMassCurveMultiplier: number;
+                speed: number;
+                yaw: number;
+            };
+            input: {
+                boost: number;
+                enginesPips: number;
+                mass: number;
+                minPitch: number;
+                minThrust: number;
+                pipSpeed: number;
+                pitch: number;
+                roll: number;
+                speed: number;
+                thrusters: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                yaw: number;
+            };
+        };
+    };
+    moduleLimits: {
+        catalogue: {
+            increases: {
+                amount: number;
+                symbol: string;
+            }[];
+            limitedCount: number;
+            weapon: string;
+        };
+        expectedIssue: {
+            code: string;
+            params: {
+                count: number;
+                group: string;
+                limit: number;
+            };
+        };
+        expectedUsage: {
+            baseLimit: number;
+            count: number;
+            excess: number;
+            group: string;
+            increase: number;
+            limit: number;
+        };
+        group: string;
+        input: {
+            limitGroup?: string;
+            limitIncrease?: {
+                amount: number;
+                group: string;
+            };
+        }[];
+        removal: {
+            expected: {
+                immovableReason: string;
+                key: string;
+                removable: boolean;
+            };
+            ship: string;
+            slot: string;
+            stabiliser: string;
+            weaponSlots: string[];
+        };
+    };
+    retailCredits: {
+        expected: {
+            hull: number;
+            modules: number;
+            rebuy: number;
+        };
+        ship: string;
+    };
+    shieldRecovery: {
+        expected: {
+            brokenRegenRate: number;
+            recoveryTime: number;
+            regenRate: number;
+            regenTime: number;
+        };
+        input: {
+            brokenRegenRate: number;
+            distributorDraw: number;
+            regenRate: number;
+            strength: number;
+            systemsCapacity: number;
+            systemsRecharge: number;
+        };
+        invalidStrength: {
+            expectedError: string;
+            input: {
+                brokenRegenRate: number;
+                distributorDraw: number;
+                regenRate: number;
+                strength: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+            };
+        };
+        pipAllocation: {
+            expected: {
+                brokenRegenRate: number;
+                recoveryTime: number;
+                regenRate: number;
+                regenTime: number;
+            };
+            input: {
+                brokenRegenRate: number;
+                distributorDraw: number;
+                regenRate: number;
+                strength: number;
+                systemsCapacity: number;
+                systemsPips: number;
+                systemsRecharge: number;
+            };
+        };
+    };
+    slotRemoval: {
+        expected: {
+            immovableReason: string;
+            key: string;
+            kind: string;
+            removable: boolean;
+            size: number;
+        };
+        ship: string;
+    };
+    weapons: {
+        expectedThermalLoad: number;
+        input: {
+            thermalLoad: number;
+        }[];
+    };
+};
+
+declare module '*/fixtures/ships/operations.jsonc' {
+    const value: FixtureShipsOperations;
+    export default value;
+}
+
 type FixtureShipsPreEngineered = {
     authoredStats: {
         count: number;
@@ -3165,7 +3624,9 @@ type FixtureShipsShips = {
     }[];
     records: {
         entitlement?: string;
+        manufacturer: string;
         name: string;
+        size: string;
         symbol: string;
     }[];
 };
@@ -3232,6 +3693,16 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 
 type FixtureShipsShipStats = {
     count: number;
+    minimumRotation: {
+        minPitch: number;
+        pipSpeed: number;
+        pitch: number;
+        symbol: string;
+    };
+    pipSpeedCorrections: {
+        pipSpeed: number;
+        symbol: string;
+    }[];
     pricedCount: number;
     prices: {
         hullCost: number;

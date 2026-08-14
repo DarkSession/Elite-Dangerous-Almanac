@@ -75,6 +75,21 @@ test('ship-stats spot checks: each merged hull carries the expected stat values'
     }
 });
 
+test('the Lynx carries its independently sourced ENG-pip handling values', () => {
+    const expected = statsFixture.minimumRotation;
+    const ship = getShipBySymbol(expected.symbol);
+    assert.ok(ship);
+    assert.deepEqual(project(ship, expected), expected);
+});
+
+test('the Diamondbacks carry their corrected hull-local ENG-pip handling values', () => {
+    for (const expected of statsFixture.pipSpeedCorrections) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship);
+        assert.deepEqual(project(ship, expected), expected);
+    }
+});
+
 test(`all ${statsFixture.pricedCount} hulls carry a hull and a retail price`, () => {
     assert.equal(SHIPS.filter((s) => s.hullCost !== undefined).length, statsFixture.pricedCount);
     for (const expected of statsFixture.prices) {

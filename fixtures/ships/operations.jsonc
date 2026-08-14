@@ -1,0 +1,453 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Cross-language parity cases for loaded mobility, shield recovery, shield-cell pools,
+ * one-per-ship and counted-module validation, direct retail pricing, alpha-strike
+ * thermal load, structured diagnostics and editor failures. Inputs pin the public
+ * data-free and ShipLoadout facade contracts; catalogue-backed expectations pin the
+ * shared ship and module snapshots.
+ */
+{
+  "mobility": {
+    "input": {
+      "speed": 200,
+      "boost": 300,
+      "pitch": 40,
+      "roll": 100,
+      "yaw": 20,
+      "minThrust": 40,
+      "mass": 90,
+      "thrusters": {
+        "minMass": 70,
+        "optMass": 90,
+        "maxMass": 200,
+        "minMultiplier": 0.9,
+        "optMultiplier": 1.1,
+        "maxMultiplier": 1.2,
+        "speedCurve": {
+          "minMass": 70,
+          "optMass": 90,
+          "maxMass": 200,
+          "minMultiplier": 0.9,
+          "optMultiplier": 1.25,
+          "maxMultiplier": 1.6
+        },
+        "rotationCurve": {
+          "minMass": 70,
+          "optMass": 90,
+          "maxMass": 200,
+          "minMultiplier": 0.9,
+          "optMultiplier": 1.1,
+          "maxMultiplier": 1.3
+        }
+      }
+    },
+    "expected": {
+      "speed": 250,
+      "boost": 375,
+      "pitch": 44,
+      "roll": 110,
+      "yaw": 22,
+      "massCurveMultiplier": 1.25,
+      "rotationMassCurveMultiplier": 1.1
+    },
+    "zeroPipRotation": {
+      "input": {
+        "speed": 200,
+        "boost": 300,
+        "pitch": 26,
+        "minPitch": 23,
+        "roll": 60,
+        "yaw": 19,
+        "minThrust": 73.75,
+        "pipSpeed": 0.065789473684211,
+        "mass": 100,
+        "thrusters": {
+          "minMass": 50,
+          "optMass": 100,
+          "maxMass": 200,
+          "minMultiplier": 1,
+          "optMultiplier": 1,
+          "maxMultiplier": 1
+        },
+        "enginesPips": 0
+      },
+      "expected": {
+        "speed": 147.5,
+        "boost": 300,
+        "pitch": 23,
+        "roll": 44.21052631578936,
+        "yaw": 13.999999999999963,
+        "massCurveMultiplier": 1,
+        "rotationMassCurveMultiplier": 1
+      }
+    },
+    "pipAllocation": {
+      "input": {
+        "speed": 200,
+        "boost": 300,
+        "pitch": 40,
+        "roll": 100,
+        "yaw": 20,
+        "minThrust": 40,
+        "pipSpeed": 0.1,
+        "mass": 100,
+        "thrusters": {
+          "minMass": 50,
+          "optMass": 100,
+          "maxMass": 200,
+          "minMultiplier": 1,
+          "optMultiplier": 1,
+          "maxMultiplier": 1
+        },
+        "enginesPips": 2
+      },
+      "expected": {
+        "speed": 140,
+        "boost": 300,
+        "pitch": 32,
+        "roll": 80,
+        "yaw": 16,
+        "massCurveMultiplier": 1,
+        "rotationMassCurveMultiplier": 1
+      }
+    },
+    "facadeExplicitFuel": {
+      "loadout": {
+        "Ship": "SideWinder",
+        "UnladenMass": 25,
+        "Modules": [
+          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
+          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+        ]
+      },
+      "options": { "fuel": 2 },
+      "expected": {
+        "speed": 233.07404536958677,
+        "boost": 339.0167932648535,
+        "pitch": 44.49595411601202,
+        "roll": 116.53702268479338,
+        "yaw": 16.950839663242675,
+        "massCurveMultiplier": 1.0594274789526672,
+        "rotationMassCurveMultiplier": 1.0594274789526672
+      },
+      "omittedFuelFails": true,
+      "invalidLoads": [
+        { "options": { "fuel": -1 }, "expectedError": "RangeError" },
+        { "options": { "cargo": -1 }, "expectedError": "RangeError" }
+      ]
+    },
+    "invalidPipSpeed": {
+      "input": {
+        "speed": 1,
+        "boost": 1,
+        "pitch": 1,
+        "roll": 1,
+        "yaw": 1,
+        "minThrust": 50,
+        "pipSpeed": 0.3,
+        "mass": 1,
+        "thrusters": {
+          "minMass": 1,
+          "optMass": 1,
+          "maxMass": 1,
+          "minMultiplier": 1,
+          "optMultiplier": 1,
+          "maxMultiplier": 1
+        }
+      },
+      "expectedError": "RangeError"
+    }
+  },
+  "shieldRecovery": {
+    "input": {
+      "strength": 200,
+      "regenRate": 2,
+      "brokenRegenRate": 4,
+      "distributorDraw": 0.6,
+      "systemsCapacity": 20,
+      "systemsRecharge": 2
+    },
+    "expected": {
+      "regenRate": 2,
+      "brokenRegenRate": 4,
+      "recoveryTime": 41,
+      "regenTime": 50
+    },
+    "pipAllocation": {
+      "input": {
+        "strength": 1000,
+        "regenRate": 10,
+        "brokenRegenRate": 20,
+        "distributorDraw": 0.6,
+        "systemsCapacity": 10,
+        "systemsRecharge": 2,
+        "systemsPips": 2
+      },
+      "expected": {
+        "regenRate": 10,
+        "brokenRegenRate": 20,
+        "recoveryTime": 326.814304135525,
+        "regenTime": 310.814304135525
+      }
+    },
+    "invalidStrength": {
+      "input": {
+        "strength": -1,
+        "regenRate": 1,
+        "brokenRegenRate": 1,
+        "distributorDraw": 0,
+        "systemsCapacity": 0,
+        "systemsRecharge": 0
+      },
+      "expectedError": "RangeError"
+    }
+  },
+  "cellBanks": {
+    "input": [
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "bank-a",
+        "reinforcementRate": 12,
+        "cells": 4,
+        "spinUp": 5,
+        "duration": 1,
+        "heat": 170
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "bank-b",
+        "reinforcementRate": 8,
+        "cells": 3,
+        "spinUp": 4,
+        "duration": 2,
+        "heat": 120
+      }
+    ],
+    "expected": { "totalRestorable": 96, "totalCells": 7 }
+  },
+  "exclusivity": {
+    "group": "shieldGenerator",
+    "expectedCode": "duplicateExclusiveModule"
+  },
+  "moduleLimits": {
+    "group": "experimentalWeapon",
+    "input": [
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitIncrease": { "group": "experimentalWeapon", "amount": 1 } }
+    ],
+    "expectedUsage": {
+      "group": "experimentalWeapon",
+      "baseLimit": 4,
+      "increase": 1,
+      "limit": 5,
+      "count": 6,
+      "excess": 1
+    },
+    "expectedIssue": {
+      "code": "moduleLimitExceeded",
+      "params": { "group": "experimentalWeapon", "count": 6, "limit": 5 }
+    },
+    "catalogue": {
+      "limitedCount": 33,
+      "weapon": "Hpt_Guardian_GaussCannon_Fixed_Small",
+      "increases": [
+        { "symbol": "Int_ExpModuleStabiliser_Size3_Class3", "amount": 1 },
+        { "symbol": "Int_ExpModuleStabiliser_Size5_Class3", "amount": 2 }
+      ]
+    },
+    "removal": {
+      "ship": "Anaconda",
+      "slot": "Slot05_Size5",
+      "stabiliser": "Int_ExpModuleStabiliser_Size3_Class3",
+      "weaponSlots": [
+        "HugeHardpoint1",
+        "LargeHardpoint1",
+        "LargeHardpoint2",
+        "LargeHardpoint3",
+        "MediumHardpoint1"
+      ],
+      "expected": {
+        "key": "Slot05_Size5",
+        "removable": false,
+        "immovableReason": "moduleLimit"
+      }
+    }
+  },
+  "retailCredits": {
+    "ship": "Anaconda",
+    "expected": { "hull": 142456440, "modules": 4522132, "rebuy": 7348928 }
+  },
+  "weapons": {
+    "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],
+    "expectedThermalLoad": 98
+  },
+  "diagnostics": {
+    "slef": {
+      "input": { "Ship": "sidewinder", "Modules": [{ "Slot": "PowerPlant" }] },
+      "expected": {
+        "code": "invalidModule",
+        "path": "entries[0].Modules[0].Item",
+        "constraint": "stringRequired"
+      }
+    },
+    "loadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size8_Class5" }
+        ]
+      },
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "FrameShiftDrive",
+          "symbol": "Int_Hyperdrive_Size8_Class5",
+          "constraint": "oversized",
+          "moduleClass": 8,
+          "slotSize": 6
+        }
+      }
+    },
+    "restrictedLoadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "MainEngines",
+            "Item": "Int_Engine_Size7_Class5_GravityOptimised_MkII"
+          }
+        ]
+      },
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "MainEngines",
+          "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
+          "constraint": "restrictedHull",
+          "allowedShipNames": ["Caspian Explorer"],
+          "allowedShipSymbols": ["Explorer_NX"],
+          "shipSymbol": "Anaconda"
+        }
+      }
+    },
+    "wrongArmourLoadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [{ "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" }]
+      },
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "Armour",
+          "symbol": "SideWinder_Armour_Grade1",
+          "constraint": "wrongHullArmour",
+          "armourShipName": "Sidewinder",
+          "armourShipSymbol": "SideWinder",
+          "shipSymbol": "Anaconda",
+          "shipName": "Anaconda"
+        }
+      }
+    },
+    "calculation": {
+      "input": { "slot": "Slot01_Size4", "symbol": "UnknownRack", "mass": 0 },
+      "expected": {
+        "field": "cargoCapacity",
+        "slot": "Slot01_Size4",
+        "symbol": "UnknownRack",
+        "params": {
+          "field": "cargoCapacity",
+          "slot": "Slot01_Size4",
+          "symbol": "UnknownRack"
+        }
+      }
+    }
+  },
+  "editorErrors": {
+    "incompatibleModule": {
+      "ship": "Anaconda",
+      "slot": "FrameShiftDrive",
+      "module": "Int_Hyperdrive_Size8_Class5",
+      "expected": {
+        "code": "incompatibleModule",
+        "constraint": "oversized",
+        "params": {
+          "slot": "FrameShiftDrive",
+          "symbol": "Int_Hyperdrive_Size8_Class5",
+          "constraint": "oversized",
+          "moduleClass": 8,
+          "slotSize": 6
+        }
+      }
+    },
+    "duplicateExclusiveModule": {
+      "ship": "Anaconda",
+      "firstSlot": "Slot01_Size7",
+      "secondSlot": "Slot02_Size6",
+      "module": "Int_ShieldGenerator_Size6_Class3",
+      "expected": {
+        "code": "duplicateExclusiveModule",
+        "params": {
+          "exclusionGroup": "shieldGenerator",
+          "slot": "Slot02_Size6",
+          "symbol": "Int_ShieldGenerator_Size6_Class3",
+          "previousSlot": "Slot01_Size7",
+          "previousSymbol": "Int_ShieldGenerator_Size6_Class3"
+        }
+      }
+    },
+    "moduleLimitExceeded": {
+      "ship": "Anaconda",
+      "fittedSlots": [
+        "HugeHardpoint1",
+        "LargeHardpoint1",
+        "LargeHardpoint2",
+        "LargeHardpoint3"
+      ],
+      "targetSlot": "MediumHardpoint1",
+      "module": "Hpt_Guardian_GaussCannon_Fixed_Small",
+      "expected": {
+        "code": "moduleLimitExceeded",
+        "params": {
+          "group": "experimentalWeapon",
+          "count": 5,
+          "limit": 4,
+          "slot": "MediumHardpoint1",
+          "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small"
+        }
+      }
+    },
+    "immutableSlot": {
+      "ship": "SideWinder",
+      "slot": "CargoHatch",
+      "expected": {
+        "code": "immutableSlot",
+        "params": { "slot": "CargoHatch" }
+      }
+    },
+    "immutableSlotReplacement": {
+      "ship": "SideWinder",
+      "slot": "CargoHatch",
+      "module": "Int_Hyperdrive_Size2_Class5",
+      "expected": {
+        "code": "immutableSlot",
+        "params": { "slot": "CargoHatch" }
+      }
+    }
+  },
+  "slotRemoval": {
+    "ship": "SideWinder",
+    "expected": {
+      "key": "CargoHatch",
+      "kind": "cargoHatch",
+      "size": 1,
+      "removable": false,
+      "immovableReason": "cargoHatch"
+    }
+  }
+}

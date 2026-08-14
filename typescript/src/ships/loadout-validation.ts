@@ -5,6 +5,8 @@
  */
 
 import type { BuildSlot } from './slots.js';
+import type { ModuleExclusionGroup, ModuleLimitGroup, ModuleLimitIncrease } from './modules.js';
+import { calculateModuleLimits } from './module-limits.js';
 import { truncate } from '../internal/argument-guards.js';
 
 /**
@@ -23,7 +25,34 @@ export type LoadoutIssueCode =
     | 'unknownSlot'
     | 'missingRequiredSlot'
     | 'unknownModule'
-    | 'incompatibleModule';
+    | 'incompatibleModule'
+    | 'duplicateExclusiveModule'
+    | 'moduleLimitExceeded';
+
+/** Stable machine-readable constraint behind an `incompatibleModule` issue. */
+export type ModuleFitConstraint =
+    | 'immutableSlot'
+    | 'armourRequired'
+    | 'wrongHullArmour'
+    | 'restrictedHull'
+    | 'restrictedMount'
+    | 'wrongCoreType'
+    | 'hardpointRequired'
+    | 'utilityRequired'
+    | 'optionalInternalRequired'
+    | 'coreModuleInOptionalSlot'
+    | 'oversized'
+    | 'unknownConstraint';
+
+/**
+ * One language-neutral value carried by a structured loadout diagnostic: a scalar
+ * string/number, or a string list the consumer can format for its locale. Paired name
+ * and symbol lists use the same order so display names align with stable identifiers.
+ */
+export type LoadoutIssueParam = string | number | readonly string[];
+
+/** Named {@link LoadoutIssueParam} values used to compose a localized diagnostic. */
+export type LoadoutIssueParams = Readonly<Record<string, LoadoutIssueParam>>;
 
 /** One validation diagnostic. */
 export interface LoadoutIssue {
@@ -37,6 +66,8 @@ export interface LoadoutIssue {
     readonly symbol?: string;
     /** Human-readable explanation. */
     readonly message: string;
+    /** Values interpolated into `message`, for consumers composing localized text. */
+    readonly params?: LoadoutIssueParams;
 }
 
 /** Summary returned by {@link validateLoadout}. */
@@ -61,6 +92,19 @@ export interface ValidationModule {
     readonly requiresKnownSlot?: boolean;
     /** Why the resolved module does not fit, or `null` when it fits. */
     readonly fitError: string | null;
+    /** Stable reason for `fitError`, when supplied by the fitting implementation. */
+    readonly fitConstraint?: ModuleFitConstraint;
+    /**
+     * Dynamic values used by the fitting explanation. `slot`, `symbol` and
+     * `constraint` are reserved: validation always supplies their canonical values.
+     */
+    readonly fitParams?: LoadoutIssueParams;
+    /** One-per-ship family, when the resolved module belongs to one. */
+    readonly exclusionGroup?: ModuleExclusionGroup;
+    /** Per-ship count family this resolved module consumes, when any. */
+    readonly limitGroup?: ModuleLimitGroup;
+    /** Per-ship count allowance increase this resolved module grants, when any. */
+    readonly limitIncrease?: ModuleLimitIncrease;
 }
 
 /** Input to {@link validateLoadout}. */
@@ -99,6 +143,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                 severity: 'error',
                 slot: module.slot,
                 symbol: module.symbol,
+                params: { slot: module.slot, previousSlot: previous, symbol: module.symbol },
                 message: `Slot ${truncate(module.slot)} occurs more than once (also ${truncate(previous)})`,
             });
         } else {
@@ -106,11 +151,46 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         }
     }
 
+    const exclusive = new Map<ModuleExclusionGroup, ValidationModule>();
+    for (const module of input.modules) {
+        if (!module.exclusionGroup) continue;
+        const previous = exclusive.get(module.exclusionGroup);
+        if (previous) {
+            issues.push({
+                code: 'duplicateExclusiveModule',
+                severity: 'error',
+                slot: module.slot,
+                symbol: module.symbol,
+                params: {
+                    exclusionGroup: module.exclusionGroup,
+                    slot: module.slot,
+                    symbol: module.symbol,
+                    previousSlot: previous.slot,
+                    previousSymbol: previous.symbol,
+                },
+                message: `${truncate(module.slot)}: ${truncate(module.symbol)} conflicts with ${truncate(previous.symbol)} in ${truncate(previous.slot)} (${module.exclusionGroup} is limited to one per ship)`,
+            });
+        } else {
+            exclusive.set(module.exclusionGroup, module);
+        }
+    }
+
+    for (const usage of calculateModuleLimits(input.modules)) {
+        if (usage.excess === 0) continue;
+        issues.push({
+            code: 'moduleLimitExceeded',
+            severity: 'error',
+            params: { group: usage.group, count: usage.count, limit: usage.limit },
+            message: `${usage.group} has ${usage.count} fitted modules but the ship allows ${usage.limit}`,
+        });
+    }
+
     if (input.slots === null) {
         issues.push({
             code: 'unknownHull',
             severity: 'incomplete',
             message: `No slot layout is known for hull ${truncate(input.shipSymbol)}`,
+            params: { shipSymbol: input.shipSymbol },
         });
     } else {
         const knownSlots = new Map(input.slots.map((slot) => [slot.key.toLowerCase(), slot]));
@@ -122,6 +202,11 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                     slot: module.slot,
                     symbol: module.symbol,
                     message: `${truncate(module.slot)} is not a slot on ${truncate(input.shipSymbol)}`,
+                    params: {
+                        shipSymbol: input.shipSymbol,
+                        slot: module.slot,
+                        symbol: module.symbol,
+                    },
                 });
             }
         }
@@ -135,6 +220,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                     severity: 'incomplete',
                     slot: slot.key,
                     message: `${truncate(slot.key)} is required for an operational build`,
+                    params: { slot: slot.key },
                 });
             }
         }
@@ -148,6 +234,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                 slot: module.slot,
                 symbol: module.symbol,
                 message: `${truncate(module.slot)}: ${truncate(module.symbol)} is not in the module catalogue`,
+                params: { slot: module.slot, symbol: module.symbol },
             });
         } else if (module.fitError !== null) {
             issues.push({
@@ -156,6 +243,12 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                 slot: module.slot,
                 symbol: module.symbol,
                 message: `${truncate(module.slot)}: ${truncate(module.symbol)} ${truncate(module.fitError)}`,
+                params: {
+                    ...module.fitParams,
+                    slot: module.slot,
+                    symbol: module.symbol,
+                    constraint: module.fitConstraint ?? 'unknownConstraint',
+                },
             });
         }
     }
@@ -163,7 +256,25 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
     // Each issue is frozen, not only the array: `ShipLoadout.validation` memoises this
     // result, so one consumer editing an issue in place would otherwise rewrite what
     // every later reader of the same build sees.
-    const frozen = Object.freeze(issues.map((issue) => Object.freeze(issue)));
+    const frozen = Object.freeze(
+        issues.map((issue) =>
+            Object.freeze({
+                ...issue,
+                ...(issue.params
+                    ? {
+                          params: Object.freeze(
+                              Object.fromEntries(
+                                  Object.entries(issue.params).map(([key, value]) => [
+                                      key,
+                                      Array.isArray(value) ? Object.freeze([...value]) : value,
+                                  ]),
+                              ) as Record<string, LoadoutIssueParam>,
+                          ),
+                      }
+                    : {}),
+            }),
+        ),
+    );
     return Object.freeze({
         valid: !issues.some((issue) => issue.severity === 'error'),
         complete: issues.length === 0,

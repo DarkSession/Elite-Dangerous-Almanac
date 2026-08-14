@@ -57,6 +57,7 @@ test('mass reports every missing dependency instead of returning a partial sum',
         ],
     );
     assert.equal(Object.isFrozen(result.issues[0]), true);
+    assert.equal(Object.isFrozen(result.issues[0]?.params), true);
 });
 
 test('cargo and fuel name unknown capacity modules while ignoring unrelated modules', () => {
@@ -69,6 +70,11 @@ test('cargo and fuel name unknown capacity modules while ignoring unrelated modu
         field: 'cargoCapacity',
         slot: 'Slot01_Size4',
         symbol: 'UnknownRack',
+        params: {
+            field: 'cargoCapacity',
+            slot: 'Slot01_Size4',
+            symbol: 'UnknownRack',
+        },
         message: 'Slot01_Size4: UnknownRack has no known cargoCapacity',
     });
     const fuel = calculateFuelCapacity(null, modules);

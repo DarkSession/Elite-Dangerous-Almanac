@@ -161,6 +161,11 @@ export interface WeaponMetrics {
     readonly heatPerSecond: number;
     /** Heat per second averaged over reloads. */
     readonly sustainedHeatPerSecond: number;
+    /**
+     * The module's thermal-load stat: per discharge for a discrete weapon, already per
+     * second for a continuous beam or mining laser, in the game's thermal-load units.
+     */
+    readonly thermalLoad: number;
     /** Power draw, in megawatts — what the weapon asks of the power plant when deployed. */
     readonly powerDraw: number;
     /**
@@ -201,6 +206,11 @@ export interface WeaponTotals {
     readonly heatPerSecond: number;
     /** Heat generated per second averaged over reloads, summed across the weapons. */
     readonly sustainedHeatPerSecond: number;
+    /**
+     * Sum of the included modules' thermal-load stats: one discharge from each discrete
+     * weapon plus each continuous weapon's already-per-second figure.
+     */
+    readonly thermalLoad: number;
     /** Deployed power draw, in MW, summed across the weapons. */
     readonly powerDraw: number;
     /** {@link damagePerSecond} split by damage type. */
@@ -487,6 +497,7 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
         sustainedEnergyPerSecond: eps * factor,
         heatPerSecond: hps,
         sustainedHeatPerSecond: hps * factor,
+        thermalLoad: weapon.thermalLoad ?? 0,
         powerDraw: weapon.powerDraw ?? 0,
         damageByType: weapon.damageComponents
             ? splitComponents(dps, weapon.damageComponents)
@@ -522,6 +533,7 @@ export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotal
     let sustainedEnergyPerSecond = 0;
     let heatPerSecond = 0;
     let sustainedHeatPerSecond = 0;
+    let thermalLoad = 0;
     let powerDraw = 0;
 
     for (const metric of metrics) {
@@ -531,6 +543,7 @@ export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotal
         sustainedEnergyPerSecond += metric.sustainedEnergyPerSecond;
         heatPerSecond += metric.heatPerSecond;
         sustainedHeatPerSecond += metric.sustainedHeatPerSecond;
+        thermalLoad += metric.thermalLoad;
         powerDraw += metric.powerDraw;
         addDamageSplit(damageByType, metric.damageByType);
         addDamageSplit(sustainedDamageByType, metric.sustainedDamageByType);
@@ -543,6 +556,7 @@ export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotal
         sustainedEnergyPerSecond,
         heatPerSecond,
         sustainedHeatPerSecond,
+        thermalLoad,
         powerDraw,
         damageByType: finishDamageSplit(damageByType),
         sustainedDamageByType: finishDamageSplit(sustainedDamageByType),
