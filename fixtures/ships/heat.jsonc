@@ -187,15 +187,29 @@
     "overheats": false
   },
 
-  // A module the catalogue cannot resolve draws power the model cannot see, and makes
-  // heat it cannot count. The named modules are reported rather than the profile being
-  // withheld: every figure is then a lower bound, and `overheats: false` answers only
-  // for the modules that did resolve.
+  // A module the catalogue cannot resolve is named rather than the profile being
+  // withheld, and what is reported is a projection over the modules that did resolve —
+  // not a bound in either direction. The unresolved module's own heat is missing, which
+  // reads low; and because an unknown draw is left out of the priority-group totals, the
+  // groups below it read as powered when the real plant might shed them, which reads
+  // high. `projection` pins that second direction: two builds differing only in whether
+  // the size-7 module resolves, where the unresolved one reports thruster heat that the
+  // resolved one — whose 4.9 MW pushes group 2 past the 12 MW plant — does not.
   "unknownDraws": {
     "fixture": "build-metrics.jsonc unknownPowerDraw",
     "labels": ["Slot01_Size7", "HugeHardpoint1", "TinyHardpoint1", "CargoHatch"],
     "idleThermalLoad": 0,
-    "overheats": false
+    "overheats": false,
+    "projection": {
+      "ship": "Anaconda",
+      "powerPlant": "Int_Powerplant_Size3_Class5",
+      "thrusters": "Int_Engine_Size7_Class5",
+      "thrusterPriority": 1,
+      "unresolvedItem": "Int_FutureModule",
+      "resolvedItem": "Int_ShieldGenerator_Size7_Class5",
+      "unresolved": { "idleThermalLoad": 3.648, "thrustersThermalLoad": 4.948 },
+      "resolved": { "idleThermalLoad": 1.96, "thrustersThermalLoad": 1.96 }
+    }
   },
 
   // Hulls with no heat figures, and builds with nothing to model.

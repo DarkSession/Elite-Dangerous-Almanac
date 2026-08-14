@@ -1633,6 +1633,22 @@ type FixtureShipsHeat = {
         idleThermalLoad: number;
         labels: string[];
         overheats: boolean;
+        projection: {
+            powerPlant: string;
+            resolved: {
+                idleThermalLoad: number;
+                thrustersThermalLoad: number;
+            };
+            resolvedItem: string;
+            ship: string;
+            thrusterPriority: number;
+            thrusters: string;
+            unresolved: {
+                idleThermalLoad: number;
+                thrustersThermalLoad: number;
+            };
+            unresolvedItem: string;
+        };
     };
     unpowered: {
         fixture: string;

@@ -3102,9 +3102,39 @@
             "fixture": { "type": "string" },
             "idleThermalLoad": { "type": "integer" },
             "labels": { "type": "array", "items": { "type": "string" } },
-            "overheats": { "type": "boolean" }
+            "overheats": { "type": "boolean" },
+            "projection": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "powerPlant": { "type": "string" },
+                "resolved": { "$ref": "#/definitions/shared251de358abd5" },
+                "resolvedItem": { "type": "string" },
+                "ship": { "type": "string" },
+                "thrusterPriority": { "type": "integer" },
+                "thrusters": { "type": "string" },
+                "unresolved": { "$ref": "#/definitions/shared251de358abd5" },
+                "unresolvedItem": { "type": "string" }
+              },
+              "required": [
+                "powerPlant",
+                "resolved",
+                "resolvedItem",
+                "ship",
+                "thrusterPriority",
+                "thrusters",
+                "unresolved",
+                "unresolvedItem"
+              ]
+            }
           },
-          "required": ["fixture", "idleThermalLoad", "labels", "overheats"]
+          "required": [
+            "fixture",
+            "idleThermalLoad",
+            "labels",
+            "overheats",
+            "projection"
+          ]
         },
         "unpowered": {
           "type": "object",
@@ -7115,6 +7145,15 @@
         "Ship",
         "UnladenMass"
       ]
+    },
+    "shared251de358abd5": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "idleThermalLoad": { "type": "number" },
+        "thrustersThermalLoad": { "type": "number" }
+      },
+      "required": ["idleThermalLoad", "thrustersThermalLoad"]
     },
     "shared28704cd9e15a": {
       "type": "object",

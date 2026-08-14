@@ -288,9 +288,12 @@ load-bearing:
   the hull publishes no heat figures — the Lynx Highliner is the one hull for which no
   source carries a dissipation figure at all. When it does answer, it names unresolved
   modules in its own `unknownDraws`, mirroring the power budget: a module the catalogue
-  cannot resolve draws power the model cannot see and makes heat it cannot count, so
-  while that list is non-empty every figure is a lower bound and `overheats: false`
-  answers only for the modules that did resolve.
+  cannot resolve draws power the model cannot see and makes heat it cannot count — and,
+  because an unknown draw is left out of the priority-group totals, it also leaves the
+  groups below it reading as powered when the real plant would shed them. The two errors
+  pull opposite ways, so while that list is non-empty the profile is a projection over
+  the modules that did resolve rather than a bound: `overheats` can be wrong in either
+  direction, and a settled level with it.
 
 Check `build.validation.issues` for `unknownModule` before trusting any of the above on a
 build you did not assemble yourself.

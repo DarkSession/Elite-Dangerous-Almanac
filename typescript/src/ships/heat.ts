@@ -172,9 +172,9 @@ export interface HeatInput {
      *
      * @remarks
      * Passing them does not change a single figure; it is how
-     * {@link HeatMetrics.unknownDraws} comes to report that the figures are a lower
-     * bound. A module missing from the catalogue draws power this calculation cannot
-     * see, and therefore makes heat it cannot count.
+     * {@link HeatMetrics.unknownDraws} comes to report that the figures are a projection
+     * over the modules that did resolve rather than an answer for the build. That entry
+     * states what goes wrong and in which directions.
      */
     readonly unknownDraws?: readonly string[];
 }
@@ -244,12 +244,20 @@ export interface HeatMetrics {
     /**
      * Modules whose power draw could not be determined, named. Normally empty.
      *
-     * **While it is not empty, every figure here is a lower bound.** An unresolved
-     * module draws power this calculation cannot see and makes heat it cannot count, so
-     * each scenario's thermal load and heat level read too low, and an `overheats` of
-     * `false` means only that the *known* modules do not overheat the build. A caller
-     * showing these figures should say so — the same caveat
-     * {@link PowerBudget.unknownDraws} carries, for the same reason.
+     * **While it is not empty, every figure here is a projection over the modules that
+     * did resolve, and is not a bound in either direction.** Two things go wrong at
+     * once, and they pull opposite ways:
+     *
+     * - The unresolved module's own draw makes heat this calculation cannot count, so
+     *   the figures read low.
+     * - An unknown draw is left out of the priority-group totals it belongs to
+     *   ({@link PowerBudget.unknownDraws} says so), which leaves the groups below it
+     *   reading as powered when the real plant would shed them. Heat from a thruster or
+     *   a weapon the build could not actually run is then counted, so the figures read
+     *   high — far enough, on a tight build, to report an overheat that would not happen.
+     *
+     * So `overheats` is not trustworthy in either direction here, and neither is a
+     * settled level. A caller showing these figures should say what they are.
      */
     readonly unknownDraws: readonly string[];
 }

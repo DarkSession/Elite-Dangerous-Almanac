@@ -1873,7 +1873,11 @@ export class ShipLoadout {
      *
      * @returns The {@link HeatMetrics}, or `null` when the build has no powered power
      * plant, or when the hull carries no heat figures — the Lynx Highliner is the one
-     * hull no source publishes a {@link Ship.heatDissipation} for.
+     * hull no source publishes a {@link Ship.heatDissipation} for. A build carrying a
+     * module the catalogues cannot resolve is answered rather than refused, with that
+     * module named in {@link HeatMetrics.unknownDraws}: read what that entry says about
+     * the figures before showing them, because they are then a projection over the rest
+     * of the build rather than an answer for it.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

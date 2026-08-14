@@ -37,7 +37,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { SHIPS, getShipBySymbol } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff, damagePerSecond } from './weapons.js';
-import type { HeatState } from './heat.js';
+import type { HeatMetrics, HeatState } from './heat.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
@@ -4146,6 +4146,11 @@ const HEAT_BUILDS: Record<string, LoadoutEvent> = {
     'journal-anaconda-slapaconda.jsonc': slapacondaJournal as LoadoutEvent,
 };
 
+/** The heat fixture rounds to 12 dp; `1e-9` catches any real change in the maths. */
+const close = (actual: number, expected: number, what: string): void => {
+    assert.ok(Math.abs(actual - expected) < 1e-9, `${what}: got ${actual}, expected ${expected}`);
+};
+
 const HEAT_SCENARIOS = [
     'idle',
     'thrusters',
@@ -4194,6 +4199,51 @@ test('heatMetrics reproduces the pinned heat profile of each captured build', ()
             }
         }
     }
+});
+
+test('an unknown draw can make the projection overstate heat, not only understate it', () => {
+    // An unknown draw is left out of its priority group's total, so the groups below it
+    // read as powered. These two builds differ only in whether the size-7 module
+    // resolves: unresolved, the thrusters read as fed and their heat is counted;
+    // resolved, the same 4.9 MW pushes group 2 past the plant and sheds them. The
+    // projection therefore reports heat the real build would not make — which is why
+    // `unknownDraws` promises no bound in either direction.
+    const expected = heatFixture.unknownDraws.projection;
+    const heatWith = (item: string): HeatMetrics => {
+        const build = ShipLoadout.fromLoadout({
+            Ship: expected.ship,
+            Modules: [
+                { Slot: 'PowerPlant', Item: expected.powerPlant, On: true, Priority: 0 },
+                { Slot: 'Slot01_Size7', Item: item, On: true, Priority: 0 },
+                {
+                    Slot: 'MainEngines',
+                    Item: expected.thrusters,
+                    On: true,
+                    Priority: expected.thrusterPriority,
+                },
+            ],
+        } as unknown as LoadoutEvent);
+        const heat = build.heatMetrics();
+        assert.ok(heat, item);
+        return heat;
+    };
+
+    const unresolved = heatWith(expected.unresolvedItem);
+    assert.deepEqual(unresolved.unknownDraws, ['Slot01_Size7']);
+    close(unresolved.idle.thermalLoad, expected.unresolved.idleThermalLoad, 'unresolved idle');
+    close(
+        unresolved.thrusters.thermalLoad,
+        expected.unresolved.thrustersThermalLoad,
+        'unresolved thrusters',
+    );
+
+    const resolved = heatWith(expected.resolvedItem);
+    assert.deepEqual(resolved.unknownDraws, []);
+    close(resolved.idle.thermalLoad, expected.resolved.idleThermalLoad, 'resolved idle');
+    close(resolved.thrusters.thermalLoad, expected.resolved.thrustersThermalLoad, 'resolved');
+    // The resolved build runs its thrusters unpowered: they add nothing over idle.
+    assert.equal(resolved.thrusters.thermalLoad, resolved.idle.thermalLoad);
+    assert.ok(unresolved.thrusters.thermalLoad > resolved.thrusters.thermalLoad);
 });
 
 test('a hull with no published dissipation reports no heat at all', () => {
@@ -4282,7 +4332,7 @@ test('a build the plant cannot feed at all generates no heat anywhere', () => {
     }
 });
 
-test('heat names the unresolved modules that make its figures a lower bound', () => {
+test('heat names the unresolved modules its figures are only a projection over', () => {
     const expected = heatFixture.unknownDraws;
     const heat = ShipLoadout.fromLoadout(metrics.unknownPowerDraw.loadout).heatMetrics();
     assert.ok(heat);
@@ -4292,7 +4342,7 @@ test('heat names the unresolved modules that make its figures a lower bound', ()
         metrics.unknownPowerDraw.unknownDraws.map((consumer) => consumer.label),
         'the same modules the power budget names',
     );
-    // The figures themselves stay as they are — a lower bound, not a refusal — and the
+    // The figures themselves are still answered — a projection, not a refusal — and the
     // list is what tells a caller not to read `overheats: false` as an all-clear.
     assert.equal(heat.idle.thermalLoad, expected.idleThermalLoad);
     assert.equal(heat.firingDrained.overheats, expected.overheats);
