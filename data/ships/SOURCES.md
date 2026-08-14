@@ -53,16 +53,16 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   symbol join, preserving registry order and rejecting duplicate or unmatched input.
   Masses are tonnes, speeds m/s, rotation rates deg/s. The in-game hull audit below
   overrides registry values where they disagree.
-- **Speed is stored as installed endpoints.** A current-client hull audit recorded
+- **Speed is stored as installed endpoints.** A game hull audit recorded
   2026-08-14 UTC supplies `minimumSpeed` and `maximumSpeed` directly for all 48 hulls.
-  The client's ratio values carry no independent information:
+  The game's ratio values carry no independent information:
   `minThrust = 100 * minimumSpeed / maximumSpeed` and
   `pipSpeed = (maximumSpeed - minimumSpeed) / (4 * maximumSpeed)`. The ratios are
   therefore not retained; reconstructing an endpoint from rounded ratios can disagree
   with the installed whole-number value (the Lynx's `73.75%` ratio produces
   `210.1875` m/s rather than its installed `210` m/s).
-- **Angular rates are stored as zero- and four-ENG-PIP endpoints.** The same current-client
-  audit supplies `minPitch`, `minRoll` and `minYaw` from each flight-default block. The
+- **Angular rates are stored as zero- and four-ENG-PIP endpoints.** The same game audit
+  supplies `minPitch`, `minRoll` and `minYaw` from each flight-default block. The
   selected full-rate words come from the hull overrides; an exact `-1.0` override
   sentinel selects the corresponding flight-default word. This structure holds for all
   48 player hulls. EDSY's public handling implementation independently identifies these
@@ -286,11 +286,11 @@ slots are outside the hull layout.
   73.75%; core PP5/thr6/FSD5/LS6/dist5/sen3/tank5; hardpoints 1 large + 4 medium;
   4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
   options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
-  records). EDSY independently gives the 23 deg/s zero-ENG-PIP pitch rate. A maintainer
-  current-client audit recorded 2026-08-14 UTC supplies `masslock: 16`,
+  records). EDSY independently gives the 23 deg/s zero-ENG-PIP pitch rate. A maintainer's
+  game audit recorded 2026-08-14 UTC supplies `masslock: 16`,
   `heatCapacity: 279`, the installed `minimumSpeed: 210` / `maximumSpeed: 285` pair,
   and the complete angular endpoints `23/26` pitch, `60/60` roll and `19/19` yaw. These
-  client readings have no immutable game revision or retained capture. Values the
+  game readings have no immutable game revision or retained capture. Values the
   static catalogue does not expose are omitted rather than invented: acceleration and
   the boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
