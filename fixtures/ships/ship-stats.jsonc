@@ -29,6 +29,7 @@
       "masslock": 23,
       "crew": 4,
       "heatCapacity": 334,
+      "heatDissipation": 67.15,
       "reserveFuelCapacity": 1.07,
       "pitch": 25,
       "roll": 60,
@@ -49,6 +50,7 @@
       "masslock": 21,
       "crew": 4,
       "heatCapacity": 341,
+      "heatDissipation": 72.1,
       "reserveFuelCapacity": 1.14,
       "pitch": 30,
       "roll": 75,
@@ -93,6 +95,17 @@
     },
     { "symbol": "MediumTransport01", "masslock": 16, "heatCapacity": 279 }
   ],
+  "heatDissipation": {
+    "count": 47,
+    "absent": ["MediumTransport01"],
+    "spot": [
+      { "symbol": "SideWinder", "heatDissipation": 18.15 },
+      { "symbol": "Dolphin", "heatDissipation": 56 },
+      { "symbol": "Python", "heatDissipation": 52.05 },
+      { "symbol": "Cutter", "heatDissipation": 72.58 },
+      { "symbol": "Corsair", "heatDissipation": 52 }
+    ]
+  },
   "speedEndpoints": [
     { "symbol": "SideWinder", "minimumSpeed": 100, "maximumSpeed": 220 },
     { "symbol": "Eagle", "minimumSpeed": 180, "maximumSpeed": 240 },

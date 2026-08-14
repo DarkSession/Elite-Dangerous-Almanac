@@ -170,6 +170,7 @@
         "masslock": { "type": "number", "minimum": 0 },
         "crew": { "type": "integer", "minimum": 1 },
         "heatCapacity": { "type": "number", "minimum": 0 },
+        "heatDissipation": { "type": "number", "exclusiveMinimum": 0 },
         "reserveFuelCapacity": { "type": "number", "minimum": 0 },
         "pitch": { "type": "number", "minimum": 0 },
         "minPitch": { "type": "number", "minimum": 0 },

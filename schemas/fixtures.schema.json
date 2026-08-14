@@ -234,6 +234,7 @@
       "definition": "shipsEngineeringOptions",
       "files": ["ships/engineering-options.jsonc"]
     },
+    { "definition": "shipsHeat", "files": ["ships/heat.jsonc"] },
     {
       "definition": "shipsJournalLoadout",
       "files": [
@@ -2985,6 +2986,208 @@
         "splitFamilies"
       ]
     },
+    "shipsHeat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "absent": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hullWithoutDissipation": { "type": "string" },
+            "unknownHull": { "type": "string" }
+          },
+          "required": ["hullWithoutDissipation", "unknownHull"]
+        },
+        "builds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "deployedPowerDraw": { "type": "number" },
+              "firingDrained": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "overheats": { "type": "boolean" },
+                  "secondsToOverheat": { "type": "number" },
+                  "thermalLoad": { "type": "number" }
+                },
+                "required": ["overheats", "secondsToOverheat", "thermalLoad"]
+              },
+              "firingSustained": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "gauge": { "type": "number" },
+                  "overheats": { "type": "boolean" },
+                  "secondsToOverheat": { "type": "number" },
+                  "thermalLoad": { "type": "number" }
+                },
+                "required": ["overheats", "thermalLoad"]
+              },
+              "fixture": { "type": "string" },
+              "fsdCharging": { "$ref": "#/definitions/shared9ee0d2bef36a" },
+              "heatEfficiency": { "type": "number" },
+              "hullHeatCapacity": { "type": "integer" },
+              "hullHeatDissipation": { "type": "number" },
+              "idle": { "$ref": "#/definitions/shared9ee0d2bef36a" },
+              "retractedPowerDraw": { "type": "number" },
+              "ship": { "type": "string" },
+              "thrusters": { "$ref": "#/definitions/shared9ee0d2bef36a" }
+            },
+            "required": [
+              "deployedPowerDraw",
+              "firingDrained",
+              "firingSustained",
+              "fixture",
+              "fsdCharging",
+              "heatEfficiency",
+              "hullHeatCapacity",
+              "hullHeatDissipation",
+              "idle",
+              "retractedPowerDraw",
+              "ship",
+              "thrusters"
+            ]
+          }
+        },
+        "drainedCapacitorMultiplier": { "type": "integer" },
+        "equilibrium": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "dissipation": { "type": "number" },
+              "heatLevel": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              },
+              "thermalLoad": { "type": "number" }
+            },
+            "required": ["dissipation", "heatLevel", "thermalLoad"]
+          }
+        },
+        "overheatHeatLevel": { "type": "number" },
+        "transient": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "heatCapacity": { "type": "integer" },
+              "heatDissipation": { "type": "integer" },
+              "heatLevel": { "type": "number" },
+              "seconds": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              },
+              "startLevel": { "type": "number" },
+              "targetLevel": { "type": "number" },
+              "thermalLoad": { "type": "integer" }
+            },
+            "required": [
+              "heatCapacity",
+              "heatDissipation",
+              "seconds",
+              "startLevel",
+              "thermalLoad"
+            ]
+          }
+        },
+        "unknownDraws": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fixture": { "type": "string" },
+            "idleThermalLoad": { "type": "integer" },
+            "labels": { "type": "array", "items": { "type": "string" } },
+            "overheats": { "type": "boolean" },
+            "projection": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "powerPlant": { "type": "string" },
+                "resolved": { "$ref": "#/definitions/shared251de358abd5" },
+                "resolvedItem": { "type": "string" },
+                "ship": { "type": "string" },
+                "thrusterPriority": { "type": "integer" },
+                "thrusters": { "type": "string" },
+                "unresolved": { "$ref": "#/definitions/shared251de358abd5" },
+                "unresolvedItem": { "type": "string" }
+              },
+              "required": [
+                "powerPlant",
+                "resolved",
+                "resolvedItem",
+                "ship",
+                "thrusterPriority",
+                "thrusters",
+                "unresolved",
+                "unresolvedItem"
+              ]
+            }
+          },
+          "required": [
+            "fixture",
+            "idleThermalLoad",
+            "labels",
+            "overheats",
+            "projection"
+          ]
+        },
+        "unpowered": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fixture": { "type": "string" },
+            "heatLevel": { "type": "integer" },
+            "overheats": { "type": "boolean" },
+            "powerPlant": { "type": "string" },
+            "thermalLoad": { "type": "integer" }
+          },
+          "required": [
+            "fixture",
+            "heatLevel",
+            "overheats",
+            "powerPlant",
+            "thermalLoad"
+          ]
+        },
+        "weaponThermalLoad": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "capacitorLevel": { "type": "integer" },
+              "distributorDraw": { "type": "integer" },
+              "effective": { "type": "integer" },
+              "thermalLoad": { "type": "integer" },
+              "weaponsCapacity": { "type": "integer" }
+            },
+            "required": [
+              "capacitorLevel",
+              "distributorDraw",
+              "effective",
+              "thermalLoad",
+              "weaponsCapacity"
+            ]
+          }
+        }
+      },
+      "required": [
+        "absent",
+        "builds",
+        "drainedCapacitorMultiplier",
+        "equilibrium",
+        "overheatHeatLevel",
+        "transient",
+        "unknownDraws",
+        "unpowered",
+        "weaponThermalLoad"
+      ]
+    },
     "shipsJournalLoadout": {
       "type": "object",
       "additionalProperties": false,
@@ -5475,6 +5678,27 @@
       "additionalProperties": false,
       "properties": {
         "count": { "type": "integer" },
+        "heatDissipation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "absent": { "type": "array", "items": { "type": "string" } },
+            "count": { "type": "integer" },
+            "spot": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "heatDissipation": { "type": "number" },
+                  "symbol": { "type": "string" }
+                },
+                "required": ["heatDissipation", "symbol"]
+              }
+            }
+          },
+          "required": ["absent", "count", "spot"]
+        },
         "inGameCorrections": {
           "type": "array",
           "items": {
@@ -5559,6 +5783,7 @@
               "crew": { "type": "integer" },
               "hardness": { "type": "integer" },
               "heatCapacity": { "type": "integer" },
+              "heatDissipation": { "type": "number" },
               "hullMass": { "type": "integer" },
               "masslock": { "type": "integer" },
               "maximumSpeed": { "type": "integer" },
@@ -5579,6 +5804,7 @@
               "crew",
               "hardness",
               "heatCapacity",
+              "heatDissipation",
               "hullMass",
               "masslock",
               "maximumSpeed",
@@ -5597,6 +5823,7 @@
       },
       "required": [
         "count",
+        "heatDissipation",
         "inGameCorrections",
         "pricedCount",
         "prices",
@@ -6878,6 +7105,15 @@
         "UnladenMass"
       ]
     },
+    "shared251de358abd5": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "idleThermalLoad": { "type": "number" },
+        "thrustersThermalLoad": { "type": "number" }
+      },
+      "required": ["idleThermalLoad", "thrustersThermalLoad"]
+    },
     "shared28704cd9e15a": {
       "type": "object",
       "additionalProperties": false,
@@ -7251,6 +7487,16 @@
         "shields",
         "speed"
       ]
+    },
+    "shared9ee0d2bef36a": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gauge": { "type": "number" },
+        "overheats": { "type": "boolean" },
+        "thermalLoad": { "type": "number" }
+      },
+      "required": ["gauge", "overheats", "thermalLoad"]
     },
     "shareda11919c7d0b2": {
       "type": "array",

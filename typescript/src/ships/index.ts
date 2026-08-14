@@ -47,8 +47,9 @@
  *   draws, by priority group), {@link shieldMetrics} and {@link armourMetrics} (strength,
  *   hit points and the resistances behind them, stacked by {@link stackShieldResistance}
  *   / {@link stackArmourResistance}), {@link weaponMetrics} (DPS, sustained DPS,
- *   capacitor draw and heat) and {@link ammunitionCapacity} (the magazine and the reserve
- *   behind it, for anything that carries rounds).
+ *   capacitor draw and heat), {@link ammunitionCapacity} (the magazine and the reserve
+ *   behind it, for anything that carries rounds) and {@link heatMetrics} (what the build
+ *   runs at idle and firing, and whether it cooks itself).
  * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
  *   an {@link EXPERIMENTAL_EFFECTS} entry; {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
@@ -366,6 +367,18 @@ export {
     type DamageSplit,
 } from './weapons.js';
 export { ammunitionCapacity, type AmmunitionStats, type AmmunitionCapacity } from './ammunition.js';
+export {
+    heatMetrics,
+    equilibriumHeatLevel,
+    effectiveWeaponThermalLoad,
+    heatLevelAtTime,
+    secondsToHeatLevel,
+    OVERHEAT_HEAT_LEVEL,
+    type HeatInput,
+    type HeatWeapon,
+    type HeatState,
+    type HeatMetrics,
+} from './heat.js';
 
 // ── Build editor: slot model (per-hull slot layouts live on each `Ship`) ─────
 export {

@@ -1,0 +1,220 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Expected heat-model outputs. The model is EDSY's (`edsy.js`
+ * `getEquilibriumHeatLevel`, `getTimeUntilHeatLevel`, `getHeatLevelAtTime`,
+ * `getEffectiveWeaponThermalLoad`, `updateUIStatsThm`), which cites the Frontier-forum
+ * research thread it was reverse-engineered in; see ATTRIBUTIONS.md and
+ * data/ships/SOURCES.md. Frontier publishes no heat formula, so these are expectations
+ * of a community model rather than readings taken from the game's own display.
+ *
+ * `equilibrium`, `weaponThermalLoad` and `transient` are algebraic checkpoints — each
+ * one is worked out from the stated formula rather than captured, and the round figures
+ * are chosen so the arithmetic can be followed by hand. `builds` pins whole-build output
+ * for the named journal captures, hull and module stats included, so a port reproduces
+ * the whole pipeline and not just the maths. Cross-language validation target.
+ *
+ * Heat levels are model units, where 1 is the level at which a hull's dissipation stops
+ * rising and 1.5 is what the cockpit gauge shows as 100%; `gauge` is that same level as
+ * a fraction of the gauge. Thermal loads are the game's thermal-load units per second,
+ * `heatDissipation` the same per second, and `heatCapacity` thermal-load units per unit
+ * of heat level.
+ *
+ * JSON carries no infinity, so a `heatLevel` or `seconds` of `null` means the figure is
+ * unbounded: a load no dissipation ever balances, or a heat level the load never
+ * carries the ship to.
+ */
+{
+  "overheatHeatLevel": 1.5,
+  "drainedCapacitorMultiplier": 5,
+
+  // heatLevel = sqrt(thermalLoad / dissipation)
+  "equilibrium": [
+    { "dissipation": 67.15, "thermalLoad": 0, "heatLevel": 0 },
+    { "dissipation": 50, "thermalLoad": 12.5, "heatLevel": 0.5 },
+    { "dissipation": 67.15, "thermalLoad": 67.15, "heatLevel": 1 },
+    { "dissipation": 50, "thermalLoad": 200, "heatLevel": 2 },
+    { "dissipation": 0, "thermalLoad": 0, "heatLevel": 0 },
+    { "dissipation": 0, "thermalLoad": 1, "heatLevel": null }
+  ],
+
+  // effective = thermalLoad × (1 + 4 × clamp(1 − (capacity × level − draw) / capacity))
+  "weaponThermalLoad": [
+    {
+      "thermalLoad": 2,
+      "distributorDraw": 5,
+      "weaponsCapacity": 20,
+      "capacitorLevel": 1,
+      "effective": 4
+    },
+    {
+      "thermalLoad": 2,
+      "distributorDraw": 5,
+      "weaponsCapacity": 20,
+      "capacitorLevel": 0,
+      "effective": 10
+    },
+    {
+      "thermalLoad": 2,
+      "distributorDraw": 0,
+      "weaponsCapacity": 20,
+      "capacitorLevel": 1,
+      "effective": 2
+    },
+    {
+      "thermalLoad": 3,
+      "distributorDraw": 0,
+      "weaponsCapacity": 0,
+      "capacitorLevel": 1,
+      "effective": 3
+    },
+    {
+      "thermalLoad": 3,
+      "distributorDraw": 1,
+      "weaponsCapacity": 0,
+      "capacitorLevel": 1,
+      "effective": 15
+    }
+  ],
+
+  // Below heat level 1 the hull sheds dissipation × level², so the level follows
+  // level(t) = settled × tanh(t × sqrt(dissipation × load) / capacity + atanh(start / settled)).
+  // At and above level 1 dissipation is capped and the level moves at
+  // (load − dissipation) / capacity per second.
+  "transient": [
+    // settled level exactly 1: level(t) = tanh(t / 2), so two seconds reaches tanh(1)
+    {
+      "heatCapacity": 100,
+      "heatDissipation": 50,
+      "thermalLoad": 50,
+      "startLevel": 0,
+      "seconds": 2,
+      "heatLevel": 0.7615941559557649
+    },
+    // the same case backwards — the time to reach that level
+    {
+      "heatCapacity": 100,
+      "heatDissipation": 50,
+      "thermalLoad": 50,
+      "startLevel": 0,
+      "targetLevel": 0.7615941559557649,
+      "seconds": 2
+    },
+    // a load the hull cannot shed: curved to level 1, then straight to 1.5 at 0.5/s
+    {
+      "heatCapacity": 100,
+      "heatDissipation": 50,
+      "thermalLoad": 100,
+      "startLevel": 0,
+      "targetLevel": 1.5,
+      "seconds": 2.2464504802804608
+    },
+    // a level the load settles below is never reached
+    {
+      "heatCapacity": 100,
+      "heatDissipation": 50,
+      "thermalLoad": 50,
+      "startLevel": 0,
+      "targetLevel": 1,
+      "seconds": null
+    },
+    // cooling from a heat sink's aftermath with the guns quiet
+    {
+      "heatCapacity": 100,
+      "heatDissipation": 50,
+      "thermalLoad": 0,
+      "startLevel": 1.5,
+      "seconds": 1,
+      "heatLevel": 1
+    }
+  ],
+
+  "builds": [
+    {
+      "fixture": "journal-federation-corvette-beams.jsonc",
+      "ship": "federation_corvette",
+      "heatEfficiency": 0.45,
+      "hullHeatCapacity": 333,
+      "hullHeatDissipation": 70.33,
+      "retractedPowerDraw": 39.1589,
+      "deployedPowerDraw": 46.8597,
+      "idle": { "thermalLoad": 17.621505, "gauge": 0.333702861669, "overheats": false },
+      "thrusters": { "thermalLoad": 19.909505, "gauge": 0.354706105106, "overheats": false },
+      "fsdCharging": { "thermalLoad": 56.909505, "gauge": 0.599695563949, "overheats": false },
+      "firingSustained": {
+        "thermalLoad": 59.724985613458,
+        "gauge": 0.614350843851,
+        "overheats": false
+      },
+      "firingDrained": {
+        "thermalLoad": 168.201363191415,
+        "overheats": true,
+        "secondsToOverheat": 2.858003559042
+      }
+    },
+    {
+      "fixture": "journal-anaconda-slapaconda.jsonc",
+      "ship": "anaconda",
+      "heatEfficiency": 0.3168,
+      "hullHeatCapacity": 334,
+      "hullHeatDissipation": 67.15,
+      "retractedPowerDraw": 17.4589,
+      "deployedPowerDraw": 36.3369,
+      "idle": { "thermalLoad": 5.53097952, "gauge": 0.191331623942, "overheats": false },
+      "thrusters": { "thermalLoad": 7.81897952, "gauge": 0.227489193082, "overheats": false },
+      "fsdCharging": { "thermalLoad": 44.81897952, "gauge": 0.54464900477, "overheats": false },
+      "firingSustained": {
+        "thermalLoad": 119.079973581401,
+        "overheats": true,
+        "secondsToOverheat": 5.53364053879
+      },
+      "firingDrained": {
+        "thermalLoad": 451.650927575221,
+        "overheats": true,
+        "secondsToOverheat": 0.875434164475
+      }
+    }
+  ],
+
+  // A plant too small to feed the build sheds priority groups from the bottom, and a
+  // module the plant does not feed is not running: it makes no heat, whatever its own
+  // stats say. With every group shed, no scenario generates anything at all.
+  "unpowered": {
+    "fixture": "journal-federation-corvette-beams.jsonc",
+    "powerPlant": "Int_PowerPlant_Size2_Class1",
+    "thermalLoad": 0,
+    "heatLevel": 0,
+    "overheats": false
+  },
+
+  // A module the catalogue cannot resolve is named rather than the profile being
+  // withheld, and what is reported is a projection over the modules that did resolve —
+  // not a bound in either direction. The unresolved module's own heat is missing, which
+  // reads low; and because an unknown draw is left out of the priority-group totals, the
+  // groups below it read as powered when the real plant might shed them, which reads
+  // high. `projection` pins that second direction: two builds differing only in whether
+  // the size-7 module resolves, where the unresolved one reports thruster heat that the
+  // resolved one — whose 4.9 MW pushes group 2 past the 12 MW plant — does not.
+  "unknownDraws": {
+    "fixture": "build-metrics.jsonc unknownPowerDraw",
+    "labels": ["Slot01_Size7", "HugeHardpoint1", "TinyHardpoint1", "CargoHatch"],
+    "idleThermalLoad": 0,
+    "overheats": false,
+    "projection": {
+      "ship": "Anaconda",
+      "powerPlant": "Int_Powerplant_Size3_Class5",
+      "thrusters": "Int_Engine_Size7_Class5",
+      "thrusterPriority": 1,
+      "unresolvedItem": "Int_FutureModule",
+      "resolvedItem": "Int_ShieldGenerator_Size7_Class5",
+      "unresolved": { "idleThermalLoad": 3.648, "thrustersThermalLoad": 4.948 },
+      "resolved": { "idleThermalLoad": 1.96, "thrustersThermalLoad": 1.96 }
+    }
+  },
+
+  // Hulls with no heat figures, and builds with nothing to model.
+  "absent": {
+    "hullWithoutDissipation": "MediumTransport01",
+    "unknownHull": "NoSuchShip"
+  }
+}

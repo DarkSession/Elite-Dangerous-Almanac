@@ -92,6 +92,28 @@ test('ship stats carry the in-game audit corrections at their observed precision
     }
 });
 
+test('47 of the 48 hulls carry a heat-dissipation figure', () => {
+    const expected = statsFixture.heatDissipation;
+    const carried = SHIPS.filter((ship) => ship.heatDissipation !== undefined);
+    assert.equal(carried.length, expected.count);
+    assert.deepEqual(
+        SHIPS.filter((ship) => ship.heatDissipation === undefined).map((ship) => ship.symbol),
+        expected.absent,
+        'only the hulls no source publishes a figure for may omit it',
+    );
+    assert.ok(
+        carried.every((ship) => ship.heatDissipation! > 0),
+        'a hull that carries the figure sheds something',
+    );
+    for (const hull of expected.spot) {
+        assert.equal(
+            getShipBySymbol(hull.symbol)?.heatDissipation,
+            hull.heatDissipation,
+            hull.symbol,
+        );
+    }
+});
+
 test('every hull carries its installed minimum and maximum speed endpoints', () => {
     for (const expected of statsFixture.speedEndpoints) {
         const ship = getShipBySymbol(expected.symbol);
