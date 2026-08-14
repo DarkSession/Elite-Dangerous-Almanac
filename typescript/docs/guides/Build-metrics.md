@@ -5,7 +5,7 @@ title: Build metrics
 # Build metrics
 
 How this library arrives at the numbers an outfitting screen shows — power, shields,
-armour, resistances, weapon output, ammunition and jump range. Each metric has its own
+armour, resistances, weapon output, ammunition, heat and jump range. Each metric has its own
 page in the API reference; this is the argument that runs through all of them, which no
 single symbol owns.
 
@@ -15,7 +15,7 @@ Every metric exists twice, and the difference is where the numbers come from rat
 what the maths does.
 
 The **calculation modules** — `ships/power`, `ships/shields`, `ships/armour`,
-`ships/resistances`, `ships/weapons`, `ships/ammunition`, `ships/jump-range` — are
+`ships/resistances`, `ships/weapons`, `ships/ammunition`, `ships/heat`, `ships/jump-range` — are
 data-free. You hand them the constants and they hand back a figure. They bundle to almost
 nothing, and they are the right layer for a what-if tool that is not modelling a real
 build.
@@ -203,6 +203,49 @@ a unit in the multiplier's third decimal is therefore taken as the whole number 
 quality roll between two published legs gets no such treatment: it is a real number with no
 whole magazine behind it.
 
+## Heat
+
+What the build runs at, and whether firing everything cooks it. Heat is the one metric
+here that no stated Frontier figure underwrites: the game publishes no formula and shows
+no dissipation figure, so the model — and the per-hull `heatDissipation` it reads — is
+community measurement of the game, ported from EDSY and credited in `ATTRIBUTIONS.md`.
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
+const heat = build.heatMetrics();
+heat?.idle.gauge; // hardpoints stowed, as the cockpit gauge reads it: 1 is 100%
+heat?.fsdCharging.gauge; // spooling a jump, the hottest thing most ships do
+heat?.firingSustained.overheats; // holding the trigger with the WEP capacitor keeping up
+heat?.firingDrained.secondsToOverheat; // and the alpha strike, on an empty capacitor
+```
+
+Two numbers decide everything, and they are not interchangeable. **Dissipation** is a
+ceiling: a build whose thermal load stays under the hull's `heatDissipation` settles below
+heat level 1 and never overheats, however long it fires; one that goes over never settles
+at all. **Capacity** is only inertia — it sets how long the climb takes, which is why a
+build that cooks itself in eight seconds and one that cooks itself in two are the same
+kind of broken.
+
+Heat follows what the plant **actually feeds**. A module switched off makes no heat, and
+neither does one in a priority group the plant cannot keep lit — including the thrusters
+and the guns. That check is state-dependent, so a build whose thrusters survive with the
+hardpoints stowed but get shed once they are out reports thruster heat in `thrusters` and
+none in the firing scenarios.
+
+Each scenario is cumulative, and each reports both a settled level and a countdown:
+`gauge` is the level as a fraction of the in-game readout, `overheats` says whether it
+settles at all, and `secondsToOverheat` fills in when it does not. A load beyond
+dissipation reports `Infinity` for the level rather than a settling point it never
+reaches.
+
+Weapons are the part worth reading twice. `firingSustained` and `firingDrained` differ
+only in the state of the weapons capacitor, and the gap is large: a shot the capacitor
+cannot pay for makes **five times** its thermal load. A build that never overheats in a
+duel can cook itself in a wing fight with the same guns.
+
 ## Jump range and fuel
 
 `jumpRangeSummary()` returns the loads a screen actually shows, so you do not have to
@@ -241,6 +284,16 @@ load-bearing:
   resolve from `weapons` and from the totals. None of the three carries a diagnostic.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
+- `heatMetrics()` returns `null` outright when the build has no powered plant, or when
+  the hull publishes no heat figures — the Lynx Highliner is the one hull for which no
+  source carries a dissipation figure at all. When it does answer, it names unresolved
+  modules in its own `unknownDraws`, mirroring the power budget: a module the catalogue
+  cannot resolve draws power the model cannot see and makes heat it cannot count — and,
+  because an unknown draw is left out of the priority-group totals, it also leaves the
+  groups below it reading as powered when the real plant would shed them. The two errors
+  pull opposite ways, so while that list is non-empty the profile is a projection over
+  the modules that did resolve rather than a bound: `overheats` can be wrong in either
+  direction, and a settled level with it.
 
 Check `build.validation.issues` for `unknownModule` before trusting any of the above on a
 build you did not assemble yourself.

@@ -109,6 +109,7 @@ import {
     armourInputFor,
     cellBankInputsFor,
     effectiveModule,
+    heatInputFor,
     mobilityInputFor,
     powerAvailable,
     powerConsumerFor,
@@ -117,6 +118,7 @@ import {
     weaponStatsFor,
 } from './internal/loadout-metrics.js';
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
+import { heatMetrics, type HeatMetrics } from './heat.js';
 import { shieldMetrics, type ShieldMetrics } from './shields.js';
 import { armourMetrics, type ArmourMetrics } from './armour.js';
 import {
@@ -1859,6 +1861,43 @@ export class ShipLoadout {
             powerAvailable(modules, (module) => this.#statsFor(module)),
             consumers,
         );
+    }
+
+    /**
+     * The build's heat: what it idles at, what it runs at flying and jumping, and
+     * whether firing everything cooks it.
+     *
+     * Every figure is post-engineering. The heat a build makes follows what the plant
+     * actually feeds, so a module switched off — or one in a priority group the plant
+     * cannot keep lit — contributes nothing.
+     *
+     * @returns The {@link HeatMetrics}, or `null` when the build has no powered power
+     * plant, or when the hull carries no heat figures — the Lynx Highliner is the one
+     * hull no source publishes a {@link Ship.heatDissipation} for. A build carrying a
+     * module the catalogues cannot resolve is answered rather than refused, with that
+     * module named in {@link HeatMetrics.unknownDraws}: read what that entry says about
+     * the figures before showing them, because they are then a projection over the rest
+     * of the build rather than an answer for it.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
+     * const heat = build.heatMetrics();
+     * heat?.idle.gauge;                      // -> 0.23, i.e. the gauge reads 23%
+     * heat?.firingSustained.overheats;       // -> false: the guns run cool enough to hold
+     * heat?.firingDrained.secondsToOverheat; // -> how long an alpha strike has on an empty WEP
+     * ```
+     */
+    heatMetrics(): HeatMetrics | null {
+        const input = heatInputFor(
+            this.#shipSymbol,
+            [...this.#modules.values()],
+            this.powerBudget(),
+            (module) => this.#statsFor(module),
+        );
+        return input ? heatMetrics(input) : null;
     }
 
     /**
