@@ -3236,7 +3236,27 @@ test('weaponsCapacitorMetrics scales fitted distributor recharge by WEP pips', (
     );
     assert.ok(halfPips.rechargeRate < rated.rechargeRate);
     assert.ok(halfPips.netDrainRate >= rated.netDrainRate);
-    assert.throws(() => build.weaponsCapacitorMetrics({ weaponsPips: 5 }), RangeError);
+    assert.throws(() => build.weaponsCapacitorMetrics({ weaponsPips: 5 }), {
+        name: 'RangeError',
+        message:
+            'ShipLoadout.weaponsCapacitorMetrics: weaponsPips must be a finite number from 0 to 4',
+    });
+});
+
+test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', () => {
+    const starved = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent).setModule(
+        'PowerPlant',
+        getModuleBySymbol(heatFixture.unpowered.powerPlant, CORE_MODULES)!,
+    );
+    assert.ok(starved.powerBudget().bands.every((band) => !band.poweredDeployed));
+    assert.deepEqual(starved.weaponsCapacitorMetrics(), {
+        weaponsPips: 4,
+        capacity: 0,
+        rechargeRate: 0,
+        sustainedEnergyPerSecond: 0,
+        netDrainRate: 0,
+        timeToDrain: Infinity,
+    });
 });
 
 test('a hull with no shield generator reports no shields', () => {

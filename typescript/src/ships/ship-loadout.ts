@@ -2207,12 +2207,16 @@ export class ShipLoadout {
     }
 
     /**
-     * WEP-capacitor recharge and endurance while every enabled weapon fires.
+     * WEP-capacitor recharge and endurance while every powered weapon fires.
      *
      * @param options - WEP pips in `[0, 4]`, defaulting to `4`.
      * @returns Actual recharge, sustained draw, net drain and seconds from full to
-     * empty. With no enabled distributor its capacity and recharge are zero; a load
-     * that draws no more than recharge reports `Infinity` for `timeToDrain`.
+     * empty. The deployed power budget is applied to the distributor and weapons, so a
+     * module the plant sheds contributes nothing. A module with an unresolved power
+     * draw is assumed powered, consistently with {@link powerBudget}; inspect its
+     * `unknownDraws` when that distinction matters. With no powered distributor,
+     * capacity and recharge are zero. A load that draws no more than recharge reports
+     * `Infinity` for `timeToDrain`.
      * @throws {RangeError} If `weaponsPips` is outside `[0, 4]` or not finite.
      * @example
      * ```ts
@@ -2224,12 +2228,16 @@ export class ShipLoadout {
      */
     weaponsCapacitorMetrics(options: WeaponsOptions = {}): WeaponsCapacitorMetrics {
         const weaponsPips = options.weaponsPips ?? 4;
-        const total = this.weaponMetrics().total;
+        if (!Number.isFinite(weaponsPips) || weaponsPips < 0 || weaponsPips > 4) {
+            throw new RangeError(
+                'ShipLoadout.weaponsCapacitorMetrics: weaponsPips must be a finite number from 0 to 4',
+            );
+        }
         return weaponsCapacitorMetrics(
             weaponsCapacitorInputFor(
                 [...this.#modules.values()],
-                total.sustainedEnergyPerSecond,
                 weaponsPips,
+                this.powerBudget(),
                 (module) => this.#statsFor(module),
             ),
         );

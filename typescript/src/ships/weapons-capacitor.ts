@@ -7,7 +7,7 @@
  * the weapons' sustained draw, so magazine reloads are already folded in.
  *
  * This module is data-free. {@link ShipLoadout.weaponsCapacitorMetrics}
- * (`./ship-loadout`) resolves the fitted distributor and enabled weapons for you.
+ * (`./ship-loadout`) resolves the powered distributor and weapons for you.
  *
  * @remarks
  * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Calculations.js`
@@ -18,6 +18,8 @@
  *
  * @packageDocumentation
  */
+
+import { capacitorRechargeAtPips } from './internal/capacitor-recharge.js';
 
 /** Everything {@link weaponsCapacitorMetrics} needs about one firing load. */
 export interface WeaponsCapacitorInput {
@@ -89,7 +91,7 @@ export function weaponsCapacitorMetrics(input: WeaponsCapacitorInput): WeaponsCa
         requireFiniteNonNegative(scope, field, input[field]);
     }
 
-    const rechargeRate = input.weaponsRecharge * Math.pow(weaponsPips / 4, 1.1);
+    const rechargeRate = capacitorRechargeAtPips(input.weaponsRecharge, weaponsPips);
     const netDrainRate = Math.max(0, input.sustainedEnergyPerSecond - rechargeRate);
     return {
         weaponsPips,

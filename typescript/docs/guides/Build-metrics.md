@@ -176,6 +176,10 @@ scales it by `(weaponsPips / 4) ^ 1.1`, then compares it with **sustained** ener
 second: a magazine's reload is time for the capacitor to recover, so burst draw would
 understate endurance. Fractional allocations from zero through four are accepted.
 
+The build facade applies the deployed power budget. A distributor or weapon shed by its
+priority group contributes nothing; unresolved power draws keep the power budget's
+optimistic assumption, so inspect `build.powerBudget().unknownDraws` when present.
+
 One asymmetry is deliberate. Frontier's Rapid Fire and High Capacity recipes shorten the
 **fire interval** rather than raising the rate of fire, so that is the label those
 blueprints carry; a weapon's combined rate of fire follows from the interval and the burst
