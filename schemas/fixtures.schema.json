@@ -235,6 +235,7 @@
       "definition": "shipsEngineeringOptions",
       "files": ["ships/engineering-options.jsonc"]
     },
+    { "definition": "shipsGunsights", "files": ["ships/gunsights.jsonc"] },
     { "definition": "shipsHeat", "files": ["ships/heat.jsonc"] },
     {
       "definition": "shipsJournalLoadout",
@@ -3009,6 +3010,36 @@
         "notEngineerable",
         "splitFamilies"
       ]
+    },
+    "shipsGunsights": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "offsets": {
+                "type": "array",
+                "items": { "type": "array", "items": { "type": "number" } }
+              },
+              "points": {
+                "type": "array",
+                "items": { "type": "array", "items": { "type": "number" } }
+              },
+              "rangeMetres": { "type": "integer" },
+              "ship": { "type": "string" },
+              "slots": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["offsets", "points", "rangeMetres", "ship"]
+          }
+        },
+        "hardpointCount": { "type": "integer" },
+        "shipCount": { "type": "integer" }
+      },
+      "required": ["cases", "hardpointCount", "shipCount"]
     },
     "shipsHeat": {
       "type": "object",

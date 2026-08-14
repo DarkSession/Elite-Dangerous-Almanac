@@ -297,6 +297,10 @@
             "types": "./dist/ships/experimental-effects.d.ts",
             "import": "./dist/ships/experimental-effects.js"
         },
+        "./ships/gunsights": {
+            "types": "./dist/ships/gunsights.d.ts",
+            "import": "./dist/ships/gunsights.js"
+        },
         "./ships/heat": {
             "types": "./dist/ships/heat.d.ts",
             "import": "./dist/ships/heat.js"

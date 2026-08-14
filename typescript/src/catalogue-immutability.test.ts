@@ -31,6 +31,7 @@ import { INTERNAL_MODULES } from './ships/modules-internal.js';
 import { HARDPOINT_MODULES } from './ships/modules-hardpoint.js';
 import { UTILITY_MODULES } from './ships/modules-utility.js';
 import { SHIPS } from './ships/ships.js';
+import { SHIP_GUNSIGHTS } from './ships/gunsights.js';
 import { DEFAULT_LOADOUTS } from './ships/default-loadouts.js';
 import { BLUEPRINT_COSTS } from './ships/blueprint-costs.js';
 import { BLUEPRINTS } from './ships/blueprints.js';
@@ -88,6 +89,7 @@ test('every published catalogue and all of its nested records are frozen', () =>
         ['HARDPOINT_MODULES', HARDPOINT_MODULES],
         ['UTILITY_MODULES', UTILITY_MODULES],
         ['SHIPS', SHIPS],
+        ['SHIP_GUNSIGHTS', SHIP_GUNSIGHTS],
         ['DEFAULT_LOADOUTS', DEFAULT_LOADOUTS],
         ['BLUEPRINT_COSTS', BLUEPRINT_COSTS],
         ['BLUEPRINTS', BLUEPRINTS],
