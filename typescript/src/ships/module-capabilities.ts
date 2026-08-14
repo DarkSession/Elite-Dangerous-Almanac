@@ -62,15 +62,15 @@ export interface PowerGenerationStats {
 export interface PowerDistributorStats {
     /** WEP capacitor capacity, in megajoules. Non-negative. */
     readonly weaponsCapacity: number;
-    /** WEP recharge rate, in megajoules per second. Non-negative. */
+    /** Maximum WEP recharge at four pips, in megajoules per second. Non-negative. */
     readonly weaponsRecharge: number;
     /** ENG capacitor capacity, in megajoules. Non-negative. */
     readonly enginesCapacity: number;
-    /** ENG recharge rate, in megajoules per second. Non-negative. */
+    /** Maximum ENG recharge at four pips, in megajoules per second. Non-negative. */
     readonly enginesRecharge: number;
     /** SYS capacitor capacity, in megajoules. Non-negative. */
     readonly systemsCapacity: number;
-    /** SYS recharge rate, in megajoules per second. Non-negative. */
+    /** Maximum SYS recharge at four pips, in megajoules per second. Non-negative. */
     readonly systemsRecharge: number;
 }
 

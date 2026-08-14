@@ -1,7 +1,7 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Cross-language parity cases for loaded mobility, shield recovery, shield-cell pools,
+ * Cross-language parity cases for loaded mobility, shield recovery, WEP-capacitor endurance, shield-cell pools,
  * one-per-ship and counted-module validation, direct retail pricing, alpha-strike
  * thermal load, structured diagnostics and editor failures. Inputs pin the public
  * data-free and ShipLoadout facade contracts; catalogue-backed expectations pin the
@@ -305,6 +305,22 @@
   "weapons": {
     "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],
     "expectedThermalLoad": 98
+  },
+  "weaponsCapacitor": {
+    "input": {
+      "weaponsCapacity": 20,
+      "weaponsRecharge": 5,
+      "sustainedEnergyPerSecond": 7,
+      "weaponsPips": 2
+    },
+    "expected": {
+      "weaponsPips": 2,
+      "capacity": 20,
+      "rechargeRate": 2.3325824788420184,
+      "sustainedEnergyPerSecond": 7,
+      "netDrainRate": 4.667417521157981,
+      "timeToDrain": 4.285024836397756
+    }
   },
   "diagnostics": {
     "slef": {

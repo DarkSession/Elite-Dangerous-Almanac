@@ -12,6 +12,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { LoadoutEditError, ShipLoadout } from './ship-loadout.js';
 import { inspectSlef } from './slef.js';
 import { sumWeaponMetrics, weaponMetrics } from './weapons.js';
+import { weaponsCapacitorMetrics } from './weapons-capacitor.js';
 
 test('shared ship-operation cases reproduce across public calculations', () => {
     const mobility = mobilityMetrics(fixture.mobility.input);
@@ -67,6 +68,10 @@ test('shared ship-operation cases reproduce across public calculations', () => {
         sumWeaponMetrics(fixture.weapons.input.map((weapon) => weaponMetrics(weapon))).thermalLoad,
         fixture.weapons.expectedThermalLoad,
     );
+    const capacitor = weaponsCapacitorMetrics(fixture.weaponsCapacitor.input);
+    for (const [field, expected] of Object.entries(fixture.weaponsCapacitor.expected)) {
+        assert.ok(Math.abs(capacitor[field as keyof typeof capacitor] - expected) < 1e-12, field);
+    }
 });
 
 test('shared catalogue-backed operation cases reproduce', () => {

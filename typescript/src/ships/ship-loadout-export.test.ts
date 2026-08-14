@@ -388,8 +388,10 @@ test('the jump figures for a real journal build match the fixture', () => {
     assert.equal(round6(summary.max), pinned.maxJumpRange);
     assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
     assert.equal(round6(summary.laden), pinned.ladenJumpRange);
-    assert.equal(round6(summary.totalUnladen), pinned.totalUnladenRange);
-    assert.equal(round6(summary.totalLaden), pinned.totalLadenRange);
+    assert.equal(round6(summary.totalUnladen.range), pinned.totalUnladenRange);
+    assert.equal(round6(summary.totalLaden.range), pinned.totalLadenRange);
+    assert.equal(summary.totalUnladen.jumps, pinned.totalJumps);
+    assert.equal(summary.totalLaden.jumps, pinned.totalJumps);
 
     // …and the game's own MaxJumpRange, which is what makes the above trustworthy.
     assert.ok(Math.abs(summary.max - pinned.sourceMaxJumpRange) < 1e-4);
@@ -452,8 +454,10 @@ test('the jump figures for the stock journal build match the fixture', () => {
     assert.equal(round6(summary.max), pinned.maxJumpRange);
     assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
     assert.equal(round6(summary.laden), pinned.ladenJumpRange);
-    assert.equal(round6(summary.totalUnladen), pinned.totalUnladenRange);
-    assert.equal(round6(summary.totalLaden), pinned.totalLadenRange);
+    assert.equal(round6(summary.totalUnladen.range), pinned.totalUnladenRange);
+    assert.equal(round6(summary.totalLaden.range), pinned.totalLadenRange);
+    assert.equal(summary.totalUnladen.jumps, pinned.totalJumps);
+    assert.equal(summary.totalLaden.jumps, pinned.totalJumps);
 
     // A build with no cargo rack cannot be loaded, so laden and unladen are the same jump.
     assert.equal(summary.laden, summary.unladen);
@@ -610,8 +614,10 @@ test('the jump figures for the anti-xeno journal build match the fixture', () =>
     assert.equal(round6(summary.max), pinned.maxJumpRange);
     assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
     assert.equal(round6(summary.laden), pinned.ladenJumpRange);
-    assert.equal(round6(summary.totalUnladen), pinned.totalUnladenRange);
-    assert.equal(round6(summary.totalLaden), pinned.totalLadenRange);
+    assert.equal(round6(summary.totalUnladen.range), pinned.totalUnladenRange);
+    assert.equal(round6(summary.totalLaden.range), pinned.totalLadenRange);
+    assert.equal(summary.totalUnladen.jumps, pinned.totalJumps);
+    assert.equal(summary.totalLaden.jumps, pinned.totalJumps);
 
     // Unlike the Viper this build carries a cargo rack, so a laden jump is the shorter one.
     assert.ok(summary.laden < summary.unladen);

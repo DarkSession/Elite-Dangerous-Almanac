@@ -160,11 +160,25 @@ weapons.total.sustainedDamagePerSecond; // with reloads
 weapons.total.energyPerSecond; // weapons capacitor draw, MW
 weapons.total.heatPerSecond;
 weapons.weapons.length; // per-hardpoint breakdown
+
+const capacitor = build.weaponsCapacitorMetrics({ weaponsPips: 2 });
+capacitor.rechargeRate; // actual WEP recharge at two pips, MJ/s
+capacitor.netDrainRate; // sustained draw minus recharge, floored at zero
+capacitor.timeToDrain; // seconds from full, or Infinity when recharge keeps pace
 ```
 
 Beam and mining lasers are **continuous**: they carry no rate of fire, and their damage,
 distributor draw and thermal load are already per second, so the per-shot arithmetic
 collapses to the raw stats.
+
+A distributor's catalogue recharge is the four-WEP-pip maximum. The capacitor result
+scales it by `(weaponsPips / 4) ^ 1.1`, then compares it with **sustained** energy per
+second: a magazine's reload is time for the capacitor to recover, so burst draw would
+understate endurance. Fractional allocations from zero through four are accepted.
+
+The build facade applies the deployed power budget. A distributor or weapon shed by its
+priority group contributes nothing; unresolved power draws keep the power budget's
+optimistic assumption, so inspect `build.powerBudget().unknownDraws` when present.
 
 One asymmetry is deliberate. Frontier's Rapid Fire and High Capacity recipes shorten the
 **fire interval** rather than raising the rate of fire, so that is the label those
@@ -260,13 +274,22 @@ const jumps = build.jumpRangeSummary();
 jumps.max; // best single jump: one jump's fuel, empty hold
 jumps.unladen; // full tank, empty hold
 jumps.laden; // full tank, full hold
-jumps.totalUnladen; // every jump on one tank, empty
-jumps.totalLaden; // every jump on one tank, full
+jumps.totalUnladen.range; // every jump on one tank, empty
+jumps.totalUnladen.jumps; // number of jumps, including the final partial one
+jumps.totalLaden.range; // every jump on one tank, full
+
+const tank = build.totalRange();
+tank.range; // summed distance as the tank drains
+tank.jumps; // full and final-partial jumps before the tank is empty
+
+build.frameShiftDriveMassFactor(); // optMass / loadedMass, dimensionless
 ```
 
 The model is the community-standard hyperspace one, and `ships/jump-range` holds it as
 pure functions if you want a single jump rather than a summary. Guardian FSD boosters and
 the drive's own engineering are already folded in by the time `ShipLoadout` calls them.
+An FSD has no thruster-style three-point mass curve: its mass term is the direct
+`optMass / (mass + fuel)` ratio, while a Guardian boost is added after that base equation.
 
 ## When a metric cannot be computed
 
