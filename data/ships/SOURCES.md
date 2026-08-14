@@ -16,7 +16,6 @@ Referred to throughout by source name; the pin is here, once.
 | EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
 | msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
 | Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                          | 2026-08-14 UTC |
-| Elite Dangerous in-game gunsight observations                                                   | game version `4.4.0.3`; direct in-game observation                                                                                                                          | 2026-08-14 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -131,7 +130,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
 ### Gunsights
 
 - **File:** `gunsights.jsonc` (48 player-flyable hulls, 234 weapon hardpoints).
-- **Source:** in-game gunsight observations from the snapshot pinned above.
+- **Source:** in-game gunsight observations from the in-game verification snapshot
+  pinned above.
 - **Derivation:** each observation is joined to `ships.jsonc` by case-insensitive hull
   symbol. Its hardpoints are joined by exact journal slot key to the hardpoints returned
   by `enumerateSlots`, then written in the existing `Ship.hardpoints` order. One observed
@@ -142,6 +142,9 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   are omitted. Hull identity is already the map key; display names, slot keys and
   hardpoint counts are recoverable from `ships.jsonc`; all other acquisition and
   presentation metadata is unnecessary for projection and is dropped.
+- **Precision:** offsets remain at their observed numeric precision. Exact zero and tiny
+  near-zero values both describe centerline mounts; the residuals are numeric precision,
+  not meaningful sub-millimetre displacements to interpret or normalize.
 - **Manual corrections:** none. All 48 hulls and all 234 of their hardpoint slot keys join
   one-to-one without correction.
 

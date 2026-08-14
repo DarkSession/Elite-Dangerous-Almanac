@@ -22,8 +22,9 @@
  *
  * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
  *   lookups. One small catalogue; each {@link Ship} carries the
- *   hull's identity, stats and slot layout together. The split
- *   {@link SHIP_GUNSIGHTS} map projects its fixed weapon mounts at any range. The split
+ *   hull's identity, stats and slot layout together. {@link SHIP_GUNSIGHTS},
+ *   {@link getShipGunsight} and {@link projectGunsight} place a hull's fixed weapon
+ *   mounts at any target range. The split
  *   {@link ships/default-loadouts!DEFAULT_LOADOUTS | default-loadouts} subpath separately
  *   carries the stock modules, and {@link ShipLoadout.default} turns one into a live build.
  * - **Modules** — the {@link OutfittingModule} type and the lookups

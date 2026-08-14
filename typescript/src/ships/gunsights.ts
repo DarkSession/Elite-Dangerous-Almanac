@@ -36,7 +36,9 @@ export type GunsightOffset = readonly [
  * The shared ordering avoids repeating slot names in this compact catalogue. Pair an
  * offset with `ship.hardpoints[index]`, or with the hardpoint entries from
  * `enumerateSlots(ship)` in their returned order, when a renderer needs the mount's
- * size or journal-compatible slot key.
+ * size or journal-compatible slot key. **The number in a journal slot key is not the
+ * array index**: some hulls skip or reorder those numbers, so resolve a journal key
+ * through `enumerateSlots(ship)` before using its index here.
  */
 export type ShipGunsight = readonly GunsightOffset[];
 

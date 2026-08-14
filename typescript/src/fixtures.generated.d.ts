@@ -1592,6 +1592,7 @@ type FixtureShipsGunsights = {
         points: number[][];
         rangeMetres: number;
         ship: string;
+        slots?: string[];
     }[];
     hardpointCount: number;
     shipCount: number;

@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import fixture from '../../../fixtures/ships/gunsights.jsonc' with { type: 'json' };
-import { SHIPS } from './ships.js';
+import { SHIPS, getShipBySymbol } from './ships.js';
 import { SHIP_GUNSIGHTS, getShipGunsight, projectGunsight } from './gunsights.js';
+import { enumerateSlots } from './slots.js';
 
 function assertPointsClose(
     actual: readonly { readonly horizontalTangent: number; readonly verticalTangent: number }[],
@@ -46,6 +47,16 @@ test('shared parity cases pin offset ordering and range projection', () => {
         const gunsight = getShipGunsight(expected.ship);
         assert.ok(gunsight, expected.ship);
         assert.deepEqual(gunsight.slice(0, expected.offsets.length), expected.offsets);
+        if (expected.slots) {
+            const ship = getShipBySymbol(expected.ship);
+            assert.ok(ship, expected.ship);
+            assert.deepEqual(
+                enumerateSlots(ship)
+                    .filter((slot) => slot.kind === 'hardpoint')
+                    .map((slot) => slot.key),
+                expected.slots,
+            );
+        }
         assertPointsClose(
             projectGunsight(gunsight, expected.rangeMetres).slice(0, expected.points.length),
             expected.points,

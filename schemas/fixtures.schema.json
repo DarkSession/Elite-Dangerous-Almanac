@@ -3030,7 +3030,8 @@
                 "items": { "type": "array", "items": { "type": "number" } }
               },
               "rangeMetres": { "type": "integer" },
-              "ship": { "type": "string" }
+              "ship": { "type": "string" },
+              "slots": { "type": "array", "items": { "type": "string" } }
             },
             "required": ["offsets", "points", "rangeMetres", "ship"]
           }
