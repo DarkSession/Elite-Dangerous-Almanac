@@ -4,6 +4,8 @@
  * Ground truth for the ship catalogue (data/ships/ships.jsonc, from EDCD FDevIDs and
  * EDCD/coriolis-data). `count` pins the catalogue size; `records` pins identity,
  * manufacturer and landing-pad size (with `entitlement` present only on gated hulls);
+ * `displayNameCorrections` pins installed English localisation readings recorded
+ * 2026-08-14 UTC (no retained capture or immutable game revision is available), and
  * `lookups` pins the case-insensitive symbol/name resolution the journal relies on.
  */
 {
@@ -35,18 +37,28 @@
     },
     {
       "symbol": "Krait_MkII",
-      "name": "Krait MkII",
+      "name": "Krait Mk II",
       "manufacturer": "Faulcon DeLacy",
       "size": "medium",
       "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
     },
     {
       "symbol": "Python_NX",
-      "name": "Python MkII",
+      "name": "Python Mk II",
       "manufacturer": "Faulcon DeLacy",
       "size": "medium",
       "entitlement": "ELITE_V_PYTHON_NX"
     }
+  ],
+  "displayNameCorrections": [
+    { "symbol": "Viper", "name": "Viper Mk III" },
+    { "symbol": "CobraMkIII", "name": "Cobra Mk III" },
+    { "symbol": "Viper_MkIV", "name": "Viper Mk IV" },
+    { "symbol": "CobraMkIV", "name": "Cobra Mk IV" },
+    { "symbol": "Krait_MkII", "name": "Krait Mk II" },
+    { "symbol": "Python_NX", "name": "Python Mk II" },
+    { "symbol": "CobraMkV", "name": "Cobra Mk V" },
+    { "symbol": "PantherMkII", "name": "Panther Clipper Mk II" }
   ],
   "lookups": [
     { "query": "empire_trader", "by": "symbol", "name": "Imperial Clipper" },

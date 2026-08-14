@@ -330,7 +330,7 @@
   },
   "pythonMkII": {
     "build": "fixtures/ships/journal-python-mkii-antixeno.jsonc",
-    "note": "A third real journal `Loadout` event, and the second carrying no engineering at all — so, like the Viper MkIV, Frontier's own `UnladenMass` and `MaxJumpRange` check the base stats directly. What it adds is coverage neither other capture has: the Python MkII hull, and six anti-xeno and Guardian hardpoints whose clip and ammo figures the game reports back as `AmmoInClip` / `AmmoInHopper`. Four of its weapons are in groups this catalogue gives no engineering menu (the Enhanced AX pair, the Guardian Nanite Torpedo Pylon and the Remote Release Flak Launcher), so it also exercises a build made largely of modules `getBlueprintsForModule` answers `[]` for.",
+    "note": "A third real journal `Loadout` event, and the second carrying no engineering at all — so, like the Viper Mk IV, Frontier's own `UnladenMass` and `MaxJumpRange` check the base stats directly. What it adds is coverage neither other capture has: the Python Mk II hull, and six anti-xeno and Guardian hardpoints whose clip and ammo figures the game reports back as `AmmoInClip` / `AmmoInHopper`. Four of its weapons are in groups this catalogue gives no engineering menu (the Enhanced AX pair, the Guardian Nanite Torpedo Pylon and the Remote Release Flak Launcher), so it also exercises a build made largely of modules `getBlueprintsForModule` answers `[]` for.",
     "topLevelKeys": [
       "event",
       "Ship",
@@ -381,7 +381,7 @@
       ]
     },
     "discount": {
-      "note": "All 18 priced modules were bought at 0.8775 of catalogue list, each within a credit after the game's own rounding — a second, independent reading of the price table beside the Viper MkIV's flat 0.85, at a different discount. The residual credit splits cleanly: the 12 internals land exactly on the floor of the ratio, the six hardpoints one credit above it, which is a rounding rule this repository does not model and does not need to. The hull agrees with the Viper MkIV rather than the Krait Phantom: 56801651 is below even the bare `hullCost` and is 0.8775 of neither convention, so a journal's HullValue is not a second reading of the price table and none of these figures is carried through.",
+      "note": "All 18 priced modules were bought at 0.8775 of catalogue list, each within a credit after the game's own rounding — a second, independent reading of the price table beside the Viper Mk IV's flat 0.85, at a different discount. The residual credit splits cleanly: the 12 internals land exactly on the floor of the ratio, the six hardpoints one credit above it, which is a rounding rule this repository does not model and does not need to. The hull agrees with the Viper Mk IV rather than the Krait Phantom: 56801651 is below even the bare `hullCost` and is 0.8775 of neither convention, so a journal's HullValue is not a second reading of the price table and none of these figures is carried through.",
       "sourceHullValue": 56801651,
       "sourceModulesValue": 8577094,
       "sourceRebuy": 3268938,

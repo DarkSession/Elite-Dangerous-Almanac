@@ -28,6 +28,15 @@ test('fixture records resolve by symbol and name with the expected identity fiel
     }
 });
 
+test('ship display names match the installed English localisation exactly', () => {
+    for (const expected of shipsFixture.displayNameCorrections) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship, `missing ${expected.symbol}`);
+        assert.deepEqual(project(ship, expected), expected);
+        assert.deepEqual(getShipByName(expected.name), ship);
+    }
+});
+
 test('symbol and name lookups are case-insensitive (journal gives lower-cased symbols)', () => {
     for (const { query, by, name, symbol } of shipsFixture.lookups) {
         const ship = by === 'symbol' ? getShipBySymbol(query) : getShipByName(query);
@@ -69,6 +78,14 @@ test(`${statsFixture.count} hulls carry stats; getShipBySymbol reads them`, () =
 
 test('ship-stats spot checks: each merged hull carries the expected stat values', () => {
     for (const expected of statsFixture.spot) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship, `missing ${expected.symbol}`);
+        assert.deepEqual(project(ship, expected), expected);
+    }
+});
+
+test('ship stats carry the in-game audit corrections at their observed precision', () => {
+    for (const expected of statsFixture.inGameCorrections) {
         const ship = getShipBySymbol(expected.symbol);
         assert.ok(ship, `missing ${expected.symbol}`);
         assert.deepEqual(project(ship, expected), expected);
