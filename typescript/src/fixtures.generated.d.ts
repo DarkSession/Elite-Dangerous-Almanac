@@ -3616,6 +3616,10 @@ declare module '*/fixtures/ships/pre-engineered.jsonc' {
 
 type FixtureShipsShips = {
     count: number;
+    displayNameCorrections: {
+        name: string;
+        symbol: string;
+    }[];
     lookups: {
         by: string;
         name?: string;
@@ -3693,6 +3697,20 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 
 type FixtureShipsShipStats = {
     count: number;
+    inGameCorrections: {
+        baseShieldStrength?: number;
+        boost?: number;
+        heatCapacity?: number;
+        masslock?: number;
+        minThrust?: number;
+        pipSpeed?: number;
+        pitch?: number;
+        reserveFuelCapacity?: number;
+        roll?: number;
+        speed?: number;
+        symbol: string;
+        yaw?: number;
+    }[];
     minimumRotation: {
         minPitch: number;
         pipSpeed: number;

@@ -130,7 +130,7 @@
     },
     "pythonMkII": {
       "build": "fixtures/ships/journal-python-mkii-antixeno.jsonc",
-      "note": "A second wholly UNENGINEERED journal capture, on a hull and a drive class the Viper MkIV does not reach: a size-5 class-3 SCO drive in a 699t anti-xeno Python MkII. `sourceMaxJumpRange` is Frontier's own figure for a drive performing exactly as the catalogue sells it, so agreement here checks the SCO drive constants and the module masses with nothing folded in. Unlike the Viper this build carries cargo, so laden and unladen are different jumps.",
+      "note": "A second wholly UNENGINEERED journal capture, on a hull and a drive class the Viper Mk IV does not reach: a size-5 class-3 SCO drive in a 699t anti-xeno Python Mk II. `sourceMaxJumpRange` is Frontier's own figure for a drive performing exactly as the catalogue sells it, so agreement here checks the SCO drive constants and the module masses with nothing folded in. Unlike the Viper this build carries cargo, so laden and unladen are different jumps.",
       "ship": "python_nx",
       "frameShiftDrive": {
         "optMass": 1050,

@@ -1295,7 +1295,7 @@ test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => 
     assert.doesNotThrow(() => ShipLoadout.empty('PantherMkII').setModule('Slot06_Size5', bay));
     assert.throws(
         () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', bay),
-        /restricted to Caspian Explorer \(Explorer_NX\), Panther Clipper MkII \(Panthe…/,
+        /restricted to Caspian Explorer \(Explorer_NX\), Panther Clipper Mk II \(Panth…/,
     );
 });
 

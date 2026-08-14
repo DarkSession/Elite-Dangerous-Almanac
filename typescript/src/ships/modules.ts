@@ -877,7 +877,7 @@ export function getModulesByName(
  * this does *not* answer "what else can this hull carry" — that is slot layout, which the
  * hull's own record carries. Reach it with {@link getShipByName}, which takes the same
  * display name as this function; {@link getShipSlots} is the same layout keyed by
- * {@link Ship.symbol} instead, and the two differ for most hulls (`"Viper MkIII"` is the
+ * {@link Ship.symbol} instead, and the two differ for most hulls (`"Viper Mk III"` is the
  * record `"Viper"`).
  * @throws {TypeError} If `ship` is present and not a string. A nullish
  * `ship` is a miss, answered the way an unrecognised one is.

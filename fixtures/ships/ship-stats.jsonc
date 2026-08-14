@@ -1,8 +1,10 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Parity fixture for the stat fields merged into data/ships/ships.jsonc. Cross-language
- * validation.
+ * Parity fixture for the stat fields merged into data/ships/ships.jsonc. The in-game
+ * corrections pin readings recorded 2026-08-14 UTC, normalized to the catalogue's
+ * established numeric precision; no retained capture or immutable game revision is
+ * available. Cross-language validation.
  */
 {
   "count": 48,
@@ -10,7 +12,11 @@
   "prices": [
     { "symbol": "SideWinder", "hullCost": 4588, "retailCost": 32000 },
     { "symbol": "Anaconda", "hullCost": 142456440, "retailCost": 146969451 },
-    { "symbol": "MediumTransport01", "hullCost": 67992080, "retailCost": 69289470 }
+    {
+      "symbol": "MediumTransport01",
+      "hullCost": 67992080,
+      "retailCost": 69289470
+    }
   ],
   "spot": [
     {
@@ -39,15 +45,120 @@
       "baseShieldStrength": 500,
       "baseArmour": 345,
       "hardness": 60,
-      "masslock": 19,
+      "masslock": 21,
       "crew": 4,
-      "heatCapacity": 250,
+      "heatCapacity": 341,
       "reserveFuelCapacity": 1.14,
       "pitch": 30,
       "roll": 75,
       "yaw": 14,
-      "minThrust": 76,
-      "pipSpeed": 0.16666666666667
+      "minThrust": 76.19,
+      "pipSpeed": 0.05952380952381
+    }
+  ],
+  "inGameCorrections": [
+    { "symbol": "Type7", "baseShieldStrength": 156 },
+    { "symbol": "Dolphin", "heatCapacity": 245 },
+    { "symbol": "Orca", "masslock": 15 },
+    { "symbol": "Cutter", "masslock": 26 },
+    { "symbol": "DiamondBack", "pipSpeed": 0.098214285714286 },
+    { "symbol": "DiamondBackXL", "pipSpeed": 0.096153846153846 },
+    { "symbol": "Viper_MkIV", "masslock": 8 },
+    { "symbol": "Asp_Scout", "masslock": 9 },
+    {
+      "symbol": "Type9_Military",
+      "speed": 180,
+      "boost": 220,
+      "pitch": 22,
+      "roll": 40
+    },
+    { "symbol": "Krait_MkII", "pitch": 31, "minThrust": 62.5 },
+    { "symbol": "TypeX", "pitch": 38, "roll": 90 },
+    {
+      "symbol": "TypeX_2",
+      "minThrust": 61.111,
+      "pipSpeed": 0.097222222222222
+    },
+    { "symbol": "TypeX_3", "speed": 200, "pitch": 35, "pipSpeed": 0.0875 },
+    { "symbol": "Krait_Light", "pitch": 31 },
+    { "symbol": "Mamba", "pitch": 30, "roll": 75 },
+    {
+      "symbol": "Python_NX",
+      "heatCapacity": 260,
+      "pitch": 37,
+      "roll": 91,
+      "yaw": 12.5,
+      "minThrust": 85.938,
+      "pipSpeed": 0.03515625
+    },
+    { "symbol": "Type8", "heatCapacity": 236, "pipSpeed": 0.1375 },
+    {
+      "symbol": "Mandalay",
+      "masslock": 12,
+      "heatCapacity": 245,
+      "reserveFuelCapacity": 0.5,
+      "minThrust": 71.429,
+      "pipSpeed": 0.071428571428571
+    },
+    {
+      "symbol": "CobraMkV",
+      "speed": 290,
+      "boost": 410,
+      "pitch": 45,
+      "roll": 120,
+      "yaw": 33,
+      "minThrust": 79.31,
+      "pipSpeed": 0.051724137931034
+    },
+    {
+      "symbol": "Corsair",
+      "heatCapacity": 280,
+      "minThrust": 64.286,
+      "pipSpeed": 0.089285714285714
+    },
+    {
+      "symbol": "PantherMkII",
+      "speed": 180,
+      "masslock": 25,
+      "heatCapacity": 329,
+      "reserveFuelCapacity": 1.11,
+      "minThrust": 33.333
+    },
+    {
+      "symbol": "LakonMiner",
+      "speed": 270,
+      "boost": 365,
+      "masslock": 15,
+      "heatCapacity": 300,
+      "reserveFuelCapacity": 0.6,
+      "minThrust": 70.37,
+      "pipSpeed": 0.074074074074074
+    },
+    {
+      "symbol": "Explorer_NX",
+      "masslock": 21,
+      "heatCapacity": 341,
+      "minThrust": 76.19,
+      "pipSpeed": 0.05952380952381
+    },
+    {
+      "symbol": "SmallCombat01_NX",
+      "speed": 270,
+      "masslock": 11,
+      "heatCapacity": 263,
+      "reserveFuelCapacity": 0.61,
+      "pitch": 50,
+      "roll": 120,
+      "yaw": 24,
+      "minThrust": 88.889,
+      "pipSpeed": 0.027777777777778
+    },
+    {
+      "symbol": "MediumTransport01",
+      "masslock": 16,
+      "heatCapacity": 279,
+      "minThrust": 73.684,
+      "pipSpeed": 0.065789473684211
     }
   ],
   "minimumRotation": {

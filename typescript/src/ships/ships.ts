@@ -8,8 +8,10 @@
  * bundles the whole ship list, which is what you wanted anyway. Stock module identities
  * live in `./default-loadouts`, keeping this small hull catalogue independent of them.
  *
- * Identity from EDCD FDevIDs (`shipyard.csv`); stats and slot layout from
- * EDCD/coriolis-data, joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * Symbols and entitlements come from EDCD FDevIDs (`shipyard.csv`), with exact English
+ * display names and stat corrections verified in-game. The remaining stats and slot
+ * layout come primarily from EDCD/coriolis-data, joined on `symbol`; see
+ * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */
@@ -24,14 +26,17 @@ import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from '
  * One ship hull — its **identity, stats and slot layout** in one record.
  *
  * @remarks
- * `symbol`, `name` and any `entitlement` come from Frontier's shipyard registry;
- * `manufacturer`, `size`, the stats fields (`hullMass`, `speed`, …), and the
- * slot-layout fields (`core`, `hardpoints`, `optional`, …) come from coriolis-data.
- * `manufacturer` and `size` are present for every hull; fields documented as optional
- * below remain absent where their source carries no value. The Lynx Highliner
- * (`MediumTransport01`), which is absent from the pinned coriolis-data revision, carries equivalent fields
- * sourced from EDSY and Frontier's update notes. Masses are tonnes, `speed`/`boost`
- * are metres per second at 4 pips to engines, rotation rates are degrees per second.
+ * `symbol` and any `entitlement` come from Frontier's shipyard registry. `name` is the
+ * installed English localisation string where in-game verification differs from that
+ * registry. `manufacturer`, `size`, the stats fields (`hullMass`, `speed`, …), and the
+ * slot-layout fields (`core`, `hardpoints`, `optional`, …) come primarily from
+ * coriolis-data, with verified in-game readings governing stat disagreements and
+ * omissions. `manufacturer` and `size` are present for every hull; fields documented
+ * as optional below remain absent where their source carries no value. The Lynx
+ * Highliner (`MediumTransport01`), which is absent from the pinned coriolis-data
+ * revision, carries equivalent fields sourced from EDSY, Frontier's update notes and
+ * in-game verification. Masses are tonnes, `speed`/`boost` are metres per second at 4
+ * pips to engines, rotation rates are degrees per second.
  */
 export interface Ship {
     /**
@@ -43,7 +48,7 @@ export interface Ship {
      * This is the hull's key — Frontier's numeric ship-type id is not carried.
      */
     readonly symbol: string;
-    /** Display name, e.g. `"Imperial Clipper"`. Unique across the catalogue. */
+    /** Installed English display name, e.g. `"Imperial Clipper"`. Unique across the catalogue. */
     readonly name: string;
     /** Hull manufacturer as the shipyard names it, e.g. `"Faulcon DeLacy"`. */
     readonly manufacturer: string;

@@ -2,6 +2,8 @@
  * One build from the shared community build corpus — a test fixture, not shipped in any package.
  *
  * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ * Calculated metrics are derived from the declared build and current catalogues; shield strength
+ * therefore incorporates the Type-7's in-game-verified base shield strength.
  */
 {
   "id": "type7-trade",
@@ -37,7 +39,7 @@
     "fuelCapacity": 32,
     "maxJumpRange": 27.200971,
     "power": { "available": 20.4, "retracted": 15.64, "deployed": 15.64, "withinBudget": true },
-    "shields": { "strength": 326.462082, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "shields": { "strength": 328.568289, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
     "armour": { "hitPoints": 612, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
     "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
   }
