@@ -86,6 +86,7 @@ import { getBlueprintsForModule, getExperimentalsForModule } from './engineering
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
+import { calculateModuleLimits, type ModuleLimitUsage } from './module-limits.js';
 import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
     cloneLoadoutModule,
@@ -106,10 +107,13 @@ import {
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import {
     armourInputFor,
+    cellBankInputsFor,
     effectiveModule,
+    mobilityInputFor,
     powerAvailable,
     powerConsumerFor,
     shieldInputFor,
+    shieldRecoveryInputFor,
     weaponStatsFor,
 } from './internal/loadout-metrics.js';
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
@@ -122,12 +126,20 @@ import {
     type WeaponTotals,
 } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
+import { mobilityMetrics, type MobilityMetrics } from './mobility.js';
+import {
+    cellBankSummary,
+    shieldRecovery,
+    type CellBankSummary,
+    type ShieldRecovery,
+} from './shield-recovery.js';
 import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
+export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import { moduleFitError } from './internal/loadout-fitting.js';
+import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
     normalizeLoadoutEvent,
@@ -153,7 +165,9 @@ import {
 } from './loadout-calculations.js';
 import {
     validateLoadout,
+    type LoadoutIssueParams,
     type LoadoutValidation,
+    type ModuleFitConstraint,
     type ValidationModule,
 } from './loadout-validation.js';
 
@@ -167,11 +181,91 @@ import {
  */
 const SLOT_KEY = 'ShipLoadout: slotKey';
 
+/** Validate public fuel/cargo overrides before build state affects the result. */
+const requireLoadOptions = (scope: string, options: JumpOptions): void => {
+    for (const field of ['fuel', 'cargo'] as const) {
+        const value = options[field];
+        if (value !== undefined && (!Number.isFinite(value) || value < 0)) {
+            throw new RangeError(`${scope}: ${field} must be a finite non-negative number`);
+        }
+    }
+};
+
+/**
+ * Stable machine-readable reason a {@link ShipLoadout} edit was refused:
+ * `immutableSlot`, an incompatible fit, a duplicate one-per-ship family, or a module
+ * count beyond the build's current allowance.
+ */
+export type LoadoutEditErrorCode =
+    'immutableSlot' | 'incompatibleModule' | 'duplicateExclusiveModule' | 'moduleLimitExceeded';
+
+/**
+ * An editor request that the current hull or build constraints cannot accept.
+ *
+ * @remarks
+ * This remains a `TypeError`, so existing `instanceof TypeError` handling continues to
+ * work. Localized editors should switch on {@link code}, then use {@link constraint}
+ * and {@link params} instead of parsing the English fallback in `message`.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   LoadoutEditError,
+ *   ShipLoadout,
+ * } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+ *
+ * const build = ShipLoadout.empty('SideWinder');
+ * const drive = getModuleBySymbol('Int_Hyperdrive_Size8_Class5', CORE_MODULES)!;
+ * try {
+ *   build.setModule('FrameShiftDrive', drive);
+ * } catch (error) {
+ *   if (error instanceof LoadoutEditError) error.constraint; // -> 'oversized'
+ * }
+ * ```
+ */
+export class LoadoutEditError extends TypeError {
+    /** Stable category for the refused edit. */
+    readonly code: LoadoutEditErrorCode;
+    /** More specific fitting rule for an `incompatibleModule` failure. */
+    readonly constraint?: ModuleFitConstraint;
+    /** Language-neutral values used by the English fallback message. */
+    readonly params: LoadoutIssueParams;
+
+    /**
+     * Construct a structured loadout-edit error.
+     *
+     * @param message - English fallback suitable for logs.
+     * @param code - Stable category for the refused edit.
+     * @param params - Language-neutral values used to render the failure.
+     * @param constraint - Specific fitting rule, when `code` is `incompatibleModule`.
+     */
+    constructor(
+        message: string,
+        code: LoadoutEditErrorCode,
+        params: LoadoutIssueParams,
+        constraint?: ModuleFitConstraint,
+    ) {
+        super(message);
+        this.code = code;
+        this.params = deepFreeze(
+            Object.fromEntries(
+                Object.entries(params).map(([key, value]) => [
+                    key,
+                    Array.isArray(value) ? [...value] : value,
+                ]),
+            ) as Record<string, string | number | readonly string[]>,
+        );
+        if (constraint !== undefined) this.constraint = constraint;
+    }
+}
+
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
-    /** Fuel in the tank for the jump, in tonnes. Defaults to the full main tank. */
+    /** Finite non-negative fuel load, in tonnes. Defaults to the full main tank. */
     readonly fuel?: number;
-    /** Cargo aboard, in tonnes. Defaults to `0` (unladen). */
+    /** Finite non-negative cargo load, in tonnes. Defaults to `0` (unladen). */
     readonly cargo?: number;
 }
 
@@ -193,9 +287,28 @@ export interface ApplyBlueprintOptions {
 export interface DefenceOptions {
     /**
      * Pips to the systems capacitor, `0`–`4`, folded into the shield resistances.
-     * Defaults to `0` — the bare shield, as an outfitting screen shows it.
+     * Defaults to `0` for {@link ShipLoadout.shieldMetrics} and `4` for
+     * {@link ShipLoadout.shieldRecovery}.
      */
     readonly systemsPips?: number;
+}
+
+/** Optional load and ENG allocation for {@link ShipLoadout.mobilityMetrics}. */
+export interface MobilityOptions extends JumpOptions {
+    /** Pips assigned to the engines capacitor, `0`–`4`. Defaults to `4`. */
+    readonly enginesPips?: number;
+}
+
+/** Retail catalogue credits for an assembled build. */
+export interface RetailCredits {
+    /** Bare hull list price in credits, or `null` for an unknown hull. */
+    readonly hull: number | null;
+    /** Sum of every priced fitted module, in credits. A lower bound when `unpriced` is non-empty. */
+    readonly modules: number;
+    /** Five percent of the priced hull and modules, truncated to credits, or `null` for an unknown hull. */
+    readonly rebuy: number | null;
+    /** Fitted modules that could not be priced from the catalogue. */
+    readonly unpriced: readonly { readonly slot: string; readonly symbol: string }[];
 }
 
 /** One fitted weapon and what it does, as {@link ShipLoadout.weaponMetrics} reports it. */
@@ -472,6 +585,11 @@ export class ShipLoadout {
      * The event's credit figures are kept twice over: as the live `hullValue` /
      * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
      * {@link sourcePurchase} record, which no edit touches.
+     *
+     * Modules are imported as one complete snapshot: their array order does not affect
+     * per-ship count allowances, and any aggregate violation is reported by
+     * {@link validation}. Use this factory rather than replaying a complete loadout
+     * through the incremental {@link setModule} editor.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -784,7 +902,8 @@ export class ShipLoadout {
      * @remarks
      * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
      * mounts must be filled for `complete` to be true. An unknown hull or module is
-     * incomplete; a module in a nonexistent or incompatible slot is invalid.
+     * incomplete; a module in a nonexistent or incompatible slot is invalid. Exclusive
+     * families and per-ship module-count allowances must also be satisfied.
      */
     get validation(): LoadoutValidation {
         const cached = this.#validationCache;
@@ -796,15 +915,23 @@ export class ShipLoadout {
             const slot = byKey.get(module.Slot.toLowerCase());
             const builtIn =
                 (stats === null && isNonOutfittingSlot(module.Slot)) || isBuiltInHullModule(module);
+            const fitProblem =
+                stats && slot && !builtIn ? moduleFitProblem(this.#shipSymbol, slot, stats) : null;
             return {
                 slot: module.Slot,
                 symbol: module.Item,
                 known: stats !== null || builtIn,
                 requiresKnownSlot: !builtIn,
-                fitError:
-                    stats && slot && !builtIn
-                        ? moduleFitError(this.#shipSymbol, slot, stats)
-                        : null,
+                fitError: fitProblem?.message ?? null,
+                ...(fitProblem === null ? {} : { fitConstraint: fitProblem.constraint }),
+                ...(fitProblem?.params === undefined ? {} : { fitParams: fitProblem.params }),
+                ...(stats?.exclusionGroup === undefined
+                    ? {}
+                    : { exclusionGroup: stats.exclusionGroup }),
+                ...(stats?.limitGroup === undefined ? {} : { limitGroup: stats.limitGroup }),
+                ...(stats?.limitIncrease === undefined
+                    ? {}
+                    : { limitIncrease: stats.limitIncrease }),
             };
         });
         const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
@@ -841,12 +968,26 @@ export class ShipLoadout {
             kind === undefined
                 ? this.#layout()
                 : this.#layout().filter((slot) => slot.kind === kind);
+        const currentLimits = this.#moduleLimits();
         const value = deepFreeze(
-            slots.map((slot) => ({
-                ...slot,
-                name: loadoutSlotName(slot),
-                module: this.fittedModuleAt(slot.key),
-            })),
+            slots.map((slot) => {
+                const stats = this.#moduleStatsAt(slot.key);
+                const immovableReason =
+                    slot.key.toLowerCase() === 'cargohatch'
+                        ? ('cargoHatch' as const)
+                        : stats?.limitIncrease !== undefined &&
+                            this.#moduleLimitRegression(slot.key, null, currentLimits, stats) !==
+                                null
+                          ? ('moduleLimit' as const)
+                          : null;
+                return {
+                    ...slot,
+                    name: loadoutSlotName(slot),
+                    module: this.fittedModuleAt(slot.key),
+                    removable: immovableReason === null,
+                    ...(immovableReason === null ? {} : { immovableReason }),
+                };
+            }),
         );
         cached.value.set(kind, value);
         return value;
@@ -964,7 +1105,8 @@ export class ShipLoadout {
 
     /**
      * The modules that fit a given slot — its size, kind and any restriction all
-     * satisfied.
+     * satisfied, with candidates that would worsen a one-per-ship or module-count limit
+     * omitted.
      *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
@@ -980,13 +1122,31 @@ export class ShipLoadout {
      */
     modulesForSlot(slotKey: string): OutfittingModule[] {
         const slot = this.#requireSlot(slotKey);
+        const occupied = new Set(
+            [...this.#modules.values()].flatMap((fitted) => {
+                if (fitted.Slot.toLowerCase() === slot.key.toLowerCase()) return [];
+                const group = this.#statsFor(fitted)?.exclusionGroup;
+                return group === undefined ? [] : [group];
+            }),
+        );
+        const currentLimits = this.#moduleLimits();
+        const currentStats = this.#moduleStatsAt(slot.key);
         return ALL_MODULES.filter(
-            (module) => moduleFitError(this.#shipSymbol, slot, module) === null,
+            (module) =>
+                moduleFitError(this.#shipSymbol, slot, module) === null &&
+                (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)) &&
+                this.#moduleLimitRegression(slot.key, module, currentLimits, currentStats) === null,
         );
     }
 
     /**
      * Fit a module into a slot, replacing whatever is there.
+     *
+     * @remarks
+     * This is an incremental editor: every call must avoid worsening the current
+     * build's module-count excess. Fit an allowance-increasing module before the weapons
+     * it permits. To consume a complete order-independent snapshot, use
+     * {@link ShipLoadout.fromLoadout}.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively (journal
      * spelling). An occupied slot keeps the key the build already spells it with, so
@@ -997,9 +1157,11 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
-     * `getModuleBySymbol` miss) or is not an outfitting module at all; the module does not
-     * fit the slot (wrong kind, too large, or a restriction the module does not satisfy);
-     * or the hull has no known slot layout (a SLEF build on an unrecognised hull).
+     * `getModuleBySymbol` miss) or is not an outfitting module at all; or the hull has no
+     * known slot layout (a SLEF build on an unrecognised hull).
+     * @throws {LoadoutEditError} If the module does not fit the slot (wrong kind, too
+     * large, or a restriction the module does not satisfy), conflicts with a one-per-ship
+     * family already fitted elsewhere, or worsens a per-ship module-count excess.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1030,10 +1192,59 @@ export class ShipLoadout {
                 `ShipLoadout.setModule: module for "${truncate(slotKey)}" must be an outfitting module, received ${describeValue(module)}`,
             );
         }
-        const problem = moduleFitError(this.#shipSymbol, slot, module);
+        const problem = moduleFitProblem(this.#shipSymbol, slot, module);
         if (problem) {
-            throw new TypeError(
-                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem}`,
+            if (problem.constraint === 'immutableSlot') {
+                throw new LoadoutEditError(
+                    `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem.message}`,
+                    'immutableSlot',
+                    { slot: slot.key },
+                );
+            }
+            throw new LoadoutEditError(
+                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem.message}`,
+                'incompatibleModule',
+                {
+                    ...problem.params,
+                    slot: slot.key,
+                    symbol: module.symbol,
+                    constraint: problem.constraint,
+                },
+                problem.constraint,
+            );
+        }
+        if (module.exclusionGroup !== undefined) {
+            const conflict = [...this.#modules.values()].find(
+                (fitted) =>
+                    fitted.Slot.toLowerCase() !== slot.key.toLowerCase() &&
+                    this.#statsFor(fitted)?.exclusionGroup === module.exclusionGroup,
+            );
+            if (conflict) {
+                throw new LoadoutEditError(
+                    `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${module.exclusionGroup} is limited to one per ship (already fitted in ${truncate(conflict.Slot)})`,
+                    'duplicateExclusiveModule',
+                    {
+                        exclusionGroup: module.exclusionGroup,
+                        slot: slot.key,
+                        symbol: module.symbol,
+                        previousSlot: conflict.Slot,
+                        previousSymbol: conflict.Item,
+                    },
+                );
+            }
+        }
+        const limitProblem = this.#moduleLimitRegression(slot.key, module);
+        if (limitProblem !== null) {
+            throw new LoadoutEditError(
+                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${limitProblem.group} would have ${limitProblem.count} modules but the ship allows ${limitProblem.limit}`,
+                'moduleLimitExceeded',
+                {
+                    group: limitProblem.group,
+                    count: limitProblem.count,
+                    limit: limitProblem.limit,
+                    slot: slot.key,
+                    symbol: module.symbol,
+                },
             );
         }
         // Replacing keeps the key the build already uses; a fresh fit takes the hull
@@ -1049,16 +1260,39 @@ export class ShipLoadout {
      * @param slotKey - The slot key to clear, matched case-insensitively (journal
      * spelling).
      * @returns `this`, for chaining. Clearing an already-empty slot is a no-op.
-     * @throws {TypeError} If `slotKey` is not a string, or names the built-in cargo
-     * hatch, which cannot be removed or replaced.
+     * @throws {TypeError} If `slotKey` is not a string.
+     * @throws {LoadoutEditError} If the slot is the built-in cargo hatch, which cannot
+     * be removed or replaced, or removing the module would worsen a per-ship
+     * module-count excess.
      */
     removeModule(slotKey: string): this {
         // Read before `#fittedKey` does, so this one method guards for itself.
         if (requireString(slotKey, SLOT_KEY).toLowerCase() === 'cargohatch') {
-            throw new TypeError('ShipLoadout.removeModule: the cargoHatch slot cannot be changed');
+            throw new LoadoutEditError(
+                'ShipLoadout.removeModule: the cargoHatch slot cannot be changed',
+                'immutableSlot',
+                { slot: 'CargoHatch' },
+            );
         }
         const key = this.#fittedKey(slotKey);
-        if (key !== null) this.#replaceModule(key, null);
+        if (key !== null) {
+            const limitProblem = this.#moduleLimitRegression(key, null);
+            if (limitProblem !== null) {
+                const fitted = this.#modules.get(key);
+                throw new LoadoutEditError(
+                    `ShipLoadout.removeModule: ${truncate(slotKey)}: ${limitProblem.group} would have ${limitProblem.count} modules but the ship allows ${limitProblem.limit}`,
+                    'moduleLimitExceeded',
+                    {
+                        group: limitProblem.group,
+                        count: limitProblem.count,
+                        limit: limitProblem.limit,
+                        slot: key,
+                        ...(fitted === undefined ? {} : { symbol: fitted.Item }),
+                    },
+                );
+            }
+            this.#replaceModule(key, null);
+        }
         return this;
     }
 
@@ -1499,8 +1733,10 @@ export class ShipLoadout {
      * @throws {TypeError} If the build has no usable frame shift drive or its mass
      * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
      * omitted.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
      */
     jumpRange(options: JumpOptions = {}): number {
+        requireLoadOptions('ShipLoadout.jumpRange', options);
         const fsd = this.frameShiftDrive;
         const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return singleJumpRange(this.#requireMass(options.cargo ?? 0), fuel, fsd);
@@ -1527,8 +1763,10 @@ export class ShipLoadout {
      * @throws {TypeError} If the build has no usable frame shift drive or its mass
      * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
      * omitted.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
      */
     fuelPerJump(distance: number, options: JumpOptions = {}): number {
+        requireLoadOptions('ShipLoadout.fuelPerJump', options);
         const fsd = this.frameShiftDrive;
         const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return fuelPerJump(distance, this.#requireMass(options.cargo ?? 0), fuel, fsd);
@@ -1542,8 +1780,10 @@ export class ShipLoadout {
      * @returns The summed range of every jump on one full tank, in light-years.
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
      * fuel capacity cannot be determined.
+     * @throws {RangeError} If cargo is not finite and non-negative.
      */
     totalRange(options: { readonly cargo?: number } = {}): number {
+        requireLoadOptions('ShipLoadout.totalRange', options);
         return totalRange(
             this.#requireMass(options.cargo ?? 0),
             this.#requireFuelCapacity().main,
@@ -1622,6 +1862,60 @@ export class ShipLoadout {
     }
 
     /**
+     * The build's speed, boost and rotation rates at a chosen load and ENG allocation.
+     *
+     * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
+     * @returns Loaded {@link MobilityMetrics}, or `null` when no powered, fully described
+     * thrusters are fitted.
+     * @throws {TypeError} If mass, reserve fuel, or an omitted main-tank fuel load cannot
+     * be determined.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
+     * `enginesPips` is outside `[0, 4]`.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.mobilityMetrics({ cargo: 32, fuel: 8, enginesPips: 2 })?.speed; // -> m/s
+     * ```
+     */
+    mobilityMetrics(options: MobilityOptions = {}): MobilityMetrics | null {
+        const enginesPips = options.enginesPips ?? 4;
+        if (!Number.isFinite(enginesPips) || enginesPips < 0 || enginesPips > 4) {
+            throw new RangeError(
+                'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
+            );
+        }
+        requireLoadOptions('ShipLoadout.mobilityMetrics', options);
+        const input = mobilityInputFor(
+            this.#shipSymbol,
+            [...this.#modules.values()],
+            () => {
+                const capacity = options.fuel === undefined ? this.#requireFuelCapacity() : null;
+                const reserve =
+                    capacity?.reserve ??
+                    this.#top.FuelCapacity?.Reserve ??
+                    getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity;
+                if (reserve === undefined) {
+                    throw new TypeError(
+                        'ShipLoadout: cannot determine reserve fuel capacity for mobility',
+                    );
+                }
+                const main = options.fuel ?? capacity?.main;
+                if (main === undefined) {
+                    throw new TypeError(
+                        'ShipLoadout: cannot determine main-tank fuel load for mobility',
+                    );
+                }
+                return this.#requireMass(options.cargo ?? 0) + main + reserve;
+            },
+            enginesPips,
+            (module) => this.#statsFor(module),
+        );
+        return input ? mobilityMetrics(input) : null;
+    }
+
+    /**
      * The build's shields: strength in megajoules, where it comes from, and the
      * effective resistances.
      *
@@ -1655,6 +1949,102 @@ export class ShipLoadout {
         );
         if (!input.generator) return null;
         return shieldMetrics(input);
+    }
+
+    /**
+     * Time for this build's shield to rise after collapse and then regenerate to full.
+     *
+     * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
+     * @returns Recovery rates and seconds, or `null` with no powered shield generator.
+     * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
+     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.shieldRecovery({ systemsPips: 4 })?.recoveryTime; // -> seconds from collapse to 50%
+     * ```
+     */
+    shieldRecovery(options: DefenceOptions = {}): ShieldRecovery | null {
+        const systemsPips = options.systemsPips ?? 4;
+        if (!Number.isFinite(systemsPips) || systemsPips < 0 || systemsPips > 4) {
+            throw new RangeError(
+                'ShipLoadout.shieldRecovery: systemsPips must be a finite number from 0 to 4',
+            );
+        }
+        const input = shieldRecoveryInputFor(
+            this.#shipSymbol,
+            [...this.#modules.values()],
+            systemsPips,
+            (module) => this.#statsFor(module),
+        );
+        return input ? shieldRecovery(input) : null;
+    }
+
+    /**
+     * Every fitted shield cell bank and the complete rearmed reinforcement pool.
+     *
+     * @returns A frozen {@link CellBankSummary}; no banks is an empty list and zero totals.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.cellBanks().totalRestorable; // -> MJ across every fitted cell
+     * ```
+     */
+    cellBanks(): CellBankSummary {
+        const banks = cellBankInputsFor([...this.#modules.values()], (module) =>
+            this.#statsFor(module),
+        );
+        const layout = this.#layoutOrNull();
+        if (layout) {
+            const order = new Map(
+                layout.map((slot, index) => [slot.key.toLowerCase(), index] as const),
+            );
+            banks.sort(
+                (left, right) =>
+                    (order.get(left.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
+                    (order.get(right.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER),
+            );
+        }
+        return cellBankSummary(banks);
+    }
+
+    /**
+     * Price this build from current catalogue list prices without creating a journal event.
+     *
+     * @returns Hull, module and five-percent rebuy credits. `modules` and `rebuy` remain
+     * lower bounds when {@link RetailCredits.unpriced} is non-empty; built-in hull fittings are free.
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * ShipLoadout.default('Anaconda').retailCredits().hull; // -> 142456440
+     * ```
+     */
+    retailCredits(): RetailCredits {
+        const hull = getShipBySymbol(this.#shipSymbol)?.hullCost ?? null;
+        let modules = 0;
+        const unpriced: { slot: string; symbol: string }[] = [];
+        for (const module of this.#modules.values()) {
+            const stats = this.#statsFor(module);
+            if (stats?.cost !== undefined) {
+                modules += stats.cost;
+            } else if (
+                stats !== null ||
+                (!isNonOutfittingSlot(module.Slot) && !isBuiltInHullModule(module))
+            ) {
+                unpriced.push({ slot: module.Slot, symbol: module.Item });
+            }
+        }
+        return deepFreeze({
+            hull,
+            modules,
+            rebuy: hull === null ? null : Math.trunc((hull + modules) * 0.05),
+            unpriced,
+        });
     }
 
     /**
@@ -1862,6 +2252,58 @@ export class ShipLoadout {
                     : {}),
             };
         });
+    }
+
+    /** Resolve the current fit's per-ship module-count usage. */
+    #moduleLimits(): readonly ModuleLimitUsage[] {
+        const entries = [...this.#modules.values()].flatMap((module) => {
+            const stats = this.#statsFor(module);
+            return stats === null ? [] : [stats];
+        });
+        return calculateModuleLimits(entries);
+    }
+
+    /** Resolve the catalogue stats currently fitted in one slot. */
+    #moduleStatsAt(slotKey: string): OutfittingModule | null {
+        const fitted = this.#fittedModuleFor(slotKey);
+        return fitted === undefined ? null : this.#statsFor(fitted);
+    }
+
+    /** A proposed edit's newly increased limit excess, or `null` when it worsens none. */
+    #moduleLimitRegression(
+        slotKey: string,
+        replacement: OutfittingModule | null,
+        current = this.#moduleLimits(),
+        previous = this.#moduleStatsAt(slotKey),
+    ): ModuleLimitUsage | null {
+        if (
+            previous?.limitGroup === undefined &&
+            previous?.limitIncrease === undefined &&
+            replacement?.limitGroup === undefined &&
+            replacement?.limitIncrease === undefined
+        ) {
+            return null;
+        }
+        for (const usage of current) {
+            const count =
+                usage.count -
+                Number(previous?.limitGroup === usage.group) +
+                Number(replacement?.limitGroup === usage.group);
+            const increase =
+                usage.increase -
+                (previous?.limitIncrease?.group === usage.group
+                    ? previous.limitIncrease.amount
+                    : 0) +
+                (replacement?.limitIncrease?.group === usage.group
+                    ? replacement.limitIncrease.amount
+                    : 0);
+            const limit = usage.baseLimit + increase;
+            const excess = Math.max(0, count - limit);
+            if (excess > usage.excess) {
+                return { ...usage, increase, limit, count, excess };
+            }
+        }
+        return null;
     }
 
     /** Replace one fitted module and keep imported aggregate figures coherent. */

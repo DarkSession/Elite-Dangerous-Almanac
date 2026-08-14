@@ -690,11 +690,11 @@
               {
                 "setModule": {
                   "slot": "Slot13_Size1",
-                  "symbol": "Int_DockingComputer_Standard"
+                  "symbol": "Int_CargoRack_Size1_Class1"
                 }
               }
             ],
-            "why": "The captured figure was paid for the supercruise assist that was fitted, not for the docking computer now in the mount. The module totals cover an article no longer aboard, so they go too; HullValue stands, because a captured hull figure names no slot and no edit narrows it.",
+            "why": "The captured figure was paid for the supercruise assist that was fitted, not for the cargo rack now in the mount. The module totals cover an article no longer aboard, so they go too; HullValue stands, because a captured hull figure names no slot and no edit narrows it.",
             "topLevelCredits": {
               "HullValue": 189326510
             },
@@ -723,7 +723,7 @@
               {
                 "setModule": {
                   "slot": "Slot13_Size1",
-                  "symbol": "Int_DockingComputer_Standard"
+                  "symbol": "Int_CargoRack_Size1_Class1"
                 }
               },
               {
@@ -919,7 +919,7 @@
               {
                 "setModule": {
                   "slot": "Slot12_Size1",
-                  "symbol": "Int_SupercruiseAssist"
+                  "symbol": "Int_CargoRack_Size1_Class1"
                 }
               }
             ],

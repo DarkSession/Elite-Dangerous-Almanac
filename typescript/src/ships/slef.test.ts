@@ -87,7 +87,12 @@ test('parseSlef is strict while inspectSlef recovers valid entries with diagnost
             index: 1,
             code: 'invalidModule',
             path: 'entries[1].Modules[0].Item',
+            constraint: 'stringRequired',
             message: 'entries[1].Modules[0].Item must be a string',
+            params: {
+                path: 'entries[1].Modules[0].Item',
+                constraint: 'stringRequired',
+            },
         },
     ]);
 });
@@ -156,8 +161,11 @@ test('duplicate slot keys are rejected case-insensitively', () => {
         index: 0,
         code: 'duplicateSlot',
         path: 'entries[0].Modules[1].Slot',
+        constraint: 'uniqueSlot',
         message: 'Entry 0 contains duplicate slot "powerplant"',
+        params: { index: 0, slot: 'powerplant' },
     });
+    assert.ok(Object.isFrozen(inspectSlef(duplicate).diagnostics[0]?.params));
 });
 
 test('duplicate-slot diagnostics abbreviate the slot copied from a capture', () => {

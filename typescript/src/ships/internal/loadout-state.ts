@@ -91,6 +91,9 @@ export function cloneModuleStats(module: OutfittingModule): OutfittingModule {
         ...(module.restrictedToShips === undefined
             ? {}
             : { restrictedToShips: [...module.restrictedToShips] }),
+        ...(module.limitIncrease === undefined
+            ? {}
+            : { limitIncrease: { ...module.limitIncrease } }),
         ...(module.damageDistribution === undefined
             ? {}
             : { damageDistribution: { ...module.damageDistribution } }),

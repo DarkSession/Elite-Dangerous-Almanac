@@ -24,7 +24,7 @@ import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { getDefaultLoadout } from '@elite-dangerous-almanac/core/ships/default-loadouts';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
 import { hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
-import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import { LoadoutEditError, ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
 import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
 import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
@@ -258,9 +258,10 @@ test('fine-grained package subpaths resolve', () => {
     );
 });
 
-test('the ship-loadout subpath exports only its owning facade', async () => {
+test('the ship-loadout subpath exports its facade and structured edit error', async () => {
     const loadout = await import('@elite-dangerous-almanac/core/ships/ship-loadout');
-    assert.deepEqual(Object.keys(loadout), ['ShipLoadout']);
+    assert.deepEqual(Object.keys(loadout), ['LoadoutEditError', 'ShipLoadout']);
+    assert.ok(LoadoutEditError.prototype instanceof TypeError);
 });
 
 test('heavy catalogues stay on explicit subpaths', async () => {
@@ -647,10 +648,13 @@ test('the data-free build calculations are importable on their own', async () =>
         await import('@elite-dangerous-almanac/core/ships/resistances');
     const { weaponMetrics } = await import('@elite-dangerous-almanac/core/ships/weapons');
     const { ammunitionCapacity } = await import('@elite-dangerous-almanac/core/ships/ammunition');
+    const { calculateModuleLimits } =
+        await import('@elite-dangerous-almanac/core/ships/module-limits');
     assert.equal(powerBudget(10, [{ draw: 4, priority: 1 }]).headroom, 6);
     assert.ok(Math.abs(stackShieldResistance(0, [0.1, 0.1]) - 0.19) < 1e-9);
     assert.equal(weaponMetrics({ damage: 2, rateOfFire: 3 }).damagePerSecond, 6);
     assert.equal(ammunitionCapacity({ clipSize: 6, ammoMaximum: 120 }).total, 126);
+    assert.equal(calculateModuleLimits([{ limitGroup: 'experimentalWeapon' }])[0].limit, 4);
 });
 
 test('each barrel ships its orientation documentation in the declarations', async () => {
@@ -947,13 +951,14 @@ test('types are exposed by owning runtime entries, not type-only subpaths', asyn
             consumer,
             [
                 "import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';",
-                "import type { FittedModule, LoadoutSlot } from '@elite-dangerous-almanac/core/ships';",
+                "import type { FittedModule } from '@elite-dangerous-almanac/core/ships';",
+                "import type { ImmovableReason, LoadoutSlot } from '@elite-dangerous-almanac/core/ships/ship-loadout';",
                 "import type { SystemAddressInput as AddressFromSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';",
                 "import type { SystemAddressInput as AddressFromProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';",
                 "import type { SystemAddressInput as AddressFromCodexLookup } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';",
                 "import type { SystemAddressInput as AddressFromLockedSystems } from '@elite-dangerous-almanac/core/astro/permit-locked-systems';",
                 "import type { SystemAddressInput as AddressFromPermitLocks } from '@elite-dangerous-almanac/core/astro/permit-locks';",
-                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot, AddressFromSystemAddress, AddressFromProceduralSystem, AddressFromCodexLookup, AddressFromLockedSystems, AddressFromPermitLocks];',
+                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot, ImmovableReason, AddressFromSystemAddress, AddressFromProceduralSystem, AddressFromCodexLookup, AddressFromLockedSystems, AddressFromPermitLocks];',
                 'void values;',
             ].join('\n'),
         );

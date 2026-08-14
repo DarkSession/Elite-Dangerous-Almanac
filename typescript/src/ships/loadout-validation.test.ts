@@ -49,6 +49,28 @@ test('validation distinguishes invalid structure from missing catalogue data', (
     assert.ok(result.issues.some((issue) => issue.code === 'incompatibleModule'));
 });
 
+test('fitting params cannot replace canonical diagnostic identity fields', () => {
+    const result = validateLoadout({
+        shipSymbol: layout.symbol,
+        slots: enumerateSlots(layout),
+        modules: [
+            {
+                slot: 'PowerPlant',
+                symbol: 'Actual',
+                known: true,
+                fitError: 'does not fit',
+                fitConstraint: 'oversized',
+                fitParams: { slot: 'spoof', symbol: 'spoof', constraint: 'wrongCoreType' },
+            },
+        ],
+    });
+    assert.deepEqual(result.issues.find((issue) => issue.code === 'incompatibleModule')?.params, {
+        slot: 'PowerPlant',
+        symbol: 'Actual',
+        constraint: 'oversized',
+    });
+});
+
 test('an unknown hull is incomplete without inventing a slot layout', () => {
     const result = validateLoadout({ shipSymbol: 'FutureShip', slots: null, modules: [] });
     assert.equal(result.valid, true);
@@ -75,6 +97,39 @@ test('known non-outfitting entries do not have to name a hull mount', () => {
         result.issues.some((issue) => issue.code === 'unknownSlot'),
         false,
     );
+});
+
+test('validation reports two modules from the same one-per-ship family', () => {
+    const result = validateLoadout({
+        shipSymbol: layout.symbol,
+        slots: enumerateSlots({ ...layout, optional: [{ size: 2 }, { size: 2 }] }),
+        modules: [
+            {
+                slot: 'Slot01_Size2',
+                symbol: 'ShieldA',
+                known: true,
+                fitError: null,
+                exclusionGroup: 'shieldGenerator',
+            },
+            {
+                slot: 'Slot02_Size2',
+                symbol: 'ShieldB',
+                known: true,
+                fitError: null,
+                exclusionGroup: 'shieldGenerator',
+            },
+        ],
+    });
+    const issue = result.issues.find((item) => item.code === 'duplicateExclusiveModule');
+    assert.equal(result.valid, false);
+    assert.deepEqual(issue?.params, {
+        exclusionGroup: 'shieldGenerator',
+        slot: 'Slot02_Size2',
+        symbol: 'ShieldB',
+        previousSlot: 'Slot01_Size2',
+        previousSymbol: 'ShieldA',
+    });
+    assert.ok(Object.isFrozen(issue?.params));
 });
 
 test('validation abbreviates message previews without changing structured values', () => {

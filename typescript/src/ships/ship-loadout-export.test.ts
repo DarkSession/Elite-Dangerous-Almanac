@@ -716,12 +716,12 @@ test('a build survives repeated export/import hops without its price drifting', 
     // the `ModulesValue` it declares. If they do not, re-importing cannot tell a free
     // hull fitting from one we priced, and every hop re-prices the stock modules that
     // `HullValue` already covers.
-    const drive = module('Int_ShieldGenerator_Size3_Class3');
+    const rack = module('Int_CargoRack_Size3_Class1');
     let event: LoadoutEvent = krait;
     const seen: (number | undefined)[] = [];
     for (let hop = 0; hop < 3; hop++) {
         const build = ShipLoadout.fromLoadout(event);
-        build.setModule('Slot05_Size3', drive);
+        build.setModule('Slot05_Size3', rack);
         event = build.toLoadoutEvent();
         seen.push(event.ModulesValue);
 

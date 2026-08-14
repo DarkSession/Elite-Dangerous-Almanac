@@ -24,10 +24,11 @@ import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from '
  * One ship hull — its **identity, stats and slot layout** in one record.
  *
  * @remarks
- * The identity fields (`symbol`, `name`, `entitlement`) come from Frontier's
- * shipyard registry and are always present. The stats fields (`hullMass`, `speed`,
- * …) and the slot-layout fields (`core`, `hardpoints`, `optional`, …) come from
- * coriolis-data and are present for every hull it covers. The Lynx Highliner
+ * `symbol`, `name` and any `entitlement` come from Frontier's shipyard registry;
+ * `manufacturer`, `size`, the stats fields (`hullMass`, `speed`, …), and the
+ * slot-layout fields (`core`, `hardpoints`, `optional`, …) come from coriolis-data.
+ * `manufacturer` and `size` are present for every hull; fields documented as optional
+ * below remain absent where their source carries no value. The Lynx Highliner
  * (`MediumTransport01`), which is absent from the pinned coriolis-data revision, carries equivalent fields
  * sourced from EDSY and Frontier's update notes. Masses are tonnes, `speed`/`boost`
  * are metres per second at 4 pips to engines, rotation rates are degrees per second.
@@ -44,6 +45,10 @@ export interface Ship {
     readonly symbol: string;
     /** Display name, e.g. `"Imperial Clipper"`. Unique across the catalogue. */
     readonly name: string;
+    /** Hull manufacturer as the shipyard names it, e.g. `"Faulcon DeLacy"`. */
+    readonly manufacturer: string;
+    /** Landing-pad size class required by the hull. */
+    readonly size: 'small' | 'medium' | 'large';
     /**
      * Frontier's DLC / purchase-grant entitlement token, e.g.
      * `"ELITE_HORIZONS_V_PLANETARY_LANDINGS"`.
@@ -88,13 +93,22 @@ export interface Ship {
     readonly retailCost: number;
     /** Pitch rate, in degrees per second. */
     readonly pitch: number;
+    /** Pitch rate at zero ENG pips, in degrees per second from `0` through {@link pitch}. */
+    readonly minPitch?: number;
     /** Roll rate, in degrees per second. */
     readonly roll: number;
+    /** Roll rate at zero ENG pips, in degrees per second from `0` through {@link roll}. */
+    readonly minRoll?: number;
     /** Yaw rate, in degrees per second. */
     readonly yaw: number;
+    /** Yaw rate at zero ENG pips, in degrees per second from `0` through {@link yaw}. */
+    readonly minYaw?: number;
     /** Minimum thrust as a percentage — the throttle floor. */
     readonly minThrust: number;
-    /** Speed gained per pip to engines, as a fraction of base speed. */
+    /**
+     * Fraction of four-pip rotation lost for each missing ENG pip, in `[0, 0.25]`.
+     * A per-axis minimum rotation rate takes precedence when present.
+     */
     readonly pipSpeed?: number;
 
     // ── Slot layout (from coriolis-data) — present alongside the stats. ──
