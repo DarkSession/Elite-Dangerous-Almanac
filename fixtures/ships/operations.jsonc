@@ -10,9 +10,14 @@
 {
   "mobility": {
     "input": {
+      "minimumSpeed": 80,
+      "maximumSpeed": 200,
       "boost": 300,
+      "minPitch": 16,
       "pitch": 40,
+      "minRoll": 40,
       "roll": 100,
+      "minYaw": 8,
       "yaw": 20,
       "mass": 90,
       "thrusters": {
@@ -38,12 +43,7 @@
           "optMultiplier": 1.1,
           "maxMultiplier": 1.3
         }
-      },
-      "minimumSpeed": 80,
-      "maximumSpeed": 200,
-      "minPitch": 16,
-      "minRoll": 40,
-      "minYaw": 8
+      }
     },
     "expected": {
       "speed": 250,
@@ -90,9 +90,14 @@
     },
     "pipAllocation": {
       "input": {
+        "minimumSpeed": 80,
+        "maximumSpeed": 200,
         "boost": 300,
+        "minPitch": 24,
         "pitch": 40,
+        "minRoll": 60,
         "roll": 100,
+        "minYaw": 12,
         "yaw": 20,
         "mass": 100,
         "thrusters": {
@@ -103,12 +108,7 @@
           "optMultiplier": 1,
           "maxMultiplier": 1
         },
-        "enginesPips": 2,
-        "minimumSpeed": 80,
-        "maximumSpeed": 200,
-        "minPitch": 24,
-        "minRoll": 60,
-        "minYaw": 12
+        "enginesPips": 2
       },
       "expected": {
         "speed": 140,
@@ -123,68 +123,47 @@
     "facadeExplicitFuel": {
       "loadout": {
         "Ship": "SideWinder",
-        "UnladenMass": 25,
+        "UnladenMass": 26,
         "Modules": [
-          {
-            "Slot": "MainEngines",
-            "Item": "Int_Engine_Size2_Class2"
-          },
-          {
-            "Slot": "FuelTank",
-            "Item": "Unknown_Fuel_Tank"
-          }
+          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
+          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
         ]
       },
       "partialCapacityLoadout": {
         "Ship": "SideWinder",
-        "UnladenMass": 25,
-        "FuelCapacity": {
-          "Main": 2
-        },
+        "UnladenMass": 26,
+        "FuelCapacity": { "Main": 2 },
         "Modules": [
-          {
-            "Slot": "MainEngines",
-            "Item": "Int_Engine_Size2_Class2"
-          },
-          {
-            "Slot": "FuelTank",
-            "Item": "Unknown_Fuel_Tank"
-          }
+          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
+          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
         ]
       },
-      "options": {
-        "fuel": 2
-      },
+      "options": { "fuel": 2 },
       "expected": {
-        "speed": 233.2,
-        "boost": 339.2,
-        "pitch": 44.52,
-        "roll": 116.6,
-        "yaw": 16.96,
-        "massCurveMultiplier": 1.06,
-        "rotationMassCurveMultiplier": 1.06
+        "speed": 232.77881613098572,
+        "boost": 338.58736891779745,
+        "pitch": 44.43959217046091,
+        "roll": 116.38940806549286,
+        "yaw": 16.92936844588987,
+        "massCurveMultiplier": 1.058085527868117,
+        "rotationMassCurveMultiplier": 1.058085527868117
       },
       "omittedFuelFails": true,
       "invalidLoads": [
-        {
-          "options": {
-            "fuel": -1
-          },
-          "expectedError": "RangeError"
-        },
-        {
-          "options": {
-            "cargo": -1
-          },
-          "expectedError": "RangeError"
-        }
+        { "options": { "fuel": -1 }, "expectedError": "RangeError" },
+        { "options": { "cargo": -1 }, "expectedError": "RangeError" }
       ]
     },
     "invalidSpeedEndpoints": {
       "input": {
+        "minimumSpeed": 2,
+        "maximumSpeed": 1,
         "boost": 1,
+        "minPitch": 1,
         "pitch": 1,
+        "minRoll": 1,
         "roll": 1,
+        "minYaw": 1,
         "yaw": 1,
         "mass": 1,
         "thrusters": {
@@ -194,12 +173,7 @@
           "minMultiplier": 1,
           "optMultiplier": 1,
           "maxMultiplier": 1
-        },
-        "minimumSpeed": 2,
-        "maximumSpeed": 1,
-        "minPitch": 1,
-        "minRoll": 1,
-        "minYaw": 1
+        }
       },
       "expectedError": "RangeError"
     }
@@ -269,10 +243,7 @@
         "heat": 120
       }
     ],
-    "expected": {
-      "totalRestorable": 96,
-      "totalCells": 7
-    }
+    "expected": { "totalRestorable": 96, "totalCells": 7 }
   },
   "exclusivity": {
     "group": "shieldGenerator",
@@ -281,30 +252,13 @@
   "moduleLimits": {
     "group": "experimentalWeapon",
     "input": [
-      {
-        "limitGroup": "experimentalWeapon"
-      },
-      {
-        "limitGroup": "experimentalWeapon"
-      },
-      {
-        "limitGroup": "experimentalWeapon"
-      },
-      {
-        "limitGroup": "experimentalWeapon"
-      },
-      {
-        "limitGroup": "experimentalWeapon"
-      },
-      {
-        "limitGroup": "experimentalWeapon"
-      },
-      {
-        "limitIncrease": {
-          "group": "experimentalWeapon",
-          "amount": 1
-        }
-      }
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitIncrease": { "group": "experimentalWeapon", "amount": 1 } }
     ],
     "expectedUsage": {
       "group": "experimentalWeapon",
@@ -316,24 +270,14 @@
     },
     "expectedIssue": {
       "code": "moduleLimitExceeded",
-      "params": {
-        "group": "experimentalWeapon",
-        "count": 6,
-        "limit": 5
-      }
+      "params": { "group": "experimentalWeapon", "count": 6, "limit": 5 }
     },
     "catalogue": {
       "limitedCount": 33,
       "weapon": "Hpt_Guardian_GaussCannon_Fixed_Small",
       "increases": [
-        {
-          "symbol": "Int_ExpModuleStabiliser_Size3_Class3",
-          "amount": 1
-        },
-        {
-          "symbol": "Int_ExpModuleStabiliser_Size5_Class3",
-          "amount": 2
-        }
+        { "symbol": "Int_ExpModuleStabiliser_Size3_Class3", "amount": 1 },
+        { "symbol": "Int_ExpModuleStabiliser_Size5_Class3", "amount": 2 }
       ]
     },
     "removal": {
@@ -356,33 +300,15 @@
   },
   "retailCredits": {
     "ship": "Anaconda",
-    "expected": {
-      "hull": 142456440,
-      "modules": 4522132,
-      "rebuy": 7348928
-    }
+    "expected": { "hull": 142456440, "modules": 4522132, "rebuy": 7348928 }
   },
   "weapons": {
-    "input": [
-      {
-        "thermalLoad": 8
-      },
-      {
-        "thermalLoad": 90
-      }
-    ],
+    "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],
     "expectedThermalLoad": 98
   },
   "diagnostics": {
     "slef": {
-      "input": {
-        "Ship": "sidewinder",
-        "Modules": [
-          {
-            "Slot": "PowerPlant"
-          }
-        ]
-      },
+      "input": { "Ship": "sidewinder", "Modules": [{ "Slot": "PowerPlant" }] },
       "expected": {
         "code": "invalidModule",
         "path": "entries[0].Modules[0].Item",
@@ -393,10 +319,7 @@
       "input": {
         "Ship": "Anaconda",
         "Modules": [
-          {
-            "Slot": "FrameShiftDrive",
-            "Item": "Int_Hyperdrive_Size8_Class5"
-          }
+          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size8_Class5" }
         ]
       },
       "expected": {
@@ -426,12 +349,8 @@
           "slot": "MainEngines",
           "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
           "constraint": "restrictedHull",
-          "allowedShipNames": [
-            "Caspian Explorer"
-          ],
-          "allowedShipSymbols": [
-            "Explorer_NX"
-          ],
+          "allowedShipNames": ["Caspian Explorer"],
+          "allowedShipSymbols": ["Explorer_NX"],
           "shipSymbol": "Anaconda"
         }
       }
@@ -439,12 +358,7 @@
     "wrongArmourLoadout": {
       "input": {
         "Ship": "Anaconda",
-        "Modules": [
-          {
-            "Slot": "Armour",
-            "Item": "SideWinder_Armour_Grade1"
-          }
-        ]
+        "Modules": [{ "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" }]
       },
       "expected": {
         "code": "incompatibleModule",
@@ -460,11 +374,7 @@
       }
     },
     "calculation": {
-      "input": {
-        "slot": "Slot01_Size4",
-        "symbol": "UnknownRack",
-        "mass": 0
-      },
+      "input": { "slot": "Slot01_Size4", "symbol": "UnknownRack", "mass": 0 },
       "expected": {
         "field": "cargoCapacity",
         "slot": "Slot01_Size4",
@@ -536,9 +446,7 @@
       "slot": "CargoHatch",
       "expected": {
         "code": "immutableSlot",
-        "params": {
-          "slot": "CargoHatch"
-        }
+        "params": { "slot": "CargoHatch" }
       }
     },
     "immutableSlotReplacement": {
@@ -547,9 +455,7 @@
       "module": "Int_Hyperdrive_Size2_Class5",
       "expected": {
         "code": "immutableSlot",
-        "params": {
-          "slot": "CargoHatch"
-        }
+        "params": { "slot": "CargoHatch" }
       }
     }
   },

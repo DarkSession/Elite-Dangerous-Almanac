@@ -281,6 +281,8 @@ test('explicit mobility fuel needs no tank capacity and excludes reserve mass', 
         fixture.partialCapacityLoadout as unknown as LoadoutEvent,
     );
     assert.equal(partial.fuelCapacity, null);
+    // At this fixture's mass, using `Main: 2` produces 1.0580855; dropping the fuel
+    // term would clamp the curve to 1.06 and fail the expected metrics below.
     const partialMetrics = partial.mobilityMetrics()!;
     for (const [field, expected] of Object.entries(fixture.expected)) {
         assert.ok(near(partialMetrics[field as keyof typeof partialMetrics], expected), field);
@@ -2450,9 +2452,10 @@ test('all ten panel-audited builds reproduce their observed angular rates', () =
         ['Slapaconda', slapacondaJournal, metrics.inGame.slapaconda],
     ] as const;
 
-    // The panel reports hundredths of a degree per second. With reserve fuel correctly
-    // excluded from flight mass, every residual fits within its half-hundredth rounding
-    // interval; including reserve made Cobra and Kestrel roll miss by 0.0635/0.0590°/s.
+    // The panel reports hundredths of a degree per second. Excluding reserve fuel puts
+    // all 30 residuals within the half-hundredth rounding interval; the closest is Cobra
+    // roll at 0.00491884°/s. Including reserve puts 21 outside it, with Cobra and Kestrel
+    // roll the largest misses at 0.06348252°/s and 0.05896712°/s.
     const tolerance = 0.005;
     for (const [name, event, expected] of cases) {
         const actual = ShipLoadout.fromLoadout(event as LoadoutEvent).mobilityMetrics();
