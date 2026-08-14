@@ -36,6 +36,11 @@ import {
     getBlueprintGradeCost,
 } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
 import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
+import {
+    getBlueprintName,
+    getExperimentalEffectName,
+    getModuleName,
+} from '@elite-dangerous-almanac/core/i18n';
 
 async function readReachableJs(entry, seen = new Set()) {
     if (seen.has(entry.href)) return '';
@@ -256,6 +261,33 @@ test('fine-grained package subpaths resolve', () => {
         )?.count,
         1,
     );
+    assert.equal(getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'), 'Frameshiftantrieb');
+    assert.equal(getBlueprintName('FSD_LongRange', 'fr'), 'Portée FSD améliorée');
+    assert.equal(
+        getExperimentalEffectName('special_concordant_sequence', 'de'),
+        'Konkordante Sequenz',
+    );
+});
+
+test('localized-name datasets stay on their own leaf subpaths', async () => {
+    const [modules, blueprints, effects] = await Promise.all([
+        consumerBundle(
+            "import { getModuleName as value } from '@elite-dangerous-almanac/core/i18n/modules'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getBlueprintName as value } from '@elite-dangerous-almanac/core/i18n/blueprints'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getExperimentalEffectName as value } from '@elite-dangerous-almanac/core/i18n/experimental-effects'; console.log(value);",
+        ),
+    ]);
+
+    assert.ok(modules.length < 128 * 1024, `module-name bundle is ${modules.length} bytes`);
+    assert.ok(blueprints.length < 40 * 1024, `blueprint-name bundle is ${blueprints.length} bytes`);
+    assert.ok(effects.length < 40 * 1024, `effect-name bundle is ${effects.length} bytes`);
+    assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);
+    assert.doesNotMatch(blueprints, /Frameshiftantrieb|Konkordante Sequenz/);
+    assert.doesNotMatch(effects, /Frameshiftantrieb|Erhöhte FSA-Reichweite/);
 });
 
 test('the ship-loadout subpath exports its facade and structured edit error', async () => {

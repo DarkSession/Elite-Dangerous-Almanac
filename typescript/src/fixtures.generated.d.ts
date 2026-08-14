@@ -241,6 +241,20 @@ declare module '*/fixtures/equipment/equipment.jsonc' {
     export default value;
 }
 
+type FixtureI18nNames = {
+    lookups: {
+        expected: string | null;
+        identifier: string;
+        kind: string;
+        locale: string;
+    }[];
+};
+
+declare module '*/fixtures/i18n/names.jsonc' {
+    const value: FixtureI18nNames;
+    export default value;
+}
+
 type FixtureMaterialsMaterials = {
     counts: {
         all: number;

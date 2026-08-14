@@ -47,13 +47,14 @@ function jumpRangeOf(journalLine: string) {
 - **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)**
   — `null` against the three errors, and the diagnostic-result pairs.
 
-## The five feature areas
+## The six feature areas
 
 | Area | Import | Provides |
 | --- | --- | --- |
 | [astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/astro) | `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
 | [ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/ships) | `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
 | [equipment](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/equipment) | `@elite-dangerous-almanac/core/equipment` | Odyssey suits, handheld weapons, grade upgrades and engineer modifications |
+| [i18n](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/i18n) | `@elite-dangerous-almanac/core/i18n` | Sparse localized module, blueprint and experimental-effect names |
 | [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
 | [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
 

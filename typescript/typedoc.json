@@ -9,6 +9,7 @@
         "src/equipment/index.ts",
         "src/equipment/modification-costs.ts",
         "src/equipment/upgrade-costs.ts",
+        "src/i18n/index.ts",
         "src/materials/index.ts",
         "src/ships/index.ts",
         "src/ships/blueprint-costs.ts",

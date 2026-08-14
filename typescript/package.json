@@ -183,6 +183,23 @@
             "import": "./dist/equipment/weapons.js"
         },
         "./equipment/internal/*": null,
+        "./i18n": {
+            "types": "./dist/i18n/index.d.ts",
+            "import": "./dist/i18n/index.js"
+        },
+        "./i18n/blueprints": {
+            "types": "./dist/i18n/blueprints.d.ts",
+            "import": "./dist/i18n/blueprints.js"
+        },
+        "./i18n/experimental-effects": {
+            "types": "./dist/i18n/experimental-effects.d.ts",
+            "import": "./dist/i18n/experimental-effects.js"
+        },
+        "./i18n/internal/*": null,
+        "./i18n/modules": {
+            "types": "./dist/i18n/modules.d.ts",
+            "import": "./dist/i18n/modules.js"
+        },
         "./materials": {
             "types": "./dist/materials/index.d.ts",
             "import": "./dist/materials/index.js"
@@ -400,7 +417,7 @@
         "generate:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs",
         "lint": "eslint .",
         "prepublishOnly": "pnpm run check && pnpm run build && pnpm run test:package",
-        "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/equipment/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
+        "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/equipment/**/*.ts\" --test-coverage-include=\"src/i18n/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
         "docs": "typedoc && node scripts/build-wiki-sidebar.mjs && node scripts/postprocess-wiki.mjs",
         "check:examples": "node --test scripts/example-claims.test.mjs scripts/example-runtime.test.mjs && node scripts/check-examples.mjs --strict --min-executable-claims 308 --max-compile-only-claims 126",

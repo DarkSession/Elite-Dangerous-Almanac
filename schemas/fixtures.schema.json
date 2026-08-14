@@ -26,6 +26,7 @@
       "definition": "equipmentEquipment",
       "files": ["equipment/equipment.jsonc"]
     },
+    { "definition": "i18nNames", "files": ["i18n/names.jsonc"] },
     {
       "definition": "materialsMaterials",
       "files": ["materials/materials.jsonc"]
@@ -708,6 +709,29 @@
         }
       },
       "required": ["counts", "modification", "suits", "upgradeCosts", "weapons"]
+    },
+    "i18nNames": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lookups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "expected": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "identifier": { "type": "string" },
+              "kind": { "type": "string" },
+              "locale": { "type": "string" }
+            },
+            "required": ["expected", "identifier", "kind", "locale"]
+          }
+        }
+      },
+      "required": ["lookups"]
     },
     "materialsMaterials": {
       "type": "object",

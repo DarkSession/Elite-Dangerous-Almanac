@@ -79,10 +79,14 @@ a verbatim copy produced at build time — edit this file, never the copy.
   engineering menus, per-ship module-count limits and fitted stabiliser increases, the
   baseline per-hull maximum heat dissipation, the
   Lynx Highliner's hull/slot figures and zero-pip minimum pitch, the journal slot names,
-  and the attribute-to-journal-Label mapping. The values are Elite Dangerous game data —
-  see the Frontier notice below. Heat dissipation is the one entry the game never shows
-  a player: it is community measurement of Frontier's game, described under Algorithms
-  above, and carried here on the same terms as the rest.
+  localized module, blueprint and experimental-effect names, and the
+  attribute-to-journal-Label mapping. The values are Elite Dangerous game data — see the
+  Frontier notice below. Heat dissipation is the one entry the game never shows a player:
+  it is community measurement of Frontier's game, described under Algorithms above, and
+  carried here on the same terms as the rest.
+- **[EDDI](https://github.com/EDCD/EDDI)** by the **EDDI contributors**, **Apache 2.0**
+  for its code — its module definitions and resource tables supply localized outfitting
+  names. The names are factual Elite Dangerous game data; no EDDI code is incorporated.
 - **[Inara](https://inara.cz/)** — the blueprint and outfitting registries behind the
   Operations pre-engineered blueprints and shop rows, the ship pages used to corroborate
   hull layouts, and the component pages that grade the Thargoid caustic / Titan materials
@@ -112,8 +116,8 @@ a verbatim copy produced at build time — edit this file, never the copy.
   **Jixxed**, **MIT** — supplies the personal suit and handheld-weapon identities, stats,
   journal symbols, grade-upgrade recipes and engineer-applied modification recipes. A
   CAPI response in its test resources also corroborates the six bundle-granted Vessel
-  Hangar variants. The values and response are factual Elite Dangerous game data. Its
-  MIT notice is reproduced below.
+  Hangar variants. The values and response are factual Elite Dangerous game data. Its MIT
+  notice is reproduced below.
 - **[msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)**, **MIT** for its code
   — its `blueprints.json` corroborates which weapons the Overcharged recipe gives a clip
   penalty to. The values are game data.
@@ -180,6 +184,7 @@ derived and every manual correction are recorded with the data itself, in
 [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md),
 [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md),
 [`data/equipment/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/equipment/SOURCES.md),
+[`data/i18n/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/i18n/SOURCES.md),
 [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
 and
 [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),
