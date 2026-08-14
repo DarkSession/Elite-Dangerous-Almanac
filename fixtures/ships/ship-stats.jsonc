@@ -49,5 +49,10 @@
       "minThrust": 76,
       "pipSpeed": 0.16666666666667
     }
-  ]
+  ],
+  "minimumRotation": {
+    "symbol": "MediumTransport01",
+    "pitch": 26,
+    "minPitch": 23
+  }
 }

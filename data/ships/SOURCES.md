@@ -237,9 +237,10 @@ slots are outside the hull layout.
   73.75%; core PP5/thr6/FSD5/LS6/dist5/sen3/tank5; hardpoints 1 large + 4 medium;
   4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
   options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
-  records). Values
-  the static catalogue does not expose are omitted rather than invented: `masslock`,
-  `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
+  records). EDSY's zero-ENG-pip pitch rate of 23 deg/s is stored as `minPitch`; its
+  source record does not independently specify minimum roll or yaw. Values the static
+  catalogue does not expose are omitted rather than invented: `masslock`,
+  `heatCapacity`, `pipSpeed`, acceleration, and the boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
   the names `Passenger01`–`Passenger03`, sourced above. A final size-1
   `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from

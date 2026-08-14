@@ -128,6 +128,16 @@ test('experimental-weapon limits are filtered, enforced, increased and diagnosed
         () => build.setModule('Slot05_Size5', stabiliser3),
         /experimentalWeapon would have 6 modules but the ship allows 5/,
     );
+    const stabiliserSlot = build.slots().find((slot) => slot.key === 'Slot05_Size5');
+    assert.ok(stabiliserSlot);
+    assert.deepEqual(
+        {
+            key: stabiliserSlot.key,
+            removable: stabiliserSlot.removable,
+            immovableReason: stabiliserSlot.immovableReason,
+        },
+        operationsFixture.moduleLimits.removal.expected,
+    );
     assert.throws(
         () => build.removeModule('Slot05_Size5'),
         /experimentalWeapon would have 6 modules but the ship allows 4/,
@@ -136,6 +146,9 @@ test('experimental-weapon limits are filtered, enforced, increased and diagnosed
         build.validation.issues.some((issue) => issue.code === 'moduleLimitExceeded'),
         false,
     );
+    build.removeModule('MediumHardpoint2').removeModule('MediumHardpoint1');
+    assert.equal(build.slots().find((slot) => slot.key === 'Slot05_Size5')?.removable, true);
+    assert.doesNotThrow(() => build.removeModule('Slot05_Size5'));
 
     const imported = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
@@ -190,6 +203,14 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     );
     assert.notEqual(enhanced.mobilityMetrics()!.speed, enhancedMobility.speed);
 
+    const lynx = ShipLoadout.default('MediumTransport01');
+    const lynxFourPips = lynx.mobilityMetrics({ enginesPips: 4 })!;
+    const lynxZeroPips = lynx.mobilityMetrics({ enginesPips: 0 })!;
+    assert.ok(lynxZeroPips.pitch < lynxFourPips.pitch);
+    assert.ok(near(lynxZeroPips.pitch / lynxFourPips.pitch, 23 / 26));
+    assert.ok(near(lynxZeroPips.roll, lynxFourPips.roll));
+    assert.ok(near(lynxZeroPips.yaw, lynxFourPips.yaw));
+
     const tuned = ShipLoadout.fromSlef(slefString);
     const fittedThrusters = tuned.fittedModuleAt('MainEngines')!;
     const effectiveThrusters = fittedThrusters.effectiveStats!;
@@ -239,6 +260,19 @@ test('mobility returns null before requiring mass when no thrusters are fitted',
     const empty = ShipLoadout.empty('SideWinder');
     assert.equal(empty.mobilityMetrics(), null);
     assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), RangeError);
+});
+
+test('explicit mobility fuel does not require an unknown main-tank capacity', () => {
+    const fixture = operationsFixture.mobility.facadeExplicitFuel;
+    const build = ShipLoadout.fromLoadout(fixture.loadout);
+    assert.equal(build.fuelCapacity, null);
+    const metrics = build.mobilityMetrics(fixture.options)!;
+    for (const [field, expected] of Object.entries(fixture.expected)) {
+        assert.ok(near(metrics[field as keyof typeof metrics], expected), field);
+    }
+    if (fixture.omittedFuelFails) {
+        assert.throws(() => build.mobilityMetrics(), /cannot determine fuel capacity/);
+    }
 });
 
 test('shield recovery validates SYS pips even without a generator', () => {

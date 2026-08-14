@@ -4134,6 +4134,7 @@
     "crew": 2,
     "reserveFuelCapacity": 0.75,
     "pitch": 26,
+    "minPitch": 23,
     "roll": 60,
     "yaw": 19,
     "minThrust": 73.75,

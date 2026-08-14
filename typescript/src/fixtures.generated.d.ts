@@ -3007,6 +3007,29 @@ type FixtureShipsOperations = {
             speed: number;
             yaw: number;
         };
+        facadeExplicitFuel: {
+            expected: {
+                boost: number;
+                massCurveMultiplier: number;
+                pitch: number;
+                roll: number;
+                rotationMassCurveMultiplier: number;
+                speed: number;
+                yaw: number;
+            };
+            loadout: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+                UnladenMass: number;
+            };
+            omittedFuelFails: boolean;
+            options: {
+                fuel: number;
+            };
+        };
         input: {
             boost: number;
             mass: number;
@@ -3039,6 +3062,36 @@ type FixtureShipsOperations = {
                 };
             };
             yaw: number;
+        };
+        zeroPipRotation: {
+            expected: {
+                boost: number;
+                massCurveMultiplier: number;
+                pitch: number;
+                roll: number;
+                rotationMassCurveMultiplier: number;
+                speed: number;
+                yaw: number;
+            };
+            input: {
+                boost: number;
+                enginesPips: number;
+                mass: number;
+                minPitch: number;
+                minThrust: number;
+                pitch: number;
+                roll: number;
+                speed: number;
+                thrusters: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                yaw: number;
+            };
         };
     };
     moduleLimits: {
@@ -3074,6 +3127,17 @@ type FixtureShipsOperations = {
                 group: string;
             };
         }[];
+        removal: {
+            expected: {
+                immovableReason: string;
+                key: string;
+                removable: boolean;
+            };
+            ship: string;
+            slot: string;
+            stabiliser: string;
+            weaponSlots: string[];
+        };
     };
     retailCredits: {
         expected: {
@@ -3430,6 +3494,11 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 
 type FixtureShipsShipStats = {
     count: number;
+    minimumRotation: {
+        minPitch: number;
+        pitch: number;
+        symbol: string;
+    };
     pricedCount: number;
     prices: {
         hullCost: number;

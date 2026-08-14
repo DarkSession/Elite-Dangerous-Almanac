@@ -75,6 +75,13 @@ test('ship-stats spot checks: each merged hull carries the expected stat values'
     }
 });
 
+test('the Lynx carries its independently sourced minimum pitch rate', () => {
+    const expected = statsFixture.minimumRotation;
+    const ship = getShipBySymbol(expected.symbol);
+    assert.ok(ship);
+    assert.deepEqual(project(ship, expected), expected);
+});
+
 test(`all ${statsFixture.pricedCount} hulls carry a hull and a retail price`, () => {
     assert.equal(SHIPS.filter((s) => s.hullCost !== undefined).length, statsFixture.pricedCount);
     for (const expected of statsFixture.prices) {

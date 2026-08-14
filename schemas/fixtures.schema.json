@@ -4046,6 +4046,52 @@
                 "yaw"
               ]
             },
+            "facadeExplicitFuel": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "number" },
+                    "massCurveMultiplier": { "type": "number" },
+                    "pitch": { "type": "number" },
+                    "roll": { "type": "number" },
+                    "rotationMassCurveMultiplier": { "type": "number" },
+                    "speed": { "type": "number" },
+                    "yaw": { "type": "number" }
+                  },
+                  "required": [
+                    "boost",
+                    "massCurveMultiplier",
+                    "pitch",
+                    "roll",
+                    "rotationMassCurveMultiplier",
+                    "speed",
+                    "yaw"
+                  ]
+                },
+                "loadout": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
+                    "Ship": { "type": "string" },
+                    "UnladenMass": { "type": "integer" }
+                  },
+                  "required": ["Modules", "Ship", "UnladenMass"]
+                },
+                "omittedFuelFails": { "type": "boolean" },
+                "options": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": { "fuel": { "type": "integer" } },
+                  "required": ["fuel"]
+                }
+              },
+              "required": ["expected", "loadout", "omittedFuelFails", "options"]
+            },
             "input": {
               "type": "object",
               "additionalProperties": false,
@@ -4094,9 +4140,90 @@
                 "thrusters",
                 "yaw"
               ]
+            },
+            "zeroPipRotation": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "massCurveMultiplier": { "type": "integer" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "integer" },
+                    "rotationMassCurveMultiplier": { "type": "integer" },
+                    "speed": { "type": "number" },
+                    "yaw": { "type": "integer" }
+                  },
+                  "required": [
+                    "boost",
+                    "massCurveMultiplier",
+                    "pitch",
+                    "roll",
+                    "rotationMassCurveMultiplier",
+                    "speed",
+                    "yaw"
+                  ]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "boost": { "type": "integer" },
+                    "enginesPips": { "type": "integer" },
+                    "mass": { "type": "integer" },
+                    "minPitch": { "type": "integer" },
+                    "minThrust": { "type": "number" },
+                    "pitch": { "type": "integer" },
+                    "roll": { "type": "integer" },
+                    "speed": { "type": "integer" },
+                    "thrusters": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "maxMass": { "type": "integer" },
+                        "maxMultiplier": { "type": "integer" },
+                        "minMass": { "type": "integer" },
+                        "minMultiplier": { "type": "integer" },
+                        "optMass": { "type": "integer" },
+                        "optMultiplier": { "type": "integer" }
+                      },
+                      "required": [
+                        "maxMass",
+                        "maxMultiplier",
+                        "minMass",
+                        "minMultiplier",
+                        "optMass",
+                        "optMultiplier"
+                      ]
+                    },
+                    "yaw": { "type": "integer" }
+                  },
+                  "required": [
+                    "boost",
+                    "enginesPips",
+                    "mass",
+                    "minPitch",
+                    "minThrust",
+                    "pitch",
+                    "roll",
+                    "speed",
+                    "thrusters",
+                    "yaw"
+                  ]
+                }
+              },
+              "required": ["expected", "input"]
             }
           },
-          "required": ["expected", "input"]
+          "required": [
+            "expected",
+            "facadeExplicitFuel",
+            "input",
+            "zeroPipRotation"
+          ]
         },
         "moduleLimits": {
           "type": "object",
@@ -4180,6 +4307,36 @@
                   }
                 }
               }
+            },
+            "removal": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "immovableReason": { "type": "string" },
+                    "key": { "type": "string" },
+                    "removable": { "type": "boolean" }
+                  },
+                  "required": ["immovableReason", "key", "removable"]
+                },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" },
+                "stabiliser": { "type": "string" },
+                "weaponSlots": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "required": [
+                "expected",
+                "ship",
+                "slot",
+                "stabiliser",
+                "weaponSlots"
+              ]
             }
           },
           "required": [
@@ -4187,7 +4344,8 @@
             "expectedIssue",
             "expectedUsage",
             "group",
-            "input"
+            "input",
+            "removal"
           ]
         },
         "retailCredits": {
@@ -4982,6 +5140,16 @@
       "additionalProperties": false,
       "properties": {
         "count": { "type": "integer" },
+        "minimumRotation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "minPitch": { "type": "integer" },
+            "pitch": { "type": "integer" },
+            "symbol": { "type": "string" }
+          },
+          "required": ["minPitch", "pitch", "symbol"]
+        },
         "pricedCount": { "type": "integer" },
         "prices": {
           "type": "array",
@@ -5040,7 +5208,7 @@
           }
         }
       },
-      "required": ["count", "pricedCount", "prices", "spot"]
+      "required": ["count", "minimumRotation", "pricedCount", "prices", "spot"]
     },
     "shipsSlefEnvelope": {
       "type": "array",

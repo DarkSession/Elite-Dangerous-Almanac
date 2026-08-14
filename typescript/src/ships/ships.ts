@@ -93,10 +93,16 @@ export interface Ship {
     readonly retailCost: number;
     /** Pitch rate, in degrees per second. */
     readonly pitch: number;
+    /** Pitch rate at zero ENG pips, in degrees per second from `0` through {@link pitch}. */
+    readonly minPitch?: number;
     /** Roll rate, in degrees per second. */
     readonly roll: number;
+    /** Roll rate at zero ENG pips, in degrees per second from `0` through {@link roll}. */
+    readonly minRoll?: number;
     /** Yaw rate, in degrees per second. */
     readonly yaw: number;
+    /** Yaw rate at zero ENG pips, in degrees per second from `0` through {@link yaw}. */
+    readonly minYaw?: number;
     /** Minimum thrust as a percentage — the throttle floor. */
     readonly minThrust: number;
     /** Speed gained per pip to engines, as a fraction of base speed. */

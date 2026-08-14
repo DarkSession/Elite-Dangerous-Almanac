@@ -3,8 +3,9 @@
  *
  * Cross-language parity cases for loaded mobility, shield recovery, shield-cell pools,
  * one-per-ship and counted-module validation, direct retail pricing, alpha-strike
- * thermal load and structured SLEF diagnostics. Inputs pin the public data-free
- * contracts; catalogue-backed expectations pin the shared ship and module snapshots.
+ * thermal load and structured SLEF diagnostics. Inputs pin the public data-free and
+ * ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship and
+ * module snapshots.
  */
 {
   "mobility": {
@@ -49,6 +50,57 @@
       "yaw": 22,
       "massCurveMultiplier": 1.25,
       "rotationMassCurveMultiplier": 1.1
+    },
+    "zeroPipRotation": {
+      "input": {
+        "speed": 200,
+        "boost": 300,
+        "pitch": 26,
+        "minPitch": 23,
+        "roll": 60,
+        "yaw": 19,
+        "minThrust": 73.75,
+        "mass": 100,
+        "thrusters": {
+          "minMass": 50,
+          "optMass": 100,
+          "maxMass": 200,
+          "minMultiplier": 1,
+          "optMultiplier": 1,
+          "maxMultiplier": 1
+        },
+        "enginesPips": 0
+      },
+      "expected": {
+        "speed": 147.5,
+        "boost": 300,
+        "pitch": 23,
+        "roll": 60,
+        "yaw": 19,
+        "massCurveMultiplier": 1,
+        "rotationMassCurveMultiplier": 1
+      }
+    },
+    "facadeExplicitFuel": {
+      "loadout": {
+        "Ship": "SideWinder",
+        "UnladenMass": 25,
+        "Modules": [
+          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
+          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+        ]
+      },
+      "options": { "fuel": 2 },
+      "expected": {
+        "speed": 233.07404536958677,
+        "boost": 339.0167932648535,
+        "pitch": 44.49595411601202,
+        "roll": 116.53702268479338,
+        "yaw": 16.950839663242675,
+        "massCurveMultiplier": 1.0594274789526672,
+        "rotationMassCurveMultiplier": 1.0594274789526672
+      },
+      "omittedFuelFails": true
     }
   },
   "shieldRecovery": {
@@ -124,6 +176,23 @@
         { "symbol": "Int_ExpModuleStabiliser_Size3_Class3", "amount": 1 },
         { "symbol": "Int_ExpModuleStabiliser_Size5_Class3", "amount": 2 }
       ]
+    },
+    "removal": {
+      "ship": "Anaconda",
+      "slot": "Slot05_Size5",
+      "stabiliser": "Int_ExpModuleStabiliser_Size3_Class3",
+      "weaponSlots": [
+        "HugeHardpoint1",
+        "LargeHardpoint1",
+        "LargeHardpoint2",
+        "LargeHardpoint3",
+        "MediumHardpoint1"
+      ],
+      "expected": {
+        "key": "Slot05_Size5",
+        "removable": false,
+        "immovableReason": "moduleLimit"
+      }
     }
   },
   "retailCredits": {
@@ -146,7 +215,9 @@
     "loadout": {
       "input": {
         "Ship": "Anaconda",
-        "Modules": [{ "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size8_Class5" }]
+        "Modules": [
+          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size8_Class5" }
+        ]
       },
       "expected": {
         "code": "incompatibleModule",

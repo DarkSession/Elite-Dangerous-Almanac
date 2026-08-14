@@ -39,13 +39,22 @@ export interface MobilityInput {
     readonly boost: number;
     /** Hull pitch rate at the thruster curve's `1` multiplier and four ENG pips, in °/s. */
     readonly pitch: number;
+    /** Hull pitch rate at zero ENG pips, in °/s from `0` through {@link pitch}. */
+    readonly minPitch?: number;
     /** Hull roll rate at the thruster curve's `1` multiplier and four ENG pips, in °/s. */
     readonly roll: number;
+    /** Hull roll rate at zero ENG pips, in °/s from `0` through {@link roll}. */
+    readonly minRoll?: number;
     /** Hull yaw rate at the thruster curve's `1` multiplier and four ENG pips, in °/s. */
     readonly yaw: number;
+    /** Hull yaw rate at zero ENG pips, in °/s from `0` through {@link yaw}. */
+    readonly minYaw?: number;
     /** Minimum thrust at zero ENG pips, as a percentage in `[0, 100]`. */
     readonly minThrust: number;
-    /** Fraction of four-pip rotation lost for each missing ENG pip. Defaults to `0`. */
+    /**
+     * Fraction of four-pip rotation lost for each missing ENG pip. Defaults to `0` and
+     * is overridden per axis by a corresponding `minPitch`, `minRoll` or `minYaw`.
+     */
     readonly pipSpeed?: number;
     /** Loaded mass — hull, modules, fuel and cargo — in tonnes. */
     readonly mass: number;
@@ -151,13 +160,16 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
     const pipMultiplier = pips / 4;
     const minimum = input.minThrust / 100;
     const speedMultiplier = pipMultiplier + minimum * (1 - pipMultiplier);
-    const handlingMultiplier = 1 - (input.pipSpeed ?? 0) * (4 - pips);
+    const handlingAtPips = (maximum: number, minimum: number | undefined): number =>
+        minimum === undefined
+            ? maximum * (1 - (input.pipSpeed ?? 0) * (4 - pips))
+            : minimum + (maximum - minimum) * pipMultiplier;
     return {
         speed: input.speed * massCurveMultiplier * speedMultiplier,
         boost: input.boost * massCurveMultiplier,
-        pitch: input.pitch * rotationMassCurveMultiplier * handlingMultiplier,
-        roll: input.roll * rotationMassCurveMultiplier * handlingMultiplier,
-        yaw: input.yaw * rotationMassCurveMultiplier * handlingMultiplier,
+        pitch: handlingAtPips(input.pitch, input.minPitch) * rotationMassCurveMultiplier,
+        roll: handlingAtPips(input.roll, input.minRoll) * rotationMassCurveMultiplier,
+        yaw: handlingAtPips(input.yaw, input.minYaw) * rotationMassCurveMultiplier,
         massCurveMultiplier,
         rotationMassCurveMultiplier,
     };

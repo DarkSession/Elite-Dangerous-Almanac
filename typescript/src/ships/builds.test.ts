@@ -76,25 +76,19 @@ const ROLES = new Set([
 
 /** Assemble a build the way the corpus describes it: fit, power, but do not engineer. */
 function assemble(build: CorpusBuild): ShipLoadout {
-    const loadout = ShipLoadout.empty(build.ship);
-    const resolved = build.modules.map((entry) => {
+    const modules = build.modules.map((entry) => {
         const module = getModuleBySymbol(entry.item, ALL_MODULES);
         assert.ok(module, `${build.id}: no module "${entry.item}"`);
-        return { entry, module };
+        return {
+            Slot: entry.slot,
+            Item: entry.item,
+            ...(entry.on === undefined ? {} : { On: entry.on }),
+            ...(entry.priority === undefined ? {} : { Priority: entry.priority }),
+        };
     });
-    // A count-increasing internal can follow the weapons it permits in the fixture's
-    // canonical slot order. Fit grants first so each intermediate editor state is valid;
-    // calculations and keyed occupancy do not depend on insertion order.
-    resolved.sort(
-        ({ module: left }, { module: right }) =>
-            Number(right.limitIncrease !== undefined) - Number(left.limitIncrease !== undefined),
-    );
-    for (const { entry, module } of resolved) {
-        loadout.setModule(entry.slot, module);
-        loadout.setModuleEnabled(entry.slot, entry.on ?? true);
-        loadout.setModulePriority(entry.slot, entry.priority ?? 0);
-    }
-    return loadout;
+    // A corpus record is a complete loadout, so import it atomically. `setModule` is the
+    // invariant-preserving editor API and intentionally makes fitting order observable.
+    return ShipLoadout.fromLoadout({ Ship: build.ship, Modules: modules });
 }
 
 /**
@@ -148,6 +142,12 @@ test('the corpus covers every hull with 2-5 builds and unique ids', () => {
 test('every build fits: each module exists and its slot accepts it', () => {
     for (const build of builds) {
         const loadout = assemble(build);
+        const validation = loadout.validation;
+        const diagnostics = validation.issues
+            .map((issue) => `${issue.code}: ${issue.message}`)
+            .join('; ');
+        assert.equal(validation.valid, true, `${build.id}: invalid fit (${diagnostics})`);
+        assert.equal(validation.complete, true, `${build.id}: incomplete fit (${diagnostics})`);
         const occupied = loadout.slots().filter((slot) => slot.module !== null);
         assert.equal(
             occupied.length,

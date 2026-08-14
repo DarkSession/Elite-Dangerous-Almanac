@@ -503,6 +503,11 @@ export class ShipLoadout {
      * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
      * {@link sourcePurchase} record, which no edit touches.
      *
+     * Modules are imported as one complete snapshot: their array order does not affect
+     * per-ship count allowances, and any aggregate violation is reported by
+     * {@link validation}. Use this factory rather than replaying a complete loadout
+     * through the incremental {@link setModule} editor.
+     *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
      * it: `event` must be an object with an array of module objects in `Modules`; each
@@ -880,16 +885,26 @@ export class ShipLoadout {
             kind === undefined
                 ? this.#layout()
                 : this.#layout().filter((slot) => slot.kind === kind);
+        const currentLimits = this.#moduleLimits();
         const value = deepFreeze(
-            slots.map((slot) => ({
-                ...slot,
-                name: loadoutSlotName(slot),
-                module: this.fittedModuleAt(slot.key),
-                removable: slot.key.toLowerCase() !== 'cargohatch',
-                ...(slot.key.toLowerCase() === 'cargohatch'
-                    ? { immovableReason: 'cargoHatch' as const }
-                    : {}),
-            })),
+            slots.map((slot) => {
+                const stats = this.#moduleStatsAt(slot.key);
+                const immovableReason =
+                    slot.key.toLowerCase() === 'cargohatch'
+                        ? ('cargoHatch' as const)
+                        : stats?.limitIncrease !== undefined &&
+                            this.#moduleLimitRegression(slot.key, null, currentLimits, stats) !==
+                                null
+                          ? ('moduleLimit' as const)
+                          : null;
+                return {
+                    ...slot,
+                    name: loadoutSlotName(slot),
+                    module: this.fittedModuleAt(slot.key),
+                    removable: immovableReason === null,
+                    ...(immovableReason === null ? {} : { immovableReason }),
+                };
+            }),
         );
         cached.value.set(kind, value);
         return value;
@@ -1032,16 +1047,23 @@ export class ShipLoadout {
             }),
         );
         const currentLimits = this.#moduleLimits();
+        const currentStats = this.#moduleStatsAt(slot.key);
         return ALL_MODULES.filter(
             (module) =>
                 moduleFitError(this.#shipSymbol, slot, module) === null &&
                 (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)) &&
-                this.#moduleLimitRegression(slot.key, module, currentLimits) === null,
+                this.#moduleLimitRegression(slot.key, module, currentLimits, currentStats) === null,
         );
     }
 
     /**
      * Fit a module into a slot, replacing whatever is there.
+     *
+     * @remarks
+     * This is an incremental editor: every call must avoid worsening the current
+     * build's module-count excess. Fit an allowance-increasing module before the weapons
+     * it permits. To consume a complete order-independent snapshot, use
+     * {@link ShipLoadout.fromLoadout}.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively (journal
      * spelling). An occupied slot keeps the key the build already spells it with, so
@@ -1711,7 +1733,8 @@ export class ShipLoadout {
      * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
      * @returns Loaded {@link MobilityMetrics}, or `null` when no powered, fully described
      * thrusters are fitted.
-     * @throws {TypeError} If mass or an omitted fuel load cannot be determined.
+     * @throws {TypeError} If mass, reserve fuel, or an omitted main-tank fuel load cannot
+     * be determined.
      * @throws {RangeError} If `enginesPips` is outside `[0, 4]`.
      * @example
      * ```ts
@@ -1732,12 +1755,23 @@ export class ShipLoadout {
             this.#shipSymbol,
             [...this.#modules.values()],
             () => {
-                const fuel = this.#requireFuelCapacity();
-                return (
-                    this.#requireMass(options.cargo ?? 0) +
-                    (options.fuel ?? fuel.main) +
-                    fuel.reserve
-                );
+                const capacity = options.fuel === undefined ? this.#requireFuelCapacity() : null;
+                const reserve =
+                    capacity?.reserve ??
+                    this.#top.FuelCapacity?.Reserve ??
+                    getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity;
+                if (reserve === undefined) {
+                    throw new TypeError(
+                        'ShipLoadout: cannot determine reserve fuel capacity for mobility',
+                    );
+                }
+                const main = options.fuel ?? capacity?.main;
+                if (main === undefined) {
+                    throw new TypeError(
+                        'ShipLoadout: cannot determine main-tank fuel load for mobility',
+                    );
+                }
+                return this.#requireMass(options.cargo ?? 0) + main + reserve;
             },
             enginesPips,
             (module) => this.#statsFor(module),
@@ -2084,19 +2118,19 @@ export class ShipLoadout {
         });
     }
 
-    /** Resolve the current or proposed fit's per-ship module-count usage. */
-    #moduleLimits(
-        replacementSlot?: string,
-        replacement?: OutfittingModule | null,
-    ): readonly ModuleLimitUsage[] {
-        const replaced = replacementSlot?.toLowerCase();
+    /** Resolve the current fit's per-ship module-count usage. */
+    #moduleLimits(): readonly ModuleLimitUsage[] {
         const entries = [...this.#modules.values()].flatMap((module) => {
-            if (module.Slot.toLowerCase() === replaced) return [];
             const stats = this.#statsFor(module);
             return stats === null ? [] : [stats];
         });
-        if (replacement !== undefined && replacement !== null) entries.push(replacement);
         return calculateModuleLimits(entries);
+    }
+
+    /** Resolve the catalogue stats currently fitted in one slot. */
+    #moduleStatsAt(slotKey: string): OutfittingModule | null {
+        const fitted = this.#fittedModuleFor(slotKey);
+        return fitted === undefined ? null : this.#statsFor(fitted);
     }
 
     /** A proposed edit's newly increased limit excess, or `null` when it worsens none. */
@@ -2104,13 +2138,36 @@ export class ShipLoadout {
         slotKey: string,
         replacement: OutfittingModule | null,
         current = this.#moduleLimits(),
+        previous = this.#moduleStatsAt(slotKey),
     ): ModuleLimitUsage | null {
-        const before = new Map(current.map((usage) => [usage.group, usage.excess]));
-        return (
-            this.#moduleLimits(slotKey, replacement).find(
-                (usage) => usage.excess > (before.get(usage.group) ?? 0),
-            ) ?? null
-        );
+        if (
+            previous?.limitGroup === undefined &&
+            previous?.limitIncrease === undefined &&
+            replacement?.limitGroup === undefined &&
+            replacement?.limitIncrease === undefined
+        ) {
+            return null;
+        }
+        for (const usage of current) {
+            const count =
+                usage.count -
+                Number(previous?.limitGroup === usage.group) +
+                Number(replacement?.limitGroup === usage.group);
+            const increase =
+                usage.increase -
+                (previous?.limitIncrease?.group === usage.group
+                    ? previous.limitIncrease.amount
+                    : 0) +
+                (replacement?.limitIncrease?.group === usage.group
+                    ? replacement.limitIncrease.amount
+                    : 0);
+            const limit = usage.baseLimit + increase;
+            const excess = Math.max(0, count - limit);
+            if (excess > usage.excess) {
+                return { ...usage, increase, limit, count, excess };
+            }
+        }
+        return null;
     }
 
     /** Replace one fitted module and keep imported aggregate figures coherent. */

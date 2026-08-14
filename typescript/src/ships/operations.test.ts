@@ -18,6 +18,13 @@ test('shared ship-operation cases reproduce across public calculations', () => {
     for (const [field, expected] of Object.entries(fixture.mobility.expected)) {
         assert.ok(Math.abs(mobility[field as keyof typeof mobility] - expected) < 1e-12, field);
     }
+    const zeroPipRotation = mobilityMetrics(fixture.mobility.zeroPipRotation.input);
+    for (const [field, expected] of Object.entries(fixture.mobility.zeroPipRotation.expected)) {
+        assert.ok(
+            Math.abs(zeroPipRotation[field as keyof typeof zeroPipRotation] - expected) < 1e-12,
+            field,
+        );
+    }
     assert.deepEqual(shieldRecovery(fixture.shieldRecovery.input), fixture.shieldRecovery.expected);
     const cells = cellBankSummary(fixture.cellBanks.input);
     assert.deepEqual(
@@ -70,6 +77,25 @@ test('shared catalogue-backed operation cases reproduce', () => {
             amount: expected.amount,
         });
     }
+
+    const removal = fixture.moduleLimits.removal;
+    const limitedBuild = ShipLoadout.fromLoadout({
+        Ship: removal.ship,
+        Modules: [
+            ...removal.weaponSlots.map((Slot) => ({ Slot, Item: limits.weapon })),
+            { Slot: removal.slot, Item: removal.stabiliser },
+        ],
+    });
+    const limitedSlot = limitedBuild.slots().find((slot) => slot.key === removal.slot);
+    assert.ok(limitedSlot);
+    assert.deepEqual(
+        {
+            key: limitedSlot.key,
+            removable: limitedSlot.removable,
+            immovableReason: limitedSlot.immovableReason,
+        },
+        removal.expected,
+    );
 });
 
 test('shared module-count limits resolve allowances and structural diagnostics', () => {
