@@ -3,9 +3,9 @@
  *
  * Cross-language parity cases for loaded mobility, shield recovery, shield-cell pools,
  * one-per-ship and counted-module validation, direct retail pricing, alpha-strike
- * thermal load and structured SLEF diagnostics. Inputs pin the public data-free and
- * ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship and
- * module snapshots.
+ * thermal load, structured diagnostics and editor failures. Inputs pin the public
+ * data-free and ShipLoadout facade contracts; catalogue-backed expectations pin the
+ * shared ship and module snapshots.
  */
 {
   "mobility": {
@@ -81,6 +81,36 @@
         "rotationMassCurveMultiplier": 1
       }
     },
+    "pipAllocation": {
+      "input": {
+        "speed": 200,
+        "boost": 300,
+        "pitch": 40,
+        "roll": 100,
+        "yaw": 20,
+        "minThrust": 40,
+        "pipSpeed": 0.1,
+        "mass": 100,
+        "thrusters": {
+          "minMass": 50,
+          "optMass": 100,
+          "maxMass": 200,
+          "minMultiplier": 1,
+          "optMultiplier": 1,
+          "maxMultiplier": 1
+        },
+        "enginesPips": 2
+      },
+      "expected": {
+        "speed": 140,
+        "boost": 300,
+        "pitch": 32,
+        "roll": 80,
+        "yaw": 16,
+        "massCurveMultiplier": 1,
+        "rotationMassCurveMultiplier": 1
+      }
+    },
     "facadeExplicitFuel": {
       "loadout": {
         "Ship": "SideWinder",
@@ -100,7 +130,32 @@
         "massCurveMultiplier": 1.0594274789526672,
         "rotationMassCurveMultiplier": 1.0594274789526672
       },
-      "omittedFuelFails": true
+      "omittedFuelFails": true,
+      "invalidLoads": [
+        { "options": { "fuel": -1 }, "expectedError": "RangeError" },
+        { "options": { "cargo": -1 }, "expectedError": "RangeError" }
+      ]
+    },
+    "invalidPipSpeed": {
+      "input": {
+        "speed": 1,
+        "boost": 1,
+        "pitch": 1,
+        "roll": 1,
+        "yaw": 1,
+        "minThrust": 50,
+        "pipSpeed": 0.3,
+        "mass": 1,
+        "thrusters": {
+          "minMass": 1,
+          "optMass": 1,
+          "maxMass": 1,
+          "minMultiplier": 1,
+          "optMultiplier": 1,
+          "maxMultiplier": 1
+        }
+      },
+      "expectedError": "RangeError"
     }
   },
   "shieldRecovery": {
@@ -117,6 +172,34 @@
       "brokenRegenRate": 4,
       "recoveryTime": 41,
       "regenTime": 50
+    },
+    "pipAllocation": {
+      "input": {
+        "strength": 1000,
+        "regenRate": 10,
+        "brokenRegenRate": 20,
+        "distributorDraw": 0.6,
+        "systemsCapacity": 10,
+        "systemsRecharge": 2,
+        "systemsPips": 2
+      },
+      "expected": {
+        "regenRate": 10,
+        "brokenRegenRate": 20,
+        "recoveryTime": 326.814304135525,
+        "regenTime": 310.814304135525
+      }
+    },
+    "invalidStrength": {
+      "input": {
+        "strength": -1,
+        "regenRate": 1,
+        "brokenRegenRate": 1,
+        "distributorDraw": 0,
+        "systemsCapacity": 0,
+        "systemsRecharge": 0
+      },
+      "expectedError": "RangeError"
     }
   },
   "cellBanks": {
@@ -230,6 +313,46 @@
         }
       }
     },
+    "restrictedLoadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "MainEngines",
+            "Item": "Int_Engine_Size7_Class5_GravityOptimised_MkII"
+          }
+        ]
+      },
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "MainEngines",
+          "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
+          "constraint": "restrictedHull",
+          "allowedShipNames": ["Caspian Explorer"],
+          "allowedShipSymbols": ["Explorer_NX"],
+          "shipSymbol": "Anaconda"
+        }
+      }
+    },
+    "wrongArmourLoadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [{ "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" }]
+      },
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "Armour",
+          "symbol": "SideWinder_Armour_Grade1",
+          "constraint": "wrongHullArmour",
+          "armourShipName": "Sidewinder",
+          "armourShipSymbol": "SideWinder",
+          "shipSymbol": "Anaconda",
+          "shipName": "Anaconda"
+        }
+      }
+    },
     "calculation": {
       "input": { "slot": "Slot01_Size4", "symbol": "UnknownRack", "mass": 0 },
       "expected": {
@@ -241,6 +364,78 @@
           "slot": "Slot01_Size4",
           "symbol": "UnknownRack"
         }
+      }
+    }
+  },
+  "editorErrors": {
+    "incompatibleModule": {
+      "ship": "Anaconda",
+      "slot": "FrameShiftDrive",
+      "module": "Int_Hyperdrive_Size8_Class5",
+      "expected": {
+        "code": "incompatibleModule",
+        "constraint": "oversized",
+        "params": {
+          "slot": "FrameShiftDrive",
+          "symbol": "Int_Hyperdrive_Size8_Class5",
+          "constraint": "oversized",
+          "moduleClass": 8,
+          "slotSize": 6
+        }
+      }
+    },
+    "duplicateExclusiveModule": {
+      "ship": "Anaconda",
+      "firstSlot": "Slot01_Size7",
+      "secondSlot": "Slot02_Size6",
+      "module": "Int_ShieldGenerator_Size6_Class3",
+      "expected": {
+        "code": "duplicateExclusiveModule",
+        "params": {
+          "exclusionGroup": "shieldGenerator",
+          "slot": "Slot02_Size6",
+          "symbol": "Int_ShieldGenerator_Size6_Class3",
+          "previousSlot": "Slot01_Size7",
+          "previousSymbol": "Int_ShieldGenerator_Size6_Class3"
+        }
+      }
+    },
+    "moduleLimitExceeded": {
+      "ship": "Anaconda",
+      "fittedSlots": [
+        "HugeHardpoint1",
+        "LargeHardpoint1",
+        "LargeHardpoint2",
+        "LargeHardpoint3"
+      ],
+      "targetSlot": "MediumHardpoint1",
+      "module": "Hpt_Guardian_GaussCannon_Fixed_Small",
+      "expected": {
+        "code": "moduleLimitExceeded",
+        "params": {
+          "group": "experimentalWeapon",
+          "count": 5,
+          "limit": 4,
+          "slot": "MediumHardpoint1",
+          "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small"
+        }
+      }
+    },
+    "immutableSlot": {
+      "ship": "SideWinder",
+      "slot": "CargoHatch",
+      "expected": {
+        "code": "immutableSlot",
+        "params": { "slot": "CargoHatch" }
+      }
+    },
+    "immutableSlotReplacement": {
+      "ship": "SideWinder",
+      "slot": "CargoHatch",
+      "module": "Int_Hyperdrive_Size2_Class5",
+      "expected": {
+        "code": "immutableSlot",
+        "params": { "slot": "CargoHatch" }
       }
     }
   },

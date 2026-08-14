@@ -1,10 +1,10 @@
 /** Module-to-mount compatibility rules for {@link ShipLoadout}. @internal */
 
 import type { OutfittingModule } from '../modules.js';
-import { getShipBySymbol } from '../ships.js';
+import { getShipByName, getShipBySymbol } from '../ships.js';
 import { SLOT_RESTRICTION_LABELS, type BuildSlot, type SlotRestriction } from '../slots.js';
 import { truncate } from '../../internal/argument-guards.js';
-import type { ModuleFitConstraint } from '../loadout-validation.js';
+import type { LoadoutIssueParams, ModuleFitConstraint } from '../loadout-validation.js';
 
 /** Optional-internal groups a military slot accepts (symbol prefixes). */
 const MILITARY_PREFIXES: readonly string[] = [
@@ -69,13 +69,13 @@ const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
 export interface ModuleFitProblem {
     readonly constraint: ModuleFitConstraint;
     readonly message: string;
-    readonly params?: Readonly<Record<string, string | number>>;
+    readonly params?: LoadoutIssueParams;
 }
 
 const problem = (
     constraint: ModuleFitConstraint,
     message: string,
-    params?: Readonly<Record<string, string | number>>,
+    params?: LoadoutIssueParams,
 ): ModuleFitProblem => ({ constraint, message, ...(params === undefined ? {} : { params }) });
 
 function restrictionProblem(slot: BuildSlot, symbol: string): ModuleFitProblem | null {
@@ -120,10 +120,16 @@ export function moduleFitProblem(
             return problem('armourRequired', 'not a ship armour module');
         }
         if (!hull || module.ship.toLowerCase() !== hull.name.toLowerCase()) {
+            const armourHull = getShipByName(module.ship);
             return problem(
                 'wrongHullArmour',
                 `armour belongs to ${truncate(module.ship)}, not ${truncate(hull?.name ?? shipSymbol)}`,
-                { armourShip: module.ship, ship: hull?.name ?? shipSymbol },
+                {
+                    armourShipName: module.ship,
+                    ...(armourHull === null ? {} : { armourShipSymbol: armourHull.symbol }),
+                    shipSymbol,
+                    ...(hull === null ? {} : { shipName: hull.name }),
+                },
             );
         }
         return null;
@@ -137,13 +143,17 @@ export function moduleFitProblem(
         restricted &&
         !restricted.some((symbol) => symbol.toLowerCase() === shipSymbol.toLowerCase())
     ) {
-        const hulls = restricted.map((symbol) => {
+        const allowedShipNames = restricted.map((symbol) => {
             const hull = getShipBySymbol(symbol);
-            return hull ? `${hull.name} (${symbol})` : symbol;
+            return hull?.name ?? symbol;
         });
-        return problem('restrictedHull', `module is restricted to ${truncate(hulls.join(', '))}`, {
-            allowedHulls: hulls.join(', '),
-            allowedShipSymbols: restricted.join(','),
+        const labels = restricted.map((symbol, index) => {
+            const name = allowedShipNames[index]!;
+            return name === symbol ? symbol : `${name} (${symbol})`;
+        });
+        return problem('restrictedHull', `module is restricted to ${truncate(labels.join(', '))}`, {
+            allowedShipNames,
+            allowedShipSymbols: [...restricted],
             shipSymbol,
         });
     }

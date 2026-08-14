@@ -7,19 +7,26 @@
  * @packageDocumentation
  */
 
-/** One post-engineering thruster performance curve. */
+/**
+ * One post-engineering thruster performance curve.
+ *
+ * Masses must be strictly ordered `minMass < optMass < maxMass`. The all-equal
+ * mass form is accepted only for a constant curve. Multipliers must be strictly
+ * ordered `minMultiplier < optMultiplier < maxMultiplier`, or all equal for a
+ * constant curve.
+ */
 export interface ThrusterCurveParams {
-    /** Loaded mass at which performance reaches {@link maxMultiplier}, in tonnes. */
+    /** Finite non-negative loaded mass at which performance reaches {@link maxMultiplier}, in tonnes. */
     readonly minMass: number;
-    /** Loaded mass at which performance is exactly {@link optMultiplier}, in tonnes. */
+    /** Finite non-negative loaded mass at which performance is exactly {@link optMultiplier}, in tonnes. */
     readonly optMass: number;
-    /** Maximum loaded mass the thrusters can move, in tonnes. */
+    /** Finite non-negative maximum loaded mass the thrusters can move, in tonnes. */
     readonly maxMass: number;
-    /** Performance multiplier at {@link maxMass}. */
+    /** Finite non-negative performance multiplier at {@link maxMass}. */
     readonly minMultiplier: number;
-    /** Performance multiplier at {@link optMass}. */
+    /** Finite non-negative performance multiplier at {@link optMass}. */
     readonly optMultiplier: number;
-    /** Performance multiplier at {@link minMass}. */
+    /** Finite non-negative performance multiplier at {@link minMass}. */
     readonly maxMultiplier: number;
 }
 
@@ -33,34 +40,35 @@ export interface ThrusterParams extends ThrusterCurveParams {
 
 /** Everything {@link mobilityMetrics} needs about one loaded ship. */
 export interface MobilityInput {
-    /** Hull top speed at the thruster curve's `1` multiplier and four ENG pips, in m/s. */
+    /** Finite non-negative hull top speed at multiplier `1` and four ENG pips, in m/s. */
     readonly speed: number;
-    /** Hull boost speed at the thruster curve's `1` multiplier, in m/s. */
+    /** Finite non-negative hull boost speed at the thruster curve's `1` multiplier, in m/s. */
     readonly boost: number;
-    /** Hull pitch rate at the thruster curve's `1` multiplier and four ENG pips, in °/s. */
+    /** Finite non-negative pitch rate at multiplier `1` and four ENG pips, in °/s. */
     readonly pitch: number;
-    /** Hull pitch rate at zero ENG pips, in °/s from `0` through {@link pitch}. */
+    /** Finite hull pitch rate at zero ENG pips, in °/s from `0` through {@link pitch}. */
     readonly minPitch?: number;
-    /** Hull roll rate at the thruster curve's `1` multiplier and four ENG pips, in °/s. */
+    /** Finite non-negative roll rate at multiplier `1` and four ENG pips, in °/s. */
     readonly roll: number;
-    /** Hull roll rate at zero ENG pips, in °/s from `0` through {@link roll}. */
+    /** Finite hull roll rate at zero ENG pips, in °/s from `0` through {@link roll}. */
     readonly minRoll?: number;
-    /** Hull yaw rate at the thruster curve's `1` multiplier and four ENG pips, in °/s. */
+    /** Finite non-negative yaw rate at multiplier `1` and four ENG pips, in °/s. */
     readonly yaw: number;
-    /** Hull yaw rate at zero ENG pips, in °/s from `0` through {@link yaw}. */
+    /** Finite hull yaw rate at zero ENG pips, in °/s from `0` through {@link yaw}. */
     readonly minYaw?: number;
-    /** Minimum thrust at zero ENG pips, as a percentage in `[0, 100]`. */
+    /** Finite minimum thrust at zero ENG pips, as a percentage in `[0, 100]`. */
     readonly minThrust: number;
     /**
-     * Fraction of four-pip rotation lost for each missing ENG pip. Defaults to `0` and
-     * is overridden per axis by a corresponding `minPitch`, `minRoll` or `minYaw`.
+     * Finite fraction of four-pip rotation lost for each missing ENG pip, in
+     * `[0, 0.25]`. Defaults to `0` and is overridden per axis by a corresponding
+     * `minPitch`, `minRoll` or `minYaw`.
      */
     readonly pipSpeed?: number;
-    /** Loaded mass — hull, modules, fuel and cargo — in tonnes. */
+    /** Finite non-negative loaded mass — hull, modules, fuel and cargo — in tonnes. */
     readonly mass: number;
     /** The fitted thrusters' post-engineering curve, or no curve when none are fitted. */
     readonly thrusters?: ThrusterParams | null;
-    /** Pips assigned to ENG, in `[0, 4]`. Defaults to `4`. */
+    /** Finite pips assigned to ENG, in `[0, 4]`. Defaults to `4`. */
     readonly enginesPips?: number;
 }
 
@@ -82,23 +90,56 @@ export interface MobilityMetrics {
     readonly rotationMassCurveMultiplier: number;
 }
 
-/**
- * Resolve a thruster's performance multiplier at a loaded mass.
- *
- * @param mass - Loaded mass in tonnes.
- * @param thrusters - The fitted thruster curve, post-engineering.
- * @returns The curve multiplier, or `0` above the thrusters' maximum supported mass.
- * @example
- * ```ts
- * import { thrusterMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/mobility';
- *
- * thrusterMassCurveMultiplier(48, {
- *   minMass: 24, optMass: 48, maxMass: 72,
- *   minMultiplier: 0.83, optMultiplier: 1, maxMultiplier: 1.03,
- * }); // -> 1
- * ```
- */
-export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCurveParams): number {
+const requireFiniteNonNegative = (scope: string, name: string, value: number): void => {
+    if (!Number.isFinite(value) || value < 0) {
+        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
+    }
+};
+
+const requireFiniteRange = (
+    scope: string,
+    name: string,
+    value: number,
+    minimum: number,
+    maximum: number,
+): void => {
+    if (!Number.isFinite(value) || value < minimum || value > maximum) {
+        throw new RangeError(
+            `${scope}: ${name} must be a finite number from ${minimum} to ${maximum}`,
+        );
+    }
+};
+
+const validateCurve = (scope: string, curve: ThrusterCurveParams): void => {
+    for (const field of ['minMass', 'optMass', 'maxMass'] as const) {
+        requireFiniteNonNegative(scope, field, curve[field]);
+    }
+    const allMassesEqual = curve.minMass === curve.optMass && curve.optMass === curve.maxMass;
+    if (!allMassesEqual && !(curve.minMass < curve.optMass && curve.optMass < curve.maxMass)) {
+        throw new RangeError(
+            `${scope}: masses must be strictly ordered minMass < optMass < maxMass, or all equal`,
+        );
+    }
+    for (const field of ['minMultiplier', 'optMultiplier', 'maxMultiplier'] as const) {
+        requireFiniteNonNegative(scope, field, curve[field]);
+    }
+    const allMultipliersEqual =
+        curve.minMultiplier === curve.optMultiplier && curve.optMultiplier === curve.maxMultiplier;
+    const strictlyOrderedMultipliers =
+        curve.minMultiplier < curve.optMultiplier && curve.optMultiplier < curve.maxMultiplier;
+    if (!allMultipliersEqual && !strictlyOrderedMultipliers) {
+        throw new RangeError(
+            `${scope}: multipliers must be strictly ordered minMultiplier < optMultiplier < maxMultiplier, or all equal`,
+        );
+    }
+    if (allMassesEqual && !allMultipliersEqual) {
+        throw new RangeError(`${scope}: an all-equal mass curve must have equal multipliers`);
+    }
+};
+
+const curveMultiplier = (scope: string, mass: number, thrusters: ThrusterCurveParams): number => {
+    requireFiniteNonNegative(scope, 'mass', mass);
+    validateCurve(`${scope}: thrusters`, thrusters);
     if (mass > thrusters.maxMass) return 0;
     const span = thrusters.maxMass - thrusters.minMass;
     if (span <= 0 || thrusters.maxMultiplier === thrusters.minMultiplier) {
@@ -111,11 +152,36 @@ export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCur
             (thrusters.optMultiplier - thrusters.minMultiplier) /
                 (thrusters.maxMultiplier - thrusters.minMultiplier),
         ) / Math.log(optNormalised);
-    if (!Number.isFinite(exponent)) return thrusters.optMultiplier;
+    if (!Number.isFinite(exponent)) {
+        throw new RangeError(`${scope}: curve values do not produce a finite exponent`);
+    }
     return (
         thrusters.minMultiplier +
         Math.pow(normalised, exponent) * (thrusters.maxMultiplier - thrusters.minMultiplier)
     );
+};
+
+/**
+ * Resolve a thruster's performance multiplier at a loaded mass.
+ *
+ * @param mass - Loaded mass in tonnes.
+ * @param thrusters - The fitted thruster curve, post-engineering.
+ * @returns The curve multiplier, or `0` above the thrusters' maximum supported mass.
+ * @throws {RangeError} If mass or a curve value is not finite and non-negative, or
+ * the curve masses or multipliers do not follow the ordering documented by
+ * {@link ThrusterCurveParams}.
+ * @example
+ * ```ts
+ * import { thrusterMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/mobility';
+ *
+ * thrusterMassCurveMultiplier(48, {
+ *   minMass: 24, optMass: 48, maxMass: 72,
+ *   minMultiplier: 0.83, optMultiplier: 1, maxMultiplier: 1.03,
+ * }); // -> 1
+ * ```
+ */
+export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCurveParams): number {
+    return curveMultiplier('thrusterMassCurveMultiplier', mass, thrusters);
 }
 
 /**
@@ -124,7 +190,9 @@ export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCur
  * @param input - Hull figures, loaded mass, fitted thrusters and ENG pips.
  * @returns The build's {@link MobilityMetrics}, or `null` without thrusters. A mass above
  * the thrusters' maximum returns zero performance rather than a fabricated curve value.
- * @throws {RangeError} If `enginesPips` is outside `[0, 4]` or not finite.
+ * @throws {RangeError} If an input is not finite or is outside its documented range,
+ * or a thruster curve does not follow the ordering documented by
+ * {@link ThrusterCurveParams}.
  * @example
  * ```ts
  * import { mobilityMetrics } from '@elite-dangerous-almanac/core/ships/mobility';
@@ -145,15 +213,33 @@ export function mobilityMetrics(
 export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null;
 export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
     const pips = input.enginesPips ?? 4;
-    if (!Number.isFinite(pips) || pips < 0 || pips > 4) {
-        throw new RangeError('mobilityMetrics: enginesPips must be a finite number from 0 to 4');
+    requireFiniteRange('mobilityMetrics', 'enginesPips', pips, 0, 4);
+    for (const field of ['speed', 'boost', 'pitch', 'roll', 'yaw', 'mass'] as const) {
+        requireFiniteNonNegative('mobilityMetrics', field, input[field]);
+    }
+    requireFiniteRange('mobilityMetrics', 'minThrust', input.minThrust, 0, 100);
+    if (input.pipSpeed !== undefined) {
+        requireFiniteRange('mobilityMetrics', 'pipSpeed', input.pipSpeed, 0, 0.25);
+    }
+    for (const [minimum, maximum] of [
+        ['minPitch', 'pitch'],
+        ['minRoll', 'roll'],
+        ['minYaw', 'yaw'],
+    ] as const) {
+        const value = input[minimum];
+        if (value !== undefined) {
+            requireFiniteRange('mobilityMetrics', minimum, value, 0, input[maximum]);
+        }
     }
     if (!input.thrusters) return null;
-    const massCurveMultiplier = thrusterMassCurveMultiplier(
+    validateCurve('mobilityMetrics: thrusters', input.thrusters);
+    const massCurveMultiplier = curveMultiplier(
+        'mobilityMetrics: speed curve',
         input.mass,
         input.thrusters.speedCurve ?? input.thrusters,
     );
-    const rotationMassCurveMultiplier = thrusterMassCurveMultiplier(
+    const rotationMassCurveMultiplier = curveMultiplier(
+        'mobilityMetrics: rotation curve',
         input.mass,
         input.thrusters.rotationCurve ?? input.thrusters,
     );

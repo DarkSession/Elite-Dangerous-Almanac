@@ -137,6 +137,7 @@ import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
+export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
 import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
 import { exportLoadoutEvent } from './internal/loadout-export.js';
@@ -164,7 +165,9 @@ import {
 } from './loadout-calculations.js';
 import {
     validateLoadout,
+    type LoadoutIssueParams,
     type LoadoutValidation,
+    type ModuleFitConstraint,
     type ValidationModule,
 } from './loadout-validation.js';
 
@@ -178,11 +181,91 @@ import {
  */
 const SLOT_KEY = 'ShipLoadout: slotKey';
 
+/** Validate public fuel/cargo overrides before build state affects the result. */
+const requireLoadOptions = (scope: string, options: JumpOptions): void => {
+    for (const field of ['fuel', 'cargo'] as const) {
+        const value = options[field];
+        if (value !== undefined && (!Number.isFinite(value) || value < 0)) {
+            throw new RangeError(`${scope}: ${field} must be a finite non-negative number`);
+        }
+    }
+};
+
+/**
+ * Stable machine-readable reason a {@link ShipLoadout} edit was refused:
+ * `immutableSlot`, an incompatible fit, a duplicate one-per-ship family, or a module
+ * count beyond the build's current allowance.
+ */
+export type LoadoutEditErrorCode =
+    'immutableSlot' | 'incompatibleModule' | 'duplicateExclusiveModule' | 'moduleLimitExceeded';
+
+/**
+ * An editor request that the current hull or build constraints cannot accept.
+ *
+ * @remarks
+ * This remains a `TypeError`, so existing `instanceof TypeError` handling continues to
+ * work. Localized editors should switch on {@link code}, then use {@link constraint}
+ * and {@link params} instead of parsing the English fallback in `message`.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   LoadoutEditError,
+ *   ShipLoadout,
+ * } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+ *
+ * const build = ShipLoadout.empty('SideWinder');
+ * const drive = getModuleBySymbol('Int_Hyperdrive_Size8_Class5', CORE_MODULES)!;
+ * try {
+ *   build.setModule('FrameShiftDrive', drive);
+ * } catch (error) {
+ *   if (error instanceof LoadoutEditError) error.constraint; // -> 'oversized'
+ * }
+ * ```
+ */
+export class LoadoutEditError extends TypeError {
+    /** Stable category for the refused edit. */
+    readonly code: LoadoutEditErrorCode;
+    /** More specific fitting rule for an `incompatibleModule` failure. */
+    readonly constraint?: ModuleFitConstraint;
+    /** Language-neutral values used by the English fallback message. */
+    readonly params: LoadoutIssueParams;
+
+    /**
+     * Construct a structured loadout-edit error.
+     *
+     * @param message - English fallback suitable for logs.
+     * @param code - Stable category for the refused edit.
+     * @param params - Language-neutral values used to render the failure.
+     * @param constraint - Specific fitting rule, when `code` is `incompatibleModule`.
+     */
+    constructor(
+        message: string,
+        code: LoadoutEditErrorCode,
+        params: LoadoutIssueParams,
+        constraint?: ModuleFitConstraint,
+    ) {
+        super(message);
+        this.code = code;
+        this.params = deepFreeze(
+            Object.fromEntries(
+                Object.entries(params).map(([key, value]) => [
+                    key,
+                    Array.isArray(value) ? [...value] : value,
+                ]),
+            ) as Record<string, string | number | readonly string[]>,
+        );
+        if (constraint !== undefined) this.constraint = constraint;
+    }
+}
+
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
-    /** Fuel in the tank for the jump, in tonnes. Defaults to the full main tank. */
+    /** Finite non-negative fuel load, in tonnes. Defaults to the full main tank. */
     readonly fuel?: number;
-    /** Cargo aboard, in tonnes. Defaults to `0` (unladen). */
+    /** Finite non-negative cargo load, in tonnes. Defaults to `0` (unladen). */
     readonly cargo?: number;
 }
 
@@ -1074,11 +1157,11 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
-     * `getModuleBySymbol` miss) or is not an outfitting module at all; the module does not
-     * fit the slot (wrong kind, too large, or a restriction the module does not satisfy),
-     * conflicts with a one-per-ship family already fitted elsewhere, worsens a per-ship
-     * module-count excess, or the hull has no known slot layout (a SLEF build on an
-     * unrecognised hull).
+     * `getModuleBySymbol` miss) or is not an outfitting module at all; or the hull has no
+     * known slot layout (a SLEF build on an unrecognised hull).
+     * @throws {LoadoutEditError} If the module does not fit the slot (wrong kind, too
+     * large, or a restriction the module does not satisfy), conflicts with a one-per-ship
+     * family already fitted elsewhere, or worsens a per-ship module-count excess.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1109,10 +1192,25 @@ export class ShipLoadout {
                 `ShipLoadout.setModule: module for "${truncate(slotKey)}" must be an outfitting module, received ${describeValue(module)}`,
             );
         }
-        const problem = moduleFitError(this.#shipSymbol, slot, module);
+        const problem = moduleFitProblem(this.#shipSymbol, slot, module);
         if (problem) {
-            throw new TypeError(
-                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem}`,
+            if (problem.constraint === 'immutableSlot') {
+                throw new LoadoutEditError(
+                    `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem.message}`,
+                    'immutableSlot',
+                    { slot: slot.key },
+                );
+            }
+            throw new LoadoutEditError(
+                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem.message}`,
+                'incompatibleModule',
+                {
+                    ...problem.params,
+                    slot: slot.key,
+                    symbol: module.symbol,
+                    constraint: problem.constraint,
+                },
+                problem.constraint,
             );
         }
         if (module.exclusionGroup !== undefined) {
@@ -1122,15 +1220,31 @@ export class ShipLoadout {
                     this.#statsFor(fitted)?.exclusionGroup === module.exclusionGroup,
             );
             if (conflict) {
-                throw new TypeError(
+                throw new LoadoutEditError(
                     `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${module.exclusionGroup} is limited to one per ship (already fitted in ${truncate(conflict.Slot)})`,
+                    'duplicateExclusiveModule',
+                    {
+                        exclusionGroup: module.exclusionGroup,
+                        slot: slot.key,
+                        symbol: module.symbol,
+                        previousSlot: conflict.Slot,
+                        previousSymbol: conflict.Item,
+                    },
                 );
             }
         }
         const limitProblem = this.#moduleLimitRegression(slot.key, module);
         if (limitProblem !== null) {
-            throw new TypeError(
+            throw new LoadoutEditError(
                 `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${limitProblem.group} would have ${limitProblem.count} modules but the ship allows ${limitProblem.limit}`,
+                'moduleLimitExceeded',
+                {
+                    group: limitProblem.group,
+                    count: limitProblem.count,
+                    limit: limitProblem.limit,
+                    slot: slot.key,
+                    symbol: module.symbol,
+                },
             );
         }
         // Replacing keeps the key the build already uses; a fresh fit takes the hull
@@ -1146,21 +1260,35 @@ export class ShipLoadout {
      * @param slotKey - The slot key to clear, matched case-insensitively (journal
      * spelling).
      * @returns `this`, for chaining. Clearing an already-empty slot is a no-op.
-     * @throws {TypeError} If `slotKey` is not a string, names the built-in cargo hatch,
-     * which cannot be removed or replaced, or removing the module would worsen a
-     * per-ship module-count excess.
+     * @throws {TypeError} If `slotKey` is not a string.
+     * @throws {LoadoutEditError} If the slot is the built-in cargo hatch, which cannot
+     * be removed or replaced, or removing the module would worsen a per-ship
+     * module-count excess.
      */
     removeModule(slotKey: string): this {
         // Read before `#fittedKey` does, so this one method guards for itself.
         if (requireString(slotKey, SLOT_KEY).toLowerCase() === 'cargohatch') {
-            throw new TypeError('ShipLoadout.removeModule: the cargoHatch slot cannot be changed');
+            throw new LoadoutEditError(
+                'ShipLoadout.removeModule: the cargoHatch slot cannot be changed',
+                'immutableSlot',
+                { slot: 'CargoHatch' },
+            );
         }
         const key = this.#fittedKey(slotKey);
         if (key !== null) {
             const limitProblem = this.#moduleLimitRegression(key, null);
             if (limitProblem !== null) {
-                throw new TypeError(
+                const fitted = this.#modules.get(key);
+                throw new LoadoutEditError(
                     `ShipLoadout.removeModule: ${truncate(slotKey)}: ${limitProblem.group} would have ${limitProblem.count} modules but the ship allows ${limitProblem.limit}`,
+                    'moduleLimitExceeded',
+                    {
+                        group: limitProblem.group,
+                        count: limitProblem.count,
+                        limit: limitProblem.limit,
+                        slot: key,
+                        ...(fitted === undefined ? {} : { symbol: fitted.Item }),
+                    },
                 );
             }
             this.#replaceModule(key, null);
@@ -1605,8 +1733,10 @@ export class ShipLoadout {
      * @throws {TypeError} If the build has no usable frame shift drive or its mass
      * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
      * omitted.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
      */
     jumpRange(options: JumpOptions = {}): number {
+        requireLoadOptions('ShipLoadout.jumpRange', options);
         const fsd = this.frameShiftDrive;
         const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return singleJumpRange(this.#requireMass(options.cargo ?? 0), fuel, fsd);
@@ -1633,8 +1763,10 @@ export class ShipLoadout {
      * @throws {TypeError} If the build has no usable frame shift drive or its mass
      * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
      * omitted.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
      */
     fuelPerJump(distance: number, options: JumpOptions = {}): number {
+        requireLoadOptions('ShipLoadout.fuelPerJump', options);
         const fsd = this.frameShiftDrive;
         const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return fuelPerJump(distance, this.#requireMass(options.cargo ?? 0), fuel, fsd);
@@ -1648,8 +1780,10 @@ export class ShipLoadout {
      * @returns The summed range of every jump on one full tank, in light-years.
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
      * fuel capacity cannot be determined.
+     * @throws {RangeError} If cargo is not finite and non-negative.
      */
     totalRange(options: { readonly cargo?: number } = {}): number {
+        requireLoadOptions('ShipLoadout.totalRange', options);
         return totalRange(
             this.#requireMass(options.cargo ?? 0),
             this.#requireFuelCapacity().main,
@@ -1735,7 +1869,8 @@ export class ShipLoadout {
      * thrusters are fitted.
      * @throws {TypeError} If mass, reserve fuel, or an omitted main-tank fuel load cannot
      * be determined.
-     * @throws {RangeError} If `enginesPips` is outside `[0, 4]`.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
+     * `enginesPips` is outside `[0, 4]`.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1751,6 +1886,7 @@ export class ShipLoadout {
                 'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
             );
         }
+        requireLoadOptions('ShipLoadout.mobilityMetrics', options);
         const input = mobilityInputFor(
             this.#shipSymbol,
             [...this.#modules.values()],

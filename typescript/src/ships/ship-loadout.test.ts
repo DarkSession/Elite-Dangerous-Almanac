@@ -273,6 +273,11 @@ test('explicit mobility fuel does not require an unknown main-tank capacity', ()
     if (fixture.omittedFuelFails) {
         assert.throws(() => build.mobilityMetrics(), /cannot determine fuel capacity/);
     }
+    for (const invalid of fixture.invalidLoads) {
+        assert.throws(() => build.mobilityMetrics(invalid.options), {
+            name: invalid.expectedError,
+        });
+    }
 });
 
 test('shield recovery validates SYS pips even without a generator', () => {
@@ -565,6 +570,17 @@ test('jumpRange honours explicit fuel and cargo', () => {
     assert.ok(near(build.jumpRange({ fuel: 128, cargo: 0 }), build.jumpRange()));
     // more cargo -> shorter jump
     assert.ok(build.jumpRange({ cargo: 100 }) < build.jumpRange({ cargo: 0 }));
+    for (const invalid of operationsFixture.mobility.facadeExplicitFuel.invalidLoads) {
+        assert.throws(() => build.jumpRange(invalid.options), { name: invalid.expectedError });
+        assert.throws(() => build.fuelPerJump(1, invalid.options), {
+            name: invalid.expectedError,
+        });
+        if ('cargo' in invalid.options) {
+            assert.throws(() => build.totalRange(invalid.options), {
+                name: invalid.expectedError,
+            });
+        }
+    }
 });
 
 test('fromLoadout works on a bare journal event', () => {
@@ -907,10 +923,11 @@ test('incompatible-module diagnostics carry every dynamic fitting value', () => 
         slot: 'MainEngines',
         symbol: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
         constraint: 'restrictedHull',
-        allowedHulls: 'Caspian Explorer (Explorer_NX)',
-        allowedShipSymbols: 'Explorer_NX',
+        allowedShipNames: ['Caspian Explorer'],
+        allowedShipSymbols: ['Explorer_NX'],
         shipSymbol: 'Anaconda',
     });
+    assert.ok(Object.isFrozen(issues[1]?.params?.allowedShipSymbols));
 });
 
 test('Guardian core modules fit their core slot and are barred from optional slots', () => {

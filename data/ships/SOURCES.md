@@ -52,6 +52,15 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   `scripts/data/ships/merge-normalized-catalogues.mjs` then performs the deterministic
   symbol join, preserving registry order and rejecting duplicate or unmatched input.
   Masses are tonnes, speeds m/s, rotation rates deg/s.
+- **Diamondback ENG-pip handling is corrected from the source.** Coriolis-data commit
+  `b49cc405dceb3993fdc41e4a088de6fdb0510db4` transposes the Diamondback Scout and
+  Diamondback Explorer `pipSpeed` values: its Scout value
+  `0.096153846153846` is exactly `(1 - 61.538461538… / 100) / 4`, using the
+  Explorer's minimum thrust, while its Explorer value `0.098214285714286` is
+  exactly `(1 - 60.714285714… / 100) / 4`, using the Scout's. The immediately
+  preceding source values already have the opposite ordering. The stored values
+  therefore restore the hull-local pairing: Scout `0.098214285714286`, Explorer
+  `0.096153846153846`.
 - **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
   the seven named `core` sizes (power plant, thrusters, frame shift drive, life
   support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into

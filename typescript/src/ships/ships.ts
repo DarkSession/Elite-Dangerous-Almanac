@@ -105,7 +105,10 @@ export interface Ship {
     readonly minYaw?: number;
     /** Minimum thrust as a percentage — the throttle floor. */
     readonly minThrust: number;
-    /** Speed gained per pip to engines, as a fraction of base speed. */
+    /**
+     * Fraction of four-pip rotation lost for each missing ENG pip, in `[0, 0.25]`.
+     * A per-axis minimum rotation rate takes precedence when present.
+     */
     readonly pipSpeed?: number;
 
     // ── Slot layout (from coriolis-data) — present alongside the stats. ──

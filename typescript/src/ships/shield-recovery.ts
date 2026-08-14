@@ -10,19 +10,19 @@
 
 /** Everything {@link shieldRecovery} needs about a powered shield and SYS capacitor. */
 export interface ShieldRecoveryInput {
-    /** Total shield strength, including boosters and reinforcement, in megajoules. */
+    /** Finite non-negative total shield strength, including reinforcement, in megajoules. */
     readonly strength: number;
-    /** Generator regeneration rate while the shield is raised, in MJ/s. */
+    /** Finite non-negative generator regeneration rate while the shield is raised, in MJ/s. */
     readonly regenRate: number;
-    /** Generator regeneration rate while the shield is broken, in MJ/s. */
+    /** Finite non-negative generator regeneration rate while the shield is broken, in MJ/s. */
     readonly brokenRegenRate: number;
-    /** SYS-capacitor energy spent per 1 MJ regenerated. */
+    /** Finite non-negative SYS-capacitor energy spent per 1 MJ regenerated. */
     readonly distributorDraw: number;
-    /** Fitted power distributor's SYS capacity. Zero when no distributor is fitted. */
+    /** Finite non-negative SYS capacity. Zero when no distributor is fitted. */
     readonly systemsCapacity: number;
-    /** Fitted power distributor's maximum SYS recharge rate, per second. */
+    /** Finite non-negative maximum SYS recharge rate, per second. */
     readonly systemsRecharge: number;
-    /** Pips assigned to SYS, in `[0, 4]`. Defaults to `4`. */
+    /** Finite pips assigned to SYS, in `[0, 4]`. Defaults to `4`. */
     readonly systemsPips?: number;
 }
 
@@ -103,12 +103,19 @@ const phaseTime = (
     return capacitorLifetime + (megajoules - beforeEmpty) / (recharge / draw);
 };
 
+const requireFiniteNonNegative = (name: string, value: number): void => {
+    if (!Number.isFinite(value) || value < 0) {
+        throw new RangeError(`shieldRecovery: ${name} must be a finite non-negative number`);
+    }
+};
+
 /**
  * Calculate shield recovery and regeneration times at one SYS-pip allocation.
  *
  * @param input - Shield strength, generator rates and power-distributor figures.
  * @returns Rates and seconds to 50%/100%. A phase that cannot finish returns `Infinity`.
- * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
+ * @throws {RangeError} If `systemsPips` is outside `[0, 4]`, or any numeric input is
+ * negative or not finite.
  * @example
  * ```ts
  * import { shieldRecovery } from '@elite-dangerous-almanac/core/ships/shield-recovery';
@@ -123,6 +130,16 @@ export function shieldRecovery(input: ShieldRecoveryInput): ShieldRecovery {
     const pips = input.systemsPips ?? 4;
     if (!Number.isFinite(pips) || pips < 0 || pips > 4) {
         throw new RangeError('shieldRecovery: systemsPips must be a finite number from 0 to 4');
+    }
+    for (const field of [
+        'strength',
+        'regenRate',
+        'brokenRegenRate',
+        'distributorDraw',
+        'systemsCapacity',
+        'systemsRecharge',
+    ] as const) {
+        requireFiniteNonNegative(field, input[field]);
     }
     const recharge = input.systemsRecharge * Math.pow(pips / 4, 1.1);
     const half = input.strength / 2;

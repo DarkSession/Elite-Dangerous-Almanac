@@ -44,6 +44,16 @@ export type ModuleFitConstraint =
     | 'oversized'
     | 'unknownConstraint';
 
+/**
+ * One language-neutral value carried by a structured loadout diagnostic: a scalar
+ * string/number, or a string list the consumer can format for its locale. Paired name
+ * and symbol lists use the same order so display names align with stable identifiers.
+ */
+export type LoadoutIssueParam = string | number | readonly string[];
+
+/** Named {@link LoadoutIssueParam} values used to compose a localized diagnostic. */
+export type LoadoutIssueParams = Readonly<Record<string, LoadoutIssueParam>>;
+
 /** One validation diagnostic. */
 export interface LoadoutIssue {
     /** Machine-readable reason. */
@@ -57,7 +67,7 @@ export interface LoadoutIssue {
     /** Human-readable explanation. */
     readonly message: string;
     /** Values interpolated into `message`, for consumers composing localized text. */
-    readonly params?: Readonly<Record<string, string | number>>;
+    readonly params?: LoadoutIssueParams;
 }
 
 /** Summary returned by {@link validateLoadout}. */
@@ -84,8 +94,11 @@ export interface ValidationModule {
     readonly fitError: string | null;
     /** Stable reason for `fitError`, when supplied by the fitting implementation. */
     readonly fitConstraint?: ModuleFitConstraint;
-    /** Dynamic values used by the fitting explanation. */
-    readonly fitParams?: Readonly<Record<string, string | number>>;
+    /**
+     * Dynamic values used by the fitting explanation. `slot`, `symbol` and
+     * `constraint` are reserved: validation always supplies their canonical values.
+     */
+    readonly fitParams?: LoadoutIssueParams;
     /** One-per-ship family, when the resolved module belongs to one. */
     readonly exclusionGroup?: ModuleExclusionGroup;
     /** Per-ship count family this resolved module consumes, when any. */
@@ -247,7 +260,18 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         issues.map((issue) =>
             Object.freeze({
                 ...issue,
-                ...(issue.params ? { params: Object.freeze({ ...issue.params }) } : {}),
+                ...(issue.params
+                    ? {
+                          params: Object.freeze(
+                              Object.fromEntries(
+                                  Object.entries(issue.params).map(([key, value]) => [
+                                      key,
+                                      Array.isArray(value) ? Object.freeze([...value]) : value,
+                                  ]),
+                              ) as Record<string, LoadoutIssueParam>,
+                          ),
+                      }
+                    : {}),
             }),
         ),
     );

@@ -56,6 +56,14 @@ test('a depleted capacitor continues at recharge-limited speed or stalls at zero
 });
 
 test('shield recovery validates pips and handles empty or non-regenerating shields', () => {
+    const input = {
+        strength: 1,
+        regenRate: 1,
+        brokenRegenRate: 1,
+        distributorDraw: 0.6,
+        systemsCapacity: 1,
+        systemsRecharge: 1,
+    };
     assert.deepEqual(
         shieldRecovery({
             strength: 0,
@@ -70,16 +78,21 @@ test('shield recovery validates pips and handles empty or non-regenerating shiel
     assert.throws(
         () =>
             shieldRecovery({
-                strength: 1,
-                regenRate: 1,
-                brokenRegenRate: 1,
-                distributorDraw: 0.6,
-                systemsCapacity: 1,
-                systemsRecharge: 1,
+                ...input,
                 systemsPips: -1,
             }),
         RangeError,
     );
+    for (const invalid of [
+        { ...input, strength: -1 },
+        { ...input, regenRate: Number.NaN },
+        { ...input, brokenRegenRate: -1 },
+        { ...input, distributorDraw: -1 },
+        { ...input, systemsCapacity: -1 },
+        { ...input, systemsRecharge: -1 },
+    ]) {
+        assert.throws(() => shieldRecovery(invalid), RangeError);
+    }
 });
 
 test('cell banks report one-cell reinforcement and the complete pool', () => {

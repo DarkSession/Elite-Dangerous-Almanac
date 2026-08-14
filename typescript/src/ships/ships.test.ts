@@ -82,6 +82,14 @@ test('the Lynx carries its independently sourced minimum pitch rate', () => {
     assert.deepEqual(project(ship, expected), expected);
 });
 
+test('the Diamondbacks carry their corrected hull-local ENG-pip handling values', () => {
+    for (const expected of statsFixture.pipSpeedCorrections) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship);
+        assert.deepEqual(project(ship, expected), expected);
+    }
+});
+
 test(`all ${statsFixture.pricedCount} hulls carry a hull and a retail price`, () => {
     assert.equal(SHIPS.filter((s) => s.hullCost !== undefined).length, statsFixture.pricedCount);
     for (const expected of statsFixture.prices) {

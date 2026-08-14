@@ -31,9 +31,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   separate credit, under Data below.) The **build-metric algorithms** are ported as fact
   (our own implementation) from it: the power budget and its priority groups; loaded speed,
   boost and rotation through the thruster-mass and ENG-pip curves; shield strength and its
-  mass curve; armour hit points; resistance stacking with its diminishing returns; and
-  weapon DPS / capacitor draw / heat. It credits the original Frontier-forum research the
-  formulas come from.
+  mass curve; shield collapse delay, regeneration and SYS-capacitor recovery timing; armour
+  hit points; resistance stacking with its diminishing returns; and weapon DPS / capacitor
+  draw / heat. It credits the original Frontier-forum research the formulas come from.
 - **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, the **engineered
   ammunition rounding** rule and the **build metrics above** are cross-checked against, or
   ported as fact from, EDSY (credited under Data below). The jump-range model derives from

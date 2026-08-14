@@ -256,7 +256,9 @@ export {
 
 // ── The build facade and the modules it composes, each named at its source ──
 export {
+    LoadoutEditError,
     ShipLoadout,
+    type LoadoutEditErrorCode,
     type JumpOptions,
     type JumpRangeSummary,
     type DefenceOptions,
@@ -284,6 +286,8 @@ export {
     validateLoadout,
     type LoadoutIssue,
     type LoadoutIssueCode,
+    type LoadoutIssueParam,
+    type LoadoutIssueParams,
     type LoadoutValidation,
     type LoadoutValidationInput,
     type ValidationModule,

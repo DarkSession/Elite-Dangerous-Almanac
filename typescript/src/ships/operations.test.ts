@@ -9,7 +9,7 @@ import { validateLoadout } from './loadout-validation.js';
 import { calculateModuleLimits, type ModuleLimitEntry } from './module-limits.js';
 import { getModuleBySymbol, type ModuleExclusionGroup } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import { ShipLoadout } from './ship-loadout.js';
+import { LoadoutEditError, ShipLoadout } from './ship-loadout.js';
 import { inspectSlef } from './slef.js';
 import { sumWeaponMetrics, weaponMetrics } from './weapons.js';
 
@@ -25,7 +25,27 @@ test('shared ship-operation cases reproduce across public calculations', () => {
             field,
         );
     }
+    const pipAllocation = mobilityMetrics(fixture.mobility.pipAllocation.input);
+    for (const [field, expected] of Object.entries(fixture.mobility.pipAllocation.expected)) {
+        assert.ok(
+            Math.abs(pipAllocation[field as keyof typeof pipAllocation] - expected) < 1e-12,
+            field,
+        );
+    }
     assert.deepEqual(shieldRecovery(fixture.shieldRecovery.input), fixture.shieldRecovery.expected);
+    const pipRecovery = shieldRecovery(fixture.shieldRecovery.pipAllocation.input);
+    for (const [field, expected] of Object.entries(fixture.shieldRecovery.pipAllocation.expected)) {
+        assert.ok(
+            Math.abs(pipRecovery[field as keyof typeof pipRecovery] - expected) < 1e-12,
+            field,
+        );
+    }
+    assert.throws(() => mobilityMetrics(fixture.mobility.invalidPipSpeed.input), {
+        name: fixture.mobility.invalidPipSpeed.expectedError,
+    });
+    assert.throws(() => shieldRecovery(fixture.shieldRecovery.invalidStrength.input), {
+        name: fixture.shieldRecovery.invalidStrength.expectedError,
+    });
     const cells = cellBankSummary(fixture.cellBanks.input);
     assert.deepEqual(
         { totalRestorable: cells.totalRestorable, totalCells: cells.totalCells },
@@ -141,6 +161,17 @@ test('shared diagnostic cases expose stable localization keys', () => {
     assert.ok(loadoutIssue);
     assert.deepEqual(loadoutIssue.params, fixture.diagnostics.loadout.expected.params);
 
+    for (const fitting of [
+        fixture.diagnostics.restrictedLoadout,
+        fixture.diagnostics.wrongArmourLoadout,
+    ]) {
+        const issue = ShipLoadout.fromLoadout(fitting.input).validation.issues.find(
+            (candidate) => candidate.code === fitting.expected.code,
+        );
+        assert.ok(issue);
+        assert.deepEqual(issue.params, fitting.expected.params);
+    }
+
     const calculationIssue = calculateCargoCapacity([
         { ...fixture.diagnostics.calculation.input, cargoCapacity: null },
     ]).issues[0];
@@ -153,6 +184,76 @@ test('shared diagnostic cases expose stable localization keys', () => {
             params: calculationIssue.params,
         },
         fixture.diagnostics.calculation.expected,
+    );
+});
+
+test('shared editor failures expose stable codes and localization params', () => {
+    const capture = (edit: () => void): LoadoutEditError => {
+        try {
+            edit();
+        } catch (error) {
+            assert.ok(error instanceof LoadoutEditError);
+            assert.ok(error instanceof TypeError);
+            return error;
+        }
+        assert.fail('expected the loadout edit to be refused');
+    };
+    const project = (error: LoadoutEditError) => ({
+        code: error.code,
+        ...(error.constraint === undefined ? {} : { constraint: error.constraint }),
+        params: error.params,
+    });
+
+    const incompatible = fixture.editorErrors.incompatibleModule;
+    assert.deepEqual(
+        project(
+            capture(() =>
+                ShipLoadout.empty(incompatible.ship).setModule(
+                    incompatible.slot,
+                    getModuleBySymbol(incompatible.module)!,
+                ),
+            ),
+        ),
+        incompatible.expected,
+    );
+
+    const exclusive = fixture.editorErrors.duplicateExclusiveModule;
+    const exclusiveModule = getModuleBySymbol(exclusive.module)!;
+    const exclusiveBuild = ShipLoadout.empty(exclusive.ship).setModule(
+        exclusive.firstSlot,
+        exclusiveModule,
+    );
+    assert.deepEqual(
+        project(capture(() => exclusiveBuild.setModule(exclusive.secondSlot, exclusiveModule))),
+        exclusive.expected,
+    );
+
+    const limited = fixture.editorErrors.moduleLimitExceeded;
+    const limitedModule = getModuleBySymbol(limited.module)!;
+    const limitedBuild = ShipLoadout.empty(limited.ship);
+    for (const slot of limited.fittedSlots) limitedBuild.setModule(slot, limitedModule);
+    assert.deepEqual(
+        project(capture(() => limitedBuild.setModule(limited.targetSlot, limitedModule))),
+        limited.expected,
+    );
+
+    const immutable = fixture.editorErrors.immutableSlot;
+    assert.deepEqual(
+        project(capture(() => ShipLoadout.default(immutable.ship).removeModule(immutable.slot))),
+        immutable.expected,
+    );
+
+    const immutableReplacement = fixture.editorErrors.immutableSlotReplacement;
+    assert.deepEqual(
+        project(
+            capture(() =>
+                ShipLoadout.default(immutableReplacement.ship).setModule(
+                    immutableReplacement.slot,
+                    getModuleBySymbol(immutableReplacement.module)!,
+                ),
+            ),
+        ),
+        immutableReplacement.expected,
     );
 });
 

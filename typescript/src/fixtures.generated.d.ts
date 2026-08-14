@@ -2979,6 +2979,26 @@ type FixtureShipsOperations = {
                 Ship: string;
             };
         };
+        restrictedLoadout: {
+            expected: {
+                code: string;
+                params: {
+                    allowedShipNames: string[];
+                    allowedShipSymbols: string[];
+                    constraint: string;
+                    shipSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
         slef: {
             expected: {
                 code: string;
@@ -2991,6 +3011,98 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             };
+        };
+        wrongArmourLoadout: {
+            expected: {
+                code: string;
+                params: {
+                    armourShipName: string;
+                    armourShipSymbol: string;
+                    constraint: string;
+                    shipName: string;
+                    shipSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+    };
+    editorErrors: {
+        duplicateExclusiveModule: {
+            expected: {
+                code: string;
+                params: {
+                    exclusionGroup: string;
+                    previousSlot: string;
+                    previousSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            firstSlot: string;
+            module: string;
+            secondSlot: string;
+            ship: string;
+        };
+        immutableSlot: {
+            expected: {
+                code: string;
+                params: {
+                    slot: string;
+                };
+            };
+            ship: string;
+            slot: string;
+        };
+        immutableSlotReplacement: {
+            expected: {
+                code: string;
+                params: {
+                    slot: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
+        incompatibleModule: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    constraint: string;
+                    moduleClass: number;
+                    slot: string;
+                    slotSize: number;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
+        moduleLimitExceeded: {
+            expected: {
+                code: string;
+                params: {
+                    count: number;
+                    group: string;
+                    limit: number;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            fittedSlots: string[];
+            module: string;
+            ship: string;
+            targetSlot: string;
         };
     };
     exclusivity: {
@@ -3017,6 +3129,13 @@ type FixtureShipsOperations = {
                 speed: number;
                 yaw: number;
             };
+            invalidLoads: {
+                expectedError: string;
+                options: {
+                    cargo?: number;
+                    fuel?: number;
+                };
+            }[];
             loadout: {
                 Modules: {
                     Item: string;
@@ -3062,6 +3181,57 @@ type FixtureShipsOperations = {
                 };
             };
             yaw: number;
+        };
+        invalidPipSpeed: {
+            expectedError: string;
+            input: {
+                boost: number;
+                mass: number;
+                minThrust: number;
+                pipSpeed: number;
+                pitch: number;
+                roll: number;
+                speed: number;
+                thrusters: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                yaw: number;
+            };
+        };
+        pipAllocation: {
+            expected: {
+                boost: number;
+                massCurveMultiplier: number;
+                pitch: number;
+                roll: number;
+                rotationMassCurveMultiplier: number;
+                speed: number;
+                yaw: number;
+            };
+            input: {
+                boost: number;
+                enginesPips: number;
+                mass: number;
+                minThrust: number;
+                pipSpeed: number;
+                pitch: number;
+                roll: number;
+                speed: number;
+                thrusters: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                yaw: number;
+            };
         };
         zeroPipRotation: {
             expected: {
@@ -3161,6 +3331,34 @@ type FixtureShipsOperations = {
             strength: number;
             systemsCapacity: number;
             systemsRecharge: number;
+        };
+        invalidStrength: {
+            expectedError: string;
+            input: {
+                brokenRegenRate: number;
+                distributorDraw: number;
+                regenRate: number;
+                strength: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+            };
+        };
+        pipAllocation: {
+            expected: {
+                brokenRegenRate: number;
+                recoveryTime: number;
+                regenRate: number;
+                regenTime: number;
+            };
+            input: {
+                brokenRegenRate: number;
+                distributorDraw: number;
+                regenRate: number;
+                strength: number;
+                systemsCapacity: number;
+                systemsPips: number;
+                systemsRecharge: number;
+            };
         };
     };
     slotRemoval: {
@@ -3499,6 +3697,10 @@ type FixtureShipsShipStats = {
         pitch: number;
         symbol: string;
     };
+    pipSpeedCorrections: {
+        pipSpeed: number;
+        symbol: string;
+    }[];
     pricedCount: number;
     prices: {
         hullCost: number;

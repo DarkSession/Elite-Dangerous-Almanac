@@ -99,16 +99,20 @@ test('enhanced thrusters use distinct speed and rotation curves', () => {
     assert.equal(result.rotationMassCurveMultiplier, 1.1);
 });
 
-test('mobility handles degenerate curves and validates pips', () => {
+test('mobility handles degenerate curves and validates physical inputs', () => {
+    const input = {
+        speed: 1,
+        boost: 1,
+        pitch: 1,
+        roll: 1,
+        yaw: 1,
+        minThrust: 0,
+        mass: 1,
+        thrusters,
+    };
     assert.equal(
         mobilityMetrics({
-            speed: 1,
-            boost: 1,
-            pitch: 1,
-            roll: 1,
-            yaw: 1,
-            minThrust: 0,
-            mass: 1,
+            ...input,
             thrusters: null,
         }),
         null,
@@ -118,24 +122,76 @@ test('mobility handles degenerate curves and validates pips', () => {
             minMass: 1,
             optMass: 1,
             maxMass: 1,
-            minMultiplier: 1,
+            minMultiplier: 1.2,
             optMultiplier: 1.2,
-            maxMultiplier: 1,
+            maxMultiplier: 1.2,
         }),
         1.2,
     );
+    assert.throws(() => mobilityMetrics({ ...input, enginesPips: 5 }), RangeError);
+    assert.throws(() => mobilityMetrics({ ...input, minThrust: 101 }), RangeError);
+    assert.throws(() => mobilityMetrics({ ...input, pipSpeed: 0.26 }), RangeError);
+    assert.throws(() => mobilityMetrics({ ...input, minPitch: 2 }), RangeError);
+    assert.throws(() => mobilityMetrics({ ...input, speed: -1 }), RangeError);
     assert.throws(
         () =>
-            mobilityMetrics({
-                speed: 1,
-                boost: 1,
-                pitch: 1,
-                roll: 1,
-                yaw: 1,
-                minThrust: 0,
-                mass: 1,
-                thrusters,
-                enginesPips: 5,
+            thrusterMassCurveMultiplier(-1, {
+                ...thrusters,
+            }),
+        RangeError,
+    );
+    assert.throws(
+        () =>
+            thrusterMassCurveMultiplier(1, {
+                ...thrusters,
+                minMass: 50,
+                optMass: 40,
+            }),
+        RangeError,
+    );
+    assert.throws(
+        () =>
+            thrusterMassCurveMultiplier(1, {
+                ...thrusters,
+                minMass: 48,
+            }),
+        RangeError,
+    );
+    assert.throws(
+        () =>
+            thrusterMassCurveMultiplier(1, {
+                ...thrusters,
+                optMass: 72,
+            }),
+        RangeError,
+    );
+    assert.throws(
+        () =>
+            thrusterMassCurveMultiplier(1, {
+                ...thrusters,
+                minMultiplier: -1,
+            }),
+        RangeError,
+    );
+    for (const multipliers of [
+        { minMultiplier: 1, optMultiplier: 1.2, maxMultiplier: 1 },
+        { minMultiplier: 0.8, optMultiplier: 0.8, maxMultiplier: 1.2 },
+        { minMultiplier: 0.8, optMultiplier: 1.2, maxMultiplier: 1.2 },
+    ]) {
+        assert.throws(
+            () => thrusterMassCurveMultiplier(1, { ...thrusters, ...multipliers }),
+            RangeError,
+        );
+    }
+    assert.throws(
+        () =>
+            thrusterMassCurveMultiplier(1, {
+                minMass: 1,
+                optMass: 1,
+                maxMass: 1,
+                minMultiplier: 1,
+                optMultiplier: 1.1,
+                maxMultiplier: 1.2,
             }),
         RangeError,
     );
