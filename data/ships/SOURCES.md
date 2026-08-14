@@ -47,23 +47,26 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   (`medium`) from Frontier's update notes and EDSY's `class:2` record.
 - **Stats derivation:** acquisition normalization looks up each hull's coriolis
   record by display name (normalized; coriolis "Viper" ⇒ registry "Viper MkIII") and
-  copies a fixed whitelist of `properties` fields (`hullMass`, `speed`, `boost`,
-  `baseArmour`, …). The repository's
+  copies a fixed whitelist of `properties` fields (`hullMass`, source `speed` as
+  `maximumSpeed`, `boost`, `baseArmour`, …). The repository's
   `scripts/data/ships/merge-normalized-catalogues.mjs` then performs the deterministic
   symbol join, preserving registry order and rejecting duplicate or unmatched input.
   Masses are tonnes, speeds m/s, rotation rates deg/s. The in-game hull audit below
-  overrides registry values where they disagree. Repeating `minThrust` readings are
-  rounded to the catalogue's existing three-decimal precision; repeating `pipSpeed`
-  readings are rounded to its existing 14-significant-digit precision.
-- **Diamondback ENG-pip handling is corrected from the source.** Coriolis-data commit
-  `b49cc405dceb3993fdc41e4a088de6fdb0510db4` transposes the Diamondback Scout and
-  Diamondback Explorer `pipSpeed` values: its Scout value
-  `0.096153846153846` is exactly `(1 - 61.538461538… / 100) / 4`, using the
-  Explorer's minimum thrust, while its Explorer value `0.098214285714286` is
-  exactly `(1 - 60.714285714… / 100) / 4`, using the Scout's. The immediately
-  preceding source values already have the opposite ordering. The stored values
-  therefore restore the hull-local pairing: Scout `0.098214285714286`, Explorer
-  `0.096153846153846`.
+  overrides registry values where they disagree.
+- **Speed is stored as installed endpoints.** A current-client hull audit recorded
+  2026-08-14 UTC supplies `minimumSpeed` and `maximumSpeed` directly for all 48 hulls.
+  The client's ratio values carry no independent information:
+  `minThrust = 100 * minimumSpeed / maximumSpeed` and
+  `pipSpeed = (maximumSpeed - minimumSpeed) / (4 * maximumSpeed)`. The ratios are
+  therefore not retained; reconstructing an endpoint from rounded ratios can disagree
+  with the installed whole-number value (the Lynx's `73.75%` ratio produces
+  `210.1875` m/s rather than its installed `210` m/s).
+- **Angular rates are stored as zero- and four-ENG-PIP endpoints.** The same current-client
+  audit supplies `minPitch`, `minRoll` and `minYaw` from each flight-default block. The
+  selected full-rate words come from the hull overrides; an exact `-1.0` override
+  sentinel selects the corresponding flight-default word. This structure holds for all
+  48 player hulls. EDSY's public handling implementation independently identifies these
+  minima as zero-ENG-PIP values and linearly interpolates each axis to its full rate.
 - **Installed English display names are taken verbatim from the game.** The in-game
   localisation audit recorded 2026-08-14 UTC replaces eight compact registry spellings:
 
@@ -92,13 +95,11 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   | `masslock`            | `Orca` 16→15; `Cutter` 27→26; `Viper_MkIV` 7→8; `Asp_Scout` 8→9; `Mandalay` 11→12; `PantherMkII` 27→25; `LakonMiner` 16→15; `Explorer_NX` 19→21; `SmallCombat01_NX` 10→11; `MediumTransport01` absent→16                                                                                                                                                                                                                                                                                                                                                                                                      |
   | `reserveFuelCapacity` | `Mandalay` 0.52→0.5; `PantherMkII` 1.16→1.11; `LakonMiner` 0.77→0.6; `SmallCombat01_NX` 0.57→0.61                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
   | `heatCapacity`        | `Dolphin` 165→245; `Python_NX` 316→260; `Type8` 226→236; `Mandalay` 250→245; `Corsair` 230→280; `PantherMkII` 250→329; `LakonMiner` 289→300; `Explorer_NX` 250→341; `SmallCombat01_NX` 237→263; `MediumTransport01` absent→279                                                                                                                                                                                                                                                                                                                                                                                |
-  | `speed`               | `Type9_Military` 179→180; `TypeX_3` 204→200; `CobraMkV` 291→290; `PantherMkII` 181→180; `LakonMiner` 272→270; `SmallCombat01_NX` 271→270                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+  | `maximumSpeed`        | `Type9_Military` 179→180; `TypeX_3` 204→200; `CobraMkV` 291→290; `PantherMkII` 181→180; `LakonMiner` 272→270; `SmallCombat01_NX` 271→270                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
   | `boost`               | `Type9_Military` 219→220; `CobraMkV` 412→410; `LakonMiner` 367→365                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
   | `pitch`               | `Type9_Military` 20→22; `Krait_MkII` 26→31; `TypeX` 39→38; `TypeX_3` 32→35; `Krait_Light` 26→31; `Mamba` 27→30; `Python_NX` 37.72→37; `CobraMkV` 45.61→45; `SmallCombat01_NX` 51.4→50                                                                                                                                                                                                                                                                                                                                                                                                                         |
   | `roll`                | `Type9_Military` 20→40; `TypeX` 92→90; `Mamba` 80→75; `Python_NX` 92.76→91; `CobraMkV` 121.62→120; `SmallCombat01_NX` 123.36→120                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
   | `yaw`                 | `Python_NX` 12.74→12.5; `CobraMkV` 33.45→33; `SmallCombat01_NX` 24.67→24                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-  | `minThrust`           | `Krait_MkII` 62.3→62.5; `TypeX_2` 61.11→61.111; `Python_NX` 85.75→85.938; `Mandalay` 71.5→71.429; `CobraMkV` 79→79.31; `Corsair` 65→64.286; `PantherMkII` 33.3→33.333; `LakonMiner` 70.5→70.37; `Explorer_NX` 76→76.19; `SmallCombat01_NX` 89→88.889; `MediumTransport01` 73.75→73.684                                                                                                                                                                                                                                                                                                                        |
-  | `pipSpeed`            | `DiamondBack` 0.096153846153846→0.098214285714286; `DiamondBackXL` 0.098214285714286→0.096153846153846; `TypeX_2` 0.15833333333333→0.097222222222222; `TypeX_3` 0.088709677419355→0.0875; `Python_NX` 0.097826086956522→0.03515625; `Type8` 0.16666666666667→0.1375; `Mandalay` 0.16666666666667→0.071428571428571; `CobraMkV` 0.125→0.051724137931034; `Corsair` 0.053571428571429→0.089285714285714; `LakonMiner` 0.17307692307692→0.074074074074074; `Explorer_NX` 0.16666666666667→0.05952380952381; `SmallCombat01_NX` 0.023809523809524→0.027777777777778; `MediumTransport01` absent→0.065789473684211 |
 
 - **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
   the seven named `core` sizes (power plant, thrusters, frame shift drive, life
@@ -285,15 +286,13 @@ slots are outside the hull layout.
   73.75%; core PP5/thr6/FSD5/LS6/dist5/sen3/tank5; hardpoints 1 large + 4 medium;
   4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
   options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
-  records). EDSY's zero-ENG-pip pitch rate of 23 deg/s is stored as `minPitch`; its
-  source record does not independently specify minimum roll or yaw. A maintainer
-  in-game audit recorded 2026-08-14 UTC supplies `masslock: 16`, `heatCapacity: 279`,
-  `minThrust: 73.684` and `pipSpeed: 0.065789473684211`. These values are not sourced
-  from EDSY; no immutable game revision or retained capture is available, and the
-  readings are stored at catalogue precision.
-  The explicit pitch minimum takes precedence for that axis, while `pipSpeed` supplies
-  roll and yaw handling below four pips. Values the static catalogue does not expose are
-  omitted rather than invented: acceleration and the boost-energy figures.
+  records). EDSY independently gives the 23 deg/s zero-ENG-PIP pitch rate. A maintainer
+  current-client audit recorded 2026-08-14 UTC supplies `masslock: 16`,
+  `heatCapacity: 279`, the installed `minimumSpeed: 210` / `maximumSpeed: 285` pair,
+  and the complete angular endpoints `23/26` pitch, `60/60` roll and `19/19` yaw. These
+  client readings have no immutable game revision or retained capture. Values the
+  static catalogue does not expose are omitted rather than invented: acceleration and
+  the boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
   the names `Passenger01`–`Passenger03`, sourced above. A final size-1
   `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from

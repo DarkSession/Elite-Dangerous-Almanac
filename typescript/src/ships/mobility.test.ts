@@ -21,13 +21,15 @@ test('the thruster curve passes through all three declared points', () => {
 
 test('mobility scales speed, boost and handling by loaded mass and ENG pips', () => {
     const four = mobilityMetrics({
-        speed: 220,
+        minimumSpeed: 100,
+        maximumSpeed: 220,
         boost: 320,
+        minPitch: 34,
         pitch: 42,
+        minRoll: 110,
         roll: 110,
+        minYaw: 16,
         yaw: 16,
-        minThrust: 45.454,
-        pipSpeed: 0.13636363636364,
         mass: 48,
         thrusters,
     });
@@ -42,30 +44,35 @@ test('mobility scales speed, boost and handling by loaded mass and ENG pips', ()
     });
 
     const two = mobilityMetrics({
-        speed: 220,
+        minimumSpeed: 100,
+        maximumSpeed: 220,
         boost: 320,
+        minPitch: 34,
         pitch: 42,
+        minRoll: 110,
         roll: 110,
+        minYaw: 16,
         yaw: 16,
-        minThrust: 45.454,
-        pipSpeed: 0.13636363636364,
         mass: 48,
         thrusters,
         enginesPips: 2,
     });
-    assert.ok(Math.abs(two.speed - 159.9994) < 1e-4);
+    assert.equal(two.speed, 160);
     assert.equal(two.boost, 320);
-    assert.ok(Math.abs(two.pitch - 30.54545454545424) < 1e-10);
+    assert.equal(two.pitch, 38);
 });
 
 test('enhanced thrusters use distinct speed and rotation curves', () => {
     const result = mobilityMetrics({
-        speed: 200,
+        minimumSpeed: 80,
+        maximumSpeed: 200,
         boost: 300,
+        minPitch: 16,
         pitch: 40,
+        minRoll: 40,
         roll: 100,
+        minYaw: 8,
         yaw: 20,
-        minThrust: 40,
         mass: 90,
         thrusters: {
             minMass: 70,
@@ -101,12 +108,15 @@ test('enhanced thrusters use distinct speed and rotation curves', () => {
 
 test('mobility handles degenerate curves and validates physical inputs', () => {
     const input = {
-        speed: 1,
+        minimumSpeed: 0,
+        maximumSpeed: 1,
         boost: 1,
+        minPitch: 0,
         pitch: 1,
+        minRoll: 0,
         roll: 1,
+        minYaw: 0,
         yaw: 1,
-        minThrust: 0,
         mass: 1,
         thrusters,
     };
@@ -129,10 +139,12 @@ test('mobility handles degenerate curves and validates physical inputs', () => {
         1.2,
     );
     assert.throws(() => mobilityMetrics({ ...input, enginesPips: 5 }), RangeError);
-    assert.throws(() => mobilityMetrics({ ...input, minThrust: 101 }), RangeError);
-    assert.throws(() => mobilityMetrics({ ...input, pipSpeed: 0.26 }), RangeError);
+    assert.throws(
+        () => mobilityMetrics({ ...input, minimumSpeed: 2, maximumSpeed: 1 }),
+        RangeError,
+    );
     assert.throws(() => mobilityMetrics({ ...input, minPitch: 2 }), RangeError);
-    assert.throws(() => mobilityMetrics({ ...input, speed: -1 }), RangeError);
+    assert.throws(() => mobilityMetrics({ ...input, maximumSpeed: -1 }), RangeError);
     assert.throws(
         () =>
             thrusterMassCurveMultiplier(-1, {
