@@ -2,8 +2,8 @@
  * Shared test fixture — not shipped in any package.
  *
  * Parity fixture for the stat fields merged into data/ships/ships.jsonc. The in-game
- * corrections and installed speed/angular-rate endpoints pin readings recorded
- * 2026-08-14 UTC; no retained capture or immutable game revision is available.
+ * corrections and installed speed/angular-rate endpoints pin Elite Dangerous 4.4.0.3
+ * readings recorded 2026-08-14 UTC; no retained capture is available.
  * Cross-language validation.
  */
 {
