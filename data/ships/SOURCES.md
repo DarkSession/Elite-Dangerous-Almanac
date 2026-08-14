@@ -15,7 +15,7 @@ Referred to throughout by source name; the pin is here, once.
 | Odyssey Materials Helper CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
 | EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
 | msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
-| Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; observed in-game with no retained capture; reproducible evidence is tracked in [#254](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/254)                                                           | 2026-08-14 UTC |
+| Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                         | 2026-08-14 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -88,9 +88,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
 
 - **In-game hull-stat audit corrections.** Live game readings from Elite Dangerous
   `4.4.0.3`, recorded 2026-08-14 UTC, govern the following registry disagreements and
-  omissions. No retained capture is available; values are copied directly, subject only
-  to the established numeric precision described above. Retaining reproducible evidence
-  is tracked in [#254](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/254).
+  omissions. Values are transcribed directly, subject only to the established numeric
+  precision described above.
 
   | Field                 | Registry value → stored game value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
   | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -111,8 +110,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   EDSY `eddb.js` `ship[…].heatdismax` from the pinned snapshot, joined by
   case-insensitive `fdname` / `symbol`. A complete maintainer-supplied thermal audit
   from Elite Dangerous `4.4.0.3`, recorded 2026-08-14 UTC, governs all 48 values and
-  supplies the nine corrections and omissions listed above; it has no retained capture,
-  with reproducible evidence tracked in #254. The other 39 values agree with EDSY exactly.
+  supplies the nine corrections and omissions listed above. The other 39 values agree
+  with EDSY exactly.
   Each value is the load in thermal-load units per second shed at heat level 1. The
   stored catalogue range is Hauler `16.2` through Cutter `72.58`.
 
@@ -305,11 +304,8 @@ slots are outside the hull layout.
   Elite Dangerous `4.4.0.3` game audit recorded 2026-08-14 UTC supplies `masslock: 16`,
   `heatCapacity: 279`, `heatDissipation: 49.35`, the installed `minimumSpeed: 210` /
   `maximumSpeed: 285` pair, and the complete angular endpoints `23/26` pitch, `60/60`
-  roll and `19/19` yaw. These game readings have no retained capture; reproducible
-  evidence is tracked in
-  [#254](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/254). Values the
-  static catalogue does not expose are omitted rather than invented: acceleration and
-  the boost-energy figures.
+  roll and `19/19` yaw. Values the static catalogue does not expose are omitted rather
+  than invented: acceleration and the boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
   the names `Passenger01`–`Passenger03`, sourced above. A final size-1
   `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from
