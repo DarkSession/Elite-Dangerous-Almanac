@@ -3247,14 +3247,28 @@ type FixtureShipsOperations = {
             options: {
                 fuel: number;
             };
+            partialCapacityLoadout: {
+                FuelCapacity: {
+                    Main: number;
+                };
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+                UnladenMass: number;
+            };
         };
         input: {
             boost: number;
             mass: number;
-            minThrust: number;
+            maximumSpeed: number;
+            minPitch: number;
+            minRoll: number;
+            minYaw: number;
+            minimumSpeed: number;
             pitch: number;
             roll: number;
-            speed: number;
             thrusters: {
                 maxMass: number;
                 maxMultiplier: number;
@@ -3281,16 +3295,18 @@ type FixtureShipsOperations = {
             };
             yaw: number;
         };
-        invalidPipSpeed: {
+        invalidSpeedEndpoints: {
             expectedError: string;
             input: {
                 boost: number;
                 mass: number;
-                minThrust: number;
-                pipSpeed: number;
+                maximumSpeed: number;
+                minPitch: number;
+                minRoll: number;
+                minYaw: number;
+                minimumSpeed: number;
                 pitch: number;
                 roll: number;
-                speed: number;
                 thrusters: {
                     maxMass: number;
                     maxMultiplier: number;
@@ -3316,11 +3332,13 @@ type FixtureShipsOperations = {
                 boost: number;
                 enginesPips: number;
                 mass: number;
-                minThrust: number;
-                pipSpeed: number;
+                maximumSpeed: number;
+                minPitch: number;
+                minRoll: number;
+                minYaw: number;
+                minimumSpeed: number;
                 pitch: number;
                 roll: number;
-                speed: number;
                 thrusters: {
                     maxMass: number;
                     maxMultiplier: number;
@@ -3346,12 +3364,13 @@ type FixtureShipsOperations = {
                 boost: number;
                 enginesPips: number;
                 mass: number;
+                maximumSpeed: number;
                 minPitch: number;
-                minThrust: number;
-                pipSpeed: number;
+                minRoll: number;
+                minYaw: number;
+                minimumSpeed: number;
                 pitch: number;
                 roll: number;
-                speed: number;
                 thrusters: {
                     maxMass: number;
                     maxMultiplier: number;
@@ -3362,6 +3381,8 @@ type FixtureShipsOperations = {
                 };
                 yaw: number;
             };
+            pitchSequence: number[];
+            speedSequence: number[];
         };
     };
     moduleLimits: {
@@ -3809,29 +3830,31 @@ type FixtureShipsShipStats = {
         boost?: number;
         heatCapacity?: number;
         masslock?: number;
-        minThrust?: number;
-        pipSpeed?: number;
+        maximumSpeed?: number;
         pitch?: number;
         reserveFuelCapacity?: number;
         roll?: number;
-        speed?: number;
         symbol: string;
         yaw?: number;
-    }[];
-    minimumRotation: {
-        minPitch: number;
-        pipSpeed: number;
-        pitch: number;
-        symbol: string;
-    };
-    pipSpeedCorrections: {
-        pipSpeed: number;
-        symbol: string;
     }[];
     pricedCount: number;
     prices: {
         hullCost: number;
         retailCost: number;
+        symbol: string;
+    }[];
+    rotationEndpoints: {
+        minPitch: number;
+        minRoll: number;
+        minYaw: number;
+        pitch: number;
+        roll: number;
+        symbol: string;
+        yaw: number;
+    }[];
+    speedEndpoints: {
+        maximumSpeed: number;
+        minimumSpeed: number;
         symbol: string;
     }[];
     spot: {
@@ -3844,12 +3867,14 @@ type FixtureShipsShipStats = {
         heatDissipation: number;
         hullMass: number;
         masslock: number;
-        minThrust: number;
-        pipSpeed: number;
+        maximumSpeed: number;
+        minPitch: number;
+        minRoll: number;
+        minYaw: number;
+        minimumSpeed: number;
         pitch: number;
         reserveFuelCapacity: number;
         roll: number;
-        speed: number;
         symbol: string;
         yaw: number;
     }[];

@@ -308,7 +308,7 @@ test('thrusters the plant stops feeding once the hardpoints are out make no heat
     );
 });
 
-test('unresolved modules are named, and make every figure a lower bound', () => {
+test('unresolved modules are named, and make the figures a projection over the rest', () => {
     assert.deepEqual(heatMetrics(INPUT).unknownDraws, []);
     const incomplete = heatMetrics({ ...INPUT, unknownDraws: ['Slot01_Size7', 'HugeHardpoint1'] });
     assert.deepEqual(incomplete.unknownDraws, ['Slot01_Size7', 'HugeHardpoint1']);

@@ -4516,6 +4516,22 @@
                   "additionalProperties": false,
                   "properties": { "fuel": { "type": "integer" } },
                   "required": ["fuel"]
+                },
+                "partialCapacityLoadout": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "FuelCapacity": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": { "Main": { "type": "integer" } },
+                      "required": ["Main"]
+                    },
+                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
+                    "Ship": { "type": "string" },
+                    "UnladenMass": { "type": "integer" }
+                  },
+                  "required": ["FuelCapacity", "Modules", "Ship", "UnladenMass"]
                 }
               },
               "required": [
@@ -4523,7 +4539,8 @@
                 "invalidLoads",
                 "loadout",
                 "omittedFuelFails",
-                "options"
+                "options",
+                "partialCapacityLoadout"
               ]
             },
             "input": {
@@ -4532,10 +4549,13 @@
               "properties": {
                 "boost": { "type": "integer" },
                 "mass": { "type": "integer" },
-                "minThrust": { "type": "integer" },
+                "maximumSpeed": { "type": "integer" },
+                "minPitch": { "type": "integer" },
+                "minRoll": { "type": "integer" },
+                "minYaw": { "type": "integer" },
+                "minimumSpeed": { "type": "integer" },
                 "pitch": { "type": "integer" },
                 "roll": { "type": "integer" },
-                "speed": { "type": "integer" },
                 "thrusters": {
                   "type": "object",
                   "additionalProperties": false,
@@ -4567,15 +4587,18 @@
               "required": [
                 "boost",
                 "mass",
-                "minThrust",
+                "maximumSpeed",
+                "minPitch",
+                "minRoll",
+                "minYaw",
+                "minimumSpeed",
                 "pitch",
                 "roll",
-                "speed",
                 "thrusters",
                 "yaw"
               ]
             },
-            "invalidPipSpeed": {
+            "invalidSpeedEndpoints": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
@@ -4586,22 +4609,26 @@
                   "properties": {
                     "boost": { "type": "integer" },
                     "mass": { "type": "integer" },
-                    "minThrust": { "type": "integer" },
-                    "pipSpeed": { "type": "number" },
+                    "maximumSpeed": { "type": "integer" },
+                    "minPitch": { "type": "integer" },
+                    "minRoll": { "type": "integer" },
+                    "minYaw": { "type": "integer" },
+                    "minimumSpeed": { "type": "integer" },
                     "pitch": { "type": "integer" },
                     "roll": { "type": "integer" },
-                    "speed": { "type": "integer" },
                     "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
                     "yaw": { "type": "integer" }
                   },
                   "required": [
                     "boost",
                     "mass",
-                    "minThrust",
-                    "pipSpeed",
+                    "maximumSpeed",
+                    "minPitch",
+                    "minRoll",
+                    "minYaw",
+                    "minimumSpeed",
                     "pitch",
                     "roll",
-                    "speed",
                     "thrusters",
                     "yaw"
                   ]
@@ -4613,56 +4640,8 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "expected": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "boost": { "type": "integer" },
-                    "massCurveMultiplier": { "type": "integer" },
-                    "pitch": { "type": "integer" },
-                    "roll": { "type": "integer" },
-                    "rotationMassCurveMultiplier": { "type": "integer" },
-                    "speed": { "type": "integer" },
-                    "yaw": { "type": "integer" }
-                  },
-                  "required": [
-                    "boost",
-                    "massCurveMultiplier",
-                    "pitch",
-                    "roll",
-                    "rotationMassCurveMultiplier",
-                    "speed",
-                    "yaw"
-                  ]
-                },
-                "input": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "boost": { "type": "integer" },
-                    "enginesPips": { "type": "integer" },
-                    "mass": { "type": "integer" },
-                    "minThrust": { "type": "integer" },
-                    "pipSpeed": { "type": "number" },
-                    "pitch": { "type": "integer" },
-                    "roll": { "type": "integer" },
-                    "speed": { "type": "integer" },
-                    "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
-                    "yaw": { "type": "integer" }
-                  },
-                  "required": [
-                    "boost",
-                    "enginesPips",
-                    "mass",
-                    "minThrust",
-                    "pipSpeed",
-                    "pitch",
-                    "roll",
-                    "speed",
-                    "thrusters",
-                    "yaw"
-                  ]
-                }
+                "expected": { "$ref": "#/definitions/shared32f1a07b036c" },
+                "input": { "$ref": "#/definitions/shared69f6e4968c70" }
               },
               "required": ["expected", "input"]
             },
@@ -4670,67 +4649,30 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "expected": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "boost": { "type": "integer" },
-                    "massCurveMultiplier": { "type": "integer" },
-                    "pitch": { "type": "integer" },
-                    "roll": { "type": "number" },
-                    "rotationMassCurveMultiplier": { "type": "integer" },
-                    "speed": { "type": "number" },
-                    "yaw": { "type": "number" }
-                  },
-                  "required": [
-                    "boost",
-                    "massCurveMultiplier",
-                    "pitch",
-                    "roll",
-                    "rotationMassCurveMultiplier",
-                    "speed",
-                    "yaw"
-                  ]
+                "expected": { "$ref": "#/definitions/shared32f1a07b036c" },
+                "input": { "$ref": "#/definitions/shared69f6e4968c70" },
+                "pitchSequence": {
+                  "type": "array",
+                  "items": { "type": "number" }
                 },
-                "input": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "boost": { "type": "integer" },
-                    "enginesPips": { "type": "integer" },
-                    "mass": { "type": "integer" },
-                    "minPitch": { "type": "integer" },
-                    "minThrust": { "type": "number" },
-                    "pipSpeed": { "type": "number" },
-                    "pitch": { "type": "integer" },
-                    "roll": { "type": "integer" },
-                    "speed": { "type": "integer" },
-                    "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
-                    "yaw": { "type": "integer" }
-                  },
-                  "required": [
-                    "boost",
-                    "enginesPips",
-                    "mass",
-                    "minPitch",
-                    "minThrust",
-                    "pipSpeed",
-                    "pitch",
-                    "roll",
-                    "speed",
-                    "thrusters",
-                    "yaw"
-                  ]
+                "speedSequence": {
+                  "type": "array",
+                  "items": { "type": "number" }
                 }
               },
-              "required": ["expected", "input"]
+              "required": [
+                "expected",
+                "input",
+                "pitchSequence",
+                "speedSequence"
+              ]
             }
           },
           "required": [
             "expected",
             "facadeExplicitFuel",
             "input",
-            "invalidPipSpeed",
+            "invalidSpeedEndpoints",
             "pipAllocation",
             "zeroPipRotation"
           ]
@@ -5767,39 +5709,14 @@
               "boost": { "type": "integer" },
               "heatCapacity": { "type": "integer" },
               "masslock": { "type": "integer" },
-              "minThrust": { "type": "number" },
-              "pipSpeed": { "type": "number" },
+              "maximumSpeed": { "type": "integer" },
               "pitch": { "type": "integer" },
               "reserveFuelCapacity": { "type": "number" },
               "roll": { "type": "integer" },
-              "speed": { "type": "integer" },
               "symbol": { "type": "string" },
               "yaw": { "type": "number" }
             },
             "required": ["symbol"]
-          }
-        },
-        "minimumRotation": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "minPitch": { "type": "integer" },
-            "pipSpeed": { "type": "number" },
-            "pitch": { "type": "integer" },
-            "symbol": { "type": "string" }
-          },
-          "required": ["minPitch", "pipSpeed", "pitch", "symbol"]
-        },
-        "pipSpeedCorrections": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "pipSpeed": { "type": "number" },
-              "symbol": { "type": "string" }
-            },
-            "required": ["pipSpeed", "symbol"]
           }
         },
         "pricedCount": { "type": "integer" },
@@ -5814,6 +5731,44 @@
               "symbol": { "type": "string" }
             },
             "required": ["hullCost", "retailCost", "symbol"]
+          }
+        },
+        "rotationEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "minPitch": { "type": "integer" },
+              "minRoll": { "type": "number" },
+              "minYaw": { "type": "number" },
+              "pitch": { "type": "integer" },
+              "roll": { "type": "number" },
+              "symbol": { "type": "string" },
+              "yaw": { "type": "number" }
+            },
+            "required": [
+              "minPitch",
+              "minRoll",
+              "minYaw",
+              "pitch",
+              "roll",
+              "symbol",
+              "yaw"
+            ]
+          }
+        },
+        "speedEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "maximumSpeed": { "type": "integer" },
+              "minimumSpeed": { "type": "integer" },
+              "symbol": { "type": "string" }
+            },
+            "required": ["maximumSpeed", "minimumSpeed", "symbol"]
           }
         },
         "spot": {
@@ -5831,12 +5786,14 @@
               "heatDissipation": { "type": "number" },
               "hullMass": { "type": "integer" },
               "masslock": { "type": "integer" },
-              "minThrust": { "type": "number" },
-              "pipSpeed": { "type": "number" },
+              "maximumSpeed": { "type": "integer" },
+              "minPitch": { "type": "integer" },
+              "minRoll": { "type": "integer" },
+              "minYaw": { "type": "integer" },
+              "minimumSpeed": { "type": "integer" },
               "pitch": { "type": "integer" },
               "reserveFuelCapacity": { "type": "number" },
               "roll": { "type": "integer" },
-              "speed": { "type": "integer" },
               "symbol": { "type": "string" },
               "yaw": { "type": "integer" }
             },
@@ -5850,12 +5807,14 @@
               "heatDissipation",
               "hullMass",
               "masslock",
-              "minThrust",
-              "pipSpeed",
+              "maximumSpeed",
+              "minPitch",
+              "minRoll",
+              "minYaw",
+              "minimumSpeed",
               "pitch",
               "reserveFuelCapacity",
               "roll",
-              "speed",
               "symbol",
               "yaw"
             ]
@@ -5866,10 +5825,10 @@
         "count",
         "heatDissipation",
         "inGameCorrections",
-        "minimumRotation",
-        "pipSpeedCorrections",
         "pricedCount",
         "prices",
+        "rotationEndpoints",
+        "speedEndpoints",
         "spot"
       ]
     },
@@ -7189,6 +7148,28 @@
       },
       "required": ["MaxJumpRange", "UnladenMass", "note"]
     },
+    "shared32f1a07b036c": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "boost": { "type": "integer" },
+        "massCurveMultiplier": { "type": "integer" },
+        "pitch": { "type": "integer" },
+        "roll": { "type": "integer" },
+        "rotationMassCurveMultiplier": { "type": "integer" },
+        "speed": { "type": "integer" },
+        "yaw": { "type": "integer" }
+      },
+      "required": [
+        "boost",
+        "massCurveMultiplier",
+        "pitch",
+        "roll",
+        "rotationMassCurveMultiplier",
+        "speed",
+        "yaw"
+      ]
+    },
     "shared34f9a7d23a34": {
       "type": "object",
       "additionalProperties": false,
@@ -7348,6 +7329,38 @@
         "optMass": { "type": "integer" }
       },
       "required": ["fuelMul", "fuelPower", "jumpBoost", "maxFuel", "optMass"]
+    },
+    "shared69f6e4968c70": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "boost": { "type": "integer" },
+        "enginesPips": { "type": "integer" },
+        "mass": { "type": "integer" },
+        "maximumSpeed": { "type": "integer" },
+        "minPitch": { "type": "integer" },
+        "minRoll": { "type": "integer" },
+        "minYaw": { "type": "integer" },
+        "minimumSpeed": { "type": "integer" },
+        "pitch": { "type": "integer" },
+        "roll": { "type": "integer" },
+        "thrusters": { "$ref": "#/definitions/sharedd2bae3acb8dc" },
+        "yaw": { "type": "integer" }
+      },
+      "required": [
+        "boost",
+        "enginesPips",
+        "mass",
+        "maximumSpeed",
+        "minPitch",
+        "minRoll",
+        "minYaw",
+        "minimumSpeed",
+        "pitch",
+        "roll",
+        "thrusters",
+        "yaw"
+      ]
     },
     "shared7481e15ca29a": {
       "type": "object",

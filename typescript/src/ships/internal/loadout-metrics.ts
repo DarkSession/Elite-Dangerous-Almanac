@@ -513,16 +513,15 @@ export function mobilityInputFor(
     }
     if (!thrusters) return null;
     return {
-        speed: hull.speed,
+        minimumSpeed: hull.minimumSpeed,
+        maximumSpeed: hull.maximumSpeed,
         boost: hull.boost,
+        minPitch: hull.minPitch,
         pitch: hull.pitch,
-        ...(hull.minPitch === undefined ? {} : { minPitch: hull.minPitch }),
+        minRoll: hull.minRoll,
         roll: hull.roll,
-        ...(hull.minRoll === undefined ? {} : { minRoll: hull.minRoll }),
+        minYaw: hull.minYaw,
         yaw: hull.yaw,
-        ...(hull.minYaw === undefined ? {} : { minYaw: hull.minYaw }),
-        minThrust: hull.minThrust,
-        ...(hull.pipSpeed === undefined ? {} : { pipSpeed: hull.pipSpeed }),
         mass: typeof mass === 'function' ? mass() : mass,
         thrusters,
         enginesPips,
@@ -666,9 +665,12 @@ function poweredDraw(budget: PowerBudget, state: 'retracted' | 'deployed'): numb
  * with them out.
  *
  * A module that asks for no power depends on no priority group and always runs. One
- * whose draw the catalogue cannot supply is taken as running too: it is named in
- * {@link PowerBudget.unknownDraws}, and dropping its heat silently would be the
- * opposite of the lower bound that list promises.
+ * whose draw the catalogue cannot supply is taken as running too — it is named in
+ * {@link PowerBudget.unknownDraws} rather than silently dropped, and
+ * {@link HeatMetrics.unknownDraws} carries that forward as the reason the profile is a
+ * projection over the modules that did resolve. Its absence from the band totals is
+ * also why the answer here can be optimistic: the groups below an unknown draw read as
+ * powered when the real plant might shed them.
  */
 function poweredStates(
     module: LoadoutModule,

@@ -114,17 +114,18 @@ test('47 of the 48 hulls carry a heat-dissipation figure', () => {
     }
 });
 
-test('the Lynx carries its independently sourced ENG-pip handling values', () => {
-    const expected = statsFixture.minimumRotation;
-    const ship = getShipBySymbol(expected.symbol);
-    assert.ok(ship);
-    assert.deepEqual(project(ship, expected), expected);
+test('every hull carries its installed minimum and maximum speed endpoints', () => {
+    for (const expected of statsFixture.speedEndpoints) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship, `missing ${expected.symbol}`);
+        assert.deepEqual(project(ship, expected), expected);
+    }
 });
 
-test('the Diamondbacks carry their corrected hull-local ENG-pip handling values', () => {
-    for (const expected of statsFixture.pipSpeedCorrections) {
+test('every hull carries its installed minimum and full angular-rate endpoints', () => {
+    for (const expected of statsFixture.rotationEndpoints) {
         const ship = getShipBySymbol(expected.symbol);
-        assert.ok(ship);
+        assert.ok(ship, `missing ${expected.symbol}`);
         assert.deepEqual(project(ship, expected), expected);
     }
 });

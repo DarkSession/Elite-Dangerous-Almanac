@@ -210,10 +210,8 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     const lynxZeroPips = lynx.mobilityMetrics({ enginesPips: 0 })!;
     assert.ok(lynxZeroPips.pitch < lynxFourPips.pitch);
     assert.ok(near(lynxZeroPips.pitch / lynxFourPips.pitch, 23 / 26));
-    const lynxPipSpeed = SHIPS.find((ship) => ship.symbol === 'MediumTransport01')!.pipSpeed!;
-    const lynxZeroPipRatio = 1 - 4 * lynxPipSpeed;
-    assert.ok(near(lynxZeroPips.roll / lynxFourPips.roll, lynxZeroPipRatio));
-    assert.ok(near(lynxZeroPips.yaw / lynxFourPips.yaw, lynxZeroPipRatio));
+    assert.equal(lynxZeroPips.roll, lynxFourPips.roll);
+    assert.equal(lynxZeroPips.yaw, lynxFourPips.yaw);
 
     const tuned = ShipLoadout.fromSlef(slefString);
     const fittedThrusters = tuned.fittedModuleAt('MainEngines')!;
@@ -226,19 +224,17 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(
         near(effectiveThrusters.maxMultiplier!, baseThrusters.maxMultiplier! * performanceRatio),
     );
-    const tunedFuel = tuned.fuelCapacity!;
-    assert.ok(
-        near(
-            tuned.mobilityMetrics()!.massCurveMultiplier,
-            thrusterMassCurveMultiplier(tuned.unladenMass! + tunedFuel.main + tunedFuel.reserve, {
-                minMass: effectiveThrusters.minMass!,
-                optMass: effectiveThrusters.optMass!,
-                maxMass: effectiveThrusters.maxMass!,
-                minMultiplier: effectiveThrusters.minMultiplier!,
-                optMultiplier: effectiveThrusters.optMultiplier!,
-                maxMultiplier: effectiveThrusters.maxMultiplier!,
-            }),
-        ),
+    const tunedMainFuel = tuned.fuelCapacity!.main;
+    assert.equal(
+        tuned.mobilityMetrics()!.massCurveMultiplier,
+        thrusterMassCurveMultiplier(tuned.unladenMass! + tunedMainFuel, {
+            minMass: effectiveThrusters.minMass!,
+            optMass: effectiveThrusters.optMass!,
+            maxMass: effectiveThrusters.maxMass!,
+            minMultiplier: effectiveThrusters.minMultiplier!,
+            optMultiplier: effectiveThrusters.optMultiplier!,
+            maxMultiplier: effectiveThrusters.maxMultiplier!,
+        }),
     );
 
     const recovery = stock.shieldRecovery();
@@ -266,7 +262,7 @@ test('mobility returns null before requiring mass when no thrusters are fitted',
     assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), RangeError);
 });
 
-test('explicit mobility fuel does not require an unknown main-tank capacity', () => {
+test('explicit mobility fuel needs no tank capacity and excludes reserve mass', () => {
     const fixture = operationsFixture.mobility.facadeExplicitFuel;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
     assert.equal(build.fuelCapacity, null);
@@ -281,6 +277,17 @@ test('explicit mobility fuel does not require an unknown main-tank capacity', ()
         assert.throws(() => build.mobilityMetrics(invalid.options), {
             name: invalid.expectedError,
         });
+    }
+
+    const partial = ShipLoadout.fromLoadout(
+        fixture.partialCapacityLoadout as unknown as LoadoutEvent,
+    );
+    assert.equal(partial.fuelCapacity, null);
+    // At this fixture's mass, using `Main: 2` produces 1.0580855; dropping the fuel
+    // term would clamp the curve to 1.06 and fail the expected metrics below.
+    const partialMetrics = partial.mobilityMetrics()!;
+    for (const [field, expected] of Object.entries(fixture.expected)) {
+        assert.ok(near(partialMetrics[field as keyof typeof partialMetrics], expected), field);
     }
 });
 
@@ -2433,6 +2440,38 @@ const offensePanelTotals = (build: ShipLoadout) => ({
     ),
 });
 
+test('all ten panel-audited builds reproduce their observed angular rates', () => {
+    const cases = [
+        ['beam Corvette', corvetteBeamsJournal, metrics.inGame.federalCorvetteBeams],
+        ['Cobra Mk V', cobraMkVJournal, metrics.inGame.cobraMkV],
+        ['Kestrel Mk II', kestrelMkIIJournal, metrics.inGame.kestrelMkII],
+        ['The Deep Black', deepBlackJournal, metrics.inGame.deepBlack],
+        ['Rescue', lynxRescueJournal, metrics.inGame.rescue],
+        ['Rescue 01', lynxJournal, metrics.inGame.rescue01],
+        ['Fat Arse', pantherJournal, metrics.inGame.fatArse],
+        ['The Fixer', corsairJournal, metrics.inGame.theFixer],
+        ['Spire Ops', spireOpsJournal, metrics.inGame.spireOps],
+        ['Slapaconda', slapacondaJournal, metrics.inGame.slapaconda],
+    ] as const;
+
+    // The panel reports hundredths of a degree per second. Excluding reserve fuel puts
+    // all 30 residuals within the half-hundredth rounding interval; the closest is Cobra
+    // roll at 0.00491884°/s. Including reserve puts 21 outside it, with Cobra and Kestrel
+    // roll the largest misses at 0.06348252°/s and 0.05896712°/s.
+    const tolerance = 0.005;
+    for (const [name, event, expected] of cases) {
+        const actual = ShipLoadout.fromLoadout(event as LoadoutEvent).mobilityMetrics();
+        assert.ok(actual, `${name}: missing mobility metrics`);
+        for (const axis of ['pitch', 'roll', 'yaw'] as const) {
+            const difference = Math.abs(actual[axis] - expected.speed[axis]);
+            assert.ok(
+                difference <= tolerance,
+                `${name} ${axis}: calculated ${actual[axis]}, observed ${expected.speed[axis]}`,
+            );
+        }
+    }
+});
+
 test('the beam Corvette reproduces the externally observed in-game build totals', () => {
     const expected = metrics.inGame.federalCorvetteBeams;
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
@@ -2629,9 +2668,6 @@ test('The Deep Black reproduces every observed calculated total', () => {
     const mobility = build.mobilityMetrics()!;
     assert.equal(displayed(mobility.speed, 0), expected.speed.top);
     assert.equal(displayed(mobility.boost, 0), expected.speed.boost);
-    assert.ok(Math.abs(mobility.pitch - expected.speed.pitch) <= 0.05);
-    assert.ok(Math.abs(mobility.roll - expected.speed.roll) <= 0.05);
-    assert.ok(Math.abs(mobility.yaw - expected.speed.yaw) <= 0.05);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);

@@ -25,6 +25,18 @@ test('shared ship-operation cases reproduce across public calculations', () => {
             field,
         );
     }
+    const lynxSequence = Array.from({ length: 5 }, (_, enginesPips) =>
+        mobilityMetrics({ ...fixture.mobility.zeroPipRotation.input, enginesPips }),
+    );
+    assert.deepEqual(
+        lynxSequence.map(({ speed }) => speed),
+        fixture.mobility.zeroPipRotation.speedSequence,
+    );
+    assert.deepEqual(
+        lynxSequence.map(({ pitch }) => pitch),
+        fixture.mobility.zeroPipRotation.pitchSequence,
+    );
+    assert.ok(lynxSequence.every(({ roll, yaw }) => roll === 60 && yaw === 19));
     const pipAllocation = mobilityMetrics(fixture.mobility.pipAllocation.input);
     for (const [field, expected] of Object.entries(fixture.mobility.pipAllocation.expected)) {
         assert.ok(
@@ -40,8 +52,8 @@ test('shared ship-operation cases reproduce across public calculations', () => {
             field,
         );
     }
-    assert.throws(() => mobilityMetrics(fixture.mobility.invalidPipSpeed.input), {
-        name: fixture.mobility.invalidPipSpeed.expectedError,
+    assert.throws(() => mobilityMetrics(fixture.mobility.invalidSpeedEndpoints.input), {
+        name: fixture.mobility.invalidSpeedEndpoints.expectedError,
     });
     assert.throws(() => shieldRecovery(fixture.shieldRecovery.invalidStrength.input), {
         name: fixture.shieldRecovery.invalidStrength.expectedError,
