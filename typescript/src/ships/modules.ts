@@ -265,8 +265,8 @@ export interface OutfittingModuleIdentity {
      */
     readonly category: ModuleCategory;
     /**
-     * Stable engineering-menu family, or `null` when no source classifies this module.
-     * See {@link EngineeringGroupId}.
+     * Stable engineering-menu family, or `null` when the stock module has no ordinary
+     * engineering menu. See {@link EngineeringGroupId}.
      */
     readonly engineeringGroup: EngineeringGroupId | null;
     /**

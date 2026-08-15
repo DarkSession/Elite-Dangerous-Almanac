@@ -13,10 +13,12 @@
  * do not bundle it.
  *
  * Each entry is a {@link PreEngineeredVariant}: `symbol` joins to the module catalogues,
- * `blueprint` to `BLUEPRINTS`, and `grade` is the grade already applied at purchase.
- * Because grade 1 is what the bought module already contains, these blueprints' own
- * recipes start at grade 2 — price the remaining upgrade with
- * `getBlueprintCost(blueprint, target, grade)` from `ships/blueprint-costs`.
+ * `blueprint` to `BLUEPRINTS`, and `grade` is the grade already applied to the article.
+ * The 22 Mercenary entries are bought at grade 1 and their bespoke recipes start at
+ * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
+ * grade)` from `ships/blueprint-costs`. Community-goal and tech-broker entries instead
+ * identify fixed reward articles; their blueprint ids do not grant a recipe to the stock
+ * module.
  *
  * Note that one base module can appear more than once: the medium Seeker Missile Rack is
  * sold or awarded in six different pre-engineered flavours, so

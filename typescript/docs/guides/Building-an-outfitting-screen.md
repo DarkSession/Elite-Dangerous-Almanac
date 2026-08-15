@@ -91,9 +91,12 @@ build.setModuleEnabled('FrameShiftDrive', true);
 build.setModulePriority('FrameShiftDrive', 1);
 ```
 
-`availableBlueprints(slotKey)` and `availableExperimentalEffects(slotKey)` answer what a
-given mount can be engineered with, so the menu never offers a recipe the module cannot
-take.
+`availableBlueprints(slotKey)` returns candidate engineering routes for the fitted module
+symbol. A candidate's `route` is `'ordinary'` when the stock module can take it or
+`'mercenary'` when it requires the matching Mercenary purchase. Stock and Mercenary
+articles share a module symbol, so show that route in the UI and confirm the purchase
+before treating a Mercenary candidate as applicable. `availableExperimentalEffects`
+continues to answer the stock module's ordinary experimental menu.
 
 ## Report what the build does
 
