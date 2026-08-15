@@ -11,6 +11,18 @@ This file provides guidance to AI coding agents (e.g. Claude Code) when working 
 - Character data
 - Market data
 
+## Pre-1.0: breaking changes are acceptable
+
+The library is a work in progress and has not reached version 1.0. **Backwards compatibility is not required at this point, and breaking changes are acceptable.** Until 1.0, get the API right rather than preserving what is already published: rename a symbol that is named badly, change a signature that takes the wrong arguments, move a module whose subpath is in the wrong place, reshape a catalogue whose structure fights its consumers.
+
+What that rules out is compatibility scaffolding, which is the same clutter whether it is added out of habit or out of caution:
+
+- **No deprecated aliases, re-exports or shims** kept alongside the new name, and no `@deprecated` symbols retained "for one more release".
+- **No dual code paths** that accept both the old and the new shape of an argument, option object or data file.
+- **No migration prose in the documentation.** Docs describe the current surface only (see §Documentation states the present, not the history); the change belongs in the pull request and the release notes, not in a TSDoc comment or a guide page.
+
+A breaking change still has to be complete and visible: update every call site, test, fixture, documented example and guide in the same change, and say plainly in the PR description what breaks and what replaces it. The version stays below 1.0 while this holds (§Releasing to npm) and the README says so for consumers — do not describe the surface as stable anywhere until 1.0 is actually released.
+
 ## Multi-Language Strategy
 
 The library starts in **TypeScript**, with **Python** (and potentially other languages/frameworks) planned for the future. Two hard requirements shape all design decisions:

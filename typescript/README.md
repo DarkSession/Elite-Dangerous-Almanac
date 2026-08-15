@@ -3,6 +3,13 @@
 Tree-shakeable Elite Dangerous static data and calculations for TypeScript and
 JavaScript applications.
 
+## Project status
+
+**This library is a work in progress.** Until version 1.0, backwards compatibility is
+not ensured and breaking changes are very likely: exported names, signatures, subpath
+exports and data shapes can change in any release. Pin an exact version if your
+application needs a stable surface, and read the release notes before upgrading.
+
 ## Install
 
 ```bash
