@@ -7,7 +7,7 @@ import {
     getLoadoutModifier,
     toSlef,
     stringifySlef,
-    type DecorativeModuleEngineering,
+    type GradeLessModuleEngineering,
     type LoadoutEvent,
     type LoadoutModule,
     type SlefHeader,
@@ -149,8 +149,8 @@ test('inspectSlef pinpoints every invalid modifier field', () => {
     }
 });
 
-test('grade-less decorative engineering is typed and parsed without fabricated fields', () => {
-    const engineering: DecorativeModuleEngineering = {
+test('grade-less fixed engineering is typed and parsed without fabricated fields', () => {
+    const engineering: GradeLessModuleEngineering = {
         BlueprintName: 'Decorative_Red',
         Modifiers: [{ Label: 'Damage', Value: 0.06, OriginalValue: 6 }],
     };
@@ -159,7 +159,7 @@ test('grade-less decorative engineering is typed and parsed without fabricated f
         Modules: [
             {
                 Slot: 'MediumHardpoint1',
-                Item: 'Hpt_PulseLaser_Fixed_Small',
+                Item: 'Hpt_FlakMortar_Turret_Medium',
                 Engineering: engineering,
             },
         ],
@@ -193,12 +193,15 @@ test('a modification block is either fully graded or fully grade-less', () => {
         ).diagnostics,
         [],
     );
+    assert.deepEqual(
+        inspectSlef(engineering('Future_Fixed_Identity', { Modifiers: [] })).diagnostics,
+        [],
+    );
+    assert.deepEqual(inspectSlef(engineering('FSD_LongRange', { Modifiers: [] })).diagnostics, []);
 
     for (const [blueprint, fields, path] of [
         ['FSD_LongRange', { Level: 1, Modifiers: [] }, 'Quality'],
         ['FSD_LongRange', { Quality: 1, Modifiers: [] }, 'Level'],
-        ['FSD_LongRange', { Modifiers: [] }, 'Level'],
-        ['Decorative_Unknown', { Modifiers: [] }, 'Level'],
         ['Decorative_Red', {}, 'Modifiers'],
         [
             'Decorative_Red',

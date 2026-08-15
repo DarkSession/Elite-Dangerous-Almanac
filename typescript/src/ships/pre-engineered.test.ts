@@ -4,7 +4,6 @@ import assert from 'node:assert/strict';
 import {
     PRE_ENGINEERED_MODULES,
     getPreEngineeredVariants,
-    getPreEngineeredByBlueprint,
     isPreEngineered,
 } from './pre-engineered.js';
 import { getBlueprintCost } from './blueprint-costs.js';
@@ -50,16 +49,20 @@ test('pinned pairings carry the expected base module, blueprint, grade and effec
     }
 });
 
-test('every variant joins to a real module, blueprint and experimental effect', () => {
+test('every variant joins to a real module and every graded identity joins to engineering data', () => {
     for (const variant of PRE_ENGINEERED_MODULES) {
         assert.ok(
             getModuleBySymbol(variant.symbol, ALL_MODULES),
             `${variant.symbol} is not in the module catalogue`,
         );
-        assert.ok(
-            getBlueprint(variant.blueprint),
-            `${variant.blueprint} is not in the blueprint catalogue`,
-        );
+        if (variant.grade === undefined) {
+            assert.equal(getBlueprint(variant.blueprint), null, variant.blueprint);
+        } else {
+            assert.ok(
+                getBlueprint(variant.blueprint),
+                `${variant.blueprint} is not in the blueprint catalogue`,
+            );
+        }
         if (variant.experimental !== undefined) {
             assert.ok(
                 EXPERIMENTAL_EFFECTS[variant.experimental],
@@ -100,7 +103,9 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
     // module. Every Mercenary record instead arrives at grade 1 and opens grades 2-5 of
     // its own bespoke recipe, even though no ordinary menu lists that recipe.
     const sold = PRE_ENGINEERED_MODULES.filter(
-        (variant) => !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
+        (variant) =>
+            variant.grade !== undefined &&
+            !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
     );
     assert.ok(sold.length > 0, 'no variant is sold with a recipe its menu omits');
     for (const variant of sold) {
@@ -176,10 +181,11 @@ test('the only pre-engineered Guardian variants are the pinned final weapons', (
     }
 });
 
-test('each variant carries the same display name as the module it fits as', () => {
+test('each graded variant carries the same display name as the module it fits as', () => {
     // `name` is denormalised so a shop list can render without pulling in ALL_MODULES.
     // That is a drift risk, so it is pinned: the two catalogues must always agree.
     for (const variant of PRE_ENGINEERED_MODULES) {
+        if (variant.grade === undefined) continue;
         const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
         assert.equal(
             variant.name,
@@ -204,7 +210,7 @@ test('a reward variant records a real grade of a real blueprint', () => {
     // Both reward routes name an ordinary journal blueprint, so the grade recorded must
     // be one the blueprint actually defines — including the grade-1 Guardian rows.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition === 'mercenary') continue;
+        if (variant.acquisition === 'mercenary' || variant.grade === undefined) continue;
         const grades = Object.keys(BLUEPRINTS[variant.blueprint]!.grades);
         assert.ok(
             grades.includes(String(variant.grade)),
@@ -222,6 +228,7 @@ test('every variant names the recipe its own module rolls, not a colliding spell
     // over the whole catalogue rather than only the rows that meet it, because the
     // hazard arrives with the next row somebody transcribes from a journal.
     for (const variant of PRE_ENGINEERED_MODULES) {
+        if (variant.grade === undefined) continue;
         assert.equal(
             resolveBlueprintForModule(variant.symbol, variant.blueprint),
             variant.blueprint,
@@ -274,18 +281,12 @@ test('getPreEngineeredVariants normalises input and misses cleanly', () => {
     assert.deepEqual(getPreEngineeredVariants('NoSuchModule'), []);
 });
 
-test('getPreEngineeredByBlueprint resolves case-insensitively and misses cleanly', () => {
-    assert.deepEqual(
-        getPreEngineeredByBlueprint('  railgun_LONGSHOT  ').map((v) => v.symbol),
-        ['Hpt_Railgun_Fixed_Medium'],
-    );
-    assert.deepEqual(getPreEngineeredByBlueprint('NoSuchBlueprint'), []);
-});
-
 test('an ordinary journal blueprint can also arrive pre-engineered', () => {
     // The "V1" drives are Long Range, so a plain journal blueprint resolves here too —
     // not just the Merc-shop Operations keys — and by two different routes.
-    const drives = getPreEngineeredByBlueprint('FSD_LongRange');
+    const drives = PRE_ENGINEERED_MODULES.filter(
+        (variant) => variant.blueprint === 'FSD_LongRange',
+    );
     assert.ok(drives.length > 0);
     assert.ok(drives.every((v) => v.grade === 5));
     assert.deepEqual([...new Set(drives.map((v) => v.acquisition))].sort(), [
@@ -294,14 +295,41 @@ test('an ordinary journal blueprint can also arrive pre-engineered', () => {
     ]);
 });
 
+test('grade-less festive identities are fixed variants of the observed launcher', () => {
+    const expected = fixture.gradeLess;
+    const variants = getPreEngineeredVariants(expected.symbol).filter((variant) =>
+        expected.blueprints.includes(variant.blueprint),
+    );
+    assert.equal(variants.length, expected.blueprints.length);
+    assert.deepEqual(
+        variants.map((variant) => variant.blueprint),
+        expected.blueprints,
+    );
+    for (const variant of variants) {
+        assert.equal(variant.symbol, expected.symbol);
+        assert.equal(variant.grade, undefined);
+        assert.equal(variant.experimental, undefined);
+        assert.equal(variant.acquisition, 'eventReward');
+        assert.deepEqual(variant.modifiers, [expected.modifier]);
+        assert.equal(getBlueprint(variant.blueprint), null);
+    }
+    assert.deepEqual(
+        getPreEngineeredVariants('Hpt_BeamLaser_Fixed_Small').filter(
+            (variant) => variant.grade === undefined,
+        ),
+        [],
+    );
+});
+
 test('isPreEngineered separates bought-engineered modules from stock ones', () => {
     assert.equal(isPreEngineered('Hpt_Railgun_Fixed_Medium'), true);
+    assert.equal(isPreEngineered(fixture.gradeLess.symbol), true);
     for (const symbol of fixture.notPreEngineered) {
         assert.equal(isPreEngineered(symbol), false, symbol);
     }
 });
 
-test('a (symbol, blueprint, grade, experimental) quadruple appears at most once', () => {
+test('a (symbol, blueprint, grade, experimental) tuple appears at most once', () => {
     // No narrower key holds: one module carries several variants, one blueprint appears
     // on several modules, (symbol, blueprint) repeats when only the effect differs, and
     // (symbol, blueprint, experimental) repeats when only the grade differs.
@@ -313,13 +341,18 @@ test('a (symbol, blueprint, grade, experimental) quadruple appears at most once'
 
 test('one blueprint can be sold on more than one base module', () => {
     assert.deepEqual(
-        getPreEngineeredByBlueprint('SeekerMissileRack_Drag').map((v) => v.symbol),
+        PRE_ENGINEERED_MODULES.filter(
+            (variant) => variant.blueprint === 'SeekerMissileRack_Drag',
+        ).map((variant) => variant.symbol),
         ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large'],
     );
 });
 
 test('the remaining upgrade is priced from the grade already applied', () => {
-    const variant = getPreEngineeredByBlueprint('RailGun_LongShot')[0]!;
+    const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium').find(
+        (candidate) => candidate.blueprint === 'RailGun_LongShot',
+    )!;
+    assert.ok(variant.grade !== undefined);
     const total = (mats: readonly { count: number }[] | null) => {
         assert.ok(mats, 'the blueprint must price');
         return mats.reduce((sum, m) => sum + m.count, 0);
@@ -415,10 +448,6 @@ test('the pre-engineered lookups name a wrong-typed symbol', () => {
         [
             () => getPreEngineeredVariants(42 as unknown as string),
             'getPreEngineeredVariants: symbol',
-        ],
-        [
-            () => getPreEngineeredByBlueprint(42 as unknown as string),
-            'getPreEngineeredByBlueprint: fdname',
         ],
         // A facade over the variants lookup, naming its own parameter.
         [() => isPreEngineered(42 as unknown as string), 'isPreEngineered: symbol'],

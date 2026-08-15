@@ -2228,55 +2228,6 @@
           },
           "required": ["cases", "description"]
         },
-        "decorativeModifications": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "description": { "type": "string" },
-            "ids": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "id": { "type": "string" },
-                  "name": { "type": "string" }
-                },
-                "required": ["id", "name"]
-              }
-            },
-            "modifiers": { "$ref": "#/definitions/shared2a52d42245cc" },
-            "module": { "type": "string" },
-            "resolved": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "baseDamage": { "type": "integer" },
-                "damage": { "type": "number" },
-                "damagePerSecond": { "type": "number" },
-                "description": { "type": "string" },
-                "panel": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "damage": { "type": "number" },
-                    "damagePerSecond": { "type": "number" },
-                    "percent": { "type": "integer" }
-                  },
-                  "required": ["damage", "damagePerSecond", "percent"]
-                }
-              },
-              "required": [
-                "baseDamage",
-                "damage",
-                "damagePerSecond",
-                "description",
-                "panel"
-              ]
-            }
-          },
-          "required": ["description", "ids", "modifiers", "module", "resolved"]
-        },
         "experimentalCount": { "type": "integer" },
         "experimentalDamageDistributions": {
           "type": "object",
@@ -2659,7 +2610,6 @@
         "blueprintOnlyModifications",
         "clipRounding",
         "damageComponentScaling",
-        "decorativeModifications",
         "experimentalCount",
         "experimentalDamageDistributions",
         "experimentalNames",
@@ -5153,10 +5103,16 @@
           "additionalProperties": false,
           "properties": {
             "communityGoal": { "type": "integer" },
+            "eventReward": { "type": "integer" },
             "mercenary": { "type": "integer" },
             "techBroker": { "type": "integer" }
           },
-          "required": ["communityGoal", "mercenary", "techBroker"]
+          "required": [
+            "communityGoal",
+            "eventReward",
+            "mercenary",
+            "techBroker"
+          ]
         },
         "engineeringLocked": {
           "type": "object",
@@ -5176,6 +5132,36 @@
             "symbols": { "type": "array", "maxItems": 0, "items": false }
           },
           "required": ["count", "note", "symbols"]
+        },
+        "gradeLess": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "blueprints": { "type": "array", "items": { "type": "string" } },
+            "modifier": { "$ref": "#/definitions/shared8064b9491813" },
+            "resolved": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "baseDamage": { "type": "integer" },
+                "damage": { "type": "number" },
+                "damagePerSecond": { "type": "number" },
+                "panel": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damage": { "type": "number" },
+                    "damagePerSecond": { "type": "number" },
+                    "percent": { "type": "integer" }
+                  },
+                  "required": ["damage", "damagePerSecond", "percent"]
+                }
+              },
+              "required": ["baseDamage", "damage", "damagePerSecond", "panel"]
+            },
+            "symbol": { "type": "string" }
+          },
+          "required": ["blueprints", "modifier", "resolved", "symbol"]
         },
         "identification": {
           "type": "object",
@@ -5311,7 +5297,10 @@
               "experimental": { "type": "string" },
               "grade": { "type": "integer" },
               "mercCoinCost": { "type": "integer" },
-              "modifiers": { "$ref": "#/definitions/shared2a52d42245cc" },
+              "modifiers": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/shared8064b9491813" }
+              },
               "name": { "type": "string" },
               "symbol": { "type": "string" }
             },
@@ -5604,6 +5593,7 @@
         "counts",
         "engineeringLocked",
         "fullyUnresolved",
+        "gradeLess",
         "identification",
         "joins",
         "maxModifierDecimalPlaces",
@@ -7233,10 +7223,6 @@
         "optMass",
         "optMultiplier"
       ]
-    },
-    "shared2a52d42245cc": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/shared8064b9491813" }
     },
     "shared2c98e2673bf9": {
       "type": "object",

@@ -57,13 +57,11 @@
  * - **Engineering** — {@link computeModifiers} applies the primitive legs of a
  *   {@link BLUEPRINTS} recipe and an {@link EXPERIMENTAL_EFFECTS} entry;
  *   {@link ShipLoadout.applyBlueprint} presents that result under Frontier's journal
- *   labels, while {@link ShipLoadout.applyDecorativeModification} installs the fixed,
- *   grade-less transformation named by a decorative id. {@link ENGINEERING_OPTION_GROUPS} answers
+ *   labels, while {@link ShipLoadout.setPreEngineeredVariant} fits a fixed article that
+ *   arrives with engineering already present. {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
- *   the fixed-roll modules you cannot craft. {@link DECORATIVE_MODIFICATIONS} is the
- *   odd one out and the one to reach for when an id resolves to no recipe: the game
- *   writes a handful of festive transformations in the same field, and no engineer
- *   applies one. Material shopping data stays on the explicit
+ *   the fixed articles you cannot craft — including grade-less festive launchers whose
+ *   `Decorative_*` journal identity names no recipe. Material shopping data stays on the explicit
  *   {@link ships/blueprint-costs!BLUEPRINT_COSTS | blueprint-costs} and
  *   {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | experimental-effect-costs}
  *   subpaths, so build calculations do not pull it in.
@@ -71,12 +69,12 @@
  * The registries use two distinct Frontier identity spaces. `symbol` identifies an
  * item — a hull, module, material, micro-resource or commodity — and is what item and
  * journal `Item` lookups accept. Engineering catalogue entries instead use `fdname` to
- * identify a recipe, effect or decorative modification. The journal normally writes
- * that id in `Engineering.BlueprintName` or `Engineering.ExperimentalEffect`; the few
- * colliding blueprint aliases are resolved for their module by
- * {@link resolveBlueprintForModule}. Functions that look up an engineering entry
- * therefore take an `fdname`, while functions that ask which engineering is available
- * *for a module* take that module's `symbol`.
+ * identify a recipe, effect or fixed variant. The journal normally writes that id in
+ * `Engineering.BlueprintName` or `Engineering.ExperimentalEffect`; the few colliding
+ * blueprint aliases are resolved for their module by {@link resolveBlueprintForModule}.
+ * Recipe and effect lookups take an `fdname`. Pre-engineered variants are found from the
+ * base module's `symbol` with {@link getPreEngineeredVariants}, after which their
+ * `blueprint` identities can be inspected.
  *
  * Catalogue containers follow those jobs rather than one universal shape. The
  * identity-bearing entity catalogues — {@link SHIPS} and the module catalogues — are
@@ -86,18 +84,16 @@
  * data rather than identifying a new module with a symbol of its own.
  *
  * Engineering entities and groups are keyed catalogues: {@link BLUEPRINTS},
- * {@link EXPERIMENTAL_EFFECTS}, {@link DECORATIVE_MODIFICATIONS} and
- * {@link ENGINEERING_OPTION_GROUPS} carry the recipe, effect or group identity in the
- * key rather than repeating it in each value. The separate
+ * {@link EXPERIMENTAL_EFFECTS} and {@link ENGINEERING_OPTION_GROUPS} carry the recipe,
+ * effect or group identity in the key rather than repeating it in each value. The separate
  * {@link ships/blueprint-costs!BLUEPRINT_COSTS | BLUEPRINT_COSTS} and
  * {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | EXPERIMENTAL_EFFECT_COSTS}
  * records map those ids to costs; {@link SLOT_RESTRICTION_LABELS} maps typed restriction
  * codes to display labels. Use `Object.values()` or `Object.entries()` to enumerate any
  * of these keyed structures.
  *
- * Five `fdname` maps have public case-insensitive, whitespace-trimming lookups for a
+ * Four `fdname` maps have public case-insensitive, whitespace-trimming lookups for a
  * caller- or journal-supplied id: {@link getBlueprint}, {@link getExperimentalEffect},
- * {@link getDecorativeModification},
  * {@link ships/blueprint-costs!getBlueprintCosts | getBlueprintCosts} and
  * {@link ships/experimental-effect-costs!getExperimentalEffectCost | getExperimentalEffectCost}.
  * Prefer those helpers to direct indexing for external text. Engineering group ids and
@@ -263,7 +259,7 @@ export {
     type LoadoutModule,
     type ModuleEngineering,
     type BlueprintModuleEngineering,
-    type DecorativeModuleEngineering,
+    type GradeLessModuleEngineering,
     type EngineeringModifier,
 } from './slef.js';
 export {
@@ -457,29 +453,19 @@ export {
 } from './engineering-options.js';
 export { resolveBlueprintForModule } from './blueprint-journal.js';
 export {
-    DECORATIVE_MODIFICATIONS,
-    getDecorativeModification,
-    getDecorativeModificationsForModule,
-    isDecorativeModification,
-    type DecorativeModification,
-    type DecorativeModifier,
-} from './decorative-modifications.js';
-export {
-    getDecorativeModifiers,
-    unresolvedDecorativeModifiers,
-} from './decorative-modification-stats.js';
-export {
     PRE_ENGINEERED_MODULES,
     getPreEngineeredVariants,
-    getPreEngineeredByBlueprint,
     isPreEngineered,
     type PreEngineeredVariant,
+    type GradedPreEngineeredVariant,
+    type GradeLessPreEngineeredVariant,
     type PreEngineeredAcquisition,
     type PreEngineeredModifier,
 } from './pre-engineered.js';
 export {
     getPreEngineeredStats,
     getPreEngineeredModifiers,
+    getPreEngineeredJournalModifiers,
     identifyPreEngineeredVariant,
     unresolvedModifiers,
 } from './pre-engineered-stats.js';

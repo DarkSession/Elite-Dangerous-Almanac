@@ -6,7 +6,7 @@
 
 import type { BlueprintFeature, ModifierMethod } from '../engineering.js';
 
-/** The structural fields shared by decorative and pre-engineered fixed modifiers. */
+/** The structural fields shared by every pre-engineered fixed modifier. */
 interface FixedModifier {
     readonly label: string;
     readonly method: ModifierMethod;

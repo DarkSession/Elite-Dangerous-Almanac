@@ -45,7 +45,6 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'experimental-effect-costs.jsonc': 'experimentalEffectCostCatalogue',
     'pre-engineered.jsonc': 'preEngineeredCatalogue',
     'engineering-options.jsonc': 'engineeringOptionCatalogue',
-    'decorative-modifications.jsonc': 'decorativeCatalogue',
 };
 
 const DATA_FILES = registerCatalogueDataTests({
@@ -163,7 +162,7 @@ for (const { name, readPayload } of DATA_FILES) {
         // `pre-engineered.jsonc` is exempt by design: its records are *pairings*, not
         // modules, and one base module is sold in several pre-engineered flavours — so
         // `symbol` repeats there. Neither column is unique on its own; the invariant
-        // that holds is on the (symbol, blueprint) pair, asserted in
+        // that holds includes grade and experimental identity, asserted in
         // pre-engineered.test.ts.
         if (name === 'pre-engineered.jsonc') return;
         const parsed = readPayload();
