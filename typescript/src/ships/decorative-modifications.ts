@@ -21,8 +21,9 @@
  * Resolving the id is the whole of its job, and it is why it is worth having. A consumer
  * reading a real journal meets `Decorative_Green` on a stored module and needs to tell "an
  * id this library has never heard of" from "an id that is real and names no recipe"; only
- * the second is true here. {@link ShipLoadout.applyBlueprint} reads it for the same
- * reason: it refuses a decorative id, but refuses it by name.
+ * the second is true here. {@link ShipLoadout.applyDecorativeModification} resolves and
+ * fits one; {@link ShipLoadout.applyBlueprint} refuses the same id by name because it is
+ * not a recipe.
  *
  * Three modifications are known — `Decorative_Green`, `Decorative_Red` and
  * `Decorative_Yellow` — and one module is observed carrying them, the medium turreted

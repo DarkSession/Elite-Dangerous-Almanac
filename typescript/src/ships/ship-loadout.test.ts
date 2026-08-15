@@ -42,6 +42,7 @@ import type { HeatMetrics, HeatState } from './heat.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
+import { getDecorativeModifiers } from './decorative-modification-stats.js';
 
 const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
 
@@ -2267,6 +2268,11 @@ test('a final pre-engineered Guardian weapon exposes no engineering', () => {
             /is a final pre-engineered article and accepts no further engineering/,
         );
     }
+    assert.throws(
+        () => build.applyDecorativeModification('MediumHardpoint1', 'Decorative_Red'),
+        /is a final pre-engineered article and accepts no further modification/,
+    );
+    assert.equal(build.fittedModuleAt('MediumHardpoint1')?.stats?.engineeringLocked, true);
 });
 
 test('imported Guardian purchase identities remain final articles', () => {
@@ -3592,6 +3598,96 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
     assert.ok(build.weaponMetrics().total.damagePerSecond > 0);
 });
 
+test('a decorative modification changes only its slot and exports grade-less state', () => {
+    const decorative = engineeringFixture.decorativeModifications;
+    const id = decorative.ids[1]!.id;
+    const laser = mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES);
+    const rapidFire = mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES);
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('MediumHardpoint1', laser)
+        .setModule('LargeHardpoint1', rapidFire)
+        .applyBlueprint('LargeHardpoint1', 'Weapon_RapidFire', { grade: 5 });
+    const otherBefore = build.fittedModuleAt('LargeHardpoint1')!;
+    const intervalBefore = otherBefore.effectiveStats!.burstInterval;
+
+    build.applyDecorativeModification('MediumHardpoint1', id);
+
+    const decorated = build.fittedModuleAt('MediumHardpoint1')!;
+    const expectedModifiers = getDecorativeModifiers(laser.symbol, id)!;
+    assert.deepEqual(decorated.engineering, {
+        BlueprintName: id,
+        Modifiers: expectedModifiers,
+    });
+    assert.ok(!Object.hasOwn(decorated.engineering!, 'Level'));
+    assert.ok(!Object.hasOwn(decorated.engineering!, 'Quality'));
+    assert.ok(near(decorated.effectiveStats!.damage!, laser.damage! * 0.01, 1e-9));
+
+    const otherAfter = build.fittedModuleAt('LargeHardpoint1')!;
+    assert.deepEqual(otherAfter.engineering, otherBefore.engineering);
+    assert.equal(otherAfter.effectiveStats!.burstInterval, intervalBefore);
+
+    const event: LoadoutEvent = build.toLoadoutEvent();
+    const exported = event.Modules.find((module) => module.Slot === 'MediumHardpoint1')!;
+    assert.deepEqual(exported.Engineering, decorated.engineering);
+    const reimported = ShipLoadout.fromLoadout(event).fittedModuleAt('MediumHardpoint1')!;
+    assert.ok(near(reimported.effectiveStats!.damage!, decorated.effectiveStats!.damage!, 1e-6));
+});
+
+test('a decorative modification resolves against the exact fitted stat snapshot', () => {
+    const stock = mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES);
+    const custom: OutfittingModule = {
+        ...stock,
+        symbol: 'Custom_Festive_Pulse_Laser',
+        damage: 4.1,
+    };
+    const id = engineeringFixture.decorativeModifications.ids[0]!.id;
+    const fitted = ShipLoadout.empty('Anaconda')
+        .setModule('MediumHardpoint1', custom)
+        .applyDecorativeModification('MediumHardpoint1', id)
+        .fittedModuleAt('MediumHardpoint1')!;
+
+    const damage = fitted.engineering!.Modifiers!.find((modifier) => modifier.Label === 'Damage')!;
+    assert.equal(damage.OriginalValue, 4.1);
+    assert.ok(near(damage.Value!, 0.041, 1e-9));
+    assert.ok(near(fitted.effectiveStats!.damage!, 0.041, 1e-9));
+});
+
+test('applyDecorativeModification rejects unknown and incomplete resolutions', () => {
+    const id = engineeringFixture.decorativeModifications.ids[0]!.id;
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'MediumHardpoint1',
+        mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES),
+    );
+    assert.throws(
+        () => build.applyDecorativeModification('MediumHardpoint1', 42 as unknown as string),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.applyDecorativeModification: fdname must be a string, received number 42',
+        },
+    );
+    assert.throws(
+        () => build.applyDecorativeModification('MediumHardpoint1', 'Decorative_Unknown'),
+        RangeError,
+    );
+    assert.throws(() => build.applyDecorativeModification('SmallHardpoint1', id), RangeError);
+    assert.throws(
+        () =>
+            ShipLoadout.fromLoadout({
+                Ship: 'unknown_hull',
+                Modules: [{ Slot: 'Mystery', Item: 'unknown_module' }],
+            }).applyDecorativeModification('Mystery', id),
+        TypeError,
+    );
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda')
+                .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5', CORE_MODULES))
+                .applyDecorativeModification('FrameShiftDrive', id),
+        /missing base stats for Damage/,
+    );
+});
+
 test('journal weapon derivation retains stored-float and firing-cycle precision', () => {
     const multiCannon = ShipLoadout.empty('Viper')
         .setModule('MediumHardpoint1', mod('Hpt_MultiCannon_Gimbal_Medium', HARDPOINT_MODULES))
@@ -4030,15 +4126,16 @@ test('every slot-key method names a wrong-typed key rather than failing inside t
     const build = ShipLoadout.empty('Anaconda');
     const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
     build.setModule('FrameShiftDrive', fsd);
-    // `#requireSlot` and `#fittedKey` cover nine of these between them, and
+    // `#requireSlot` and `#fittedKey` cover these between them, and
     // `removeModule` guards itself ahead of both. This list is the check that no method
-    // reaches the build around all three — an eleventh has to appear here too.
+    // reaches the build around all three — a new one has to appear here too.
     const calls: readonly ((key: string) => unknown)[] = [
         (key) => build.setModule(key, fsd),
         (key) => build.removeModule(key),
         (key) => build.setModuleEnabled(key, true),
         (key) => build.setModulePriority(key, 1),
         (key) => build.applyBlueprint(key, 'FSD_LongRange', { grade: 5 }),
+        (key) => build.applyDecorativeModification(key, 'Decorative_Red'),
         (key) => build.clearEngineering(key),
         (key) => build.fittedModuleAt(key),
         (key) => build.modulesForSlot(key),
