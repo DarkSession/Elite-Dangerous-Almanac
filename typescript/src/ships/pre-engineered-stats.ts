@@ -24,7 +24,7 @@
  * @packageDocumentation
  */
 
-import { computeModifiers, type BlueprintFeature } from './engineering.js';
+import { computeModifiers } from './engineering.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import {
     baseStats,
@@ -34,26 +34,13 @@ import {
 } from './internal/module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
-import {
-    getPreEngineeredVariants,
-    type PreEngineeredModifier,
-    type PreEngineeredVariant,
-} from './pre-engineered.js';
+import { getPreEngineeredVariants, type PreEngineeredVariant } from './pre-engineered.js';
 import type { EngineeringModifier, LoadoutModule } from './slef.js';
 import { combinedRateOfFire } from './weapons.js';
 import { scaleDamageComponents } from './internal/damage-components.js';
+import { fixedModifierFeatures } from './internal/fixed-modifier-features.js';
 import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
-
-/** A pre-engineered modifier is a fixed article, so its min and max are the same value. */
-function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeature[] {
-    return modifiers.map((m) => ({
-        label: m.label,
-        method: m.method,
-        min: m.value,
-        max: m.value,
-    }));
-}
 
 /** Compute a variant's fixed block together with an experimental added to the article. */
 function modifiersWithExperimental(
@@ -67,7 +54,7 @@ function modifiersWithExperimental(
     if (effectName !== undefined && !effect) return null;
     return computeModifiers(
         baseStats(module),
-        asFeatures(variant.modifiers ?? []),
+        fixedModifierFeatures(variant.modifiers ?? []),
         1,
         effect ?? undefined,
     );

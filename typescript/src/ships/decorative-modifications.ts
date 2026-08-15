@@ -13,8 +13,10 @@
  * **Not cosmetic-only, either.** A festive launcher fires fireworks rather than flak, and
  * the transformation cuts the module's `Damage` by 99% to match — the one stat any of them
  * moves, carried in {@link DecorativeModification.modifiers}. So a record here is never a
- * claim that the module is unmodified. Feed the modifiers to {@link computeModifiers} to
- * resolve a fitted launcher, the same way a pre-engineered variant's are resolved.
+ * claim that the module is unmodified. Resolve the transformation against its fitted
+ * module with {@link getDecorativeModifiers}, and inspect any labels the module
+ * catalogue could not compute with {@link unresolvedDecorativeModifiers}; both live in
+ * `./decorative-modification-stats`.
  *
  * Resolving the id is the whole of its job, and it is why it is worth having. A consumer
  * reading a real journal meets `Decorative_Green` on a stored module and needs to tell "an

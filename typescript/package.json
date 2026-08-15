@@ -277,6 +277,10 @@
             "types": "./dist/ships/decorative-modifications.d.ts",
             "import": "./dist/ships/decorative-modifications.js"
         },
+        "./ships/decorative-modification-stats": {
+            "types": "./dist/ships/decorative-modification-stats.d.ts",
+            "import": "./dist/ships/decorative-modification-stats.js"
+        },
         "./ships/default-loadouts": {
             "types": "./dist/ships/default-loadouts.d.ts",
             "import": "./dist/ships/default-loadouts.js"
