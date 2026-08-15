@@ -1531,7 +1531,6 @@ type FixtureShipsEngineeringOptions = {
         lifeSupports: number;
         manifestScanners: number;
         mines: number;
-        miningToolsLasers: number;
         missiles: number;
         moduleReinforcements: number;
         multiCannons: number;

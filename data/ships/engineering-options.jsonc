@@ -1,6 +1,6 @@
 /*
- * **Engineering options** — which blueprints and which experimental effects each
- * outfitting module can actually take.
+ * **Ordinary engineering options** — which blueprints and experimental effects appear
+ * in each stock outfitting module's ordinary engineering menu.
  *
  * Sources: EDSY eddb.js (the module-group menus and the per-module denials that narrow
  * them), keyed and cross-checked against EDCD/coriolis-data modifications/modules.json,
@@ -39,14 +39,16 @@
  * kind, listed by the nine Guardian groups under the journal id `GuardianModule_Sturdy`.
  *
  * `exclusions` handles what is left: the modules that take their group's blueprints but
- * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and
- * the Abrasion Blaster takes no experimental at all. Each entry lists the effect ids that
- * module cannot take, already expanded — subtract it from the group's `experimentals` to
- * get the exact set. Modules absent from `exclusions` take their whole group's list.
+ * not all of its experimental effects — for example, a small Multi-cannon cannot take
+ * Phasing Sequence. Each entry lists the effect ids that module cannot take, already
+ * expanded — subtract it from the group's `experimentals` to get the exact set. Modules
+ * absent from `exclusions` take their whole group's list.
  *
- * Only modules the game lets you engineer appear at all, 1028 of the 1199; the other 171
- * are the families no blueprint reaches, plus the individual modules upstream denies every
- * blueprint. SOURCES.md lists both sets.
+ * Only modules with an ordinary engineering menu appear at all, 1026 of the 1199; the
+ * other 173 are the families no ordinary blueprint reaches, plus the individual modules
+ * upstream denies every blueprint. A purchased Mercenary module may still take the bespoke
+ * grades 2–5 it is sold with; that purchase-specific route is not an ordinary menu and is
+ * recorded by `pre-engineered.jsonc`. SOURCES.md lists both sets.
  *
  * `modules` is ordered by group, in the order `groups` declares them, and within a group
  * in module-catalogue order.
@@ -455,15 +457,6 @@
         "special_weapon_efficient",
         "special_weapon_lightweight",
         "special_weapon_toughened"
-      ]
-    },
-    "miningToolsLasers": {
-      "name": "Mining Tools - Lasers",
-      "blueprints": [
-        "Weapon_LongRange"
-      ],
-      "experimentals": [
-        "special_incendiary_rounds"
       ]
     },
     "antiXenoMultiCannons": {
@@ -1156,8 +1149,6 @@
     "Hpt_AdvancedTorpPylon_Fixed_Small": "torpedoes",
     "Hpt_AdvancedTorpPylon_Fixed_Medium": "torpedoes",
     "Hpt_AdvancedTorpPylon_Fixed_Large": "torpedoes",
-    "Hpt_MiningLaser_Fixed_Small": "miningToolsLasers",
-    "Hpt_Mining_AbrBlstr_Fixed_Small": "miningToolsLasers",
     "Hpt_ATMultiCannon_Gimbal_Large": "antiXenoMultiCannons",
     "Hpt_ATMultiCannon_Gimbal_Medium": "antiXenoMultiCannons",
     "Hpt_ShieldBooster_Size0_Class1": "shieldBoosters",
@@ -1840,9 +1831,6 @@
     ],
     "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced": [
       "special_drag_munitions"
-    ],
-    "Hpt_Mining_AbrBlstr_Fixed_Small": [
-      "special_incendiary_rounds"
     ]
   }
 }

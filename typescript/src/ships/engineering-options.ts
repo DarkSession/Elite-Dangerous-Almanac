@@ -1,6 +1,6 @@
 /**
- * **Engineering options** — which blueprints and which experimental effects a given
- * module can actually take.
+ * **Ordinary engineering options** — which blueprints and experimental effects appear
+ * in a given stock module's ordinary engineering menu.
  *
  * Availability is a property of the **module**, not of the blueprint. A Pulse Laser
  * accepts the Efficient blueprint and a Rail Gun does not, and the two offer different
@@ -8,17 +8,20 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1028 of the 1199 modules — every module upstream allows a recipe
- * on. The other 171 take no engineering: whole families (fuel tanks, passenger cabins,
+ * The catalogue groups 1026 of the 1199 modules — every stock module with an ordinary
+ * engineering menu. The other 173 have no ordinary menu: whole families (fuel tanks, passenger cabins,
  * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
  * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
  * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
  * Supercruise Assist, the module stabilisers, the planetary approach suites, the cargo
  * hatch and the AX utility modules), plus the individual
- * modules upstream denies every blueprint — every anti-xeno multi-cannon but the two
- * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of
- * the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Accelerator.
+ * modules denied every ordinary blueprint — every anti-xeno multi-cannon but the two
+ * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, all seven
+ * mining tools, the remote-release launchers and the Mk II Plasma Shock
+ * Accelerator. Three modules without a menu still have a purchase-specific route: the
+ * fixed Mining Laser, fixed Abrasion Blaster and size-5 class-2 Module Reinforcement
+ * Package are sold as grade-1 Mercenary articles that can take grades 2–5 of their
+ * bespoke recipes through `ships/pre-engineered`.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
@@ -39,16 +42,16 @@
  * module — `resolveBlueprintForModule`, which needs a menu and the small journal-collision
  * catalogue — lives in `ships/blueprint-journal` rather than here.
  *
- * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
- * this module does not offer for that module, so "what can I put on this?" and "may I put
- * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
- * therefore carries this module's weight whether or not the consumer calls it. This is a
- * deliberate tradeoff: the editor and the menu use one catalogue, so their answers cannot
- * drift. The gate makes three accommodations beyond the menu, in the
+ * **This catalogue is the ordinary-menu gate.** {@link ShipLoadout.applyBlueprint} refuses
+ * a recipe this module does not offer unless one of the three narrow accommodations below
+ * resolves it. A `ShipLoadout` therefore carries this module's weight whether or not the
+ * consumer calls it. The editor and the menu use one catalogue for ordinary availability,
+ * so those answers cannot drift; Mercenary upgrades remain a separate purchase-specific
+ * route. The gate makes three accommodations beyond the literal menu ids, in the
  * order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
- * reading this menu against the journal-collision catalogue; an Operations key belonging to a
- * non-final module sold already engineered, which no menu lists, and
+ * reading this menu against the journal-collision catalogue; a bespoke Operations key
+ * belonging to a Mercenary module sold at grade 1, whose grades 2–5 no ordinary menu lists, and
  * `ships/pre-engineered` resolves per module; and a build that spells a modification
  * generically — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
  * {@link getBlueprintsForModule} describes.
@@ -62,7 +65,7 @@ import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
- * A stable identifier for an engineerable module's gameplay family.
+ * A stable identifier for an engineering-menu family.
  *
  * @remarks
  * These are the keys of {@link ENGINEERING_OPTION_GROUPS}. They are more precise than
@@ -70,9 +73,9 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
  * an engineering-group id identifies the family whose stats and engineering menu it
  * shares. Guardian variants use separate ids when their menus differ.
  *
- * An outfitting module with no published engineering family carries
- * `engineeringGroup: null`; do not infer a group from its symbol. This explicit absence
- * distinguishes an unclassified module from an unknown id.
+ * An outfitting module with no ordinary engineering menu carries `engineeringGroup:
+ * null`; do not infer a group from its symbol. This explicit absence distinguishes a
+ * stock module without a menu from an unknown id.
  *
  * @example
  * ```ts
@@ -104,7 +107,6 @@ export type EngineeringGroupId =
     | 'missiles'
     | 'mines'
     | 'torpedoes'
-    | 'miningToolsLasers'
     | 'antiXenoMultiCannons'
     | 'shieldBoosters'
     | 'bulkheads'
@@ -184,12 +186,14 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"no source gives this module a recipe"**, which for the 171 ungrouped
- * modules is the same as "cannot be engineered" — the families and the individually
- * denied modules listed in the module overview above. This is the catalogue's answer,
- * not a claim that the game forbids engineering. The build corpus contains one contrary
- * case: the Mk II Plasma Shock Accelerator is denied every blueprint upstream but appears
- * engineered on both large hardpoints of a community build.
+ * `null` means **"this stock module has no ordinary engineering menu"**. For 170 of the
+ * 173 ungrouped modules that is the same as "cannot be engineered" — the families and the
+ * individually denied modules listed in the module overview above. The fixed Mining
+ * Laser, fixed Abrasion Blaster and size-5 class-2 Module Reinforcement Package are the
+ * exceptions: their stock articles take nothing, but their grade-1 Mercenary articles can
+ * be upgraded through the bespoke recipes recorded in `ships/pre-engineered`.
+ * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
+ * Accelerator, which upstream denies every blueprint.
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
  * @returns The group id, or `null` when the module is not in the catalogue.
@@ -212,7 +216,7 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
 }
 
 /**
- * Every blueprint a module can be engineered with.
+ * Every blueprint in a stock module's ordinary engineering menu.
  *
  * Matching is case-insensitive and trims whitespace. A module this catalogue does not
  * group yields an empty array, never `null`, so the result is always safe to iterate —
@@ -260,21 +264,19 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
 }
 
 /**
- * Every experimental effect a module can take — its group's list, minus the effects
- * that particular module is excluded from.
+ * Every experimental effect in a stock module's ordinary menu — its group's list, minus
+ * the effects that particular module is excluded from.
  *
- * Most modules take their whole group's list, but 24 are exceptions: 13 Multi-cannons
- * cannot take Phasing Sequence, six dumbfire racks cannot take Drag Munitions, four
- * missile racks are short of Penetrator Munitions or FSD Interrupt, and the small fixed
- * Abrasion Blaster takes blueprints but no experimental at all. Those are applied here,
- * so the result is the exact set for this module.
+ * Most modules take their whole group's list, but 23 are exceptions: 13 Multi-cannons
+ * cannot take Phasing Sequence, six dumbfire racks cannot take Drag Munitions, and four
+ * missile racks are short of Penetrator Munitions or FSD Interrupt. Those are applied
+ * here, so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 388
- * of the 1028 grouped modules have no experimental slot: 387 sit in the 30 of 53 groups
+ * **An empty array is the common answer, and it usually means "blueprints only".** 387
+ * of the 1026 grouped modules have no experimental slot; all sit in the 30 of 52 groups
  * that offer none — life support, sensors, the limpet controllers, the utility scanners,
- * and every Guardian group, weapons and modules alike — and the Abrasion Blaster is
- * excluded from its group's only effect. An ungrouped module answers empty too;
- * {@link getEngineeringGroup} tells the two apart: it is `null` only for that one.
+ * and every Guardian group, weapons and modules alike. An ungrouped module answers empty
+ * too; {@link getEngineeringGroup} tells the two apart.
  *
  * @param symbol - A module symbol.
  * @returns Experimental-effect ids. Join to `EXPERIMENTAL_EFFECTS`.
@@ -290,7 +292,7 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * // The small Multi-cannon is one effect short — no Phasing Sequence.
  * getExperimentalsForModule('Hpt_MultiCannon_Fixed_Small').length; // -> 11
  *
- * // Grouped, so it has blueprints — but it takes no experimental.
+ * // The stock Abrasion Blaster has no ordinary engineering menu.
  * getExperimentalsForModule('Hpt_Mining_AbrBlstr_Fixed_Small'); // -> []
  * ```
  */

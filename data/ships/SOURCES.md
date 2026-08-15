@@ -379,10 +379,12 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     II's `Int_MkIIAgileBoost_Engine_*` thrusters.
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
-- **`kind` is the engineering family.** The 1028 records mapped by
+- **`kind` is the ordinary engineering-menu family.** The 1026 records mapped by
   `engineering-options.jsonc` repeat that map's group key in the compact on-disk `kind`
-  field. The remaining 171 records carry no `kind` because the pinned sources publish
-  no engineering family for them. The group source, derivation, split
+  field. Of the remaining 173 records, 171 carry no `kind` because the pinned sources
+  publish no engineering family for them; the fixed Mining Laser and Abrasion Blaster
+  omit the family as the in-game correction documented under Engineering options below.
+  The group source, derivation, split
   Guardian families and coverage are documented under Engineering options below; this
   field is a projection of that map, not a separate classification source.
 - **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
@@ -1344,7 +1346,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (53 groups covering 1028 engineerable modules) and each group lists the
+  grouped (52 groups covering 1026 ordinary engineering menus) and each group lists the
   `blueprints` and `experimentals` it offers.
 - **Source:** EDSY `eddb.js`, whose module-group tables carry each group's `blueprints`
   and `expeffects` lists and which modules belong to each group, and whose module records
@@ -1352,8 +1354,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   denials that narrow either list. Second registry: coriolis-data
   `modifications/modules.json`, which carries the same per-group lists keyed by the
   journal `BlueprintName`s this catalogue joins on.
-- **Coverage: every group EDSY's `mtype` table gives a `blueprints:` key.** That is 53
-  groups over 1028 modules, including bulkheads (the 241 ship armour records), life
+- **Coverage: every retained group EDSY's `mtype` table gives a `blueprints:` key.** After
+  the Mining Laser and Abrasion Blaster corrections below, that is 52 groups over 1026
+  modules, including
+  bulkheads (the 241 ship armour records), life
   support, sensors, the Detailed Surface Scanner, cargo racks, refineries, AFMUs, fuel
   scoops, FSD interdictors and boosters, Guardian module and shield reinforcement, the
   four engineerable limpet controllers, chaff, heat sink and caustic sink launchers,
@@ -1380,18 +1384,25 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **14 modules are absent because upstream denies them every blueprint:** eight AX
     multi-cannons (all but the two gimballed), five of the seven mining tools, and the
     Mk II Plasma Shock Accelerator — which is why `antiXenoMultiCannons` holds 2 of that
-    family's 10 modules, `miningToolsLasers` 2 of its 7 and `plasmaAccelerators` 4 of its 5.
+    family's 10 modules and `plasmaAccelerators` 4 of its 5. The other two mining tools
+    are the manually corrected Mining Laser and Abrasion Blaster below, so all seven lack
+    an ordinary menu and the empty `miningToolsLasers` group is not retained.
     The ten plain Module Reinforcement Packages are denied their family's only recipe
     and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
     packages.
-  - **The 171 modules absent take no engineering.** Whole families first, both registries
+  - **The 173 modules absent have no ordinary engineering menu.** For 171 this comes from
+    the pinned registries. Whole families first, both registries
     agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
     multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
     Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and
     vehicle hangars, the docking computers and Supercruise Assist, the module stabilisers,
     the planetary approach suites, the cargo hatch and
     the AX utility modules (Xeno Scanners, Shutdown Field Neutralisers), followed by the
-    individually denied modules described above.
+    individually denied modules described above. The other two are the fixed Mining Laser
+    and Abrasion Blaster, corrected from the registry-derived result below. They and the
+    size-5 class-2 Module Reinforcement Package within the registry-derived 171 have no
+    stock menu, but their purchased Mercenary articles remain upgradeable through their
+    bespoke recipes.
   - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
     three other entries are `_X_`-marked. The `Decorative_*` entries on the remote-release
@@ -1417,14 +1428,14 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the nine further groups it carries a list for —
     20 in all, every one an exact match. Chaff, heat sink, point defence and ECMs keep the
     generic `Misc_*` ids: there coriolis agrees with EDSY.
-  - **13 groups rest on EDSY alone**, because coriolis carries no blueprint list for
+  - **12 retained groups rest on EDSY alone**, because coriolis carries no blueprint list for
     them at all: the nine Guardian-only groups (`guardianPowerPlants`,
     `guardianPowerDistributors`, `guardianHullReinforcements`, `moduleReinforcements`,
     `shieldReinforcements`, `fsdBoosters`, `guardianGauss`, `guardianPlasma`,
-    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons`,
-    `miningToolsLasers` and `antiXenoMultiCannons`. That is coriolis being
+    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons` and
+    `antiXenoMultiCannons`. That is coriolis being
     silent rather than contradicting — its Guardian and anti-xeno groups are empty
-    objects — but it means the second registry corroborates 40 of the 53 groups, not
+    objects — but it means the second registry corroborates 40 of the 52 groups, not
     all of them. The Guardian-weapon menus are independently settled by the in-game
     observations below: stock weapons take Anti-Guardian Zone Resistance alone, while
     the pre-engineered articles are final.
@@ -1454,19 +1465,30 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **File order is derivable:** `modules` is written group by group in the order `groups`
   declares them, and within a group in module-catalogue order, so a re-derivation from the
   same sources reproduces the file rather than reshuffling it.
-- **`exclusions` are the exceptions, and they are real.** 24 modules take their group's
+- **`exclusions` are the exceptions, and they are real.** 23 modules take their group's
   blueprints but not all of its experimental effects: 13 Multi-cannons cannot take Phasing
   Sequence, six dumbfire racks cannot take Drag Munitions, four missile racks are short of
-  Penetrator Munitions or FSD Interrupt, and the small fixed Abrasion Blaster takes none
-  at all. Upstream these are an exclusion map (with a wildcard for "none of them"); here
-  the wildcard is expanded to the explicit list. A module absent from `exclusions` takes
-  its whole group's list. Five mining tools
+  Penetrator Munitions or FSD Interrupt. Upstream these are an exclusion map. A module
+  absent from `exclusions` takes its whole group's list. All seven mining tools
   that would otherwise be listed here are absent from the catalogue entirely, taking no
-  blueprint either.
-- **Kept deliberately:** the Abrasion Blaster stays in `modules` (it has a blueprint) even
-  though its experimental list is empty. That distinction carries most of the catalogue:
-  30 of the 53 groups offer no experimental at all, so 388 of the 1028 grouped modules
-  have an empty experimental list while retaining blueprints.
+  ordinary blueprint either.
+- **The fixed Mining Laser and Abrasion Blaster have no ordinary engineering menu.** Both
+  are removed from `modules`, despite EDSY assigning them to `miningToolsLasers` with
+  `Weapon_LongRange`; the Abrasion Blaster is also removed from `exclusions`, where EDSY
+  denies the group's experimental effect. Direct in-game menu confirmation recorded
+  2026-08-15 UTC establishes that neither stock article can receive ordinary engineering;
+  there is no immutable revision for an in-game observation. Their `Weapon_LongRange`
+  grade-5 states are separately catalogued reward articles with hand-set modifiers that
+  identify rather than reproduce them. This does not remove the Mercenary routes: both
+  are acquired at grade 1 with bespoke recipes (`MiningLaser_LongRange` and
+  `AbrasionBlaster_FarReaching`), whose sourced grades 2–5 remain applicable through the
+  `pre-engineered.jsonc` purchase records. A re-derivation from EDSY must reapply this
+  correction by dropping both module mappings, the now-empty `miningToolsLasers` group,
+  both projected `kind` fields in `modules-hardpoint.jsonc`, and the Abrasion Blaster's
+  now-unreachable experimental exclusion.
+- **An empty experimental menu is still distinct from no menu.** 30 of the 52 groups offer
+  no experimental at all, so 387 of the 1026 grouped modules have an empty experimental
+  list while retaining blueprints.
 - **Key form:** the Anti-Guardian blueprint is listed under `GuardianModule_Sturdy`, the id
   a Loadout writes and the one EDSY uses — the same and only spelling `blueprints.jsonc`
   keys it under.
