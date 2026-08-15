@@ -66,6 +66,7 @@ import {
     stringifySlef,
     type LoadoutEvent,
     type LoadoutModule,
+    type EngineeringModifier,
     type Slef,
     type SlefHeader,
 } from './slef.js';
@@ -512,6 +513,8 @@ export class ShipLoadout {
     readonly #shipSymbol: string;
     readonly #modules: Map<string, LoadoutModule>;
     readonly #moduleStats: Map<string, OutfittingModule>;
+    /** Primitive modifiers retained for calculations after journal presentation. */
+    readonly #primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /**
@@ -1031,7 +1034,7 @@ export class ShipLoadout {
         if (existing !== undefined) return existing;
         const raw = cloneLoadoutModule(module);
         const stats = this.#statsFor(module);
-        const effective = effectiveModule(raw, stats);
+        const effective = effectiveModule(this.#moduleForEffectiveStats(module), stats);
         const value = deepFreeze({
             slot: module.Slot,
             symbol: raw.Item,
@@ -1325,6 +1328,9 @@ export class ShipLoadout {
      * such as `BurstInterval` are exposed as the derived `RateOfFire` and
      * `DamagePerSecond` labels a journal writes. Module-specific aliases likewise use the
      * journal spelling (`MaximumRange` for a weapon and `Range` for a scanner).
+     * Recipe-only values remain available through {@link FittedModule.effectiveStats} and
+     * build calculations even though a journal does not serialize their labels; this is
+     * what keeps burst and reload-cycle calculations faithful after applying a recipe.
      *
      * **Which recipe an id names can depend on the module.** The game writes
      * `Sensor_LongRange` and `Sensor_WideAngle` for both a sensor suite's modification and a
@@ -1503,21 +1509,26 @@ export class ShipLoadout {
         // supersedes the stock split. Both catalogue shapes feed the same journal-label
         // synthesis below.
         const damageDistribution = experimental?.damageDistribution ?? grade.damageDistribution;
-        const modifiers = journalModifiersFor(
-            stats,
-            computeModifiers(base, canonical.grade, quality, canonical.experimental),
+        const primitiveModifiers = computeModifiers(
+            base,
+            canonical.grade,
+            quality,
+            canonical.experimental,
         );
+        const modifiers = journalModifiersFor(stats, primitiveModifiers);
         if (damageDistribution) {
             for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
                 const value = damageDistribution[type];
                 if (value === undefined) continue;
                 const label = labelsForDamageType(type)[0];
                 if (label === undefined) continue;
-                modifiers.push({
+                const damageModifier = {
                     Label: label,
                     Value: value * scaleForLabel(label),
                     OriginalValue: (stats.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
-                });
+                };
+                modifiers.push(damageModifier);
+                primitiveModifiers.push(damageModifier);
             }
         }
         const engineering: ModuleEngineering = {
@@ -1527,7 +1538,12 @@ export class ShipLoadout {
             ...(wantedExperimental !== undefined ? { ExperimentalEffect: wantedExperimental } : {}),
             Modifiers: modifiers,
         };
-        this.#replaceModule(module.Slot, { ...module, Engineering: engineering });
+        this.#replaceModule(
+            module.Slot,
+            { ...module, Engineering: engineering },
+            undefined,
+            primitiveModifiers,
+        );
         return this;
     }
 
@@ -1963,7 +1979,7 @@ export class ShipLoadout {
     heatMetrics(): HeatMetrics | null {
         const input = heatInputFor(
             this.#shipSymbol,
-            [...this.#modules.values()],
+            this.#modulesForEffectiveStats(),
             this.powerBudget(),
             (module) => this.#statsFor(module),
         );
@@ -2203,7 +2219,7 @@ export class ShipLoadout {
         const weapons: FittedWeaponMetrics[] = [];
         for (const module of this.#modules.values()) {
             const record = this.#statsFor(module);
-            const stats = weaponStatsFor(module, record);
+            const stats = weaponStatsFor(this.#moduleForEffectiveStats(module), record);
             if (!stats) continue;
             weapons.push({
                 slot: module.Slot,
@@ -2251,7 +2267,7 @@ export class ShipLoadout {
         }
         return weaponsCapacitorMetrics(
             weaponsCapacitorInputFor(
-                [...this.#modules.values()],
+                this.#modulesForEffectiveStats(),
                 weaponsPips,
                 this.powerBudget(),
                 (module) => this.#statsFor(module),
@@ -2408,6 +2424,21 @@ export class ShipLoadout {
         return fitted === undefined ? null : this.#statsFor(fitted);
     }
 
+    /** Internal fitted state with recipe-only modifiers restored for effective calculations. */
+    #moduleForEffectiveStats(module: LoadoutModule): LoadoutModule {
+        const modifiers = this.#primitiveModifiers.get(module.Slot);
+        if (modifiers === undefined || module.Engineering === undefined) return module;
+        return {
+            ...module,
+            Engineering: { ...module.Engineering, Modifiers: modifiers },
+        };
+    }
+
+    /** Every fitted module in its effective-calculation representation. */
+    #modulesForEffectiveStats(): LoadoutModule[] {
+        return [...this.#modules.values()].map((module) => this.#moduleForEffectiveStats(module));
+    }
+
     /** A proposed edit's newly increased limit excess, or `null` when it worsens none. */
     #moduleLimitRegression(
         slotKey: string,
@@ -2450,15 +2481,19 @@ export class ShipLoadout {
         slotKey: string,
         replacement: LoadoutModule | null,
         replacementStats?: OutfittingModule,
+        primitiveModifiers?: readonly EngineeringModifier[],
     ): void {
         const previous = this.#modules.get(slotKey) ?? null;
         this.#adjustImportedFigures(previous, replacement, replacementStats);
         if (replacement === null) {
             this.#modules.delete(slotKey);
             this.#moduleStats.delete(slotKey);
+            this.#primitiveModifiers.delete(slotKey);
         } else {
             this.#modules.set(slotKey, cloneLoadoutModule(replacement));
             if (replacementStats !== undefined) this.#moduleStats.set(slotKey, replacementStats);
+            if (primitiveModifiers === undefined) this.#primitiveModifiers.delete(slotKey);
+            else this.#primitiveModifiers.set(slotKey, primitiveModifiers);
         }
         this.#invalidate();
     }

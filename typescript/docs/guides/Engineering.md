@@ -67,7 +67,7 @@ const mods = computeModifiers(
     1, // quality: 0 is the worst roll, 1 the best
     getExperimentalEffect('special_fsd_heavy')!,
 );
-// -> [{ Label: 'FSDOptimalMass', Value: 7528.04, OriginalValue: 4670 }]
+// -> [{ Label: 'FSDOptimalMass', Value: 7528.039551, OriginalValue: 4670 }]
 ```
 
 Each contribution names a modifier label and an apply method — `multiplicative` (the
@@ -90,7 +90,10 @@ the internal fire interval, then the journal presentation exposes the resulting
 `RateOfFire` and `DamagePerSecond` rather than storing `BurstInterval`.
 
 A compact build reconstructed from blueprint, grade, quality and experimental effect
-therefore behaves like the equivalent journal import:
+therefore writes the equivalent journal modifier block while retaining recipe-only values
+for `effectiveStats` and build calculations. A later journal import can only recover what
+the journal serialized; the live reconstructed build also knows the burst interval or
+burst size the recipe changed:
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

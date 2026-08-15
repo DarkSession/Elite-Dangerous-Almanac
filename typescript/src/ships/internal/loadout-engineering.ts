@@ -21,6 +21,7 @@ import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { FITTED_ITEM } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
 import type { BlueprintGrade, ExperimentalEffect } from '../engineering.js';
+import { preciseModifierValue } from './engineering-precision.js';
 
 /** Engineering groups whose non-menu recipes identify final bought articles. */
 const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
@@ -274,8 +275,8 @@ const round6 = (value: number): number => {
     return Object.is(rounded, -0) ? 0 : rounded;
 };
 
-/** Frontier's firing-cycle calculation, with a float stored after every operation. */
-function float32RateOfFire(
+/** Frontier's firing-cycle duration, with a float stored after every operation. */
+function float32FiringCycle(
     interval: number,
     burstRounds: number,
     burstRateOfFire: number,
@@ -286,15 +287,39 @@ function float32RateOfFire(
             ? Math.fround(Math.fround(burstRounds - 1) / Math.fround(burstRateOfFire))
             : 0;
     const cycle = Math.fround(withinBurst + Math.fround(interval));
-    return cycle > 0 ? Math.fround(Math.fround(burstRounds) / cycle) : undefined;
+    return cycle > 0 ? cycle : undefined;
 }
 
-/** A discrete weapon's displayed DPS, using the same stored-float boundaries. */
-function float32DamagePerSecond(damage: number, rounds: number, rate: number): number {
+/** Frontier's firing rate derived from one stored firing cycle. */
+function float32RateOfFire(
+    interval: number,
+    burstRounds: number,
+    burstRateOfFire: number,
+): number | undefined {
+    const cycle = float32FiringCycle(interval, burstRounds, burstRateOfFire);
+    return cycle === undefined ? undefined : Math.fround(Math.fround(burstRounds) / cycle);
+}
+
+/** A discrete weapon's displayed DPS, using a cycle directly when one is available. */
+function float32DamagePerSecond(
+    damage: number,
+    rounds: number,
+    rate: number,
+    burstRounds: number,
+    cycle?: number,
+): number {
+    if (cycle !== undefined && (rounds !== 1 || burstRounds !== 1)) {
+        const damagePerCycle = Math.fround(
+            Math.fround(Math.fround(damage) * Math.fround(rounds)) * Math.fround(burstRounds),
+        );
+        return Math.fround(damagePerCycle / cycle);
+    }
     return Math.fround(Math.fround(Math.fround(damage) * Math.fround(rounds)) * Math.fround(rate));
 }
 
 const JOURNAL_MODIFIER_ORDER = [
+    'CargoCapacity',
+    'GuardianModuleResistance',
     'Mass',
     'Integrity',
     'PowerDraw',
@@ -302,28 +327,44 @@ const JOURNAL_MODIFIER_ORDER = [
     'PowerCapacity',
     'HeatEfficiency',
     'FSDOptimalMass',
+    'MaxFuelPerJump',
+    'FSDHeatRate',
     'EngineOptimalMass',
     'EngineOptPerformance',
     'EngineHeatRate',
+    'ShieldGenOptimalMass',
+    'ShieldGenStrength',
     'DamagePerSecond',
     'Damage',
     'DistributorDraw',
     'ThermalLoad',
+    'ArmourPenetration',
+    'MaximumRange',
+    'ShotSpeed',
     'RateOfFire',
-    'Jitter',
+    'DamageType',
+    '$Kinetic;',
+    '$Thermal;',
+    '$Explosive;',
+    '$Absolute;',
     'AmmoClipSize',
     'AmmoMaximum',
     'ReloadTime',
-    'MaximumRange',
+    'Jitter',
     'DamageFalloffRange',
     'DefenceModifierShieldMultiplier',
     'DefenceModifierHealthMultiplier',
     'DefenceModifierHealthAddition',
+    'DefenceModifierShieldAddition',
     'RegenRate',
     'BrokenRegenRate',
+    'EnergyPerRegen',
     'KineticResistance',
     'ThermicResistance',
     'ExplosiveResistance',
+    'CausticResistance',
+    'DamageProtection',
+    'ModuleDefenceAbsorption',
     'WeaponsCapacity',
     'WeaponsRecharge',
     'EnginesCapacity',
@@ -331,12 +372,18 @@ const JOURNAL_MODIFIER_ORDER = [
     'SystemsCapacity',
     'SystemsRecharge',
     'ShieldBankSpinUp',
+    'ShieldBankDuration',
     'ShieldBankReinforcement',
     'ShieldBankHeat',
     'FSDInterdictorRange',
     'FSDInterdictorFacingLimit',
     'SensorTargetScanAngle',
+    'MaxAngle',
+    'ScannerTimeToScan',
     'Range',
+    'DSS_PatchRadius',
+    'FuelScoopRate',
+    'FuelCapacity',
 ] as const;
 
 const JOURNAL_MODIFIER_RANK: ReadonlyMap<string, number> = new Map(
@@ -374,8 +421,10 @@ export function journalModifiersFor(
     modifiers: EngineeringModifier[],
 ): EngineeringModifier[] {
     const weapon = stats.damage !== undefined;
-    const valueFor = (label: string, fallback: number): number =>
-        modifiers.find((modifier) => modifier.Label === label)?.Value ?? Math.fround(fallback);
+    const valueFor = (label: string, fallback: number): number => {
+        const modifier = modifiers.find((candidate) => candidate.Label === label);
+        return (modifier && preciseModifierValue(modifier)) ?? Math.fround(fallback);
+    };
     const burstTouched = ['BurstInterval', 'BurstSize', 'BurstRateOfFire'].some((label) =>
         modifiers.some((modifier) => modifier.Label === label),
     );
@@ -398,26 +447,32 @@ export function journalModifiersFor(
         } else {
             const burstRounds = valueFor('BurstSize', stats.burstRounds ?? 1);
             const burstRate = valueFor('BurstRateOfFire', stats.burstRateOfFire ?? 1);
+            const baseBurstRounds = Math.fround(stats.burstRounds ?? 1);
+            const baseBurstRate = Math.fround(stats.burstRateOfFire ?? 1);
+            const baseInterval =
+                stats.burstInterval === undefined ? undefined : Math.fround(stats.burstInterval);
+            const baseCycle =
+                baseInterval === undefined
+                    ? undefined
+                    : float32FiringCycle(baseInterval, baseBurstRounds, baseBurstRate);
             const baseRate =
-                stats.burstInterval !== undefined
-                    ? float32RateOfFire(
-                          Math.fround(stats.burstInterval),
-                          Math.fround(stats.burstRounds ?? 1),
-                          Math.fround(stats.burstRateOfFire ?? 1),
-                      )
+                baseInterval !== undefined
+                    ? float32RateOfFire(baseInterval, baseBurstRounds, baseBurstRate)
                     : stats.rateOfFire === undefined
                       ? undefined
                       : Math.fround(stats.rateOfFire);
-            const effectiveRate = modifiers.find(
-                (modifier) => modifier.Label === 'RateOfFire',
-            )?.Value;
+            const rateModifier = modifiers.find((modifier) => modifier.Label === 'RateOfFire');
+            const effectiveRate = rateModifier && preciseModifierValue(rateModifier);
+            const effectiveInterval = valueFor('BurstInterval', stats.burstInterval ?? 0);
+            const effectiveCycle =
+                effectiveRate === undefined
+                    ? float32FiringCycle(effectiveInterval, burstRounds, burstRate)
+                    : undefined;
             const rate =
                 effectiveRate ??
-                float32RateOfFire(
-                    valueFor('BurstInterval', stats.burstInterval ?? 0),
-                    burstRounds,
-                    burstRate,
-                );
+                (effectiveCycle === undefined
+                    ? undefined
+                    : Math.fround(Math.fround(burstRounds) / effectiveCycle));
             if (baseRate !== undefined && rate !== undefined) {
                 const stockRounds = Math.fround(stats.roundsPerShot ?? 1);
                 const effectiveRounds = Math.fround(
@@ -428,9 +483,23 @@ export function journalModifiersFor(
                 );
                 damagePerSecond = {
                     Label: 'DamagePerSecond',
-                    Value: round6(float32DamagePerSecond(effectiveDamage, effectiveRounds, rate)),
+                    Value: round6(
+                        float32DamagePerSecond(
+                            effectiveDamage,
+                            effectiveRounds,
+                            rate,
+                            burstRounds,
+                            effectiveCycle,
+                        ),
+                    ),
                     OriginalValue: round6(
-                        float32DamagePerSecond(baseDamage, stockRounds, baseRate),
+                        float32DamagePerSecond(
+                            baseDamage,
+                            stockRounds,
+                            baseRate,
+                            baseBurstRounds,
+                            baseCycle,
+                        ),
                     ),
                 };
                 if (burstTouched) {

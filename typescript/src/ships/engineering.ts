@@ -46,7 +46,7 @@
  *   1,
  *   getExperimentalEffect('special_fsd_heavy')!,
  * );
- * // -> [{ Label: 'FSDOptimalMass', Value: 7528.04, OriginalValue: 4670 }]
+ * // -> [{ Label: 'FSDOptimalMass', Value: 7528.039551, OriginalValue: 4670 }]
  * ```
  *
  * @packageDocumentation
@@ -54,7 +54,12 @@
 
 import type { EngineeringModifier } from './slef.js';
 import type { DamageDistribution } from './modules.js';
-import { capabilityValueForLabel, multiplierBaseForLabel } from './internal/module-stat-labels.js';
+import {
+    capabilityValueForLabel,
+    multiplierBaseForLabel,
+    scaleForLabel,
+} from './internal/module-stat-labels.js';
+import { withPreciseModifierValue } from './internal/engineering-precision.js';
 
 /** How a modifier value is applied to a base stat. */
 export type ModifierMethod = 'multiplicative' | 'additive' | 'overwrite';
@@ -180,6 +185,16 @@ const round6 = (n: number): number => {
     return Object.is(rounded, -0) ? 0 : rounded;
 };
 
+/** Stats whose catalogue ratio is stored as float32 before journal percentage scaling. */
+const FLOAT32_SCALED_BASE_LABELS: ReadonlySet<string> = new Set([
+    'EngineOptPerformance',
+    'EngineMinPerformance',
+    'EngineMaxPerformance',
+    'ShieldGenStrength',
+    'ShieldGenMinStrength',
+    'ShieldGenMaxStrength',
+]);
+
 /**
  * Compute the primitive stat modifiers a blueprint (and optional experimental effect)
  * produces on a set of base stats.
@@ -265,7 +280,13 @@ export function computeModifiers(
         const overwrite = contributions.find((c) => c.method === 'overwrite');
         const multiplierBase = multiplierBaseForLabel(label);
         const original =
-            baseValue === undefined ? undefined : float32JournalValue(baseValue, multiplierBase);
+            baseValue === undefined
+                ? undefined
+                : float32JournalValue(
+                      baseValue,
+                      multiplierBase,
+                      FLOAT32_SCALED_BASE_LABELS.has(label) ? scaleForLabel(label) : 1,
+                  );
         // A stat the module does not carry cannot be *scaled*, but it can still be set or
         // added to: an overwrite replaces it outright (Double Shot gives a burst size to
         // a weapon that fires one round at a time) and an addition starts from zero
@@ -316,24 +337,31 @@ export function computeModifiers(
         } else if (label === 'AmmoMaximum' && !overwrite) {
             value = Math.round(value);
         }
-        modifiers.push({
-            Label: label,
-            Value: round6(value),
-            // A stat the module never carried has no original value to report — except a
-            // percentage-of-a-multiplier stat, whose absence *is* a value: 0%, exactly as
-            // a journal reports it.
-            ...(original === undefined && multiplierBase === null
-                ? {}
-                : { OriginalValue: round6(original ?? 0) }),
-        });
+        modifiers.push(
+            withPreciseModifierValue(
+                {
+                    Label: label,
+                    Value: round6(value),
+                    // A stat the module never carried has no original value to report — except a
+                    // percentage-of-a-multiplier stat, whose absence *is* a value: 0%, exactly as
+                    // a journal reports it.
+                    ...(original === undefined && multiplierBase === null
+                        ? {}
+                        : { OriginalValue: round6(original ?? 0) }),
+                },
+                value,
+            ),
+        );
     }
     const resolved = resolveFalloffFromRange(modifiers, base);
     return clipIsOverwritten ? resolved : roundClipToWholeBursts(resolved, base);
 }
 
 /** Recreate the float backing a journal percentage-of-a-multiplier value. */
-function float32JournalValue(value: number, multiplierBase: number | null): number {
-    if (multiplierBase === null) return Math.fround(value);
+function float32JournalValue(value: number, multiplierBase: number | null, scale: number): number {
+    if (multiplierBase === null) {
+        return Math.fround(Math.fround(value / scale) * scale);
+    }
     const factor = Math.fround(1 + value / multiplierBase);
     return Math.fround(Math.fround(factor - 1) * multiplierBase);
 }

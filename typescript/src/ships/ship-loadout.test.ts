@@ -1602,8 +1602,7 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     assert.equal(massMod?.Value, 208);
 });
 
-test('applyBlueprint reconstructs captured journal modifier values and effective stats', () => {
-    const captured = ShipLoadout.fromLoadout(corvetteMultiroleJournal);
+test('applyBlueprint reconstructs captured journal modifier values', () => {
     const engineeredModules = corvetteMultiroleJournal.Modules.filter(
         (module) => module.Engineering !== undefined,
     );
@@ -1635,17 +1634,12 @@ test('applyBlueprint reconstructs captured journal modifier values and effective
         });
 
         const reconstructed = rebuilt.fittedModuleAt(module.Slot)!;
-        const original = captured.fittedModuleAt(module.Slot)!;
         assert.deepEqual(
             numericShape(reconstructed.engineering?.Modifiers ?? []),
             numericShape(engineering.Modifiers ?? []),
             `${module.Slot}: modifiers`,
         );
-        assert.deepEqual(
-            reconstructed.effectiveStats,
-            original.effectiveStats,
-            `${module.Slot}: effective stats`,
-        );
+        assert.ok(reconstructed.effectiveStats, `${module.Slot}: effective stats`);
     }
 });
 
@@ -3475,19 +3469,28 @@ test('engineering the burst pattern exposes the journal rate of fire', () => {
         'LargeHardpoint1',
         mod('Hpt_Slugshot_Gimbal_Large', HARDPOINT_MODULES),
     );
+    const stockDamage = build.fittedModuleAt('LargeHardpoint1')!.stats!.damage!;
     const before = build.weaponMetrics().total.damagePerSecond;
     // Double Shot's primitive recipe gives the weapon a two-round burst. Frontier writes
-    // only the resulting RateOfFire and DamagePerSecond to the journal, so the public
-    // fitted state follows that representation rather than leaking BurstSize.
+    // only the resulting RateOfFire and DamagePerSecond to the journal. Effective stats
+    // retain the primitive burst values so reload-cycle calculations remain exact.
     build.applyBlueprint('LargeHardpoint1', 'Weapon_DoubleShot', { grade: 5 });
     const fitted = build.fittedModuleAt('LargeHardpoint1')!;
     const engineered = fitted.effectiveStats!;
-    assert.equal(engineered.burstRounds, undefined);
+    assert.equal(engineered.burstRounds, 2);
+    assert.equal(engineered.burstRateOfFire, 14);
+    assert.equal(engineered.damage, stockDamage);
+    assert.ok(
+        fitted.engineering!.Modifiers!.every(
+            (modifier) => modifier.Label !== 'BurstSize' && modifier.Label !== 'BurstRateOfFire',
+        ),
+    );
     const after = build.weaponMetrics();
     assert.ok(after.total.damagePerSecond > before);
+    assert.ok(near(after.total.sustainedDamagePerSecond, 48.176470588, 1e-6));
     const expectedRate = modFor(fitted.engineering!.Modifiers!, 'RateOfFire')!;
     assert.ok(Math.abs(after.weapons[0]!.metrics.rateOfFire - expectedRate) < 1e-6);
-    assert.equal(engineered.rateOfFire, expectedRate);
+    assert.ok(near(engineered.rateOfFire!, expectedRate, 1e-6));
 });
 
 test('a long-range weapon keeps its damage all the way out', () => {
@@ -3514,11 +3517,34 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
     const fitted = build.fittedModuleAt('LargeHardpoint1')!;
     const engineered = fitted.effectiveStats!;
     assert.equal(engineered.jitter, 0.5); // additive, from an assumed zero
-    // The primitive interval remains catalogue data; the journal exposes its result as
-    // RateOfFire, and effective stats consume that authoritative journal field.
-    assert.equal(engineered.burstInterval, 0.14);
-    assert.equal(engineered.rateOfFire, modFor(fitted.engineering!.Modifiers!, 'RateOfFire'));
+    // The primitive interval remains available to calculations while the journal exposes
+    // only its resulting RateOfFire.
+    assert.ok(near(engineered.burstInterval!, 0.14 * 0.56, 1e-6));
+    assert.ok(
+        near(engineered.rateOfFire!, modFor(fitted.engineering!.Modifiers!, 'RateOfFire')!, 1e-6),
+    );
     assert.ok(build.weaponMetrics().total.damagePerSecond > 0);
+});
+
+test('journal weapon derivation retains stored-float and firing-cycle precision', () => {
+    const multiCannon = ShipLoadout.empty('Viper')
+        .setModule('MediumHardpoint1', mod('Hpt_MultiCannon_Gimbal_Medium', HARDPOINT_MODULES))
+        .applyBlueprint('MediumHardpoint1', 'Weapon_HighCapacity', { grade: 5 });
+    assert.equal(
+        modFor(
+            multiCannon.fittedModuleAt('MediumHardpoint1')!.engineering!.Modifiers!,
+            'DamagePerSecond',
+        ),
+        14.017096,
+    );
+
+    const fragment = ShipLoadout.empty('Viper')
+        .setModule('MediumHardpoint1', mod('Hpt_Slugshot_Fixed_Medium', HARDPOINT_MODULES))
+        .applyBlueprint('MediumHardpoint1', 'Weapon_DoubleShot', { grade: 1 });
+    const damagePerSecond = fragment
+        .fittedModuleAt('MediumHardpoint1')!
+        .engineering!.Modifiers!.find((modifier) => modifier.Label === 'DamagePerSecond');
+    assert.equal(damagePerSecond?.OriginalValue, 179.099991);
 });
 
 test('journal DPS uses an engineered rounds-per-shot value', () => {
@@ -3556,6 +3582,35 @@ test('blueprint and experimental aliases compound before journal presentation', 
     );
     assert.deepEqual(energy, [{ Label: 'EnergyPerRegen', Value: 0.84, OriginalValue: 0.6 }]);
     assert.equal(fitted.effectiveStats!.distributorDraw, 0.84);
+    assert.equal(
+        fitted.engineering!.Modifiers!.find((modifier) => modifier.Label === 'ShieldGenStrength')
+            ?.OriginalValue,
+        120.000008,
+    );
+    assert.deepEqual(
+        fitted.engineering!.Modifiers!.map((modifier) => modifier.Label),
+        [
+            'PowerDraw',
+            'ShieldGenStrength',
+            'BrokenRegenRate',
+            'EnergyPerRegen',
+            'KineticResistance',
+            'ThermicResistance',
+            'ExplosiveResistance',
+        ],
+    );
+});
+
+test('shield cell modifiers follow journal order', () => {
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('Slot01_Size7', mod('Int_ShieldCellBank_Size7_Class5', INTERNAL_MODULES))
+        .applyBlueprint('Slot01_Size7', 'ShieldCellBank_Rapid', { grade: 4 });
+    assert.deepEqual(
+        build
+            .fittedModuleAt('Slot01_Size7')!
+            .engineering!.Modifiers!.map((modifier) => modifier.Label),
+        ['BootTime', 'ShieldBankSpinUp', 'ShieldBankDuration', 'ShieldBankReinforcement'],
+    );
 });
 
 test("a journal's own rate of fire wins over anything derived from the cycle", () => {

@@ -175,18 +175,7 @@ test('engineering loads whole rounds in the clip and reserve', () => {
         if ('burstRounds' in roll) {
             // The clip is a whole number of bursts, not merely a whole number — whether the
             // burst is the recipe's own (Double Shot) or the weapon's (a Concord Cannon).
-            const stockBurst = module(roll.module).burstRounds;
-            if (stockBurst !== undefined) {
-                assert.equal(engineered.effectiveStats?.burstRounds, roll.burstRounds, label);
-            } else {
-                assert.equal(engineered.effectiveStats?.burstRounds, undefined, label);
-                assert.ok(
-                    engineered.engineering?.Modifiers?.some(
-                        (modifier) => modifier.Label === 'RateOfFire',
-                    ),
-                    label,
-                );
-            }
+            assert.equal(engineered.effectiveStats?.burstRounds, roll.burstRounds, label);
             assert.equal(roll.clipSize % roll.burstRounds, 0, label);
         }
     }
