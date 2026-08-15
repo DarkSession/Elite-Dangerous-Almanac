@@ -507,7 +507,7 @@
         "optMass": 1785,
         "mass": 26,
         "integrity": 84,
-        "fsdHeatRate": 32.4
+        "fsdHeatRate": 32.400002
       },
       "unresolved": []
     },
@@ -540,8 +540,8 @@
         "falloffRange": 1500,
         "shotSpeed": 6299.209,
         "jitter": 1.5,
-        "thermalLoad": 19.8,
-        "armourPiercing": 90.9,
+        "thermalLoad": 19.800001,
+        "armourPiercing": 90.900002,
         "rateOfFire": 1.666667,
         "roundsPerShot": 12,
         "clipSize": 5,

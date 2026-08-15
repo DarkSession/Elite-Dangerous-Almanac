@@ -55,6 +55,8 @@ export interface FittedModule {
      * damage per second is resolved back to per-round damage and falloff is capped at
      * maximum range. Exact damage components follow the engineered total and disappear
      * when a damage conversion replaces them with a fractional distribution.
+     * A module engineered through {@link ShipLoadout.applyBlueprint} also retains
+     * recipe-only burst values that its journal-shaped modifier block does not serialize.
      */
     readonly effectiveStats: OutfittingModule | null;
     /** Fully rearmed ammunition capacity, or `null` for modules without ammunition. */
