@@ -1345,8 +1345,9 @@ export class ShipLoadout {
      * decorative modification, which names no recipe (see
      * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
-     * generic spelling of a recipe that menu lists under a family's name, or by being sold
-     * already carrying it; the fitted article is final and accepts no further engineering;
+     * generic spelling of a recipe that menu lists under a family's name, or by being a
+     * Mercenary article sold at grade 1 with that bespoke recipe; the fitted article is
+     * final and accepts no further engineering;
      * or the module is not offered the experimental effect, which its
      * menu alone decides; or the catalogue does not carry every base stat the recipe
      * modifies. Incomplete engineering is rejected rather than stored as a partial journal
@@ -1461,7 +1462,7 @@ export class ShipLoadout {
         }
         // The engineering menu is the authority on what a module accepts, so the same
         // catalogue answers `getBlueprintsForModule` and this gate. A module with no menu
-        // is not necessarily unengineerable: some are sold already carrying a recipe, and
+        // may still be a grade-1 Mercenary article carrying a bespoke upgrade recipe;
         // `blueprintAvailableFor` knows that, so ask it before blaming the module.
         if (!blueprintAvailableFor(module.Item, fdname)) {
             throw new TypeError(

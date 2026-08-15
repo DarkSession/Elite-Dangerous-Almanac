@@ -1921,7 +1921,6 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
-    "kind": "miningToolsLasers",
     "name": "Mining Laser",
     "mount": "Fixed",
     "class": 1,
@@ -3883,7 +3882,6 @@
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
-    "kind": "miningToolsLasers",
     "name": "Abrasion Blaster",
     "mount": "Fixed",
     "class": 1,

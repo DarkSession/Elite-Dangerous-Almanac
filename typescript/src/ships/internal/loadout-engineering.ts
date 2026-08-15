@@ -116,7 +116,8 @@ const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().star
  */
 function isSoldWithBlueprint(item: string, wanted: string): boolean {
     return getPreEngineeredVariants(item).some(
-        (variant) => !variant.engineeringLocked && variant.blueprint.toLowerCase() === wanted,
+        (variant) =>
+            variant.acquisition === 'mercenary' && variant.blueprint.toLowerCase() === wanted,
     );
 }
 
@@ -136,8 +137,11 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * recipes' shape says they belong together. Every id it does not recognise passes straight
  * through, so the two checks below see what the caller wrote.
  *
- * The second is {@link isSoldWithBlueprint}: a non-final module with no menu, or a menu
- * that omits the recipe, still accepts one it is sold already carrying. It is asked about
+ * The second is {@link isSoldWithBlueprint}: a Mercenary module with no menu, or a menu
+ * that omits its bespoke recipe, still accepts the grades above the grade 1 it is sold
+ * carrying. Community-goal and tech-broker rewards do not grant this permission: their
+ * ordinary blueprint ids identify fixed articles rather than recipes that can be applied
+ * to the stock module. The Mercenary check is asked about
  * the id as written
  * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
@@ -152,8 +156,8 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * `pre-engineered.jsonc` names the recipe the module rolls, never a spelling that would
  * resolve to a different one, and `pre-engineered.test.ts` asserts exactly that over the
  * whole catalogue — each row's `blueprint`, resolved on its own module, comes back
- * unchanged. That is a narrower claim than menu membership, which 29 rows do not have and
- * are not meant to: this leg exists for them. So the question does not arise; it is
+ * unchanged. That is a narrower claim than menu membership, which the 22 Mercenary rows
+ * do not have and are not meant to: this leg exists for them. So the question does not arise; it is
  * written down because the gate itself cannot catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families

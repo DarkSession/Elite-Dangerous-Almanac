@@ -291,13 +291,12 @@ test('the small Multi-cannon is exactly one effect short of its group', () => {
     assert.ok(!small.includes('special_phasing_sequence'));
 });
 
-test('an engineerable module with no experimental slot still has blueprints', () => {
-    // The Abrasion Blaster is grouped and takes blueprints but no experimental —
-    // distinct from a module the catalogue does not group, which has neither.
-    const symbol = 'Hpt_Mining_AbrBlstr_Fixed_Small';
-    assert.ok(getEngineeringGroup(symbol));
-    assert.ok(getBlueprintsForModule(symbol).length > 0);
-    assert.deepEqual(getExperimentalsForModule(symbol), []);
+test('the stock Mining Laser and Abrasion Blaster have no ordinary engineering menu', () => {
+    for (const symbol of ['Hpt_MiningLaser_Fixed_Small', 'Hpt_Mining_AbrBlstr_Fixed_Small']) {
+        assert.equal(getEngineeringGroup(symbol), null, symbol);
+        assert.deepEqual(getBlueprintsForModule(symbol), [], symbol);
+        assert.deepEqual(getExperimentalsForModule(symbol), [], symbol);
+    }
 });
 
 test('a blueprint query returns the union across every group offering it', () => {
@@ -344,7 +343,7 @@ const declared = corpus.flatMap((build) =>
         .map((module) => ({ symbol: module.item, ...module.engineering! })),
 );
 
-test('every module the build corpus declares as engineered is grouped, bar the Mk II weapon', () => {
+test('corpus engineering without an ordinary menu is explicitly classified', () => {
     assert.equal(declared.length, fixture.corpus.declaredEngineering);
     const ungrouped = declared.filter((entry) => getEngineeringGroup(entry.symbol) === null);
     assert.deepEqual(

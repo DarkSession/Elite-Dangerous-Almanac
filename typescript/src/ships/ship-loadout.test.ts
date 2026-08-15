@@ -2154,6 +2154,47 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
     );
 });
 
+test('stock mining tools refuse ordinary engineering but keep their Mercenary climbs', () => {
+    const cases = [
+        {
+            symbol: 'Hpt_MiningLaser_Fixed_Small',
+            blueprint: 'MiningLaser_LongRange',
+        },
+        {
+            symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small',
+            blueprint: 'AbrasionBlaster_FarReaching',
+        },
+    ] as const;
+
+    for (const { symbol, blueprint } of cases) {
+        const build = ShipLoadout.empty('Anaconda').setModule(
+            'SmallHardpoint1',
+            mod(symbol, HARDPOINT_MODULES),
+        );
+        assert.deepEqual(build.availableBlueprints('SmallHardpoint1'), [], symbol);
+        assert.throws(
+            () =>
+                build.applyBlueprint('SmallHardpoint1', 'Weapon_LongRange', {
+                    grade: 5,
+                    quality: 1,
+                }),
+            new RegExp(`no registry lists an engineering menu for module "${symbol}"`),
+        );
+
+        const mercenary = getPreEngineeredVariants(symbol).find(
+            (variant) => variant.acquisition === 'mercenary',
+        )!;
+        assert.equal(mercenary.grade, 1, symbol);
+        assert.equal(mercenary.blueprint, blueprint, symbol);
+        build.applyBlueprint('SmallHardpoint1', blueprint, { grade: 5, quality: 1 });
+        assert.equal(
+            build.fittedModuleAt('SmallHardpoint1')?.engineering?.BlueprintName,
+            blueprint,
+            symbol,
+        );
+    }
+});
+
 test('a final pre-engineered Guardian weapon exposes no engineering', () => {
     const variant = getPreEngineeredVariants('Hpt_Guardian_GaussCannon_Fixed_Medium')[0]!;
     const resolved = getPreEngineeredStats(variant)!;

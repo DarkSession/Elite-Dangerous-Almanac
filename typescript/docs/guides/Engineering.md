@@ -26,17 +26,21 @@ getExperimentalsForModule('Hpt_PulseLaser_Fixed_Small'); // the effects it takes
 ```
 
 {@link ships!ShipLoadout.applyBlueprint | applyBlueprint} reads that same catalogue and
-refuses a recipe it does not list for that module. That is the point: "what can I put on
-this?" and "may I put this on it?" are answered from one source, so a menu that offers a
-recipe the editor would reject is not a state this library can reach.
+refuses a recipe it does not list for that stock module, apart from the purchase-specific
+Mercenary climb described below. That is the point: "what can I put on this?" and "may I
+put this on it?" are answered from one source, so a menu that offers a recipe the editor
+would reject is not a state this library can reach.
 
 `ShipLoadout` includes the menu catalogue whether or not a consumer calls these methods.
 Using one catalogue keeps the editor and menu consistent.
 
-**Not every module engineers.** The catalogue groups 1028 of the 1199 modules; the rest
-take nothing — whole families like fuel tanks, passenger cabins and limpet controllers,
-plus individual modules upstream denies every recipe. A module with no group is not a gap
-in the data.
+**Not every stock module has an ordinary engineering menu.** The catalogue groups 1026 of
+the 1199 modules; the rest include whole families like fuel tanks, passenger cabins and
+limpet controllers, plus individual modules denied every ordinary recipe. Three are
+purchase-specific exceptions: the fixed Mining Laser, fixed Abrasion Blaster and size-5
+class-2 Module Reinforcement Package have no stock menu, while their grade-1 Mercenary
+articles can be upgraded through grades 2–5 of their bespoke recipes. A module with no
+group is therefore not a gap in the data.
 
 ### Why there is no family map
 
@@ -116,16 +120,18 @@ family's id, never for another generic one. `Misc_ChaffCapacity` and `Misc_HeatS
 are both "Ammo capacity" over the same three labels, but they roll different amounts of
 different ammunition, so neither may substitute for the other.
 
-**The pre-engineered route.** Most Operations keys belong to a module bought already
-engineered, so no menu lists one and the menu check alone would refuse all of them
-everywhere. `ships/pre-engineered` names which module each arrives on, and the gate accepts
-such a recipe on the non-final module sold carrying it and nowhere else — `RailGun_LongShot`
-resolves on the medium rail gun, not on the small one.
+**The Mercenary route.** The 22 Mercenary catalogue records describe modules bought
+already engineered at grade 1, so no ordinary menu lists their bespoke recipes and the
+menu check alone would refuse all of them everywhere. `ships/pre-engineered` names which
+module each arrives on, and the
+gate accepts that bespoke recipe on the module sold carrying it and nowhere else —
+`RailGun_LongShot` resolves on the medium rail gun, not on the small one. A community-goal
+or tech-broker reward does not open the same route merely because its record names an
+ordinary blueprint: that id identifies the fixed article.
 
 This route covers the **climb, not the purchase**. A Mercenary module arrives at grade 1 and
 its recipe publishes grades 2–5, the grades an engineer can still add; the grade it was sold
-at cannot be reproduced through this route, and a variant marked `engineeringLocked` never
-takes it at all.
+at cannot be reproduced through this route.
 
 ## Pre-engineered modules
 
