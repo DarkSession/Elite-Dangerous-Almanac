@@ -4,7 +4,8 @@
  * Ground truth for the engineering mechanics, cost, journal-collision and decorative
  * catalogues under data/ships/: the per-grade modifier legs and material recipes a blueprint
  * applies, each experimental effect's modifiers and one-application cost, the three decorative
- * transformations, the journal spellings that collide, and the engineered results those fold to.
+ * transformations, the journal spellings that collide, and the Frontier-float32 engineered
+ * results those fold to.
  */
 {
   "anchor": {
@@ -19,9 +20,9 @@
       "PowerDraw": 1.05
     },
     "expected": {
-      "FSDOptimalMass": 7528.04,
+      "FSDOptimalMass": 7528.039551,
       "Mass": 208,
-      "Integrity": 147.016,
+      "Integrity": 147.016006,
       "PowerDraw": 1.2075
     }
   },
@@ -103,7 +104,7 @@
             "Value": 66,
             "OriginalValue": 30
           },
-          { "Label": "ScannerRange", "Value": 5913.6, "OriginalValue": 6720 }
+          { "Label": "ScannerRange", "Value": 5913.600098, "OriginalValue": 6720 }
         ]
       },
       {
@@ -233,7 +234,7 @@
           "ThermalLoad": 15.58
         },
         "modifiers": [
-          { "Label": "Damage", "Value": 92.31, "OriginalValue": 54.3 },
+          { "Label": "Damage", "Value": 92.309998, "OriginalValue": 54.299999 },
           { "Label": "DistributorDraw", "Value": 11.6775, "OriginalValue": 8.65 },
           { "Label": "ThermalLoad", "Value": 17.917, "OriginalValue": 15.58 }
         ]

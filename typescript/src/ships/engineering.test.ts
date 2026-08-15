@@ -5,7 +5,12 @@ import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js'
 import { getBlueprintCost } from './blueprint-costs.js';
 import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import { blueprintAvailableFor, experimentalAvailableFor } from './internal/loadout-engineering.js';
+import {
+    blueprintAvailableFor,
+    experimentalAvailableFor,
+    journalModifiersFor,
+    primitiveEngineeringInputsFor,
+} from './internal/loadout-engineering.js';
 import {
     getBlueprintsForModule,
     getEngineeringGroup,
@@ -473,7 +478,7 @@ test('additive and multiplicative methods differ', () => {
         { label: 'X', method: 'additive', min: 0.1, max: 0.1 },
     ]);
     assert.equal(modFor(mult, 'X'), 110);
-    assert.equal(modFor(add, 'X'), 100.1);
+    assert.equal(modFor(add, 'X'), 100.099998);
 });
 
 test('each contribution keeps its own method on a label collision', () => {
@@ -485,7 +490,7 @@ test('each contribution keeps its own method on a label collision', () => {
         1,
         [{ label: 'X', method: 'additive', value: 5 }],
     );
-    assert.equal(modFor(mods, 'X'), 125);
+    assert.equal(modFor(mods, 'X'), 125.000008);
 });
 
 test('quality outside [0, 1] is rejected', () => {
@@ -564,6 +569,26 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
             combinedRateOfFire({ ...burstLaser, burstInterval: burstInterval.Value! })! -
                 3 / (2 / 15 + 0.5 * 0.56),
         ) < 1e-9,
+    );
+});
+
+test('modifier arithmetic uses Frontier float precision once', () => {
+    const rack = getModuleBySymbol('Hpt_DrunkMissileRack_Fixed_Medium', ALL_MODULES)!;
+    const modifiers = computeModifiers(
+        baseStats(rack),
+        getBlueprintGrade('Weapon_HighCapacity', 5)!,
+        1,
+        getExperimentalEffect('special_drag_munitions')!,
+    );
+    assert.equal(modFor(modifiers, 'BurstInterval'), 0.45);
+    assert.equal(modFor(modifiers, 'AmmoClipSize'), 24);
+    assert.deepEqual(
+        modifiers.find(({ Label }) => Label === 'PowerDraw'),
+        {
+            Label: 'PowerDraw',
+            Value: 1.44,
+            OriginalValue: 1.2,
+        },
     );
 });
 
@@ -737,6 +762,44 @@ test('the base stats a recipe scales come back in the journal spelling for the f
     const dss = baseStats(getModuleBySymbol('Int_DetailedSurfaceScanner_Tiny', ALL_MODULES)!);
     assert.equal(dss['ProbeRadius'], 20);
     assert.equal(dss['DSS_PatchRadius'], 20);
+});
+
+test('range aliases follow the field a module carries rather than its weapon category', () => {
+    const rangeContribution = {
+        label: 'Range',
+        method: 'multiplicative',
+        min: 0.5,
+        max: 0.5,
+    } as const;
+
+    // An ECM is not a weapon or scanner, but its effect distance is maximumRange. A
+    // future Range recipe must therefore stay on that field and export as MaximumRange.
+    const ecm = getModuleBySymbol('Hpt_ElectronicCountermeasure_Tiny', ALL_MODULES)!;
+    assert.equal(ecm.damage, undefined);
+    assert.equal(ecm.maximumRange, 3000);
+    assert.equal(ecm.scannerRange, undefined);
+    const maximumInputs = primitiveEngineeringInputsFor(ecm, {
+        features: [rangeContribution],
+    });
+    assert.equal(maximumInputs.grade.features[0]!.label, 'Range');
+    const maximumModifiers = computeModifiers(baseStats(ecm), maximumInputs.grade, 1);
+    assert.deepEqual(journalModifiersFor(ecm, maximumModifiers), [
+        { Label: 'MaximumRange', Value: 4500, OriginalValue: 3000 },
+    ]);
+
+    // A scanner carrying only scannerRange takes the journal's ambiguous Range spelling
+    // back to ScannerRange for arithmetic, then presents it as Range again.
+    const scanner = getModuleBySymbol('Hpt_CargoScanner_Size0_Class5', ALL_MODULES)!;
+    assert.equal(scanner.maximumRange, undefined);
+    assert.equal(scanner.scannerRange, 4000);
+    const scannerInputs = primitiveEngineeringInputsFor(scanner, {
+        features: [rangeContribution],
+    });
+    assert.equal(scannerInputs.grade.features[0]!.label, 'ScannerRange');
+    const scannerModifiers = computeModifiers(baseStats(scanner), scannerInputs.grade, 1);
+    assert.deepEqual(journalModifiersFor(scanner, scannerModifiers), [
+        { Label: 'Range', Value: 6000, OriginalValue: 4000 },
+    ]);
 });
 
 test('Overcharged leaves a cannon’s clip alone, as a real journal reports', () => {

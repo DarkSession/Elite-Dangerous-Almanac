@@ -61,12 +61,14 @@ function modifiersWithExperimental(
 }
 
 /**
- * The journal-style modifiers a pre-engineered variant applies to its base module.
+ * The primitive fixed modifiers a pre-engineered variant applies to its base module.
  *
  * Includes the variant's baked experimental effect. Only labels the module catalogues
  * carry a base value for can be computed; unsupported hand-set labels are listed by
- * {@link unresolvedModifiers}. The result is the same shape a journal `Loadout` reports
- * under `Engineering.Modifiers`, so it can be used to construct one.
+ * {@link unresolvedModifiers}. Labels remain in their recipe form, so burst-pattern
+ * internals such as `BurstInterval` are not converted into a journal's derived
+ * `RateOfFire` and `DamagePerSecond`; use {@link getPreEngineeredStats} when the resolved
+ * module stats are required.
  *
  * @param variant - A pre-engineered variant.
  * @returns One modifier per computable label, or an empty array when the variant carries
