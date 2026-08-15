@@ -5,11 +5,7 @@ import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js'
 import { getBlueprintCost } from './blueprint-costs.js';
 import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import {
-    blueprintAvailableFor,
-    experimentalAvailableFor,
-    isEngineerable,
-} from './internal/loadout-engineering.js';
+import { blueprintAvailableFor, experimentalAvailableFor } from './internal/loadout-engineering.js';
 import {
     getBlueprintsForModule,
     getEngineeringGroup,
@@ -427,10 +423,10 @@ test('the gate matches an id the way every other lookup does', () => {
 });
 
 test('a module no registry gives a menu takes no engineering', () => {
-    assert.ok(!isEngineerable('Int_FuelTank_Size5_Class3'));
+    assert.equal(getEngineeringGroup('Int_FuelTank_Size5_Class3'), null);
     assert.ok(!blueprintAvailableFor('Int_FuelTank_Size5_Class3', 'Misc_LightWeight'));
-    assert.ok(!isEngineerable('Hpt_MRAScanner_Size0_Class1'));
-    assert.ok(isEngineerable('Int_LifeSupport_Size4_Class2'));
+    assert.equal(getEngineeringGroup('Hpt_MRAScanner_Size0_Class1'), null);
+    assert.notEqual(getEngineeringGroup('Int_LifeSupport_Size4_Class2'), null);
 });
 
 test('computeModifiers reproduces the FSD Long Range G5 + Mass Manager anchor', () => {

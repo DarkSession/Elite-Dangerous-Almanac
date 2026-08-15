@@ -1479,10 +1479,12 @@ export class ShipLoadout {
         // may still be a grade-1 Mercenary article carrying a bespoke upgrade recipe;
         // `blueprintAvailableFor` knows that, so ask it before blaming the module.
         if (!blueprintAvailableFor(module.Item, fdname)) {
-            const offered = [...blueprintRoutesFor(module.Item).keys()];
+            const offered = [...blueprintRoutesFor(module.Item)].map(
+                ([blueprint, route]) => `${blueprint} (${route})`,
+            );
             throw new TypeError(
                 offered.length > 0
-                    ? `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered blueprint ${named}; it takes ${offered.join(', ')}`
+                    ? `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered blueprint ${named}; available candidates are ${offered.join(', ')}`
                     : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${truncate(module.Item)}"`,
             );
         }

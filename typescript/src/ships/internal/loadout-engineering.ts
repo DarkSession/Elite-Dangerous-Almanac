@@ -235,11 +235,6 @@ export function experimentalAvailableFor(item: string, fdname: string): boolean 
     return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
 }
 
-/** Whether any registry lists an engineering menu for this module at all. @internal */
-export function isEngineerable(item: string): boolean {
-    return getEngineeringGroup(item) !== null;
-}
-
 /**
  * Whether captured engineering identifies a final pre-engineered Guardian weapon.
  *

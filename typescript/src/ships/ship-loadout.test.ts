@@ -1642,7 +1642,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     // A recipe the drive's own menu does not list, and the menu is quoted back.
     assert.throws(
         () => build.applyBlueprint('FrameShiftDrive', 'Armour_HeavyDuty', { grade: 5 }),
-        /is not offered blueprint "Armour_HeavyDuty"; it takes FSD_FastBoot, FSD_LongRange, FSD_Shielded/,
+        /is not offered blueprint "Armour_HeavyDuty"; available candidates are FSD_FastBoot \(ordinary\), FSD_LongRange \(ordinary\), FSD_Shielded \(ordinary\)/,
     );
     assert.throws(
         () =>
@@ -2089,7 +2089,7 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
     // scanner's id, and the error quotes the menu it checked.
     assert.throws(
         () => build.applyBlueprint('Radar', 'Scanner_LongRange', { grade: 3 }),
-        /is not offered blueprint "Scanner_LongRange"; it takes Sensor_LightWeight/,
+        /is not offered blueprint "Scanner_LongRange"; available candidates are Sensor_LightWeight \(ordinary\)/,
     );
     // Once the two spellings differ, an error names both — the id the caller passed, and
     // the recipe this module would have rolled. Reporting one as the other is how a
@@ -2183,7 +2183,7 @@ test('stock mining tools refuse ordinary engineering but keep their Mercenary cl
                     quality: 1,
                 }),
             new RegExp(
-                `module "${symbol}" is not offered blueprint "Weapon_LongRange"; it takes ${blueprint}`,
+                `module "${symbol}" is not offered blueprint "Weapon_LongRange"; available candidates are ${blueprint} \\(mercenary\\)`,
             ),
         );
 
