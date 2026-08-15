@@ -3,7 +3,10 @@ import { test } from 'node:test';
 
 import fixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 import { DECORATIVE_MODIFICATIONS } from './decorative-modifications.js';
-import { getDecorativeModifiers } from './decorative-modification-stats.js';
+import {
+    getDecorativeModifiers,
+    unresolvedDecorativeModifiers,
+} from './decorative-modification-stats.js';
 
 const decorative = fixture.decorativeModifications;
 
@@ -16,6 +19,7 @@ test('decorative transformations resolve to journal-style modifiers', () => {
                 OriginalValue: decorative.resolved.baseDamage,
             },
         ]);
+        assert.deepEqual(unresolvedDecorativeModifiers(decorative.module, id), []);
     }
 });
 
@@ -39,26 +43,41 @@ test('the observational module list is not an allowlist', () => {
     const unobserved = 'Hpt_PulseLaser_Fixed_Small';
     const id = decorative.ids[0]!.id;
     assert.ok(!DECORATIVE_MODIFICATIONS[id]!.modules.includes(unobserved));
-    const [damage] = getDecorativeModifiers(unobserved, id);
+    const modifiers = getDecorativeModifiers(unobserved, id);
+    assert.ok(modifiers);
+    const [damage] = modifiers;
     assert.equal(damage?.Label, 'Damage');
     assert.ok(Math.abs(damage!.Value! - damage!.OriginalValue! * 0.01) < 1e-9);
 });
 
 test('unknown or absent identities are misses', () => {
-    assert.deepEqual(getDecorativeModifiers('not_a_real_module', decorative.ids[0]!.id), []);
-    assert.deepEqual(getDecorativeModifiers(decorative.module, 'Decorative_Unknown'), []);
-    assert.deepEqual(getDecorativeModifiers(null as unknown as string, decorative.ids[0]!.id), []);
-    assert.deepEqual(getDecorativeModifiers(decorative.module, null as unknown as string), []);
+    const id = decorative.ids[0]!.id;
+    assert.equal(getDecorativeModifiers('not_a_real_module', id), null);
+    assert.equal(unresolvedDecorativeModifiers('not_a_real_module', id), null);
+    assert.equal(getDecorativeModifiers(decorative.module, 'Decorative_Unknown'), null);
+    assert.equal(unresolvedDecorativeModifiers(decorative.module, 'Decorative_Unknown'), null);
+    assert.equal(getDecorativeModifiers(null as unknown as string, id), null);
+    assert.equal(unresolvedDecorativeModifiers(null as unknown as string, id), null);
+    assert.equal(getDecorativeModifiers(decorative.module, null as unknown as string), null);
+    assert.equal(unresolvedDecorativeModifiers(decorative.module, null as unknown as string), null);
+});
+
+test('a known pairing reports a purely multiplicative label with no base as unresolved', () => {
+    const moduleWithoutDamage = 'Int_Hyperdrive_Size5_Class5';
+    const id = decorative.ids[0]!.id;
+    assert.deepEqual(getDecorativeModifiers(moduleWithoutDamage, id), []);
+    assert.deepEqual(unresolvedDecorativeModifiers(moduleWithoutDamage, id), ['Damage']);
 });
 
 test('every authored label resolves for every observed module pairing', () => {
     for (const [id, modification] of Object.entries(DECORATIVE_MODIFICATIONS)) {
         const authored = modification.modifiers.map((modifier) => modifier.label).sort();
         for (const symbol of modification.modules) {
-            const resolved = getDecorativeModifiers(symbol, id)
-                .map((modifier) => modifier.Label)
-                .sort();
+            const modifiers = getDecorativeModifiers(symbol, id);
+            assert.ok(modifiers);
+            const resolved = modifiers.map((modifier) => modifier.Label).sort();
             assert.deepEqual(resolved, authored, `${symbol} / ${id}`);
+            assert.deepEqual(unresolvedDecorativeModifiers(symbol, id), [], `${symbol} / ${id}`);
         }
     }
 });
@@ -71,5 +90,16 @@ test('wrong-typed identities name the public resolver arguments', () => {
     assert.throws(() => getDecorativeModifiers(decorative.module, 42 as unknown as string), {
         name: 'TypeError',
         message: 'getDecorativeModifiers: fdname must be a string, received number 42',
+    });
+    assert.throws(
+        () => unresolvedDecorativeModifiers(42 as unknown as string, decorative.ids[0]!.id),
+        {
+            name: 'TypeError',
+            message: 'unresolvedDecorativeModifiers: symbol must be a string, received number 42',
+        },
+    );
+    assert.throws(() => unresolvedDecorativeModifiers(decorative.module, 42 as unknown as string), {
+        name: 'TypeError',
+        message: 'unresolvedDecorativeModifiers: fdname must be a string, received number 42',
     });
 });

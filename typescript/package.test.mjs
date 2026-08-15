@@ -21,7 +21,10 @@ import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials
 import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials';
 import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
-import { getDecorativeModifiers } from '@elite-dangerous-almanac/core/ships/decorative-modification-stats';
+import {
+    getDecorativeModifiers,
+    unresolvedDecorativeModifiers,
+} from '@elite-dangerous-almanac/core/ships/decorative-modification-stats';
 import { getDefaultLoadout } from '@elite-dangerous-almanac/core/ships/default-loadouts';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
 import { hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
@@ -213,6 +216,10 @@ test('fine-grained package subpaths resolve', () => {
     assert.deepEqual(getDecorativeModifiers('Hpt_FlakMortar_Turret_Medium', 'Decorative_Green'), [
         { Label: 'Damage', Value: 0.34, OriginalValue: 34 },
     ]);
+    assert.deepEqual(
+        unresolvedDecorativeModifiers('Hpt_FlakMortar_Turret_Medium', 'Decorative_Green'),
+        [],
+    );
     assert.equal(
         getDefaultLoadout('sidewinder')?.modules.find((module) => module.slot === 'FrameShiftDrive')
             ?.symbol,

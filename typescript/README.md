@@ -142,7 +142,9 @@ collide across module families; `resolveBlueprintForModule` resolves those journ
 spellings. Functions that ask what engineering a module accepts therefore take the
 module's `symbol`; functions that look up a recipe, effect or modification take its
 `fdname`. `getDecorativeModifiers` takes both identities to reconstruct the
-journal-style stat block of a fitted decorative transformation.
+journal-style stat block of a fitted decorative transformation;
+`unresolvedDecorativeModifiers` reports any authored labels the module catalogue could
+not compute.
 
 Personal-equipment modifications are keyed by their recipe symbol, just as ship
 blueprints and experimental effects are keyed by `fdname`; there is no second synthetic
