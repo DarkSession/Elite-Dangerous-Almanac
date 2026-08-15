@@ -1593,12 +1593,12 @@ export class ShipLoadout {
      * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
      *
      * const build = ShipLoadout.empty('Krait_MkII');
-     * const laser = getModuleBySymbol(
-     *   'Hpt_PulseLaser_Fixed_Small',
+     * const flak = getModuleBySymbol(
+     *   'Hpt_FlakMortar_Turret_Medium',
      *   HARDPOINT_MODULES,
      * )!;
      *
-     * build.setModule('MediumHardpoint1', laser)
+     * build.setModule('MediumHardpoint1', flak)
      *      .applyDecorativeModification('MediumHardpoint1', 'Decorative_Red');
      * build.fittedModuleAt('MediumHardpoint1')?.engineering?.BlueprintName;
      * // -> 'Decorative_Red'

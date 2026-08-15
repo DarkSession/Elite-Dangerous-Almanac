@@ -184,13 +184,22 @@ test('a modification block is either fully graded or fully grade-less', () => {
         ],
     });
 
+    assert.deepEqual(
+        inspectSlef(
+            engineering('Decorative_Red', {
+                Level: 1,
+                Quality: 0,
+            }),
+        ).diagnostics,
+        [],
+    );
+
     for (const [blueprint, fields, path] of [
         ['FSD_LongRange', { Level: 1, Modifiers: [] }, 'Quality'],
         ['FSD_LongRange', { Quality: 1, Modifiers: [] }, 'Level'],
         ['FSD_LongRange', { Modifiers: [] }, 'Level'],
         ['Decorative_Unknown', { Modifiers: [] }, 'Level'],
         ['Decorative_Red', {}, 'Modifiers'],
-        ['Decorative_Red', { Level: 1, Quality: 1, Modifiers: [] }, 'Level'],
         [
             'Decorative_Red',
             { ExperimentalEffect: 'special_test', Modifiers: [] },

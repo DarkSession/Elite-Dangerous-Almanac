@@ -279,7 +279,6 @@ const CONSTRAINT_MESSAGES: Record<Exclude<SlefConstraint, 'uniqueSlot'>, string>
     engineeringLevelRange: 'must be an integer from 1 to 5',
     unitInterval: 'must be a number from 0 to 1',
     binaryInteger: 'must be 0 or 1',
-    decorativeGradeAbsent: 'must be absent from a grade-less decorative block',
     decorativeExperimentalAbsent: 'must be absent from a grade-less decorative block',
     versionRequired: 'must be a string or finite number',
     loadoutEventRequired: 'must be "Loadout"',
@@ -297,12 +296,9 @@ function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | n
     if (typeof value.BlueprintName !== 'string')
         return invalid('invalidEngineering', `${path}.BlueprintName`, 'stringRequired');
     const decorative = isDecorativeModification(value.BlueprintName);
-    if (decorative) {
-        if (value.Level !== undefined)
-            return invalid('invalidEngineering', `${path}.Level`, 'decorativeGradeAbsent');
-        if (value.Quality !== undefined)
-            return invalid('invalidEngineering', `${path}.Quality`, 'decorativeGradeAbsent');
-    } else {
+    const graded = value.Level !== undefined || value.Quality !== undefined;
+    const gradeLessDecorative = decorative && !graded;
+    if (!gradeLessDecorative) {
         if (!isOptionalIntegerInRange(value.Level, 1, 5) || value.Level === undefined)
             return invalid('invalidEngineering', `${path}.Level`, 'engineeringLevelRange');
         if (!isOptionalNumberInRange(value.Quality, 0, 1) || value.Quality === undefined)
@@ -316,19 +312,19 @@ function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | n
             `${path}.ExperimentalEffect_Localised`,
             'stringRequired',
         );
-    if (decorative && value.ExperimentalEffect !== undefined)
+    if (gradeLessDecorative && value.ExperimentalEffect !== undefined)
         return invalid(
             'invalidEngineering',
             `${path}.ExperimentalEffect`,
             'decorativeExperimentalAbsent',
         );
-    if (decorative && value.ExperimentalEffect_Localised !== undefined)
+    if (gradeLessDecorative && value.ExperimentalEffect_Localised !== undefined)
         return invalid(
             'invalidEngineering',
             `${path}.ExperimentalEffect_Localised`,
             'decorativeExperimentalAbsent',
         );
-    if (decorative && !Array.isArray(value.Modifiers))
+    if (gradeLessDecorative && !Array.isArray(value.Modifiers))
         return invalid('invalidEngineering', `${path}.Modifiers`, 'arrayRequired');
     if (value.Modifiers !== undefined) {
         if (!Array.isArray(value.Modifiers))
@@ -478,7 +474,6 @@ export type SlefConstraint =
     | 'engineeringLevelRange'
     | 'unitInterval'
     | 'binaryInteger'
-    | 'decorativeGradeAbsent'
     | 'decorativeExperimentalAbsent'
     | 'versionRequired'
     | 'loadoutEventRequired'
