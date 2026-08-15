@@ -292,9 +292,10 @@ const LABELS_BY_FIELD: ReadonlyMap<keyof OutfittingModule, readonly string[]> = 
 })();
 
 /**
- * Convert catalogue stats to base values keyed by journal Modifier Label, **in the
- * journal's own units** — so the modifiers {@link computeModifiers} returns are
- * journal-shaped and can be written straight onto a fitted module.
+ * Convert catalogue stats to base values keyed by primitive modifier label, **in the
+ * journal's own units**. {@link computeModifiers} applies the recipe to these values once;
+ * the loadout adapter then presents that result under the module-specific labels a journal
+ * writes.
  *
  * @internal
  */

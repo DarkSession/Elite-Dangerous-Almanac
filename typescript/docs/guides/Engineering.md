@@ -54,7 +54,7 @@ per-module menu.
 A blueprint grade bounds each modifier, and the engineering **quality** roll picks a point
 in that range: `v = min + (max − min) × quality`. An experimental effect adds a fixed
 contribution on top. {@link ships!computeModifiers | computeModifiers} folds every
-contribution onto the module's base stats and hands back journal-style modifiers.
+contribution onto base values while preserving the recipe's primitive labels.
 
 ```ts
 import { computeModifiers } from '@elite-dangerous-almanac/core/ships/engineering';
@@ -70,7 +70,7 @@ const mods = computeModifiers(
 // -> [{ Label: 'FSDOptimalMass', Value: 7528.04, OriginalValue: 4670 }]
 ```
 
-Each contribution names a journal Label and an apply method — `multiplicative` (the
+Each contribution names a modifier label and an apply method — `multiplicative` (the
 percentages compound), `additive` (flat reinforcement) or `overwrite` (the value replaces
 the base). Two behaviors apply on top of those methods:
 
@@ -82,8 +82,15 @@ the base). Two behaviors apply on top of those methods:
   `{ Label: 'GuardianModuleResistance', ValueStr: 'Active' }`; its displayed `+100%` is not
   folded as a value, and effective module stats expose the granted boolean instead.
 
-On a build, all of this is one call, and it recomputes the derived stats — a weapon's rate
-of fire, for instance — that follow from what the recipe changed:
+`computeModifiers` uses Frontier's float32 arithmetic once. On a build,
+`applyBlueprint` presents that same result under the module-specific labels a journal
+writes; it does not run a second calculation. A weapon's `Range` recipe leg becomes
+`MaximumRange`, while a scanner's `ScannerRange` becomes `Range`. High Capacity changes
+the internal fire interval, then the journal presentation exposes the resulting
+`RateOfFire` and `DamagePerSecond` rather than storing `BurstInterval`.
+
+A compact build reconstructed from blueprint, grade, quality and experimental effect
+therefore behaves like the equivalent journal import:
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

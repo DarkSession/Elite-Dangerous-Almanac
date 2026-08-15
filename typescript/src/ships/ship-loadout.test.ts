@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { ShipLoadout } from './ship-loadout.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import type { LoadoutEvent } from './slef.js';
+import type { EngineeringModifier, LoadoutEvent } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
@@ -25,6 +25,7 @@ import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-re
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.jsonc' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.jsonc' with { type: 'json' };
 import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.jsonc' with { type: 'json' };
+import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.jsonc' with { type: 'json' };
 import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.jsonc' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.jsonc' with { type: 'json' };
 import kestrelMkIIJournal from '../../../fixtures/ships/journal-kestrel-mkii.jsonc' with { type: 'json' };
@@ -1601,18 +1602,65 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     assert.equal(massMod?.Value, 208);
 });
 
+test('applyBlueprint reconstructs captured journal modifier values and effective stats', () => {
+    const captured = ShipLoadout.fromLoadout(corvetteMultiroleJournal);
+    const engineeredModules = corvetteMultiroleJournal.Modules.filter(
+        (module) => module.Engineering !== undefined,
+    );
+    assert.equal(engineeredModules.length, 29);
+
+    const numericShape = (modifiers: readonly EngineeringModifier[]) =>
+        modifiers.map(({ Label, Value, OriginalValue, ValueStr }) => ({
+            Label,
+            ...(Value === undefined ? {} : { Value }),
+            ...(OriginalValue === undefined ? {} : { OriginalValue }),
+            ...(ValueStr === undefined ? {} : { ValueStr }),
+        }));
+
+    for (const module of engineeredModules) {
+        const engineering = module.Engineering!;
+        const rebuilt = ShipLoadout.fromLoadout({
+            Ship: corvetteMultiroleJournal.Ship,
+            Modules: [{ Slot: module.Slot, Item: module.Item }],
+        });
+        // The capture's SmallHardpoint2 states a partial Quality despite carrying the
+        // complete grade-5 values; its own header records that source inconsistency.
+        const quality = module.Slot === 'SmallHardpoint2' ? 1 : engineering.Quality;
+        rebuilt.applyBlueprint(module.Slot, engineering.BlueprintName, {
+            grade: engineering.Level,
+            quality,
+            ...(engineering.ExperimentalEffect === undefined
+                ? {}
+                : { experimental: engineering.ExperimentalEffect }),
+        });
+
+        const reconstructed = rebuilt.fittedModuleAt(module.Slot)!;
+        const original = captured.fittedModuleAt(module.Slot)!;
+        assert.deepEqual(
+            numericShape(reconstructed.engineering?.Modifiers ?? []),
+            numericShape(engineering.Modifiers ?? []),
+            `${module.Slot}: modifiers`,
+        );
+        assert.deepEqual(
+            reconstructed.effectiveStats,
+            original.effectiveStats,
+            `${module.Slot}: effective stats`,
+        );
+    }
+});
+
 test('assembled builds include engineered cargo capacity in their aggregates', () => {
     const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
     const build = ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack);
     assert.equal(build.cargoCapacity, 32);
 
     build.applyBlueprint('Slot05_Size5', 'CargoRack_IncreasedCapacity', { grade: 5 });
-    assert.equal(build.cargoCapacity, 43.008);
+    assert.equal(build.cargoCapacity, 43.007999);
     assert.equal(
         build
             .fittedModuleAt('Slot05_Size5')
             ?.engineering?.Modifiers?.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
-        43.008,
+        43.007999,
     );
 });
 
@@ -2034,16 +2082,13 @@ test('a scanner has one range field and either journal label moves it', () => {
         .setModule('TinyHardpoint1', mod('Hpt_CargoScanner_Size0_Class5', UTILITY_MODULES))
         .applyBlueprint('TinyHardpoint1', 'Scanner_LongRange', { grade: 5 });
     const rolled = build.fittedModuleAt('TinyHardpoint1')!;
-    const range = rolled.engineering!.Modifiers!.find((m) => m.Label === 'ScannerRange')!.Value!;
+    const range = rolled.engineering!.Modifiers!.find((m) => m.Label === 'Range')!.Value!;
     assert.ok(range > 4000);
     assert.equal(rolled.effectiveStats?.scannerRange, range);
     assert.equal(rolled.effectiveStats?.maximumRange, undefined);
 
-    // And the journal's spelling of the same modifier, read back through a `Loadout` event.
+    // And that journal spelling reads back through a `Loadout` event.
     const event: LoadoutEvent = JSON.parse(JSON.stringify(build.toLoadoutEvent()));
-    for (const modifier of event.Modules[0]!.Engineering!.Modifiers!) {
-        if (modifier.Label === 'ScannerRange') (modifier as { Label: string }).Label = 'Range';
-    }
     const asJournal = ShipLoadout.fromLoadout(event).fittedModuleAt('TinyHardpoint1')!;
     assert.equal(asJournal.effectiveStats?.scannerRange, range);
     assert.equal(asJournal.effectiveStats?.maximumRange, undefined);
@@ -2065,12 +2110,8 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
         (build.fittedModuleAt(slot)!.engineering!.Modifiers ?? [])
             .map((modifier) => modifier.Label)
             .sort();
-    assert.deepEqual(labels('Radar'), ['Mass', 'ScannerRange', 'SensorTargetScanAngle']);
-    assert.deepEqual(labels('TinyHardpoint1'), [
-        'PowerDraw',
-        'ScannerRange',
-        'SensorTargetScanAngle',
-    ]);
+    assert.deepEqual(labels('Radar'), ['Mass', 'Range', 'SensorTargetScanAngle']);
+    assert.deepEqual(labels('TinyHardpoint1'), ['PowerDraw', 'Range', 'SensorTargetScanAngle']);
 
     // The block keeps the id the build declared, so it reads back the way it came in.
     assert.equal(
@@ -2129,7 +2170,7 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
     for (const [label, expected] of Object.entries(climb.expected)) {
         const modifier = engineered.Modifiers!.find((entry) => entry.Label === label);
         assert.equal(modifier?.OriginalValue, climb.base[label as keyof typeof climb.base], label);
-        assert.ok(Math.abs(modifier!.Value! - expected) < 1e-6, `${label}: ${modifier?.Value}`);
+        assert.ok(near(modifier!.Value!, expected), `${label}: ${modifier?.Value}`);
     }
     // Grade 1 is what the module was bought with, so the recipe does not define it.
     assert.throws(
@@ -3301,7 +3342,7 @@ test('engineering moves the metrics it should', () => {
     build.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
     const heavyArmour = build.armourMetrics();
     // Heavy Duty compounds on the armour multiplier: x3.5 becomes x4.62.
-    assert.ok(near(heavyArmour.bulkheads, 525 * 4.62, 1e-6));
+    assert.ok(near(heavyArmour.bulkheads, 525 * 4.62));
     assert.ok(heavyArmour.hitPoints > bareArmour);
     // It stiffens the resistances too.
     assert.ok(heavyArmour.resistances.kinetic > 0.26875);
@@ -3428,23 +3469,25 @@ test('an engineered hull reinforcement package adds a share of the base armour',
     assert.equal(armour.hitPoints, 945 + 341 + 31.5);
 });
 
-test('engineering the burst pattern moves the rate of fire with it', () => {
+test('engineering the burst pattern exposes the journal rate of fire', () => {
     // Double Shot is the fragment cannons' recipe — the only group whose menu lists it.
     const build = ShipLoadout.empty('Anaconda').setModule(
         'LargeHardpoint1',
         mod('Hpt_Slugshot_Gimbal_Large', HARDPOINT_MODULES),
     );
     const before = build.weaponMetrics().total.damagePerSecond;
-    // Double Shot names no rate of fire, but a two-round burst fires faster.
+    // Double Shot's primitive recipe gives the weapon a two-round burst. Frontier writes
+    // only the resulting RateOfFire and DamagePerSecond to the journal, so the public
+    // fitted state follows that representation rather than leaking BurstSize.
     build.applyBlueprint('LargeHardpoint1', 'Weapon_DoubleShot', { grade: 5 });
-    const engineered = build.fittedModuleAt('LargeHardpoint1')!.effectiveStats!;
-    assert.equal(engineered.burstRounds, 2);
+    const fitted = build.fittedModuleAt('LargeHardpoint1')!;
+    const engineered = fitted.effectiveStats!;
+    assert.equal(engineered.burstRounds, undefined);
     const after = build.weaponMetrics();
     assert.ok(after.total.damagePerSecond > before);
-    const expectedRate = 2 / (1 / 14 + engineered.burstInterval!);
+    const expectedRate = modFor(fitted.engineering!.Modifiers!, 'RateOfFire')!;
     assert.ok(Math.abs(after.weapons[0]!.metrics.rateOfFire - expectedRate) < 1e-6);
-    // The fitted snapshot must agree with the metrics, not report the stock rate.
-    assert.ok(Math.abs(engineered.rateOfFire! - expectedRate) < 1e-6, `${engineered.rateOfFire}`);
+    assert.equal(engineered.rateOfFire, expectedRate);
 });
 
 test('a long-range weapon keeps its damage all the way out', () => {
@@ -3468,11 +3511,51 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
     assert.ok(build.availableBlueprints(gun.slot).some((b) => b.fdname === 'Weapon_RapidFire'));
 
     build.applyBlueprint('LargeHardpoint1', 'Weapon_RapidFire', { grade: 5 });
-    const engineered = build.fittedModuleAt('LargeHardpoint1')!.effectiveStats!;
+    const fitted = build.fittedModuleAt('LargeHardpoint1')!;
+    const engineered = fitted.effectiveStats!;
     assert.equal(engineered.jitter, 0.5); // additive, from an assumed zero
-    assert.ok(Math.abs(engineered.burstInterval! - 0.14 * 0.56) < 1e-9);
-    assert.ok(Math.abs(engineered.rateOfFire! - 7.142857 / 0.56) < 1e-4);
+    // The primitive interval remains catalogue data; the journal exposes its result as
+    // RateOfFire, and effective stats consume that authoritative journal field.
+    assert.equal(engineered.burstInterval, 0.14);
+    assert.equal(engineered.rateOfFire, modFor(fitted.engineering!.Modifiers!, 'RateOfFire'));
     assert.ok(build.weaponMetrics().total.damagePerSecond > 0);
+});
+
+test('journal DPS uses an engineered rounds-per-shot value', () => {
+    const build = ShipLoadout.empty('Vulture').setModule(
+        'LargeHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES),
+    );
+    build.applyBlueprint('LargeHardpoint1', 'MultiCannon_Rapid', { grade: 5 });
+
+    const fitted = build.fittedModuleAt('LargeHardpoint1')!;
+    const modifiers = fitted.engineering!.Modifiers!;
+    const damage = modFor(modifiers, 'Damage')!;
+    const damagePerSecond = modFor(modifiers, 'DamagePerSecond')!;
+    const rounds = modFor(modifiers, 'Rounds')!;
+    const rate = modFor(modifiers, 'RateOfFire')!;
+
+    assert.equal(rounds, 3);
+    assert.ok(near(fitted.effectiveStats!.damage!, damage, 1e-6));
+    assert.equal(fitted.effectiveStats!.roundsPerShot, rounds);
+    assert.ok(near(build.weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-6));
+    assert.ok(damagePerSecond > damage * rate);
+});
+
+test('blueprint and experimental aliases compound before journal presentation', () => {
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('Slot05_Size5', mod('Int_ShieldGenerator_Size5_Class5', INTERNAL_MODULES))
+        .applyBlueprint('Slot05_Size5', 'ShieldGenerator_Reinforced', {
+            grade: 5,
+            experimental: 'special_shield_health',
+        });
+
+    const fitted = build.fittedModuleAt('Slot05_Size5')!;
+    const energy = fitted.engineering!.Modifiers!.filter(
+        (modifier) => modifier.Label === 'EnergyPerRegen',
+    );
+    assert.deepEqual(energy, [{ Label: 'EnergyPerRegen', Value: 0.84, OriginalValue: 0.6 }]);
+    assert.equal(fitted.effectiveStats!.distributorDraw, 0.84);
 });
 
 test("a journal's own rate of fire wins over anything derived from the cycle", () => {

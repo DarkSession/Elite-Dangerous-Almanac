@@ -204,7 +204,7 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
     assert.equal(Math.round(fitted.damage! * 10) / 10, displayed.damage);
     assert.equal(Math.round(fitted.powerDraw! * 100) / 100, displayed.powerDraw);
     assert.equal(fitted.distributorDraw, displayed.distributorDraw);
-    assert.equal(fitted.thermalLoad, displayed.thermalLoad);
+    assert.equal(Math.round(fitted.thermalLoad! * 10) / 10, displayed.thermalLoad);
     assert.equal(Math.round(fitted.armourPiercing!), displayed.armourPiercing);
     assert.equal(fitted.maximumRange, displayed.maximumRange);
     assert.equal(Math.round(fitted.shotSpeed!), displayed.shotSpeed);

@@ -15,10 +15,12 @@ import { EXPERIMENTAL_EFFECTS } from '../experimental-effects.js';
 import { getPreEngineeredVariants } from '../pre-engineered.js';
 import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import type { OutfittingModule } from '../modules.js';
+import type { EngineeringModifier } from '../slef.js';
 import type { AvailableBlueprint } from '../ship-loadout.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { FITTED_ITEM } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
+import type { BlueprintGrade, ExperimentalEffect } from '../engineering.js';
 
 /** Engineering groups whose non-menu recipes identify final bought articles. */
 const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
@@ -215,6 +217,256 @@ export function experimentalAvailableFor(item: string, fdname: string): boolean 
 /** Whether any registry lists an engineering menu for this module at all. @internal */
 export function isEngineerable(item: string): boolean {
     return getEngineeringGroup(item) !== null;
+}
+
+/** The recipe-side spelling for a module-specific journal alias. */
+function primitiveLabelFor(stats: OutfittingModule, label: string): string {
+    const weapon = stats.damage !== undefined;
+    if (weapon && label === 'MaximumRange') return 'Range';
+    if (weapon && label === 'DamageFalloffRange') return 'FalloffRange';
+    if (!weapon && label === 'Range') return 'ScannerRange';
+    if (label === 'DSS_PatchRadius') return 'ProbeRadius';
+    if (label === 'FuelScoopRate') return 'RefuelRate';
+    if (label === 'EnergyPerRegen' && stats.shieldRegenRate !== undefined) {
+        return 'DistributorDraw';
+    }
+    return label;
+}
+
+/**
+ * Canonicalize aliases before the one modifier calculation combines their contributions.
+ *
+ * A blueprint and experimental can name the same stat differently — shield recipes use
+ * `DistributorDraw`, while shield experimentals use the journal alias `EnergyPerRegen`.
+ * Normalizing their labels first lets {@link computeModifiers} compound them as one stat;
+ * {@link journalModifiersFor} translates the single result back afterward.
+ *
+ * @internal
+ */
+export function primitiveEngineeringInputsFor(
+    stats: OutfittingModule,
+    grade: BlueprintGrade,
+    experimental?: ExperimentalEffect,
+): { grade: BlueprintGrade; experimental?: ExperimentalEffect } {
+    const canonicalGrade = {
+        ...grade,
+        features: grade.features.map((feature) => {
+            const label = primitiveLabelFor(stats, feature.label);
+            return label === feature.label ? feature : { ...feature, label };
+        }),
+    };
+    if (!experimental) return { grade: canonicalGrade };
+    return {
+        grade: canonicalGrade,
+        experimental: {
+            ...experimental,
+            modifiers: experimental.modifiers.map((modifier) => {
+                const label = primitiveLabelFor(stats, modifier.label);
+                return label === modifier.label ? modifier : { ...modifier, label };
+            }),
+        },
+    };
+}
+
+/** Round a journal number to Frontier's six serialized decimal places. */
+const round6 = (value: number): number => {
+    const rounded = Math.round(value * 1e6) / 1e6;
+    return Object.is(rounded, -0) ? 0 : rounded;
+};
+
+/** Frontier's firing-cycle calculation, with a float stored after every operation. */
+function float32RateOfFire(
+    interval: number,
+    burstRounds: number,
+    burstRateOfFire: number,
+): number | undefined {
+    if (interval <= 0) return undefined;
+    const withinBurst =
+        burstRounds > 1
+            ? Math.fround(Math.fround(burstRounds - 1) / Math.fround(burstRateOfFire))
+            : 0;
+    const cycle = Math.fround(withinBurst + Math.fround(interval));
+    return cycle > 0 ? Math.fround(Math.fround(burstRounds) / cycle) : undefined;
+}
+
+/** A discrete weapon's displayed DPS, using the same stored-float boundaries. */
+function float32DamagePerSecond(damage: number, rounds: number, rate: number): number {
+    return Math.fround(Math.fround(Math.fround(damage) * Math.fround(rounds)) * Math.fround(rate));
+}
+
+const JOURNAL_MODIFIER_ORDER = [
+    'Mass',
+    'Integrity',
+    'PowerDraw',
+    'BootTime',
+    'PowerCapacity',
+    'HeatEfficiency',
+    'FSDOptimalMass',
+    'EngineOptimalMass',
+    'EngineOptPerformance',
+    'EngineHeatRate',
+    'DamagePerSecond',
+    'Damage',
+    'DistributorDraw',
+    'ThermalLoad',
+    'RateOfFire',
+    'Jitter',
+    'AmmoClipSize',
+    'AmmoMaximum',
+    'ReloadTime',
+    'MaximumRange',
+    'DamageFalloffRange',
+    'DefenceModifierShieldMultiplier',
+    'DefenceModifierHealthMultiplier',
+    'DefenceModifierHealthAddition',
+    'RegenRate',
+    'BrokenRegenRate',
+    'KineticResistance',
+    'ThermicResistance',
+    'ExplosiveResistance',
+    'WeaponsCapacity',
+    'WeaponsRecharge',
+    'EnginesCapacity',
+    'EnginesRecharge',
+    'SystemsCapacity',
+    'SystemsRecharge',
+    'ShieldBankSpinUp',
+    'ShieldBankReinforcement',
+    'ShieldBankHeat',
+    'FSDInterdictorRange',
+    'FSDInterdictorFacingLimit',
+    'SensorTargetScanAngle',
+    'Range',
+] as const;
+
+const JOURNAL_MODIFIER_RANK: ReadonlyMap<string, number> = new Map(
+    JOURNAL_MODIFIER_ORDER.map((label, index) => [label, index]),
+);
+
+/** Stable ordering used by Frontier's outfitting/journal stat list. */
+function sortJournalModifiers(modifiers: EngineeringModifier[]): EngineeringModifier[] {
+    return modifiers
+        .map((modifier, index) => ({ modifier, index }))
+        .sort(
+            (a, b) =>
+                (JOURNAL_MODIFIER_RANK.get(a.modifier.Label) ?? JOURNAL_MODIFIER_ORDER.length) -
+                    (JOURNAL_MODIFIER_RANK.get(b.modifier.Label) ??
+                        JOURNAL_MODIFIER_ORDER.length) || a.index - b.index,
+        )
+        .map(({ modifier }) => modifier);
+}
+
+/**
+ * Present computed primitive modifiers the way Frontier writes them to a journal.
+ *
+ * This does no blueprint arithmetic. It maps the one result of {@link computeModifiers}
+ * onto module-specific aliases and derives display stats such as weapon DPS and rate of
+ * fire. Keeping this in the loadout adapter prevents a second calculator from becoming
+ * another source of truth.
+ *
+ * Reference: Frontier journal `Loadout` captures, including the 29-engineered-module
+ * Federal Corvette reconstruction fixture. Frontier is credited in `ATTRIBUTIONS.md`.
+ *
+ * @internal
+ */
+export function journalModifiersFor(
+    stats: OutfittingModule,
+    modifiers: EngineeringModifier[],
+): EngineeringModifier[] {
+    const weapon = stats.damage !== undefined;
+    const valueFor = (label: string, fallback: number): number =>
+        modifiers.find((modifier) => modifier.Label === label)?.Value ?? Math.fround(fallback);
+    const burstTouched = ['BurstInterval', 'BurstSize', 'BurstRateOfFire'].some((label) =>
+        modifiers.some((modifier) => modifier.Label === label),
+    );
+    const damageTouched = modifiers.some((modifier) => modifier.Label === 'Damage');
+    const rateTouched =
+        burstTouched || modifiers.some((modifier) => modifier.Label === 'RateOfFire');
+
+    let damagePerSecond: EngineeringModifier | undefined;
+    let derivedRate: EngineeringModifier | undefined;
+    if (weapon && (damageTouched || rateTouched)) {
+        const continuous = stats.burstInterval === undefined && stats.rateOfFire === undefined;
+        const baseDamage = Math.fround(stats.damage!);
+        const effectiveDamage = valueFor('Damage', stats.damage!);
+        if (continuous) {
+            damagePerSecond = {
+                Label: 'DamagePerSecond',
+                Value: round6(effectiveDamage),
+                OriginalValue: round6(baseDamage),
+            };
+        } else {
+            const burstRounds = valueFor('BurstSize', stats.burstRounds ?? 1);
+            const burstRate = valueFor('BurstRateOfFire', stats.burstRateOfFire ?? 1);
+            const baseRate =
+                stats.burstInterval !== undefined
+                    ? float32RateOfFire(
+                          Math.fround(stats.burstInterval),
+                          Math.fround(stats.burstRounds ?? 1),
+                          Math.fround(stats.burstRateOfFire ?? 1),
+                      )
+                    : stats.rateOfFire === undefined
+                      ? undefined
+                      : Math.fround(stats.rateOfFire);
+            const effectiveRate = modifiers.find(
+                (modifier) => modifier.Label === 'RateOfFire',
+            )?.Value;
+            const rate =
+                effectiveRate ??
+                float32RateOfFire(
+                    valueFor('BurstInterval', stats.burstInterval ?? 0),
+                    burstRounds,
+                    burstRate,
+                );
+            if (baseRate !== undefined && rate !== undefined) {
+                const stockRounds = Math.fround(stats.roundsPerShot ?? 1);
+                const effectiveRounds = Math.fround(
+                    modifiers.find(
+                        (modifier) =>
+                            modifier.Label === 'Rounds' || modifier.Label === 'RoundsPerShot',
+                    )?.Value ?? stockRounds,
+                );
+                damagePerSecond = {
+                    Label: 'DamagePerSecond',
+                    Value: round6(float32DamagePerSecond(effectiveDamage, effectiveRounds, rate)),
+                    OriginalValue: round6(
+                        float32DamagePerSecond(baseDamage, stockRounds, baseRate),
+                    ),
+                };
+                if (burstTouched) {
+                    derivedRate = {
+                        Label: 'RateOfFire',
+                        Value: round6(rate),
+                        OriginalValue: round6(baseRate),
+                    };
+                }
+            }
+        }
+    }
+
+    const result: EngineeringModifier[] = [];
+    for (const modifier of modifiers) {
+        const label = modifier.Label;
+        if (weapon && ['BurstInterval', 'BurstSize', 'BurstRateOfFire'].includes(label)) continue;
+        if (weapon && label === 'Damage' && stats.rateOfFire === undefined) continue;
+        let journalLabel = label;
+        if (weapon && label === 'Range') journalLabel = 'MaximumRange';
+        else if (weapon && label === 'FalloffRange') journalLabel = 'DamageFalloffRange';
+        else if (!weapon && label === 'ScannerRange') journalLabel = 'Range';
+        else if (label === 'ProbeRadius') journalLabel = 'DSS_PatchRadius';
+        else if (label === 'RefuelRate') journalLabel = 'FuelScoopRate';
+        else if (label === 'DistributorDraw' && stats.shieldRegenRate !== undefined) {
+            journalLabel = 'EnergyPerRegen';
+        }
+        result.push(journalLabel === label ? modifier : { ...modifier, Label: journalLabel });
+    }
+    if (damagePerSecond) result.push(damagePerSecond);
+    if (derivedRate) {
+        const direct = result.findIndex((modifier) => modifier.Label === 'RateOfFire');
+        if (direct >= 0) result[direct] = derivedRate;
+        else result.push(derivedRate);
+    }
+    return sortJournalModifiers(result);
 }
 
 /**

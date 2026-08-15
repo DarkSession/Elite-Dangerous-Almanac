@@ -477,7 +477,7 @@ test('additive and multiplicative methods differ', () => {
         { label: 'X', method: 'additive', min: 0.1, max: 0.1 },
     ]);
     assert.equal(modFor(mult, 'X'), 110);
-    assert.equal(modFor(add, 'X'), 100.1);
+    assert.equal(modFor(add, 'X'), 100.099998);
 });
 
 test('each contribution keeps its own method on a label collision', () => {
@@ -489,7 +489,7 @@ test('each contribution keeps its own method on a label collision', () => {
         1,
         [{ label: 'X', method: 'additive', value: 5 }],
     );
-    assert.equal(modFor(mods, 'X'), 125);
+    assert.equal(modFor(mods, 'X'), 125.000008);
 });
 
 test('quality outside [0, 1] is rejected', () => {
@@ -568,6 +568,26 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
             combinedRateOfFire({ ...burstLaser, burstInterval: burstInterval.Value! })! -
                 3 / (2 / 15 + 0.5 * 0.56),
         ) < 1e-9,
+    );
+});
+
+test('modifier arithmetic uses Frontier float precision once', () => {
+    const rack = getModuleBySymbol('Hpt_DrunkMissileRack_Fixed_Medium', ALL_MODULES)!;
+    const modifiers = computeModifiers(
+        baseStats(rack),
+        getBlueprintGrade('Weapon_HighCapacity', 5)!,
+        1,
+        getExperimentalEffect('special_drag_munitions')!,
+    );
+    assert.equal(modFor(modifiers, 'BurstInterval'), 0.45);
+    assert.equal(modFor(modifiers, 'AmmoClipSize'), 24);
+    assert.deepEqual(
+        modifiers.find(({ Label }) => Label === 'PowerDraw'),
+        {
+            Label: 'PowerDraw',
+            Value: 1.44,
+            OriginalValue: 1.2,
+        },
     );
 });
 

@@ -54,8 +54,10 @@
  *   firing endurance), {@link ammunitionCapacity} (the magazine and the reserve
  *   behind it, for anything that carries rounds) and {@link heatMetrics} (what the build
  *   runs at idle and firing, and whether it cooks itself).
- * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
- *   an {@link EXPERIMENTAL_EFFECTS} entry; {@link ENGINEERING_OPTION_GROUPS} answers
+ * - **Engineering** — {@link computeModifiers} applies the primitive legs of a
+ *   {@link BLUEPRINTS} recipe and an {@link EXPERIMENTAL_EFFECTS} entry;
+ *   {@link ShipLoadout.applyBlueprint} presents that result under Frontier's journal
+ *   labels. {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
  *   the fixed-roll modules you cannot craft. {@link DECORATIVE_MODIFICATIONS} is the
  *   odd one out and the one to reach for when an id resolves to no recipe: the game

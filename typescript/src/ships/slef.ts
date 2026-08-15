@@ -98,8 +98,8 @@ export interface ModuleEngineering {
      * `BlueprintName`, `Level` and `Quality` — the specification's own example omits it —
      * so an export from another app may name the blueprint and its roll without spelling
      * out the resulting stats. Treat a missing array as "not stated", not as "nothing was
-     * changed": the blueprint's effect can be recomputed with `computeModifiers` from
-     * `./engineering`.
+     * changed": fit the module and call {@link ShipLoadout.applyBlueprint} to reconstruct
+     * the journal-equivalent numeric modifiers and effective stats.
      */
     readonly Modifiers?: readonly EngineeringModifier[];
 }

@@ -104,7 +104,9 @@ import {
     blueprintAvailableFor,
     experimentalAvailableFor,
     isEngineerable,
+    journalModifiersFor,
     missingBaseLabels,
+    primitiveEngineeringInputsFor,
 } from './internal/loadout-engineering.js';
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import {
@@ -1315,9 +1317,14 @@ export class ShipLoadout {
      * Engineer the module in a slot — apply a blueprint (with a grade and quality) and
      * an optional experimental effect, computing the resulting stat modifiers.
      *
-     * The modifiers are stored as an `Engineering` block on the fitted module, so the
-     * build's jump-range and mass calculations pick them up automatically. The block keeps
-     * the `BlueprintName` you passed, so it reads back the way the build declared it.
+     * The modifiers are stored with journal-equivalent labels and numeric values on the
+     * fitted module, so the build's jump-range and mass calculations pick them up
+     * automatically. The optional journal display-direction hint `LessIsGood` is omitted.
+     * The block keeps the `BlueprintName` you passed, so it reads back the way the build
+     * declared it. Values use Frontier's float32 arithmetic, and weapon recipe internals
+     * such as `BurstInterval` are exposed as the derived `RateOfFire` and
+     * `DamagePerSecond` labels a journal writes. Module-specific aliases likewise use the
+     * journal spelling (`MaximumRange` for a weapon and `Range` for a scanner).
      *
      * **Which recipe an id names can depend on the module.** The game writes
      * `Sensor_LongRange` and `Sensor_WideAngle` for both a sensor suite's modification and a
@@ -1480,7 +1487,13 @@ export class ShipLoadout {
             );
         }
         const base = baseStats(stats);
-        const missing = missingBaseLabels(stats, base, grade.features, experimental?.modifiers);
+        const canonical = primitiveEngineeringInputsFor(stats, grade, experimental);
+        const missing = missingBaseLabels(
+            stats,
+            base,
+            canonical.grade.features,
+            canonical.experimental?.modifiers,
+        );
         if (missing.length > 0) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${truncate(module.Item)}"; missing base stats for ${missing.join(', ')}`,
@@ -1490,7 +1503,10 @@ export class ShipLoadout {
         // supersedes the stock split. Both catalogue shapes feed the same journal-label
         // synthesis below.
         const damageDistribution = experimental?.damageDistribution ?? grade.damageDistribution;
-        const modifiers = computeModifiers(base, grade, quality, experimental);
+        const modifiers = journalModifiersFor(
+            stats,
+            computeModifiers(base, canonical.grade, quality, canonical.experimental),
+        );
         if (damageDistribution) {
             for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
                 const value = damageDistribution[type];

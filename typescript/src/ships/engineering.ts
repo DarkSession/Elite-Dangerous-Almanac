@@ -1,6 +1,6 @@
 /**
  * The **engineering calculator** — data-free maths that turns a blueprint (grade +
- * quality) and an optional experimental effect into journal-style stat modifiers.
+ * quality) and an optional experimental effect into stat modifiers.
  *
  * A blueprint feature bounds a modifier by the engineering **quality** roll
  * (`v = min + (max − min) · quality`); an experimental effect adds a fixed
@@ -24,14 +24,15 @@
  * why a `−20%` kinetic resistance with `+5%` becomes `−14%`.
  *
  * @remarks
- * Every feature names the stat it actually changes. Frontier's own Rapid Fire and High
- * Capacity recipes shorten the **fire interval** (`BurstInterval`) rather than raising
- * the rate of fire, so that is the label they carry; a weapon's combined `rateOfFire`
- * follows from the interval and the burst pattern via `combinedRateOfFire` in
- * `./weapons`. `ShipLoadout` and `getPreEngineeredStats` recompute it for you.
+ * {@link computeModifiers} preserves the primitive labels a recipe actually changes.
+ * Frontier's own Rapid Fire and High Capacity recipes shorten `BurstInterval`, for
+ * example, rather than directly raising `RateOfFire`. Values use Frontier's float32
+ * arithmetic. A journal writer then maps those primitive results to the derived labels
+ * Frontier exposes; {@link ShipLoadout.applyBlueprint} performs that presentation step.
  *
  * The catalogues live in `./blueprints` and `./experimental-effects`; this module
- * holds no data. It is what {@link ShipLoadout.applyBlueprint} uses under the hood.
+ * holds no data. {@link ShipLoadout.applyBlueprint} uses this calculator, then presents
+ * its result in Frontier's journal form.
  *
  * @example
  * ```ts
@@ -173,12 +174,15 @@ export interface Blueprint {
     readonly grades: BlueprintGrades;
 }
 
-/** Round to 6 decimals to shed floating-point noise, matching in-game modifier values. */
-const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
+/** Serialize a stored float to the six decimal places used by journal modifier values. */
+const round6 = (n: number): number => {
+    const rounded = Math.round(n * 1e6) / 1e6;
+    return Object.is(rounded, -0) ? 0 : rounded;
+};
 
 /**
- * Compute the journal-style modifiers a blueprint (and optional experimental effect)
- * produce on a module's base stats.
+ * Compute the primitive stat modifiers a blueprint (and optional experimental effect)
+ * produces on a set of base stats.
  *
  * @param base - The module's base stat values, keyed by journal Modifier Label (only
  * the labels present here can be modified — a contribution to an absent stat is
@@ -195,8 +199,10 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  * @param experimental - A complete experimental effect (from
  * {@link getExperimentalEffect}), if any. A raw contribution list is also accepted for
  * callers synthesising effects without a catalogue record.
- * @returns One {@link EngineeringModifier} per modified label. Numeric stats carry the
- * computed `Value` and `OriginalValue`; a granted capability carries `ValueStr`.
+ * @returns One {@link EngineeringModifier} per modified catalogue label. Numeric stats
+ * carry the computed `Value` and `OriginalValue`; a granted capability carries
+ * `ValueStr`. Recipe-only labels such as `BurstInterval` are deliberately preserved;
+ * journal serialization derives the labels Frontier exposes from these results.
  * @throws {RangeError} If `quality` is not a finite number in `[0, 1]`.
  */
 export function computeModifiers(
@@ -208,7 +214,8 @@ export function computeModifiers(
     if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
         throw new RangeError(`computeModifiers: quality must be a finite number in [0, 1]`);
     }
-    const roll = quality;
+    const f = Math.fround;
+    const roll = f(quality);
     // Gather every contribution per label, keeping each one's own method so a
     // blueprint and an experimental targeting the same label can apply differently.
     const byLabel = new Map<string, { method: ModifierMethod; value: number; stated: boolean }[]>();
@@ -220,17 +227,31 @@ export function computeModifiers(
     // `stated` marks a contribution the registry publishes as a number, rather than one
     // interpolated between two of them — see `snapToStatedWhole`.
     const features = 'features' in grade ? grade.features : grade;
-    for (const f of features) {
+    for (const feature of features) {
+        const rolledValue =
+            roll === 0
+                ? feature.min
+                : roll === 1
+                  ? feature.max
+                  : feature.min + (feature.max - feature.min) * roll;
+        const value =
+            feature.method === 'overwrite'
+                ? rolledValue
+                : roll === 0 || roll === 1
+                  ? f(rolledValue)
+                  : f(f(feature.min) + f(f(feature.max - feature.min) * roll));
         add(
-            f.label,
-            f.method,
-            f.min + (f.max - f.min) * roll,
-            f.min === f.max || roll === 0 || roll === 1,
+            feature.label,
+            feature.method,
+            value,
+            feature.min === feature.max || roll === 0 || roll === 1,
         );
     }
     const experimentalModifiers =
         experimental && 'modifiers' in experimental ? experimental.modifiers : experimental;
-    for (const e of experimentalModifiers ?? []) add(e.label, e.method, e.value, true);
+    for (const e of experimentalModifiers ?? []) {
+        add(e.label, e.method, e.method === 'overwrite' ? e.value : f(e.value), true);
+    }
 
     const modifiers: EngineeringModifier[] = [];
     let clipIsOverwritten = false;
@@ -240,9 +261,11 @@ export function computeModifiers(
             modifiers.push({ Label: label, ValueStr: capabilityValue });
             continue;
         }
-        const original = base[label];
+        const baseValue = base[label];
         const overwrite = contributions.find((c) => c.method === 'overwrite');
         const multiplierBase = multiplierBaseForLabel(label);
+        const original =
+            baseValue === undefined ? undefined : float32JournalValue(baseValue, multiplierBase);
         // A stat the module does not carry cannot be *scaled*, but it can still be set or
         // added to: an overwrite replaces it outright (Double Shot gives a burst size to
         // a weapon that fires one round at a time) and an addition starts from zero
@@ -263,18 +286,22 @@ export function computeModifiers(
         if (multiplierBase === null) {
             // Fold in a stable order — compound the multiplicative factors, then add
             // the additive terms, then let an overwrite (if any) win last.
-            for (const c of contributions) if (c.method === 'multiplicative') value *= 1 + c.value;
-            for (const c of contributions) if (c.method === 'additive') value += c.value;
+            for (const c of contributions) {
+                if (c.method === 'multiplicative') value = f(value * f(1 + f(c.value)));
+            }
+            for (const c of contributions) {
+                if (c.method === 'additive') value = f(value + f(c.value));
+            }
         } else {
             // A percentage-of-a-multiplier stat compounds on its multiplier, whatever
             // method the recipe declares: hull boost and shield boost on `1 + v`,
             // a resistance on its damage multiplier `1 - v`.
-            let factor = 1 + value / multiplierBase;
+            let factor = f(1 + value / multiplierBase);
             for (const c of contributions) {
                 if (c.method === 'overwrite') continue;
-                factor *= 1 + (c.value * 100) / multiplierBase;
+                factor = f(factor * f(1 + f((f(c.value) * 100) / multiplierBase)));
             }
-            value = (factor - 1) * multiplierBase;
+            value = f(f(factor - 1) * multiplierBase);
         }
         if (overwrite) value = overwrite.value;
         // Ammunition is counted in whole rounds. A computed reserve rounds to the nearest
@@ -297,11 +324,18 @@ export function computeModifiers(
             // a journal reports it.
             ...(original === undefined && multiplierBase === null
                 ? {}
-                : { OriginalValue: original ?? 0 }),
+                : { OriginalValue: round6(original ?? 0) }),
         });
     }
     const resolved = resolveFalloffFromRange(modifiers, base);
     return clipIsOverwritten ? resolved : roundClipToWholeBursts(resolved, base);
+}
+
+/** Recreate the float backing a journal percentage-of-a-multiplier value. */
+function float32JournalValue(value: number, multiplierBase: number | null): number {
+    if (multiplierBase === null) return Math.fround(value);
+    const factor = Math.fround(1 + value / multiplierBase);
+    return Math.fround(Math.fround(factor - 1) * multiplierBase);
 }
 
 /**
