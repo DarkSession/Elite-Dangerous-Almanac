@@ -44,7 +44,7 @@ export interface FittedModule {
     readonly health: number | undefined;
     /** Captured purchase value in credits, or `undefined` when unspecified. */
     readonly value: number | undefined;
-    /** Applied engineering, or `undefined` for a stock module. */
+    /** Applied blueprint engineering or grade-less decorative state; otherwise `undefined`. */
     readonly engineering: ModuleEngineering | undefined;
     /** Detached, journal-shaped fitted record. */
     readonly raw: LoadoutModule;
@@ -57,6 +57,8 @@ export interface FittedModule {
      * when a damage conversion replaces them with a fractional distribution.
      * A module engineered through {@link ShipLoadout.applyBlueprint} also retains
      * recipe-only burst values that its journal-shaped modifier block does not serialize.
+     * A decorative transformation applied through
+     * {@link ShipLoadout.applyDecorativeModification} uses its fixed modifier block.
      */
     readonly effectiveStats: OutfittingModule | null;
     /** Fully rearmed ammunition capacity, or `null` for modules without ammunition. */

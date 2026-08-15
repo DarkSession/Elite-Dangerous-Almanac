@@ -111,6 +111,33 @@ build.availableBlueprints('FrameShiftDrive'); // ordinary menu for the fitted FS
 build.availableExperimentalEffects('FrameShiftDrive');
 ```
 
+## Decorative transformations
+
+Decorative transformations occupy the journal's `Engineering` field but are not blueprint
+engineering: they have no grade, quality roll, material cost or engineer. Use
+{@link ships!ShipLoadout.applyDecorativeModification | applyDecorativeModification} to
+resolve the fixed stat block and install it on one fitted slot. The emitted journal/SLEF
+block contains `BlueprintName` and `Modifiers` only, while every other fitted module keeps
+its already-computed effective state.
+
+```ts
+import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const laser = getModuleBySymbol('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES)!;
+const festive = ShipLoadout.empty('Krait_MkII')
+    .setModule('MediumHardpoint1', laser)
+    .applyDecorativeModification('MediumHardpoint1', 'Decorative_Red');
+
+festive.toLoadoutEvent().Modules[0]?.Engineering;
+// BlueprintName + Modifiers, with no Level or Quality
+```
+
+`getDecorativeModifiers` remains the lower-level resolver for callers working with plain
+records rather than a `ShipLoadout`. Applying a decorative id whose fixed labels cannot be
+fully resolved is rejected instead of installing a partial transformation.
+
 For a module symbol that has Mercenary variants, `availableBlueprints` appends every
 bespoke Mercenary upgrade recipe after the ordinary menu and marks it with `route:
 'mercenary'`. Stock and Mercenary articles share a symbol, so the loadout cannot prove

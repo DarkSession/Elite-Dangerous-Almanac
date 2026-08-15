@@ -7,6 +7,7 @@ import {
     getLoadoutModifier,
     toSlef,
     stringifySlef,
+    type DecorativeModuleEngineering,
     type LoadoutEvent,
     type LoadoutModule,
     type SlefHeader,
@@ -145,6 +146,54 @@ test('inspectSlef pinpoints every invalid modifier field', () => {
         }).diagnostics[0];
         assert.equal(diagnostic?.code, 'invalidEngineering');
         assert.equal(diagnostic?.path, `entries[0].Modules[0].Engineering.Modifiers[0].${field}`);
+    }
+});
+
+test('grade-less decorative engineering is typed and parsed without fabricated fields', () => {
+    const engineering: DecorativeModuleEngineering = {
+        BlueprintName: 'Decorative_Red',
+        Modifiers: [{ Label: 'Damage', Value: 0.06, OriginalValue: 6 }],
+    };
+    const loadout: LoadoutEvent = {
+        Ship: 'krait_mkii',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: 'Hpt_PulseLaser_Fixed_Small',
+                Engineering: engineering,
+            },
+        ],
+    };
+
+    const parsed = parseSlef(loadout)[0]!.data.Modules[0]!.Engineering!;
+    assert.deepEqual(parsed, engineering);
+    assert.ok(!Object.hasOwn(parsed, 'Level'));
+    assert.ok(!Object.hasOwn(parsed, 'Quality'));
+    assert.deepEqual(toSlef(loadout, TEST_HEADER)[0]!.data, loadout);
+});
+
+test('a modification block is either fully graded or fully grade-less', () => {
+    const engineering = (fields: Record<string, unknown>) => ({
+        Ship: 'sidewinder',
+        Modules: [
+            {
+                Slot: 'MainEngines',
+                Item: 'x',
+                Engineering: { BlueprintName: 'Decorative_Red', ...fields },
+            },
+        ],
+    });
+
+    for (const [fields, path] of [
+        [{ Level: 1, Modifiers: [] }, 'Quality'],
+        [{ Quality: 1, Modifiers: [] }, 'Level'],
+        [{}, 'Modifiers'],
+        [{ ExperimentalEffect: 'special_test', Modifiers: [] }, 'ExperimentalEffect'],
+    ] as const) {
+        assert.equal(
+            inspectSlef(engineering(fields)).diagnostics[0]?.path,
+            `entries[0].Modules[0].Engineering.${path}`,
+        );
     }
 });
 

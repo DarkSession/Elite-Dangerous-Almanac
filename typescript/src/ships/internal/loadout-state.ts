@@ -41,8 +41,12 @@ export function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
             : {
                   Engineering: {
                       BlueprintName: module.Engineering.BlueprintName,
-                      Level: module.Engineering.Level,
-                      Quality: module.Engineering.Quality,
+                      ...(module.Engineering.Level === undefined
+                          ? {}
+                          : { Level: module.Engineering.Level }),
+                      ...(module.Engineering.Quality === undefined
+                          ? {}
+                          : { Quality: module.Engineering.Quality }),
                       ...(module.Engineering.ExperimentalEffect === undefined
                           ? {}
                           : { ExperimentalEffect: module.Engineering.ExperimentalEffect }),

@@ -144,7 +144,8 @@ module's `symbol`; functions that look up a recipe, effect or modification take 
 `fdname`. `getDecorativeModifiers` takes both identities to reconstruct the
 journal-style stat block of a fitted decorative transformation;
 `unresolvedDecorativeModifiers` reports any authored labels the module catalogue could
-not compute.
+not compute. `ShipLoadout.applyDecorativeModification` installs that fixed block on one
+fitted slot and exports it without fabricating an engineering grade or quality roll.
 
 Personal-equipment modifications are keyed by their recipe symbol, just as ship
 blueprints and experimental effects are keyed by `fdname`; there is no second synthetic
