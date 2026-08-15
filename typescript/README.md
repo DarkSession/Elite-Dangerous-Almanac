@@ -141,7 +141,8 @@ normally writes that id in its `Engineering` block, but a few blueprint aliases
 collide across module families; `resolveBlueprintForModule` resolves those journal
 spellings. Functions that ask what engineering a module accepts therefore take the
 module's `symbol`; functions that look up a recipe, effect or modification take its
-`fdname`.
+`fdname`. `getDecorativeModifiers` takes both identities to reconstruct the
+journal-style stat block of a fitted decorative transformation.
 
 Personal-equipment modifications are keyed by their recipe symbol, just as ship
 blueprints and experimental effects are keyed by `fdname`; there is no second synthetic

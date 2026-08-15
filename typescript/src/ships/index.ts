@@ -459,6 +459,7 @@ export {
     type DecorativeModification,
     type DecorativeModifier,
 } from './decorative-modifications.js';
+export { getDecorativeModifiers } from './decorative-modification-stats.js';
 export {
     PRE_ENGINEERED_MODULES,
     getPreEngineeredVariants,

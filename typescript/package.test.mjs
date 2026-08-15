@@ -21,6 +21,7 @@ import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials
 import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials';
 import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+import { getDecorativeModifiers } from '@elite-dangerous-almanac/core/ships/decorative-modification-stats';
 import { getDefaultLoadout } from '@elite-dangerous-almanac/core/ships/default-loadouts';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
 import { hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
@@ -209,6 +210,9 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.name, 'Iron');
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
+    assert.deepEqual(getDecorativeModifiers('Hpt_FlakMortar_Turret_Medium', 'Decorative_Green'), [
+        { Label: 'Damage', Value: 0.34, OriginalValue: 34 },
+    ]);
     assert.equal(
         getDefaultLoadout('sidewinder')?.modules.find((module) => module.slot === 'FrameShiftDrive')
             ?.symbol,
@@ -554,6 +558,17 @@ test('engineering menus and journal resolution do not bundle blueprint mechanics
     for (const marker of [/FSDOptimalMass/, /Increased range/, /multiplicative/]) {
         assert.doesNotMatch(join, marker);
     }
+});
+
+test('decorative identities stay separate from their fitted-stat resolver', async () => {
+    const [catalogue, stats] = await Promise.all([
+        readReachableJs(new URL('./dist/ships/decorative-modifications.js', import.meta.url)),
+        readReachableJs(new URL('./dist/ships/decorative-modification-stats.js', import.meta.url)),
+    ]);
+
+    assert.ok(catalogue.length < 8 * 1024, `decorative catalogue is ${catalogue.length} bytes`);
+    assert.doesNotMatch(catalogue, /Anaconda_Armour/);
+    assert.match(stats, /Anaconda_Armour/);
 });
 
 test('engineering mechanics and shopping costs stay in separate package graphs', async () => {
