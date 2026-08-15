@@ -93,14 +93,15 @@ const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().star
 /**
  * Whether a module is sold carrying this recipe in a form that can still be engineered.
  *
- * Most Operations keys belong to modules bought already engineered — the Mercenary shop's
- * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists one
- * and the menu check alone would refuse every caller. (The four a menu *does* list are
+ * The Mercenary shop's Operations keys name bespoke recipes on modules bought already
+ * engineered at grade 1, so no ordinary engineering menu lists one and the menu check
+ * alone would refuse every caller. (The four Operations keys a menu *does* list are
  * recipes a player applies from grade 1, and reach the caller by the menu instead; see
- * `engineering-options`.) The pre-engineered catalogue names
- * which module each arrives on, which is the same question answered by purchase instead of
- * by a menu, and it is narrower than a family: `RailGun_LongShot` resolves on the
- * rail gun that ships with it and nowhere else.
+ * `engineering-options`.) The pre-engineered catalogue names which module each Mercenary
+ * recipe arrives on, which is the same question answered by purchase instead of by a
+ * menu, and it is narrower than a family: `RailGun_LongShot` resolves on the rail gun
+ * that ships with it and nowhere else. Community-goal and tech-broker records identify
+ * fixed reward articles and never open this route.
  *
  * This route covers the **climb**, not the purchase. A Mercenary module arrives at grade 1
  * and its recipe publishes grades 2–5 — the grades an engineer can still add — so folding
@@ -116,8 +117,27 @@ const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().star
  */
 function isSoldWithBlueprint(item: string, wanted: string): boolean {
     return getPreEngineeredVariants(item).some(
-        (variant) => !variant.engineeringLocked && variant.blueprint.toLowerCase() === wanted,
+        (variant) =>
+            variant.acquisition === 'mercenary' && variant.blueprint.toLowerCase() === wanted,
     );
+}
+
+/**
+ * Literal recipe ids and routes accepted for a module symbol, before alias resolution.
+ * Ordinary-menu order comes first, followed by distinct Mercenary recipes in catalogue
+ * order.
+ *
+ * @internal
+ */
+export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableBlueprint['route']> {
+    const routes = new Map<string, AvailableBlueprint['route']>();
+    for (const fdname of getBlueprintsForModule(item)) routes.set(fdname, 'ordinary');
+    for (const variant of getPreEngineeredVariants(item)) {
+        if (variant.acquisition === 'mercenary' && !routes.has(variant.blueprint)) {
+            routes.set(variant.blueprint, 'mercenary');
+        }
+    }
+    return routes;
 }
 
 /**
@@ -136,8 +156,11 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * recipes' shape says they belong together. Every id it does not recognise passes straight
  * through, so the two checks below see what the caller wrote.
  *
- * The second is {@link isSoldWithBlueprint}: a non-final module with no menu, or a menu
- * that omits the recipe, still accepts one it is sold already carrying. It is asked about
+ * The second is {@link isSoldWithBlueprint}: a Mercenary module with no menu, or a menu
+ * that omits its bespoke recipe, still accepts the grades above the grade 1 it is sold
+ * carrying. Community-goal and tech-broker rewards do not grant this permission: their
+ * ordinary blueprint ids identify fixed articles rather than recipes that can be applied
+ * to the stock module. The Mercenary check is asked about
  * the id as written
  * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
@@ -152,8 +175,8 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * `pre-engineered.jsonc` names the recipe the module rolls, never a spelling that would
  * resolve to a different one, and `pre-engineered.test.ts` asserts exactly that over the
  * whole catalogue — each row's `blueprint`, resolved on its own module, comes back
- * unchanged. That is a narrower claim than menu membership, which 29 rows do not have and
- * are not meant to: this leg exists for them. So the question does not arise; it is
+ * unchanged. That is a narrower claim than menu membership, which the 22 Mercenary rows
+ * do not have and are not meant to: this leg exists for them. So the question does not arise; it is
  * written down because the gate itself cannot catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families
@@ -199,22 +222,17 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
 /**
  * Whether a module's engineering menu offers an experimental effect.
  *
- * No aliasing and no pre-engineered leg here: effect ids are unique per effect, the menu
- * already narrows a group's list to the individual module (a small Multi-cannon is one
- * effect short of a medium one), and every experimental a pre-engineered variant arrives
- * with is one its module's menu lists anyway — `pre-engineered.test.ts` asserts that, so
- * the day it stops being true a test says so rather than this quietly covering for it.
+ * No aliasing and no pre-engineered leg here: effect ids are unique per effect, and the
+ * menu already narrows a group's list to the individual module (a small Multi-cannon is
+ * one effect short of a medium one). A fixed reward may arrive carrying an effect its
+ * stock module cannot apply — the Tech Broker Mining Laser does — but that identifies the
+ * article rather than widening its menu. `pre-engineered.test.ts` pins that distinction.
  *
  * @internal
  */
 export function experimentalAvailableFor(item: string, fdname: string): boolean {
     const wanted = normalizeKey(fdname, 'ShipLoadout.applyBlueprint: options.experimental');
     return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
-}
-
-/** Whether any registry lists an engineering menu for this module at all. @internal */
-export function isEngineerable(item: string): boolean {
-    return getEngineeringGroup(item) !== null;
 }
 
 /**
@@ -248,7 +266,16 @@ function engineerableBase(
     return { stats, base: baseStats(stats) };
 }
 
-/** Blueprints the fitted article's menu offers whose modifiers can also be computed. @internal */
+/**
+ * Blueprint candidates for a fitted module symbol whose modifiers can also be computed.
+ *
+ * The ordinary menu comes first, followed by any bespoke Mercenary recipes in catalogue
+ * order. Each result names that route because the shared module symbol cannot establish
+ * whether the fitted article was bought from the Mercenary shop. Fixed community-goal
+ * and tech-broker rewards add nothing.
+ *
+ * @internal
+ */
 export function availableBlueprintsFor(
     item: string,
     statsOverride?: OutfittingModule | null,
@@ -257,7 +284,7 @@ export function availableBlueprintsFor(
     if (!engineerable) return [];
     const { stats, base } = engineerable;
     const available: AvailableBlueprint[] = [];
-    for (const fdname of getBlueprintsForModule(item)) {
+    for (const [fdname, route] of blueprintRoutesFor(item)) {
         const blueprint = BLUEPRINTS[fdname];
         if (!blueprint) continue;
         const grades = Object.entries(blueprint.grades)
@@ -265,7 +292,7 @@ export function availableBlueprintsFor(
             .map(([grade]) => Number(grade))
             .filter(Number.isFinite)
             .sort((a, b) => a - b);
-        if (grades.length > 0) available.push({ fdname, grades });
+        if (grades.length > 0) available.push({ fdname, grades, route });
     }
     return available;
 }

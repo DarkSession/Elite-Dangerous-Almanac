@@ -253,7 +253,7 @@
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "kind": {
-          "description": "On-disk stable gameplay family copied from the engineering-options module map. Public library records expose this as `engineeringGroup`. Absent only when no source classifies the module in an engineering family; loaders normalize that deliberate absence to null.",
+          "description": "On-disk stable ordinary engineering-menu family copied from the engineering-options module map. Public library records expose this as `engineeringGroup`. Absent when the stock module has no ordinary engineering menu; loaders normalize that deliberate absence to null.",
           "enum": [
             "powerPlants",
             "guardianPowerPlants",
@@ -277,7 +277,6 @@
             "missiles",
             "mines",
             "torpedoes",
-            "miningToolsLasers",
             "antiXenoMultiCannons",
             "shieldBoosters",
             "bulkheads",

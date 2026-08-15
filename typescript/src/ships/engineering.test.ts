@@ -5,11 +5,7 @@ import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js'
 import { getBlueprintCost } from './blueprint-costs.js';
 import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import {
-    blueprintAvailableFor,
-    experimentalAvailableFor,
-    isEngineerable,
-} from './internal/loadout-engineering.js';
+import { blueprintAvailableFor, experimentalAvailableFor } from './internal/loadout-engineering.js';
 import {
     getBlueprintsForModule,
     getEngineeringGroup,
@@ -130,11 +126,12 @@ test('a build that spells a modification generically is still engineered', () =>
     assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'Misc_Nonsense'));
 });
 
-test('the gate accepts what the menu omits only by a pinned alias or a non-final sale', () => {
+test('the gate accepts what the menu omits only by a pinned alias or a Mercenary upgrade', () => {
     // Three things beyond the menu may explain an acceptance, and nothing else may: the
     // generic spelling of a recipe the menu lists under a family's name, the journal
-    // colliding journal spelling of an offered blueprint, and a recipe the module
-    // is sold already carrying and is not final. Anything else means the gate has quietly widened.
+    // colliding journal spelling of an offered blueprint, and the bespoke recipe a
+    // Mercenary module is sold carrying at grade 1. Anything else means the gate has
+    // quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
@@ -146,10 +143,9 @@ test('the gate accepts what the menu omits only by a pinned alias or a non-final
     const seen = new Set<string>();
     for (const module of ALL_MODULES) {
         const offered = getBlueprintsForModule(module.symbol);
-        if (offered.length === 0) continue;
         const sold = new Set(
             getPreEngineeredVariants(module.symbol)
-                .filter((variant) => !variant.engineeringLocked)
+                .filter((variant) => variant.acquisition === 'mercenary')
                 .map((variant) => variant.blueprint.toLowerCase()),
         );
         for (const fdname of Object.keys(BLUEPRINTS)) {
@@ -162,7 +158,7 @@ test('the gate accepts what the menu omits only by a pinned alias or a non-final
             assert.equal(
                 matched.length,
                 1,
-                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a non-final pre-engineered sale explains`,
+                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a Mercenary upgrade explains`,
             );
             seen.add(`${fdname.toLowerCase()}|${matched[0]!.toLowerCase()}`);
         }
@@ -377,8 +373,8 @@ test('a recipe sold on one module is not thereby available on its neighbours', (
     assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'RailGun_LongShot'));
     assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'RailGun_LongShot'));
     // A module with no engineering menu at all can still be sold carrying a recipe, and
-    // the menu check must not refuse it first: the Mercenary Module Reinforcement Package
-    // is the one such case, and reproducing its numbers is the whole point of this leg.
+    // the menu check must not refuse it first. The Mercenary Module Reinforcement Package
+    // is one of the three such modules, and this case pins the internal-module path.
     assert.equal(getEngineeringGroup('Int_ModuleReinforcement_Size5_Class2'), null);
     assert.ok(
         blueprintAvailableFor(
@@ -427,10 +423,10 @@ test('the gate matches an id the way every other lookup does', () => {
 });
 
 test('a module no registry gives a menu takes no engineering', () => {
-    assert.ok(!isEngineerable('Int_FuelTank_Size5_Class3'));
+    assert.equal(getEngineeringGroup('Int_FuelTank_Size5_Class3'), null);
     assert.ok(!blueprintAvailableFor('Int_FuelTank_Size5_Class3', 'Misc_LightWeight'));
-    assert.ok(!isEngineerable('Hpt_MRAScanner_Size0_Class1'));
-    assert.ok(isEngineerable('Int_LifeSupport_Size4_Class2'));
+    assert.equal(getEngineeringGroup('Hpt_MRAScanner_Size0_Class1'), null);
+    assert.notEqual(getEngineeringGroup('Int_LifeSupport_Size4_Class2'), null);
 });
 
 test('computeModifiers reproduces the FSD Long Range G5 + Mass Manager anchor', () => {

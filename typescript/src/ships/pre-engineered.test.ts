@@ -11,10 +11,15 @@ import { getBlueprintCost } from './blueprint-costs.js';
 import { BLUEPRINTS, getBlueprint } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
-import { blueprintAvailableFor } from './internal/loadout-engineering.js';
+import {
+    availableBlueprintsFor,
+    blueprintAvailableFor,
+    missingBaseLabels,
+} from './internal/loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
+import { baseStats } from './internal/module-stat-labels.js';
 import fixture from '../../../fixtures/ships/pre-engineered.jsonc' with { type: 'json' };
 
 test(`the catalogue holds ${fixture.count} pre-engineered variants`, () => {
@@ -64,22 +69,36 @@ test('every variant joins to a real module, blueprint and experimental effect', 
     }
 });
 
-test('pre-engineered variants distinguish menu compatibility from final articles', () => {
+test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed articles', () => {
     // `applyBlueprint` gates experimental effects on the engineering menu alone, with no
-    // pre-engineered leg beside the one it has for blueprints — because it needs none:
-    // every effect a variant is sold carrying is one the module's own menu lists. This is
-    // what says that stays true. The blueprints are the other way round, which is why they
-    // do have that leg: 21 Operations keys are sold and never offered.
-    for (const variant of PRE_ENGINEERED_MODULES) {
-        if (!variant.experimental) continue;
-        assert.ok(
-            getExperimentalsForModule(variant.symbol).includes(variant.experimental),
-            `${variant.symbol} is sold with "${variant.experimental}", which its menu does not offer`,
-        );
-    }
-    // The blueprint half of that contrast. A non-final sale may open the remaining grades
-    // of its recipe; a final Guardian article is evidence of what was bought, never
-    // permission to roll that recipe at an engineer.
+    // pre-engineered leg beside the one it has for blueprints. A fixed reward may arrive
+    // carrying an effect outside the stock module's menu, but that identifies the article
+    // rather than making the effect applicable. The long-range Mining Laser is the one
+    // such record in this catalogue.
+    assert.deepEqual(
+        PRE_ENGINEERED_MODULES.filter(
+            (variant) =>
+                variant.experimental !== undefined &&
+                !getExperimentalsForModule(variant.symbol).includes(variant.experimental),
+        ).map(({ symbol, blueprint, experimental, acquisition }) => ({
+            symbol,
+            blueprint,
+            experimental,
+            acquisition,
+        })),
+        [
+            {
+                symbol: 'Hpt_MiningLaser_Fixed_Small',
+                blueprint: 'Weapon_LongRange',
+                experimental: 'special_incendiary_rounds',
+                acquisition: 'techBroker',
+            },
+        ],
+    );
+    // The blueprint half of that contrast. Community-goal and tech-broker records identify
+    // what was bought or awarded; they do not make that recipe applicable to a stock
+    // module. Every Mercenary record instead arrives at grade 1 and opens grades 2-5 of
+    // its own bespoke recipe, even though no ordinary menu lists that recipe.
     const sold = PRE_ENGINEERED_MODULES.filter(
         (variant) => !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
     );
@@ -87,9 +106,55 @@ test('pre-engineered variants distinguish menu compatibility from final articles
     for (const variant of sold) {
         assert.equal(
             blueprintAvailableFor(variant.symbol, variant.blueprint),
-            !variant.engineeringLocked,
+            variant.acquisition === 'mercenary',
             `${variant.symbol}: ${variant.blueprint}`,
         );
+        assert.equal(
+            availableBlueprintsFor(variant.symbol).some(
+                (candidate) => candidate.fdname === variant.blueprint,
+            ),
+            variant.acquisition === 'mercenary',
+            `${variant.symbol}: ${variant.blueprint} menu visibility`,
+        );
+    }
+});
+
+test('every Mercenary module arrives at grade 1 and can climb through grades 2-5', () => {
+    const mercenary = PRE_ENGINEERED_MODULES.filter(
+        (variant) => variant.acquisition === 'mercenary',
+    );
+    assert.equal(mercenary.length, fixture.counts.mercenary);
+    for (const variant of mercenary) {
+        assert.equal(variant.grade, 1, `${variant.symbol}: purchased grade`);
+        assert.ok(
+            !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
+            `${variant.symbol}: bespoke recipe leaked into the ordinary menu`,
+        );
+        assert.ok(
+            blueprintAvailableFor(variant.symbol, variant.blueprint),
+            `${variant.symbol}: ${variant.blueprint} is not upgradeable`,
+        );
+        assert.deepEqual(
+            availableBlueprintsFor(variant.symbol).find(
+                (candidate) => candidate.fdname === variant.blueprint,
+            ),
+            { fdname: variant.blueprint, grades: [2, 3, 4, 5], route: 'mercenary' },
+            `${variant.symbol}: ${variant.blueprint} is missing from available blueprints`,
+        );
+        const blueprint = BLUEPRINTS[variant.blueprint]!;
+        assert.deepEqual(
+            Object.keys(blueprint.grades).map(Number),
+            [2, 3, 4, 5],
+            `${variant.blueprint}: upgrade grades`,
+        );
+        const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
+        for (const [grade, recipe] of Object.entries(blueprint.grades)) {
+            assert.deepEqual(
+                missingBaseLabels(module, baseStats(module), recipe.features),
+                [],
+                `${variant.symbol}: ${variant.blueprint} grade ${grade}`,
+            );
+        }
     }
 });
 

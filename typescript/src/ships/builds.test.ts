@@ -218,7 +218,8 @@ test('every applicable build declaration engineers through applyBlueprint', () =
     // refusal here is this library disagreeing with the game. Final pre-engineered
     // Guardian articles are expected to refuse: their Engineering blocks identify the
     // bought article, not a recipe to apply. The Mk II Plasma Shock Accelerator entries
-    // are refused because that stock module cannot be engineered at all.
+    // are refused because that stock module cannot be engineered at all, and the Abrasion
+    // Blaster entry identifies its community-goal reward rather than an ordinary roll.
     const notEngineerable = new Set(
         optionsFixture.corpus.notEngineerable.map((row) => `${row.symbol}|${row.blueprint}`),
     );

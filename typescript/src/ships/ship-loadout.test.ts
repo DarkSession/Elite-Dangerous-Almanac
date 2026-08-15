@@ -1642,7 +1642,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     // A recipe the drive's own menu does not list, and the menu is quoted back.
     assert.throws(
         () => build.applyBlueprint('FrameShiftDrive', 'Armour_HeavyDuty', { grade: 5 }),
-        /is not offered blueprint "Armour_HeavyDuty"; it takes FSD_FastBoot, FSD_LongRange, FSD_Shielded/,
+        /is not offered blueprint "Armour_HeavyDuty"; available candidates are FSD_FastBoot \(ordinary\), FSD_LongRange \(ordinary\), FSD_Shielded \(ordinary\)/,
     );
     assert.throws(
         () =>
@@ -2089,7 +2089,7 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
     // scanner's id, and the error quotes the menu it checked.
     assert.throws(
         () => build.applyBlueprint('Radar', 'Scanner_LongRange', { grade: 3 }),
-        /is not offered blueprint "Scanner_LongRange"; it takes Sensor_LightWeight/,
+        /is not offered blueprint "Scanner_LongRange"; available candidates are Sensor_LightWeight \(ordinary\)/,
     );
     // Once the two spellings differ, an error names both — the id the caller passed, and
     // the recipe this module would have rolled. Reporting one as the other is how a
@@ -2152,6 +2152,53 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
                 }),
         /no registry lists an engineering menu for module "Int_ModuleReinforcement_Size3_Class2"/,
     );
+});
+
+test('stock mining tools refuse ordinary engineering but keep their Mercenary climbs', () => {
+    const cases = [
+        {
+            symbol: 'Hpt_MiningLaser_Fixed_Small',
+            blueprint: 'MiningLaser_LongRange',
+        },
+        {
+            symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small',
+            blueprint: 'AbrasionBlaster_FarReaching',
+        },
+    ] as const;
+
+    for (const { symbol, blueprint } of cases) {
+        const build = ShipLoadout.empty('Anaconda').setModule(
+            'SmallHardpoint1',
+            mod(symbol, HARDPOINT_MODULES),
+        );
+        assert.deepEqual(
+            build.availableBlueprints('SmallHardpoint1'),
+            [{ fdname: blueprint, grades: [2, 3, 4, 5], route: 'mercenary' }],
+            symbol,
+        );
+        assert.throws(
+            () =>
+                build.applyBlueprint('SmallHardpoint1', 'Weapon_LongRange', {
+                    grade: 5,
+                    quality: 1,
+                }),
+            new RegExp(
+                `module "${symbol}" is not offered blueprint "Weapon_LongRange"; available candidates are ${blueprint} \\(mercenary\\)`,
+            ),
+        );
+
+        const mercenary = getPreEngineeredVariants(symbol).find(
+            (variant) => variant.acquisition === 'mercenary',
+        )!;
+        assert.equal(mercenary.grade, 1, symbol);
+        assert.equal(mercenary.blueprint, blueprint, symbol);
+        build.applyBlueprint('SmallHardpoint1', blueprint, { grade: 5, quality: 1 });
+        assert.equal(
+            build.fittedModuleAt('SmallHardpoint1')?.engineering?.BlueprintName,
+            blueprint,
+            symbol,
+        );
+    }
 });
 
 test('a final pre-engineered Guardian weapon exposes no engineering', () => {
@@ -2375,7 +2422,7 @@ test('keyed facade mutations produce new fitted-module snapshots', () => {
     assert.equal(build.frameShiftDrive.optMass, 4670); // base
 });
 
-test('availableBlueprints / availableExperimentalEffects answer the module menu', () => {
+test('availableBlueprints / availableExperimentalEffects answer available engineering', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Size6_Class5'),
@@ -2384,6 +2431,7 @@ test('availableBlueprints / availableExperimentalEffects answer the module menu'
     const longRange = blueprints.find((b) => b.fdname === 'FSD_LongRange');
     assert.ok(longRange, 'FSD_LongRange should be offered on an FSD');
     assert.deepEqual([...longRange!.grades], [1, 2, 3, 4, 5]);
+    assert.equal(longRange!.route, 'ordinary');
     // No armour recipe leaks onto a frame shift drive.
     assert.ok(!blueprints.some((b) => b.fdname.toLowerCase().startsWith('armour_')));
 
