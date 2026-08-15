@@ -14,6 +14,13 @@ test('decorative transformations resolve to journal-style modifiers', () => {
     for (const { id } of decorative.ids) {
         assert.deepEqual(getDecorativeModifiers(decorative.module, id), [
             {
+                Label: 'DamagePerSecond',
+                Value: decorative.resolved.damagePerSecond,
+                OriginalValue:
+                    decorative.resolved.baseDamage *
+                    (decorative.resolved.damagePerSecond / decorative.resolved.damage),
+            },
+            {
                 Label: 'Damage',
                 Value: decorative.resolved.damage,
                 OriginalValue: decorative.resolved.baseDamage,
@@ -31,6 +38,13 @@ test('resolution normalizes both journal identities', () => {
         ),
         [
             {
+                Label: 'DamagePerSecond',
+                Value: decorative.resolved.damagePerSecond,
+                OriginalValue:
+                    decorative.resolved.baseDamage *
+                    (decorative.resolved.damagePerSecond / decorative.resolved.damage),
+            },
+            {
                 Label: 'Damage',
                 Value: decorative.resolved.damage,
                 OriginalValue: decorative.resolved.baseDamage,
@@ -45,9 +59,21 @@ test('the observational module list is not an allowlist', () => {
     assert.ok(!DECORATIVE_MODIFICATIONS[id]!.modules.includes(unobserved));
     const modifiers = getDecorativeModifiers(unobserved, id);
     assert.ok(modifiers);
-    const [damage] = modifiers;
+    const damage = modifiers.find((modifier) => modifier.Label === 'Damage');
     assert.equal(damage?.Label, 'Damage');
     assert.ok(Math.abs(damage!.Value! - damage!.OriginalValue! * 0.01) < 1e-9);
+    assert.ok(modifiers.some((modifier) => modifier.Label === 'DamagePerSecond'));
+});
+
+test('continuous-fire damage is presented under the journal DPS label', () => {
+    const beam = 'Hpt_BeamLaser_Fixed_Small';
+    const id = decorative.ids[0]!.id;
+    const modifiers = getDecorativeModifiers(beam, id)!;
+    assert.deepEqual(
+        modifiers.map((modifier) => modifier.Label),
+        ['DamagePerSecond'],
+    );
+    assert.ok(Math.abs(modifiers[0]!.Value! - modifiers[0]!.OriginalValue! * 0.01) < 1e-9);
 });
 
 test('unknown or absent identities are misses', () => {
@@ -75,8 +101,11 @@ test('every authored label resolves for every observed module pairing', () => {
         for (const symbol of modification.modules) {
             const modifiers = getDecorativeModifiers(symbol, id);
             assert.ok(modifiers);
-            const resolved = modifiers.map((modifier) => modifier.Label).sort();
-            assert.deepEqual(resolved, authored, `${symbol} / ${id}`);
+            const resolved = modifiers.map((modifier) => modifier.Label);
+            assert.ok(
+                authored.every((label) => resolved.includes(label)),
+                `${symbol} / ${id}: ${resolved.join(', ')}`,
+            );
             assert.deepEqual(unresolvedDecorativeModifiers(symbol, id), [], `${symbol} / ${id}`);
         }
     }

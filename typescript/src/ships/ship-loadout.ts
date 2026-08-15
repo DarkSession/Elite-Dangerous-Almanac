@@ -84,10 +84,6 @@ import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getDecorativeModification, isDecorativeModification } from './decorative-modifications.js';
-import {
-    getDecorativeModifiers,
-    unresolvedDecorativeModifiers,
-} from './decorative-modification-stats.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
@@ -168,6 +164,7 @@ import {
     truncate,
 } from '../internal/argument-guards.js';
 import { completeResult } from './internal/calculation-result.js';
+import { resolveDecorativeModificationStats } from './internal/decorative-modification-resolution.js';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
@@ -1583,13 +1580,12 @@ export class ShipLoadout {
      * @param fdname - The decorative transformation's Frontier `fdname`, e.g.
      * `"Decorative_Red"`.
      * @returns `this`, for chaining.
-     * @throws {RangeError} If the slot is empty, the decorative identity is unknown, or
-     * the fitted module identity cannot be resolved by the outfitting catalogue.
+     * @throws {RangeError} If the slot is empty or the decorative identity is unknown.
      * @throws {TypeError} If `slotKey` or `fdname` is not a string, or one or more of the
      * decorative transformation's stat labels cannot be computed for the fitted module;
-     * or the fitted module is a final pre-engineered article and accepts no further
-     * modification. Incomplete transformations are rejected rather than stored as
-     * partial modifier blocks.
+     * the fitted module carries no stat snapshot; or it is a final pre-engineered article
+     * and accepts no further modification. Incomplete transformations are rejected
+     * rather than stored as partial modifier blocks.
      * @example
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1616,28 +1612,27 @@ export class ShipLoadout {
                 `ShipLoadout.applyDecorativeModification: slot "${truncate(slotKey)}" is empty`,
             );
         }
-        if (!getDecorativeModification(fdname)) {
+        const modification = getDecorativeModification(fdname);
+        if (!modification) {
             throw new RangeError(
                 `ShipLoadout.applyDecorativeModification: unknown decorative modification "${truncate(fdname)}"`,
             );
         }
-        if (this.#statsFor(module)?.engineeringLocked) {
+        const stats = this.#statsFor(module);
+        if (!stats) {
+            throw new TypeError(
+                `ShipLoadout.applyDecorativeModification: no stats for module "${truncate(module.Item)}"`,
+            );
+        }
+        if (stats.engineeringLocked) {
             throw new TypeError(
                 `ShipLoadout.applyDecorativeModification: module "${truncate(module.Item)}" is a final pre-engineered article and accepts no further modification`,
             );
         }
-        const modifiers = getDecorativeModifiers(module.Item, fdname);
-        if (modifiers === null) {
-            throw new RangeError(
-                `ShipLoadout.applyDecorativeModification: unknown module "${truncate(module.Item)}"`,
-            );
-        }
-        const unresolved = unresolvedDecorativeModifiers(module.Item, fdname);
-        if (unresolved === null) {
-            throw new RangeError(
-                `ShipLoadout.applyDecorativeModification: cannot resolve decorative modification "${truncate(fdname)}" for module "${truncate(module.Item)}"`,
-            );
-        }
+        const { modifiers, primitiveModifiers, unresolved } = resolveDecorativeModificationStats(
+            stats,
+            modification,
+        );
         if (unresolved.length > 0) {
             throw new TypeError(
                 `ShipLoadout.applyDecorativeModification: cannot compute decorative modification "${truncate(fdname)}" for module "${truncate(module.Item)}"; missing base stats for ${unresolved.join(', ')}`,
@@ -1651,7 +1646,7 @@ export class ShipLoadout {
             module.Slot,
             { ...module, Engineering: engineering },
             undefined,
-            modifiers,
+            primitiveModifiers,
         );
         return this;
     }

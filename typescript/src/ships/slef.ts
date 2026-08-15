@@ -11,11 +11,13 @@
  *    "data":   { "event": "Loadout", "Ship": "explorer_nx", "Modules": [ ... ] } }]
  * ```
  *
- * The top level is an **array** so several builds can travel together. This module
- * is **data-free** — just the record shapes, {@link parseSlef} / {@link getLoadoutModifier}
- * to read, and {@link toSlef} / {@link stringifySlef} to write. To turn a parsed build
- * into jump-range and fuel numbers, or to produce the `Loadout` event {@link toSlef}
- * wraps, hand it to {@link ShipLoadout} (`./ship-loadout`).
+ * The top level is an **array** so several builds can travel together. This module carries
+ * the record shapes and the tiny decorative-identity catalogue needed to distinguish a
+ * real grade-less transformation from malformed blueprint engineering; it imports no
+ * blueprint, module or ship catalogue. {@link parseSlef} / {@link getLoadoutModifier}
+ * read, and {@link toSlef} / {@link stringifySlef} write. To turn a parsed build into
+ * jump-range and fuel numbers, or to produce the `Loadout` event {@link toSlef} wraps,
+ * hand it to {@link ShipLoadout} (`./ship-loadout`).
  *
  * ```ts
  * const build = ShipLoadout.fromSlef(exported);       // in
@@ -31,6 +33,7 @@
 
 import { normalizeKey } from '../internal/registry-index.js';
 import { truncate } from '../internal/argument-guards.js';
+import { isDecorativeModification } from './decorative-modifications.js';
 
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
@@ -276,6 +279,7 @@ const CONSTRAINT_MESSAGES: Record<Exclude<SlefConstraint, 'uniqueSlot'>, string>
     engineeringLevelRange: 'must be an integer from 1 to 5',
     unitInterval: 'must be a number from 0 to 1',
     binaryInteger: 'must be 0 or 1',
+    decorativeGradeAbsent: 'must be absent from a grade-less decorative block',
     decorativeExperimentalAbsent: 'must be absent from a grade-less decorative block',
     versionRequired: 'must be a string or finite number',
     loadoutEventRequired: 'must be "Loadout"',
@@ -292,8 +296,13 @@ function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | n
     if (!isRecord(value)) return invalid('invalidEngineering', path, 'objectRequired');
     if (typeof value.BlueprintName !== 'string')
         return invalid('invalidEngineering', `${path}.BlueprintName`, 'stringRequired');
-    const graded = value.Level !== undefined || value.Quality !== undefined;
-    if (graded) {
+    const decorative = isDecorativeModification(value.BlueprintName);
+    if (decorative) {
+        if (value.Level !== undefined)
+            return invalid('invalidEngineering', `${path}.Level`, 'decorativeGradeAbsent');
+        if (value.Quality !== undefined)
+            return invalid('invalidEngineering', `${path}.Quality`, 'decorativeGradeAbsent');
+    } else {
         if (!isOptionalIntegerInRange(value.Level, 1, 5) || value.Level === undefined)
             return invalid('invalidEngineering', `${path}.Level`, 'engineeringLevelRange');
         if (!isOptionalNumberInRange(value.Quality, 0, 1) || value.Quality === undefined)
@@ -307,19 +316,19 @@ function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | n
             `${path}.ExperimentalEffect_Localised`,
             'stringRequired',
         );
-    if (!graded && value.ExperimentalEffect !== undefined)
+    if (decorative && value.ExperimentalEffect !== undefined)
         return invalid(
             'invalidEngineering',
             `${path}.ExperimentalEffect`,
             'decorativeExperimentalAbsent',
         );
-    if (!graded && value.ExperimentalEffect_Localised !== undefined)
+    if (decorative && value.ExperimentalEffect_Localised !== undefined)
         return invalid(
             'invalidEngineering',
             `${path}.ExperimentalEffect_Localised`,
             'decorativeExperimentalAbsent',
         );
-    if (!graded && !Array.isArray(value.Modifiers))
+    if (decorative && !Array.isArray(value.Modifiers))
         return invalid('invalidEngineering', `${path}.Modifiers`, 'arrayRequired');
     if (value.Modifiers !== undefined) {
         if (!Array.isArray(value.Modifiers))
@@ -469,6 +478,7 @@ export type SlefConstraint =
     | 'engineeringLevelRange'
     | 'unitInterval'
     | 'binaryInteger'
+    | 'decorativeGradeAbsent'
     | 'decorativeExperimentalAbsent'
     | 'versionRequired'
     | 'loadoutEventRequired'

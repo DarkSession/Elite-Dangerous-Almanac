@@ -3630,7 +3630,26 @@ test('a decorative modification changes only its slot and exports grade-less sta
     const exported = event.Modules.find((module) => module.Slot === 'MediumHardpoint1')!;
     assert.deepEqual(exported.Engineering, decorated.engineering);
     const reimported = ShipLoadout.fromLoadout(event).fittedModuleAt('MediumHardpoint1')!;
-    assert.equal(reimported.effectiveStats!.damage, decorated.effectiveStats!.damage);
+    assert.ok(near(reimported.effectiveStats!.damage!, decorated.effectiveStats!.damage!, 1e-6));
+});
+
+test('a decorative modification resolves against the exact fitted stat snapshot', () => {
+    const stock = mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES);
+    const custom: OutfittingModule = {
+        ...stock,
+        symbol: 'Custom_Festive_Pulse_Laser',
+        damage: 4.1,
+    };
+    const id = engineeringFixture.decorativeModifications.ids[0]!.id;
+    const fitted = ShipLoadout.empty('Anaconda')
+        .setModule('MediumHardpoint1', custom)
+        .applyDecorativeModification('MediumHardpoint1', id)
+        .fittedModuleAt('MediumHardpoint1')!;
+
+    const damage = fitted.engineering!.Modifiers!.find((modifier) => modifier.Label === 'Damage')!;
+    assert.equal(damage.OriginalValue, 4.1);
+    assert.ok(near(damage.Value!, 0.041, 1e-9));
+    assert.ok(near(fitted.effectiveStats!.damage!, 0.041, 1e-9));
 });
 
 test('applyDecorativeModification rejects unknown and incomplete resolutions', () => {
@@ -3658,7 +3677,7 @@ test('applyDecorativeModification rejects unknown and incomplete resolutions', (
                 Ship: 'unknown_hull',
                 Modules: [{ Slot: 'Mystery', Item: 'unknown_module' }],
             }).applyDecorativeModification('Mystery', id),
-        RangeError,
+        TypeError,
     );
     assert.throws(
         () =>

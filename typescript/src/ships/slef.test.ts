@@ -173,25 +173,32 @@ test('grade-less decorative engineering is typed and parsed without fabricated f
 });
 
 test('a modification block is either fully graded or fully grade-less', () => {
-    const engineering = (fields: Record<string, unknown>) => ({
+    const engineering = (blueprint: string, fields: Record<string, unknown>) => ({
         Ship: 'sidewinder',
         Modules: [
             {
                 Slot: 'MainEngines',
                 Item: 'x',
-                Engineering: { BlueprintName: 'Decorative_Red', ...fields },
+                Engineering: { BlueprintName: blueprint, ...fields },
             },
         ],
     });
 
-    for (const [fields, path] of [
-        [{ Level: 1, Modifiers: [] }, 'Quality'],
-        [{ Quality: 1, Modifiers: [] }, 'Level'],
-        [{}, 'Modifiers'],
-        [{ ExperimentalEffect: 'special_test', Modifiers: [] }, 'ExperimentalEffect'],
+    for (const [blueprint, fields, path] of [
+        ['FSD_LongRange', { Level: 1, Modifiers: [] }, 'Quality'],
+        ['FSD_LongRange', { Quality: 1, Modifiers: [] }, 'Level'],
+        ['FSD_LongRange', { Modifiers: [] }, 'Level'],
+        ['Decorative_Unknown', { Modifiers: [] }, 'Level'],
+        ['Decorative_Red', {}, 'Modifiers'],
+        ['Decorative_Red', { Level: 1, Quality: 1, Modifiers: [] }, 'Level'],
+        [
+            'Decorative_Red',
+            { ExperimentalEffect: 'special_test', Modifiers: [] },
+            'ExperimentalEffect',
+        ],
     ] as const) {
         assert.equal(
-            inspectSlef(engineering(fields)).diagnostics[0]?.path,
+            inspectSlef(engineering(blueprint, fields)).diagnostics[0]?.path,
             `entries[0].Modules[0].Engineering.${path}`,
         );
     }

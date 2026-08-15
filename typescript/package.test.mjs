@@ -214,6 +214,7 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
     assert.deepEqual(getDecorativeModifiers('Hpt_FlakMortar_Turret_Medium', 'Decorative_Green'), [
+        { Label: 'DamagePerSecond', Value: 0.17, OriginalValue: 17 },
         { Label: 'Damage', Value: 0.34, OriginalValue: 34 },
     ]);
     assert.deepEqual(
@@ -530,12 +531,13 @@ test('module capability guards do not pull the outfitting catalogues', async () 
     }
 });
 
-test('reading and writing SLEF costs nothing but the wire format', async () => {
-    // `ships/slef` is the parse-and-serialise leaf: apps that only move builds between
-    // tools must not pay for the catalogues. Serialising is the easy way to break this,
-    // since the obvious implementation reaches for ShipLoadout.
+test('reading and writing SLEF excludes heavyweight catalogues', async () => {
+    // `ships/slef` carries the three decorative identities needed to discriminate valid
+    // grade-less state. Apps that only move builds must not pay for module, blueprint or
+    // ship catalogues; serialising is the easy way to break this by reaching for ShipLoadout.
     const graph = await readReachableJs(new URL('./dist/ships/slef.js', import.meta.url));
     assert.ok(graph.length < 16 * 1024, `expected a tiny module, got ${graph.length} bytes`);
+    assert.match(graph, /Decorative_Red/);
     for (const marker of [/Anaconda/, /Chaff Launcher/, /FSD_LongRange/, /Witch Head/]) {
         assert.doesNotMatch(graph, marker);
     }
