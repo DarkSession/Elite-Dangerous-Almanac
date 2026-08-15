@@ -83,7 +83,7 @@ import { getDefaultLoadout } from './default-loadouts.js';
 import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
-import { isDecorativeModification } from './decorative-modifications.js';
+import { getDecorativeModification, isDecorativeModification } from './decorative-modifications.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
@@ -164,6 +164,7 @@ import {
     truncate,
 } from '../internal/argument-guards.js';
 import { completeResult } from './internal/calculation-result.js';
+import { resolveDecorativeModificationStats } from './internal/decorative-modification-resolution.js';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
@@ -1454,7 +1455,7 @@ export class ShipLoadout {
         // `DECORATIVE_MODIFICATIONS`, not a grade this recipe never had.
         if (isDecorativeModification(recipe)) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are in DECORATIVE_MODIFICATIONS`,
+                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; use applyDecorativeModification to fit its fixed stat changes`,
             );
         }
         if (!Number.isInteger(wantedGrade) || wantedGrade < 1 || wantedGrade > 5) {
@@ -1567,11 +1568,96 @@ export class ShipLoadout {
     }
 
     /**
-     * Strip the engineering from a slot's module, restoring its base stats.
+     * Apply a fixed, grade-less decorative transformation to the module in a slot.
+     *
+     * The transformation is resolved through the decorative catalogue and stored as a
+     * journal/SLEF `Engineering` block containing only `BlueprintName` and `Modifiers` —
+     * no grade or quality is invented. Only this slot is replaced, so effective state
+     * retained for every other engineered module remains untouched.
+     *
+     * @param slotKey - The slot whose module to transform, matched case-insensitively
+     * (journal spelling).
+     * @param fdname - The decorative transformation's Frontier `fdname`, e.g.
+     * `"Decorative_Red"`.
+     * @returns `this`, for chaining.
+     * @throws {RangeError} If the slot is empty or the decorative identity is unknown.
+     * @throws {TypeError} If `slotKey` or `fdname` is not a string, or one or more of the
+     * decorative transformation's stat labels cannot be computed for the fitted module;
+     * the fitted module carries no stat snapshot; or it is a final pre-engineered article
+     * and accepts no further modification. Incomplete transformations are rejected
+     * rather than stored as partial modifier blocks.
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+     * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+     *
+     * const build = ShipLoadout.empty('Krait_MkII');
+     * const flak = getModuleBySymbol(
+     *   'Hpt_FlakMortar_Turret_Medium',
+     *   HARDPOINT_MODULES,
+     * )!;
+     *
+     * build.setModule('MediumHardpoint1', flak)
+     *      .applyDecorativeModification('MediumHardpoint1', 'Decorative_Red');
+     * build.fittedModuleAt('MediumHardpoint1')?.engineering?.BlueprintName;
+     * // -> 'Decorative_Red'
+     * ```
+     */
+    applyDecorativeModification(slotKey: string, fdname: string): this {
+        requireString(fdname, 'ShipLoadout.applyDecorativeModification: fdname');
+        const module = this.#fittedModuleFor(slotKey);
+        if (!module) {
+            throw new RangeError(
+                `ShipLoadout.applyDecorativeModification: slot "${truncate(slotKey)}" is empty`,
+            );
+        }
+        const modification = getDecorativeModification(fdname);
+        if (!modification) {
+            throw new RangeError(
+                `ShipLoadout.applyDecorativeModification: unknown decorative modification "${truncate(fdname)}"`,
+            );
+        }
+        const stats = this.#statsFor(module);
+        if (!stats) {
+            throw new TypeError(
+                `ShipLoadout.applyDecorativeModification: no stats for module "${truncate(module.Item)}"`,
+            );
+        }
+        if (stats.engineeringLocked) {
+            throw new TypeError(
+                `ShipLoadout.applyDecorativeModification: module "${truncate(module.Item)}" is a final pre-engineered article and accepts no further modification`,
+            );
+        }
+        const { modifiers, primitiveModifiers, unresolved } = resolveDecorativeModificationStats(
+            stats,
+            modification,
+        );
+        if (unresolved.length > 0) {
+            throw new TypeError(
+                `ShipLoadout.applyDecorativeModification: cannot compute decorative modification "${truncate(fdname)}" for module "${truncate(module.Item)}"; missing base stats for ${unresolved.join(', ')}`,
+            );
+        }
+        const engineering: ModuleEngineering = {
+            BlueprintName: fdname,
+            Modifiers: modifiers,
+        };
+        this.#replaceModule(
+            module.Slot,
+            { ...module, Engineering: engineering },
+            undefined,
+            primitiveModifiers,
+        );
+        return this;
+    }
+
+    /**
+     * Strip blueprint engineering or a decorative transformation from a slot's module,
+     * restoring its base stats.
      *
      * @param slotKey - The slot to de-engineer, matched case-insensitively (journal
      * spelling).
-     * @returns `this`, for chaining. A no-op if the slot is empty or un-engineered.
+     * @returns `this`, for chaining. A no-op if the slot is empty or unmodified.
      * @throws {TypeError} If `slotKey` is not a string, or the fitted article is final
      * pre-engineered and its baked engineering cannot be removed.
      */
