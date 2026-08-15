@@ -1468,9 +1468,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **`exclusions` are the exceptions, and they are real.** 23 modules take their group's
   blueprints but not all of its experimental effects: 13 Multi-cannons cannot take Phasing
   Sequence, six dumbfire racks cannot take Drag Munitions, four missile racks are short of
-  Penetrator Munitions or FSD Interrupt. Upstream these are an exclusion map; here
-  the wildcard is expanded to the explicit list. A module absent from `exclusions` takes
-  its whole group's list. All seven mining tools
+  Penetrator Munitions or FSD Interrupt. Upstream these are an exclusion map. A module
+  absent from `exclusions` takes its whole group's list. All seven mining tools
   that would otherwise be listed here are absent from the catalogue entirely, taking no
   ordinary blueprint either.
 - **The fixed Mining Laser and Abrasion Blaster have no ordinary engineering menu.** Both

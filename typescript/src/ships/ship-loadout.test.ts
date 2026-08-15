@@ -2173,7 +2173,7 @@ test('stock mining tools refuse ordinary engineering but keep their Mercenary cl
         );
         assert.deepEqual(
             build.availableBlueprints('SmallHardpoint1'),
-            [{ fdname: blueprint, grades: [2, 3, 4, 5] }],
+            [{ fdname: blueprint, grades: [2, 3, 4, 5], route: 'mercenary' }],
             symbol,
         );
         assert.throws(
@@ -2182,7 +2182,9 @@ test('stock mining tools refuse ordinary engineering but keep their Mercenary cl
                     grade: 5,
                     quality: 1,
                 }),
-            new RegExp(`no registry lists an engineering menu for module "${symbol}"`),
+            new RegExp(
+                `module "${symbol}" is not offered blueprint "Weapon_LongRange"; it takes ${blueprint}`,
+            ),
         );
 
         const mercenary = getPreEngineeredVariants(symbol).find(
@@ -2429,6 +2431,7 @@ test('availableBlueprints / availableExperimentalEffects answer available engine
     const longRange = blueprints.find((b) => b.fdname === 'FSD_LongRange');
     assert.ok(longRange, 'FSD_LongRange should be offered on an FSD');
     assert.deepEqual([...longRange!.grades], [1, 2, 3, 4, 5]);
+    assert.equal(longRange!.route, 'ordinary');
     // No armour recipe leaks onto a frame shift drive.
     assert.ok(!blueprints.some((b) => b.fdname.toLowerCase().startsWith('armour_')));
 

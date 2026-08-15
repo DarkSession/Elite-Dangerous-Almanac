@@ -101,8 +101,11 @@ build.availableBlueprints('FrameShiftDrive'); // ordinary menu for the fitted FS
 build.availableExperimentalEffects('FrameShiftDrive');
 ```
 
-For a Mercenary module, `availableBlueprints` appends its bespoke Mercenary upgrade
-recipes after the ordinary menu.
+For a module symbol that has Mercenary variants, `availableBlueprints` appends every
+bespoke Mercenary upgrade recipe after the ordinary menu and marks it with `route:
+'mercenary'`. Stock and Mercenary articles share a symbol, so the loadout cannot prove
+which one was purchased: the route says the recipe requires the corresponding Mercenary
+article, not that the fitted module is one.
 
 ## The three accommodations
 

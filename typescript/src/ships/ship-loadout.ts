@@ -84,7 +84,7 @@ import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { isDecorativeModification } from './decorative-modifications.js';
 import { getExperimentalEffect } from './experimental-effects.js';
-import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
+import { getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
@@ -102,8 +102,8 @@ import {
     availableBlueprintsFor,
     availableExperimentalsFor,
     blueprintAvailableFor,
+    blueprintRoutesFor,
     experimentalAvailableFor,
-    isEngineerable,
     missingBaseLabels,
 } from './internal/loadout-engineering.js';
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
@@ -370,12 +370,22 @@ export interface JumpRangeSummary {
     readonly totalLaden: TotalRangeDetails;
 }
 
-/** A blueprint that can engineer a module, with the grades it offers. */
+/** A blueprint candidate for a module symbol, with its grades and availability route. */
 export interface AvailableBlueprint {
     /** The blueprint's Frontier `fdname`, e.g. `"FSD_LongRange"`. */
     readonly fdname: string;
     /** The grades the blueprint offers, ascending (e.g. `[1, 2, 3, 4, 5]`). */
     readonly grades: readonly number[];
+    /**
+     * Why the recipe is listed: `'ordinary'` for the stock module's engineering menu,
+     * or `'mercenary'` for a bespoke recipe attached to a Mercenary purchase.
+     *
+     * @remarks
+     * A Mercenary article shares its module symbol with the stock article, so a loadout
+     * cannot tell which one was purchased. `'mercenary'` means the recipe is available
+     * only through that purchase route; it does not identify the fitted article as one.
+     */
+    readonly route: 'ordinary' | 'mercenary';
 }
 
 /** How to shape a build on the way out — see {@link ShipLoadout.toLoadoutEvent}. */
@@ -1072,12 +1082,15 @@ export class ShipLoadout {
     }
 
     /**
-     * Return the computable blueprints a fitted module can accept.
+     * Return the computable blueprint candidates for a fitted module symbol.
      *
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns Frozen blueprint descriptors: the ordinary engineering menu first, then
-     * bespoke Mercenary upgrade recipes. Returns an empty array when the slot is empty,
-     * unresolved or final, or the module has neither route.
+     * bespoke Mercenary upgrade recipes. An `'ordinary'` candidate is available to the
+     * stock module; a `'mercenary'` candidate requires the caller to confirm that the
+     * fitted article is the matching Mercenary purchase, because its symbol alone cannot.
+     * Returns an empty array when the slot is empty, unresolved or final, or the module
+     * symbol has neither route.
      * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
@@ -1466,9 +1479,10 @@ export class ShipLoadout {
         // may still be a grade-1 Mercenary article carrying a bespoke upgrade recipe;
         // `blueprintAvailableFor` knows that, so ask it before blaming the module.
         if (!blueprintAvailableFor(module.Item, fdname)) {
+            const offered = [...blueprintRoutesFor(module.Item).keys()];
             throw new TypeError(
-                isEngineerable(module.Item)
-                    ? `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered blueprint ${named}; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
+                offered.length > 0
+                    ? `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered blueprint ${named}; it takes ${offered.join(', ')}`
                     : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${truncate(module.Item)}"`,
             );
         }

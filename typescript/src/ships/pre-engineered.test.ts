@@ -138,7 +138,7 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
             availableBlueprintsFor(variant.symbol).find(
                 (candidate) => candidate.fdname === variant.blueprint,
             ),
-            { fdname: variant.blueprint, grades: [2, 3, 4, 5] },
+            { fdname: variant.blueprint, grades: [2, 3, 4, 5], route: 'mercenary' },
             `${variant.symbol}: ${variant.blueprint} is missing from available blueprints`,
         );
         const blueprint = BLUEPRINTS[variant.blueprint]!;

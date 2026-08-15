@@ -123,6 +123,24 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
 }
 
 /**
+ * Literal recipe ids and routes accepted for a module symbol, before alias resolution.
+ * Ordinary-menu order comes first, followed by distinct Mercenary recipes in catalogue
+ * order.
+ *
+ * @internal
+ */
+export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableBlueprint['route']> {
+    const routes = new Map<string, AvailableBlueprint['route']>();
+    for (const fdname of getBlueprintsForModule(item)) routes.set(fdname, 'ordinary');
+    for (const variant of getPreEngineeredVariants(item)) {
+        if (variant.acquisition === 'mercenary' && !routes.has(variant.blueprint)) {
+            routes.set(variant.blueprint, 'mercenary');
+        }
+    }
+    return routes;
+}
+
+/**
  * Whether a module's engineering menu offers a blueprint — the check
  * {@link ShipLoadout.applyBlueprint} makes before it computes anything.
  *
@@ -254,10 +272,12 @@ function engineerableBase(
 }
 
 /**
- * Blueprints the fitted article can accept whose modifiers can also be computed.
+ * Blueprint candidates for a fitted module symbol whose modifiers can also be computed.
  *
  * The ordinary menu comes first, followed by any bespoke Mercenary recipes in catalogue
- * order. Fixed community-goal and tech-broker rewards add nothing.
+ * order. Each result names that route because the shared module symbol cannot establish
+ * whether the fitted article was bought from the Mercenary shop. Fixed community-goal
+ * and tech-broker rewards add nothing.
  *
  * @internal
  */
@@ -269,13 +289,7 @@ export function availableBlueprintsFor(
     if (!engineerable) return [];
     const { stats, base } = engineerable;
     const available: AvailableBlueprint[] = [];
-    const fdnames = new Set([
-        ...getBlueprintsForModule(item),
-        ...getPreEngineeredVariants(item)
-            .filter((variant) => variant.acquisition === 'mercenary')
-            .map((variant) => variant.blueprint),
-    ]);
-    for (const fdname of fdnames) {
+    for (const [fdname, route] of blueprintRoutesFor(item)) {
         const blueprint = BLUEPRINTS[fdname];
         if (!blueprint) continue;
         const grades = Object.entries(blueprint.grades)
@@ -283,7 +297,7 @@ export function availableBlueprintsFor(
             .map(([grade]) => Number(grade))
             .filter(Number.isFinite)
             .sort((a, b) => a - b);
-        if (grades.length > 0) available.push({ fdname, grades });
+        if (grades.length > 0) available.push({ fdname, grades, route });
     }
     return available;
 }
