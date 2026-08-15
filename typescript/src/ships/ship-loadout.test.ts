@@ -1719,8 +1719,8 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     }
 });
 
-test('a grade-less variant identity cannot be applied as a blueprint', () => {
-    const expected = preEngineeredFixture.gradeLess;
+test('a fixed event-reward identity cannot be applied as a blueprint', () => {
+    const expected = preEngineeredFixture.festive;
     const build = ShipLoadout.empty('Anaconda').setModule(
         'MediumHardpoint1',
         mod(expected.symbol, HARDPOINT_MODULES),
@@ -1730,7 +1730,7 @@ test('a grade-less variant identity cannot be applied as a blueprint', () => {
             build.applyBlueprint('MediumHardpoint1', expected.blueprints[0]!, {
                 grade: 1,
             }),
-        /is a grade-less pre-engineered identity, not a blueprint; use setPreEngineeredVariant/,
+        /is a fixed pre-engineered identity, not a craftable blueprint; use setPreEngineeredVariant/,
     );
 });
 
@@ -2379,6 +2379,28 @@ test('clearEngineering restores base stats', () => {
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.engineering, undefined);
     assert.ok(build.frameShiftDrive.optMass < engineered); // back to base 1800
     assert.equal(build.frameShiftDrive.optMass, 1800);
+});
+
+test('clearing a fixed festive variant restores its stock module stats', () => {
+    const expected = preEngineeredFixture.festive;
+    const variant = getPreEngineeredVariants(expected.symbol).find(
+        (candidate) => candidate.blueprint === expected.blueprints[0],
+    )!;
+    const stock = mod(expected.symbol, HARDPOINT_MODULES);
+    const direct = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'MediumHardpoint1',
+        variant,
+    );
+    const imported = ShipLoadout.fromLoadout(direct.toLoadoutEvent());
+
+    for (const build of [direct, imported]) {
+        assert.equal(build.fittedModuleAt('MediumHardpoint1')?.effectiveStats?.damage, 0.34);
+        build.clearEngineering('MediumHardpoint1');
+        const cleared = build.fittedModuleAt('MediumHardpoint1')!;
+        assert.equal(cleared.engineering, undefined);
+        assert.equal(cleared.stats?.damage, stock.damage);
+        assert.equal(cleared.effectiveStats?.damage, stock.damage);
+    }
 });
 
 test('resolved pre-engineered stats survive fitting and drive build calculations', () => {
@@ -3608,8 +3630,8 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
     assert.ok(build.weaponMetrics().total.damagePerSecond > 0);
 });
 
-test('a grade-less pre-engineered variant changes only its slot and round-trips', () => {
-    const expected = preEngineeredFixture.gradeLess;
+test('a festive pre-engineered variant changes only its slot and round-trips', () => {
+    const expected = preEngineeredFixture.festive;
     const variant = getPreEngineeredVariants(expected.symbol).find(
         (candidate) => candidate.blueprint === expected.blueprints[1],
     )!;
@@ -3626,11 +3648,12 @@ test('a grade-less pre-engineered variant changes only its slot and round-trips'
     const expectedModifiers = getPreEngineeredJournalModifiers(variant);
     assert.deepEqual(decorated.engineering, {
         BlueprintName: variant.blueprint,
+        Level: expected.grade,
+        Quality: 1,
         Modifiers: expectedModifiers,
     });
-    assert.ok(!Object.hasOwn(decorated.engineering!, 'Level'));
-    assert.ok(!Object.hasOwn(decorated.engineering!, 'Quality'));
     assert.equal(decorated.symbol, expected.symbol);
+    assert.ok(near(decorated.stats!.damage!, expected.resolved.damage, 1e-9));
     assert.ok(near(decorated.effectiveStats!.damage!, expected.resolved.damage, 1e-9));
     assert.equal(decorated.preEngineeredVariant, variant);
 
@@ -3662,13 +3685,42 @@ test('a graded pre-engineered variant fits with its complete engineering state',
         Modifiers: getPreEngineeredJournalModifiers(variant),
     });
     assert.equal(fitted.effectiveStats!.optMass, expected.engineered.optMass);
+    assert.equal(fitted.stats!.optMass, expected.engineered.optMass);
     assert.equal(fitted.preEngineeredVariant, variant);
 
     const reimported = ShipLoadout.fromLoadout(build.toLoadoutEvent()).fittedModuleAt(
         'FrameShiftDrive',
     )!;
+    assert.equal(reimported.stats!.optMass, fitted.stats!.optMass);
     assert.equal(reimported.effectiveStats!.optMass, expected.engineered.optMass);
     assert.equal(reimported.preEngineeredVariant, variant);
+});
+
+test('a craftable blueprint replaces fixed variant engineering from stock stats', () => {
+    const variant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
+        (candidate) =>
+            candidate.blueprint === 'FSD_LongRange' && candidate.acquisition === 'techBroker',
+    )!;
+    const fixed = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('FrameShiftDrive', variant);
+    const imported = ShipLoadout.fromLoadout(fixed.toLoadoutEvent());
+    const fromStock = ShipLoadout.empty('Anaconda')
+        .setModule('FrameShiftDrive', mod(variant.symbol, CORE_MODULES))
+        .applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+            grade: 5,
+            experimental: 'special_fsd_heavy',
+        });
+
+    for (const replacement of [fixed, imported]) {
+        replacement.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+            grade: 5,
+            experimental: 'special_fsd_heavy',
+        });
+        assert.deepEqual(
+            replacement.fittedModuleAt('FrameShiftDrive')?.effectiveStats,
+            fromStock.fittedModuleAt('FrameShiftDrive')?.effectiveStats,
+        );
+        assert.equal(replacement.fittedModuleAt('FrameShiftDrive')?.preEngineeredVariant, null);
+    }
 });
 
 test('a burst-pattern variant identifies before and after export', () => {
@@ -3702,7 +3754,7 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
 });
 
 test('setPreEngineeredVariant validates the variant and preserves its module identity', () => {
-    const variant = getPreEngineeredVariants(preEngineeredFixture.gradeLess.symbol)[0]!;
+    const variant = getPreEngineeredVariants(preEngineeredFixture.festive.symbol)[0]!;
     const build = ShipLoadout.empty('Anaconda');
     assert.throws(
         () => build.setPreEngineeredVariant('MediumHardpoint1', null as never),
@@ -3730,7 +3782,7 @@ test('setPreEngineeredVariant validates the variant and preserves its module ide
     );
     assert.deepEqual(
         getPreEngineeredVariants('Hpt_PulseLaser_Fixed_Small').filter(
-            (candidate) => candidate.grade === undefined,
+            (candidate) => candidate.acquisition === 'eventReward',
         ),
         [],
     );
@@ -4186,7 +4238,7 @@ test('every slot-key method names a wrong-typed key rather than failing inside t
         (key) =>
             build.setPreEngineeredVariant(
                 key,
-                getPreEngineeredVariants(preEngineeredFixture.gradeLess.symbol)[0]!,
+                getPreEngineeredVariants(preEngineeredFixture.festive.symbol)[0]!,
             ),
         (key) => build.clearEngineering(key),
         (key) => build.fittedModuleAt(key),

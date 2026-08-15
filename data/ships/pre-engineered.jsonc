@@ -6,9 +6,9 @@
  * Sources: the in-game outfitting and blueprint registries cross-checked against Inara
  * and Frontier's update notes; EDSY's stored-module presets for the community-goal and
  * tech-broker rewards; in-game observation for the Guardian rows' final-engineering
- * restriction; Frontier journal captures for the tech-broker shard cannon and the three
- * festive Remote Release Flak Launchers; outfitting-panel readings for the festive
- * launchers' damage reduction.
+ * restriction; a Frontier journal capture for the tech-broker shard cannon;
+ * repository-owner in-game observations, with a public journal excerpt recorded in issue
+ * #53, for the three festive Remote Release Flak Launchers and their damage reduction.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/ships/SOURCES.md.
@@ -17,11 +17,11 @@
  * ordinary module with engineering already applied, and a journal `Loadout` reports it
  * as the base `symbol` plus an `Engineering` block. So each record here is a *pairing*,
  * not a new module — `symbol` joins to the module catalogues and `blueprint` is the
- * Frontier id written in `Engineering.BlueprintName`. On a graded variant it joins to
- * `blueprints.jsonc`, the optional `experimental` to `experimental-effects.jsonc`, and
- * `grade` is the grade already applied. A grade-less festive variant instead has no
- * recipe, grade or experimental effect: `blueprint` preserves the `Decorative_*` identity
- * the journal writes, and `modifiers` carries its complete fixed transformation.
+ * Frontier id written in `Engineering.BlueprintName`. Craftable blueprint identities join
+ * to `blueprints.jsonc`, the optional `experimental` joins to
+ * `experimental-effects.jsonc`, and `grade` is the grade already applied. The festive
+ * variants carry a grade-5 `Decorative_*` identity that is not an engineer recipe;
+ * `modifiers` carries the complete fixed transformation awarded with the module.
  *
  * `acquisition` says where the variant comes from:
  *   - `"mercenary"`     — the Merc-Coin shop rows, all at grade 1.
@@ -2204,21 +2204,30 @@
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "name": "Festive Green Remote Release Flak Launcher",
     "blueprint": "Decorative_Green",
+    "grade": 5,
     "acquisition": "eventReward",
-    "modifiers": [{ "label": "Damage", "method": "multiplicative", "value": -0.99 }]
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+    ]
   },
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "name": "Festive Red Remote Release Flak Launcher",
     "blueprint": "Decorative_Red",
+    "grade": 5,
     "acquisition": "eventReward",
-    "modifiers": [{ "label": "Damage", "method": "multiplicative", "value": -0.99 }]
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+    ]
   },
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "name": "Festive Yellow Remote Release Flak Launcher",
     "blueprint": "Decorative_Yellow",
+    "grade": 5,
     "acquisition": "eventReward",
-    "modifiers": [{ "label": "Damage", "method": "multiplicative", "value": -0.99 }]
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+    ]
   }
 ]

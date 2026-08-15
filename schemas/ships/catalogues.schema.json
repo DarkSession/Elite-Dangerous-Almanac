@@ -743,7 +743,7 @@
     "preEngineeredVariant": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["symbol", "name", "blueprint", "acquisition"],
+      "required": ["symbol", "name", "blueprint", "grade", "acquisition"],
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "name": { "$ref": "#/definitions/nonEmptyString" },
@@ -766,7 +766,6 @@
       },
       "oneOf": [
         {
-          "required": ["grade"],
           "properties": {
             "acquisition": {
               "enum": ["mercenary", "communityGoal", "techBroker"]
@@ -778,7 +777,6 @@
           "properties": { "acquisition": { "const": "eventReward" } },
           "not": {
             "anyOf": [
-              { "required": ["grade"] },
               { "required": ["experimental"] },
               { "required": ["engineeringLocked"] },
               { "required": ["mercCoinCost"] }

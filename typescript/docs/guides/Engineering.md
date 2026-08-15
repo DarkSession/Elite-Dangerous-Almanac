@@ -111,14 +111,14 @@ build.availableBlueprints('FrameShiftDrive'); // ordinary menu for the fitted FS
 build.availableExperimentalEffects('FrameShiftDrive');
 ```
 
-## Grade-less pre-engineered variants
+## Festive pre-engineered variants
 
-Decorative transformations occupy the journal's `Engineering` field but are not blueprint
-engineering: they have no grade, quality roll, material cost or engineer. They are fixed
-variants of the awarded Remote Release Flak Launcher, not transformations a caller may
-apply to any damage-bearing module. Find one in `ships/pre-engineered` and fit it with
+Decorative transformations occupy the journal's `Engineering` field at grade 5 but are
+not craftable blueprint recipes: they have no material cost or applying engineer. They are
+fixed variants of the awarded Remote Release Flak Launcher, not transformations a caller
+may apply to any damage-bearing module. Find one in `ships/pre-engineered` and fit it with
 {@link ships!ShipLoadout.setPreEngineeredVariant | setPreEngineeredVariant}. The emitted
-journal/SLEF block contains `BlueprintName` and `Modifiers` only.
+journal/SLEF block contains `BlueprintName`, `Level: 5`, `Quality: 1` and `Modifiers`.
 
 ```ts
 import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -135,7 +135,7 @@ const festive = ShipLoadout.empty('Krait_MkII').setPreEngineeredVariant(
 );
 
 festive.toLoadoutEvent().Modules[0]?.Engineering;
-// BlueprintName + Modifiers, with no Level or Quality
+// BlueprintName + Level: 5 + Quality: 1 + Modifiers
 ```
 
 `getPreEngineeredStats`, `getPreEngineeredModifiers` and
@@ -186,7 +186,7 @@ at cannot be reproduced through this route.
 
 ## Pre-engineered modules
 
-Use `ships/pre-engineered` to find any graded or grade-less variant and
+Use `ships/pre-engineered` to find any fixed variant and
 `ships/pre-engineered-stats` to resolve its fitted stats.
 
 ```ts

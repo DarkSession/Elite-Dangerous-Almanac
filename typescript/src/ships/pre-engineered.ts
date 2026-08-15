@@ -13,13 +13,11 @@
  * Its own module (and data file) so consumers who never touch pre-engineered variants
  * do not bundle it.
  *
- * Each entry is a {@link PreEngineeredVariant}: `symbol` joins to the module catalogues
- * and `blueprint` is the id Frontier writes in `Engineering.BlueprintName`. On a
- * {@link GradedPreEngineeredVariant}, that id joins to `BLUEPRINTS` and `grade` is the
- * grade already applied. A {@link GradeLessPreEngineeredVariant} instead records a fixed
- * `Decorative_*` transformation: it has no recipe, grade, quality roll, material cost or
- * engineer, but its fixed −99% damage modifier makes it a real pre-modified article
- * rather than a cosmetic marker.
+ * Each entry is a {@link PreEngineeredVariant}: `symbol` joins to the module catalogues,
+ * `blueprint` is the id Frontier writes in `Engineering.BlueprintName`, and `grade` is the
+ * grade already applied. Most blueprint ids join to `BLUEPRINTS`; the festive
+ * `Decorative_*` ids instead identify fixed grade-5 reward articles with no craftable
+ * recipe or material cost.
  * The 22 Mercenary entries are bought at grade 1 and their bespoke recipes start at
  * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
  * grade)` from `ships/blueprint-costs`. Community-goal and tech-broker entries instead
@@ -56,7 +54,7 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
  * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, and
  *   often carrying an experimental effect the shop rows do not.
  * - `techBroker` — unlocked at a tech broker. Records the route stated by the source.
- * - `eventReward` — awarded already transformed by an event; grade-less and fixed.
+ * - `eventReward` — awarded already transformed by an event; the festive articles are grade 5.
  */
 export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal' | 'techBroker' | 'eventReward';
 
@@ -81,15 +79,15 @@ export interface PreEngineeredModifier {
 }
 
 /**
- * Fields shared by a pre-engineered module variant — a pairing of a stock module with
- * the engineering identity it ships with, not a module in its own right.
+ * One pre-engineered module variant — a pairing of a stock module with the engineering
+ * identity it ships with, not a module in its own right.
  */
-interface PreEngineeredVariantBase {
+export interface PreEngineeredVariant {
     /** The base module's symbol, e.g. `"Hpt_Railgun_Fixed_Medium"`. Joins to the module catalogues. */
     readonly symbol: string;
     /**
-     * The variant's display name. Graded rows use the base module's name; a grade-less
-     * festive row includes its colour so variants of the same launcher remain distinct.
+     * The variant's display name. Festive rows include their colour so variants of the
+     * same launcher remain distinct.
      */
     readonly name: string;
     /**
@@ -97,8 +95,9 @@ interface PreEngineeredVariantBase {
      * or `"Decorative_Red"`.
      *
      * @remarks
-     * On a graded reward variant this joins to `BLUEPRINTS`, but **identifies** the
-     * article rather than reproducing it.
+     * Most ids join to `BLUEPRINTS`. A festive `Decorative_*` id does not, because it
+     * identifies a fixed reward article rather than a recipe a player can apply.
+     * On any reward variant the id **identifies** the article rather than reproducing it.
      * Alongside its blueprint and effect, a reward carries hand-set modifier overrides no
      * blueprint grants — that is what makes it a reward rather than a shortcut — so
      * rolling this recipe to this `grade` does not
@@ -107,6 +106,14 @@ interface PreEngineeredVariantBase {
      * for what the article actually carries.
      */
     readonly blueprint: string;
+    /** The engineering grade already applied (1–5). */
+    readonly grade: number;
+    /**
+     * The experimental effect's Frontier `fdname`, e.g.
+     * `"special_feedback_cascade_cooled"`. Joins to `EXPERIMENTAL_EFFECTS`. Absent when
+     * the variant carries none.
+     */
+    readonly experimental?: string;
     /** Where the variant comes from. */
     readonly acquisition: PreEngineeredAcquisition;
     /**
@@ -133,50 +140,6 @@ interface PreEngineeredVariantBase {
      */
     readonly modifiers?: readonly PreEngineeredModifier[];
 }
-
-/**
- * A module that arrives with a real graded blueprint recipe already applied.
- *
- * The recipe may identify a hand-set reward article that an ordinary roll cannot
- * reproduce; its `modifiers` remain authoritative for the fixed stats it carries.
- */
-export interface GradedPreEngineeredVariant extends PreEngineeredVariantBase {
-    /** The blueprint grade already applied (1–5). */
-    readonly grade: number;
-    /**
-     * The experimental effect's Frontier `fdname`, e.g.
-     * `"special_feedback_cascade_cooled"`. Joins to `EXPERIMENTAL_EFFECTS`. Absent when
-     * the variant carries none.
-     */
-    readonly experimental?: string;
-    /** A graded article comes from a shop, community goal or tech broker. */
-    readonly acquisition: Exclude<PreEngineeredAcquisition, 'eventReward'>;
-}
-
-/**
- * A fixed article whose journal engineering identity has no blueprint grade.
- *
- * Frontier writes its `Decorative_*` id in `Engineering.BlueprintName`, but no recipe,
- * quality roll, material cost or experimental effect exists. Its required modifier block
- * is the complete mechanical transformation carried by the awarded article.
- */
-export interface GradeLessPreEngineeredVariant extends PreEngineeredVariantBase {
-    /** Grade-less variants are awarded already transformed. */
-    readonly acquisition: 'eventReward';
-    /** Absent because the identity names no graded blueprint recipe. */
-    readonly grade?: never;
-    /** Absent because a grade-less fixed transformation accepts no experimental effect. */
-    readonly experimental?: never;
-    /** The complete fixed stat block carried by the article. */
-    readonly modifiers: readonly PreEngineeredModifier[];
-    /** Not used: the fixed identity itself replaces ordinary engineering. */
-    readonly engineeringLocked?: never;
-    /** Not used: an event reward is not bought with Merc Coin. */
-    readonly mercCoinCost?: never;
-}
-
-/** One module variant that arrives with fixed engineering state already present. */
-export type PreEngineeredVariant = GradedPreEngineeredVariant | GradeLessPreEngineeredVariant;
 
 /**
  * Every pre-engineered module variant, whether purchased, unlocked or awarded.

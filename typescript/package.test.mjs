@@ -534,8 +534,8 @@ test('module capability guards do not pull the outfitting catalogues', async () 
 });
 
 test('reading and writing SLEF excludes heavyweight catalogues', async () => {
-    // Grade-less engineering is identified structurally, so apps that only move builds
-    // must not pay for module, variant, blueprint or ship catalogues.
+    // Engineering is identified structurally, so apps that only move builds must not pay
+    // for module, variant, blueprint or ship catalogues.
     const graph = await readReachableJs(new URL('./dist/ships/slef.js', import.meta.url));
     assert.ok(graph.length < 16 * 1024, `expected a tiny module, got ${graph.length} bytes`);
     for (const marker of [

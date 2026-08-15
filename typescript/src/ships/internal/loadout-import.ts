@@ -117,8 +117,8 @@ function captureEngineering(engineering: ModuleEngineering): ModuleEngineering {
     const modifiers = engineering.Modifiers;
     return {
         BlueprintName: engineering.BlueprintName,
-        ...(engineering.Level === undefined ? {} : { Level: engineering.Level }),
-        ...(engineering.Quality === undefined ? {} : { Quality: engineering.Quality }),
+        Level: engineering.Level,
+        Quality: engineering.Quality,
         ...(experimental === undefined ? {} : { ExperimentalEffect: experimental }),
         ...(experimentalLocalised === undefined
             ? {}

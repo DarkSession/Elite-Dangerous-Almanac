@@ -1309,9 +1309,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
   Group-ambiguous keys (`optmass`, `optmul`, `thermload`) are disambiguated by the
   blueprint's target module group.
-- **The `Decorative_*` transformations EDSY lists are not blueprints.** They are real ids
-  the game writes in the same field as a blueprint, but name fixed, grade-less variants
-  rather than recipes. They are carried in `pre-engineered.jsonc`; see §Grade-less festive
+- **The `Decorative_*` transformations EDSY lists are not craftable blueprints.** They are
+  real grade-5 ids the game writes in the same field as a blueprint, but name fixed reward
+  variants rather than recipes. They are carried in `pre-engineered.jsonc`; see §Festive
   variants below.
 - **Blueprint keys deliberately left out:**
   - **Per-module-group aliases, not extra blueprints.** A blueprint that applies to several
@@ -1410,7 +1410,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     decorative transformation names no recipe, and no engineer applies one. So a
     launcher left with only those entries is offering nothing, and its `noblueprints`
     reading holds — carrying one already transformed is not the same as being
-    engineerable. §Grade-less festive variants has the evidence.
+    engineerable. §Festive variants has the evidence.
   - **Where EDSY records one generic id and the journal writes a family-specific one,
     coriolis-data settles it.** EDSY collapses Lightweight, Reinforced and Shielded to
     `misc_lw` / `misc_rf` / `misc_sh` for eight families; coriolis keys the same lists by
@@ -1577,18 +1577,21 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
 ## Pre-engineered modules
 
-### Grade-less festive variants
+### Festive variants
 
-- **File:** `pre-engineered.jsonc`. Three grade-less records pair
+- **File:** `pre-engineered.jsonc`. Three grade-5 records pair
   `Hpt_FlakMortar_Turret_Medium` with `Decorative_Green`, `Decorative_Red` or
-  `Decorative_Yellow`, the same fixed-variant relation used by the graded records.
-- **Source:** a `StoredModules` capture contributed by the repository owner
-  (521 stored modules, 2026-08-07 UTC) holds three medium turreted Remote Release Flak
-  Launchers, one per colour, in `EngineerModifications`. Those three are the only ones of
-  the capture's 46 distinct spellings that name no recipe: every other spelling, down to
-  the lower-case `weapon_longrange` the game writes on a Guardian Shard Cannon, resolves
-  against the blueprint catalogue. They have no grade, material cost or applying engineer,
-  so they are transformations rather than blueprint recipes.
+  `Decorative_Yellow`, the same fixed-variant relation used by the other records.
+- **Source:** [issue #53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53)
+  preserves the three relevant lines from a repository-owner `StoredModules` capture
+  (521 stored modules, 2026-08-07 UTC): one medium turreted Remote Release Flak Launcher
+  per colour, carrying `Decorative_Green`, `Decorative_Red` or `Decorative_Yellow` in
+  `EngineerModifications`. The full capture is not checked into this repository. The
+  repository owner's direct in-game reading supplies grade 5. Those three are the only
+  ones of the capture's 46 distinct spellings reported not to name a recipe; every other
+  spelling, down to the lower-case `weapon_longrange` written on a Guardian Shard Cannon,
+  resolves against the blueprint catalogue. The festive identities have no material cost
+  or applying engineer, so they are fixed transformations rather than craftable recipes.
 - **They are not cosmetic-only: each carries a −99% `Damage` modifier.** A festive launcher
   fires fireworks rather than flak. The repository owner's outfitting panel reads −99.0%,
   0.3 damage and 0.2 damage/s. The medium turreted launcher's 34 base damage becomes 0.34,
@@ -1599,15 +1602,15 @@ up straight through with no disambiguation at all. Both paths are evidence that
   engineer applies the transformation. The acquisition route is the contributor's
   account, not a field in the capture.
 - **The records bind the transformation to what has been observed.** The medium turreted
-  Remote Release Flak Launcher (`Hpt_FlakMortar_Turret_Medium`) is the only module any
-  capture shows carrying one, so it is the only base symbol paired with these identities.
+  Remote Release Flak Launcher (`Hpt_FlakMortar_Turret_Medium`) is the only module the
+  public capture excerpt shows carrying one, so it is the only base symbol paired with these identities.
   Nothing in the evidence supports applying `Decorative_*` to an arbitrary damage-bearing
   module.
 - **`name` pairs the festive naming with the launcher and the id's colour.** No registry
   publishes the outfitting panel's own string: EDSY carries the transformation, not a
   label. The festive names come from the repository owner's account.
 
-### Graded variants
+### Other pre-engineered variants
 
 - **Guardian coverage is complete.** There are no pre-engineered Guardian power plant,
   distributor, hull-reinforcement, module-reinforcement, shield-reinforcement or
@@ -1619,7 +1622,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `{ symbol, name, blueprint, grade, acquisition }`, plus any sourced stat block and
   price. The game reports these articles under the base module symbol rather than a
   distinct variant symbol.
-- **`acquisition` says where a graded variant comes from.** 73 records: 22 `mercenary`,
+- **`acquisition` says where each remaining variant comes from.** 73 records: 22 `mercenary`,
   30 `communityGoal` and 21 `techBroker`.
   - **`mercenary`** — the Merc-Coin shop rows. Source: the in-game outfitting and
     blueprint registries, cross-checked against Inara's outfitting and blueprint registries

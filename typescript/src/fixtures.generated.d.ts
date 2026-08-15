@@ -3563,13 +3563,9 @@ type FixtureShipsPreEngineered = {
         count: number;
         symbols: string[];
     };
-    fullyUnresolved: {
-        count: number;
-        note: string;
-        symbols: never[];
-    };
-    gradeLess: {
+    festive: {
         blueprints: string[];
+        grade: number;
         modifier: {
             label: string;
             method: string;
@@ -3586,6 +3582,11 @@ type FixtureShipsPreEngineered = {
             };
         };
         symbol: string;
+    };
+    fullyUnresolved: {
+        count: number;
+        note: string;
+        symbols: never[];
     };
     identification: {
         description: string;

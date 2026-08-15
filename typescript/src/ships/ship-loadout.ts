@@ -1376,7 +1376,7 @@ export class ShipLoadout {
      * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
      * object, or `options.experimental` carries a value that is not a string — a nullish
      * one is no effect, not a wrong type; the fitted module has no stats to engineer; or the id names a
-     * grade-less pre-engineered identity, which names no recipe; or the module is not offered the blueprint — by
+     * fixed event-reward identity, which names no craftable recipe; or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
      * generic spelling of a recipe that menu lists under a family's name, or by being a
      * Mercenary article sold at grade 1 with that bespoke recipe; the fitted article is
@@ -1434,8 +1434,8 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: slot "${truncate(slotKey)}" is empty`,
             );
         }
-        const stats = this.#statsFor(module);
-        if (!stats) {
+        const fittedStats = this.#statsFor(module);
+        if (!fittedStats) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: no stats for module "${truncate(module.Item)}"`,
             );
@@ -1451,22 +1451,21 @@ export class ShipLoadout {
             recipe === fdname
                 ? `"${truncate(fdname)}"`
                 : `"${truncate(fdname)}" (${truncate(recipe)} on this module)`;
-        // A grade-less fixed variant reaches this method as a real journal identity that
-        // names no recipe. Say that rather than reporting a known festive article as an
-        // unknown grade; it is fitted as a pre-engineered variant, not applied to an
-        // arbitrary stock module.
+        // A festive fixed variant reaches this method as a real journal identity that
+        // names no craftable recipe. It is fitted as a pre-engineered variant, not applied
+        // to an arbitrary stock module.
         const written = fdname.trim().toLowerCase();
         const resolved = recipe.trim().toLowerCase();
         if (
             getPreEngineeredVariants(module.Item).some(
                 (variant) =>
-                    variant.grade === undefined &&
+                    variant.acquisition === 'eventReward' &&
                     (variant.blueprint.toLowerCase() === written ||
                         variant.blueprint.toLowerCase() === resolved),
             )
         ) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: ${named} is a grade-less pre-engineered identity, not a blueprint; use setPreEngineeredVariant to fit its fixed article`,
+                `ShipLoadout.applyBlueprint: ${named} is a fixed pre-engineered identity, not a craftable blueprint; use setPreEngineeredVariant to fit its fixed article`,
             );
         }
         if (!Number.isInteger(wantedGrade) || wantedGrade < 1 || wantedGrade > 5) {
@@ -1495,7 +1494,7 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
             );
         }
-        if (stats.engineeringLocked) {
+        if (fittedStats.engineeringLocked) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is a final pre-engineered article and accepts no further engineering`,
             );
@@ -1523,6 +1522,11 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(wantedExperimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
             );
         }
+        // A fixed variant's effective snapshot is not a new stock module. Replacing its
+        // engineering starts from the catalogue article, otherwise the new recipe would
+        // be folded over the fixed values a second time (and clearing it would retain
+        // those values as an unlabelled base).
+        const stats = this.#engineeringBaseStats(module) ?? fittedStats;
         const base = baseStats(stats);
         const canonical = primitiveEngineeringInputsFor(stats, grade, experimental);
         const missing = missingBaseLabels(
@@ -1572,7 +1576,7 @@ export class ShipLoadout {
         this.#replaceModule(
             module.Slot,
             { ...module, Engineering: engineering },
-            undefined,
+            stats,
             primitiveModifiers,
         );
         return this;
@@ -1582,8 +1586,7 @@ export class ShipLoadout {
      * Fit a pre-engineered variant into a slot, replacing whatever is there.
      *
      * The variant's fixed stats and journal engineering block are resolved together.
-     * Graded articles carry `Level`, `Quality: 1` and any baked experimental effect;
-     * grade-less festive articles carry only `BlueprintName` and their required
+     * Articles carry `Level`, `Quality: 1`, any baked experimental effect and their fixed
      * modifiers. Because the variant names its base module, a decorative identity cannot
      * be applied to an unrelated damage-bearing module.
      * A Mercenary variant whose fixed modifier block has not been published retains the
@@ -1648,23 +1651,15 @@ export class ShipLoadout {
         }
         this.setModule(slotKey, stats);
         const module = this.#fittedModuleFor(slotKey)!;
-        const engineering: ModuleEngineering =
-            known.grade === undefined
-                ? {
-                      BlueprintName: known.blueprint,
-                      Modifiers: getPreEngineeredJournalModifiers(known),
-                  }
-                : {
-                      BlueprintName: known.blueprint,
-                      Level: known.grade,
-                      Quality: 1,
-                      ...(known.experimental === undefined
-                          ? {}
-                          : { ExperimentalEffect: known.experimental }),
-                      ...(known.modifiers?.length
-                          ? { Modifiers: getPreEngineeredJournalModifiers(known) }
-                          : {}),
-                  };
+        const engineering: ModuleEngineering = {
+            BlueprintName: known.blueprint,
+            Level: known.grade,
+            Quality: 1,
+            ...(known.experimental === undefined ? {} : { ExperimentalEffect: known.experimental }),
+            ...(known.modifiers?.length
+                ? { Modifiers: getPreEngineeredJournalModifiers(known) }
+                : {}),
+        };
         this.#replaceModule(
             module.Slot,
             { ...module, Engineering: engineering },
@@ -1675,7 +1670,7 @@ export class ShipLoadout {
     }
 
     /**
-     * Strip graded or grade-less engineering from a slot's module,
+     * Strip engineering from a slot's module,
      * restoring its base stats.
      *
      * @param slotKey - The slot to de-engineer, matched case-insensitively (journal
@@ -1692,6 +1687,7 @@ export class ShipLoadout {
             );
         }
         if (module?.Engineering) {
+            const baseStats = this.#engineeringBaseStats(module);
             const bare: LoadoutModule = { Slot: module.Slot, Item: module.Item };
             if (module.On !== undefined) (bare as { On?: boolean }).On = module.On;
             if (module.Priority !== undefined) {
@@ -1699,7 +1695,7 @@ export class ShipLoadout {
             }
             if (module.Health !== undefined) (bare as { Health?: number }).Health = module.Health;
             if (module.Value !== undefined) (bare as { Value?: number }).Value = module.Value;
-            this.#replaceModule(module.Slot, bare);
+            this.#replaceModule(module.Slot, bare, baseStats ?? undefined);
         }
         return this;
     }
@@ -2550,6 +2546,17 @@ export class ShipLoadout {
     #moduleStatsAt(slotKey: string): OutfittingModule | null {
         const fitted = this.#fittedModuleFor(slotKey);
         return fitted === undefined ? null : this.#statsFor(fitted);
+    }
+
+    /** Stock/base snapshot to use when replacing the fitted engineering block. */
+    #engineeringBaseStats(module: LoadoutModule): OutfittingModule | null {
+        const fitted = this.#statsFor(module);
+        if (!module.Engineering || identifyPreEngineeredVariant(module) === null) return fitted;
+        const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
+        if (!stock) return fitted;
+        return fitted?.engineeringLocked
+            ? cloneModuleStats({ ...stock, engineeringLocked: true })
+            : stock;
     }
 
     /** Internal fitted state with recipe-only modifiers restored for effective calculations. */

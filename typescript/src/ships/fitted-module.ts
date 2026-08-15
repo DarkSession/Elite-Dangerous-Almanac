@@ -44,11 +44,20 @@ export interface FittedModule {
     readonly health: number | undefined;
     /** Captured purchase value in credits, or `undefined` when unspecified. */
     readonly value: number | undefined;
-    /** Applied graded or grade-less engineering state; otherwise `undefined`. */
+    /** Applied engineering state; otherwise `undefined`. */
     readonly engineering: ModuleEngineering | undefined;
     /** Detached, journal-shaped fitted record. */
     readonly raw: LoadoutModule;
-    /** Snapshotted base module stats, or `null` when unresolved. */
+    /**
+     * Snapshotted fitted-article stats before its journal modifier block is folded, or
+     * `null` when unresolved.
+     *
+     * A stock or ordinarily engineered module exposes its base catalogue record. A fixed
+     * pre-engineered variant exposes its resolved article record here as well as through
+     * {@link effectiveStats}, so stats omitted by a journal capture still describe the
+     * article. Clearing or replacing that fixed engineering restores the stock record
+     * before applying the next recipe.
+     */
     readonly stats: OutfittingModule | null;
     /**
      * Post-engineering module stats, or `null` when unresolved. For weapons, journal
@@ -57,8 +66,8 @@ export interface FittedModule {
      * when a damage conversion replaces them with a fractional distribution.
      * A module engineered through {@link ShipLoadout.applyBlueprint} also retains
      * recipe-only burst values that its journal-shaped modifier block does not serialize.
-     * A grade-less variant fitted through {@link ShipLoadout.setPreEngineeredVariant}
-     * uses its fixed modifier block.
+     * A festive variant fitted through {@link ShipLoadout.setPreEngineeredVariant} uses
+     * its fixed modifier block.
      */
     readonly effectiveStats: OutfittingModule | null;
     /** Fully rearmed ammunition capacity, or `null` for modules without ammunition. */

@@ -60,7 +60,7 @@
  *   labels, while {@link ShipLoadout.setPreEngineeredVariant} fits a fixed article that
  *   arrives with engineering already present. {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
- *   the fixed articles you cannot craft — including grade-less festive launchers whose
+ *   the fixed articles you cannot craft — including grade-5 festive launchers whose
  *   `Decorative_*` journal identity names no recipe. Material shopping data stays on the explicit
  *   {@link ships/blueprint-costs!BLUEPRINT_COSTS | blueprint-costs} and
  *   {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | experimental-effect-costs}
@@ -259,7 +259,6 @@ export {
     type LoadoutModule,
     type ModuleEngineering,
     type BlueprintModuleEngineering,
-    type GradeLessModuleEngineering,
     type EngineeringModifier,
 } from './slef.js';
 export {
@@ -457,8 +456,6 @@ export {
     getPreEngineeredVariants,
     isPreEngineered,
     type PreEngineeredVariant,
-    type GradedPreEngineeredVariant,
-    type GradeLessPreEngineeredVariant,
     type PreEngineeredAcquisition,
     type PreEngineeredModifier,
 } from './pre-engineered.js';

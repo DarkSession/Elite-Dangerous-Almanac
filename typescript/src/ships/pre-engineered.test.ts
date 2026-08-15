@@ -49,13 +49,13 @@ test('pinned pairings carry the expected base module, blueprint, grade and effec
     }
 });
 
-test('every variant joins to a real module and every graded identity joins to engineering data', () => {
+test('every variant joins to a real module and every craftable identity joins to engineering data', () => {
     for (const variant of PRE_ENGINEERED_MODULES) {
         assert.ok(
             getModuleBySymbol(variant.symbol, ALL_MODULES),
             `${variant.symbol} is not in the module catalogue`,
         );
-        if (variant.grade === undefined) {
+        if (variant.acquisition === 'eventReward') {
             assert.equal(getBlueprint(variant.blueprint), null, variant.blueprint);
         } else {
             assert.ok(
@@ -104,7 +104,7 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
     // its own bespoke recipe, even though no ordinary menu lists that recipe.
     const sold = PRE_ENGINEERED_MODULES.filter(
         (variant) =>
-            variant.grade !== undefined &&
+            variant.acquisition !== 'eventReward' &&
             !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
     );
     assert.ok(sold.length > 0, 'no variant is sold with a recipe its menu omits');
@@ -181,11 +181,11 @@ test('the only pre-engineered Guardian variants are the pinned final weapons', (
     }
 });
 
-test('each graded variant carries the same display name as the module it fits as', () => {
+test('each non-festive variant carries the same display name as the module it fits as', () => {
     // `name` is denormalised so a shop list can render without pulling in ALL_MODULES.
     // That is a drift risk, so it is pinned: the two catalogues must always agree.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.grade === undefined) continue;
+        if (variant.acquisition === 'eventReward') continue;
         const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
         assert.equal(
             variant.name,
@@ -206,11 +206,11 @@ test('a Merc-shop blueprint starts at grade 2 — grade 1 is what you bought', (
     }
 });
 
-test('a reward variant records a real grade of a real blueprint', () => {
-    // Both reward routes name an ordinary journal blueprint, so the grade recorded must
-    // be one the blueprint actually defines — including the grade-1 Guardian rows.
+test('a community-goal or tech-broker reward records a real blueprint grade', () => {
+    // Both routes name an ordinary journal blueprint, so the grade recorded must be one
+    // the blueprint actually defines — including the grade-1 Guardian rows.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition === 'mercenary' || variant.grade === undefined) continue;
+        if (variant.acquisition === 'mercenary' || variant.acquisition === 'eventReward') continue;
         const grades = Object.keys(BLUEPRINTS[variant.blueprint]!.grades);
         assert.ok(
             grades.includes(String(variant.grade)),
@@ -228,7 +228,7 @@ test('every variant names the recipe its own module rolls, not a colliding spell
     // over the whole catalogue rather than only the rows that meet it, because the
     // hazard arrives with the next row somebody transcribes from a journal.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.grade === undefined) continue;
+        if (variant.acquisition === 'eventReward') continue;
         assert.equal(
             resolveBlueprintForModule(variant.symbol, variant.blueprint),
             variant.blueprint,
@@ -295,8 +295,8 @@ test('an ordinary journal blueprint can also arrive pre-engineered', () => {
     ]);
 });
 
-test('grade-less festive identities are fixed variants of the observed launcher', () => {
-    const expected = fixture.gradeLess;
+test('grade-5 festive identities are fixed variants of the observed launcher', () => {
+    const expected = fixture.festive;
     const variants = getPreEngineeredVariants(expected.symbol).filter((variant) =>
         expected.blueprints.includes(variant.blueprint),
     );
@@ -307,23 +307,17 @@ test('grade-less festive identities are fixed variants of the observed launcher'
     );
     for (const variant of variants) {
         assert.equal(variant.symbol, expected.symbol);
-        assert.equal(variant.grade, undefined);
+        assert.equal(variant.grade, expected.grade);
         assert.equal(variant.experimental, undefined);
         assert.equal(variant.acquisition, 'eventReward');
         assert.deepEqual(variant.modifiers, [expected.modifier]);
         assert.equal(getBlueprint(variant.blueprint), null);
     }
-    assert.deepEqual(
-        getPreEngineeredVariants('Hpt_BeamLaser_Fixed_Small').filter(
-            (variant) => variant.grade === undefined,
-        ),
-        [],
-    );
 });
 
 test('isPreEngineered separates bought-engineered modules from stock ones', () => {
     assert.equal(isPreEngineered('Hpt_Railgun_Fixed_Medium'), true);
-    assert.equal(isPreEngineered(fixture.gradeLess.symbol), true);
+    assert.equal(isPreEngineered(fixture.festive.symbol), true);
     for (const symbol of fixture.notPreEngineered) {
         assert.equal(isPreEngineered(symbol), false, symbol);
     }
@@ -352,7 +346,6 @@ test('the remaining upgrade is priced from the grade already applied', () => {
     const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium').find(
         (candidate) => candidate.blueprint === 'RailGun_LongShot',
     )!;
-    assert.ok(variant.grade !== undefined);
     const total = (mats: readonly { count: number }[] | null) => {
         assert.ok(mats, 'the blueprint must price');
         return mats.reduce((sum, m) => sum + m.count, 0);

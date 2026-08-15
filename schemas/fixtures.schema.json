@@ -5123,21 +5123,12 @@
           },
           "required": ["count", "symbols"]
         },
-        "fullyUnresolved": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "count": { "type": "integer" },
-            "note": { "type": "string" },
-            "symbols": { "type": "array", "maxItems": 0, "items": false }
-          },
-          "required": ["count", "note", "symbols"]
-        },
-        "gradeLess": {
+        "festive": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
             "blueprints": { "type": "array", "items": { "type": "string" } },
+            "grade": { "type": "integer" },
             "modifier": { "$ref": "#/definitions/shared8064b9491813" },
             "resolved": {
               "type": "object",
@@ -5161,7 +5152,17 @@
             },
             "symbol": { "type": "string" }
           },
-          "required": ["blueprints", "modifier", "resolved", "symbol"]
+          "required": ["blueprints", "grade", "modifier", "resolved", "symbol"]
+        },
+        "fullyUnresolved": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "count": { "type": "integer" },
+            "note": { "type": "string" },
+            "symbols": { "type": "array", "maxItems": 0, "items": false }
+          },
+          "required": ["count", "note", "symbols"]
         },
         "identification": {
           "type": "object",
@@ -5592,8 +5593,8 @@
         "count",
         "counts",
         "engineeringLocked",
+        "festive",
         "fullyUnresolved",
-        "gradeLess",
         "identification",
         "joins",
         "maxModifierDecimalPlaces",

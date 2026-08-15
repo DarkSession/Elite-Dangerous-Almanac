@@ -145,12 +145,12 @@ test('a pre-engineered drive resolves to its known in-game stats', () => {
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
-test('grade-less festive variants resolve and identify through the fixed-article path', () => {
-    const expected = fixture.gradeLess;
+test('grade-5 festive variants resolve and identify through the fixed-article path', () => {
+    const expected = fixture.festive;
     for (const blueprint of expected.blueprints) {
         const variant = only({ symbol: expected.symbol, blueprint });
         const fitted = getPreEngineeredStats(variant)!;
-        assert.equal(variant.grade, undefined);
+        assert.equal(variant.grade, expected.grade);
         assert.equal(fitted.damage, expected.resolved.damage);
         const modifiers = getPreEngineeredJournalModifiers(variant);
         assert.deepEqual(modifiers, [
@@ -169,31 +169,40 @@ test('grade-less festive variants resolve and identify through the fixed-article
             identifyPreEngineeredVariant({
                 Slot: 'MediumHardpoint1',
                 Item: variant.symbol,
-                Engineering: { BlueprintName: variant.blueprint, Modifiers: modifiers },
+                Engineering: {
+                    BlueprintName: variant.blueprint,
+                    Level: expected.grade,
+                    Quality: 1,
+                    Modifiers: modifiers,
+                },
             }),
             variant,
         );
     }
 });
 
-test('grade-less identification rejects graded and experimental fields', () => {
-    const expected = fixture.gradeLess;
+test('festive identification rejects a mismatched grade or experimental effect', () => {
+    const expected = fixture.festive;
     const variant = only({ symbol: expected.symbol, blueprint: expected.blueprints[1]! });
     const modifiers = getPreEngineeredJournalModifiers(variant);
     for (const Engineering of [
         {
             BlueprintName: variant.blueprint,
-            Level: 5,
+            Level: 4,
             Quality: 1,
             Modifiers: modifiers,
         },
         {
             BlueprintName: variant.blueprint,
+            Level: expected.grade,
+            Quality: 1,
             ExperimentalEffect: 'special_auto_loader',
             Modifiers: modifiers,
         },
         {
             BlueprintName: variant.blueprint,
+            Level: expected.grade,
+            Quality: 1,
             ExperimentalEffect_Localised: 'Auto Loader',
             Modifiers: modifiers,
         },
@@ -217,7 +226,6 @@ test('setter-shaped fragment-cannon modifiers identify their fixed variants', ()
             acquisition: 'communityGoal',
         });
         const grade = variant.grade;
-        if (grade === undefined) assert.fail(`${symbol} unexpectedly has no grade`);
         assert.equal(
             identifyPreEngineeredVariant({
                 Slot: 'Hardpoint',

@@ -125,8 +125,8 @@ function journalModifiersWithExperimental(
  *
  * Primitive recipe labels are translated to the labels a `Loadout` event uses for the
  * variant's exact base module. A baked damage conversion is expanded into the journal's
- * per-damage-type modifiers. Grade-less festive variants therefore resolve through the
- * same path as every other fixed article.
+ * per-damage-type modifiers. Festive variants therefore resolve through the same path as
+ * every other fixed article.
  *
  * @param variant - A pre-engineered variant.
  * @returns Its computable fixed modifiers in journal representation, or an empty array
@@ -207,8 +207,8 @@ function matchesModifierSignature(
  * @returns The uniquely matching catalogue variant, or `null` when the stats do not
  * identify one.
  * @throws {TypeError} If a field it reads is present and not a string — `module.Item`,
- * or a modifier's `Label` or the block's `ExperimentalEffect`. A module with no
- * engineering block answers `null` before any of them is read.
+ * a modifier's `Label`, or the block's `BlueprintName` or `ExperimentalEffect`. A module
+ * with no engineering block answers `null` before any of them is read.
  *
  * @example
  * ```ts
@@ -241,15 +241,14 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     const matches: PreEngineeredVariant[] = [];
     for (const candidate of getPreEngineeredVariants(module.Item)) {
         if (!candidate.modifiers?.length) continue;
-        // Grade-less fixed articles share the same stat block, so their journal identity
-        // is what distinguishes the green, red and yellow variants. Graded rewards still
+        if (candidate.grade !== engineering.Level) continue;
+        // The festive articles share the same stat block, so their journal identity is
+        // what distinguishes the green, red and yellow variants. Other rewards still
         // match primarily by their hand-set signature because aliases and incomplete
-        // captures make the blueprint tuple weaker evidence there.
+        // captures make the blueprint spelling weaker evidence there.
         if (
-            candidate.grade === undefined &&
-            (engineering.Level !== undefined ||
-                engineering.Quality !== undefined ||
-                engineering.ExperimentalEffect !== undefined ||
+            candidate.acquisition === 'eventReward' &&
+            (engineering.ExperimentalEffect !== undefined ||
                 engineering.ExperimentalEffect_Localised !== undefined ||
                 normalizeKey(
                     engineering.BlueprintName,

@@ -71,10 +71,10 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * @returns The blueprint (its `name` and `grades`), or `null` if this catalogue stores no
  * blueprint under that id.
  * @remarks
- * **`null` is not always an unknown id.** The game writes the grade-less `Decorative_*`
+ * **`null` is not always an unknown id.** The game writes the grade-5 `Decorative_*`
  * identities of festive pre-engineered variants in the same `BlueprintName` /
- * `EngineerModifications` field. They name no recipe — no grade, materials or applying
- * engineer — and are carried by the grade-less variants returned from
+ * `EngineerModifications` field. They name no craftable recipe — no materials or applying
+ * engineer — and are carried by the variants returned from
  * `getPreEngineeredVariants` in `ships/pre-engineered`. Their fixed modifiers still
  * change the fitted article's stats.
  * @throws {TypeError} If `fdname` is present and not a string. A nullish

@@ -5,11 +5,11 @@
  * modified, whether bought from the Merc-Coin shop, awarded by an event or community goal, or
  * unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs
  * a base module `symbol` (joins to the module catalogues) with the journal `blueprint` identity
- * baked in. Graded records also carry the `grade` already applied and an optional `experimental`;
- * the three festive event rewards are grade-less fixed variants. `engineeringLocked` marks the seven
+ * baked in, the `grade` already applied, and an optional `experimental`. The three festive event
+ * rewards carry grade-5 `Decorative_*` identities. `engineeringLocked` marks the seven
  * Guardian-weapon articles — the catalogue's only Guardian variants — that are final and accept
  * no further engineering. No narrower key than the (symbol, blueprint, grade, experimental)
- * tuple is unique across the graded variants — the medium Guardian Shard
+ * tuple is unique across the catalogue — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the
  * catalogue size and its split by acquisition; `records` pins individual pairings;
  * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable;
@@ -42,10 +42,15 @@
       "Hpt_Guardian_ShardCannon_Fixed_Small"
     ]
   },
-  "gradeLess": {
+  "festive": {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
+    "grade": 5,
     "blueprints": ["Decorative_Green", "Decorative_Red", "Decorative_Yellow"],
-    "modifier": { "label": "Damage", "method": "multiplicative", "value": -0.99 },
+    "modifier": {
+      "label": "Damage",
+      "method": "multiplicative",
+      "value": -0.99
+    },
     "resolved": {
       "baseDamage": 34,
       "damage": 0.34,

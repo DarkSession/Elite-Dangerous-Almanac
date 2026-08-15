@@ -149,10 +149,10 @@ collide across module families; `resolveBlueprintForModule` resolves those journ
 spellings. Recipe and effect lookups take that `fdname`. Pre-engineered variants instead
 form a relation from the base module: after resolving a module by type or name,
 `getPreEngineeredVariants` lists the fixed articles associated with its `symbol`, and the
-caller can inspect each variant's `blueprint` identity. Those include the grade-less
+caller can inspect each variant's `blueprint` identity. Those include the grade-5
 `Decorative_*` launchers whose −99% damage modifier is part of the awarded article rather
-than a generally applicable recipe. `ShipLoadout.setPreEngineeredVariant` fits either a
-graded or grade-less fixed article and writes its corresponding journal block.
+than a generally applicable recipe. `ShipLoadout.setPreEngineeredVariant` fits the fixed
+article and writes its corresponding journal block.
 
 Personal-equipment modifications are keyed by their recipe symbol, just as ship
 blueprints and experimental effects are keyed by `fdname`; there is no second synthetic
