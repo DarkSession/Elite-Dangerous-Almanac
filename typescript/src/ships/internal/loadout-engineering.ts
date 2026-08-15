@@ -93,14 +93,15 @@ const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().star
 /**
  * Whether a module is sold carrying this recipe in a form that can still be engineered.
  *
- * Most Operations keys belong to modules bought already engineered — the Mercenary shop's
- * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists one
- * and the menu check alone would refuse every caller. (The four a menu *does* list are
+ * The Mercenary shop's Operations keys name bespoke recipes on modules bought already
+ * engineered at grade 1, so no ordinary engineering menu lists one and the menu check
+ * alone would refuse every caller. (The four Operations keys a menu *does* list are
  * recipes a player applies from grade 1, and reach the caller by the menu instead; see
- * `engineering-options`.) The pre-engineered catalogue names
- * which module each arrives on, which is the same question answered by purchase instead of
- * by a menu, and it is narrower than a family: `RailGun_LongShot` resolves on the
- * rail gun that ships with it and nowhere else.
+ * `engineering-options`.) The pre-engineered catalogue names which module each Mercenary
+ * recipe arrives on, which is the same question answered by purchase instead of by a
+ * menu, and it is narrower than a family: `RailGun_LongShot` resolves on the rail gun
+ * that ships with it and nowhere else. Community-goal and tech-broker records identify
+ * fixed reward articles and never open this route.
  *
  * This route covers the **climb**, not the purchase. A Mercenary module arrives at grade 1
  * and its recipe publishes grades 2–5 — the grades an engineer can still add — so folding
@@ -203,11 +204,11 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
 /**
  * Whether a module's engineering menu offers an experimental effect.
  *
- * No aliasing and no pre-engineered leg here: effect ids are unique per effect, the menu
- * already narrows a group's list to the individual module (a small Multi-cannon is one
- * effect short of a medium one), and every experimental a pre-engineered variant arrives
- * with is one its module's menu lists anyway — `pre-engineered.test.ts` asserts that, so
- * the day it stops being true a test says so rather than this quietly covering for it.
+ * No aliasing and no pre-engineered leg here: effect ids are unique per effect, and the
+ * menu already narrows a group's list to the individual module (a small Multi-cannon is
+ * one effect short of a medium one). A fixed reward may arrive carrying an effect its
+ * stock module cannot apply — the Tech Broker Mining Laser does — but that identifies the
+ * article rather than widening its menu. `pre-engineered.test.ts` pins that distinction.
  *
  * @internal
  */
@@ -252,7 +253,14 @@ function engineerableBase(
     return { stats, base: baseStats(stats) };
 }
 
-/** Blueprints the fitted article's menu offers whose modifiers can also be computed. @internal */
+/**
+ * Blueprints the fitted article can accept whose modifiers can also be computed.
+ *
+ * The ordinary menu comes first, followed by any bespoke Mercenary recipes in catalogue
+ * order. Fixed community-goal and tech-broker rewards add nothing.
+ *
+ * @internal
+ */
 export function availableBlueprintsFor(
     item: string,
     statsOverride?: OutfittingModule | null,
@@ -261,7 +269,13 @@ export function availableBlueprintsFor(
     if (!engineerable) return [];
     const { stats, base } = engineerable;
     const available: AvailableBlueprint[] = [];
-    for (const fdname of getBlueprintsForModule(item)) {
+    const fdnames = new Set([
+        ...getBlueprintsForModule(item),
+        ...getPreEngineeredVariants(item)
+            .filter((variant) => variant.acquisition === 'mercenary')
+            .map((variant) => variant.blueprint),
+    ]);
+    for (const fdname of fdnames) {
         const blueprint = BLUEPRINTS[fdname];
         if (!blueprint) continue;
         const grades = Object.entries(blueprint.grades)

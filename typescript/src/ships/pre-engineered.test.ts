@@ -11,7 +11,11 @@ import { getBlueprintCost } from './blueprint-costs.js';
 import { BLUEPRINTS, getBlueprint } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
-import { blueprintAvailableFor, missingBaseLabels } from './internal/loadout-engineering.js';
+import {
+    availableBlueprintsFor,
+    blueprintAvailableFor,
+    missingBaseLabels,
+} from './internal/loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -105,6 +109,13 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
             variant.acquisition === 'mercenary',
             `${variant.symbol}: ${variant.blueprint}`,
         );
+        assert.equal(
+            availableBlueprintsFor(variant.symbol).some(
+                (candidate) => candidate.fdname === variant.blueprint,
+            ),
+            variant.acquisition === 'mercenary',
+            `${variant.symbol}: ${variant.blueprint} menu visibility`,
+        );
     }
 });
 
@@ -122,6 +133,13 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
         assert.ok(
             blueprintAvailableFor(variant.symbol, variant.blueprint),
             `${variant.symbol}: ${variant.blueprint} is not upgradeable`,
+        );
+        assert.deepEqual(
+            availableBlueprintsFor(variant.symbol).find(
+                (candidate) => candidate.fdname === variant.blueprint,
+            ),
+            { fdname: variant.blueprint, grades: [2, 3, 4, 5] },
+            `${variant.symbol}: ${variant.blueprint} is missing from available blueprints`,
         );
         const blueprint = BLUEPRINTS[variant.blueprint]!;
         assert.deepEqual(

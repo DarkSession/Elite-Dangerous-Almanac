@@ -2171,7 +2171,11 @@ test('stock mining tools refuse ordinary engineering but keep their Mercenary cl
             'SmallHardpoint1',
             mod(symbol, HARDPOINT_MODULES),
         );
-        assert.deepEqual(build.availableBlueprints('SmallHardpoint1'), [], symbol);
+        assert.deepEqual(
+            build.availableBlueprints('SmallHardpoint1'),
+            [{ fdname: blueprint, grades: [2, 3, 4, 5] }],
+            symbol,
+        );
         assert.throws(
             () =>
                 build.applyBlueprint('SmallHardpoint1', 'Weapon_LongRange', {
@@ -2416,7 +2420,7 @@ test('keyed facade mutations produce new fitted-module snapshots', () => {
     assert.equal(build.frameShiftDrive.optMass, 4670); // base
 });
 
-test('availableBlueprints / availableExperimentalEffects answer the module menu', () => {
+test('availableBlueprints / availableExperimentalEffects answer available engineering', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Size6_Class5'),

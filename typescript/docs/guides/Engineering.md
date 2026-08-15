@@ -90,13 +90,19 @@ On a build, all of this is one call, and it recomputes the derived stats — a w
 of fire, for instance — that follow from what the recipe changed:
 
 ```ts
+import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
-const build = ShipLoadout.empty('Anaconda');
+const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+const build = ShipLoadout.empty('Anaconda').setModule('FrameShiftDrive', fsd);
 
-build.availableBlueprints('FrameShiftDrive'); // what this mount can take
+build.availableBlueprints('FrameShiftDrive'); // ordinary menu for the fitted FSD
 build.availableExperimentalEffects('FrameShiftDrive');
 ```
+
+For a Mercenary module, `availableBlueprints` appends its bespoke Mercenary upgrade
+recipes after the ordinary menu.
 
 ## The three accommodations
 

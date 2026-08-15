@@ -1072,11 +1072,12 @@ export class ShipLoadout {
     }
 
     /**
-     * Return the computable blueprints offered to a fitted module.
+     * Return the computable blueprints a fitted module can accept.
      *
      * @param slotKey - Slot key, matched case-insensitively.
-     * @returns Frozen blueprint descriptors in engineering-menu order, or an empty
-     * array when the slot is empty, unresolved, final, or has no engineering menu.
+     * @returns Frozen blueprint descriptors: the ordinary engineering menu first, then
+     * bespoke Mercenary upgrade recipes. Returns an empty array when the slot is empty,
+     * unresolved or final, or the module has neither route.
      * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
