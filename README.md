@@ -4,6 +4,13 @@ Static Elite Dangerous data and calculations for community applications and rese
 The repository provides an ESM TypeScript package backed by shared JSONC data, fixtures
 and JSON Schemas.
 
+## Project status
+
+**This library is a work in progress.** Until version 1.0, backwards compatibility is
+not ensured and breaking changes are very likely: exported names, signatures, module
+paths and data shapes can change in any release. Pin an exact version if your
+application needs a stable surface, and read the release notes before upgrading.
+
 ## TypeScript package
 
 ```bash
