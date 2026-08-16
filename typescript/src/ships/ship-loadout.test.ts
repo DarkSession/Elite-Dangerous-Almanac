@@ -588,11 +588,11 @@ test('jump calculations honour explicit fuel and cargo', () => {
     assert.ok(near(build.jumpRange({ fuel: 128, cargo: 0 }), build.jumpRange()));
     // more cargo -> shorter jump
     assert.ok(build.jumpRange({ cargo: 100 }) < build.jumpRange({ cargo: 0 }));
-    const maxFuel = Math.min(build.fuelCapacity!.main, build.frameShiftDrive.maxFuel);
-    const totalMax = build.totalRange({ fuel: maxFuel });
+    const totalMax = build.totalRange({ fuel: build.frameShiftDrive.maxFuel });
     assert.equal(totalMax.jumps, 1);
     assert.ok(near(totalMax.range, build.maxJumpRange()));
     assert.ok(build.totalRange({ fuel: 64 }).range < build.totalRange().range);
+    assert.throws(() => build.totalRange({ fuel: 1e7 }), /more than 100000 jumps/);
 
     const partial = expected.explicitFuelWithoutKnownTank;
     const unknownTank = ShipLoadout.fromLoadout(partial.loadout as unknown as LoadoutEvent);
@@ -717,6 +717,16 @@ test('a build with no frame shift drive throws on a jump calculation', () => {
         Modules: [{ Slot: 'CargoHatch', Item: 'modularcargobaydoor' }],
     };
     assert.throws(() => ShipLoadout.fromLoadout(noFsd).maxJumpRange(), /no frame shift drive/);
+
+    const unknownTank: LoadoutEvent = {
+        Ship: 'sidewinder',
+        UnladenMass: 50,
+        Modules: [{ Slot: 'FuelTank', Item: 'Unknown_Fuel_Tank' }],
+    };
+    assert.throws(() => ShipLoadout.fromLoadout(unknownTank).jumpRangeSummary(), {
+        name: 'TypeError',
+        message: 'ShipLoadout: build has no frame shift drive',
+    });
 });
 
 test('a fitted drive with no stats-catalogue constants throws a distinct error', () => {
@@ -3468,13 +3478,8 @@ test('jumpRangeSummary gathers the loads that matter', () => {
     assert.ok(near(summary.max, build.maxJumpRange()));
     assert.ok(near(summary.unladen, build.jumpRange()));
     assert.ok(near(summary.laden, build.ladenJumpRange()));
-    assert.deepEqual(
-        summary.totalMax,
-        build.totalRange({
-            fuel: Math.min(build.fuelCapacity!.main, build.frameShiftDrive.maxFuel),
-        }),
-    );
-    assert.equal(summary.totalMax.jumps, 1);
+    assert.equal(summary.totalMax.jumps, expected.totalMaxJumps);
+    assert.ok(near(summary.totalMax.range, expected.totalMaxRange));
     assert.ok(near(summary.totalMax.range, summary.max));
     assert.deepEqual(summary.totalUnladen, build.totalRange());
     assert.deepEqual(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! }));

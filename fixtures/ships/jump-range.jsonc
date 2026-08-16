@@ -21,6 +21,8 @@
   "mainFuel": 128,
   "cargoCapacity": 16,
   "maxJumpRange": 89.414678,
+  "totalMaxRange": 89.414678,
+  "totalMaxJumps": 1,
   "edsyMaxJumpRange": 89.414678,
   "unladenJumpRange": 82.409288,
   "ladenJumpRange": 81.576342,
@@ -38,7 +40,7 @@
       ]
     },
     "options": { "fuel": 2 },
-    "expected": { "range": 55.02934810026529, "jumps": 4 }
+    "expected": { "range": 55.029348, "jumps": 4 }
   },
   "invalidInputs": [
     {

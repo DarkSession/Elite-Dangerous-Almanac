@@ -3537,6 +3537,8 @@
           "required": ["fuel", "mass", "minimumRange"]
         },
         "totalJumps": { "type": "integer" },
+        "totalMaxJumps": { "type": "integer" },
+        "totalMaxRange": { "type": "number" },
         "totalRange": { "type": "number" },
         "unladenJumpRange": { "type": "number" },
         "unladenMass": { "type": "number" }
@@ -3558,6 +3560,8 @@
         "ship",
         "tinyFuel",
         "totalJumps",
+        "totalMaxJumps",
+        "totalMaxRange",
         "totalRange",
         "unladenJumpRange",
         "unladenMass"

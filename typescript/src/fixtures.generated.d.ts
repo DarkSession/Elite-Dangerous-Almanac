@@ -2749,6 +2749,8 @@ type FixtureShipsJumpRange = {
         minimumRange: number;
     };
     totalJumps: number;
+    totalMaxJumps: number;
+    totalMaxRange: number;
     totalRange: number;
     unladenJumpRange: number;
     unladenMass: number;

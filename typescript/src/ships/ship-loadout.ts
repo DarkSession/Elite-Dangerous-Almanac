@@ -1879,6 +1879,12 @@ export class ShipLoadout {
         return drive;
     }
 
+    /** The fuel one jump can burn: the whole main tank, or the drive limit if lower. */
+    #maxJumpFuel(): number {
+        const fsd = this.frameShiftDrive;
+        return Math.min(this.#requireFuelCapacity().main, fsd.maxFuel);
+    }
+
     /**
      * The fitted frame shift drive's dimensionless mass factor at a chosen load.
      *
@@ -1927,9 +1933,8 @@ export class ShipLoadout {
      * fuel capacity cannot be determined.
      */
     maxJumpRange(): number {
-        const fsd = this.frameShiftDrive;
-        const fuel = Math.min(this.#requireFuelCapacity().main, fsd.maxFuel);
-        return singleJumpRange(this.#requireMass(0), fuel, fsd);
+        const fuel = this.#maxJumpFuel();
+        return singleJumpRange(this.#requireMass(0), fuel, this.frameShiftDrive);
     }
 
     /**
@@ -1989,7 +1994,8 @@ export class ShipLoadout {
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
      * fuel capacity cannot be determined; fuel capacity is not required when
      * `options.fuel` is supplied.
-     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or the
+     * fuel load would require more than 100,000 jumps.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2034,7 +2040,7 @@ export class ShipLoadout {
      */
     jumpRangeSummary(): JumpRangeSummary {
         const cargo = this.#requireCargoCapacity();
-        const maxFuel = Math.min(this.#requireFuelCapacity().main, this.frameShiftDrive.maxFuel);
+        const maxFuel = this.#maxJumpFuel();
         return {
             max: this.maxJumpRange(),
             unladen: this.jumpRange(),
