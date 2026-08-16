@@ -3439,6 +3439,24 @@
           },
           "required": ["error", "fuel", "mass", "maxFuel"]
         },
+        "explicitFuelWithoutKnownTank": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "jumps": { "type": "integer" },
+                "range": { "type": "number" }
+              },
+              "required": ["jumps", "range"]
+            },
+            "loadout": { "$ref": "#/definitions/sharedeff85db8445f" },
+            "options": { "$ref": "#/definitions/shared03f655aa24ed" }
+          },
+          "required": ["expected", "loadout", "options"]
+        },
         "frameShiftDrive": {
           "type": "object",
           "additionalProperties": false,
@@ -3528,6 +3546,7 @@
         "cargoCapacity",
         "edsyMaxJumpRange",
         "excessiveJumpCount",
+        "explicitFuelWithoutKnownTank",
         "frameShiftDrive",
         "fuelPerJump50Ly",
         "invalidInputs",
@@ -4514,23 +4533,9 @@
                     "required": ["expectedError", "options"]
                   }
                 },
-                "loadout": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
-                    "Ship": { "type": "string" },
-                    "UnladenMass": { "type": "integer" }
-                  },
-                  "required": ["Modules", "Ship", "UnladenMass"]
-                },
+                "loadout": { "$ref": "#/definitions/sharedeff85db8445f" },
                 "omittedFuelFails": { "type": "boolean" },
-                "options": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": { "fuel": { "type": "integer" } },
-                  "required": ["fuel"]
-                },
+                "options": { "$ref": "#/definitions/shared03f655aa24ed" },
                 "partialCapacityLoadout": {
                   "type": "object",
                   "additionalProperties": false,
@@ -7099,6 +7104,12 @@
       },
       "required": ["captures", "editedExports", "syntheticCaptures"]
     },
+    "shared03f655aa24ed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "fuel": { "type": "integer" } },
+      "required": ["fuel"]
+    },
     "shared066cc3500e8c": {
       "type": "object",
       "additionalProperties": false,
@@ -7693,6 +7704,16 @@
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
+    },
+    "sharedeff85db8445f": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
+        "Ship": { "type": "string" },
+        "UnladenMass": { "type": "integer" }
+      },
+      "required": ["Modules", "Ship", "UnladenMass"]
     },
     "sharedf05bf89298b5": {
       "type": "object",

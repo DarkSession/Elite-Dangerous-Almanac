@@ -2695,6 +2695,23 @@ type FixtureShipsJumpRange = {
         mass: number;
         maxFuel: number;
     };
+    explicitFuelWithoutKnownTank: {
+        expected: {
+            jumps: number;
+            range: number;
+        };
+        loadout: {
+            Modules: {
+                Item: string;
+                Slot: string;
+            }[];
+            Ship: string;
+            UnladenMass: number;
+        };
+        options: {
+            fuel: number;
+        };
+    };
     frameShiftDrive: {
         fuelMul: number;
         fuelPower: number;

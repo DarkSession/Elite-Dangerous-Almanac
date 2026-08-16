@@ -582,22 +582,34 @@ test('unladen / laden / total range and per-jump fuel match the fixture', () => 
     );
 });
 
-test('jumpRange honours explicit fuel and cargo', () => {
+test('jump calculations honour explicit fuel and cargo', () => {
     const build = ShipLoadout.fromSlef(slefString);
     // The default is a full main tank with no cargo.
     assert.ok(near(build.jumpRange({ fuel: 128, cargo: 0 }), build.jumpRange()));
     // more cargo -> shorter jump
     assert.ok(build.jumpRange({ cargo: 100 }) < build.jumpRange({ cargo: 0 }));
+    const maxFuel = Math.min(build.fuelCapacity!.main, build.frameShiftDrive.maxFuel);
+    const totalMax = build.totalRange({ fuel: maxFuel });
+    assert.equal(totalMax.jumps, 1);
+    assert.ok(near(totalMax.range, build.maxJumpRange()));
+    assert.ok(build.totalRange({ fuel: 64 }).range < build.totalRange().range);
+
+    const partial = expected.explicitFuelWithoutKnownTank;
+    const unknownTank = ShipLoadout.fromLoadout(partial.loadout as unknown as LoadoutEvent);
+    assert.equal(unknownTank.fuelCapacity, null);
+    const partialTotal = unknownTank.totalRange(partial.options);
+    assert.equal(partialTotal.jumps, partial.expected.jumps);
+    assert.ok(near(partialTotal.range, partial.expected.range));
+    assert.throws(() => unknownTank.totalRange(), /cannot determine fuel capacity/);
+
     for (const invalid of operationsFixture.mobility.facadeExplicitFuel.invalidLoads) {
         assert.throws(() => build.jumpRange(invalid.options), { name: invalid.expectedError });
         assert.throws(() => build.fuelPerJump(1, invalid.options), {
             name: invalid.expectedError,
         });
-        if ('cargo' in invalid.options) {
-            assert.throws(() => build.totalRange(invalid.options), {
-                name: invalid.expectedError,
-            });
-        }
+        assert.throws(() => build.totalRange(invalid.options), {
+            name: invalid.expectedError,
+        });
     }
 });
 
@@ -3456,6 +3468,14 @@ test('jumpRangeSummary gathers the loads that matter', () => {
     assert.ok(near(summary.max, build.maxJumpRange()));
     assert.ok(near(summary.unladen, build.jumpRange()));
     assert.ok(near(summary.laden, build.ladenJumpRange()));
+    assert.deepEqual(
+        summary.totalMax,
+        build.totalRange({
+            fuel: Math.min(build.fuelCapacity!.main, build.frameShiftDrive.maxFuel),
+        }),
+    );
+    assert.equal(summary.totalMax.jumps, 1);
+    assert.ok(near(summary.totalMax.range, summary.max));
     assert.deepEqual(summary.totalUnladen, build.totalRange());
     assert.deepEqual(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! }));
     // Best single jump beats a full tank, which beats a full tank and a full hold.
