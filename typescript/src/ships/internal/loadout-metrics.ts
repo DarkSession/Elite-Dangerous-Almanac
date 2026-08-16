@@ -760,12 +760,14 @@ function poweredStates(
 /** Gather fitted cell banks without treating their normal powered-off state as absence. */
 export function cellBankInputsFor(
     modules: readonly LoadoutModule[],
+    budget: PowerBudget,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CellBankInput[] {
     const banks: CellBankInput[] = [];
     for (const module of modules) {
         if (!startsWithAny(module.Item, PREFIX.shieldCellBank)) continue;
-        const effective = effectiveModule(module, statsFor(module));
+        const stats = statsFor(module);
+        const effective = effectiveModule(module, stats);
         const ammunition = effective ? ammunitionCapacity(effective) : null;
         banks.push({
             slot: module.Slot,
@@ -775,6 +777,10 @@ export function cellBankInputsFor(
             spinUp: effective?.shieldBankSpinUp ?? 0,
             duration: effective?.shieldBankDuration ?? 0,
             heat: effective?.shieldBankHeat ?? 0,
+            powered:
+                budget.available > 0 &&
+                isEnabled(module) &&
+                poweredStates(module, stats, budget).deployed,
         });
     }
     return banks;

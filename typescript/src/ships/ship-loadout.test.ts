@@ -244,7 +244,27 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(recovery.regenTime > 0);
 
     const bank = mod('Int_ShieldCellBank_Size6_Class3', INTERNAL_MODULES);
-    const banked = ShipLoadout.empty('Anaconda')
+    const withoutPlant = ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', bank).cellBanks();
+    assert.deepEqual(
+        withoutPlant.banks.map(({ powered }) => powered),
+        [false],
+    );
+    assert.equal(withoutPlant.totalCells, 0);
+    assert.equal(withoutPlant.totalRestorable, 0);
+
+    const { powerDraw, ...bankWithoutPowerDraw } = bank;
+    assert.ok(powerDraw !== undefined && powerDraw > 0);
+    const unresolvedWithoutPlant = ShipLoadout.empty('Anaconda')
+        .setModule('Slot01_Size7', bankWithoutPowerDraw)
+        .cellBanks();
+    assert.deepEqual(
+        unresolvedWithoutPlant.banks.map(({ powered }) => powered),
+        [false],
+    );
+    assert.equal(unresolvedWithoutPlant.totalCells, 0);
+    assert.equal(unresolvedWithoutPlant.totalRestorable, 0);
+
+    const banked = ShipLoadout.default('Anaconda')
         .setModule('Slot02_Size6', bank)
         .setModule('Slot01_Size7', bank);
     const cells = banked.cellBanks();
@@ -253,8 +273,55 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
         cells.banks.map(({ slot }) => slot),
         ['Slot01_Size7', 'Slot02_Size6'],
     );
+    assert.deepEqual(
+        cells.banks.map(({ powered }) => powered),
+        [true, true],
+    );
     assert.ok(cells.totalCells > 0);
     assert.ok(cells.totalRestorable > 0);
+
+    banked.setModuleEnabled('Slot02_Size6', false);
+    const disabled = banked.cellBanks();
+    assert.deepEqual(
+        disabled.banks.map(({ slot, powered }) => ({ slot, powered })),
+        [
+            { slot: 'Slot01_Size7', powered: true },
+            { slot: 'Slot02_Size6', powered: false },
+        ],
+    );
+    assert.equal(disabled.totalCells, disabled.banks[0]!.cells);
+    assert.equal(
+        disabled.totalRestorable,
+        disabled.banks[0]!.reinforcement * disabled.banks[0]!.cells,
+    );
+
+    const beamForSize = {
+        1: 'Hpt_BeamLaser_Gimbal_Small',
+        2: 'Hpt_BeamLaser_Gimbal_Medium',
+        3: 'Hpt_BeamLaser_Gimbal_Large',
+        4: 'Hpt_BeamLaser_Gimbal_Huge',
+    } as const;
+    const combat = ShipLoadout.default('Anaconda');
+    for (const slot of combat.slots('hardpoint')) {
+        const symbol = beamForSize[slot.size as keyof typeof beamForSize];
+        assert.ok(symbol);
+        combat.setModule(slot.key, mod(symbol, HARDPOINT_MODULES)).setModulePriority(slot.key, 0);
+    }
+    combat
+        .setModule('Slot01_Size7', bank)
+        .setModulePriority('Slot01_Size7', 4)
+        .setModule('PowerPlant', mod('Int_PowerPlant_Size6_Class4', CORE_MODULES));
+    const combatPower = combat.powerBudget();
+    assert.equal(combatPower.bands[0]?.poweredDeployed, true);
+    assert.equal(combatPower.bands[4]?.poweredRetracted, true);
+    assert.equal(combatPower.bands[4]?.poweredDeployed, false);
+    const shed = combat.cellBanks();
+    assert.deepEqual(
+        shed.banks.map(({ powered }) => powered),
+        [false],
+    );
+    assert.equal(shed.totalCells, 0);
+    assert.equal(shed.totalRestorable, 0);
 });
 
 test('mobility returns null before requiring mass when no thrusters are fitted', () => {
