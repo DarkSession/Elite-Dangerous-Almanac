@@ -196,6 +196,14 @@
             "import": "./dist/i18n/experimental-effects.js"
         },
         "./i18n/internal/*": null,
+        "./i18n/materials": {
+            "types": "./dist/i18n/materials.d.ts",
+            "import": "./dist/i18n/materials.js"
+        },
+        "./i18n/micro-resources": {
+            "types": "./dist/i18n/micro-resources.d.ts",
+            "import": "./dist/i18n/micro-resources.js"
+        },
         "./i18n/modules": {
             "types": "./dist/i18n/modules.d.ts",
             "import": "./dist/i18n/modules.js"

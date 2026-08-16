@@ -118,8 +118,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   **Jixxed**, **MIT** — supplies the personal suit and handheld-weapon identities, stats,
   journal symbols, grade-upgrade recipes and engineer-applied modification recipes. A
   CAPI response in its test resources also corroborates the six bundle-granted Vessel
-  Hangar variants. The values and response are factual Elite Dangerous game data. Its MIT
-  notice is reproduced below.
+  Hangar variants. Its language tables supply localized engineering-material and Odyssey
+  micro-resource display names. The values and response are factual Elite Dangerous game
+  data. Its MIT notice is reproduced below.
 - **[msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)**, **MIT** for its code
   — its `blueprints.json` corroborates which weapons the Overcharged recipe gives a clip
   penalty to. The values are game data.
@@ -202,8 +203,8 @@ add it here and record the provenance where the data lives.
 
 ## Odyssey Materials Helper license
 
-The personal-equipment data is derived from Odyssey Materials Helper, whose MIT notice
-is reproduced as required:
+The personal-equipment data and localized material and micro-resource name tables are
+derived from Odyssey Materials Helper, whose MIT notice is reproduced as required:
 
 ```
 Copyright (c) 2026 Jixxed

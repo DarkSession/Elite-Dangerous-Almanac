@@ -85,6 +85,8 @@ symbols you are most likely to reach for first:
 | `getModuleName` | `core/i18n/modules` |
 | `getBlueprintName` | `core/i18n/blueprints` |
 | `getExperimentalEffectName` | `core/i18n/experimental-effects` |
+| `getMaterialName` | `core/i18n/materials` |
+| `getMicroResourceName` | `core/i18n/micro-resources` |
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |
 | `getMicroResourceByName` | `core/materials/micro-resources` |
 | `getCommodityByName` | `core/commodities/commodities` |
