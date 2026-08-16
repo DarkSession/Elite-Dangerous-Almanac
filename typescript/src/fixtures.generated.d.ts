@@ -1229,30 +1229,6 @@ type FixtureShipsEngineering = {
         }[];
         description: string;
     };
-    decorativeModifications: {
-        description: string;
-        ids: {
-            id: string;
-            name: string;
-        }[];
-        modifiers: {
-            label: string;
-            method: string;
-            value: number;
-        }[];
-        module: string;
-        resolved: {
-            baseDamage: number;
-            damage: number;
-            damagePerSecond: number;
-            description: string;
-            panel: {
-                damage: number;
-                damagePerSecond: number;
-                percent: number;
-            };
-        };
-    };
     experimentalCount: number;
     experimentalDamageDistributions: {
         description: string;
@@ -3579,12 +3555,33 @@ type FixtureShipsPreEngineered = {
     count: number;
     counts: {
         communityGoal: number;
+        eventReward: number;
         mercenary: number;
         techBroker: number;
     };
     engineeringLocked: {
         count: number;
         symbols: string[];
+    };
+    festive: {
+        blueprints: string[];
+        grade: number;
+        modifier: {
+            label: string;
+            method: string;
+            value: number;
+        };
+        resolved: {
+            baseDamage: number;
+            damage: number;
+            damagePerSecond: number;
+            panel: {
+                damage: number;
+                damagePerSecond: number;
+                percent: number;
+            };
+        };
+        symbol: string;
     };
     fullyUnresolved: {
         count: number;

@@ -71,13 +71,12 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * @returns The blueprint (its `name` and `grades`), or `null` if this catalogue stores no
  * blueprint under that id.
  * @remarks
- * **`null` is not always an unknown id.** The game writes a handful of cosmetic
- * transformations in the same `BlueprintName` / `EngineerModifications` field, and they
- * name no recipe — no grade, no materials, and no engineer who applies one.
- * {@link isDecorativeModification} from `ships/decorative-modifications` is what tells one
- * of those apart from an id this library has never heard of. Note that such an id is not a
- * claim that the module is unmodified: read a fitted one's stats from the journal's own
- * `Engineering.Modifiers`.
+ * **`null` is not always an unknown id.** The game writes the grade-5 `Decorative_*`
+ * identities of festive pre-engineered variants in the same `BlueprintName` /
+ * `EngineerModifications` field. They name no craftable recipe — no materials or applying
+ * engineer — and are carried by the variants returned from
+ * `getPreEngineeredVariants` in `ships/pre-engineered`. Their fixed modifiers still
+ * change the fitted article's stats.
  * @throws {TypeError} If `fdname` is present and not a string. A nullish
  * `fdname` is a miss, answered the way an unrecognised one is.
  */

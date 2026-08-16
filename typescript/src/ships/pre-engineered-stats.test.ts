@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
     getPreEngineeredStats,
     getPreEngineeredModifiers,
+    getPreEngineeredJournalModifiers,
     identifyPreEngineeredVariant,
     unresolvedModifiers,
 } from './pre-engineered-stats.js';
@@ -142,6 +143,107 @@ test('a pre-engineered drive resolves to its known in-game stats', () => {
     assert.equal(fitted.integrity, engineered.integrity);
     assert.equal(fitted.fsdHeatRate, engineered.fsdHeatRate);
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
+});
+
+test('grade-5 festive variants resolve and identify through the fixed-article path', () => {
+    const expected = fixture.festive;
+    for (const blueprint of expected.blueprints) {
+        const variant = only({ symbol: expected.symbol, blueprint });
+        const fitted = getPreEngineeredStats(variant)!;
+        assert.equal(variant.grade, expected.grade);
+        assert.equal(fitted.damage, expected.resolved.damage);
+        const modifiers = getPreEngineeredJournalModifiers(variant);
+        assert.deepEqual(modifiers, [
+            {
+                Label: 'DamagePerSecond',
+                Value: expected.resolved.damagePerSecond,
+                OriginalValue: expected.resolved.baseDamage * 0.5,
+            },
+            {
+                Label: 'Damage',
+                Value: expected.resolved.damage,
+                OriginalValue: expected.resolved.baseDamage,
+            },
+        ]);
+        assert.equal(
+            identifyPreEngineeredVariant({
+                Slot: 'MediumHardpoint1',
+                Item: variant.symbol,
+                Engineering: {
+                    BlueprintName: variant.blueprint,
+                    Level: expected.grade,
+                    Quality: 1,
+                    Modifiers: modifiers,
+                },
+            }),
+            variant,
+        );
+    }
+});
+
+test('festive identification rejects a mismatched grade or experimental effect', () => {
+    const expected = fixture.festive;
+    const variant = only({ symbol: expected.symbol, blueprint: expected.blueprints[1]! });
+    const modifiers = getPreEngineeredJournalModifiers(variant);
+    for (const Engineering of [
+        {
+            BlueprintName: variant.blueprint,
+            Level: 4,
+            Quality: 1,
+            Modifiers: modifiers,
+        },
+        {
+            BlueprintName: variant.blueprint,
+            Level: expected.grade,
+            Quality: 1,
+            ExperimentalEffect: 'special_auto_loader',
+            Modifiers: modifiers,
+        },
+        {
+            BlueprintName: variant.blueprint,
+            Level: expected.grade,
+            Quality: 1,
+            ExperimentalEffect_Localised: 'Auto Loader',
+            Modifiers: modifiers,
+        },
+    ]) {
+        assert.equal(
+            identifyPreEngineeredVariant({
+                Slot: 'MediumHardpoint1',
+                Item: variant.symbol,
+                Engineering,
+            } as LoadoutModule),
+            null,
+        );
+    }
+});
+
+test('setter-shaped fragment-cannon modifiers identify their fixed variants', () => {
+    for (const symbol of ['Hpt_Slugshot_Gimbal_Small', 'Hpt_Slugshot_Gimbal_Large']) {
+        const variant = only({
+            symbol,
+            blueprint: 'Weapon_DoubleShot',
+            acquisition: 'communityGoal',
+        });
+        const grade = variant.grade;
+        assert.equal(
+            identifyPreEngineeredVariant({
+                Slot: 'Hardpoint',
+                Item: symbol,
+                Engineering: {
+                    BlueprintName: variant.blueprint,
+                    Level: grade,
+                    Quality: 1,
+                    ...(variant.experimental === undefined
+                        ? {}
+                        : { ExperimentalEffect: variant.experimental }),
+                    Modifiers: getPreEngineeredJournalModifiers(variant),
+                },
+            }),
+            variant,
+            symbol,
+        );
+    }
 });
 
 test('a string-valued capability resolves to the boolean module field', () => {

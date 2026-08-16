@@ -111,32 +111,37 @@ build.availableBlueprints('FrameShiftDrive'); // ordinary menu for the fitted FS
 build.availableExperimentalEffects('FrameShiftDrive');
 ```
 
-## Decorative transformations
+## Festive pre-engineered variants
 
-Decorative transformations occupy the journal's `Engineering` field but are not blueprint
-engineering: they have no grade, quality roll, material cost or engineer. Use
-{@link ships!ShipLoadout.applyDecorativeModification | applyDecorativeModification} to
-resolve the fixed stat block and install it on one fitted slot. The emitted journal/SLEF
-block contains `BlueprintName` and `Modifiers` only, while every other fitted module keeps
-its already-computed effective state.
+Decorative transformations occupy the journal's `Engineering` field at grade 5 but are
+not craftable blueprint recipes: they have no material cost or applying engineer. They are
+fixed variants of the awarded Remote Release Flak Launcher, not transformations a caller
+may apply to any damage-bearing module. Find one in `ships/pre-engineered` and fit it with
+{@link ships!ShipLoadout.setPreEngineeredVariant | setPreEngineeredVariant}. The emitted
+journal/SLEF block contains `BlueprintName`, `Level: 5`, `Quality: 1` and `Modifiers`.
 
 ```ts
-import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
-import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+import { getModulesByName } from '@elite-dangerous-almanac/core/ships/modules';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
-const laser = getModuleBySymbol('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES)!;
-const festive = ShipLoadout.empty('Krait_MkII')
-    .setModule('MediumHardpoint1', laser)
-    .applyDecorativeModification('MediumHardpoint1', 'Decorative_Red');
+const launcher = getModulesByName('Remote Release Flak Launcher')
+    .find((module) => module.mount === 'Turreted')!;
+const red = getPreEngineeredVariants(launcher.symbol)
+    .find((variant) => variant.blueprint === 'Decorative_Red')!;
+const festive = ShipLoadout.empty('Krait_MkII').setPreEngineeredVariant(
+    'MediumHardpoint1',
+    red,
+);
 
 festive.toLoadoutEvent().Modules[0]?.Engineering;
-// BlueprintName + Modifiers, with no Level or Quality
+// BlueprintName + Level: 5 + Quality: 1 + Modifiers
 ```
 
-`getDecorativeModifiers` remains the lower-level resolver for callers working with plain
-records rather than a `ShipLoadout`. Applying a decorative id whose fixed labels cannot be
-fully resolved is rejected instead of installing a partial transformation.
+`getPreEngineeredStats`, `getPreEngineeredModifiers` and
+`getPreEngineeredJournalModifiers` resolve the same record for callers working with plain
+module data. The catalogue binds each `Decorative_*` identity to the only module observed
+carrying it, preventing unsupported festive variants of unrelated weapons.
 
 For a module symbol that has Mercenary variants, `availableBlueprints` appends every
 bespoke Mercenary upgrade recipe after the ordinary menu and marks it with `route:
@@ -181,8 +186,8 @@ at cannot be reproduced through this route.
 
 ## Pre-engineered modules
 
-Use `ships/pre-engineered` to find a variant and `ships/pre-engineered-stats` to resolve
-its fitted stats.
+Use `ships/pre-engineered` to find any fixed variant and
+`ships/pre-engineered-stats` to resolve its fitted stats.
 
 ```ts
 import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
