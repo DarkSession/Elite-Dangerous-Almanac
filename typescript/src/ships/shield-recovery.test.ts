@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
+import { cellBankSummary, shieldRecovery, type CellBankInput } from './shield-recovery.js';
 
 test('shield recovery includes collapse delay and capacitor-supported phases', () => {
     assert.deepEqual(
@@ -131,4 +131,19 @@ test('cell banks report every fitted bank and total only the powered pool', () =
     assert.ok(Object.isFrozen(summary));
     assert.ok(Object.isFrozen(summary.banks));
     assert.deepEqual(cellBankSummary([]), { banks: [], totalRestorable: 0, totalCells: 0 });
+    assert.throws(
+        () =>
+            cellBankSummary([
+                {
+                    slot: 'Slot03_Size4',
+                    symbol: 'bank-without-power-state',
+                    reinforcementRate: 1,
+                    cells: 1,
+                    spinUp: 1,
+                    duration: 1,
+                    heat: 1,
+                } as unknown as CellBankInput,
+            ]),
+        /banks\[0\]\.powered must be a boolean/,
+    );
 });

@@ -777,7 +777,10 @@ export function cellBankInputsFor(
             spinUp: effective?.shieldBankSpinUp ?? 0,
             duration: effective?.shieldBankDuration ?? 0,
             heat: effective?.shieldBankHeat ?? 0,
-            powered: isEnabled(module) && poweredStates(module, stats, budget).retracted,
+            powered:
+                budget.available > 0 &&
+                isEnabled(module) &&
+                poweredStates(module, stats, budget).deployed,
         });
     }
     return banks;

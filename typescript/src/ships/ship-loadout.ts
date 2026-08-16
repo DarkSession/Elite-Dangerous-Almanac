@@ -2255,10 +2255,12 @@ export class ShipLoadout {
      * Every fitted shield cell bank and the usable rearmed reinforcement pool.
      *
      * Every fitted bank remains in `banks`, where `powered` says whether it is switched
-     * on and its priority group is fed with hardpoints retracted. The totals include
+     * on and its priority group is fed with hardpoints deployed. The totals include
      * only those powered banks. A bank whose draw is unresolved is assumed powered,
      * consistently with {@link powerBudget}; inspect that result's `unknownDraws` when
-     * the distinction matters.
+     * the distinction matters. A build with no powered power plant — including one
+     * created by {@link empty} before a plant is fitted — reports every bank as
+     * unpowered and returns zero totals.
      *
      * @returns A frozen {@link CellBankSummary}; no banks is an empty list and zero totals.
      * @example
