@@ -190,8 +190,10 @@ powered distributor or when the fitted article's capacitor stats cannot be resol
 pip-scaled recharge with **sustained** energy per second: a magazine's reload is time for
 the capacitor to recover, so burst draw would understate endurance.
 
-The build facade applies the deployed power budget. A distributor or weapon shed by its
-priority group contributes nothing; unresolved power draws keep the power budget's
+The general distributor facade applies the **retracted** power budget: all three
+capacitors recharge while hardpoints are stowed. Weapons endurance instead applies the
+**deployed** budget, because its result models firing. A distributor or weapon shed in
+the relevant state contributes nothing; unresolved power draws keep the power budget's
 optimistic assumption, so inspect `build.powerBudget().unknownDraws` when present.
 
 One asymmetry is deliberate. Frontier's Rapid Fire and High Capacity recipes shorten the

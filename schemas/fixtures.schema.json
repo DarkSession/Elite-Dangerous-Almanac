@@ -4306,16 +4306,7 @@
               "additionalProperties": false,
               "properties": {
                 "engines": { "$ref": "#/definitions/sharedfbeeff3a79e6" },
-                "pips": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "engines": { "type": "integer" },
-                    "systems": { "type": "integer" },
-                    "weapons": { "type": "integer" }
-                  },
-                  "required": ["engines", "systems", "weapons"]
-                },
+                "pips": { "$ref": "#/definitions/shared888d6b629d59" },
                 "systems": { "$ref": "#/definitions/sharedfbeeff3a79e6" },
                 "weapons": { "$ref": "#/definitions/sharedfbeeff3a79e6" }
               },
@@ -4325,6 +4316,65 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "engines": { "$ref": "#/definitions/shared54c2a237b089" },
+                    "pips": { "$ref": "#/definitions/shared888d6b629d59" },
+                    "systems": { "$ref": "#/definitions/shared54c2a237b089" },
+                    "weapons": { "$ref": "#/definitions/shared54c2a237b089" }
+                  },
+                  "required": ["engines", "pips", "systems", "weapons"]
+                },
+                "loadout": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "Engineering": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "BlueprintName": { "type": "string" },
+                              "Level": { "type": "integer" },
+                              "Modifiers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "Label": { "type": "string" },
+                                    "Value": { "type": "number" }
+                                  },
+                                  "required": ["Label", "Value"]
+                                }
+                              },
+                              "Quality": { "type": "integer" }
+                            },
+                            "required": [
+                              "BlueprintName",
+                              "Level",
+                              "Modifiers",
+                              "Quality"
+                            ]
+                          },
+                          "Item": { "type": "string" },
+                          "Priority": { "type": "integer" },
+                          "Slot": { "type": "string" }
+                        },
+                        "required": ["Item", "Slot"]
+                      }
+                    },
+                    "Ship": { "type": "string" }
+                  },
+                  "required": ["Modules", "Ship"]
+                },
                 "nullLoadouts": {
                   "type": "array",
                   "items": {
@@ -4358,10 +4408,9 @@
                     "weaponsPips": { "type": "integer" }
                   },
                   "required": ["enginesPips", "systemsPips", "weaponsPips"]
-                },
-                "ship": { "type": "string" }
+                }
               },
-              "required": ["nullLoadouts", "options", "ship"]
+              "required": ["expected", "loadout", "nullLoadouts", "options"]
             },
             "input": {
               "type": "object",
@@ -7472,6 +7521,16 @@
       },
       "required": ["current", "maximum"]
     },
+    "shared54c2a237b089": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capacity": { "type": "number" },
+        "ratedRecharge": { "type": "number" },
+        "rechargeRate": { "type": "number" }
+      },
+      "required": ["capacity", "ratedRecharge", "rechargeRate"]
+    },
     "shared58a45d8295b8": {
       "type": "object",
       "additionalProperties": false,
@@ -7604,6 +7663,16 @@
         "Slot": { "type": "string" }
       },
       "required": ["Item", "Slot"]
+    },
+    "shared888d6b629d59": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "engines": { "type": "integer" },
+        "systems": { "type": "integer" },
+        "weapons": { "type": "integer" }
+      },
+      "required": ["engines", "systems", "weapons"]
     },
     "shared8d1c2fa65d38": {
       "type": "object",

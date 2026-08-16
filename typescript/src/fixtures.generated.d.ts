@@ -3171,6 +3171,45 @@ type FixtureShipsOperations = {
             };
         };
         facade: {
+            expected: {
+                engines: {
+                    capacity: number;
+                    ratedRecharge: number;
+                    rechargeRate: number;
+                };
+                pips: {
+                    engines: number;
+                    systems: number;
+                    weapons: number;
+                };
+                systems: {
+                    capacity: number;
+                    ratedRecharge: number;
+                    rechargeRate: number;
+                };
+                weapons: {
+                    capacity: number;
+                    ratedRecharge: number;
+                    rechargeRate: number;
+                };
+            };
+            loadout: {
+                Modules: {
+                    Engineering?: {
+                        BlueprintName: string;
+                        Level: number;
+                        Modifiers: {
+                            Label: string;
+                            Value: number;
+                        }[];
+                        Quality: number;
+                    };
+                    Item: string;
+                    Priority?: number;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
             nullLoadouts: {
                 Modules: {
                     Item: string;
@@ -3184,7 +3223,6 @@ type FixtureShipsOperations = {
                 systemsPips: number;
                 weaponsPips: number;
             };
-            ship: string;
         };
         input: {
             enginesCapacity: number;

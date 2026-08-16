@@ -2419,8 +2419,10 @@ export class ShipLoadout {
      * independent comparisons of the three maxima.
      * @returns Capacity, rated four-pip recharge and actual pip-scaled recharge for
      * SYS, ENG and WEP, or `null` when no distributor is fitted, it is switched off,
-     * its six capacitor stats cannot be resolved, or the deployed power budget sheds
-     * it. A module with unresolved power draw is assumed powered, consistently with
+     * its six capacitor stats cannot be resolved, or the retracted power budget sheds
+     * it. The retracted state represents the distributor itself; firing endurance in
+     * {@link weaponsCapacitorMetrics} separately applies the deployed state. A module
+     * with unresolved power draw is assumed powered, consistently with
      * {@link powerBudget}; inspect its `unknownDraws` when that distinction matters.
      * @throws {RangeError} If any pip allocation is outside `[0, 4]` or not finite.
      * @example

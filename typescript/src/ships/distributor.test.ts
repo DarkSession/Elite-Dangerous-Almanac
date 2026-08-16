@@ -19,9 +19,9 @@ test('four pips use every rated recharge and zero pips provide none', () => {
     };
     const rated = distributorMetrics(input);
     assert.deepEqual(rated.pips, { systems: 4, engines: 4, weapons: 4 });
-    assert.equal(rated.systems.rechargeRate, rated.systems.ratedRecharge);
-    assert.equal(rated.engines.rechargeRate, rated.engines.ratedRecharge);
-    assert.equal(rated.weapons.rechargeRate, rated.weapons.ratedRecharge);
+    assert.deepEqual(rated.systems, { capacity: 20, ratedRecharge: 2, rechargeRate: 2 });
+    assert.deepEqual(rated.engines, { capacity: 24, ratedRecharge: 3, rechargeRate: 3 });
+    assert.deepEqual(rated.weapons, { capacity: 30, ratedRecharge: 5, rechargeRate: 5 });
 
     const empty = distributorMetrics({
         ...input,

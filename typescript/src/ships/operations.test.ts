@@ -78,9 +78,13 @@ test('shared ship-operation cases reproduce across public calculations', () => {
 
 test('shared catalogue-backed operation cases reproduce', () => {
     const distributorFacade = fixture.distributor.facade;
+    const distributorBuild = ShipLoadout.fromLoadout(distributorFacade.loadout);
+    const distributorBand = distributorBuild.powerBudget().bands[4];
+    assert.equal(distributorBand?.poweredRetracted, true);
+    assert.equal(distributorBand?.poweredDeployed, false);
     assert.deepEqual(
-        ShipLoadout.default(distributorFacade.ship).distributorMetrics(distributorFacade.options),
-        fixture.distributor.expected,
+        distributorBuild.distributorMetrics(distributorFacade.options),
+        distributorFacade.expected,
     );
     for (const loadout of distributorFacade.nullLoadouts) {
         assert.equal(ShipLoadout.fromLoadout(loadout).distributorMetrics(), null);

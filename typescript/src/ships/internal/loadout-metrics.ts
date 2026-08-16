@@ -599,7 +599,7 @@ export function weaponsCapacitorInputFor(
     return { weaponsCapacity, weaponsRecharge, sustainedEnergyPerSecond, weaponsPips };
 }
 
-/** Gather all three capacitors from the powered distributor under the deployed budget. */
+/** Gather all three capacitors from the powered distributor with hardpoints retracted. */
 export function distributorInputFor(
     modules: readonly LoadoutModule[],
     pips: {
@@ -614,7 +614,7 @@ export function distributorInputFor(
         if (!isEnabled(module)) continue;
         const stats = statsFor(module);
         if (!isPowerDistributor(module, stats)) continue;
-        if (!poweredStates(module, stats, budget).deployed) return null;
+        if (!poweredStates(module, stats, budget).retracted) return null;
         const systemsCapacity = effectiveStat(module, 'systemsCapacity', stats);
         const systemsRecharge = effectiveStat(module, 'systemsRecharge', stats);
         const enginesCapacity = effectiveStat(module, 'enginesCapacity', stats);
