@@ -11,9 +11,10 @@
  * source's Simplified Chinese values, while `zh-TW`, `zh-Hant` and other Chinese
  * regional or script tags do not fall back across scripts.
  *
- * `pt` is retained because that is the exact language tag published by EDSY. EDDI
- * additionally distinguishes Brazilian Portuguese (`pt-BR`) and Simplified Chinese
- * (`zh-CN`).
+ * `pt` is retained because that is the exact language tag published by EDSY and Odyssey
+ * Materials Helper. EDDI additionally distinguishes Brazilian Portuguese (`pt-BR`) and
+ * Simplified Chinese (`zh-CN`). Odyssey Materials Helper also supplies sparse Georgian
+ * (`ka`) material names.
  *
  * @example
  * ```ts
@@ -25,7 +26,7 @@
  */
 /** Locale keys stored in the shared localized-name catalogues. @internal */
 export type CatalogueLocale =
-    'en' | 'de' | 'es' | 'fr' | 'hu' | 'it' | 'pt' | 'pt-BR' | 'ru' | 'zh-CN';
+    'en' | 'de' | 'es' | 'fr' | 'hu' | 'it' | 'ka' | 'pt' | 'pt-BR' | 'ru' | 'zh-CN';
 
 export type GameLocale =
-    'en' | 'de' | 'es' | 'fr' | 'hu' | 'it' | 'pt' | 'pt-BR' | 'ru' | 'zh' | 'zh-CN';
+    'en' | 'de' | 'es' | 'fr' | 'hu' | 'it' | 'ka' | 'pt' | 'pt-BR' | 'ru' | 'zh' | 'zh-CN';

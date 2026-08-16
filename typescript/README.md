@@ -48,7 +48,8 @@ The package has six feature areas:
 - `astro`: procedural names, id64 addresses, regions, nebulae and permit locks;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
 - `equipment`: Odyssey suits, handheld weapons, grade upgrades and modifications;
-- `i18n`: sparse localized module, blueprint and experimental-effect names;
+- `i18n`: sparse localized module, blueprint, experimental-effect, material and
+  micro-resource names;
 - `materials`: ship engineering materials and Odyssey micro resources;
 - `commodities`: standard and rare market goods.
 
@@ -126,10 +127,17 @@ do not bundle them. English names are complete; other locales return `null` wher
 pinned sources carry no translation instead of silently substituting English:
 
 ```ts
-import { getBlueprintName, getModuleName } from '@elite-dangerous-almanac/core/i18n';
+import {
+    getBlueprintName,
+    getMaterialName,
+    getMicroResourceName,
+    getModuleName,
+} from '@elite-dangerous-almanac/core/i18n';
 
 getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> "Frameshiftantrieb"
 getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
+getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
+getMicroResourceName('graphene', 'fr'); // -> "Graphène"
 ```
 
 Unqualified `zh` selects the source's Simplified Chinese (`zh-CN`) module names.

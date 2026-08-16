@@ -33,6 +33,7 @@ const CANONICAL_LOCALE: Readonly<Record<string, CatalogueLocale>> = Object.freez
     fr: 'fr',
     hu: 'hu',
     it: 'it',
+    ka: 'ka',
     pt: 'pt',
     'pt-br': 'pt-BR',
     ru: 'ru',

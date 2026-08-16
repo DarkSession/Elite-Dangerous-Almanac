@@ -8,7 +8,16 @@ import { test } from 'node:test';
 
 import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with { type: 'json' };
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
+import materialNamesData from '../../../data/i18n/material-names.jsonc' with { type: 'json' };
+import microResourceNamesData from '../../../data/i18n/micro-resource-names.jsonc' with { type: 'json' };
 import moduleNamesData from '../../../data/i18n/module-names.jsonc' with { type: 'json' };
+import materialsEncodedData from '../../../data/materials/materials-encoded.jsonc' with { type: 'json' };
+import materialsManufacturedData from '../../../data/materials/materials-manufactured.jsonc' with { type: 'json' };
+import materialsRawData from '../../../data/materials/materials-raw.jsonc' with { type: 'json' };
+import microResourcesComponentData from '../../../data/materials/micro-resources-component.jsonc' with { type: 'json' };
+import microResourcesConsumableData from '../../../data/materials/micro-resources-consumable.jsonc' with { type: 'json' };
+import microResourcesDataData from '../../../data/materials/micro-resources-data.jsonc' with { type: 'json' };
+import microResourcesItemData from '../../../data/materials/micro-resources-item.jsonc' with { type: 'json' };
 import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: 'json' };
 import effectsData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
 import coreModulesData from '../../../data/ships/modules-core.jsonc' with { type: 'json' };
@@ -21,6 +30,8 @@ import type { LocalizedNameCatalogue, LocalizedNameMap } from './internal/locali
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'blueprint-names.jsonc': 'localizedNameMap',
     'experimental-effect-names.jsonc': 'localizedNameMap',
+    'material-names.jsonc': 'localizedNameMap',
+    'micro-resource-names.jsonc': 'localizedNameMap',
     'module-names.jsonc': 'localizedNameCatalogue',
 };
 
@@ -87,5 +98,28 @@ test('English names and identifiers stay aligned with every owning ships catalog
     assertDirectEnglishNames(
         effectNamesData as LocalizedNameMap,
         Object.fromEntries(Object.entries(effects).map(([key, value]) => [key, value.name])),
+    );
+});
+
+test('English names and symbols stay aligned with every owning materials catalogue', () => {
+    const materials = [
+        ...(materialsRawData as readonly NamedSymbol[]),
+        ...(materialsManufacturedData as readonly NamedSymbol[]),
+        ...(materialsEncodedData as readonly NamedSymbol[]),
+    ];
+    const microResources = [
+        ...(microResourcesComponentData as readonly NamedSymbol[]),
+        ...(microResourcesConsumableData as readonly NamedSymbol[]),
+        ...(microResourcesDataData as readonly NamedSymbol[]),
+        ...(microResourcesItemData as readonly NamedSymbol[]),
+    ];
+
+    assertDirectEnglishNames(
+        materialNamesData as LocalizedNameMap,
+        Object.fromEntries(materials.map(({ symbol, name }) => [symbol, name])),
+    );
+    assertDirectEnglishNames(
+        microResourceNamesData as LocalizedNameMap,
+        Object.fromEntries(microResources.map(({ symbol, name }) => [symbol, name])),
     );
 });
