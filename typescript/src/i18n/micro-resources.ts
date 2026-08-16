@@ -23,7 +23,7 @@ const MICRO_RESOURCE_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * regions do not fall back across scripts.
  * @returns The localized micro-resource name; the canonical `MicroResource.name` for
  * any English tag; or `null` when the symbol is unknown, the locale is unsupported, or
- * the pinned source carries no value for that micro resource and locale.
+ * the accepted sources carry no value for that micro resource and locale.
  * @remarks
  * This function bundles names only, not micro-resource categories or equipment costs.
  * Missing translations never silently fall back to English. Ship engineering materials

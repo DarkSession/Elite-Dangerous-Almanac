@@ -190,6 +190,9 @@ const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elem
  * `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`, `ENCODED_MATERIALS`, or any array you
  * have filtered yourself. Omit it unless you specifically want to exclude the rest.
  * @returns The matching {@link Material}, or `null` if no material has that symbol.
+ * @remarks
+ * `PowerMegashipData` is not yet represented because its material line or group remains
+ * unresolved; see https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/280.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
  * `symbol` is a miss, answered the way an unrecognised one is.
  * @example

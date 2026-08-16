@@ -56,9 +56,9 @@ grade 3), which is why it is used to fill the gap.
   - EDCD FDevIDs `microresources.csv`, acquired 2026-07-24; upstream revision
     unavailable. It provides 196 records, including each internal symbol,
     category (Component / Consumable / Data / Item) and English display name.
-  - In-game verification, acquired 2026-08-16 UTC, provides 29 player-facing identities
-    absent from the FDevIDs snapshot, their internal and player categories, and English
-    display names.
+  - In-game verification, acquired 2026-08-16 UTC; immutable revision unavailable. It
+    provides 29 player-facing identities absent from the FDevIDs snapshot, their internal
+    and player categories, and English display names.
 - **Derivation:**
   - `symbol` is the source's internal id (e.g. `graphene`) — what the player journal
     reports with the same field and meaning as on a ship, module or material. Frontier's
@@ -81,4 +81,6 @@ grade 3), which is why it is used to fill the gap.
   `Contaminated Spire Compound` where the community table differs.
 - **Deliberate absence:** `PowerMegashipData` appears in a community Odyssey data table,
   but in-game verification identifies it as a grade-5 encoded ship material, not an
-  Odyssey micro resource. It therefore does not belong in these catalogues.
+  Odyssey micro resource. It therefore does not belong in these catalogues;
+  [#280](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/280) tracks adding
+  it to the material model once its line or group can be established.

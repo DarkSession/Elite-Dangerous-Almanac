@@ -7,7 +7,7 @@
  * known gaps: data/i18n/SOURCES.md.
  *
  * Each Frontier symbol maps directly to the owning catalogue's canonical English name
- * and only the translations the pinned source explicitly carries; a missing locale
+ * and only the translations the accepted sources explicitly carry; a missing locale
  * makes the public lookup return null.
  */
 {

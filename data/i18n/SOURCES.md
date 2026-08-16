@@ -1,10 +1,10 @@
 # Localized game-name catalogues
 
 These catalogues keep the canonical English display names already published by the
-ships data domain and add only localized values carried explicitly by the pinned community
-sources. They are deliberately sparse: absence means that no accepted source carried a
-value, and the lookup API returns `null` for that locale rather than treating English as
-a translation.
+ships data domain and add only localized values carried explicitly by accepted sources.
+They are deliberately sparse: absence means that no accepted source carried a value, and
+the lookup API returns `null` for that locale rather than treating English as a
+translation.
 
 ## `module-names.jsonc`
 
@@ -85,21 +85,24 @@ a translation.
 - **Acquired:** 2026-08-16 UTC.
 - **Odyssey Materials Helper revision:** commit
   `23343c453938e724f317c56e9eb7db0dbfa71f78`.
-- **Supplemental source:** in-game verification.
+- **Supplemental source:** in-game verification, acquired 2026-08-16 UTC; immutable
+  revision unavailable.
 - **Derivation:** each of the 225 current symbols and its canonical English name comes
-  from the four `data/materials/micro-resources-*.jsonc` catalogues. For the 196 records
-  present in Odyssey Materials Helper, the lower-cased symbol joins directly to the final
-  component of its message key in
-  `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
-  localized columns are copied. The remaining 29 records join to their in-game
-  localization identity, and the explicit `name` values for German, Spanish, French,
-  Brazilian Portuguese and Russian are copied. In both cases the owning catalogue remains
-  authoritative for canonical English names.
+  from the four `data/materials/micro-resources-*.jsonc` catalogues. The 196 FDevIDs-backed
+  records join directly to the final component of Odyssey Materials Helper's message key
+  in `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
+  localized columns are copied. Twenty-seven of the 29 in-game-backed records also have
+  rows in Odyssey Materials Helper, while `PowerVirus` and
+  `SmallCapacityPowerRegulator` do not. All 29 take the explicit in-game `name` values for
+  German, Spanish, French, Brazilian Portuguese and Russian. In both cases the owning
+  catalogue remains authoritative for canonical English names.
 - **Coverage:** English, Spanish and Russian cover all 225 micro resources. The explicit
   translations cover 217 in German, 224 in French, 188 in Portuguese, 29 in Brazilian
   Portuguese, 6 in Simplified Chinese and 10 in Georgian. Five of the source's Georgian
   values are byte-for-byte equal to the canonical English spelling and are retained
-  verbatim; they are explicit source values, not lookup-generated fallbacks.
+  verbatim; they are explicit source values, not lookup-generated fallbacks. Portuguese
+  (`pt`) and Brazilian Portuguese (`pt-BR`) remain distinct source locales: the 29
+  in-game-backed records have explicit `pt-BR` values but no `pt` value.
 - **Manual corrections:** none.
 
 ## Deliberate absence: ship names
@@ -126,7 +129,7 @@ a translation.
 
 ## Known gaps
 
-Localized coverage follows the pinned sources and is not complete for every catalogue or
+Localized coverage follows the accepted sources and is not complete for every catalogue or
 locale. Missing values are observable as `null`, never an English fallback. Expanding
 source-backed coverage, localized slot labels and higher-level generated text remains
 tracked by [#245](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/245).

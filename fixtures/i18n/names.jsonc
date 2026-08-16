@@ -109,6 +109,12 @@
     },
     {
       "kind": "microResource",
+      "identifier": "operationscounterattackdata",
+      "locale": "pt",
+      "expected": null
+    },
+    {
+      "kind": "microResource",
       "identifier": "smallcapacitypowerregulator",
       "locale": "fr-FR",
       "expected": "Régulateur de puissance basse capacité"
