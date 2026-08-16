@@ -311,7 +311,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
     assert.ok(effects.length < 40 * 1024, `effect-name bundle is ${effects.length} bytes`);
     assert.ok(materials.length < 64 * 1024, `material-name bundle is ${materials.length} bytes`);
     assert.ok(
-        microResources.length < 64 * 1024,
+        microResources.length < 72 * 1024,
         `micro-resource-name bundle is ${microResources.length} bytes`,
     );
     assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);
@@ -509,7 +509,7 @@ test('catalogue-derived fields stay compact in consumer bundles', async () => {
     );
     assert.ok(allNebulae.length < 448 * 1024, `all nebulae bundle is ${allNebulae.length} bytes`);
     assert.ok(
-        microResources.length < 12 * 1024,
+        microResources.length < 14 * 1024,
         `micro-resource bundle is ${microResources.length} bytes`,
     );
 });

@@ -4,7 +4,7 @@
  *
  * Search it with the query functions in `./micro-resources`.
  *
- * Data from EDCD FDevIDs (`microresources.csv`); see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
+ * Data from EDCD FDevIDs (`microresources.csv`), in-game verification and Inara; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @packageDocumentation
  */
@@ -17,7 +17,7 @@ import {
 import dataData from '../../../data/materials/micro-resources-data.jsonc' with { type: 'json' };
 
 /**
- * All 114 data micro resources, in Frontier's registry order.
+ * All 125 data micro resources, in catalogue order.
  *
  * @remarks
  * Every record has `category: 'data'`. The array and its records are frozen.
@@ -26,7 +26,7 @@ import dataData from '../../../data/materials/micro-resources-data.jsonc' with {
  * ```ts
  * import { DATA_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-data';
  *
- * DATA_MICRO_RESOURCES.length; // -> 114
+ * DATA_MICRO_RESOURCES.length; // -> 125
  * ```
  */
 export const DATA_MICRO_RESOURCES: readonly MicroResource[] = buildMicroResourceCatalogue(
