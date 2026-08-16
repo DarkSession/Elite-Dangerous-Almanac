@@ -85,5 +85,5 @@ grade 3), which is why it is used to fill the gap.
   alongside the other five Power data resources establishes that it is an Odyssey micro
   resource, which therefore has no material grade or line. The in-game English names are
   otherwise retained verbatim, including
-  `Installation Intelligence Report`, `Spire Refinery Compound` and
+  `Installation Intelligence Report`, `Personal Protective Equipment` and
   `Contaminated Spire Compound` where the community table differs.

@@ -133,6 +133,84 @@
     },
     {
       "kind": "microResource",
+      "identifier": "operationscounterattackdata",
+      "locale": "fr",
+      "expected": "Rapport d’espionnage sur une installation"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "operationsstrikedata",
+      "locale": "fr",
+      "expected": "Données d’emplacement des chercheurs"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerclassifieddata",
+      "locale": "fr",
+      "expected": "Données classifiées de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "poweremployeedata",
+      "locale": "fr",
+      "expected": "Données d’association de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerfinancialrecords",
+      "locale": "fr",
+      "expected": "Données industrielles de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerpreparationspyware",
+      "locale": "fr",
+      "expected": "Logiciel malveillant d’injection de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerpropagandadata",
+      "locale": "fr",
+      "expected": "Données politiques de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerresearchdata",
+      "locale": "fr",
+      "expected": "Données de recherche de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerspyware",
+      "locale": "fr",
+      "expected": "Logiciel malveillant de traçage de Puissance"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "nm_seed",
+      "locale": "fr",
+      "expected": "Graine d’unica"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powercomputer",
+      "locale": "fr",
+      "expected": "Composants d’ordinateur"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powerextraction",
+      "locale": "fr",
+      "expected": "Échantillon d’extraction"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powercomputer",
+      "locale": "ru",
+      "expected": "Компьютерные детали"
+    },
+    {
+      "kind": "microResource",
       "identifier": "smallcapacitypowerregulator",
       "locale": "fr-FR",
       "expected": "Régulateur de puissance basse capacité"

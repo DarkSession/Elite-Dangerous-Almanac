@@ -27,7 +27,7 @@
  * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 226 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all four
- * catalogues, since that is what it falls back to — 13.4 KiB minified for all 226.
+ * catalogues, since that is what it falls back to — 13.0 KiB minified for all 226.
  * {@link microResourcesInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`), in-game verification and

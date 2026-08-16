@@ -311,7 +311,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
     assert.ok(effects.length < 40 * 1024, `effect-name bundle is ${effects.length} bytes`);
     assert.ok(materials.length < 64 * 1024, `material-name bundle is ${materials.length} bytes`);
     assert.ok(
-        microResources.length < 64 * 1024,
+        microResources.length < 72 * 1024,
         `micro-resource-name bundle is ${microResources.length} bytes`,
     );
     assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);

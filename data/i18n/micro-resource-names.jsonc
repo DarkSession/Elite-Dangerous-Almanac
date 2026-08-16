@@ -1582,7 +1582,7 @@
     "en": "Installation Intelligence Report",
     "de": "Installation-Informationsbericht",
     "es": "Informe de inteligencia sobre instalaciones",
-    "fr": "Rapport d'espionnage sur une installation",
+    "fr": "Rapport d’espionnage sur une installation",
     "pt-BR": "Relatório de inteligência de instalação",
     "ru": "Разведывательный отчет об установке"
   },
@@ -1590,7 +1590,7 @@
     "en": "Researcher Location Data",
     "de": "Forscher-Standortdaten",
     "es": "Coordenadas de investigadores",
-    "fr": "Données d'emplacement des chercheurs",
+    "fr": "Données d’emplacement des chercheurs",
     "pt-BR": "Dados de localização dos pesquisadores",
     "ru": "Данные о местонахождении исследовательского персонала"
   },
@@ -1598,7 +1598,7 @@
     "en": "Power Classified Data",
     "de": "Geheime Daten der Macht",
     "es": "Información clasificada de la potencia",
-    "fr": "Données classifiées de puissance",
+    "fr": "Données classifiées de Puissance",
     "pt-BR": "Dados confidenciais da potência",
     "ru": "Секретные данные державы"
   },
@@ -1606,7 +1606,7 @@
     "en": "Power Association Data",
     "de": "Zugehörigkeitsdaten der Macht",
     "es": "Información de asociación de potencia",
-    "fr": "Données d'association de puissance",
+    "fr": "Données d’association de Puissance",
     "pt-BR": "Dados de associação à potência",
     "ru": "Данные о связях державы"
   },
@@ -1614,7 +1614,7 @@
     "en": "Power Industrial Data",
     "de": "Industriedaten der Macht",
     "es": "Datos industriales de la potencia",
-    "fr": "Données industrielles de puissance",
+    "fr": "Données industrielles de Puissance",
     "pt-BR": "Dados industriais da potência",
     "ru": "Данные о промышленности державы"
   },
@@ -1630,7 +1630,7 @@
     "en": "Power Injection Malware",
     "de": "Macht-Einspeisungs-Malware",
     "es": "Malware de inyección de potencia",
-    "fr": "Malware d'injection de puissance",
+    "fr": "Logiciel malveillant d’injection de Puissance",
     "pt-BR": "Malware de injeção da potência",
     "ru": "ПО-инъектор"
   },
@@ -1638,7 +1638,7 @@
     "en": "Power Political Data",
     "de": "Politische Daten der Macht",
     "es": "Información política de la potencia",
-    "fr": "Données politiques de puissance",
+    "fr": "Données politiques de Puissance",
     "pt-BR": "Dados políticos da potência",
     "ru": "Данные о политической обстановке"
   },
@@ -1646,7 +1646,7 @@
     "en": "Power Research Data",
     "de": "Forschungsdaten der Macht",
     "es": "Datos de investigación de la potencia",
-    "fr": "Données de recherche de puissance",
+    "fr": "Données de recherche de Puissance",
     "pt-BR": "Dados de pesquisa da potência",
     "ru": "Данные об исследованиях державы"
   },
@@ -1654,7 +1654,7 @@
     "en": "Power Tracker Malware",
     "de": "Macht-Tracker-Malware",
     "es": "Malware de seguimiento de potencia",
-    "fr": "Malware de traçage de puissance",
+    "fr": "Logiciel malveillant de traçage de Puissance",
     "pt-BR": "Malware rastreador de potências",
     "ru": "Отслеживающее вредоносное ПО"
   },
@@ -1678,7 +1678,7 @@
     "en": "Unica Seed",
     "de": "Unica-Samen",
     "es": "Semilla de Unica",
-    "fr": "Graine d'unica",
+    "fr": "Graine d’unica",
     "pt-BR": "Semente Unica",
     "ru": "Семя уники"
   },
@@ -1694,9 +1694,9 @@
     "en": "Computer Parts",
     "de": "Computerbauteile",
     "es": "Piezas informáticas",
-    "fr": "Composants d'ordinateur",
+    "fr": "Composants d’ordinateur",
     "pt-BR": "Peças de computador",
-    "ru": "Комьютерные детали"
+    "ru": "Компьютерные детали"
   },
   "powerelectronics": {
     "en": "Electronics Package",
@@ -1726,7 +1726,7 @@
     "en": "Extraction Sample",
     "de": "Extraktionsprobe",
     "es": "Muestra de extracción",
-    "fr": "Échantillon d'extraction",
+    "fr": "Échantillon d’extraction",
     "pt-BR": "Amostra de extração",
     "ru": "Образец добычи"
   },
