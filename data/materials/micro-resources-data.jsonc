@@ -1,9 +1,9 @@
 /*
- * Odyssey micro resources — the data category (114 entries).
+ * Odyssey micro resources — the data category (125 entries).
  *
  * Data — the intel and files downloaded, stolen or traded on foot.
  *
- * Source: EDCD FDevIDs, microresources.csv.
+ * Sources: EDCD FDevIDs, microresources.csv; in-game verification; Inara.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/materials/SOURCES.md.
@@ -469,5 +469,49 @@
   {
     "symbol": "pharmaceuticalpatents",
     "name": "Pharmaceutical Patents"
+  },
+  {
+    "symbol": "operationscounterattackdata",
+    "name": "Installation Intelligence Report"
+  },
+  {
+    "symbol": "operationsstrikedata",
+    "name": "Researcher Location Data"
+  },
+  {
+    "symbol": "powerclassifieddata",
+    "name": "Power Classified Data"
+  },
+  {
+    "symbol": "poweremployeedata",
+    "name": "Power Association Data"
+  },
+  {
+    "symbol": "powerfinancialrecords",
+    "name": "Power Industrial Data"
+  },
+  {
+    "symbol": "powermegashipdata",
+    "name": "Power Megaship Data"
+  },
+  {
+    "symbol": "powerpreparationspyware",
+    "name": "Power Injection Malware"
+  },
+  {
+    "symbol": "powerpropagandadata",
+    "name": "Power Political Data"
+  },
+  {
+    "symbol": "powerresearchdata",
+    "name": "Power Research Data"
+  },
+  {
+    "symbol": "powerspyware",
+    "name": "Power Tracker Malware"
+  },
+  {
+    "symbol": "powervirus",
+    "name": "Power Virus"
   }
 ]

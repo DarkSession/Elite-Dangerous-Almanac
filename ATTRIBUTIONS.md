@@ -92,7 +92,7 @@ a verbatim copy produced at build time — edit this file, never the copy.
 - **[Inara](https://inara.cz/)** — the blueprint and outfitting registries behind the
   Operations pre-engineered blueprints and shop rows, the ship pages used to corroborate
   hull layouts, and the component pages that grade the Thargoid caustic / Titan materials
-  absent from FDevIDs.
+  absent from FDevIDs and classify Power Megaship Data as an Odyssey data resource.
 - **[EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)** by
   **Ben Peddell** ([klightspeed](https://github.com/klightspeed)), **MIT** — the 42
   galactic codex regions, their ids and their lookup geometry. Original region-boundary

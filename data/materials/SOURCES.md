@@ -1,8 +1,8 @@
 # Data sources — `data/materials/`
 
-**Acquired:** 2026-07-24. **Upstream revision:** unavailable for both sources below.
-
 ## Materials — raw, manufactured, encoded
+
+**Acquired:** 2026-07-24. **Upstream revision:** unavailable for both sources below.
 
 - **Files:** `materials-raw.jsonc`, `materials-manufactured.jsonc`,
   `materials-encoded.jsonc`.
@@ -52,25 +52,39 @@ grade 3), which is why it is used to fill the gap.
 
 - **Files:** `micro-resources-component.jsonc`, `micro-resources-consumable.jsonc`,
   `micro-resources-data.jsonc`, `micro-resources-item.jsonc`.
-- **Source:** EDCD FDevIDs, `microresources.csv`. It provides, for each micro resource,
-  the internal symbol, category (Component / Consumable / Data / Item) and English display
-  name.
+- **Sources:**
+  - EDCD FDevIDs `microresources.csv`, acquired 2026-07-24; upstream revision
+    unavailable. It provides 196 records, including each internal symbol,
+    category (Component / Consumable / Data / Item) and English display name.
+  - In-game verification, acquired 2026-08-16 UTC; immutable revision unavailable. It
+    provides 30 player-facing identities absent from the FDevIDs snapshot, their internal
+    identifiers and English display names, and player categories for 29 of them.
+    `PowerMegashipData` is the exception documented under manual corrections.
+  - Inara component pages, acquired 2026-08-16 UTC; immutable revision unavailable. Its
+    six Power data pages independently classify Power Association Data, Power Classified
+    Data, Power Industrial Data, Power Injection Malware, Power Megaship Data and Power
+    Political Data as Odyssey data resources.
 - **Derivation:**
-  - `symbol` is FDevIDs' internal id (e.g. `graphene`) — what the player journal reports
-    with the same field and meaning as on a ship, module or material.
-    Frontier's numeric micro-resource id from the CSV is **not** carried.
+  - `symbol` is the source's internal id (e.g. `graphene`) — what the player journal
+    reports with the same field and meaning as on a ship, module or material. Frontier's
+    numeric micro-resource id from the FDevIDs CSV is **not** carried.
   - `name` is the English display name (`Graphene`).
-  - FDevIDs' category is lower-cased to `component` / `consumable` / `data` / `item`
-    (matching how ship modules and materials spell their category). Each data file holds
-    exactly one category, so the category is represented by the file rather than repeated
-    on every record.
+  - The source category is lower-cased to `component` / `consumable` / `data` / `item`
+    (matching how ship modules and materials spell their category). In-game `assets` map
+    to `component` and `goods` map to `item`. Each data file holds exactly one category,
+    so the category is represented by the file rather than repeated on every record.
   - Micro resources have **no grade and no line** — those belong to the ship-side
     engineering materials above; each data-file record is a plain `{ symbol, name }`
     registry record.
-
-- **Known gap:** Odyssey Materials Helper commit
-  `23343c453938e724f317c56e9eb7db0dbfa71f78` carries 28 distinct non-placeholder
-  micro-resource symbols beyond this FDevIDs-based snapshot, primarily Powerplay 2.0 and
-  Spire resources. The current catalogues have no records for them;
-  [#277](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/277) tracks acquiring
-  and adding their identities, categories and English names.
+  - Three registered identities are deliberately absent: `FlightData` and
+    `Humanoid_ShieldGrenade_Bubble` have no localization and are not player-facing
+    resources; `NOCData_Tutorial` is the tutorial-only duplicate of `NOCData` and has the
+    same English display name. The localized, player-facing
+    `SmallCapacityPowerRegulator` record is retained.
+- **Manual corrections:** `PowerMegashipData` is assigned to `data`. The encoded-material
+  classification attached to its in-game localization record is rejected: Inara
+  classifies it alongside the other five Power data resources, establishing that it is an
+  Odyssey micro resource with no material grade or line. The in-game English names are
+  otherwise retained verbatim, including
+  `Installation Intelligence Report`, `Personal Protective Equipment` and
+  `Contaminated Spire Compound` where the community table differs.
