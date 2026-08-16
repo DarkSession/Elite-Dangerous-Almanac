@@ -4106,10 +4106,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
+                "powered": { "type": "array", "items": { "type": "boolean" } },
                 "totalCells": { "type": "integer" },
                 "totalRestorable": { "type": "integer" }
               },
-              "required": ["totalCells", "totalRestorable"]
+              "required": ["powered", "totalCells", "totalRestorable"]
             },
             "input": {
               "type": "array",
@@ -4120,6 +4121,7 @@
                   "cells": { "type": "integer" },
                   "duration": { "type": "integer" },
                   "heat": { "type": "integer" },
+                  "powered": { "type": "boolean" },
                   "reinforcementRate": { "type": "integer" },
                   "slot": { "type": "string" },
                   "spinUp": { "type": "integer" },
@@ -4129,6 +4131,7 @@
                   "cells",
                   "duration",
                   "heat",
+                  "powered",
                   "reinforcementRate",
                   "slot",
                   "spinUp",
