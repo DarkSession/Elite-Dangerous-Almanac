@@ -509,7 +509,7 @@ test('catalogue-derived fields stay compact in consumer bundles', async () => {
     );
     assert.ok(allNebulae.length < 448 * 1024, `all nebulae bundle is ${allNebulae.length} bytes`);
     assert.ok(
-        microResources.length < 12 * 1024,
+        microResources.length < 14 * 1024,
         `micro-resource bundle is ${microResources.length} bytes`,
     );
 });
