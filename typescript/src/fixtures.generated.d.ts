@@ -3166,6 +3166,95 @@ type FixtureShipsOperations = {
             };
         };
     };
+    distributor: {
+        expected: {
+            engines: {
+                capacity: number;
+                ratedRecharge: number;
+                rechargeRate: number;
+            };
+            pips: {
+                engines: number;
+                systems: number;
+                weapons: number;
+            };
+            systems: {
+                capacity: number;
+                ratedRecharge: number;
+                rechargeRate: number;
+            };
+            weapons: {
+                capacity: number;
+                ratedRecharge: number;
+                rechargeRate: number;
+            };
+        };
+        facade: {
+            expected: {
+                engines: {
+                    capacity: number;
+                    ratedRecharge: number;
+                    rechargeRate: number;
+                };
+                pips: {
+                    engines: number;
+                    systems: number;
+                    weapons: number;
+                };
+                systems: {
+                    capacity: number;
+                    ratedRecharge: number;
+                    rechargeRate: number;
+                };
+                weapons: {
+                    capacity: number;
+                    ratedRecharge: number;
+                    rechargeRate: number;
+                };
+            };
+            loadout: {
+                Modules: {
+                    Engineering?: {
+                        BlueprintName: string;
+                        Level: number;
+                        Modifiers: {
+                            Label: string;
+                            Value: number;
+                        }[];
+                        Quality: number;
+                    };
+                    Item: string;
+                    Priority?: number;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+            nullLoadouts: {
+                Modules: {
+                    Item: string;
+                    On?: boolean;
+                    Slot: string;
+                }[];
+                Ship: string;
+            }[];
+            options: {
+                enginesPips: number;
+                systemsPips: number;
+                weaponsPips: number;
+            };
+        };
+        input: {
+            enginesCapacity: number;
+            enginesPips: number;
+            enginesRecharge: number;
+            systemsCapacity: number;
+            systemsPips: number;
+            systemsRecharge: number;
+            weaponsCapacity: number;
+            weaponsPips: number;
+            weaponsRecharge: number;
+        };
+    };
     editorErrors: {
         duplicateExclusiveModule: {
             expected: {
