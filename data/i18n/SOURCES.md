@@ -94,16 +94,18 @@ translation.
   localized columns are copied. Twenty-eight of the 30 in-game-backed records also have
   rows in Odyssey Materials Helper, while `PowerVirus` and
   `SmallCapacityPowerRegulator` do not. All 30 take the explicit in-game `name` values for
-  German, Spanish, French, Brazilian Portuguese and Russian. In both cases the owning
-  catalogue remains authoritative for canonical English names.
+  German, Spanish, French, Brazilian Portuguese and Russian. The Brazilian Portuguese
+  values are stored under `pt`, matching the existing catalogue values described below.
+  In both cases the owning catalogue remains authoritative for canonical English names.
 - **Coverage:** English, Spanish and Russian cover all 226 micro resources. The explicit
-  translations cover 218 in German, 225 in French, 188 in Portuguese, 30 in Brazilian
-  Portuguese, 6 in Simplified Chinese and 10 in Georgian. Five of the source's Georgian
-  values are byte-for-byte equal to the canonical English spelling and are retained
-  verbatim; they are explicit source values, not lookup-generated fallbacks. Portuguese
-  (`pt`) and Brazilian Portuguese (`pt-BR`) remain distinct source locales: the 30
-  in-game-backed records have explicit `pt-BR` values but no `pt` value.
-- **Manual corrections:** none.
+  translations cover 218 in German and Portuguese, 225 in French, 6 in Simplified Chinese
+  and 10 in Georgian. Five of the source's Georgian values are byte-for-byte equal to the
+  canonical English spelling and are retained verbatim; they are explicit source values,
+  not lookup-generated fallbacks.
+- **Manual corrections:** the 30 in-game values labelled Brazilian Portuguese are stored
+  under `pt`, matching the 188 existing Portuguese entries because both sets contain the
+  same Brazilian Portuguese game text. `pt-BR` lookups resolve these values through the
+  regional-to-language fallback.
 
 ## Deliberate absence: ship names
 

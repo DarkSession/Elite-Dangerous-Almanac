@@ -7,8 +7,9 @@
  * known gaps: data/i18n/SOURCES.md.
  *
  * Each Frontier symbol maps directly to the owning catalogue's canonical English name
- * and only the translations the accepted sources explicitly carry; a missing locale
- * makes the public lookup return null.
+ * and only translations the accepted sources carry. Equivalent Portuguese source tags
+ * are normalized as documented in SOURCES.md; a missing locale makes the public lookup
+ * return null.
  */
 {
   "graphene": {
@@ -1583,7 +1584,7 @@
     "de": "Installation-Informationsbericht",
     "es": "Informe de inteligencia sobre instalaciones",
     "fr": "Rapport d’espionnage sur une installation",
-    "pt-BR": "Relatório de inteligência de instalação",
+    "pt": "Relatório de inteligência de instalação",
     "ru": "Разведывательный отчет об установке"
   },
   "operationsstrikedata": {
@@ -1591,7 +1592,7 @@
     "de": "Forscher-Standortdaten",
     "es": "Coordenadas de investigadores",
     "fr": "Données d’emplacement des chercheurs",
-    "pt-BR": "Dados de localização dos pesquisadores",
+    "pt": "Dados de localização dos pesquisadores",
     "ru": "Данные о местонахождении исследовательского персонала"
   },
   "powerclassifieddata": {
@@ -1599,7 +1600,7 @@
     "de": "Geheime Daten der Macht",
     "es": "Información clasificada de la potencia",
     "fr": "Données classifiées de Puissance",
-    "pt-BR": "Dados confidenciais da potência",
+    "pt": "Dados confidenciais da potência",
     "ru": "Секретные данные державы"
   },
   "poweremployeedata": {
@@ -1607,7 +1608,7 @@
     "de": "Zugehörigkeitsdaten der Macht",
     "es": "Información de asociación de potencia",
     "fr": "Données d’association de Puissance",
-    "pt-BR": "Dados de associação à potência",
+    "pt": "Dados de associação à potência",
     "ru": "Данные о связях державы"
   },
   "powerfinancialrecords": {
@@ -1615,7 +1616,7 @@
     "de": "Industriedaten der Macht",
     "es": "Datos industriales de la potencia",
     "fr": "Données industrielles de Puissance",
-    "pt-BR": "Dados industriais da potência",
+    "pt": "Dados industriais da potência",
     "ru": "Данные о промышленности державы"
   },
   "powermegashipdata": {
@@ -1623,7 +1624,7 @@
     "de": "Macht-Megaschiff-Daten",
     "es": "Datos de meganave de potencia",
     "fr": "Données de méga-vaisseau de puissance",
-    "pt-BR": "Dados da meganave da potência",
+    "pt": "Dados da meganave da potência",
     "ru": "Данные о гигантском корабле державы"
   },
   "powerpreparationspyware": {
@@ -1631,7 +1632,7 @@
     "de": "Macht-Einspeisungs-Malware",
     "es": "Malware de inyección de potencia",
     "fr": "Logiciel malveillant d’injection de Puissance",
-    "pt-BR": "Malware de injeção da potência",
+    "pt": "Malware de injeção da potência",
     "ru": "ПО-инъектор"
   },
   "powerpropagandadata": {
@@ -1639,7 +1640,7 @@
     "de": "Politische Daten der Macht",
     "es": "Información política de la potencia",
     "fr": "Données politiques de Puissance",
-    "pt-BR": "Dados políticos da potência",
+    "pt": "Dados políticos da potência",
     "ru": "Данные о политической обстановке"
   },
   "powerresearchdata": {
@@ -1647,7 +1648,7 @@
     "de": "Forschungsdaten der Macht",
     "es": "Datos de investigación de la potencia",
     "fr": "Données de recherche de Puissance",
-    "pt-BR": "Dados de pesquisa da potência",
+    "pt": "Dados de pesquisa da potência",
     "ru": "Данные об исследованиях державы"
   },
   "powerspyware": {
@@ -1655,7 +1656,7 @@
     "de": "Macht-Tracker-Malware",
     "es": "Malware de seguimiento de potencia",
     "fr": "Logiciel malveillant de traçage de Puissance",
-    "pt-BR": "Malware rastreador de potências",
+    "pt": "Malware rastreador de potências",
     "ru": "Отслеживающее вредоносное ПО"
   },
   "powervirus": {
@@ -1663,7 +1664,7 @@
     "de": "Macht-Virus",
     "es": "Virus de potencia",
     "fr": "Virus de puissance",
-    "pt-BR": "Vírus da potência",
+    "pt": "Vírus da potência",
     "ru": "Вирусное ПО"
   },
   "biomechanicalcomponent": {
@@ -1671,7 +1672,7 @@
     "de": "Turm-Raffinerieverbindung",
     "es": "Compuesto de refinería de agujas",
     "fr": "Composé de raffinerie de flèche",
-    "pt-BR": "Composto de refino do pináculo",
+    "pt": "Composto de refino do pináculo",
     "ru": "Очищающий компонент шпиля"
   },
   "nm_seed": {
@@ -1679,7 +1680,7 @@
     "de": "Unica-Samen",
     "es": "Semilla de Unica",
     "fr": "Graine d’unica",
-    "pt-BR": "Semente Unica",
+    "pt": "Semente Unica",
     "ru": "Семя уники"
   },
   "poweragriculture": {
@@ -1687,7 +1688,7 @@
     "de": "Agrikulturverfahren-Probe",
     "es": "Muestra de proceso agrícola",
     "fr": "Échantillon de production agricole",
-    "pt-BR": "Amostra de Processo Agrícola",
+    "pt": "Amostra de Processo Agrícola",
     "ru": "Образец сельхозпроизводства"
   },
   "powercomputer": {
@@ -1695,7 +1696,7 @@
     "de": "Computerbauteile",
     "es": "Piezas informáticas",
     "fr": "Composants d’ordinateur",
-    "pt-BR": "Peças de computador",
+    "pt": "Peças de computador",
     "ru": "Компьютерные детали"
   },
   "powerelectronics": {
@@ -1703,7 +1704,7 @@
     "de": "Elektronikpaket",
     "es": "Paquete de componentes electrónicos",
     "fr": "Kit électronique",
-    "pt-BR": "Pacote de eletrônicos",
+    "pt": "Pacote de eletrônicos",
     "ru": "Набор электроники"
   },
   "powerequipment": {
@@ -1711,7 +1712,7 @@
     "de": "Persönliche Schutzausrüstung",
     "es": "Equipamiento de protección personal",
     "fr": "Équipement de protection personnel",
-    "pt-BR": "Equipamento de proteção individual",
+    "pt": "Equipamento de proteção individual",
     "ru": "Средства индивидуальной защиты"
   },
   "powerexperiment": {
@@ -1719,7 +1720,7 @@
     "de": "Experimenteller Prototyp",
     "es": "Prototipo experimental",
     "fr": "Prototype expérimental",
-    "pt-BR": "Protótipo de experimento",
+    "pt": "Protótipo de experimento",
     "ru": "Экспериментальный прототип"
   },
   "powerextraction": {
@@ -1727,7 +1728,7 @@
     "de": "Extraktionsprobe",
     "es": "Muestra de extracción",
     "fr": "Échantillon d’extraction",
-    "pt-BR": "Amostra de extração",
+    "pt": "Amostra de extração",
     "ru": "Образец добычи"
   },
   "powerindustrial": {
@@ -1735,7 +1736,7 @@
     "de": "Industrielle Komponente",
     "es": "Componente industrial",
     "fr": "Composant industriel",
-    "pt-BR": "Componente industrial",
+    "pt": "Componente industrial",
     "ru": "Промышленный компонент"
   },
   "powerinventory": {
@@ -1743,7 +1744,7 @@
     "de": "Inventaraufzeichnung",
     "es": "Registro de inventario",
     "fr": "Registre de stock",
-    "pt-BR": "Registro de inventário",
+    "pt": "Registro de inventário",
     "ru": "Опись имущества"
   },
   "powermedical": {
@@ -1751,7 +1752,7 @@
     "de": "Medizinische Probe",
     "es": "Muestra médica",
     "fr": "Échantillon médical",
-    "pt-BR": "Amostra clínica",
+    "pt": "Amostra clínica",
     "ru": "Медицинский образец"
   },
   "powermisccomputer": {
@@ -1759,7 +1760,7 @@
     "de": "Datenspeichergerät",
     "es": "Dispositivo de almacenamiento de datos",
     "fr": "Dispositif de stockage de données",
-    "pt-BR": "Dispositivo de armazenamento de dados",
+    "pt": "Dispositivo de armazenamento de dados",
     "ru": "Запоминающее устройство"
   },
   "powermiscindust": {
@@ -1767,7 +1768,7 @@
     "de": "Industrielle Maschinen",
     "es": "Maquinaria industrial",
     "fr": "Machines industrielles",
-    "pt-BR": "Maquinário industrial",
+    "pt": "Maquinário industrial",
     "ru": "Промышленные машины"
   },
   "powerplaymilitary": {
@@ -1775,7 +1776,7 @@
     "de": "Militärbauplan",
     "es": "Plano militar",
     "fr": "Plan militaire",
-    "pt-BR": "Esquema militar",
+    "pt": "Esquema militar",
     "ru": "Военный чертеж"
   },
   "powerpower": {
@@ -1783,7 +1784,7 @@
     "de": "Energieregulator",
     "es": "Regulador de energía",
     "fr": "Régulateur énergétique",
-    "pt-BR": "Regulador de energia",
+    "pt": "Regulador de energia",
     "ru": "Энергорегулятор"
   },
   "powerresearch": {
@@ -1791,7 +1792,7 @@
     "de": "Forschungsnotizen",
     "es": "Notas de investigación",
     "fr": "Notes de recherche",
-    "pt-BR": "Notas de pesquisa",
+    "pt": "Notas de pesquisa",
     "ru": "Исследовательские заметки"
   },
   "powersecurity": {
@@ -1799,7 +1800,7 @@
     "de": "Sicherheitsprotokolle",
     "es": "Registros de seguridad",
     "fr": "Registres de sécurité",
-    "pt-BR": "Registros de segurança",
+    "pt": "Registros de segurança",
     "ru": "Журнал службы безопасности"
   },
   "sabotagedcomponent": {
@@ -1807,7 +1808,7 @@
     "de": "Kontaminierte Turm-Komponente",
     "es": "Compuesto de agujas contaminado",
     "fr": "Composé de flèche contaminé",
-    "pt-BR": "Composto contaminado do pináculo",
+    "pt": "Composto contaminado do pináculo",
     "ru": "Загрязненный компонент шпиля"
   },
   "smallcapacitypowerregulator": {
@@ -1815,7 +1816,7 @@
     "de": "Kleiner Energieregulator",
     "es": "Regulador de potencia de capacidad reducida",
     "fr": "Régulateur de puissance basse capacité",
-    "pt-BR": "Regulador de Energia de Baixa Capacidade",
+    "pt": "Regulador de Energia de Baixa Capacidade",
     "ru": "Регулятор мощности малой емкости"
   }
 }

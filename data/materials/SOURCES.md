@@ -58,7 +58,8 @@ grade 3), which is why it is used to fill the gap.
     category (Component / Consumable / Data / Item) and English display name.
   - In-game verification, acquired 2026-08-16 UTC; immutable revision unavailable. It
     provides 30 player-facing identities absent from the FDevIDs snapshot, their internal
-    and player categories, and English display names.
+    identifiers and English display names, and player categories for 29 of them.
+    `PowerMegashipData` is the exception documented under manual corrections.
   - Inara component pages, acquired 2026-08-16 UTC; immutable revision unavailable. Its
     six Power data pages independently classify Power Association Data, Power Classified
     Data, Power Industrial Data, Power Injection Malware, Power Megaship Data and Power
@@ -80,10 +81,10 @@ grade 3), which is why it is used to fill the gap.
     resources; `NOCData_Tutorial` is the tutorial-only duplicate of `NOCData` and has the
     same English display name. The localized, player-facing
     `SmallCapacityPowerRegulator` record is retained.
-- **Manual corrections:** `PowerMegashipData` is assigned to `data`, overriding the
-  encoded-material classification in in-game verification. Inara's classification
-  alongside the other five Power data resources establishes that it is an Odyssey micro
-  resource, which therefore has no material grade or line. The in-game English names are
+- **Manual corrections:** `PowerMegashipData` is assigned to `data`. The encoded-material
+  classification attached to its in-game localization record is rejected: Inara
+  classifies it alongside the other five Power data resources, establishing that it is an
+  Odyssey micro resource with no material grade or line. The in-game English names are
   otherwise retained verbatim, including
   `Installation Intelligence Report`, `Personal Protective Equipment` and
   `Contaminated Spire Compound` where the community table differs.

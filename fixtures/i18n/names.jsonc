@@ -111,7 +111,7 @@
       "kind": "microResource",
       "identifier": "operationscounterattackdata",
       "locale": "pt",
-      "expected": null
+      "expected": "Relatório de inteligência de instalação"
     },
     {
       "kind": "microResource",
@@ -129,7 +129,7 @@
       "kind": "microResource",
       "identifier": "powermegashipdata",
       "locale": "pt",
-      "expected": null
+      "expected": "Dados da meganave da potência"
     },
     {
       "kind": "microResource",
