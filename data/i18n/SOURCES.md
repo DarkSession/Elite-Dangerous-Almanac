@@ -58,6 +58,46 @@ a translation.
   Spanish, French, Portuguese and Russian.
 - **Manual corrections:** none.
 
+## `material-names.jsonc`
+
+- **Acquired:** 2026-08-16 UTC.
+- **Odyssey Materials Helper revision:** commit
+  `23343c453938e724f317c56e9eb7db0dbfa71f78`.
+- **Derivation:** each of the 146 current symbols and its canonical English name comes
+  from the three `data/materials/materials-*.jsonc` catalogues. The lower-cased symbol
+  joins directly to the final component of Odyssey Materials Helper's message key in
+  `locale/material/horizons/{raw,manufactured,encoded}.csv`; only that row's explicit
+  localized columns are copied. The source's English column is not copied because the
+  owning materials catalogues remain authoritative for canonical names. The canonical
+  English values therefore keep the existing `Segment` spelling and omit the source's
+  parenthetical Guardian and Thargoid category labels where the owning catalogue does;
+  localized columns remain verbatim source values.
+- **Coverage:** English, Spanish and Russian cover all 146 materials. The explicit
+  translations cover 128 in German, 140 in French, 140 in Portuguese and 28 in
+  Georgian. Fourteen of the source's Georgian values are byte-for-byte equal to the
+  canonical English spelling and are retained verbatim; they are explicit source values,
+  not lookup-generated fallbacks. The pinned source carries no Simplified Chinese
+  material names.
+- **Manual corrections:** none.
+
+## `micro-resource-names.jsonc`
+
+- **Acquired:** 2026-08-16 UTC.
+- **Odyssey Materials Helper revision:** commit
+  `23343c453938e724f317c56e9eb7db0dbfa71f78`.
+- **Derivation:** each of the 196 current symbols and its canonical English name comes
+  from the four `data/materials/micro-resources-*.jsonc` catalogues. The lower-cased
+  symbol joins directly to the final component of Odyssey Materials Helper's message key
+  in `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
+  localized columns are copied. The source's English column is not copied because the
+  owning micro-resource catalogues remain authoritative for canonical names.
+- **Coverage:** English, Spanish and Russian cover all 196 micro resources. The explicit
+  translations cover 188 in German, 195 in French, 188 in Portuguese, 6 in Simplified
+  Chinese and 10 in Georgian. Five of the source's Georgian values are byte-for-byte
+  equal to the canonical English spelling and are retained verbatim; they are explicit
+  source values, not lookup-generated fallbacks.
+- **Manual corrections:** none.
+
 ## Deliberate absence: ship names
 
 - **Acquired:** 2026-08-14 UTC.

@@ -44,6 +44,8 @@ import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/e
 import {
     getBlueprintName,
     getExperimentalEffectName,
+    getMaterialName,
+    getMicroResourceName,
     getModuleName,
 } from '@elite-dangerous-almanac/core/i18n';
 
@@ -281,10 +283,12 @@ test('fine-grained package subpaths resolve', () => {
         getExperimentalEffectName('special_concordant_sequence', 'de'),
         'Konkordante Sequenz',
     );
+    assert.equal(getMaterialName('GridResistors', 'de-DE'), 'Gitterwiderstände');
+    assert.equal(getMicroResourceName('graphene', 'fr'), 'Graphène');
 });
 
 test('localized-name datasets stay on their own leaf subpaths', async () => {
-    const [modules, blueprints, effects] = await Promise.all([
+    const [modules, blueprints, effects, materials, microResources] = await Promise.all([
         consumerBundle(
             "import { getModuleName as value } from '@elite-dangerous-almanac/core/i18n/modules'; console.log(value);",
         ),
@@ -294,14 +298,27 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         consumerBundle(
             "import { getExperimentalEffectName as value } from '@elite-dangerous-almanac/core/i18n/experimental-effects'; console.log(value);",
         ),
+        consumerBundle(
+            "import { getMaterialName as value } from '@elite-dangerous-almanac/core/i18n/materials'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getMicroResourceName as value } from '@elite-dangerous-almanac/core/i18n/micro-resources'; console.log(value);",
+        ),
     ]);
 
     assert.ok(modules.length < 128 * 1024, `module-name bundle is ${modules.length} bytes`);
     assert.ok(blueprints.length < 40 * 1024, `blueprint-name bundle is ${blueprints.length} bytes`);
     assert.ok(effects.length < 40 * 1024, `effect-name bundle is ${effects.length} bytes`);
+    assert.ok(materials.length < 64 * 1024, `material-name bundle is ${materials.length} bytes`);
+    assert.ok(
+        microResources.length < 64 * 1024,
+        `micro-resource-name bundle is ${microResources.length} bytes`,
+    );
     assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);
     assert.doesNotMatch(blueprints, /Frameshiftantrieb|Konkordante Sequenz/);
     assert.doesNotMatch(effects, /Frameshiftantrieb|Erhöhte FSA-Reichweite/);
+    assert.doesNotMatch(materials, /Graphène|Frameshiftantrieb/);
+    assert.doesNotMatch(microResources, /Gitterwiderstände|Frameshiftantrieb/);
 });
 
 test('the ship-loadout subpath exports its facade and structured edit error', async () => {

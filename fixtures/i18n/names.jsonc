@@ -1,6 +1,7 @@
 /*
- * Pins locale normalization, sparse misses and representative module, blueprint and
- * experimental-effect localized-name lookups for every language implementation.
+ * Pins locale normalization, sparse misses and representative module, blueprint,
+ * experimental-effect, material and micro-resource localized-name lookups for every
+ * language implementation.
  */
 {
   "lookups": [
@@ -56,6 +57,48 @@
       "kind": "experimentalEffect",
       "identifier": "special_concordant_sequence",
       "locale": "ja-JP",
+      "expected": null
+    },
+    {
+      "kind": "material",
+      "identifier": "GridResistors",
+      "locale": "de-DE",
+      "expected": "Gitterwiderstände"
+    },
+    {
+      "kind": "material",
+      "identifier": "gridresistors",
+      "locale": "fr",
+      "expected": "Résistance à grille"
+    },
+    {
+      "kind": "material",
+      "identifier": "Vanadium",
+      "locale": "de",
+      "expected": null
+    },
+    {
+      "kind": "material",
+      "identifier": "Mercury",
+      "locale": "ka",
+      "expected": "Mercury"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "graphene",
+      "locale": "fr-FR",
+      "expected": "Graphène"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "amm_grenade_emp",
+      "locale": "ka-GE",
+      "expected": "ფარი განმანადგურებელი"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "aerogel",
+      "locale": "de",
       "expected": null
     },
     {
