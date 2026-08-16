@@ -131,6 +131,8 @@ const jumps = build.jumpRangeSummary();
 jumps.max; // best single jump: one jump's fuel, empty hold
 jumps.unladen; // full tank, empty hold
 jumps.laden; // full tank, full hold
+jumps.totalMax.range; // the same best jump as a one-jump total
+jumps.totalMax.jumps; // one jump when the build carries fuel
 jumps.totalUnladen.range; // every jump on one tank, empty
 jumps.totalUnladen.jumps; // number of jumps on that tank
 jumps.totalLaden.range; // every jump on one tank, full

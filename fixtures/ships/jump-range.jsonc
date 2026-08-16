@@ -2,9 +2,10 @@
  * Shared test fixture — not shipped in any package.
  *
  * Expected ShipLoadout jump/fuel outputs, FSD mass factor and tank jump count. The flat keys below cover
- * fixtures/ships/slef-the-deep-black.jsonc and match EDSY's own MaxJumpRange; `builds` adds further
- * hulls, each naming the artifact it reads and the figure its source asserts. Cross-language
- * validation target.
+ * fixtures/ships/slef-the-deep-black.jsonc and match EDSY's own MaxJumpRange;
+ * `explicitFuelWithoutKnownTank` pins the partial-load total when the fitted tank's capacity is unknown;
+ * `builds` adds further hulls, each naming the artifact it reads and the figure its source asserts.
+ * Cross-language validation target.
  */
 {
   "ship": "explorer_nx",
@@ -20,6 +21,8 @@
   "mainFuel": 128,
   "cargoCapacity": 16,
   "maxJumpRange": 89.414678,
+  "totalMaxRange": 89.414678,
+  "totalMaxJumps": 1,
   "edsyMaxJumpRange": 89.414678,
   "unladenJumpRange": 82.409288,
   "ladenJumpRange": 81.576342,
@@ -27,6 +30,18 @@
   "totalRange": 1625.166,
   "totalJumps": 19,
   "fuelPerJump50Ly": 1.9474,
+  "explicitFuelWithoutKnownTank": {
+    "loadout": {
+      "Ship": "SideWinder",
+      "UnladenMass": 26,
+      "Modules": [
+        { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class2" },
+        { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+      ]
+    },
+    "options": { "fuel": 2 },
+    "expected": { "range": 55.029348, "jumps": 4 }
+  },
   "invalidInputs": [
     {
       "function": "singleJumpRange",
