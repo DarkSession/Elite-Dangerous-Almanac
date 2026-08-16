@@ -361,7 +361,7 @@ export interface BuildWeaponMetrics {
 
 /**
  * A build's jump ranges at the loads that matter. The three single-jump values and
- * each multi-jump result's `range` are in light-years.
+ * each total result's `range` are in light-years.
  */
 export interface JumpRangeSummary {
     /**
@@ -373,6 +373,8 @@ export interface JumpRangeSummary {
     readonly unladen: number;
     /** Single jump on a full tank with a full hold. */
     readonly laden: number;
+    /** Summed range and jump count on one jump's fuel, empty hold. */
+    readonly totalMax: TotalRangeDetails;
     /** Summed range and jump count on one full tank, empty hold. */
     readonly totalUnladen: TotalRangeDetails;
     /** Summed range and jump count on one full tank, full hold. */
@@ -1877,6 +1879,11 @@ export class ShipLoadout {
         return drive;
     }
 
+    /** The fuel one jump can burn: the whole main tank, or the drive limit if lower. */
+    #maxJumpFuel(fsd: FrameShiftDriveParams): number {
+        return Math.min(this.#requireFuelCapacity().main, fsd.maxFuel);
+    }
+
     /**
      * The fitted frame shift drive's dimensionless mass factor at a chosen load.
      *
@@ -1926,8 +1933,7 @@ export class ShipLoadout {
      */
     maxJumpRange(): number {
         const fsd = this.frameShiftDrive;
-        const fuel = Math.min(this.#requireFuelCapacity().main, fsd.maxFuel);
-        return singleJumpRange(this.#requireMass(0), fuel, fsd);
+        return singleJumpRange(this.#requireMass(0), this.#maxJumpFuel(fsd), fsd);
     }
 
     /**
@@ -1979,36 +1985,41 @@ export class ShipLoadout {
     }
 
     /**
-     * Total multi-jump range and jump count on a full main tank.
+     * Total range and jump count for a chosen fuel and cargo load.
      *
-     * @param options - `cargo` aboard, in tonnes; defaults to `0`.
+     * @param options - {@link JumpOptions}. `fuel` defaults to a full main tank,
+     * `cargo` to `0`.
      * @returns Summed range in light-years and the jumps made before the tank is empty.
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
-     * fuel capacity cannot be determined.
-     * @throws {RangeError} If cargo is not finite and non-negative.
+     * fuel capacity cannot be determined; fuel capacity is not required when
+     * `options.fuel` is supplied.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or the
+     * fuel load would require more than 100,000 jumps.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
      * declare const build: ShipLoadout;
      * build.totalRange().jumps; // jumps available from one full main tank
+     * build.totalRange({ fuel: 8, cargo: 32 }).range; // range for that partial load
      * ```
      */
-    totalRange(options: { readonly cargo?: number } = {}): TotalRangeDetails {
+    totalRange(options: JumpOptions = {}): TotalRangeDetails {
         requireLoadOptions('ShipLoadout.totalRange', options);
         return totalRange(
             this.#requireMass(options.cargo ?? 0),
-            this.#requireFuelCapacity().main,
+            options.fuel ?? this.#requireFuelCapacity().main,
             this.frameShiftDrive,
         );
     }
 
     /**
-     * Every jump figure at once — best, unladen, laden, and the multi-jump totals.
+     * Every jump figure at once — best, unladen, laden, and each load's total.
      *
      * @returns The {@link JumpRangeSummary}. Single-jump figures and each total's
-     * `range` are in light-years. For a partial load, call {@link jumpRange} with the
-     * `fuel` and `cargo` you actually have.
+     * `range` are in light-years. For a partial load, call {@link jumpRange} for one
+     * jump or {@link totalRange} for every jump with the `fuel` and `cargo` you
+     * actually have.
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass,
      * fuel capacity or cargo capacity cannot be determined.
      * @example
@@ -2020,6 +2031,7 @@ export class ShipLoadout {
      * const jumps = build.jumpRangeSummary();
      * jumps.max;    // -> 89.41  (one jump's fuel, empty hold)
      * jumps.laden;  // -> the range with the hold full
+     * jumps.totalMax.jumps; // the best jump expressed as a total
      * // Half a tank and 32 t aboard, once the tank is known:
      * const fuel = build.fuelCapacityResult;
      * if (fuel.complete) build.jumpRange({ fuel: fuel.value.main / 2, cargo: 32 });
@@ -2027,10 +2039,13 @@ export class ShipLoadout {
      */
     jumpRangeSummary(): JumpRangeSummary {
         const cargo = this.#requireCargoCapacity();
+        const fsd = this.frameShiftDrive;
+        const maxFuel = this.#maxJumpFuel(fsd);
         return {
             max: this.maxJumpRange(),
             unladen: this.jumpRange(),
             laden: this.jumpRange({ cargo }),
+            totalMax: this.totalRange({ fuel: maxFuel }),
             totalUnladen: this.totalRange(),
             totalLaden: this.totalRange({ cargo }),
         };
