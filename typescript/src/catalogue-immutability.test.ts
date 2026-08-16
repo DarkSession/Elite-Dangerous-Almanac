@@ -35,7 +35,6 @@ import { SHIP_GUNSIGHTS } from './ships/gunsights.js';
 import { DEFAULT_LOADOUTS } from './ships/default-loadouts.js';
 import { BLUEPRINT_COSTS } from './ships/blueprint-costs.js';
 import { BLUEPRINTS } from './ships/blueprints.js';
-import { DECORATIVE_MODIFICATIONS } from './ships/decorative-modifications.js';
 import { ENGINEERING_OPTION_GROUPS } from './ships/engineering-options.js';
 import { EXPERIMENTAL_EFFECT_COSTS } from './ships/experimental-effect-costs.js';
 import { EXPERIMENTAL_EFFECTS } from './ships/experimental-effects.js';
@@ -93,7 +92,6 @@ test('every published catalogue and all of its nested records are frozen', () =>
         ['DEFAULT_LOADOUTS', DEFAULT_LOADOUTS],
         ['BLUEPRINT_COSTS', BLUEPRINT_COSTS],
         ['BLUEPRINTS', BLUEPRINTS],
-        ['DECORATIVE_MODIFICATIONS', DECORATIVE_MODIFICATIONS],
         ['ENGINEERING_OPTION_GROUPS', ENGINEERING_OPTION_GROUPS],
         ['EXPERIMENTAL_EFFECT_COSTS', EXPERIMENTAL_EFFECT_COSTS],
         ['EXPERIMENTAL_EFFECTS', EXPERIMENTAL_EFFECTS],

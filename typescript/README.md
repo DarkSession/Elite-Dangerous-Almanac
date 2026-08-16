@@ -143,16 +143,16 @@ large combined dataset is never an implicit dependency.
 
 `symbol` is Frontier's item id for a hull, module, suit, handheld weapon, material,
 micro-resource or commodity. Ship engineering uses a separate identity space: `fdname` identifies a
-blueprint recipe, experimental effect or decorative modification. The journal
+blueprint recipe, experimental effect or fixed variant identity. The journal
 normally writes that id in its `Engineering` block, but a few blueprint aliases
 collide across module families; `resolveBlueprintForModule` resolves those journal
-spellings. Functions that ask what engineering a module accepts therefore take the
-module's `symbol`; functions that look up a recipe, effect or modification take its
-`fdname`. `getDecorativeModifiers` takes both identities to reconstruct the
-journal-style stat block of a fitted decorative transformation;
-`unresolvedDecorativeModifiers` reports any authored labels the module catalogue could
-not compute. `ShipLoadout.applyDecorativeModification` installs that fixed block on one
-fitted slot and exports it without fabricating an engineering grade or quality roll.
+spellings. Recipe and effect lookups take that `fdname`. Pre-engineered variants instead
+form a relation from the base module: after resolving a module by type or name,
+`getPreEngineeredVariants` lists the fixed articles associated with its `symbol`, and the
+caller can inspect each variant's `blueprint` identity. Those include the grade-5
+`Decorative_*` launchers whose −99% damage modifier is part of the awarded article rather
+than a generally applicable recipe. `ShipLoadout.setPreEngineeredVariant` fits the fixed
+article and writes its corresponding journal block.
 
 Personal-equipment modifications are keyed by their recipe symbol, just as ship
 blueprints and experimental effects are keyed by `fdname`; there is no second synthetic

@@ -8,8 +8,8 @@
  * arrives, not as the stock module leaves the shipyard. That is what
  * {@link getPreEngineeredStats} returns.
  *
- * This module imports every module record to resolve stats. Its resolver is 334.4 KiB
- * minified in a consumer bundle; the complete runtime API is 362.9 KiB (38.0 KiB
+ * This module imports every module record to resolve stats. Its resolver is 343.9 KiB
+ * minified in a consumer bundle; the complete runtime API is 376.2 KiB (41.6 KiB
  * gzipped). Consumers that only list variants can import `./pre-engineered.js` without
  * these module catalogues.
  * A journal or SLEF module can instead be classified with
@@ -30,6 +30,7 @@ import {
     baseStats,
     capabilityValueForLabel,
     fieldForLabel,
+    labelsForDamageType,
     scaleForLabel,
 } from './internal/module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -41,6 +42,7 @@ import { scaleDamageComponents } from './internal/damage-components.js';
 import { fixedModifierFeatures } from './internal/fixed-modifier-features.js';
 import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
+import { journalModifiersFor } from './internal/loadout-engineering.js';
 
 /** Compute a variant's fixed block together with an experimental added to the article. */
 function modifiersWithExperimental(
@@ -76,16 +78,75 @@ function modifiersWithExperimental(
  *
  * @example
  * ```ts
- * import { getPreEngineeredByBlueprint } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
  * import { getPreEngineeredModifiers } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
  *
- * const [railgun] = getPreEngineeredByBlueprint('Weapon_HighCapacity');
+ * const railgun = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium')
+ *     .find((variant) => variant.blueprint === 'Weapon_HighCapacity');
  * if (railgun) getPreEngineeredModifiers(railgun);
  * // -> [{ Label: 'Mass', Value: 2.85, OriginalValue: 1.5 }, ...]
  * ```
  */
 export function getPreEngineeredModifiers(variant: PreEngineeredVariant): EngineeringModifier[] {
     return modifiersWithExperimental(variant) ?? [];
+}
+
+/** Translate a variant and the effect present in a capture to journal-shaped modifiers. */
+function journalModifiersWithExperimental(
+    variant: PreEngineeredVariant,
+    experimental?: string,
+): EngineeringModifier[] {
+    const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
+    if (!module) return [];
+    const modifiers = journalModifiersFor(
+        module,
+        modifiersWithExperimental(variant, experimental) ?? [],
+    );
+    const effectName = experimental ?? variant.experimental;
+    const damageDistribution = effectName
+        ? getExperimentalEffect(effectName)?.damageDistribution
+        : undefined;
+    if (!damageDistribution) return modifiers;
+    for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
+        const value = damageDistribution[type];
+        const label = labelsForDamageType(type)[0];
+        if (value === undefined || label === undefined) continue;
+        modifiers.push({
+            Label: label,
+            Value: value * scaleForLabel(label),
+            OriginalValue: (module.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
+        });
+    }
+    return modifiers;
+}
+
+/**
+ * The journal-shaped fixed modifiers a pre-engineered variant reports when fitted.
+ *
+ * Primitive recipe labels are translated to the labels a `Loadout` event uses for the
+ * variant's exact base module. A baked damage conversion is expanded into the journal's
+ * per-damage-type modifiers. Festive variants therefore resolve through the same path as
+ * every other fixed article.
+ *
+ * @param variant - A pre-engineered variant.
+ * @returns Its computable fixed modifiers in journal representation, or an empty array
+ * when its symbol is unknown or no fixed stat block is published.
+ *
+ * @example
+ * ```ts
+ * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ * import { getPreEngineeredJournalModifiers } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
+ *
+ * const red = getPreEngineeredVariants('Hpt_FlakMortar_Turret_Medium')
+ *     .find((variant) => variant.blueprint === 'Decorative_Red')!;
+ * getPreEngineeredJournalModifiers(red);
+ * // -> [{ Label: 'DamagePerSecond', Value: 0.17, OriginalValue: 17 }, { Label: 'Damage', Value: 0.34, OriginalValue: 34 }]
+ * ```
+ */
+export function getPreEngineeredJournalModifiers(
+    variant: PreEngineeredVariant,
+): EngineeringModifier[] {
+    return journalModifiersWithExperimental(variant);
 }
 
 /** Numeric equality at the precision of Frontier's journal float values. */
@@ -111,6 +172,22 @@ function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier
     return expected.ValueStr !== undefined && actual.ValueStr !== undefined;
 }
 
+/** Whether a capture contains enough of one predicted modifier representation. */
+function matchesModifierSignature(
+    actualByKey: ReadonlyMap<string, EngineeringModifier>,
+    expected: readonly EngineeringModifier[],
+    module: OutfittingModule,
+): boolean {
+    let matched = 0;
+    for (const predicted of expected) {
+        const actual = actualByKey.get(modifierKey(predicted, module));
+        if (!actual) continue;
+        if (!sameModifier(actual, predicted)) return false;
+        matched++;
+    }
+    return matched >= Math.max(1, expected.length - 1);
+}
+
 /**
  * Identify the fixed pre-engineered/reward variant described by a fitted loadout module.
  *
@@ -130,8 +207,8 @@ function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier
  * @returns The uniquely matching catalogue variant, or `null` when the stats do not
  * identify one.
  * @throws {TypeError} If a field it reads is present and not a string — `module.Item`,
- * or a modifier's `Label` or the block's `ExperimentalEffect`. A module with no
- * engineering block answers `null` before any of them is read.
+ * a modifier's `Label`, or the block's `BlueprintName` or `ExperimentalEffect`. A module
+ * with no engineering block answers `null` before any of them is read.
  *
  * @example
  * ```ts
@@ -164,26 +241,41 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     const matches: PreEngineeredVariant[] = [];
     for (const candidate of getPreEngineeredVariants(module.Item)) {
         if (!candidate.modifiers?.length) continue;
+        if (candidate.grade !== engineering.Level) continue;
+        // The festive articles share the same stat block, so their journal identity is
+        // what distinguishes the green, red and yellow variants. Other rewards still
+        // match primarily by their hand-set signature because aliases and incomplete
+        // captures make the blueprint spelling weaker evidence there.
+        if (
+            candidate.acquisition === 'eventReward' &&
+            (engineering.ExperimentalEffect !== undefined ||
+                engineering.ExperimentalEffect_Localised !== undefined ||
+                normalizeKey(
+                    engineering.BlueprintName,
+                    'identifyPreEngineeredVariant: module.Engineering.BlueprintName',
+                ) !== candidate.blueprint.toLowerCase())
+        ) {
+            continue;
+        }
         if (
             candidate.experimental !== undefined &&
             candidate.experimental.toLowerCase() !== capturedExperimental
         ) {
             continue;
         }
-        const expected = modifiersWithExperimental(candidate, engineering.ExperimentalEffect);
-        if (!expected?.length) continue;
-        let matched = 0;
-        let disagrees = false;
-        for (const predicted of expected) {
-            const actual = actualByKey.get(modifierKey(predicted, stock));
-            if (!actual) continue;
-            if (!sameModifier(actual, predicted)) {
-                disagrees = true;
-                break;
-            }
-            matched++;
-        }
-        if (!disagrees && matched >= Math.max(1, expected.length - 1)) matches.push(candidate);
+        const primitive = modifiersWithExperimental(candidate, engineering.ExperimentalEffect);
+        if (!primitive?.length) continue;
+        // Captures in the wild use both Frontier's primitive stat labels and its derived
+        // outfitting-panel labels. The setter emits the latter, so accept either complete
+        // representation without mixing partial evidence from the two.
+        const matched =
+            matchesModifierSignature(actualByKey, primitive, stock) ||
+            matchesModifierSignature(
+                actualByKey,
+                journalModifiersWithExperimental(candidate, engineering.ExperimentalEffect),
+                stock,
+            );
+        if (matched) matches.push(candidate);
     }
     return matches.length === 1 ? matches[0]! : null;
 }

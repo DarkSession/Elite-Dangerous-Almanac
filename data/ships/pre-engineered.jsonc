@@ -1,11 +1,14 @@
 /*
- * **Pre-engineered module variants** — the outfitting rows you buy already engineered,
- * each mapped to the base module symbol it fits as and the blueprint baked into it.
+ * **Pre-engineered module variants** — the outfitting rows you buy or receive already
+ * modified, each mapped to the base module symbol it fits as and the engineering identity
+ * baked into it.
  *
  * Sources: the in-game outfitting and blueprint registries cross-checked against Inara
  * and Frontier's update notes; EDSY's stored-module presets for the community-goal and
  * tech-broker rewards; in-game observation for the Guardian rows' final-engineering
- * restriction; a Frontier journal capture for the tech-broker shard cannon.
+ * restriction; a Frontier journal capture for the tech-broker shard cannon;
+ * repository-owner in-game observations, with a public journal excerpt recorded in issue
+ * #53, for the three festive Remote Release Flak Launchers and their damage reduction.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/ships/SOURCES.md.
@@ -13,9 +16,12 @@
  * A pre-engineered module has **no symbol of its own**: the game sells or awards an
  * ordinary module with engineering already applied, and a journal `Loadout` reports it
  * as the base `symbol` plus an `Engineering` block. So each record here is a *pairing*,
- * not a new module — `symbol` joins to the module catalogues, `blueprint` to
- * `blueprints.jsonc`, the optional `experimental` to `experimental-effects.jsonc`, and
- * `grade` is the grade already applied.
+ * not a new module — `symbol` joins to the module catalogues and `blueprint` is the
+ * Frontier id written in `Engineering.BlueprintName`. Craftable blueprint identities join
+ * to `blueprints.jsonc`, the optional `experimental` joins to
+ * `experimental-effects.jsonc`, and `grade` is the grade already applied. The festive
+ * variants carry a grade-5 `Decorative_*` identity that is not an engineer recipe;
+ * `modifiers` carries the complete fixed transformation awarded with the module.
  *
  * `acquisition` says where the variant comes from:
  *   - `"mercenary"`     — the Merc-Coin shop rows, all at grade 1.
@@ -25,6 +31,7 @@
  *     and seeker racks; the Guardian weapon rows come from the Salvation, Azimuth and
  *     Sirius brokers. Several are recorded elsewhere as having *also* been community-goal
  *     rewards; this field records the one route the source states, not every route.
+ *   - `"eventReward"`   — awarded already transformed by an event; no engineer applies it.
  *
  * `engineeringLocked: true` marks the seven pre-engineered Guardian weapons as final.
  * Their stock counterparts can take Anti-Guardian Zone Resistance; these bought or
@@ -44,6 +51,11 @@
  *
  * Modifier values are the authored decimals recovered from the source's own encoding,
  * not figures rounded by eye; SOURCES.md records how.
+ *
+ * The festive variants each carry a fixed −99% `Damage` modifier, turning the Remote
+ * Release Flak Launcher into a firework launcher. They are fixed articles rather than
+ * generally applicable modifications: this catalogue does not imply that a `Decorative_*`
+ * identity may be placed on any other damage-bearing module.
  *
  * One modifier is deliberately dropped: burst interval, which 13 variants carry and
  * which Frontier's journal has no Modifier Label for. It drives rate of fire, and
@@ -2186,6 +2198,36 @@
         "method": "multiplicative",
         "value": 1
       }
+    ]
+  },
+  {
+    "symbol": "Hpt_FlakMortar_Turret_Medium",
+    "name": "Festive Green Remote Release Flak Launcher",
+    "blueprint": "Decorative_Green",
+    "grade": 5,
+    "acquisition": "eventReward",
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+    ]
+  },
+  {
+    "symbol": "Hpt_FlakMortar_Turret_Medium",
+    "name": "Festive Red Remote Release Flak Launcher",
+    "blueprint": "Decorative_Red",
+    "grade": 5,
+    "acquisition": "eventReward",
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+    ]
+  },
+  {
+    "symbol": "Hpt_FlakMortar_Turret_Medium",
+    "name": "Festive Yellow Remote Release Flak Launcher",
+    "blueprint": "Decorative_Yellow",
+    "grade": 5,
+    "acquisition": "eventReward",
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
     ]
   }
 ]

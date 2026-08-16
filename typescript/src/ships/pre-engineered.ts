@@ -1,19 +1,23 @@
 /**
- * The **pre-engineered module catalogue** — the outfitting rows you buy already
- * engineered, each paired with the base module it fits as and the blueprint baked in.
+ * The **pre-engineered module catalogue** — the outfitting rows you buy or receive
+ * already modified, each paired with the base module it fits as and the engineering
+ * identity baked in.
  *
  * A pre-engineered module has **no symbol of its own**. The game sells an ordinary
  * module with engineering already applied, so a journal `Loadout` reports the base
  * `symbol` plus an `Engineering` block — which is why you will not find, say, a
  * `Hpt_Railgun_Fixed_Medium_Merc` in the module catalogues. This catalogue supplies the
- * link that would otherwise be missing: which stock modules are purchasable
- * pre-engineered, and with what.
+ * link that would otherwise be missing: which stock modules exist in a pre-engineered
+ * form, and with what fixed engineering state.
  *
  * Its own module (and data file) so consumers who never touch pre-engineered variants
  * do not bundle it.
  *
  * Each entry is a {@link PreEngineeredVariant}: `symbol` joins to the module catalogues,
- * `blueprint` to `BLUEPRINTS`, and `grade` is the grade already applied to the article.
+ * `blueprint` is the id Frontier writes in `Engineering.BlueprintName`, and `grade` is the
+ * grade already applied. Most blueprint ids join to `BLUEPRINTS`; the festive
+ * `Decorative_*` ids instead identify fixed grade-5 reward articles with no craftable
+ * recipe or material cost.
  * The 22 Mercenary entries are bought at grade 1 and their bespoke recipes start at
  * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
  * grade)` from `ships/blueprint-costs`. Community-goal and tech-broker entries instead
@@ -25,7 +29,7 @@
  * `Hpt_BasicMissileRack_Fixed_Medium` has six entries. Look variants up with
  * {@link getPreEngineeredVariants} (plural) rather than assuming one.
  *
- * Most variants carry a {@link PreEngineeredVariant.modifiers} block — the hand-set stat
+ * Most variants carry a `modifiers` block — the hand-set stat
  * changes the variant arrives with, which is what lets one be fitted and its stats
  * computed. Resolve them against the base module with `getPreEngineeredStats` from
  * `./pre-engineered-stats.js`; it lives in its own module so that consumers who only
@@ -50,8 +54,9 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
  * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, and
  *   often carrying an experimental effect the shop rows do not.
  * - `techBroker` — unlocked at a tech broker. Records the route stated by the source.
+ * - `eventReward` — awarded already transformed by an event; the festive articles are grade 5.
  */
-export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal' | 'techBroker';
+export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal' | 'techBroker' | 'eventReward';
 
 /**
  * One hand-set stat change a pre-engineered variant arrives with.
@@ -74,30 +79,34 @@ export interface PreEngineeredModifier {
 }
 
 /**
- * One purchasable pre-engineered module variant — a pairing of a stock module with the
- * blueprint it ships with, not a module in its own right.
+ * One pre-engineered module variant — a pairing of a stock module with the engineering
+ * identity it ships with, not a module in its own right.
  */
 export interface PreEngineeredVariant {
     /** The base module's symbol, e.g. `"Hpt_Railgun_Fixed_Medium"`. Joins to the module catalogues. */
     readonly symbol: string;
-    /** The base module's display name, e.g. `"Rail Gun"`. */
+    /**
+     * The variant's display name. Festive rows include their colour so variants of the
+     * same launcher remain distinct.
+     */
     readonly name: string;
     /**
-     * The blueprint recipe's Frontier `fdname`, e.g. `"RailGun_LongShot"`. Joins to
-     * `BLUEPRINTS`.
+     * The Frontier id written in `Engineering.BlueprintName`, e.g. `"RailGun_LongShot"`
+     * or `"Decorative_Red"`.
      *
      * @remarks
-     * On a reward variant this **identifies** the article rather than reproducing it.
+     * Most ids join to `BLUEPRINTS`. A festive `Decorative_*` id does not, because it
+     * identifies a fixed reward article rather than a recipe a player can apply.
+     * On any reward variant the id **identifies** the article rather than reproducing it.
      * Alongside its blueprint and effect, a reward carries hand-set modifier overrides no
      * blueprint grants — that is what makes it a reward rather than a shortcut — so
-     * rolling this recipe to this {@link PreEngineeredVariant.grade | grade} does not
+     * rolling this recipe to this `grade` does not
      * arrive at the same module, and `getBlueprintCost` (in `ships/blueprint-costs`)
-     * against it prices ordinary engineering rather than the reward. Read
-     * {@link PreEngineeredVariant.modifiers | modifiers} for what the article actually
-     * carries.
+     * against it prices ordinary engineering rather than the reward. Read `modifiers`
+     * for what the article actually carries.
      */
     readonly blueprint: string;
-    /** The blueprint grade already applied (1–5). */
+    /** The engineering grade already applied (1–5). */
     readonly grade: number;
     /**
      * The experimental effect's Frontier `fdname`, e.g.
@@ -127,13 +136,13 @@ export interface PreEngineeredVariant {
      * The hand-set stat block the variant arrives with, sorted by `label`.
      *
      * Absent on every `mercenary` row: no registry publishes the grade-1 pre-engineering
-     * those arrive with. Present on all 51 community-goal and tech-broker rows.
+     * those arrive with. Present on all community-goal, tech-broker and event-reward rows.
      */
     readonly modifiers?: readonly PreEngineeredModifier[];
 }
 
 /**
- * Every purchasable pre-engineered module variant.
+ * Every pre-engineered module variant, whether purchased, unlocked or awarded.
  *
  * @remarks
  * This catalogue omits pre-engineered Guardian module rewards whose variant details have
@@ -144,7 +153,7 @@ export interface PreEngineeredVariant {
  * ```ts
  * import { PRE_ENGINEERED_MODULES } from '@elite-dangerous-almanac/core/ships/pre-engineered';
  *
- * PRE_ENGINEERED_MODULES.length; // -> 73
+ * PRE_ENGINEERED_MODULES.length; // -> 76
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
  * //      blueprint: 'AbrasionBlaster_FarReaching', grade: 1,
@@ -156,11 +165,11 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
 );
 
 /**
- * Every pre-engineered variant sold for a given base module symbol.
+ * Every pre-engineered variant associated with a given base module symbol.
  *
  * Matching is case-insensitive and tolerates surrounding whitespace, so a raw journal
- * value can be passed straight in. Returns an empty array when the module is not sold
- * pre-engineered — never `null`, so the result is always safe to iterate.
+ * value can be passed straight in. Returns an empty array when the module has no known
+ * pre-engineered variant — never `null`, so the result is always safe to iterate.
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BasicMissileRack_Fixed_Medium"`.
  * @returns Every pre-engineered variant of that module, in catalogue order.
@@ -190,42 +199,7 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
 }
 
 /**
- * Every pre-engineered variant sold with a given blueprint.
- *
- * One blueprint can be sold on more than one base module — the Drag seeker
- * pre-engineering, for instance, is offered on both the medium and the large missile
- * rack — so this returns an array. Matching is case-insensitive and trims whitespace,
- * and a miss is an empty array rather than `null`.
- *
- * @param fdname - A blueprint recipe `fdname`, e.g. `"RailGun_LongShot"`.
- * @returns Every variant sold with that blueprint, in catalogue order.
- *
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
- * @example
- * ```ts
- * import { getPreEngineeredByBlueprint } from '@elite-dangerous-almanac/core/ships/pre-engineered';
- *
- * getPreEngineeredByBlueprint('RailGun_LongShot').map((v) => v.symbol);
- * // -> ['Hpt_Railgun_Fixed_Medium']
- *
- * getPreEngineeredByBlueprint('SeekerMissileRack_Drag').map((v) => v.symbol);
- * // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
- *
- * getPreEngineeredByBlueprint('NoSuchBlueprint'); // -> []
- * ```
- */
-export function getPreEngineeredByBlueprint(fdname: string): readonly PreEngineeredVariant[] {
-    return filterByKey(
-        PRE_ENGINEERED_MODULES,
-        'blueprint',
-        fdname,
-        'getPreEngineeredByBlueprint: fdname',
-    );
-}
-
-/**
- * Whether a module is sold in at least one pre-engineered form.
+ * Whether a module has at least one known pre-engineered form.
  *
  * @param symbol - A module symbol.
  * @returns `true` when {@link getPreEngineeredVariants} would return anything.

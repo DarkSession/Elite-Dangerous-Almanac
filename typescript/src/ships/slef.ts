@@ -12,9 +12,8 @@
  * ```
  *
  * The top level is an **array** so several builds can travel together. This module carries
- * the record shapes and the tiny decorative-identity catalogue needed to distinguish a
- * real grade-less transformation from malformed blueprint engineering; it imports no
- * blueprint, module or ship catalogue. {@link parseSlef} / {@link getLoadoutModifier}
+ * only the record shapes, so it imports no variant, blueprint, module or ship catalogue.
+ * {@link parseSlef} / {@link getLoadoutModifier}
  * read, and {@link toSlef} / {@link stringifySlef} write. To turn a parsed build into
  * jump-range and fuel numbers, or to produce the `Loadout` event {@link toSlef} wraps,
  * hand it to {@link ShipLoadout} (`./ship-loadout`).
@@ -33,7 +32,6 @@
 
 import { normalizeKey } from '../internal/registry-index.js';
 import { truncate } from '../internal/argument-guards.js';
-import { isDecorativeModification } from './decorative-modifications.js';
 
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
@@ -73,12 +71,11 @@ export interface EngineeringModifier {
 }
 
 /**
- * Graded engineering applied from a blueprint recipe.
+ * A graded engineering identity and its fitted state.
  *
- * `Level` and `Quality` identify the grade and roll used to produce the fitted state;
- * `Modifiers` may be absent because SLEF permits a compact recipe-only block. Use
- * {@link DecorativeModuleEngineering} for a fixed decorative transformation, which has
- * neither numeric field and requires its modifier block instead.
+ * `BlueprintName` may name a craftable recipe or a fixed pre-engineered identity such
+ * as a grade-5 festive launcher. `Level` and `Quality` identify the stated grade and
+ * quality; `Modifiers` may be absent because SLEF permits a compact identity-only block.
  */
 export interface BlueprintModuleEngineering {
     /** The blueprint's journal name, e.g. `"FSD_LongRange"`. */
@@ -99,51 +96,25 @@ export interface BlueprintModuleEngineering {
      * `BlueprintName`, `Level` and `Quality` — the specification's own example omits it —
      * so an export from another app may name the blueprint and its roll without spelling
      * out the resulting stats. Treat a missing array as "not stated", not as "nothing was
-     * changed": fit the module and call {@link ShipLoadout.applyBlueprint} to reconstruct
-     * the journal-equivalent numeric modifiers and effective stats.
+     * changed". A craftable recipe can be reconstructed with
+     * {@link ShipLoadout.applyBlueprint}; resolve a fixed identity through the
+     * pre-engineered catalogue and fit it with
+     * {@link ShipLoadout.setPreEngineeredVariant}.
      */
     readonly Modifiers?: readonly EngineeringModifier[];
-}
-
-/**
- * A grade-less decorative transformation carried in a module's journal
- * `Engineering` block.
- *
- * @remarks
- * Frontier records decorative transformations in `BlueprintName`, but they are not
- * engineering recipes: they have no `Level`, `Quality`, experimental effect, material
- * cost or engineer. Their required `Modifiers` array is the fitted state — for example,
- * a festive launcher records the damage reduction that makes it fire fireworks.
- * {@link ShipLoadout.applyDecorativeModification} constructs this shape.
- */
-export interface DecorativeModuleEngineering {
-    /** The decorative transformation's Frontier `fdname`, e.g. `"Decorative_Red"`. */
-    readonly BlueprintName: string;
-    /** Absent because a decorative transformation has no grade. */
-    readonly Level?: never;
-    /** Absent because a decorative transformation has no quality roll. */
-    readonly Quality?: never;
-    /** Absent because a decorative transformation cannot carry an experimental effect. */
-    readonly ExperimentalEffect?: never;
-    /** Absent because a decorative transformation has no experimental effect. */
-    readonly ExperimentalEffect_Localised?: never;
-    /** Every stat changed by the fixed decorative transformation. */
-    readonly Modifiers: readonly EngineeringModifier[];
 }
 
 /**
  * The durable modification applied to one module.
  *
  * @remarks
- * This is either graded blueprint engineering ({@link BlueprintModuleEngineering}) or a
- * grade-less decorative transformation ({@link DecorativeModuleEngineering}). A journal
- * capture may also name `Engineer`, `EngineerID` and `BlueprintID`. They are deliberately
- * outside both shapes: the engineer fields record who applied a modification, while the
- * numeric blueprint id is redundant with `BlueprintName`; none changes the fitted module.
- * {@link ShipLoadout.fromLoadout} therefore drops them and subsequent loadout/SLEF exports
- * never write them.
+ * A journal capture may also name `Engineer`, `EngineerID` and `BlueprintID`. They are
+ * deliberately outside this shape: the engineer fields record who applied a modification,
+ * while the numeric blueprint id is redundant with `BlueprintName`; none changes the fitted
+ * module. {@link ShipLoadout.fromLoadout} therefore drops them and subsequent loadout/SLEF
+ * exports never write them.
  */
-export type ModuleEngineering = BlueprintModuleEngineering | DecorativeModuleEngineering;
+export type ModuleEngineering = BlueprintModuleEngineering;
 
 /**
  * One fitted module in a `Loadout` event.
@@ -279,7 +250,6 @@ const CONSTRAINT_MESSAGES: Record<Exclude<SlefConstraint, 'uniqueSlot'>, string>
     engineeringLevelRange: 'must be an integer from 1 to 5',
     unitInterval: 'must be a number from 0 to 1',
     binaryInteger: 'must be 0 or 1',
-    decorativeExperimentalAbsent: 'must be absent from a grade-less decorative block',
     versionRequired: 'must be a string or finite number',
     loadoutEventRequired: 'must be "Loadout"',
     validLoadoutRequired: 'is not a valid Loadout event',
@@ -295,15 +265,10 @@ function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | n
     if (!isRecord(value)) return invalid('invalidEngineering', path, 'objectRequired');
     if (typeof value.BlueprintName !== 'string')
         return invalid('invalidEngineering', `${path}.BlueprintName`, 'stringRequired');
-    const decorative = isDecorativeModification(value.BlueprintName);
-    const graded = value.Level !== undefined || value.Quality !== undefined;
-    const gradeLessDecorative = decorative && !graded;
-    if (!gradeLessDecorative) {
-        if (!isOptionalIntegerInRange(value.Level, 1, 5) || value.Level === undefined)
-            return invalid('invalidEngineering', `${path}.Level`, 'engineeringLevelRange');
-        if (!isOptionalNumberInRange(value.Quality, 0, 1) || value.Quality === undefined)
-            return invalid('invalidEngineering', `${path}.Quality`, 'unitInterval');
-    }
+    if (!isOptionalIntegerInRange(value.Level, 1, 5) || value.Level === undefined)
+        return invalid('invalidEngineering', `${path}.Level`, 'engineeringLevelRange');
+    if (!isOptionalNumberInRange(value.Quality, 0, 1) || value.Quality === undefined)
+        return invalid('invalidEngineering', `${path}.Quality`, 'unitInterval');
     if (!isOptionalString(value.ExperimentalEffect))
         return invalid('invalidEngineering', `${path}.ExperimentalEffect`, 'stringRequired');
     if (!isOptionalString(value.ExperimentalEffect_Localised))
@@ -312,20 +277,6 @@ function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | n
             `${path}.ExperimentalEffect_Localised`,
             'stringRequired',
         );
-    if (gradeLessDecorative && value.ExperimentalEffect !== undefined)
-        return invalid(
-            'invalidEngineering',
-            `${path}.ExperimentalEffect`,
-            'decorativeExperimentalAbsent',
-        );
-    if (gradeLessDecorative && value.ExperimentalEffect_Localised !== undefined)
-        return invalid(
-            'invalidEngineering',
-            `${path}.ExperimentalEffect_Localised`,
-            'decorativeExperimentalAbsent',
-        );
-    if (gradeLessDecorative && !Array.isArray(value.Modifiers))
-        return invalid('invalidEngineering', `${path}.Modifiers`, 'arrayRequired');
     if (value.Modifiers !== undefined) {
         if (!Array.isArray(value.Modifiers))
             return invalid('invalidEngineering', `${path}.Modifiers`, 'arrayRequired');
@@ -474,7 +425,6 @@ export type SlefConstraint =
     | 'engineeringLevelRange'
     | 'unitInterval'
     | 'binaryInteger'
-    | 'decorativeExperimentalAbsent'
     | 'versionRequired'
     | 'loadoutEventRequired'
     | 'validLoadoutRequired'
@@ -713,8 +663,8 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  * engineered, states no modifiers at all, carries no such modifier, or the modifier is
  * non-numeric.
  * @throws {TypeError} If `label` is present and not a string. A nullish
- * `label` is a miss, answered the way an unrecognised one is. Blueprint and decorative
- * modifier blocks are read identically.
+ * `label` is a miss, answered the way an unrecognised one is. All engineering blocks use
+ * the same modifier representation.
  * @example
  * ```ts
  * import { getLoadoutModifier } from '@elite-dangerous-almanac/core/ships/slef';

@@ -83,7 +83,6 @@ import { getDefaultLoadout } from './default-loadouts.js';
 import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
-import { getDecorativeModification, isDecorativeModification } from './decorative-modifications.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
@@ -142,7 +141,14 @@ import {
     type CellBankSummary,
     type ShieldRecovery,
 } from './shield-recovery.js';
-import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
+import {
+    getPreEngineeredJournalModifiers,
+    getPreEngineeredModifiers,
+    getPreEngineeredStats,
+    identifyPreEngineeredVariant,
+    unresolvedModifiers,
+} from './pre-engineered-stats.js';
+import { getPreEngineeredVariants, type PreEngineeredVariant } from './pre-engineered.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
@@ -164,7 +170,6 @@ import {
     truncate,
 } from '../internal/argument-guards.js';
 import { completeResult } from './internal/calculation-result.js';
-import { resolveDecorativeModificationStats } from './internal/decorative-modification-resolution.js';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
@@ -1371,8 +1376,7 @@ export class ShipLoadout {
      * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
      * object, or `options.experimental` carries a value that is not a string — a nullish
      * one is no effect, not a wrong type; the fitted module has no stats to engineer; or the id names a
-     * decorative modification, which names no recipe (see
-     * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
+     * fixed event-reward identity, which names no craftable recipe; or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
      * generic spelling of a recipe that menu lists under a family's name, or by being a
      * Mercenary article sold at grade 1 with that bespoke recipe; the fitted article is
@@ -1430,8 +1434,8 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: slot "${truncate(slotKey)}" is empty`,
             );
         }
-        const stats = this.#statsFor(module);
-        if (!stats) {
+        const fittedStats = this.#statsFor(module);
+        if (!fittedStats) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: no stats for module "${truncate(module.Item)}"`,
             );
@@ -1447,15 +1451,21 @@ export class ShipLoadout {
             recipe === fdname
                 ? `"${truncate(fdname)}"`
                 : `"${truncate(fdname)}" (${truncate(recipe)} on this module)`;
-        // A decorative transformation reaches this method as a real id that names no
-        // recipe: the game writes it in the same field, but it has no grade, costs nothing
-        // and no engineer applies one. Say that, rather than letting the grade lookup below
-        // report a genuine id as an unknown blueprint. It does move a stat, so the refusal
-        // names where that is — a caller wanting a festive launcher's damage wants
-        // `DECORATIVE_MODIFICATIONS`, not a grade this recipe never had.
-        if (isDecorativeModification(recipe)) {
+        // A festive fixed variant reaches this method as a real journal identity that
+        // names no craftable recipe. It is fitted as a pre-engineered variant, not applied
+        // to an arbitrary stock module.
+        const written = fdname.trim().toLowerCase();
+        const resolved = recipe.trim().toLowerCase();
+        if (
+            getPreEngineeredVariants(module.Item).some(
+                (variant) =>
+                    variant.acquisition === 'eventReward' &&
+                    (variant.blueprint.toLowerCase() === written ||
+                        variant.blueprint.toLowerCase() === resolved),
+            )
+        ) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; use applyDecorativeModification to fit its fixed stat changes`,
+                `ShipLoadout.applyBlueprint: ${named} is a fixed pre-engineered identity, not a craftable blueprint; use setPreEngineeredVariant to fit its fixed article`,
             );
         }
         if (!Number.isInteger(wantedGrade) || wantedGrade < 1 || wantedGrade > 5) {
@@ -1484,7 +1494,7 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
             );
         }
-        if (stats.engineeringLocked) {
+        if (fittedStats.engineeringLocked) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is a final pre-engineered article and accepts no further engineering`,
             );
@@ -1512,6 +1522,11 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(wantedExperimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
             );
         }
+        // A fixed variant's effective snapshot is not a new stock module. Replacing its
+        // engineering starts from the catalogue article, otherwise the new recipe would
+        // be folded over the fixed values a second time (and clearing it would retain
+        // those values as an unlabelled base).
+        const stats = this.#engineeringBaseStats(module) ?? fittedStats;
         const base = baseStats(stats);
         const canonical = primitiveEngineeringInputsFor(stats, grade, experimental);
         const missing = missingBaseLabels(
@@ -1561,98 +1576,101 @@ export class ShipLoadout {
         this.#replaceModule(
             module.Slot,
             { ...module, Engineering: engineering },
-            undefined,
+            stats,
             primitiveModifiers,
         );
         return this;
     }
 
     /**
-     * Apply a fixed, grade-less decorative transformation to the module in a slot.
+     * Fit a pre-engineered variant into a slot, replacing whatever is there.
      *
-     * The transformation is resolved through the decorative catalogue and stored as a
-     * journal/SLEF `Engineering` block containing only `BlueprintName` and `Modifiers` —
-     * no grade or quality is invented. Only this slot is replaced, so effective state
-     * retained for every other engineered module remains untouched.
+     * The variant's fixed stats and journal engineering block are resolved together.
+     * Articles carry `Level`, `Quality: 1`, any baked experimental effect and their fixed
+     * modifiers. Because the variant names its base module, a decorative identity cannot
+     * be applied to an unrelated damage-bearing module.
+     * A Mercenary variant whose fixed modifier block has not been published retains the
+     * stock catalogue stats and omits `Modifiers` rather than claiming it changes none.
      *
-     * @param slotKey - The slot whose module to transform, matched case-insensitively
-     * (journal spelling).
-     * @param fdname - The decorative transformation's Frontier `fdname`, e.g.
-     * `"Decorative_Red"`.
+     * @param slotKey - The slot key to fit into, matched case-insensitively.
+     * @param variant - The pre-engineered catalogue variant to fit.
      * @returns `this`, for chaining.
-     * @throws {RangeError} If the slot is empty or the decorative identity is unknown.
-     * @throws {TypeError} If `slotKey` or `fdname` is not a string, or one or more of the
-     * decorative transformation's stat labels cannot be computed for the fitted module;
-     * the fitted module carries no stat snapshot; or it is a final pre-engineered article
-     * and accepts no further modification. Incomplete transformations are rejected
-     * rather than stored as partial modifier blocks.
+     * @throws {TypeError} If `variant` is not a pre-engineered variant or one of its
+     * authored modifier labels cannot be resolved for its base module.
+     * @throws {RangeError} If no catalogue row matches the supplied module, blueprint,
+     * grade, experimental effect and acquisition route.
+     * @throws {LoadoutEditError} If the variant's base module does not fit the slot or
+     * violates a fitted-module limit.
      * @example
      * ```ts
+     * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
-     * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
      *
-     * const build = ShipLoadout.empty('Krait_MkII');
-     * const flak = getModuleBySymbol(
-     *   'Hpt_FlakMortar_Turret_Medium',
-     *   HARDPOINT_MODULES,
-     * )!;
-     *
-     * build.setModule('MediumHardpoint1', flak)
-     *      .applyDecorativeModification('MediumHardpoint1', 'Decorative_Red');
-     * build.fittedModuleAt('MediumHardpoint1')?.engineering?.BlueprintName;
-     * // -> 'Decorative_Red'
+     * const festive = getPreEngineeredVariants('Hpt_FlakMortar_Turret_Medium')
+     *     .find((variant) => variant.blueprint === 'Decorative_Red')!;
+     * const build = ShipLoadout.empty('Krait_MkII')
+     *     .setPreEngineeredVariant('MediumHardpoint1', festive);
+     * build.fittedModuleAt('MediumHardpoint1')?.effectiveStats?.damage; // -> 0.34
      * ```
      */
-    applyDecorativeModification(slotKey: string, fdname: string): this {
-        requireString(fdname, 'ShipLoadout.applyDecorativeModification: fdname');
-        const module = this.#fittedModuleFor(slotKey);
-        if (!module) {
-            throw new RangeError(
-                `ShipLoadout.applyDecorativeModification: slot "${truncate(slotKey)}" is empty`,
-            );
-        }
-        const modification = getDecorativeModification(fdname);
-        if (!modification) {
-            throw new RangeError(
-                `ShipLoadout.applyDecorativeModification: unknown decorative modification "${truncate(fdname)}"`,
-            );
-        }
-        const stats = this.#statsFor(module);
-        if (!stats) {
+    setPreEngineeredVariant(slotKey: string, variant: PreEngineeredVariant): this {
+        if (variant === null || typeof variant !== 'object') {
             throw new TypeError(
-                `ShipLoadout.applyDecorativeModification: no stats for module "${truncate(module.Item)}"`,
+                `ShipLoadout.setPreEngineeredVariant: variant must be a pre-engineered variant, received ${describeValue(variant)}`,
             );
         }
-        if (stats.engineeringLocked) {
-            throw new TypeError(
-                `ShipLoadout.applyDecorativeModification: module "${truncate(module.Item)}" is a final pre-engineered article and accepts no further modification`,
-            );
-        }
-        const { modifiers, primitiveModifiers, unresolved } = resolveDecorativeModificationStats(
-            stats,
-            modification,
+        requireString(variant.symbol, 'ShipLoadout.setPreEngineeredVariant: variant.symbol');
+        requireString(variant.blueprint, 'ShipLoadout.setPreEngineeredVariant: variant.blueprint');
+        requireString(
+            variant.acquisition,
+            'ShipLoadout.setPreEngineeredVariant: variant.acquisition',
         );
+        requireStringIfPresent(
+            variant.experimental,
+            'ShipLoadout.setPreEngineeredVariant: variant.experimental',
+        );
+        const known = getPreEngineeredVariants(variant.symbol).find(
+            (candidate) =>
+                candidate.blueprint.toLowerCase() === variant.blueprint.toLowerCase() &&
+                candidate.grade === variant.grade &&
+                (candidate.experimental?.toLowerCase() ?? '') ===
+                    (variant.experimental?.toLowerCase() ?? '') &&
+                candidate.acquisition === variant.acquisition,
+        );
+        if (!known) {
+            throw new RangeError(
+                `ShipLoadout.setPreEngineeredVariant: no catalogued variant "${truncate(variant.blueprint)}" for module "${truncate(variant.symbol)}"`,
+            );
+        }
+        const stats = getPreEngineeredStats(known)!;
+        const unresolved = unresolvedModifiers(known);
         if (unresolved.length > 0) {
             throw new TypeError(
-                `ShipLoadout.applyDecorativeModification: cannot compute decorative modification "${truncate(fdname)}" for module "${truncate(module.Item)}"; missing base stats for ${unresolved.join(', ')}`,
+                `ShipLoadout.setPreEngineeredVariant: cannot resolve "${truncate(variant.blueprint)}" for module "${truncate(variant.symbol)}"; missing base stats for ${unresolved.join(', ')}`,
             );
         }
+        this.setModule(slotKey, stats);
+        const module = this.#fittedModuleFor(slotKey)!;
         const engineering: ModuleEngineering = {
-            BlueprintName: fdname,
-            Modifiers: modifiers,
+            BlueprintName: known.blueprint,
+            Level: known.grade,
+            Quality: 1,
+            ...(known.experimental === undefined ? {} : { ExperimentalEffect: known.experimental }),
+            ...(known.modifiers?.length
+                ? { Modifiers: getPreEngineeredJournalModifiers(known) }
+                : {}),
         };
         this.#replaceModule(
             module.Slot,
             { ...module, Engineering: engineering },
-            undefined,
-            primitiveModifiers,
+            cloneModuleStats(stats),
+            getPreEngineeredModifiers(known),
         );
         return this;
     }
 
     /**
-     * Strip blueprint engineering or a decorative transformation from a slot's module,
+     * Strip engineering from a slot's module,
      * restoring its base stats.
      *
      * @param slotKey - The slot to de-engineer, matched case-insensitively (journal
@@ -1669,6 +1687,7 @@ export class ShipLoadout {
             );
         }
         if (module?.Engineering) {
+            const baseStats = this.#engineeringBaseStats(module);
             const bare: LoadoutModule = { Slot: module.Slot, Item: module.Item };
             if (module.On !== undefined) (bare as { On?: boolean }).On = module.On;
             if (module.Priority !== undefined) {
@@ -1676,7 +1695,7 @@ export class ShipLoadout {
             }
             if (module.Health !== undefined) (bare as { Health?: number }).Health = module.Health;
             if (module.Value !== undefined) (bare as { Value?: number }).Value = module.Value;
-            this.#replaceModule(module.Slot, bare);
+            this.#replaceModule(module.Slot, bare, baseStats ?? undefined);
         }
         return this;
     }
@@ -2527,6 +2546,17 @@ export class ShipLoadout {
     #moduleStatsAt(slotKey: string): OutfittingModule | null {
         const fitted = this.#fittedModuleFor(slotKey);
         return fitted === undefined ? null : this.#statsFor(fitted);
+    }
+
+    /** Stock/base snapshot to use when replacing the fitted engineering block. */
+    #engineeringBaseStats(module: LoadoutModule): OutfittingModule | null {
+        const fitted = this.#statsFor(module);
+        if (!module.Engineering || identifyPreEngineeredVariant(module) === null) return fitted;
+        const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
+        if (!stock) return fitted;
+        return fitted?.engineeringLocked
+            ? cloneModuleStats({ ...stock, engineeringLocked: true })
+            : stock;
     }
 
     /** Internal fitted state with recipe-only modifiers restored for effective calculations. */

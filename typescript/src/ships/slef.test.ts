@@ -7,7 +7,7 @@ import {
     getLoadoutModifier,
     toSlef,
     stringifySlef,
-    type DecorativeModuleEngineering,
+    type BlueprintModuleEngineering,
     type LoadoutEvent,
     type LoadoutModule,
     type SlefHeader,
@@ -149,9 +149,11 @@ test('inspectSlef pinpoints every invalid modifier field', () => {
     }
 });
 
-test('grade-less decorative engineering is typed and parsed without fabricated fields', () => {
-    const engineering: DecorativeModuleEngineering = {
+test('festive engineering is typed and parsed with its observed grade', () => {
+    const engineering: BlueprintModuleEngineering = {
         BlueprintName: 'Decorative_Red',
+        Level: 5,
+        Quality: 1,
         Modifiers: [{ Label: 'Damage', Value: 0.06, OriginalValue: 6 }],
     };
     const loadout: LoadoutEvent = {
@@ -159,7 +161,7 @@ test('grade-less decorative engineering is typed and parsed without fabricated f
         Modules: [
             {
                 Slot: 'MediumHardpoint1',
-                Item: 'Hpt_PulseLaser_Fixed_Small',
+                Item: 'Hpt_FlakMortar_Turret_Medium',
                 Engineering: engineering,
             },
         ],
@@ -167,12 +169,12 @@ test('grade-less decorative engineering is typed and parsed without fabricated f
 
     const parsed = parseSlef(loadout)[0]!.data.Modules[0]!.Engineering!;
     assert.deepEqual(parsed, engineering);
-    assert.ok(!Object.hasOwn(parsed, 'Level'));
-    assert.ok(!Object.hasOwn(parsed, 'Quality'));
+    assert.equal(parsed.Level, 5);
+    assert.equal(parsed.Quality, 1);
     assert.deepEqual(toSlef(loadout, TEST_HEADER)[0]!.data, loadout);
 });
 
-test('a modification block is either fully graded or fully grade-less', () => {
+test('every modification block requires both grade fields', () => {
     const engineering = (blueprint: string, fields: Record<string, unknown>) => ({
         Ship: 'sidewinder',
         Modules: [
@@ -187,24 +189,17 @@ test('a modification block is either fully graded or fully grade-less', () => {
     assert.deepEqual(
         inspectSlef(
             engineering('Decorative_Red', {
-                Level: 1,
-                Quality: 0,
+                Level: 5,
+                Quality: 1,
             }),
         ).diagnostics,
         [],
     );
-
     for (const [blueprint, fields, path] of [
         ['FSD_LongRange', { Level: 1, Modifiers: [] }, 'Quality'],
         ['FSD_LongRange', { Quality: 1, Modifiers: [] }, 'Level'],
-        ['FSD_LongRange', { Modifiers: [] }, 'Level'],
-        ['Decorative_Unknown', { Modifiers: [] }, 'Level'],
-        ['Decorative_Red', {}, 'Modifiers'],
-        [
-            'Decorative_Red',
-            { ExperimentalEffect: 'special_test', Modifiers: [] },
-            'ExperimentalEffect',
-        ],
+        ['Decorative_Red', { Modifiers: [] }, 'Level'],
+        ['Future_Fixed_Identity', { Modifiers: [] }, 'Level'],
     ] as const) {
         assert.equal(
             inspectSlef(engineering(blueprint, fields)).diagnostics[0]?.path,

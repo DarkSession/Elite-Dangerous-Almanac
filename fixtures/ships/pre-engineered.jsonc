@@ -2,13 +2,14 @@
  * Shared test fixture — not shipped in any package.
  *
  * Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already
- * engineered, whether bought from the Merc-Coin shop, awarded for a community goal, or unlocked at
- * a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base
- * module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade`
- * already applied, and an optional `experimental`. `engineeringLocked` marks the seven
+ * modified, whether bought from the Merc-Coin shop, awarded by an event or community goal, or
+ * unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs
+ * a base module `symbol` (joins to the module catalogues) with the journal `blueprint` identity
+ * baked in, the `grade` already applied, and an optional `experimental`. The three festive event
+ * rewards carry grade-5 `Decorative_*` identities. `engineeringLocked` marks the seven
  * Guardian-weapon articles — the catalogue's only Guardian variants — that are final and accept
  * no further engineering. No narrower key than the (symbol, blueprint, grade, experimental)
- * quadruple is unique — the medium Guardian Shard
+ * tuple is unique across the catalogue — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the
  * catalogue size and its split by acquisition; `records` pins individual pairings;
  * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable;
@@ -18,14 +19,15 @@
  * against the module, blueprint and experimental catalogues.
  */
 {
-  "count": 73,
+  "count": 76,
   "counts": {
     "mercenary": 22,
     "communityGoal": 30,
-    "techBroker": 21
+    "techBroker": 21,
+    "eventReward": 3
   },
   "modifierCounts": {
-    "withModifiers": 51,
+    "withModifiers": 54,
     "withoutModifiers": 22,
     "withMercCoinCost": 22
   },
@@ -39,6 +41,22 @@
       "Hpt_Guardian_ShardCannon_Fixed_Medium",
       "Hpt_Guardian_ShardCannon_Fixed_Small"
     ]
+  },
+  "festive": {
+    "symbol": "Hpt_FlakMortar_Turret_Medium",
+    "grade": 5,
+    "blueprints": ["Decorative_Green", "Decorative_Red", "Decorative_Yellow"],
+    "modifier": {
+      "label": "Damage",
+      "method": "multiplicative",
+      "value": -0.99
+    },
+    "resolved": {
+      "baseDamage": 34,
+      "damage": 0.34,
+      "damagePerSecond": 0.17,
+      "panel": { "percent": -99, "damage": 0.3, "damagePerSecond": 0.2 }
+    }
   },
   "modifierLabels": [
     "AmmoClipSize",
