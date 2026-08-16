@@ -1618,6 +1618,14 @@
     "pt-BR": "Dados industriais da potência",
     "ru": "Данные о промышленности державы"
   },
+  "powermegashipdata": {
+    "en": "Power Megaship Data",
+    "de": "Macht-Megaschiff-Daten",
+    "es": "Datos de meganave de potencia",
+    "fr": "Données de méga-vaisseau de puissance",
+    "pt-BR": "Dados da meganave da potência",
+    "ru": "Данные о гигантском корабле державы"
+  },
   "powerpreparationspyware": {
     "en": "Power Injection Malware",
     "de": "Macht-Einspeisungs-Malware",

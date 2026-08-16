@@ -57,8 +57,12 @@ grade 3), which is why it is used to fill the gap.
     unavailable. It provides 196 records, including each internal symbol,
     category (Component / Consumable / Data / Item) and English display name.
   - In-game verification, acquired 2026-08-16 UTC; immutable revision unavailable. It
-    provides 29 player-facing identities absent from the FDevIDs snapshot, their internal
+    provides 30 player-facing identities absent from the FDevIDs snapshot, their internal
     and player categories, and English display names.
+  - Inara component pages, acquired 2026-08-16 UTC; immutable revision unavailable. Its
+    six Power data pages independently classify Power Association Data, Power Classified
+    Data, Power Industrial Data, Power Injection Malware, Power Megaship Data and Power
+    Political Data as Odyssey data resources.
 - **Derivation:**
   - `symbol` is the source's internal id (e.g. `graphene`) — what the player journal
     reports with the same field and meaning as on a ship, module or material. Frontier's
@@ -76,11 +80,10 @@ grade 3), which is why it is used to fill the gap.
     resources; `NOCData_Tutorial` is the tutorial-only duplicate of `NOCData` and has the
     same English display name. The localized, player-facing
     `SmallCapacityPowerRegulator` record is retained.
-- **Manual corrections:** none. The in-game English names are retained verbatim, including
+- **Manual corrections:** `PowerMegashipData` is assigned to `data`, overriding the
+  encoded-material classification in in-game verification. Inara's classification
+  alongside the other five Power data resources establishes that it is an Odyssey micro
+  resource, which therefore has no material grade or line. The in-game English names are
+  otherwise retained verbatim, including
   `Installation Intelligence Report`, `Spire Refinery Compound` and
   `Contaminated Spire Compound` where the community table differs.
-- **Deliberate absence:** `PowerMegashipData` appears in a community Odyssey data table,
-  but in-game verification identifies it as a grade-5 encoded ship material, not an
-  Odyssey micro resource. It therefore does not belong in these catalogues;
-  [#280](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/280) tracks adding
-  it to the material model once its line or group can be established.

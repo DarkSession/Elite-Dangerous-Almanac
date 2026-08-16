@@ -87,21 +87,21 @@ translation.
   `23343c453938e724f317c56e9eb7db0dbfa71f78`.
 - **Supplemental source:** in-game verification, acquired 2026-08-16 UTC; immutable
   revision unavailable.
-- **Derivation:** each of the 225 current symbols and its canonical English name comes
+- **Derivation:** each of the 226 current symbols and its canonical English name comes
   from the four `data/materials/micro-resources-*.jsonc` catalogues. The 196 FDevIDs-backed
   records join directly to the final component of Odyssey Materials Helper's message key
   in `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
-  localized columns are copied. Twenty-seven of the 29 in-game-backed records also have
+  localized columns are copied. Twenty-eight of the 30 in-game-backed records also have
   rows in Odyssey Materials Helper, while `PowerVirus` and
-  `SmallCapacityPowerRegulator` do not. All 29 take the explicit in-game `name` values for
+  `SmallCapacityPowerRegulator` do not. All 30 take the explicit in-game `name` values for
   German, Spanish, French, Brazilian Portuguese and Russian. In both cases the owning
   catalogue remains authoritative for canonical English names.
-- **Coverage:** English, Spanish and Russian cover all 225 micro resources. The explicit
-  translations cover 217 in German, 224 in French, 188 in Portuguese, 29 in Brazilian
+- **Coverage:** English, Spanish and Russian cover all 226 micro resources. The explicit
+  translations cover 218 in German, 225 in French, 188 in Portuguese, 30 in Brazilian
   Portuguese, 6 in Simplified Chinese and 10 in Georgian. Five of the source's Georgian
   values are byte-for-byte equal to the canonical English spelling and are retained
   verbatim; they are explicit source values, not lookup-generated fallbacks. Portuguese
-  (`pt`) and Brazilian Portuguese (`pt-BR`) remain distinct source locales: the 29
+  (`pt`) and Brazilian Portuguese (`pt-BR`) remain distinct source locales: the 30
   in-game-backed records have explicit `pt-BR` values but no `pt` value.
 - **Manual corrections:** none.
 

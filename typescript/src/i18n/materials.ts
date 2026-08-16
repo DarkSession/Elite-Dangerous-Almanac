@@ -27,9 +27,7 @@ const MATERIAL_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * @remarks
  * This function bundles names only, not material grades, categories or engineering
  * costs. Missing translations never silently fall back to English. Odyssey micro
- * resources use {@link getMicroResourceName} instead. `PowerMegashipData` is not yet
- * represented because its material line or group remains unresolved; see
- * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/280.
+ * resources use {@link getMicroResourceName} instead.
  * @throws {TypeError} If `symbol` is present and not a string, or `locale` is not a
  * string. A nullish `symbol` is a lookup miss and returns `null`.
  * @example

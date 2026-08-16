@@ -2,8 +2,8 @@
  * Shared test fixture — not shipped in any package.
  *
  * Ground truth for the Odyssey micro-resource catalogues (data/materials/micro-resources-*.jsonc,
- * from EDCD FDevIDs microresources.csv and in-game verification). `counts` pins the size
- * of each catalogue; `membershipSha256` pins each file's ordered symbols encoded as
+ * from EDCD FDevIDs microresources.csv, in-game verification and Inara). `counts` pins
+ * the size of each catalogue; `membershipSha256` pins each file's ordered symbols encoded as
  * UTF-8, joined by LF (`U+000A`) and terminated by one final LF; `records` pins individual
  * entries.
  * `symbol` is Frontier's internal id (the journal id, like
@@ -15,14 +15,14 @@
   "counts": {
     "component": 33,
     "consumable": 6,
-    "data": 124,
+    "data": 125,
     "item": 62,
-    "all": 225
+    "all": 226
   },
   "membershipSha256": {
     "component": "3c6534fe1868e78d70898760120802a1bdd5b404049939647223d7ee41ec9566",
     "consumable": "64c689e283c7a8019fdd519688069eb65ff960103eef971ffceae75686630526",
-    "data": "492d605b18b7f0eb0ecb3a7ec4dc5f858437fe33ec269bf4b166769b105da81b",
+    "data": "40d7a6f779ac8da33aa52f929ea719b6cbfcb49580074c4d350735536b43cb91",
     "item": "04d9b2fe275740fd7dcfef385e441af52f9743051718894f1e67ade6631ec657"
   },
   "records": [
@@ -65,6 +65,11 @@
       "symbol": "powervirus",
       "category": "data",
       "name": "Power Virus"
+    },
+    {
+      "symbol": "powermegashipdata",
+      "category": "data",
+      "name": "Power Megaship Data"
     },
     {
       "symbol": "chemicalsample",

@@ -115,6 +115,24 @@
     },
     {
       "kind": "microResource",
+      "identifier": "PowerMegashipData",
+      "locale": "de-DE",
+      "expected": "Macht-Megaschiff-Daten"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powermegashipdata",
+      "locale": "pt-BR",
+      "expected": "Dados da meganave da potência"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "powermegashipdata",
+      "locale": "pt",
+      "expected": null
+    },
+    {
+      "kind": "microResource",
       "identifier": "smallcapacitypowerregulator",
       "locale": "fr-FR",
       "expected": "Régulateur de puissance basse capacité"

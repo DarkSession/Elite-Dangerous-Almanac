@@ -1,9 +1,9 @@
 /*
- * Odyssey micro resources — the data category (124 entries).
+ * Odyssey micro resources — the data category (125 entries).
  *
  * Data — the intel and files downloaded, stolen or traded on foot.
  *
- * Sources: EDCD FDevIDs, microresources.csv; in-game verification.
+ * Sources: EDCD FDevIDs, microresources.csv; in-game verification; Inara.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/materials/SOURCES.md.
@@ -489,6 +489,10 @@
   {
     "symbol": "powerfinancialrecords",
     "name": "Power Industrial Data"
+  },
+  {
+    "symbol": "powermegashipdata",
+    "name": "Power Megaship Data"
   },
   {
     "symbol": "powerpreparationspyware",
