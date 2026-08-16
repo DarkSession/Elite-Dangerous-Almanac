@@ -1880,8 +1880,7 @@ export class ShipLoadout {
     }
 
     /** The fuel one jump can burn: the whole main tank, or the drive limit if lower. */
-    #maxJumpFuel(): number {
-        const fsd = this.frameShiftDrive;
+    #maxJumpFuel(fsd: FrameShiftDriveParams): number {
         return Math.min(this.#requireFuelCapacity().main, fsd.maxFuel);
     }
 
@@ -1933,8 +1932,8 @@ export class ShipLoadout {
      * fuel capacity cannot be determined.
      */
     maxJumpRange(): number {
-        const fuel = this.#maxJumpFuel();
-        return singleJumpRange(this.#requireMass(0), fuel, this.frameShiftDrive);
+        const fsd = this.frameShiftDrive;
+        return singleJumpRange(this.#requireMass(0), this.#maxJumpFuel(fsd), fsd);
     }
 
     /**
@@ -2040,7 +2039,8 @@ export class ShipLoadout {
      */
     jumpRangeSummary(): JumpRangeSummary {
         const cargo = this.#requireCargoCapacity();
-        const maxFuel = this.#maxJumpFuel();
+        const fsd = this.frameShiftDrive;
+        const maxFuel = this.#maxJumpFuel(fsd);
         return {
             max: this.maxJumpRange(),
             unladen: this.jumpRange(),
