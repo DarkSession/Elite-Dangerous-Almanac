@@ -10,11 +10,14 @@
  * `zh` and explicit Simplified Chinese tags such as `zh-CN` and `zh-Hans` select the
  * source's Simplified Chinese values, while `zh-TW`, `zh-Hant` and other Chinese
  * regional or script tags do not fall back across scripts.
+ * A source may explicitly publish a localized value whose spelling equals the canonical
+ * English name. Lookups return that source value verbatim; they never generate an
+ * English fallback for a missing locale.
  *
  * `pt` is retained because that is the exact language tag published by EDSY and Odyssey
  * Materials Helper. EDDI additionally distinguishes Brazilian Portuguese (`pt-BR`) and
  * Simplified Chinese (`zh-CN`). Odyssey Materials Helper also supplies sparse Georgian
- * (`ka`) material names.
+ * (`ka`) material and micro-resource names.
  *
  * @example
  * ```ts

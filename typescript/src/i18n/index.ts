@@ -6,6 +6,8 @@
  * BCP 47 locale. English is complete and exactly matches the owning record's `name`.
  * Other locales are intentionally sparse: the function returns `null` when its pinned
  * sources carry no translation, leaving the application in control of fallback policy.
+ * A source-backed localized spelling can be identical to English; the lookup returns
+ * explicit source values verbatim but never manufactures an English fallback.
  * Regional tags normally use language fallback (`de-DE` → `de`). Unqualified `zh`
  * selects Simplified Chinese (`zh-CN`), while other Chinese scripts and regions do not
  * fall back across scripts.

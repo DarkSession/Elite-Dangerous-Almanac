@@ -203,8 +203,8 @@ add it here and record the provenance where the data lives.
 
 ## Odyssey Materials Helper license
 
-The personal-equipment data is derived from Odyssey Materials Helper, whose MIT notice
-is reproduced as required:
+The personal-equipment data and localized material and micro-resource name tables are
+derived from Odyssey Materials Helper, whose MIT notice is reproduced as required:
 
 ```
 Copyright (c) 2026 Jixxed

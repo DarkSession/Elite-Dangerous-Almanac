@@ -78,6 +78,12 @@
       "expected": null
     },
     {
+      "kind": "material",
+      "identifier": "Mercury",
+      "locale": "ka",
+      "expected": "Mercury"
+    },
+    {
       "kind": "microResource",
       "identifier": "graphene",
       "locale": "fr-FR",

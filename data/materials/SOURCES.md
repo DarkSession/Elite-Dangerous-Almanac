@@ -67,3 +67,10 @@ grade 3), which is why it is used to fill the gap.
   - Micro resources have **no grade and no line** — those belong to the ship-side
     engineering materials above; each data-file record is a plain `{ symbol, name }`
     registry record.
+
+- **Known gap:** Odyssey Materials Helper commit
+  `23343c453938e724f317c56e9eb7db0dbfa71f78` carries 28 distinct non-placeholder
+  micro-resource symbols beyond this FDevIDs-based snapshot, primarily Powerplay 2.0 and
+  Spire resources. The current catalogues have no records for them;
+  [#277](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/277) tracks acquiring
+  and adding their identities, categories and English names.

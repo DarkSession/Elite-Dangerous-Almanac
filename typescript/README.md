@@ -140,9 +140,11 @@ getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
 getMicroResourceName('graphene', 'fr'); // -> "Graphène"
 ```
 
-Unqualified `zh` selects the source's Simplified Chinese (`zh-CN`) module names.
-Explicitly different Chinese scripts or regions such as `zh-TW` do not fall back to
-Simplified Chinese and return `null` unless a matching source is added.
+The functions return an explicit source value verbatim, so a source-backed spelling may
+happen to equal English; the library itself never supplies an English fallback.
+Unqualified `zh` selects the source's Simplified Chinese (`zh-CN`) names. Explicitly
+different Chinese scripts or regions such as `zh-TW` do not fall back to Simplified
+Chinese and return `null` unless a matching source is added.
 
 Registry lookups ignore case and surrounding whitespace. Material, commodity and
 module lookups search their complete registry by default and accept an optional
