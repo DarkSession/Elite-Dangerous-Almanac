@@ -3061,6 +3061,7 @@ declare module '*/fixtures/ships/module-stats.jsonc' {
 type FixtureShipsOperations = {
     cellBanks: {
         expected: {
+            powered: boolean[];
             totalCells: number;
             totalRestorable: number;
         };
@@ -3068,6 +3069,7 @@ type FixtureShipsOperations = {
             cells: number;
             duration: number;
             heat: number;
+            powered: boolean;
             reinforcementRate: number;
             slot: string;
             spinUp: number;

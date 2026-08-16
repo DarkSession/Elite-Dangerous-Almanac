@@ -2252,7 +2252,13 @@ export class ShipLoadout {
     }
 
     /**
-     * Every fitted shield cell bank and the complete rearmed reinforcement pool.
+     * Every fitted shield cell bank and the usable rearmed reinforcement pool.
+     *
+     * Every fitted bank remains in `banks`, where `powered` says whether it is switched
+     * on and its priority group is fed with hardpoints retracted. The totals include
+     * only those powered banks. A bank whose draw is unresolved is assumed powered,
+     * consistently with {@link powerBudget}; inspect that result's `unknownDraws` when
+     * the distinction matters.
      *
      * @returns A frozen {@link CellBankSummary}; no banks is an empty list and zero totals.
      * @example
@@ -2260,11 +2266,12 @@ export class ShipLoadout {
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
      * declare const build: ShipLoadout;
-     * build.cellBanks().totalRestorable; // -> MJ across every fitted cell
+     * build.cellBanks().totalRestorable; // -> MJ across every powered fitted cell
      * ```
      */
     cellBanks(): CellBankSummary {
-        const banks = cellBankInputsFor([...this.#modules.values()], (module) =>
+        const modules = [...this.#modules.values()];
+        const banks = cellBankInputsFor(modules, this.powerBudget(), (module) =>
             this.#statsFor(module),
         );
         const layout = this.#layoutOrNull();

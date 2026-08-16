@@ -62,7 +62,11 @@ test('shared ship-operation cases reproduce across public calculations', () => {
     });
     const cells = cellBankSummary(fixture.cellBanks.input);
     assert.deepEqual(
-        { totalRestorable: cells.totalRestorable, totalCells: cells.totalCells },
+        {
+            totalRestorable: cells.totalRestorable,
+            totalCells: cells.totalCells,
+            powered: cells.banks.map((bank) => bank.powered),
+        },
         fixture.cellBanks.expected,
     );
     assert.equal(

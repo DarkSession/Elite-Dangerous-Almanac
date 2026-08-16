@@ -244,7 +244,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(recovery.regenTime > 0);
 
     const bank = mod('Int_ShieldCellBank_Size6_Class3', INTERNAL_MODULES);
-    const banked = ShipLoadout.empty('Anaconda')
+    const banked = ShipLoadout.default('Anaconda')
         .setModule('Slot02_Size6', bank)
         .setModule('Slot01_Size7', bank);
     const cells = banked.cellBanks();
@@ -253,8 +253,35 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
         cells.banks.map(({ slot }) => slot),
         ['Slot01_Size7', 'Slot02_Size6'],
     );
+    assert.deepEqual(
+        cells.banks.map(({ powered }) => powered),
+        [true, true],
+    );
     assert.ok(cells.totalCells > 0);
     assert.ok(cells.totalRestorable > 0);
+
+    banked.setModuleEnabled('Slot02_Size6', false);
+    const disabled = banked.cellBanks();
+    assert.deepEqual(
+        disabled.banks.map(({ slot, powered }) => ({ slot, powered })),
+        [
+            { slot: 'Slot01_Size7', powered: true },
+            { slot: 'Slot02_Size6', powered: false },
+        ],
+    );
+    assert.equal(disabled.totalCells, disabled.banks[0]!.cells);
+    assert.equal(
+        disabled.totalRestorable,
+        disabled.banks[0]!.reinforcement * disabled.banks[0]!.cells,
+    );
+
+    banked
+        .setModuleEnabled('Slot02_Size6', true)
+        .setModulePriority('Slot02_Size6', 4)
+        .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class1', CORE_MODULES));
+    const shed = banked.cellBanks();
+    assert.equal(banked.powerBudget().bands[4]?.poweredRetracted, false);
+    assert.equal(shed.banks.find(({ slot }) => slot === 'Slot02_Size6')?.powered, false);
 });
 
 test('mobility returns null before requiring mass when no thrusters are fitted', () => {

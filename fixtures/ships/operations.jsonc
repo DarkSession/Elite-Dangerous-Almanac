@@ -232,7 +232,8 @@
         "cells": 4,
         "spinUp": 5,
         "duration": 1,
-        "heat": 170
+        "heat": 170,
+        "powered": true
       },
       {
         "slot": "Slot02_Size5",
@@ -241,10 +242,11 @@
         "cells": 3,
         "spinUp": 4,
         "duration": 2,
-        "heat": 120
+        "heat": 120,
+        "powered": false
       }
     ],
-    "expected": { "totalRestorable": 96, "totalCells": 7 }
+    "expected": { "totalRestorable": 48, "totalCells": 4, "powered": [true, false] }
   },
   "exclusivity": {
     "group": "shieldGenerator",

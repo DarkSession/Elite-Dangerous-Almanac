@@ -95,7 +95,7 @@ test('shield recovery validates pips and handles empty or non-regenerating shiel
     }
 });
 
-test('cell banks report one-cell reinforcement and the complete pool', () => {
+test('cell banks report every fitted bank and total only the powered pool', () => {
     const summary = cellBankSummary([
         {
             slot: 'Slot01_Size6',
@@ -105,6 +105,7 @@ test('cell banks report one-cell reinforcement and the complete pool', () => {
             spinUp: 5,
             duration: 1,
             heat: 170,
+            powered: true,
         },
         {
             slot: 'Slot02_Size5',
@@ -114,13 +115,18 @@ test('cell banks report one-cell reinforcement and the complete pool', () => {
             spinUp: 4,
             duration: 2,
             heat: 200,
+            powered: false,
         },
     ]);
-    assert.equal(summary.totalCells, 7);
-    assert.equal(summary.totalRestorable, 108);
+    assert.equal(summary.totalCells, 4);
+    assert.equal(summary.totalRestorable, 48);
     assert.deepEqual(
         summary.banks.map((bank) => bank.reinforcement),
         [12, 20],
+    );
+    assert.deepEqual(
+        summary.banks.map((bank) => bank.powered),
+        [true, false],
     );
     assert.ok(Object.isFrozen(summary));
     assert.ok(Object.isFrozen(summary.banks));
