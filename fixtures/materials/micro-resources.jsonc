@@ -2,9 +2,10 @@
  * Shared test fixture — not shipped in any package.
  *
  * Ground truth for the Odyssey micro-resource catalogues (data/materials/micro-resources-*.jsonc,
- * from EDCD FDevIDs microresources.csv). `counts` pins the size of each catalogue;
- * `membershipSha256` pins each file's ordered symbols encoded as UTF-8, joined by LF
- * (`U+000A`) and terminated by one final LF; `records` pins individual entries.
+ * from EDCD FDevIDs microresources.csv and in-game verification). `counts` pins the size
+ * of each catalogue; `membershipSha256` pins each file's ordered symbols encoded as
+ * UTF-8, joined by LF (`U+000A`) and terminated by one final LF; `records` pins individual
+ * entries.
  * `symbol` is Frontier's internal id (the journal id, like
  * ships/modules/materials), `name` is the display name, `category` is one of component /
  * consumable / data / item. Micro resources have no grade or line — they are on-foot resources,
@@ -14,15 +15,15 @@
   "counts": {
     "component": 33,
     "consumable": 6,
-    "data": 114,
-    "item": 43,
-    "all": 196
+    "data": 124,
+    "item": 62,
+    "all": 225
   },
   "membershipSha256": {
     "component": "3c6534fe1868e78d70898760120802a1bdd5b404049939647223d7ee41ec9566",
     "consumable": "64c689e283c7a8019fdd519688069eb65ff960103eef971ffceae75686630526",
-    "data": "044ffdb2b4fcd93c945206c02a8b6a06c5a464a958cfe43461c2c355490640c0",
-    "item": "60747eea7f4d9adc96f49f70bd4e4fca30757b9a2b6fc0bbd5126e90f61c1453"
+    "data": "492d605b18b7f0eb0ecb3a7ec4dc5f858437fe33ec269bf4b166769b105da81b",
+    "item": "04d9b2fe275740fd7dcfef385e441af52f9743051718894f1e67ade6631ec657"
   },
   "records": [
     {
@@ -56,9 +57,29 @@
       "name": "Spyware"
     },
     {
+      "symbol": "operationscounterattackdata",
+      "category": "data",
+      "name": "Installation Intelligence Report"
+    },
+    {
+      "symbol": "powervirus",
+      "category": "data",
+      "name": "Power Virus"
+    },
+    {
       "symbol": "chemicalsample",
       "category": "item",
       "name": "Chemical Sample"
+    },
+    {
+      "symbol": "biomechanicalcomponent",
+      "category": "item",
+      "name": "Spire Refinery Compound"
+    },
+    {
+      "symbol": "smallcapacitypowerregulator",
+      "category": "item",
+      "name": "Small-Capacity Power Regulator"
     }
   ]
 }

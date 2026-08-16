@@ -102,6 +102,18 @@
       "expected": null
     },
     {
+      "kind": "microResource",
+      "identifier": "operationscounterattackdata",
+      "locale": "pt-BR",
+      "expected": "Relatório de inteligência de instalação"
+    },
+    {
+      "kind": "microResource",
+      "identifier": "smallcapacitypowerregulator",
+      "locale": "fr-FR",
+      "expected": "Régulateur de puissance basse capacité"
+    },
+    {
       "kind": "module",
       "identifier": "not_a_module",
       "locale": "en-GB",

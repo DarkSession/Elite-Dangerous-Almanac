@@ -116,7 +116,7 @@ imports are:
 `ships/modules` is 311.9 KiB and `ships/modules-all` 310.8 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
-materials 16.9 KiB, micro resources 10.7 KiB, commodities 29.5 KiB.
+materials 16.9 KiB, micro resources 13.3 KiB, commodities 29.5 KiB.
 
 ## Published source maps
 

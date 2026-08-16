@@ -1,9 +1,9 @@
 /*
- * Odyssey micro resources — the item category (43 entries).
+ * Odyssey micro resources — the item category (62 entries).
  *
  * Items — the physical goods collected and traded on foot.
  *
- * Source: EDCD FDevIDs, microresources.csv.
+ * Sources: EDCD FDevIDs, microresources.csv; in-game verification.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/materials/SOURCES.md.
@@ -185,5 +185,81 @@
   {
     "symbol": "largecapacitypowerregulator",
     "name": "Power Regulator"
+  },
+  {
+    "symbol": "biomechanicalcomponent",
+    "name": "Spire Refinery Compound"
+  },
+  {
+    "symbol": "nm_seed",
+    "name": "Unica Seed"
+  },
+  {
+    "symbol": "poweragriculture",
+    "name": "Agricultural Sample"
+  },
+  {
+    "symbol": "powercomputer",
+    "name": "Computer Parts"
+  },
+  {
+    "symbol": "powerelectronics",
+    "name": "Electronics Package"
+  },
+  {
+    "symbol": "powerequipment",
+    "name": "Personal Protective Equipment"
+  },
+  {
+    "symbol": "powerexperiment",
+    "name": "Experiment Prototype"
+  },
+  {
+    "symbol": "powerextraction",
+    "name": "Extraction Sample"
+  },
+  {
+    "symbol": "powerindustrial",
+    "name": "Industrial Component"
+  },
+  {
+    "symbol": "powerinventory",
+    "name": "Inventory Record"
+  },
+  {
+    "symbol": "powermedical",
+    "name": "Medical Sample"
+  },
+  {
+    "symbol": "powermisccomputer",
+    "name": "Data Storage Device"
+  },
+  {
+    "symbol": "powermiscindust",
+    "name": "Industrial Machinery"
+  },
+  {
+    "symbol": "powerplaymilitary",
+    "name": "Military Schematic"
+  },
+  {
+    "symbol": "powerpower",
+    "name": "Energy Regulator"
+  },
+  {
+    "symbol": "powerresearch",
+    "name": "Research Notes"
+  },
+  {
+    "symbol": "powersecurity",
+    "name": "Security Logs"
+  },
+  {
+    "symbol": "sabotagedcomponent",
+    "name": "Contaminated Spire Compound"
+  },
+  {
+    "symbol": "smallcapacitypowerregulator",
+    "name": "Small-Capacity Power Regulator"
   }
 ]

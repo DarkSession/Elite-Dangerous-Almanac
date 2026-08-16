@@ -8,7 +8,7 @@
  * ({@link getMicroResourceBySymbol}, {@link getMicroResourceByName},
  * {@link microResourcesInCategory}).
  *
- * **Every lookup searches all 196 micro resources by default** — you do not have to
+ * **Every lookup searches all 225 micro resources by default** — you do not have to
  * hand it a catalogue:
  *
  * ```ts
@@ -22,15 +22,15 @@
  * | --- | --- | --- |
  * | `./micro-resources-component` | `COMPONENT_MICRO_RESOURCES` | 33 |
  * | `./micro-resources-consumable` | `CONSUMABLE_MICRO_RESOURCES` | 6 |
- * | `./micro-resources-data` | `DATA_MICRO_RESOURCES` | 114 |
- * | `./micro-resources-item` | `ITEM_MICRO_RESOURCES` | 43 |
- * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 196 (the default) |
+ * | `./micro-resources-data` | `DATA_MICRO_RESOURCES` | 124 |
+ * | `./micro-resources-item` | `ITEM_MICRO_RESOURCES` | 62 |
+ * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 225 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all four
- * catalogues, since that is what it falls back to — 10.7 KiB minified for all 196.
+ * catalogues, since that is what it falls back to — 13.3 KiB minified for all 225.
  * {@link microResourcesInCategory} reaches the same subsets from a plain string.
  *
- * Data originates from EDCD FDevIDs (`microresources.csv`); see
+ * Data originates from EDCD FDevIDs (`microresources.csv`) and in-game verification; see
  * [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @example
@@ -94,7 +94,7 @@ const MICRO_RESOURCES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURC
  *
  * @param symbol - The internal symbol, e.g. `"graphene"`, or the lower-cased form the
  * player journal reports. Leading/trailing whitespace and case are ignored.
- * @param microResources - Optional subset to search instead of all 196 micro
+ * @param microResources - Optional subset to search instead of all 225 micro
  * resources — `COMPONENT_MICRO_RESOURCES`, `CONSUMABLE_MICRO_RESOURCES`,
  * `DATA_MICRO_RESOURCES`, `ITEM_MICRO_RESOURCES`, or any array you have filtered
  * yourself. Omit it unless you specifically want to exclude the rest.

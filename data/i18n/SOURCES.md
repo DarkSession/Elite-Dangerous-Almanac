@@ -85,17 +85,21 @@ a translation.
 - **Acquired:** 2026-08-16 UTC.
 - **Odyssey Materials Helper revision:** commit
   `23343c453938e724f317c56e9eb7db0dbfa71f78`.
-- **Derivation:** each of the 196 current symbols and its canonical English name comes
-  from the four `data/materials/micro-resources-*.jsonc` catalogues. The lower-cased
-  symbol joins directly to the final component of Odyssey Materials Helper's message key
-  in `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
-  localized columns are copied. The source's English column is not copied because the
-  owning micro-resource catalogues remain authoritative for canonical names.
-- **Coverage:** English, Spanish and Russian cover all 196 micro resources. The explicit
-  translations cover 188 in German, 195 in French, 188 in Portuguese, 6 in Simplified
-  Chinese and 10 in Georgian. Five of the source's Georgian values are byte-for-byte
-  equal to the canonical English spelling and are retained verbatim; they are explicit
-  source values, not lookup-generated fallbacks.
+- **Supplemental source:** in-game verification.
+- **Derivation:** each of the 225 current symbols and its canonical English name comes
+  from the four `data/materials/micro-resources-*.jsonc` catalogues. For the 196 records
+  present in Odyssey Materials Helper, the lower-cased symbol joins directly to the final
+  component of its message key in
+  `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
+  localized columns are copied. The remaining 29 records join to their in-game
+  localization identity, and the explicit `name` values for German, Spanish, French,
+  Brazilian Portuguese and Russian are copied. In both cases the owning catalogue remains
+  authoritative for canonical English names.
+- **Coverage:** English, Spanish and Russian cover all 225 micro resources. The explicit
+  translations cover 217 in German, 224 in French, 188 in Portuguese, 29 in Brazilian
+  Portuguese, 6 in Simplified Chinese and 10 in Georgian. Five of the source's Georgian
+  values are byte-for-byte equal to the canonical English spelling and are retained
+  verbatim; they are explicit source values, not lookup-generated fallbacks.
 - **Manual corrections:** none.
 
 ## Deliberate absence: ship names
