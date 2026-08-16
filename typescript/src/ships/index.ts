@@ -50,7 +50,8 @@
  *   draws, by priority group), {@link shieldMetrics} and {@link armourMetrics} (strength,
  *   hit points and the resistances behind them, stacked by {@link stackShieldResistance}
  *   / {@link stackArmourResistance}), {@link weaponMetrics} (DPS, sustained DPS,
- *   capacitor draw and heat), {@link weaponsCapacitorMetrics} (WEP-pip recharge and
+ *   capacitor draw and heat), {@link distributorMetrics} (SYS, ENG and WEP capacity
+ *   and pip-scaled recharge), {@link weaponsCapacitorMetrics} (WEP-pip recharge and
  *   firing endurance), {@link ammunitionCapacity} (the magazine and the reserve
  *   behind it, for anything that carries rounds) and {@link heatMetrics} (what the build
  *   runs at idle and firing, and whether it cooks itself).
@@ -279,6 +280,7 @@ export {
     type JumpRangeSummary,
     type DefenceOptions,
     type MobilityOptions,
+    type DistributorOptions,
     type WeaponsOptions,
     type RetailCredits,
     type FittedWeaponMetrics,
@@ -382,6 +384,13 @@ export {
     type WeaponTotals,
     type DamageSplit,
 } from './weapons.js';
+export {
+    distributorMetrics,
+    type DistributorInput,
+    type DistributorCapacitorMetrics,
+    type DistributorPips,
+    type DistributorMetrics,
+} from './distributor.js';
 export {
     weaponsCapacitorMetrics,
     type WeaponsCapacitorInput,

@@ -277,6 +277,10 @@
             "types": "./dist/ships/default-loadouts.d.ts",
             "import": "./dist/ships/default-loadouts.js"
         },
+        "./ships/distributor": {
+            "types": "./dist/ships/distributor.d.ts",
+            "import": "./dist/ships/distributor.js"
+        },
         "./ships/engineering-options": {
             "types": "./dist/ships/engineering-options.d.ts",
             "import": "./dist/ships/engineering-options.js"
