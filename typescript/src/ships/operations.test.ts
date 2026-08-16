@@ -3,6 +3,7 @@ import { test } from 'node:test';
 
 import fixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
 import { mobilityMetrics } from './mobility.js';
+import { distributorMetrics } from './distributor.js';
 import { calculateCargoCapacity } from './loadout-calculations.js';
 import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
 import { validateLoadout } from './loadout-validation.js';
@@ -72,9 +73,19 @@ test('shared ship-operation cases reproduce across public calculations', () => {
     for (const [field, expected] of Object.entries(fixture.weaponsCapacitor.expected)) {
         assert.ok(Math.abs(capacitor[field as keyof typeof capacitor] - expected) < 1e-12, field);
     }
+    assert.deepEqual(distributorMetrics(fixture.distributor.input), fixture.distributor.expected);
 });
 
 test('shared catalogue-backed operation cases reproduce', () => {
+    const distributorFacade = fixture.distributor.facade;
+    assert.deepEqual(
+        ShipLoadout.default(distributorFacade.ship).distributorMetrics(distributorFacade.options),
+        fixture.distributor.expected,
+    );
+    for (const loadout of distributorFacade.nullLoadouts) {
+        assert.equal(ShipLoadout.fromLoadout(loadout).distributorMetrics(), null);
+    }
+
     const retail = ShipLoadout.default(fixture.retailCredits.ship).retailCredits();
     assert.deepEqual(
         { hull: retail.hull, modules: retail.modules, rebuy: retail.rebuy },

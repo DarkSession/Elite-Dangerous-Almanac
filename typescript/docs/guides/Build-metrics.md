@@ -161,6 +161,14 @@ weapons.total.energyPerSecond; // weapons capacitor draw, MW
 weapons.total.heatPerSecond;
 weapons.weapons.length; // per-hardpoint breakdown
 
+const distributor = build.distributorMetrics({
+    systemsPips: 2,
+    enginesPips: 2,
+    weaponsPips: 2,
+});
+distributor?.engines.ratedRecharge; // four-pip catalogue rate, MJ/s
+distributor?.engines.rechargeRate; // actual ENG recharge at two pips, MJ/s
+
 const capacitor = build.weaponsCapacitorMetrics({ weaponsPips: 2 });
 capacitor.rechargeRate; // actual WEP recharge at two pips, MJ/s
 capacitor.netDrainRate; // sustained draw minus recharge, floored at zero
@@ -171,10 +179,16 @@ Beam and mining lasers are **continuous**: they carry no rate of fire, and their
 distributor draw and thermal load are already per second, so the per-shot arithmetic
 collapses to the raw stats.
 
-A distributor's catalogue recharge is the four-WEP-pip maximum. The capacitor result
-scales it by `(weaponsPips / 4) ^ 1.1`, then compares it with **sustained** energy per
-second: a magazine's reload is time for the capacitor to recover, so burst draw would
-understate endurance. Fractional allocations from zero through four are accepted.
+A distributor's three catalogue recharge figures are their four-pip maxima.
+`distributorMetrics()` scales SYS, ENG and WEP independently by `(pips / 4) ^ 1.1` and
+returns each capacity, rated recharge and actual rate. Fractional allocations from zero
+through four are accepted; each defaults to four independently and they need not total
+six, so the result can compare three independent scenarios. It returns `null` without a
+powered distributor or when the fitted article's capacitor stats cannot be resolved.
+
+`weaponsCapacitorMetrics()` adds firing endurance to the WEP calculation. It compares
+pip-scaled recharge with **sustained** energy per second: a magazine's reload is time for
+the capacitor to recover, so burst draw would understate endurance.
 
 The build facade applies the deployed power budget. A distributor or weapon shed by its
 priority group contributes nothing; unresolved power draws keep the power budget's

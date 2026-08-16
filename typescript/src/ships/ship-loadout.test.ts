@@ -3382,6 +3382,42 @@ test('weaponsCapacitorMetrics scales fitted distributor recharge by WEP pips', (
     });
 });
 
+test('distributorMetrics reports every fitted capacitor at its selected pips', () => {
+    const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
+    const distributor = build.fittedModuleAt('PowerDistributor')!.effectiveStats!;
+    const rated = build.distributorMetrics()!;
+    const halfPips = build.distributorMetrics({
+        systemsPips: 2,
+        enginesPips: 2,
+        weaponsPips: 2,
+    })!;
+
+    assert.deepEqual(rated.pips, { systems: 4, engines: 4, weapons: 4 });
+    for (const capacitor of ['systems', 'engines', 'weapons'] as const) {
+        const capacity = `${capacitor}Capacity` as const;
+        const recharge = `${capacitor}Recharge` as const;
+        assert.equal(rated[capacitor].capacity, distributor[capacity]);
+        assert.equal(rated[capacitor].ratedRecharge, distributor[recharge]);
+        assert.equal(rated[capacitor].rechargeRate, distributor[recharge]);
+        assert.ok(halfPips[capacitor].rechargeRate < rated[capacitor].rechargeRate);
+    }
+    assert.equal(
+        halfPips.engines.rechargeRate,
+        distributor.enginesRecharge! * Math.pow(2 / 4, 1.1),
+    );
+    assert.throws(() => build.distributorMetrics({ enginesPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.distributorMetrics: enginesPips must be a finite number from 0 to 4',
+    });
+});
+
+test('distributorMetrics returns null without a powered distributor', () => {
+    assert.equal(ShipLoadout.empty('Anaconda').distributorMetrics(), null);
+
+    const off = ShipLoadout.default('Anaconda').setModuleEnabled('PowerDistributor', false);
+    assert.equal(off.distributorMetrics(), null);
+});
+
 test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', () => {
     const starved = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent).setModule(
         'PowerPlant',
@@ -3396,6 +3432,7 @@ test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', (
         netDrainRate: 0,
         timeToDrain: Infinity,
     });
+    assert.equal(starved.distributorMetrics(), null);
 });
 
 test('a hull with no shield generator reports no shields', () => {

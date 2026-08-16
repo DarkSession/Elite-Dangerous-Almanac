@@ -112,6 +112,7 @@ import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import {
     armourInputFor,
     cellBankInputsFor,
+    distributorInputFor,
     effectiveModule,
     heatInputFor,
     mobilityInputFor,
@@ -134,6 +135,7 @@ import {
 } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { weaponsCapacitorMetrics, type WeaponsCapacitorMetrics } from './weapons-capacitor.js';
+import { distributorMetrics, type DistributorMetrics } from './distributor.js';
 import { mobilityMetrics, type MobilityMetrics } from './mobility.js';
 import {
     cellBankSummary,
@@ -316,6 +318,16 @@ export interface MobilityOptions extends JumpOptions {
 
 /** Optional WEP allocation for {@link ShipLoadout.weaponsCapacitorMetrics}. */
 export interface WeaponsOptions {
+    /** Pips assigned to the weapons capacitor, `0`–`4`. Defaults to `4`. */
+    readonly weaponsPips?: number;
+}
+
+/** Optional SYS, ENG and WEP allocations for {@link ShipLoadout.distributorMetrics}. */
+export interface DistributorOptions {
+    /** Pips assigned to the systems capacitor, `0`–`4`. Defaults to `4`. */
+    readonly systemsPips?: number;
+    /** Pips assigned to the engines capacitor, `0`–`4`. Defaults to `4`. */
+    readonly enginesPips?: number;
     /** Pips assigned to the weapons capacitor, `0`–`4`. Defaults to `4`. */
     readonly weaponsPips?: number;
 }
@@ -2397,6 +2409,54 @@ export class ShipLoadout {
                 (module) => this.#statsFor(module),
             ),
         );
+    }
+
+    /**
+     * All three power-distributor capacitors at selected pip allocations.
+     *
+     * @param options - SYS, ENG and WEP pips in `[0, 4]`, each defaulting
+     * independently to `4`. The allocations need not sum to six, which permits
+     * independent comparisons of the three maxima.
+     * @returns Capacity, rated four-pip recharge and actual pip-scaled recharge for
+     * SYS, ENG and WEP, or `null` when no distributor is fitted, it is switched off,
+     * its six capacitor stats cannot be resolved, or the deployed power budget sheds
+     * it. A module with unresolved power draw is assumed powered, consistently with
+     * {@link powerBudget}; inspect its `unknownDraws` when that distinction matters.
+     * @throws {RangeError} If any pip allocation is outside `[0, 4]` or not finite.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * const distributor = build.distributorMetrics({
+     *   systemsPips: 2,
+     *   enginesPips: 2,
+     *   weaponsPips: 2,
+     * });
+     * distributor?.engines.rechargeRate; // MJ/s
+     * ```
+     */
+    distributorMetrics(options: DistributorOptions = {}): DistributorMetrics | null {
+        const pips = {
+            systemsPips: options.systemsPips ?? 4,
+            enginesPips: options.enginesPips ?? 4,
+            weaponsPips: options.weaponsPips ?? 4,
+        };
+        for (const field of ['systemsPips', 'enginesPips', 'weaponsPips'] as const) {
+            const value = pips[field];
+            if (!Number.isFinite(value) || value < 0 || value > 4) {
+                throw new RangeError(
+                    `ShipLoadout.distributorMetrics: ${field} must be a finite number from 0 to 4`,
+                );
+            }
+        }
+        const input = distributorInputFor(
+            this.#modulesForEffectiveStats(),
+            pips,
+            this.powerBudget(),
+            (module) => this.#statsFor(module),
+        );
+        return input ? distributorMetrics(input) : null;
     }
 
     /**

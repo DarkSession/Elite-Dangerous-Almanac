@@ -33,7 +33,7 @@ a verbatim copy produced at build time — edit this file, never the copy.
   boost and rotation through the thruster-mass and ENG-pip curves; shield strength and its
   mass curve; shield collapse delay, regeneration and SYS-capacitor recovery timing; armour
   hit points; resistance stacking with its diminishing returns; weapon DPS / capacitor
-  draw / heat; and WEP-pip recharge with weapons-capacitor endurance. It credits the
+  draw / heat; SYS- and WEP-pip recharge; and weapons-capacitor endurance. It credits the
   original Frontier-forum research the formulas come from.
 - **The heat model** — the equilibrium heat level a thermal load settles at, how heat
   moves towards it over time, and the multiplier a drained weapons capacitor puts on a
@@ -49,9 +49,10 @@ a verbatim copy produced at build time — edit this file, never the copy.
   the game displays. Both
   describe Frontier's game and fall under the same Frontier notice as every other stat
   here; what differs is how they were arrived at, not who owns them.
-- **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, the **engineered
-  ammunition rounding** rule and the **build metrics above** are cross-checked against, or
-  ported as fact from, EDSY (credited under Data below). The jump-range model derives from
+- **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, **ENG-capacitor
+  pip-scaled recharge**, the **engineered ammunition rounding** rule and the **build metrics
+  above** are cross-checked against, or ported as fact from, EDSY (credited under Data below).
+  The jump-range model derives from
   Frontier's "mass effect on hyperspace range" description; Coriolis carries the same maths
   for the metrics, and a clip round-up that omits EDSY's burst step, where EDSY is followed.
 - **Galactic codex region lookup** — resolving a region from galactic coordinates or from a

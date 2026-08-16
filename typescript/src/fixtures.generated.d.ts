@@ -3147,6 +3147,57 @@ type FixtureShipsOperations = {
             };
         };
     };
+    distributor: {
+        expected: {
+            engines: {
+                capacity: number;
+                ratedRecharge: number;
+                rechargeRate: number;
+            };
+            pips: {
+                engines: number;
+                systems: number;
+                weapons: number;
+            };
+            systems: {
+                capacity: number;
+                ratedRecharge: number;
+                rechargeRate: number;
+            };
+            weapons: {
+                capacity: number;
+                ratedRecharge: number;
+                rechargeRate: number;
+            };
+        };
+        facade: {
+            nullLoadouts: {
+                Modules: {
+                    Item: string;
+                    On?: boolean;
+                    Slot: string;
+                }[];
+                Ship: string;
+            }[];
+            options: {
+                enginesPips: number;
+                systemsPips: number;
+                weaponsPips: number;
+            };
+            ship: string;
+        };
+        input: {
+            enginesCapacity: number;
+            enginesPips: number;
+            enginesRecharge: number;
+            systemsCapacity: number;
+            systemsPips: number;
+            systemsRecharge: number;
+            weaponsCapacity: number;
+            weaponsPips: number;
+            weaponsRecharge: number;
+        };
+    };
     editorErrors: {
         duplicateExclusiveModule: {
             expected: {

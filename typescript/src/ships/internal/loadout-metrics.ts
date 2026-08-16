@@ -44,6 +44,7 @@ import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
 import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
 import type { WeaponsCapacitorInput } from '../weapons-capacitor.js';
+import type { DistributorInput } from '../distributor.js';
 import { ammunitionCapacity } from '../ammunition.js';
 
 /**
@@ -596,6 +597,51 @@ export function weaponsCapacitorInputFor(
         }
     }
     return { weaponsCapacity, weaponsRecharge, sustainedEnergyPerSecond, weaponsPips };
+}
+
+/** Gather all three capacitors from the powered distributor under the deployed budget. */
+export function distributorInputFor(
+    modules: readonly LoadoutModule[],
+    pips: {
+        readonly systemsPips: number;
+        readonly enginesPips: number;
+        readonly weaponsPips: number;
+    },
+    budget: PowerBudget,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): DistributorInput | null {
+    for (const module of modules) {
+        if (!isEnabled(module)) continue;
+        const stats = statsFor(module);
+        if (!isPowerDistributor(module, stats)) continue;
+        if (!poweredStates(module, stats, budget).deployed) return null;
+        const systemsCapacity = effectiveStat(module, 'systemsCapacity', stats);
+        const systemsRecharge = effectiveStat(module, 'systemsRecharge', stats);
+        const enginesCapacity = effectiveStat(module, 'enginesCapacity', stats);
+        const enginesRecharge = effectiveStat(module, 'enginesRecharge', stats);
+        const weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats);
+        const weaponsRecharge = effectiveStat(module, 'weaponsRecharge', stats);
+        if (
+            systemsCapacity === undefined ||
+            systemsRecharge === undefined ||
+            enginesCapacity === undefined ||
+            enginesRecharge === undefined ||
+            weaponsCapacity === undefined ||
+            weaponsRecharge === undefined
+        ) {
+            return null;
+        }
+        return {
+            systemsCapacity,
+            systemsRecharge,
+            enginesCapacity,
+            enginesRecharge,
+            weaponsCapacity,
+            weaponsRecharge,
+            ...pips,
+        };
+    }
+    return null;
 }
 
 /**

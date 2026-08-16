@@ -1,11 +1,12 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Cross-language parity cases for loaded mobility, shield recovery, WEP-capacitor endurance, shield-cell pools,
- * one-per-ship and counted-module validation, direct retail pricing, alpha-strike
- * thermal load, structured diagnostics and editor failures. Inputs pin the public
- * data-free and ShipLoadout facade contracts; catalogue-backed expectations pin the
- * shared ship and module snapshots.
+ * Cross-language parity cases for loaded mobility, shield recovery, distributor
+ * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship and
+ * counted-module validation, direct retail pricing, alpha-strike thermal load,
+ * structured diagnostics and editor failures. Inputs pin the public data-free and
+ * ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship
+ * and module snapshots.
  */
 {
   "mobility": {
@@ -305,6 +306,73 @@
   "weapons": {
     "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],
     "expectedThermalLoad": 98
+  },
+  "distributor": {
+    "input": {
+      "systemsCapacity": 32,
+      "systemsRecharge": 3.2,
+      "enginesCapacity": 32,
+      "enginesRecharge": 3.2,
+      "weaponsCapacity": 48,
+      "weaponsRecharge": 4.8,
+      "systemsPips": 2,
+      "enginesPips": 2,
+      "weaponsPips": 2
+    },
+    "expected": {
+      "systems": {
+        "capacity": 32,
+        "ratedRecharge": 3.2,
+        "rechargeRate": 1.4928527864588919
+      },
+      "engines": {
+        "capacity": 32,
+        "ratedRecharge": 3.2,
+        "rechargeRate": 1.4928527864588919
+      },
+      "weapons": {
+        "capacity": 48,
+        "ratedRecharge": 4.8,
+        "rechargeRate": 2.239279179688338
+      },
+      "pips": { "systems": 2, "engines": 2, "weapons": 2 }
+    },
+    "facade": {
+      "ship": "Anaconda",
+      "options": { "systemsPips": 2, "enginesPips": 2, "weaponsPips": 2 },
+      "nullLoadouts": [
+        { "Ship": "Anaconda", "Modules": [] },
+        {
+          "Ship": "Anaconda",
+          "Modules": [
+            { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size8_Class1" },
+            {
+              "Slot": "PowerDistributor",
+              "Item": "Int_PowerDistributor_Size8_Class1",
+              "On": false
+            }
+          ]
+        },
+        {
+          "Ship": "Anaconda",
+          "Modules": [
+            {
+              "Slot": "PowerDistributor",
+              "Item": "Int_PowerDistributor_Size8_Class1"
+            }
+          ]
+        },
+        {
+          "Ship": "Anaconda",
+          "Modules": [
+            {
+              "Slot": "PowerDistributor",
+              "Item": "Int_PowerDistributor_Future"
+            }
+          ]
+        }
+      ]
+    }
   },
   "weaponsCapacitor": {
     "input": {
