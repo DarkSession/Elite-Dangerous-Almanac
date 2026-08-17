@@ -36,6 +36,11 @@ RUN npm uninstall --global pnpm \
     && corepack enable pnpm \
     && test "$(command -v pnpm)" = "$(dirname "$(command -v corepack)")/pnpm"
 
+# The VS Code extension does not put the Codex CLI on PATH for lifecycle commands.
+# Install the current CLI and fail the build if its plugin commands are unavailable.
+RUN npm install --global @openai/codex \
+    && codex plugin --help >/dev/null
+
 RUN (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
 	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
