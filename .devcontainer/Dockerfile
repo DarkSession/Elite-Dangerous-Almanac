@@ -37,8 +37,7 @@ RUN npm uninstall --global pnpm \
     && test "$(command -v pnpm)" = "$(dirname "$(command -v corepack)")/pnpm"
 
 # The VS Code extension does not put the Codex CLI on PATH for lifecycle commands.
-# Plugin management is currently available in the alpha CLI, so pin the exact
-# version that provides the commands used by postCreateCommand.
+# Install the current CLI and fail the build if its plugin commands are unavailable.
 RUN npm install --global @openai/codex \
     && codex plugin --help >/dev/null
 

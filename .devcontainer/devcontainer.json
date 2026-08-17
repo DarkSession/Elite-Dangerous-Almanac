@@ -37,5 +37,7 @@
   // pnpm comes from the image (see Dockerfile), not from here: enabling Corepack as
   // this user cannot write the shim. `pnpm --version` resolves the pin in
   // typescript/package.json, so it reports the version the container will actually use.
-  "postCreateCommand": "node --version && python3 --version && cd typescript && pnpm --version && codex plugin marketplace add DietrichGebert/ponytail && codex plugin add ponytail@ponytail"
+  // Ponytail is pinned to the v4.9.0 commit so container creation never executes a
+  // moving third-party ref.
+  "postCreateCommand": "node --version && python3 --version && cd typescript && pnpm --version && codex plugin marketplace add DietrichGebert/ponytail --ref 0a4dd63ad4541f4f655c4108a295916f3c1d8fda && codex plugin add ponytail@ponytail"
 }

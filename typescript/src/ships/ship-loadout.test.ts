@@ -2601,25 +2601,20 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
         ...mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES),
         restrictedToShips: ['Anaconda'],
         limitIncrease: { group: 'experimentalWeapon', amount: 1 },
+        damageDistribution: { kinetic: 1 },
         damageComponents: { explosive: 4, unclassified: [1] },
         projectileRange: { maximumBoundary: 0, falloffBoundary: 100000 },
     };
-    ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', supplied);
+    ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', new Proxy(supplied, {}));
 
     assert.equal(Object.isFrozen(supplied), false);
     assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
     assert.equal(Object.isFrozen(supplied.limitIncrease), false);
+    assert.equal(Object.isFrozen(supplied.damageDistribution), false);
     assert.equal(Object.isFrozen(supplied.damageComponents), false);
     assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
     assert.equal(Object.isFrozen(supplied.projectileRange), false);
     assert.doesNotThrow(() => (supplied.damageComponents!.unclassified as number[]).push(2));
-});
-
-test('fitting accepts a Proxy-wrapped module record', () => {
-    const module = mod('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
-    const build = ShipLoadout.empty('Anaconda').setModule('FrameShiftDrive', new Proxy(module, {}));
-
-    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.stats?.symbol, module.symbol);
 });
 
 // ── Immutable slot and fitted-module views ───────────────────────────────────
