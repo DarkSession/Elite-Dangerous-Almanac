@@ -2358,6 +2358,35 @@ export class ShipLoadout {
     }
 
     /**
+     * Total the Merc Coin prices of the Mercenary articles fitted to this build.
+     *
+     * @returns The total in Merc Coin, or `0` when no fitted article is a Mercenary
+     * purchase. Credit prices and rebuy remain available from {@link retailCredits}.
+     * @remarks
+     * The total counts each fitted article. Its Mercenary-only blueprint identifies the
+     * purchase at grade 1 and after later upgrades; the current grade does not change the
+     * original shop price.
+     * @example
+     * ```ts
+     * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium')
+     *     .find((candidate) => candidate.acquisition === 'mercenary')!;
+     * const build = ShipLoadout.default('Python')
+     *     .setPreEngineeredVariant('MediumHardpoint1', variant);
+     * build.mercCoinCost(); // -> 950
+     * ```
+     */
+    mercCoinCost(): number {
+        let total = 0;
+        for (const module of this.#modules.values()) {
+            total += identifyPreEngineeredVariant(module)?.mercCoinCost ?? 0;
+        }
+        return total;
+    }
+
+    /**
      * The build's armour: hull hit points, the bulkhead and reinforcement each
      * contribute, and the effective resistances.
      *

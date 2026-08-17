@@ -3348,6 +3348,16 @@ type FixtureShipsOperations = {
         expectedCode: string;
         group: string;
     };
+    mercCoinCost: {
+        expected: number;
+        modules: {
+            blueprint: string;
+            cost: number;
+            slot: string;
+            symbol: string;
+        }[];
+        ship: string;
+    };
     mobility: {
         expected: {
             boost: number;
