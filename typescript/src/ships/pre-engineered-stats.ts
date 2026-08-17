@@ -45,6 +45,9 @@ import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 import { journalModifiersFor } from './internal/loadout-engineering.js';
 
+/** Highest engineering grade Frontier reports for any module blueprint. */
+const MAX_ENGINEERING_GRADE = 5;
+
 /** Compute a variant's fixed block together with an experimental added to the article. */
 function modifiersWithExperimental(
     variant: PreEngineeredVariant,
@@ -243,15 +246,19 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
         'identifyPreEngineeredVariant: module.Engineering.BlueprintName',
     );
     const variants = getPreEngineeredVariants(module.Item);
-    const mercenaryMatches = variants.filter(
-        (candidate) =>
-            candidate.acquisition === 'mercenary' &&
-            candidate.blueprint.toLowerCase() === capturedBlueprint &&
-            Number.isInteger(engineering.Level) &&
-            engineering.Level >= candidate.grade &&
-            engineering.Level <= 5,
+    const blueprintMatches = variants.filter(
+        (candidate) => candidate.blueprint.toLowerCase() === capturedBlueprint,
     );
-    if (mercenaryMatches.length === 1) return mercenaryMatches[0]!;
+    const blueprintMatch = blueprintMatches.length === 1 ? blueprintMatches[0]! : null;
+    const capturedGrade = engineering.Level;
+    if (
+        blueprintMatch?.acquisition === 'mercenary' &&
+        Number.isInteger(capturedGrade) &&
+        capturedGrade >= blueprintMatch.grade &&
+        capturedGrade <= MAX_ENGINEERING_GRADE
+    ) {
+        return blueprintMatch;
+    }
     if (!engineering.Modifiers?.length) return null;
 
     const actualByKey = new Map<string, EngineeringModifier>();
@@ -274,10 +281,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
             candidate.acquisition === 'eventReward' &&
             (engineering.ExperimentalEffect !== undefined ||
                 engineering.ExperimentalEffect_Localised !== undefined ||
-                normalizeKey(
-                    engineering.BlueprintName,
-                    'identifyPreEngineeredVariant: module.Engineering.BlueprintName',
-                ) !== candidate.blueprint.toLowerCase())
+                capturedBlueprint !== candidate.blueprint.toLowerCase())
         ) {
             continue;
         }

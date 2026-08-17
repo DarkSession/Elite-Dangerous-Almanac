@@ -1125,8 +1125,9 @@ export class ShipLoadout {
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns Frozen blueprint descriptors: the ordinary engineering menu first, then
      * bespoke Mercenary upgrade recipes. An `'ordinary'` candidate is available to the
-     * stock module; a `'mercenary'` candidate requires the caller to confirm that the
-     * fitted article is the matching Mercenary purchase, because its symbol alone cannot.
+     * stock module; a `'mercenary'` candidate is purchase-specific. Applying that bespoke
+     * blueprint identifies the matching Mercenary article even though its bare module
+     * symbol does not.
      * Returns an empty array when the slot is empty, unresolved or final, or the module
      * symbol has neither route.
      * @throws {TypeError} If `slotKey` is not a string.
@@ -1720,6 +1721,9 @@ export class ShipLoadout {
      * @returns `this`, for chaining. A no-op if the slot is empty or unmodified.
      * @throws {TypeError} If `slotKey` is not a string, or the fitted article is final
      * pre-engineered and its baked engineering cannot be removed.
+     * @remarks
+     * Clearing a Mercenary article removes its purchase-exclusive blueprint identity.
+     * Its {@link FittedModule.preEngineeredVariant} then reads `null`.
      */
     clearEngineering(slotKey: string): this {
         const module = this.#fittedModuleFor(slotKey);
