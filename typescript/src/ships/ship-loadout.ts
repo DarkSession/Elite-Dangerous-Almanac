@@ -156,6 +156,7 @@ import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
+import { fixedSlotReason } from './internal/loadout-slot-rules.js';
 import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
@@ -1022,9 +1023,10 @@ export class ShipLoadout {
         const value = deepFreeze(
             slots.map((slot) => {
                 const stats = this.#moduleStatsAt(slot.key);
+                const fixedReason = fixedSlotReason(slot);
                 const immovableReason =
-                    slot.key.toLowerCase() === 'cargohatch'
-                        ? ('cargoHatch' as const)
+                    fixedReason !== null
+                        ? fixedReason
                         : stats?.limitIncrease !== undefined &&
                             this.#moduleLimitRegression(slot.key, null, currentLimits, stats) !==
                                 null
@@ -1313,19 +1315,30 @@ export class ShipLoadout {
      *
      * @param slotKey - The slot key to clear, matched case-insensitively (journal
      * spelling).
-     * @returns `this`, for chaining. Clearing an already-empty slot is a no-op.
+     * @returns `this`, for chaining. Clearing an already-empty removable slot is a no-op.
      * @throws {TypeError} If `slotKey` is not a string.
-     * @throws {LoadoutEditError} If the slot is the built-in cargo hatch, which cannot
-     * be removed or replaced, or removing the module would worsen a per-ship
-     * module-count excess.
+     * @throws {LoadoutEditError} If the slot is the built-in cargo hatch; is a required
+     * core or armour mount; or removing the module would worsen a per-ship module-count
+     * excess. Required mounts may be replaced with {@link setModule}, but not emptied.
      */
     removeModule(slotKey: string): this {
         // Read before `#fittedKey` does, so this one method guards for itself.
-        if (requireString(slotKey, SLOT_KEY).toLowerCase() === 'cargohatch') {
+        const wanted = requireString(slotKey, SLOT_KEY).toLowerCase();
+        if (wanted === 'cargohatch') {
             throw new LoadoutEditError(
                 'ShipLoadout.removeModule: the cargoHatch slot cannot be changed',
                 'immutableSlot',
                 { slot: 'CargoHatch' },
+            );
+        }
+        const slot = this.#layoutOrNull()?.find(
+            (candidate) => candidate.key.toLowerCase() === wanted,
+        );
+        if (slot !== undefined && fixedSlotReason(slot) === 'requiredSlot') {
+            throw new LoadoutEditError(
+                `ShipLoadout.removeModule: the ${truncate(slot.key)} slot is required and cannot be emptied`,
+                'immutableSlot',
+                { slot: slot.key },
             );
         }
         const key = this.#fittedKey(slotKey);

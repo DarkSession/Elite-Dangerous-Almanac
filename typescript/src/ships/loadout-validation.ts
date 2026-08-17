@@ -8,6 +8,7 @@ import type { BuildSlot } from './slots.js';
 import type { ModuleExclusionGroup, ModuleLimitGroup, ModuleLimitIncrease } from './modules.js';
 import { calculateModuleLimits } from './module-limits.js';
 import { truncate } from '../internal/argument-guards.js';
+import { isRequiredSlot } from './internal/loadout-slot-rules.js';
 
 /**
  * Stable machine-readable reason a loadout is invalid or incomplete.
@@ -211,10 +212,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
             }
         }
         for (const slot of input.slots) {
-            if (
-                (slot.kind === 'core' || slot.kind === 'armour') &&
-                !seen.has(slot.key.toLowerCase())
-            ) {
+            if (isRequiredSlot(slot) && !seen.has(slot.key.toLowerCase())) {
                 issues.push({
                     code: 'missingRequiredSlot',
                     severity: 'incomplete',

@@ -792,43 +792,51 @@
                 }
               },
               {
-                "removeModule": {
-                  "slot": "Armour"
+                "setModule": {
+                  "slot": "Armour",
+                  "symbol": "Explorer_NX_Armour_Grade2"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "PowerPlant"
+                "setModule": {
+                  "slot": "PowerPlant",
+                  "symbol": "Int_Powerplant_Size2_Class1"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "MainEngines"
+                "setModule": {
+                  "slot": "MainEngines",
+                  "symbol": "Int_Engine_Size2_Class1"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "FrameShiftDrive"
+                "setModule": {
+                  "slot": "FrameShiftDrive",
+                  "symbol": "Int_Hyperdrive_Size2_Class1"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "LifeSupport"
+                "setModule": {
+                  "slot": "LifeSupport",
+                  "symbol": "Int_LifeSupport_Size1_Class1"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "PowerDistributor"
+                "setModule": {
+                  "slot": "PowerDistributor",
+                  "symbol": "Int_PowerDistributor_Size1_Class1"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "Radar"
+                "setModule": {
+                  "slot": "Radar",
+                  "symbol": "Int_Sensors_Size1_Class1"
                 }
               },
               {
-                "removeModule": {
-                  "slot": "FuelTank"
+                "setModule": {
+                  "slot": "FuelTank",
+                  "symbol": "Int_FuelTank_Size1_Class3"
                 }
               },
               {
@@ -882,7 +890,7 @@
                 }
               }
             ],
-            "why": "Nothing the capture priced is left. Emitting its totals over the remaining cargo hatch would state a purchase for a build that no longer exists.",
+            "why": "Nothing the capture priced is left. Required mounts hold replacement articles and every other priced article is removed, so emitting the capture's totals would state a purchase for a build that no longer exists.",
             "topLevelCredits": {
               "HullValue": 189326510
             },

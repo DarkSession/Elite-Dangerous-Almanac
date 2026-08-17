@@ -8,7 +8,7 @@ import type { FittedModule } from './fitted-module.js';
 import type { BuildSlot } from './slots.js';
 
 /** Stable reason a hull mount cannot be emptied through {@link ShipLoadout.removeModule}. */
-export type ImmovableReason = 'cargoHatch' | 'moduleLimit';
+export type ImmovableReason = 'cargoHatch' | 'moduleLimit' | 'requiredSlot';
 
 /**
  * A point-in-time, deeply frozen view of one hull mount.
@@ -71,8 +71,9 @@ export type LoadoutSlot = BuildSlot & {
     readonly removable: boolean;
     /**
      * Machine-readable reason the mount cannot currently be emptied: `cargoHatch` for
-     * the built-in hatch, or `moduleLimit` when removing a fitted allowance-increasing
-     * module would leave too many limited modules. Absent when {@link removable} is true.
+     * the built-in hatch, `requiredSlot` for a core or armour mount, or `moduleLimit`
+     * when removing a fitted allowance-increasing module would leave too many limited
+     * modules. Absent when {@link removable} is true.
      */
     readonly immovableReason?: ImmovableReason;
 };
