@@ -3,10 +3,10 @@
  *
  * Cross-language parity cases for loaded mobility, shield recovery, distributor
  * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship and
- * counted-module validation, direct retail pricing, alpha-strike thermal load,
- * structured diagnostics and editor failures. Inputs pin the public data-free and
- * ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship
- * and module snapshots.
+ * counted-module validation, direct retail and Merc Coin pricing, alpha-strike thermal
+ * load, structured diagnostics and editor failures. Inputs pin the public data-free and
+ * ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship and
+ * module snapshots.
  */
 {
   "mobility": {
@@ -304,6 +304,24 @@
   "retailCredits": {
     "ship": "Anaconda",
     "expected": { "hull": 142456440, "modules": 4522132, "rebuy": 7348928 }
+  },
+  "mercCoinCost": {
+    "ship": "Python",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "blueprint": "RailGun_LongShot",
+        "cost": 950
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_MultiCannon_Fixed_Medium",
+        "blueprint": "MultiCannon_Rapid",
+        "cost": 850
+      }
+    ],
+    "expected": 1800
   },
   "weapons": {
     "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],
