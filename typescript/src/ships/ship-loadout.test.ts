@@ -3930,9 +3930,11 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
     const variant = getPreEngineeredVariants('Int_PowerDistributor_Size6_Class5').find(
         (candidate) => candidate.acquisition === 'mercenary',
     )!;
-    const fitted = ShipLoadout.empty('Anaconda')
-        .setPreEngineeredVariant('PowerDistributor', variant)
-        .fittedModuleAt('PowerDistributor')!;
+    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'PowerDistributor',
+        variant,
+    );
+    const fitted = build.fittedModuleAt('PowerDistributor')!;
 
     assert.deepEqual(fitted.engineering, {
         BlueprintName: variant.blueprint,
@@ -3940,6 +3942,10 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
         Quality: 1,
     });
     assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'));
+    assert.equal(fitted.preEngineeredVariant, variant);
+
+    build.clearEngineering('PowerDistributor');
+    assert.equal(build.fittedModuleAt('PowerDistributor')!.preEngineeredVariant, null);
 });
 
 test('setPreEngineeredVariant validates the variant and preserves its module identity', () => {

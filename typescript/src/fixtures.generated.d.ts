@@ -3726,6 +3726,13 @@ type FixtureShipsPreEngineered = {
             source: string;
             symbol: string;
         }[];
+        mercenary: {
+            blueprint: string;
+            mercCoinCost: number;
+            purchaseGrade: number;
+            symbol: string;
+            upgradedGrade: number;
+        };
         notMatches: {
             slot: string;
             source: string;

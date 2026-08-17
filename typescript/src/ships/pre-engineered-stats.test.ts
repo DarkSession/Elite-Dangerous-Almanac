@@ -107,6 +107,72 @@ test('ordinary and under-specified engineering is not guessed to be pre-engineer
     );
 });
 
+test('a Mercenary-only blueprint identifies the bought article at every reachable grade', () => {
+    const expected = fixture.identification.mercenary;
+    const variant = only({
+        symbol: expected.symbol,
+        blueprint: expected.blueprint,
+        acquisition: 'mercenary',
+    });
+    assert.equal(variant.grade, expected.purchaseGrade);
+    assert.equal(variant.mercCoinCost, expected.mercCoinCost);
+
+    for (let grade = expected.purchaseGrade; grade <= expected.upgradedGrade; grade++) {
+        assert.equal(
+            identifyPreEngineeredVariant({
+                Slot: 'MediumHardpoint1',
+                Item: expected.symbol,
+                Engineering: {
+                    BlueprintName: expected.blueprint,
+                    Level: grade,
+                    Quality: 1,
+                },
+            }),
+            variant,
+            `grade ${grade}`,
+        );
+    }
+});
+
+test('every Mercenary catalogue row identifies without a published modifier block', () => {
+    for (const variant of PRE_ENGINEERED_MODULES.filter(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )) {
+        assert.equal(
+            identifyPreEngineeredVariant({
+                Slot: 'Slot',
+                Item: variant.symbol,
+                Engineering: {
+                    BlueprintName: variant.blueprint,
+                    Level: variant.grade,
+                    Quality: 1,
+                },
+            }),
+            variant,
+            `${variant.symbol}: ${variant.blueprint}`,
+        );
+    }
+});
+
+test('Mercenary identification still requires a valid exclusive blueprint and grade', () => {
+    const expected = fixture.identification.mercenary;
+    for (const Engineering of [
+        { BlueprintName: 'Weapon_HighCapacity', Level: expected.purchaseGrade, Quality: 1 },
+        { BlueprintName: expected.blueprint, Level: 0, Quality: 1 },
+        { BlueprintName: expected.blueprint, Level: 6, Quality: 1 },
+        { BlueprintName: expected.blueprint, Level: 1.5, Quality: 1 },
+    ]) {
+        assert.equal(
+            identifyPreEngineeredVariant({
+                Slot: 'MediumHardpoint1',
+                Item: expected.symbol,
+                Engineering,
+            }),
+            null,
+        );
+    }
+});
+
 test('resolved fallback stats include a baked experimental effect omitted by the capture', () => {
     const expected = fixture.identification.omittedBakedExperimental;
     const captured = capturedModule(expected.source, expected.slot);
@@ -580,6 +646,19 @@ test('identification names its own fields, not the catalogue lookup beneath it',
             message: `identifyPreEngineeredVariant: ${field} must be a string, received number 42`,
         });
     }
+    assert.throws(
+        () =>
+            identifyPreEngineeredVariant({
+                Slot: 'a',
+                Item: 'Hpt_Railgun_Fixed_Medium',
+                Engineering: { BlueprintName: 42, Level: 1, Quality: 1 },
+            } as never),
+        {
+            name: 'TypeError',
+            message:
+                'identifyPreEngineeredVariant: module.Engineering.BlueprintName must be a string, received number 42',
+        },
+    );
     // An unengineered module answers before any field is read.
     assert.equal(identifyPreEngineeredVariant({ Slot: 'a', Item: 42 } as never), null);
 });

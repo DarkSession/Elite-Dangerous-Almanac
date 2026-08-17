@@ -145,9 +145,10 @@ carrying it, preventing unsupported festive variants of unrelated weapons.
 
 For a module symbol that has Mercenary variants, `availableBlueprints` appends every
 bespoke Mercenary upgrade recipe after the ordinary menu and marks it with `route:
-'mercenary'`. Stock and Mercenary articles share a symbol, so the loadout cannot prove
-which one was purchased: the route says the recipe requires the corresponding Mercenary
-article, not that the fitted module is one.
+'mercenary'`. Stock and Mercenary articles share a symbol, but each bespoke blueprint is
+available only to its corresponding purchase. A fitted module carrying that blueprint is
+therefore identified as the Mercenary article at its purchase grade or after a later
+upgrade; its `preEngineeredVariant` retains the original grade and Merc Coin price.
 
 ## The three accommodations
 

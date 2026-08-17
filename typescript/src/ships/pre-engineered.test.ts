@@ -163,6 +163,24 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
     }
 });
 
+test('every Mercenary blueprint is exclusive to its purchased article', () => {
+    for (const variant of PRE_ENGINEERED_MODULES.filter(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )) {
+        const collisions = PRE_ENGINEERED_MODULES.filter(
+            (candidate) =>
+                candidate.symbol === variant.symbol &&
+                candidate.blueprint === variant.blueprint &&
+                candidate.acquisition !== 'mercenary',
+        );
+        assert.deepEqual(
+            collisions,
+            [],
+            `${variant.symbol}: ${variant.blueprint} is not purchase-exclusive`,
+        );
+    }
+});
+
 test('the only pre-engineered Guardian variants are the pinned final weapons', () => {
     const guardian = PRE_ENGINEERED_MODULES.filter((variant) =>
         variant.symbol.toLowerCase().includes('guardian'),

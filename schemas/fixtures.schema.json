@@ -5365,6 +5365,24 @@
                 ]
               }
             },
+            "mercenary": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprint": { "type": "string" },
+                "mercCoinCost": { "type": "integer" },
+                "purchaseGrade": { "type": "integer" },
+                "symbol": { "type": "string" },
+                "upgradedGrade": { "type": "integer" }
+              },
+              "required": [
+                "blueprint",
+                "mercCoinCost",
+                "purchaseGrade",
+                "symbol",
+                "upgradedGrade"
+              ]
+            },
             "notMatches": {
               "type": "array",
               "items": {
@@ -5403,6 +5421,7 @@
           "required": [
             "description",
             "matches",
+            "mercenary",
             "notMatches",
             "omittedBakedExperimental"
           ]

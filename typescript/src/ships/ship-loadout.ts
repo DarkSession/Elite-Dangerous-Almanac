@@ -412,9 +412,10 @@ export interface AvailableBlueprint {
      * or `'mercenary'` for a bespoke recipe attached to a Mercenary purchase.
      *
      * @remarks
-     * A Mercenary article shares its module symbol with the stock article, so a loadout
-     * cannot tell which one was purchased. `'mercenary'` means the recipe is available
-     * only through that purchase route; it does not identify the fitted article as one.
+     * A Mercenary article shares its module symbol with the stock article. Its bespoke
+     * blueprint is nevertheless available only through that purchase, so a fitted module
+     * carrying the blueprint identifies the article even after a later grade upgrade.
+     * `'mercenary'` means the recipe requires that purchase route.
      */
     readonly route: 'ordinary' | 'mercenary';
 }
@@ -629,11 +630,14 @@ export class ShipLoadout {
      * Capture/instance state (`timestamp`, `ShipID`, `HullHealth`, `Hot`) and engineering
      * provenance (`Engineer`, `EngineerID`, `BlueprintID`) are deliberately excluded
      * from the durable build. See {@link LoadoutEvent} and {@link ModuleEngineering}.
-     * A pre-engineered/reward module is identified from its reported stat signature when
-     * the evidence uniquely matches a catalogue variant. Its complete fixed stat block is
-     * then used as the fitted record, including values the capture omits; a separately
-     * applied experimental effect is included when matching and remains authoritative in
-     * the captured modifiers. Under-specified or ambiguous evidence stays unidentified.
+     * A reward module is identified when its reported stat signature uniquely matches a
+     * catalogue variant. That reward's complete fixed stat block is then used as the fitted
+     * record, including values the capture omits; a separately applied experimental effect
+     * is included when matching and remains authoritative in the captured modifiers. A
+     * Mercenary module is instead identified by the bespoke blueprint available only to its
+     * purchase, including after a later grade upgrade. Its unpublished purchase modifiers
+     * are not inferred; the capture's current engineering remains authoritative.
+     * Under-specified or ambiguous evidence stays unidentified.
      * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
      * article; the import preserves that identity, uses the catalogue's complete hand-set
      * stat block when the exact article is known, exposes no engineering options for it,
@@ -1121,8 +1125,9 @@ export class ShipLoadout {
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns Frozen blueprint descriptors: the ordinary engineering menu first, then
      * bespoke Mercenary upgrade recipes. An `'ordinary'` candidate is available to the
-     * stock module; a `'mercenary'` candidate requires the caller to confirm that the
-     * fitted article is the matching Mercenary purchase, because its symbol alone cannot.
+     * stock module; a `'mercenary'` candidate is purchase-specific. Applying that bespoke
+     * blueprint identifies the matching Mercenary article even though its bare module
+     * symbol does not.
      * Returns an empty array when the slot is empty, unresolved or final, or the module
      * symbol has neither route.
      * @throws {TypeError} If `slotKey` is not a string.
@@ -1716,6 +1721,9 @@ export class ShipLoadout {
      * @returns `this`, for chaining. A no-op if the slot is empty or unmodified.
      * @throws {TypeError} If `slotKey` is not a string, or the fitted article is final
      * pre-engineered and its baked engineering cannot be removed.
+     * @remarks
+     * Clearing a Mercenary article removes its purchase-exclusive blueprint identity.
+     * Its {@link FittedModule.preEngineeredVariant} then reads `null`.
      */
     clearEngineering(slotKey: string): this {
         const module = this.#fittedModuleFor(slotKey);
