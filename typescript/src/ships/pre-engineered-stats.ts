@@ -13,8 +13,9 @@
  * gzipped). Consumers that only list variants can import `./pre-engineered.js` without
  * these module catalogues.
  * A journal or SLEF module can instead be classified with
- * {@link identifyPreEngineeredVariant}: it matches the article's reported stat signature
- * and composes an experimental effect added after purchase before comparing values.
+ * {@link identifyPreEngineeredVariant}: it matches a reward article's reported stat signature
+ * and composes an experimental effect added after purchase before comparing values. A Mercenary
+ * article is identified by its Mercenary-only blueprint, including after later grade upgrades.
  *
  * **What is resolved, and what is not.** The module catalogues carry the mechanical
  * stats (mass, integrity, power, capacities, optimal mass), defence stats and weapon
@@ -43,6 +44,9 @@ import { fixedModifierFeatures } from './internal/fixed-modifier-features.js';
 import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 import { journalModifiersFor } from './internal/loadout-engineering.js';
+
+/** Highest engineering grade Frontier reports for any module blueprint. */
+const MAX_ENGINEERING_GRADE = 5;
 
 /** Compute a variant's fixed block together with an experimental added to the article. */
 function modifiersWithExperimental(
@@ -191,17 +195,24 @@ function matchesModifierSignature(
 /**
  * Identify the fixed pre-engineered/reward variant described by a fitted loadout module.
  *
- * Matching uses the reported post-engineering stat values rather than trusting the
+ * Reward matching uses the reported post-engineering stat values rather than trusting the
  * blueprint tuple alone: reward variants carry hand-set values that an ordinary roll of
  * the named blueprint does not reproduce. A captured experimental effect is composed
  * with each candidate before comparison, because some fixed articles accept an effect
  * after purchase (the V1 frame-shift drives are the common example).
  *
+ * Mercenary articles are the exception: their bespoke blueprint is available only after
+ * buying the article, while their unpublished purchase modifier block cannot identify it.
+ * The module symbol and blueprint therefore identify the purchase at grade 1 and after
+ * upgrading it through grades 2–5. The fitted grade and experimental effect remain the
+ * loadout's current engineering state; the returned variant carries the original purchase
+ * grade and Merc Coin price.
+ *
  * Frontier journals and captures may omit a derived modifier, so one predicted value may
  * be absent. Every stated predicted value must agree within journal float noise, and all
  * but at most one must be present. Ambiguous or incomplete evidence returns `null` rather
  * than guessing.
- * Variants without a published stat block cannot be identified this way.
+ * Other variants without a published stat block cannot be identified.
  *
  * @param module - A module from a journal `Loadout` event or SLEF export.
  * @returns The uniquely matching catalogue variant, or `null` when the stats do not
@@ -223,12 +234,32 @@ function matchesModifierSignature(
  */
 export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineeredVariant | null {
     const engineering = module.Engineering;
-    if (!engineering?.Modifiers?.length) return null;
+    if (!engineering) return null;
     // Named here rather than left to the catalogue lookup below, so a wrong-typed field
     // reports the function the caller reached for instead of the one it delegates to.
     requireStringIfPresent(module.Item, 'identifyPreEngineeredVariant: module.Item');
     const stock = getModuleBySymbol(module.Item, ALL_MODULES);
     if (!stock) return null;
+
+    const capturedBlueprint = normalizeKey(
+        engineering.BlueprintName,
+        'identifyPreEngineeredVariant: module.Engineering.BlueprintName',
+    );
+    const variants = getPreEngineeredVariants(module.Item);
+    const blueprintMatches = variants.filter(
+        (candidate) => candidate.blueprint.toLowerCase() === capturedBlueprint,
+    );
+    const blueprintMatch = blueprintMatches.length === 1 ? blueprintMatches[0]! : null;
+    const capturedGrade = engineering.Level;
+    if (
+        blueprintMatch?.acquisition === 'mercenary' &&
+        Number.isInteger(capturedGrade) &&
+        capturedGrade >= blueprintMatch.grade &&
+        capturedGrade <= MAX_ENGINEERING_GRADE
+    ) {
+        return blueprintMatch;
+    }
+    if (!engineering.Modifiers?.length) return null;
 
     const actualByKey = new Map<string, EngineeringModifier>();
     for (const modifier of engineering.Modifiers) {
@@ -239,7 +270,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
         'identifyPreEngineeredVariant: module.Engineering.ExperimentalEffect',
     );
     const matches: PreEngineeredVariant[] = [];
-    for (const candidate of getPreEngineeredVariants(module.Item)) {
+    for (const candidate of variants) {
         if (!candidate.modifiers?.length) continue;
         if (candidate.grade !== engineering.Level) continue;
         // The festive articles share the same stat block, so their journal identity is
@@ -250,10 +281,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
             candidate.acquisition === 'eventReward' &&
             (engineering.ExperimentalEffect !== undefined ||
                 engineering.ExperimentalEffect_Localised !== undefined ||
-                normalizeKey(
-                    engineering.BlueprintName,
-                    'identifyPreEngineeredVariant: module.Engineering.BlueprintName',
-                ) !== candidate.blueprint.toLowerCase())
+                capturedBlueprint !== candidate.blueprint.toLowerCase())
         ) {
             continue;
         }
