@@ -3940,6 +3940,7 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
         Quality: 1,
     });
     assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'));
+    assert.equal(fitted.preEngineeredVariant, variant);
 });
 
 test('setPreEngineeredVariant validates the variant and preserves its module identity', () => {
