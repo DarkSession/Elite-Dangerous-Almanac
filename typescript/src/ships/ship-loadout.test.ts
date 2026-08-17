@@ -71,7 +71,28 @@ test('slot views state whether a mount can be emptied', () => {
             immovableReason: 'cargoHatch',
         },
     );
-    assert.ok(slots.filter((slot) => slot.kind !== 'cargoHatch').every((slot) => slot.removable));
+    const required = slots.filter((slot) => slot.kind === 'core' || slot.kind === 'armour');
+    assert.equal(required.length, 8);
+    assert.ok(required.every((slot) => !slot.removable && slot.immovableReason === 'requiredSlot'));
+    assert.ok(
+        slots
+            .filter(
+                (slot) =>
+                    slot.kind !== 'cargoHatch' && slot.kind !== 'core' && slot.kind !== 'armour',
+            )
+            .every((slot) => slot.removable),
+    );
+
+    for (const ship of SHIPS) {
+        const fixed = ShipLoadout.default(ship.symbol)
+            .slots()
+            .filter((slot) => slot.kind === 'core' || slot.kind === 'armour');
+        assert.equal(fixed.length, 8, ship.symbol);
+        assert.ok(
+            fixed.every((slot) => !slot.removable && slot.immovableReason === 'requiredSlot'),
+            ship.symbol,
+        );
+    }
 });
 
 test('one-per-ship modules are filtered, rejected on edit and diagnosed on import', () => {
@@ -467,8 +488,8 @@ test('default builds fit every stock module and remain independently editable', 
     const first = ShipLoadout.default(' sidewinder ');
     const second = ShipLoadout.default('SideWinder');
     assert.equal(first.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class1');
-    first.removeModule('FrameShiftDrive');
-    assert.equal(first.fittedModuleAt('FrameShiftDrive'), null);
+    first.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size2_Class2'));
+    assert.equal(first.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class2');
     assert.equal(second.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class1');
 });
 
@@ -743,9 +764,9 @@ test('editing a SLEF build keeps imported aggregate figures coherent', () => {
     );
     assert.equal(build.unladenMass, originalMass - 48);
 
-    build.removeModule('FuelTank');
+    build.setModule('FuelTank', mod('Int_FuelTank_Size6_Class3'));
     build.removeModule('Slot09_Size4');
-    assert.deepEqual(build.fuelCapacity, { main: 0, reserve: 1.14 });
+    assert.deepEqual(build.fuelCapacity, { main: 64, reserve: 1.14 });
     assert.equal(build.cargoCapacity, 0);
     assert.equal(build.modulesValue, null);
     assert.equal(build.rebuy, null);
@@ -1636,7 +1657,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
     );
 });
 
-test('armour is hull-specific while the cargo hatch remains fixed', () => {
+test('armour is hull-specific while fixed mounts cannot be emptied', () => {
     const conda = ShipLoadout.empty('Anaconda');
     const armour = conda.modulesForSlot('Armour');
     assert.equal(armour.length, 5);
@@ -1655,6 +1676,22 @@ test('armour is hull-specific while the cargo hatch remains fixed', () => {
         () => conda.setModule('CargoHatch', mod('Int_Hyperdrive_Size6_Class5')),
         /cargoHatch slot cannot be changed/,
     );
+    assert.throws(() => conda.removeModule('Armour'), {
+        name: 'TypeError',
+        code: 'requiredSlot',
+        params: { slot: 'Armour' },
+    });
+    assert.throws(() => conda.removeModule('powerplant'), {
+        name: 'TypeError',
+        code: 'requiredSlot',
+        params: { slot: 'PowerPlant' },
+    });
+    assert.equal(conda.fittedModuleAt('Armour')?.symbol, 'Anaconda_Armour_Grade2');
+    conda.setModule(
+        'Armour',
+        armour.find((module) => module.symbol.endsWith('_Grade3'))!,
+    );
+    assert.equal(conda.fittedModuleAt('Armour')?.symbol, 'Anaconda_Armour_Grade3');
 
     const imported = ShipLoadout.fromSlef(slefString);
     const cargoHatch = imported.fittedModuleAt('CargoHatch')?.raw;
@@ -1662,6 +1699,29 @@ test('armour is hull-specific while the cargo hatch remains fixed', () => {
     assert.throws(() => imported.removeModule('CargoHatch'), /cargoHatch slot cannot be changed/);
     assert.deepEqual(imported.fittedModuleAt('CargoHatch')?.raw, cargoHatch);
     assert.ok(imported.slots().find((slot) => slot.key === 'CargoHatch')?.module);
+});
+
+test('required mounts stay occupied when an imported hull has no known layout', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'FutureShip',
+        Modules: [
+            { Slot: 'powerplant', Item: 'FuturePowerPlant' },
+            { Slot: 'Armour', Item: 'FutureArmour' },
+        ],
+    });
+
+    assert.throws(() => build.removeModule('PowerPlant'), {
+        name: 'TypeError',
+        code: 'requiredSlot',
+        params: { slot: 'powerplant' },
+    });
+    assert.throws(() => build.removeModule('armour'), {
+        name: 'TypeError',
+        code: 'requiredSlot',
+        params: { slot: 'Armour' },
+    });
+    assert.equal(build.fittedModuleAt('PowerPlant')?.symbol, 'FuturePowerPlant');
+    assert.equal(build.fittedModuleAt('Armour')?.symbol, 'FutureArmour');
 });
 
 // ── Engineering ─────────────────────────────────────────────────────────────
@@ -2570,13 +2630,13 @@ test('slot views are immutable point-in-time values', () => {
     assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(fitted.slot, 'FrameShiftDrive');
 
-    conda.removeModule(drive.key);
+    conda.setModule(drive.key, mod('Int_Hyperdrive_Size5_Class5'));
     assert.equal(
         fitted.symbol,
         'Int_Hyperdrive_Size6_Class5',
         'the earlier module snapshot stays readable',
     );
-    assert.equal(conda.fittedModules().length, 0);
+    assert.equal(conda.fittedModules().length, 1);
     assert.throws(() => Object.assign(drive, { name: 'changed' }), TypeError);
     assert.throws(() => Object.assign(fitted.raw, { Item: 'changed' }), TypeError);
 });
@@ -2622,13 +2682,13 @@ test('availableBlueprints / availableExperimentalEffects answer available engine
 
 test('fittedModuleAt returns null for empty slots and fittedModules lists snapshots', () => {
     const build = ShipLoadout.empty('Anaconda');
-    assert.equal(build.fittedModuleAt('FrameShiftDrive'), null);
-    build.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'));
-    const snapshot = build.fittedModuleAt('FrameShiftDrive')!;
+    assert.equal(build.fittedModuleAt('Slot01_Size7'), null);
+    build.setModule('Slot01_Size7', mod('Int_FuelTank_Size6_Class3'));
+    const snapshot = build.fittedModuleAt('Slot01_Size7')!;
     assert.deepEqual(build.fittedModules(), [snapshot]);
     build.removeModule(snapshot.slot);
-    assert.equal(build.fittedModuleAt('FrameShiftDrive'), null);
-    assert.equal(snapshot.symbol, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(build.fittedModuleAt('Slot01_Size7'), null);
+    assert.equal(snapshot.symbol, 'Int_FuelTank_Size6_Class3');
 });
 
 test('a fitted-module snapshot remains unchanged after replacement', () => {
@@ -4252,15 +4312,11 @@ test('a derived view never survives the edit that invalidates it', () => {
             },
         ],
         [
-            // Fitting and emptying a *required* mount is what moves `validation`: the
+            // Filling a *required* mount is what moves `validation`: the
             // cargo-slot edits above leave `valid`, `complete` and the issue list
             // untouched, so on their own they cannot catch a stale validation cache.
             'setModule filling a required core mount',
             (build) => void build.setModule('MainEngines', build.modulesForSlot('MainEngines')[0]!),
-        ],
-        [
-            'removeModule emptying a required core mount',
-            (build) => void build.removeModule('PowerPlant'),
         ],
         [
             'applyBlueprint',

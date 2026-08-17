@@ -3327,6 +3327,22 @@ type FixtureShipsOperations = {
             ship: string;
             targetSlot: string;
         };
+        requiredSlot: {
+            expected: {
+                code: string;
+                params: {
+                    slot: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+            slot: string;
+        };
     };
     exclusivity: {
         expectedCode: string;
@@ -3613,7 +3629,7 @@ type FixtureShipsOperations = {
             kind: string;
             removable: boolean;
             size: number;
-        };
+        }[];
         ship: string;
     };
     weapons: {
@@ -4738,8 +4754,12 @@ type FixtureShipsSourcePurchase = {
                     };
                     stripEveryPricedModule: {
                         edits: {
-                            removeModule: {
+                            removeModule?: {
                                 slot: string;
+                            };
+                            setModule?: {
+                                slot: string;
+                                symbol: string;
                             };
                         }[];
                         topLevelCredits: {
