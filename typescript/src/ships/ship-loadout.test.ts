@@ -2605,15 +2605,17 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
         damageComponents: { explosive: 4, unclassified: [1] },
         projectileRange: { maximumBoundary: 0, falloffBoundary: 100000 },
     };
-    ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', new Proxy(supplied, {}));
-
-    assert.equal(Object.isFrozen(supplied), false);
-    assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
-    assert.equal(Object.isFrozen(supplied.limitIncrease), false);
-    assert.equal(Object.isFrozen(supplied.damageDistribution), false);
-    assert.equal(Object.isFrozen(supplied.damageComponents), false);
-    assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
-    assert.equal(Object.isFrozen(supplied.projectileRange), false);
+    for (const input of [supplied, new Proxy(supplied, {})]) {
+        const build = ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', input);
+        assert.equal(build.fittedModuleAt('Slot01_Size7')?.stats?.symbol, supplied.symbol);
+        assert.equal(Object.isFrozen(supplied), false);
+        assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
+        assert.equal(Object.isFrozen(supplied.limitIncrease), false);
+        assert.equal(Object.isFrozen(supplied.damageDistribution), false);
+        assert.equal(Object.isFrozen(supplied.damageComponents), false);
+        assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
+        assert.equal(Object.isFrozen(supplied.projectileRange), false);
+    }
     assert.doesNotThrow(() => (supplied.damageComponents!.unclassified as number[]).push(2));
 });
 
