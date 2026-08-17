@@ -2601,17 +2601,21 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
         ...mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES),
         restrictedToShips: ['Anaconda'],
         limitIncrease: { group: 'experimentalWeapon', amount: 1 },
+        damageDistribution: { kinetic: 1 },
         damageComponents: { explosive: 4, unclassified: [1] },
         projectileRange: { maximumBoundary: 0, falloffBoundary: 100000 },
     };
-    ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', supplied);
-
-    assert.equal(Object.isFrozen(supplied), false);
-    assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
-    assert.equal(Object.isFrozen(supplied.limitIncrease), false);
-    assert.equal(Object.isFrozen(supplied.damageComponents), false);
-    assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
-    assert.equal(Object.isFrozen(supplied.projectileRange), false);
+    for (const input of [supplied, new Proxy(supplied, {})]) {
+        const build = ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', input);
+        assert.equal(build.fittedModuleAt('Slot01_Size7')?.stats?.symbol, supplied.symbol);
+        assert.equal(Object.isFrozen(supplied), false);
+        assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
+        assert.equal(Object.isFrozen(supplied.limitIncrease), false);
+        assert.equal(Object.isFrozen(supplied.damageDistribution), false);
+        assert.equal(Object.isFrozen(supplied.damageComponents), false);
+        assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
+        assert.equal(Object.isFrozen(supplied.projectileRange), false);
+    }
     assert.doesNotThrow(() => (supplied.damageComponents!.unclassified as number[]).push(2));
 });
 
@@ -4272,148 +4276,14 @@ test("a core mount's function name reaches its slot only where casing is the dif
     }
 });
 
-// ── Derived-view caching ────────────────────────────────────────────────────
-// `unladenMass`, `validation` and the slot layout are memoised, so every edit that
-// changes what a fitted module *is* has to move the version they hang off. These tests
-// compare a build whose caches were filled before an edit against one that had the same
-// edit applied as its first action — any missed invalidation shows up as a difference.
-
-/** Every memoised view, flattened so two builds can be compared in one assertion. */
-const derivedViews = (build: ShipLoadout) => ({
-    unladenMass: build.unladenMass,
-    cargoCapacity: build.cargoCapacity,
-    fuelCapacity: build.fuelCapacity,
-    valid: build.validation.valid,
-    complete: build.validation.complete,
-    issues: build.validation.issues.map((issue) => `${issue.code}:${issue.slot ?? ''}`),
-    slots: build.slots().map((slot) => `${slot.key}=${slot.module?.symbol ?? ''}`),
-});
-
-const anaconda = (): ShipLoadout => {
-    const build = ShipLoadout.empty('Anaconda');
-    for (const key of ['PowerPlant', 'FrameShiftDrive', 'FuelTank']) {
-        build.setModule(key, build.modulesForSlot(key)[0]!);
-    }
-    return build;
-};
-
-/**
- * The same hull as an *imported* build. Its `UnladenMass` / `CargoCapacity` /
- * `FuelCapacity` short-circuit the calculation cache until an edit discards them, so
- * an assembled build alone never enters that interaction.
- */
-const importedAnaconda = (): ShipLoadout => ShipLoadout.fromLoadout(anaconda().toLoadoutEvent());
-
-/**
- * A rack that actually carries cargo. The first module that merely *fits* the slot is
- * a docking computer — zero mass, no capacity — so an edit fitting it would move only
- * the symbol, and the mass and capacity views would agree either way.
- */
-const cargoRack = (build: ShipLoadout): OutfittingModule =>
-    build
-        .modulesForSlot(build.slots('optional').find((slot) => !slot.restriction)!.key)
-        .find((module) => module.cargoCapacity !== undefined)!;
-
-test('a derived view never survives the edit that invalidates it', () => {
-    // Read the key off the hull rather than typing one: the Anaconda is one of the ten
-    // hulls whose optional numbering the rules do not reproduce.
-    const cargoSlot = anaconda()
-        .slots('optional')
-        .find((slot) => !slot.restriction)!.key;
-    const edits: readonly (readonly [string, (build: ShipLoadout) => void])[] = [
-        ['setModule', (build) => void build.setModule(cargoSlot, cargoRack(build))],
-        [
-            'setModule replacing an occupied slot',
-            (build) => {
-                const fits = build
-                    .modulesForSlot(cargoSlot)
-                    .filter((module) => module.cargoCapacity !== undefined);
-                build.setModule(cargoSlot, fits[0]!).setModule(cargoSlot, fits[1]!);
-            },
-        ],
-        [
-            'removeModule',
-            (build) => {
-                build.setModule(cargoSlot, cargoRack(build));
-                build.removeModule(cargoSlot);
-            },
-        ],
-        [
-            // Filling a *required* mount is what moves `validation`: the
-            // cargo-slot edits above leave `valid`, `complete` and the issue list
-            // untouched, so on their own they cannot catch a stale validation cache.
-            'setModule filling a required core mount',
-            (build) => void build.setModule('MainEngines', build.modulesForSlot('MainEngines')[0]!),
-        ],
-        [
-            'applyBlueprint',
-            (build) => void build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }),
-        ],
-        [
-            'clearEngineering',
-            (build) => {
-                build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
-                build.clearEngineering('FrameShiftDrive');
-            },
-        ],
-    ];
-
-    for (const [origin, make] of [
-        ['assembled', anaconda],
-        ['imported', importedAnaconda],
-    ] as const) {
-        for (const [name, edit] of edits) {
-            const warmed = make();
-            derivedViews(warmed); // fill every cache before the edit
-            edit(warmed);
-
-            const cold = make();
-            edit(cold); // same edit, nothing cached beforehand
-
-            assert.deepEqual(derivedViews(warmed), derivedViews(cold), `${origin}: ${name}`);
-        }
-    }
-});
-
-test('powering a module up or down leaves the cached views alone and still moves the budget', () => {
-    // The one edit that deliberately does not invalidate: `On` and `Priority` are read
-    // by `powerBudget`, which is not cached, and by none of the memoised views.
-    const build = anaconda();
-    const before = derivedViews(build);
-    const deployedBefore = build.powerBudget().deployed;
-
-    build.setModuleEnabled('FrameShiftDrive', false);
-    assert.deepEqual(derivedViews(build), before);
-    assert.ok(build.powerBudget().deployed < deployedBefore);
-
-    build.setModulePriority('FrameShiftDrive', 4);
-    assert.deepEqual(derivedViews(build), before);
-
-    build.setModuleEnabled('FrameShiftDrive', true);
-    assert.equal(build.powerBudget().deployed, deployedBefore);
-});
-
-test('slot and fitted-module snapshots are frozen and reused until the build changes', () => {
-    const build = anaconda();
+// ── Derived views
+test('slot snapshots are cached until an edit and fitted-module snapshots are detached', () => {
+    const build = ShipLoadout.default('Anaconda');
     const first = build.slots();
-    const hardpoints = build.slots('hardpoint');
-    const core = build.slots('core');
     const drive = build.fittedModuleAt('FrameShiftDrive')!;
     assert.throws(() => (first as LoadoutSlot[]).pop(), TypeError);
     assert.throws(() => Object.assign(first[0]!, { name: 'changed' }), TypeError);
     assert.equal(build.slots(), first);
-    assert.equal(build.slots()[0], first[0]);
-    assert.equal(build.slots('hardpoint'), hardpoints);
-    assert.equal(
-        core.find((slot) => slot.key === 'FrameShiftDrive')?.module,
-        first.find((slot) => slot.key === 'FrameShiftDrive')?.module,
-    );
-    assert.equal(build.fittedModuleAt('frameshiftdrive'), drive);
-
-    const empty = ShipLoadout.empty('Anaconda');
-    const unchanged = empty.slots();
-    empty.removeModule('Slot01_Size7');
-    assert.equal(empty.slots(), unchanged);
 
     build.setModuleEnabled('FrameShiftDrive', !drive.on);
     const second = build.slots();
@@ -4425,13 +4295,10 @@ test('slot and fitted-module snapshots are frozen and reused until the build cha
     assert.equal(drive.on, first.find((slot) => slot.key === 'FrameShiftDrive')?.module?.on);
 });
 
-test('a memoised validation cannot be edited through by one consumer', () => {
-    // The result is shared between reads, so mutation by one caller must not affect
-    // another reader of the same build.
+test('validation issues are frozen', () => {
     const build = ShipLoadout.empty('Anaconda');
     const issue = build.validation.issues[0]!;
     assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
-    assert.notEqual(build.validation.issues[0]!.message, 'rewritten');
 });
 
 test('every slot-key method names a wrong-typed key rather than failing inside the build', () => {

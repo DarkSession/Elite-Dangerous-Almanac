@@ -1,16 +1,6 @@
 import { readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { stripBareImports } from './strip-bare-imports.mjs';
 
-async function javascriptFiles(directory) {
-    const files = [];
-    for (const entry of await readdir(directory, { withFileTypes: true })) {
-        const path = `${directory}/${entry.name}`;
-        if (entry.isDirectory()) files.push(...(await javascriptFiles(path)));
-        else if (entry.name.endsWith('.js')) files.push(path);
-    }
-    return files;
-}
-
 // With every public module built as an entry, esbuild can leave redundant bare imports
 // in generated entry files. The source package has no side effects, so downstream
 // bundlers correctly discard these imports but warn while doing so. Shared chunks are
@@ -19,7 +9,9 @@ async function javascriptFiles(directory) {
 // literals or comments remains untouched. Imports that bind a value, and every
 // re-export, remain too. Blanking rather than shortening the file preserves source-map
 // positions emitted by tsup.
-const files = await javascriptFiles('dist');
+const files = (await readdir('dist', { recursive: true, withFileTypes: true }))
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.js'))
+    .map((entry) => `${entry.parentPath}/${entry.name}`);
 for (const entry of files.filter((path) => !path.split('/').at(-1)?.startsWith('chunk-'))) {
     const source = await readFile(entry, 'utf8');
     const cleaned = stripBareImports(source);

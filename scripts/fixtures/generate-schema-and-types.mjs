@@ -32,17 +32,6 @@ const TYPES_PATH = join(
 const require = createRequire(join(REPOSITORY_ROOT, "typescript/package.json"));
 const { format } = require("prettier");
 
-async function filesBelow(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const files = await Promise.all(
-    entries.map(async (entry) => {
-      const path = join(directory, entry.name);
-      return entry.isDirectory() ? filesBelow(path) : [path];
-    }),
-  );
-  return files.flat().sort();
-}
-
 function nameFromFile(file) {
   return file
     .replace(/\.jsonc$/, "")
@@ -72,20 +61,9 @@ function valueKind(value) {
   return typeof value;
 }
 
-function groupBy(values, keyFor) {
-  const groups = new Map();
-  for (const value of values) {
-    const key = keyFor(value);
-    const group = groups.get(key);
-    if (group) group.push(value);
-    else groups.set(key, [value]);
-  }
-  return groups;
-}
-
 function inferSchema(values) {
   assert.ok(values.length > 0);
-  const byKind = groupBy(values, valueKind);
+  const byKind = Map.groupBy(values, valueKind);
 
   if (byKind.has("number") && byKind.has("integer")) {
     byKind.set("number", [...byKind.get("number"), ...byKind.get("integer")]);
@@ -293,16 +271,19 @@ function generatedTypes(families) {
 }
 
 async function generatedOutputs() {
-  const paths = (await filesBelow(FIXTURE_ROOT)).filter((file) =>
-    file.endsWith(".jsonc"),
-  );
+  const paths = (
+    await readdir(FIXTURE_ROOT, { recursive: true, withFileTypes: true })
+  )
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".jsonc"))
+    .map((entry) => join(entry.parentPath, entry.name))
+    .sort();
   const payloads = await Promise.all(
     paths.map(async (path) => ({
       file: relative(FIXTURE_ROOT, path).replaceAll("\\", "/"),
       value: JSON.parse(stripJsonComments(await readFile(path, "utf8"))),
     })),
   );
-  const grouped = groupBy(payloads, ({ file }) => familyName(file));
+  const grouped = Map.groupBy(payloads, ({ file }) => familyName(file));
   const families = [...grouped.entries()]
     .map(([name, fixtures]) => ({
       name,
