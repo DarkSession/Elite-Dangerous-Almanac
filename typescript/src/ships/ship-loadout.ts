@@ -274,14 +274,7 @@ export class LoadoutEditError extends TypeError {
     ) {
         super(message);
         this.code = code;
-        this.params = deepFreeze(
-            Object.fromEntries(
-                Object.entries(params).map(([key, value]) => [
-                    key,
-                    Array.isArray(value) ? [...value] : value,
-                ]),
-            ) as Record<string, string | number | readonly string[]>,
-        );
+        this.params = deepFreeze(structuredClone(params));
         if (constraint !== undefined) this.constraint = constraint;
     }
 }
@@ -561,32 +554,11 @@ export class ShipLoadout {
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /**
-     * Bumped by every edit that changes what a fitted module *is* — which slots are
-     * filled, by which article, with which engineering. Calculation and validation
-     * results are rebuilt when it moves and reused when it does not.
-     *
-     * @remarks
-     * `#patchModule` deliberately does not bump it. Powering a module up or down, or
-     * moving it between priority groups, changes no calculation or validation input —
-     * `powerBudget` and `toLoadoutEvent`, which do read that state, are not cached.
-     */
-    #version = 0;
-    /** Bumped by every edit reflected in a public slot or fitted-module snapshot. */
-    #viewVersion = 0;
-    /**
      * The hull's expanded mounts: `undefined` until first asked, `null` for a hull
      * with no known layout. Needs no version — `#shipSymbol` is `readonly`, so a
      * build's layout is fixed for its whole life.
      */
     #layoutCache: readonly BuildSlot[] | null | undefined;
-    #calculationCache: { version: number; value: readonly LoadoutCalculationModule[] } | null =
-        null;
-    #validationCache: { version: number; value: LoadoutValidation } | null = null;
-    #fittedModuleCache: { version: number; value: Map<string, FittedModule> } | null = null;
-    #slotCache: {
-        version: number;
-        value: Map<SlotKind | undefined, readonly LoadoutSlot[]>;
-    } | null = null;
 
     private constructor(
         shipSymbol: string,
@@ -972,8 +944,6 @@ export class ShipLoadout {
      * families and per-ship module-count allowances must also be satisfied.
      */
     get validation(): LoadoutValidation {
-        const cached = this.#validationCache;
-        if (cached !== null && cached.version === this.#version) return cached.value;
         const slots = this.#layoutOrNull();
         const byKey = new Map(slots?.map((slot) => [slot.key.toLowerCase(), slot]) ?? []);
         const modules: ValidationModule[] = [...this.#modules.values()].map((module) => {
@@ -1000,18 +970,14 @@ export class ShipLoadout {
                     : { limitIncrease: stats.limitIncrease }),
             };
         });
-        const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
-        this.#validationCache = { version: this.#version, value };
-        return value;
+        return validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
     }
 
     /**
      * Frozen point-in-time views of the hull's mounts in outfitting-panel order.
      *
      * @param kind - Optionally keep only one mount kind. Omit it for every mount.
-     * @returns Detached slot views. Repeated reads at the same build version reuse the
-     * same frozen array and records; every state-changing edit makes the next read produce
-     * new snapshots.
+     * @returns Detached, frozen slot views.
      * @throws {TypeError} If the hull has no known slot layout.
      * @example
      * ```ts
@@ -1022,20 +988,12 @@ export class ShipLoadout {
      * ```
      */
     slots(kind?: SlotKind): readonly LoadoutSlot[] {
-        let cached = this.#slotCache;
-        if (cached === null || cached.version !== this.#viewVersion) {
-            cached = { version: this.#viewVersion, value: new Map() };
-            this.#slotCache = cached;
-        }
-        const existing = cached.value.get(kind);
-        if (existing !== undefined) return existing;
-
         const slots =
             kind === undefined
                 ? this.#layout()
                 : this.#layout().filter((slot) => slot.kind === kind);
         const currentLimits = this.#moduleLimits();
-        const value = deepFreeze(
+        return deepFreeze(
             slots.map((slot) => {
                 const stats = this.#moduleStatsAt(slot.key);
                 const fixedReason = fixedSlotReason(slot);
@@ -1056,33 +1014,22 @@ export class ShipLoadout {
                 };
             }),
         );
-        cached.value.set(kind, value);
-        return value;
     }
 
     /**
      * A deeply frozen, point-in-time view of the module in a slot.
      *
      * @param slotKey - Slot key, matched case-insensitively.
-     * @returns A detached view, or `null` when the slot is empty or unknown. Repeated
-     * reads at the same build version reuse the same frozen record; every state-changing
-     * edit makes the next read produce a new snapshot.
+     * @returns A detached, frozen view, or `null` when the slot is empty or unknown.
      * @throws {TypeError} If `slotKey` is not a string.
      */
     fittedModuleAt(slotKey: string): FittedModule | null {
         const module = this.#fittedModuleFor(slotKey);
         if (!module) return null;
-        let cached = this.#fittedModuleCache;
-        if (cached === null || cached.version !== this.#viewVersion) {
-            cached = { version: this.#viewVersion, value: new Map() };
-            this.#fittedModuleCache = cached;
-        }
-        const existing = cached.value.get(module.Slot);
-        if (existing !== undefined) return existing;
         const raw = cloneLoadoutModule(module);
         const stats = this.#statsFor(module);
         const effective = effectiveModule(this.#moduleForEffectiveStats(module), stats);
-        const value = deepFreeze({
+        return deepFreeze({
             slot: module.Slot,
             symbol: raw.Item,
             on: raw.On,
@@ -1096,8 +1043,6 @@ export class ShipLoadout {
             ammunition: ammunitionCapacity(effective),
             preEngineeredVariant: identifyPreEngineeredVariant(raw),
         });
-        cached.value.set(module.Slot, value);
-        return value;
     }
 
     /**
@@ -1809,7 +1754,6 @@ export class ShipLoadout {
             throw new RangeError(`ShipLoadout: slot "${truncate(slotKey)}" is empty`);
         }
         this.#modules.set(module.Slot, cloneLoadoutModule({ ...module, ...patch }));
-        this.#viewVersion++;
     }
 
     /**
@@ -2567,12 +2511,6 @@ export class ShipLoadout {
         return this.#layoutCache;
     }
 
-    /** Discard the derived views: something a fitted module *is* has changed. */
-    #invalidate(): void {
-        this.#version++;
-        this.#viewVersion++;
-    }
-
     #layout(): readonly BuildSlot[] {
         const layout = this.#layoutOrNull();
         if (!layout) {
@@ -2633,16 +2571,8 @@ export class ShipLoadout {
         return this.#require(this.cargoCapacityResult, 'cargo capacity');
     }
 
-    /** Resolve fitted modules once into the data-free aggregate-calculation shape. */
+    /** Resolve fitted modules into the data-free aggregate-calculation shape. */
     #calculationModules(): readonly LoadoutCalculationModule[] {
-        const cached = this.#calculationCache;
-        if (cached !== null && cached.version === this.#version) return cached.value;
-        const value = this.#resolveCalculationModules();
-        this.#calculationCache = { version: this.#version, value };
-        return value;
-    }
-
-    #resolveCalculationModules(): readonly LoadoutCalculationModule[] {
         return [...this.#modules.values()].map((module) => {
             const stats = this.#statsFor(module);
             const symbol = module.Item.toLowerCase();
@@ -2783,7 +2713,6 @@ export class ShipLoadout {
             if (primitiveModifiers === undefined) this.#primitiveModifiers.delete(slotKey);
             else this.#primitiveModifiers.set(slotKey, primitiveModifiers);
         }
-        this.#invalidate();
     }
 
     /**

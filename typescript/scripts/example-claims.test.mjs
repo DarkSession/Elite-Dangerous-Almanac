@@ -138,6 +138,27 @@ test('preserves exact negative zero through the JSON runtime manifest', () => {
     assert.equal(compareExampleValue([-0, { nested: 0 }], structured).pass, false);
 });
 
+test('parses parenthesized numbers and rejects recovered malformed literals', () => {
+    assert.deepEqual(matchingSpec('(1)'), { kind: 'number-exact', value: 1 });
+    assert.deepEqual(matchingSpec('(-0)'), { kind: 'number-special', value: '-0' });
+    assert.deepEqual(matchingSpec('(1.25)'), {
+        kind: 'number-rounded',
+        value: 1.25,
+        text: '1.25',
+        decimalPlaces: 2,
+    });
+    assert.deepEqual(matchingSpec('-0.2 (lightweight alloy is kinetically weak)'), {
+        kind: 'number-rounded',
+        value: -0.2,
+        text: '-0.2',
+        decimalPlaces: 1,
+    });
+
+    for (const text of ['([1, 2)', '({ value: 1)', '([1, 2]']) {
+        assert.equal(parseExpectedClaim(text).status, 'skip', text);
+    }
+});
+
 test('rounds finite decimals to documented precision and preserves exact integers', () => {
     assert.deepEqual(compareExampleValue(89.41467782385232, matchingSpec('89.414678')), {
         pass: true,

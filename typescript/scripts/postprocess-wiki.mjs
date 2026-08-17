@@ -4,18 +4,9 @@ import { fileURLToPath } from 'node:url';
 
 const wikiDir = fileURLToPath(new URL('../docs/wiki/', import.meta.url));
 
-async function markdownFiles(directory) {
-    const entries = await readdir(directory, { withFileTypes: true });
-    const files = [];
-    for (const entry of entries) {
-        const path = join(directory, entry.name);
-        if (entry.isDirectory()) files.push(...(await markdownFiles(path)));
-        else if (entry.name.endsWith('.md')) files.push(path);
-    }
-    return files;
-}
-
-const files = await markdownFiles(wikiDir);
+const files = (await readdir(wikiDir, { recursive: true, withFileTypes: true }))
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .map((entry) => join(entry.parentPath, entry.name));
 const pageNames = new Set(files.map((file) => file.slice(file.lastIndexOf('/') + 1, -3)));
 
 for (const file of files) {

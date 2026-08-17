@@ -251,9 +251,8 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         }
     }
 
-    // Each issue is frozen, not only the array: `ShipLoadout.validation` memoises this
-    // result, so one consumer editing an issue in place would otherwise rewrite what
-    // every later reader of the same build sees.
+    // Each issue is frozen, not only the array, so callers cannot mutate a validation
+    // snapshot in place.
     const frozen = Object.freeze(
         issues.map((issue) =>
             Object.freeze({

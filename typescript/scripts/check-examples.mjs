@@ -10,22 +10,15 @@
  * This extracts each ` ```ts ` fence into its own scratch file, resolves every
  * `@elite-dangerous-almanac/core/<subpath>` specifier through the package's own
  * `exports` map — so a snippet importing a private path fails rather than passing — and
- * runs `tsc --noEmit` over the set. Each snippet compiles as an isolated module, so it
- * must declare what it uses — that is the point, since a reader pastes it into an empty
- * file too. It then executes every machine-readable `expression; // -> value` claim that
+ * compiles the set with the TypeScript compiler API. Each snippet is an isolated module,
+ * so it must declare what it uses — that is the point, since a reader pastes it into an
+ * empty file too. It then executes every machine-readable `expression; // -> value` claim that
  * needs no ambient `declare` input. Exact literals compare exactly, finite decimals are
  * rounded to their documented precision, and `0.667…` is a decimal-prefix assertion.
  * Prose and abbreviated values remain compile-only and are counted explicitly.
  *
- * `pnpm run check` uses `--strict`, so every documented snippet must compile.
- * `--max-failures <n>` sets an explicit failure ceiling and fails
- * only when the count rises above the agreed number.
- *
- * Usage:
- *   node scripts/check-examples.mjs                    # report, always exit 0
- *   node scripts/check-examples.mjs --max-failures 189 # exit 1 if it gets worse
- *   node scripts/check-examples.mjs --strict           # exit 1 on any failure
- *   node scripts/check-examples.mjs --verbose          # list compile-only claims
+ * Every documented snippet must compile. The executable and compile-only claim counts
+ * are ratcheted below so examples cannot silently lose runtime coverage.
  */
 
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
@@ -34,7 +27,6 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { spawnSync } from 'node:child_process';
 import ts from 'typescript';
 
 import { transformExampleClaims } from './example-claims.mjs';
@@ -43,11 +35,8 @@ import { runExampleEntries } from './example-runtime.mjs';
 const packageRoot = fileURLToPath(new URL('../', import.meta.url));
 const repositoryRoot = resolve(packageRoot, '..');
 const sourceRoot = join(packageRoot, 'src');
-const strict = process.argv.includes('--strict');
-const verbose = process.argv.includes('--verbose');
-const maxFailures = numericFlag('--max-failures');
-const minimumExecutableClaims = numericFlag('--min-executable-claims');
-const maximumCompileOnlyClaims = numericFlag('--max-compile-only-claims');
+const MINIMUM_EXECUTABLE_CLAIMS = 308;
+const MAXIMUM_COMPILE_ONLY_CLAIMS = 126;
 
 /** The package's published entry points, as a consumer's resolver sees them. */
 const exportsMap = JSON.parse(await readFile(join(packageRoot, 'package.json'), 'utf8')).exports;
@@ -62,22 +51,18 @@ const PACKAGE = '@elite-dangerous-almanac/core';
  * @returns Absolute file paths.
  */
 async function sourceFiles(directory) {
-    const entries = await readdir(directory, { withFileTypes: true });
-    const files = [];
-    for (const entry of entries) {
-        const path = join(directory, entry.name);
-        if (entry.isDirectory()) {
-            if (entry.name === 'internal') continue;
-            files.push(...(await sourceFiles(path)));
-        } else if (
-            entry.name.endsWith('.ts') &&
-            !entry.name.endsWith('.test.ts') &&
-            !entry.name.endsWith('.d.ts')
-        ) {
-            files.push(path);
-        }
-    }
-    return files;
+    return (await readdir(directory, { recursive: true, withFileTypes: true }))
+        .filter((entry) => {
+            const path = relative(directory, join(entry.parentPath, entry.name));
+            return (
+                entry.isFile() &&
+                entry.name.endsWith('.ts') &&
+                !entry.name.endsWith('.test.ts') &&
+                !entry.name.endsWith('.d.ts') &&
+                !path.split(/[\\/]/).includes('internal')
+            );
+        })
+        .map((entry) => join(entry.parentPath, entry.name));
 }
 
 /**
@@ -321,94 +306,39 @@ async function main() {
         // outside `snippets/` where the parser below would drop them.
         include: ['snippets/**/*.ts', resolve(sourceRoot, '**/*.d.ts')],
     };
-    await writeFile(join(scratch, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2));
-
-    const tscBin = join(packageRoot, 'node_modules', 'typescript', 'bin', 'tsc');
-
-    /**
-     * Compile the snippet set, skipping the named files.
-     *
-     * Run from the scratch root so tsc reports `snippets/<name>.ts` rather than a path
-     * relative to this process's cwd, which the parser below would silently miss.
-     *
-     * @param skip - Snippet file names to exclude from this pass.
-     * @returns The exit status, the diagnostics keyed by snippet, and any diagnostic
-     *   that did not belong to a snippet at all.
-     */
-    function compile(skip) {
-        const args = [tscBin, '--project', '.', '--pretty', 'false'];
-        const result = spawnSync(process.execPath, args, { encoding: 'utf8', cwd: scratch });
-        const output = `${result.stdout}${result.stderr}`;
-
-        const diagnostics = new Map();
-        const foreign = [];
-        for (const raw of output.split('\n')) {
-            const line = raw.trim();
-            if (!/error TS\d+:/.test(line)) continue;
-            const match = /^snippets[/\\]([^(]+)\((\d+),\d+\): error (TS\d+): (.+)$/.exec(line);
-            if (!match) {
-                foreign.push(line);
-                continue;
-            }
-            const [, name, row, code, message] = match;
-            if (skip.has(name)) continue;
-            if (!diagnostics.has(name)) diagnostics.set(name, []);
-            diagnostics.get(name).push({ row: Number(row), code, message });
+    const parsedConfig = ts.parseJsonConfigFileContent(tsconfig, ts.sys, scratch);
+    const program = ts.createProgram(parsedConfig.fileNames, parsedConfig.options);
+    const diagnostics = [...parsedConfig.errors, ...ts.getPreEmitDiagnostics(program)];
+    const failures = new Map();
+    const foreign = [];
+    for (const diagnostic of diagnostics) {
+        const code = `TS${diagnostic.code}`;
+        const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
+        if (diagnostic.file === undefined || diagnostic.start === undefined) {
+            foreign.push(`error ${code}: ${message}`);
+            continue;
         }
-        return { status: result.status, output, diagnostics, foreign };
-    }
-
-    // tsc abandons semantic checking for the whole program as soon as any file has a
-    // syntactic error, so a single unparseable snippet silently hides every type error
-    // in the run. Drop the unparseable ones and compile again until none remain; only
-    // then are the semantic results trustworthy.
-    const broken = new Map();
-    const skip = new Set();
-    let pass = compile(skip);
-    for (let attempt = 0; attempt < 8; attempt += 1) {
-        const syntactic = [...pass.diagnostics].filter(([, problems]) =>
-            problems.some((problem) => /^TS1\d{3}$/.test(problem.code)),
-        );
-        if (syntactic.length === 0) break;
-        for (const [name, problems] of syntactic) {
-            broken.set(name, problems);
-            skip.add(name);
-            await rm(join(scratch, 'snippets', name), { force: true });
+        const path = relative(scratch, diagnostic.file.fileName).replaceAll('\\', '/');
+        const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+        if (!path.startsWith('snippets/')) {
+            foreign.push(`${path}(${line + 1},${character + 1}): error ${code}: ${message}`);
+            continue;
         }
-        pass = compile(skip);
+        const name = path.slice('snippets/'.length);
+        if (!failures.has(name)) failures.set(name, []);
+        failures.get(name).push({ row: line + 1, code, message });
     }
-
-    // Convergence is judged from `pass.diagnostics`, which has already had `skip`
-    // filtered out of it. If a snippet failed to delete, or the attempt cap were ever
-    // exhausted, tsc would still be abandoning semantic checking while the filtered
-    // view looked clean — and every pass count below would be unjustified. Ask the raw
-    // output instead.
-    if (/error TS1\d{3}:/.test(pass.output)) {
-        console.error(
-            'check-examples: tsc still reports a syntactic error after pruning, so semantic\n' +
-                'results for this run are not trustworthy. Raw output:\n',
-        );
-        console.error(pass.output.trim());
-        return 1;
-    }
-
-    const failures = new Map([...pass.diagnostics, ...broken]);
     for (const entry of cases) {
         if (entry.problems.length === 0) continue;
         failures.set(entry.name, [...(failures.get(entry.name) ?? []), ...entry.problems]);
     }
 
-    // A diagnostic outside `snippets/`, or a non-zero exit with nothing parsable, means
-    // the harness itself is wrong. Reporting a pass count from a broken compile would be
-    // worse than reporting nothing, so fail loudly instead.
-    if (pass.foreign.length > 0) {
-        console.error('check-examples: tsc reported errors outside the snippet set:\n');
-        console.error(pass.foreign.slice(0, 10).join('\n'));
-        return 1;
-    }
-    if (pass.status !== 0 && failures.size === 0) {
-        console.error('check-examples: tsc failed without a parsable diagnostic:\n');
-        console.error(pass.output.trim() || `(no output, exit ${pass.status})`);
+    // A diagnostic outside `snippets/` means the harness itself is wrong. Reporting a
+    // pass count from a broken compile would be worse than reporting nothing, so fail
+    // loudly instead.
+    if (foreign.length > 0) {
+        console.error('check-examples: TypeScript reported errors outside the snippet set:\n');
+        console.error(foreign.slice(0, 10).join('\n'));
         return 1;
     }
 
@@ -485,24 +415,18 @@ async function main() {
         `check-examples: ${skippedClaims.length} value claims remain compile-only` +
             (skipSummary === '' ? '' : ` — ${skipSummary}`),
     );
-    if (verbose) {
-        for (const claim of skippedClaims) {
-            console.log(`  ${claim.file}:${claim.line}: ${claim.reason} (${claim.expected})`);
-        }
-    }
-
     let claimRatchetFailed = false;
-    if (minimumExecutableClaims !== null && executableClaims.length < minimumExecutableClaims) {
+    if (executableClaims.length < MINIMUM_EXECUTABLE_CLAIMS) {
         console.error(
             `check-examples: ${executableClaims.length} executable claims is below the required ` +
-                `minimum of ${minimumExecutableClaims}`,
+                `minimum of ${MINIMUM_EXECUTABLE_CLAIMS}`,
         );
         claimRatchetFailed = true;
     }
-    if (maximumCompileOnlyClaims !== null && skippedClaims.length > maximumCompileOnlyClaims) {
+    if (skippedClaims.length > MAXIMUM_COMPILE_ONLY_CLAIMS) {
         console.error(
             `check-examples: ${skippedClaims.length} compile-only claims is above the allowed ` +
-                `maximum of ${maximumCompileOnlyClaims}`,
+                `maximum of ${MAXIMUM_COMPILE_ONLY_CLAIMS}`,
         );
         claimRatchetFailed = true;
     }
@@ -518,37 +442,7 @@ async function main() {
     const passed = cases.length - failed.length;
     console.log(`\ncheck-examples: ${passed}/${cases.length} snippets pass all applicable checks`);
 
-    if (strict) return failed.length > 0 || claimRatchetFailed ? 1 : 0;
-
-    if (claimRatchetFailed) return 1;
-
-    if (maxFailures !== null) {
-        if (failed.length > maxFailures) {
-            console.error(
-                `\ncheck-examples: ${failed.length} failing snippets, above the agreed ` +
-                    `ceiling of ${maxFailures}. Fix the new one, or lower the ceiling if you ` +
-                    `have fixed others.`,
-            );
-            return 1;
-        }
-        if (failed.length < maxFailures) {
-            console.log(
-                `check-examples: ${failed.length} failing, below the ceiling of ` +
-                    `${maxFailures} — lower it in package.json to lock the gain in.`,
-            );
-        }
-    }
-    return 0;
-}
-
-function numericFlag(name) {
-    const index = process.argv.indexOf(name);
-    if (index === -1) return null;
-    const value = Number(process.argv[index + 1]);
-    if (!Number.isInteger(value) || value < 0) {
-        throw new TypeError(`check-examples: ${name} needs a non-negative integer`);
-    }
-    return value;
+    return failed.length > 0 || claimRatchetFailed ? 1 : 0;
 }
 
 try {

@@ -273,147 +273,79 @@ function contextSensitiveExpression(expression) {
 }
 
 function literalPrefix(text) {
-    const scanner = ts.createScanner(
-        ts.ScriptTarget.Latest,
-        false,
-        ts.LanguageVariant.Standard,
-        text,
-    );
-    let sign = '';
-    let token = scanner.scan();
-    if (token === ts.SyntaxKind.MinusToken || token === ts.SyntaxKind.PlusToken) {
-        sign = token === ts.SyntaxKind.MinusToken ? '-' : '+';
-        token = scanner.scan();
-    }
-
-    if (token === ts.SyntaxKind.NumericLiteral) {
-        const tokenText = scanner.getTokenText();
-        const value = Number(`${sign}${tokenText.replaceAll('_', '')}`);
-        if (!Number.isFinite(value)) return null;
-        return {
-            kind: 'number',
-            value,
-            text: `${sign}${tokenText}`,
-            end: scanner.getTextPos(),
-        };
-    }
-    if (token === ts.SyntaxKind.BigIntLiteral) {
-        const tokenText = scanner.getTokenText().replaceAll('_', '');
-        const unsigned = BigInt(tokenText.slice(0, -1));
-        const value = sign === '-' ? -unsigned : unsigned;
-        return {
-            kind: 'bigint',
-            value,
-            end: scanner.getTextPos(),
-            spec: { kind: 'bigint', value: String(value) },
-        };
-    }
-    if (sign !== '') {
-        if (token === ts.SyntaxKind.Identifier && scanner.getTokenText() === 'Infinity') {
-            const value = sign === '-' ? -Infinity : Infinity;
-            return {
-                kind: 'number',
-                value,
-                text: String(value),
-                end: scanner.getTextPos(),
-            };
-        }
-        return null;
-    }
-
-    if (
-        token === ts.SyntaxKind.StringLiteral ||
-        token === ts.SyntaxKind.NoSubstitutionTemplateLiteral
-    ) {
-        const value = scanner.getTokenValue();
-        return {
-            kind: 'string',
-            value,
-            end: scanner.getTextPos(),
-            spec: { kind: 'string', value },
-        };
-    }
-    if (token === ts.SyntaxKind.TrueKeyword || token === ts.SyntaxKind.FalseKeyword) {
-        const value = token === ts.SyntaxKind.TrueKeyword;
-        return {
-            kind: 'primitive',
-            end: scanner.getTextPos(),
-            spec: { kind: 'boolean', value },
-        };
-    }
-    if (token === ts.SyntaxKind.NullKeyword) {
-        return { kind: 'primitive', end: scanner.getTextPos(), spec: { kind: 'null' } };
-    }
-    if (token === ts.SyntaxKind.UndefinedKeyword) {
-        return { kind: 'primitive', end: scanner.getTextPos(), spec: { kind: 'undefined' } };
-    }
-    if (token === ts.SyntaxKind.Identifier) {
-        const value = scanner.getTokenText();
-        if (value === 'NaN' || value === 'Infinity') {
-            return {
-                kind: 'number',
-                value: Number(value),
-                text: value,
-                end: scanner.getTextPos(),
-            };
-        }
-        return null;
-    }
-    if (token !== ts.SyntaxKind.OpenBracketToken && token !== ts.SyntaxKind.OpenBraceToken) {
-        return null;
-    }
-
-    const end = balancedLiteralEnd(text);
-    if (end === null) return null;
-    const literal = text.slice(0, end);
-    const decoded = decodeCompositeLiteral(literal);
-    if (decoded === null) return null;
-    return { kind: 'structured', end, spec: decoded };
-}
-
-function balancedLiteralEnd(text) {
-    const scanner = ts.createScanner(
-        ts.ScriptTarget.Latest,
-        false,
-        ts.LanguageVariant.Standard,
-        text,
-    );
-    const stack = [];
-    for (
-        let token = scanner.scan();
-        token !== ts.SyntaxKind.EndOfFileToken;
-        token = scanner.scan()
-    ) {
-        if (token === ts.SyntaxKind.OpenBracketToken || token === ts.SyntaxKind.OpenBraceToken) {
-            stack.push(token);
-            continue;
-        }
-        if (token !== ts.SyntaxKind.CloseBracketToken && token !== ts.SyntaxKind.CloseBraceToken)
-            continue;
-        const expected =
-            token === ts.SyntaxKind.CloseBracketToken
-                ? ts.SyntaxKind.OpenBracketToken
-                : ts.SyntaxKind.OpenBraceToken;
-        if (stack.pop() !== expected) return null;
-        if (stack.length === 0) return scanner.getTextPos();
-    }
-    return null;
-}
-
-function decodeCompositeLiteral(literal) {
+    const declaration = 'const expected = ';
     const source = ts.createSourceFile(
         'expected.ts',
-        `const expected = (${literal});`,
+        `${declaration}${text}`,
         ts.ScriptTarget.Latest,
         true,
         ts.ScriptKind.TS,
     );
-    if (source.parseDiagnostics.length > 0) return null;
     const statement = source.statements[0];
     if (!ts.isVariableStatement(statement)) return null;
     const initializer = statement.declarationList.declarations[0]?.initializer;
     if (initializer === undefined) return null;
-    return decodeLiteralNode(initializer);
+
+    const start = initializer.getStart(source);
+    let match = null;
+    function visit(node) {
+        if (node.getStart(source) !== start) return;
+        const spec = decodeLiteralNode(node);
+        if (spec !== null && (match === null || node.end > match.node.end)) match = { node, spec };
+        ts.forEachChild(node, visit);
+    }
+    visit(initializer);
+
+    // TypeScript parses `-0.2 (annotation)` as unary minus applied to a call. Recover
+    // the numeric operand prefix, then apply the unary operator to its decoded value.
+    if (match === null && ts.isPrefixUnaryExpression(initializer)) {
+        const operandStart = initializer.operand.getStart(source);
+        let operandMatch = null;
+        function visitOperand(node) {
+            if (node.getStart(source) !== operandStart) return;
+            const spec = decodeLiteralNode(node);
+            if (spec !== null && (operandMatch === null || node.end > operandMatch.node.end)) {
+                operandMatch = { node, spec };
+            }
+            ts.forEachChild(node, visitOperand);
+        }
+        visitOperand(initializer.operand);
+        const spec =
+            operandMatch === null
+                ? null
+                : decodePrefixUnary(initializer.operator, operandMatch.spec);
+        if (spec !== null) match = { node: operandMatch.node, spec };
+    }
+    if (match === null) return null;
+
+    const literal = source.text.slice(start, match.node.end);
+    const literalSource = ts.createSourceFile(
+        'expected.ts',
+        `${declaration}${literal}`,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TS,
+    );
+    if (literalSource.parseDiagnostics.length > 0) return null;
+
+    const end = match.node.end - declaration.length;
+    if (match.spec.kind.startsWith('number-')) {
+        return {
+            kind: 'number',
+            value:
+                match.spec.kind === 'number-special' ? Number(match.spec.value) : match.spec.value,
+            text: match.spec.kind === 'number-rounded' ? match.spec.text : literal,
+            end,
+        };
+    }
+    if (match.spec.kind === 'string') {
+        return { kind: 'string', value: match.spec.value, end, spec: match.spec };
+    }
+    return {
+        kind: match.spec.kind === 'bigint' ? 'bigint' : 'structured',
+        end,
+        spec: match.spec,
+    };
 }
 
 function decodeLiteralNode(node) {
@@ -439,42 +371,14 @@ function decodeLiteralNode(node) {
     if (node.kind === ts.SyntaxKind.NullKeyword) return { kind: 'null' };
     if (node.kind === ts.SyntaxKind.UndefinedKeyword) return { kind: 'undefined' };
     if (ts.isIdentifier(node)) {
+        if (node.text === 'undefined') return { kind: 'undefined' };
         if (node.text === 'NaN' || node.text === 'Infinity') {
             return { kind: 'number-special', value: node.text };
         }
         return null;
     }
     if (ts.isPrefixUnaryExpression(node)) {
-        if (node.operator !== ts.SyntaxKind.MinusToken && node.operator !== ts.SyntaxKind.PlusToken)
-            return null;
-        const decoded = decodeLiteralNode(node.operand);
-        if (decoded?.kind === 'number-exact') {
-            const value =
-                node.operator === ts.SyntaxKind.MinusToken ? -decoded.value : decoded.value;
-            return exactNumberSpec(value);
-        }
-        if (decoded?.kind === 'number-rounded') {
-            const negative = node.operator === ts.SyntaxKind.MinusToken;
-            return {
-                ...decoded,
-                value: negative ? -decoded.value : decoded.value,
-                text: `${negative ? '-' : '+'}${decoded.text}`,
-            };
-        }
-        if (decoded?.kind === 'bigint') {
-            const value = BigInt(decoded.value);
-            return {
-                kind: 'bigint',
-                value: String(node.operator === ts.SyntaxKind.MinusToken ? -value : value),
-            };
-        }
-        if (decoded?.kind === 'number-special' && decoded.value === 'Infinity') {
-            return {
-                kind: 'number-special',
-                value: node.operator === ts.SyntaxKind.MinusToken ? '-Infinity' : 'Infinity',
-            };
-        }
-        return null;
+        return decodePrefixUnary(node.operator, decodeLiteralNode(node.operand));
     }
     if (ts.isArrayLiteralExpression(node)) {
         const items = [];
@@ -497,6 +401,37 @@ function decodeLiteralNode(node) {
             entries.push([key, value]);
         }
         return { kind: 'object', entries };
+    }
+    return null;
+}
+
+function decodePrefixUnary(operator, decoded) {
+    if (operator !== ts.SyntaxKind.MinusToken && operator !== ts.SyntaxKind.PlusToken) return null;
+    if (decoded?.kind === 'number-exact') {
+        return exactNumberSpec(
+            operator === ts.SyntaxKind.MinusToken ? -decoded.value : decoded.value,
+        );
+    }
+    if (decoded?.kind === 'number-rounded') {
+        const negative = operator === ts.SyntaxKind.MinusToken;
+        return {
+            ...decoded,
+            value: negative ? -decoded.value : decoded.value,
+            text: `${negative ? '-' : '+'}${decoded.text}`,
+        };
+    }
+    if (decoded?.kind === 'bigint') {
+        const value = BigInt(decoded.value);
+        return {
+            kind: 'bigint',
+            value: String(operator === ts.SyntaxKind.MinusToken ? -value : value),
+        };
+    }
+    if (decoded?.kind === 'number-special' && decoded.value === 'Infinity') {
+        return {
+            kind: 'number-special',
+            value: operator === ts.SyntaxKind.MinusToken ? '-Infinity' : 'Infinity',
+        };
     }
     return null;
 }
