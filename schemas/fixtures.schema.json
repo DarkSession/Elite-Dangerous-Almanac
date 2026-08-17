@@ -4594,6 +4594,16 @@
                 "ship",
                 "targetSlot"
               ]
+            },
+            "requiredSlot": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": { "$ref": "#/definitions/sharedf124e7bd189b" },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "input", "slot"]
             }
           },
           "required": [
@@ -4601,7 +4611,8 @@
             "immutableSlot",
             "immutableSlotReplacement",
             "incompatibleModule",
-            "moduleLimitExceeded"
+            "moduleLimitExceeded",
+            "requiredSlot"
           ]
         },
         "exclusivity": {
@@ -5109,22 +5120,25 @@
           "additionalProperties": false,
           "properties": {
             "expected": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "immovableReason": { "type": "string" },
-                "key": { "type": "string" },
-                "kind": { "type": "string" },
-                "removable": { "type": "boolean" },
-                "size": { "type": "integer" }
-              },
-              "required": [
-                "immovableReason",
-                "key",
-                "kind",
-                "removable",
-                "size"
-              ]
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "immovableReason": { "type": "string" },
+                  "key": { "type": "string" },
+                  "kind": { "type": "string" },
+                  "removable": { "type": "boolean" },
+                  "size": { "type": "integer" }
+                },
+                "required": [
+                  "immovableReason",
+                  "key",
+                  "kind",
+                  "removable",
+                  "size"
+                ]
+              }
             },
             "ship": { "type": "string" }
           },
@@ -7006,10 +7020,62 @@
                           ]
                         },
                         "removeAPricedModule": {
-                          "$ref": "#/definitions/sharedf40ac09f53fc"
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "edits": {
+                              "$ref": "#/definitions/sharedd1ecdf166d5d"
+                            },
+                            "topLevelCredits": {
+                              "$ref": "#/definitions/shared4e61e9b07257"
+                            },
+                            "unpricedSlots": {
+                              "type": "array",
+                              "items": { "type": "string" }
+                            },
+                            "why": { "type": "string" }
+                          },
+                          "required": [
+                            "edits",
+                            "topLevelCredits",
+                            "unpricedSlots",
+                            "why"
+                          ]
                         },
                         "stripEveryPricedModule": {
-                          "$ref": "#/definitions/sharedf40ac09f53fc"
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "edits": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "removeModule": {
+                                    "$ref": "#/definitions/sharedbb0c12b7a5ac"
+                                  },
+                                  "setModule": {
+                                    "$ref": "#/definitions/sharedf570f3651544"
+                                  }
+                                }
+                              }
+                            },
+                            "topLevelCredits": {
+                              "$ref": "#/definitions/shared4e61e9b07257"
+                            },
+                            "unpricedSlots": {
+                              "type": "array",
+                              "items": { "type": "string" }
+                            },
+                            "why": { "type": "string" }
+                          },
+                          "required": [
+                            "edits",
+                            "topLevelCredits",
+                            "unpricedSlots",
+                            "why"
+                          ]
                         },
                         "swapAPricedModule": {
                           "type": "object",
@@ -7933,17 +7999,6 @@
         "symbol": { "type": "string" }
       },
       "required": ["blueprint", "slot", "symbol"]
-    },
-    "sharedf40ac09f53fc": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "edits": { "$ref": "#/definitions/sharedd1ecdf166d5d" },
-        "topLevelCredits": { "$ref": "#/definitions/shared4e61e9b07257" },
-        "unpricedSlots": { "type": "array", "items": { "type": "string" } },
-        "why": { "type": "string" }
-      },
-      "required": ["edits", "topLevelCredits", "unpricedSlots", "why"]
     },
     "sharedf570f3651544": {
       "type": "object",

@@ -279,6 +279,12 @@ test('shared editor failures expose stable codes and localization params', () =>
         immutable.expected,
     );
 
+    const required = fixture.editorErrors.requiredSlot;
+    assert.deepEqual(
+        project(capture(() => ShipLoadout.fromLoadout(required.input).removeModule(required.slot))),
+        required.expected,
+    );
+
     const immutableReplacement = fixture.editorErrors.immutableSlotReplacement;
     assert.deepEqual(
         project(
@@ -294,10 +300,11 @@ test('shared editor failures expose stable codes and localization params', () =>
 });
 
 test('shared slot metadata states whether a mount can be emptied', () => {
-    const slot = ShipLoadout.default(fixture.slotRemoval.ship)
-        .slots()
-        .find((candidate) => candidate.key === fixture.slotRemoval.expected.key);
-    assert.ok(slot);
-    const { key, kind, size, removable, immovableReason } = slot;
-    assert.deepEqual({ key, kind, size, removable, immovableReason }, fixture.slotRemoval.expected);
+    const slots = ShipLoadout.default(fixture.slotRemoval.ship).slots();
+    for (const expected of fixture.slotRemoval.expected) {
+        const slot = slots.find((candidate) => candidate.key === expected.key);
+        assert.ok(slot);
+        const { key, kind, size, removable, immovableReason } = slot;
+        assert.deepEqual({ key, kind, size, removable, immovableReason }, expected);
+    }
 });

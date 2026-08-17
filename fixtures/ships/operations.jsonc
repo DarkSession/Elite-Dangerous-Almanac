@@ -596,6 +596,17 @@
         "params": { "slot": "CargoHatch" }
       }
     },
+    "requiredSlot": {
+      "input": {
+        "Ship": "FutureShip",
+        "Modules": [{ "Slot": "powerplant", "Item": "FuturePowerPlant" }]
+      },
+      "slot": "PowerPlant",
+      "expected": {
+        "code": "requiredSlot",
+        "params": { "slot": "powerplant" }
+      }
+    },
     "immutableSlotReplacement": {
       "ship": "SideWinder",
       "slot": "CargoHatch",
@@ -608,12 +619,28 @@
   },
   "slotRemoval": {
     "ship": "SideWinder",
-    "expected": {
-      "key": "CargoHatch",
-      "kind": "cargoHatch",
-      "size": 1,
-      "removable": false,
-      "immovableReason": "cargoHatch"
-    }
+    "expected": [
+      {
+        "key": "CargoHatch",
+        "kind": "cargoHatch",
+        "size": 1,
+        "removable": false,
+        "immovableReason": "cargoHatch"
+      },
+      {
+        "key": "PowerPlant",
+        "kind": "core",
+        "size": 2,
+        "removable": false,
+        "immovableReason": "requiredSlot"
+      },
+      {
+        "key": "Armour",
+        "kind": "armour",
+        "size": 0,
+        "removable": false,
+        "immovableReason": "requiredSlot"
+      }
+    ]
   }
 }
