@@ -281,7 +281,7 @@ test('shared editor failures expose stable codes and localization params', () =>
 
     const required = fixture.editorErrors.requiredSlot;
     assert.deepEqual(
-        project(capture(() => ShipLoadout.default(required.ship).removeModule(required.slot))),
+        project(capture(() => ShipLoadout.fromLoadout(required.input).removeModule(required.slot))),
         required.expected,
     );
 

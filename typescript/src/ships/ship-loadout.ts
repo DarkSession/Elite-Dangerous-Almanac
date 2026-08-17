@@ -210,12 +210,19 @@ const requireLoadOptions = (scope: string, options: JumpOptions): void => {
 };
 
 /**
- * Stable machine-readable reason a {@link ShipLoadout} edit was refused:
- * `immutableSlot`, an incompatible fit, a duplicate one-per-ship family, or a module
- * count beyond the build's current allowance.
+ * Stable machine-readable reason a {@link ShipLoadout} edit was refused. `immutableSlot`
+ * identifies a mount that cannot be changed at all; `requiredSlot` identifies a core or
+ * armour mount that must remain occupied. A required mount can be replaced when the
+ * hull's slot layout is known, but it cannot be emptied even when the hull is unknown.
+ * The remaining codes identify an incompatible fit, a duplicate one-per-ship family,
+ * or a module count beyond the build's current allowance.
  */
 export type LoadoutEditErrorCode =
-    'immutableSlot' | 'incompatibleModule' | 'duplicateExclusiveModule' | 'moduleLimitExceeded';
+    | 'immutableSlot'
+    | 'requiredSlot'
+    | 'incompatibleModule'
+    | 'duplicateExclusiveModule'
+    | 'moduleLimitExceeded';
 
 /**
  * An editor request that the current hull or build constraints cannot accept.
@@ -1319,7 +1326,8 @@ export class ShipLoadout {
      * @throws {TypeError} If `slotKey` is not a string.
      * @throws {LoadoutEditError} If the slot is the built-in cargo hatch; is a required
      * core or armour mount; or removing the module would worsen a per-ship module-count
-     * excess. Required mounts may be replaced with {@link setModule}, but not emptied.
+     * excess. Required mounts may be replaced with {@link setModule} when the hull's
+     * slot layout is known, but cannot be emptied even when the hull is unknown.
      */
     removeModule(slotKey: string): this {
         // Read before `#fittedKey` does, so this one method guards for itself.
@@ -1331,14 +1339,17 @@ export class ShipLoadout {
                 { slot: 'CargoHatch' },
             );
         }
+        const parsed = parseSlotName(slotKey);
         const slot = this.#layoutOrNull()?.find(
             (candidate) => candidate.key.toLowerCase() === wanted,
         );
-        if (slot !== undefined && fixedSlotReason(slot) === 'requiredSlot') {
+        if (parsed !== null && fixedSlotReason(parsed) === 'requiredSlot') {
+            const fittedKey = this.#fittedKey(slotKey);
+            const key = slot?.key ?? fittedKey ?? slotKey;
             throw new LoadoutEditError(
-                `ShipLoadout.removeModule: the ${truncate(slot.key)} slot is required and cannot be emptied`,
-                'immutableSlot',
-                { slot: slot.key },
+                `ShipLoadout.removeModule: the ${truncate(key)} slot is required and cannot be emptied`,
+                'requiredSlot',
+                { slot: key },
             );
         }
         const key = this.#fittedKey(slotKey);

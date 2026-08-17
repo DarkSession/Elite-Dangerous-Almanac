@@ -3334,7 +3334,13 @@ type FixtureShipsOperations = {
                     slot: string;
                 };
             };
-            ship: string;
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
             slot: string;
         };
     };

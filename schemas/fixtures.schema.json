@@ -4514,7 +4514,16 @@
                 "ship"
               ]
             },
-            "immutableSlot": { "$ref": "#/definitions/sharedc8fcaf3f9092" },
+            "immutableSlot": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": { "$ref": "#/definitions/sharedf124e7bd189b" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "ship", "slot"]
+            },
             "immutableSlotReplacement": {
               "type": "object",
               "additionalProperties": false,
@@ -4586,7 +4595,16 @@
                 "targetSlot"
               ]
             },
-            "requiredSlot": { "$ref": "#/definitions/sharedc8fcaf3f9092" }
+            "requiredSlot": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": { "$ref": "#/definitions/sharedf124e7bd189b" },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "input", "slot"]
+            }
           },
           "required": [
             "duplicateExclusiveModule",
@@ -7849,16 +7867,6 @@
       "additionalProperties": false,
       "properties": { "slot": { "type": "string" } },
       "required": ["slot"]
-    },
-    "sharedc8fcaf3f9092": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "expected": { "$ref": "#/definitions/sharedf124e7bd189b" },
-        "ship": { "type": "string" },
-        "slot": { "type": "string" }
-      },
-      "required": ["expected", "ship", "slot"]
     },
     "sharedce8a1d5c0f7c": {
       "type": "object",

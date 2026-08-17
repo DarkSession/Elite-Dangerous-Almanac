@@ -1678,12 +1678,12 @@ test('armour is hull-specific while fixed mounts cannot be emptied', () => {
     );
     assert.throws(() => conda.removeModule('Armour'), {
         name: 'TypeError',
-        code: 'immutableSlot',
+        code: 'requiredSlot',
         params: { slot: 'Armour' },
     });
     assert.throws(() => conda.removeModule('powerplant'), {
         name: 'TypeError',
-        code: 'immutableSlot',
+        code: 'requiredSlot',
         params: { slot: 'PowerPlant' },
     });
     assert.equal(conda.fittedModuleAt('Armour')?.symbol, 'Anaconda_Armour_Grade2');
@@ -1699,6 +1699,29 @@ test('armour is hull-specific while fixed mounts cannot be emptied', () => {
     assert.throws(() => imported.removeModule('CargoHatch'), /cargoHatch slot cannot be changed/);
     assert.deepEqual(imported.fittedModuleAt('CargoHatch')?.raw, cargoHatch);
     assert.ok(imported.slots().find((slot) => slot.key === 'CargoHatch')?.module);
+});
+
+test('required mounts stay occupied when an imported hull has no known layout', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'FutureShip',
+        Modules: [
+            { Slot: 'powerplant', Item: 'FuturePowerPlant' },
+            { Slot: 'Armour', Item: 'FutureArmour' },
+        ],
+    });
+
+    assert.throws(() => build.removeModule('PowerPlant'), {
+        name: 'TypeError',
+        code: 'requiredSlot',
+        params: { slot: 'powerplant' },
+    });
+    assert.throws(() => build.removeModule('armour'), {
+        name: 'TypeError',
+        code: 'requiredSlot',
+        params: { slot: 'Armour' },
+    });
+    assert.equal(build.fittedModuleAt('PowerPlant')?.symbol, 'FuturePowerPlant');
+    assert.equal(build.fittedModuleAt('Armour')?.symbol, 'FutureArmour');
 });
 
 // ── Engineering ─────────────────────────────────────────────────────────────
@@ -4289,7 +4312,7 @@ test('a derived view never survives the edit that invalidates it', () => {
             },
         ],
         [
-            // Fitting and emptying a *required* mount is what moves `validation`: the
+            // Filling a *required* mount is what moves `validation`: the
             // cargo-slot edits above leave `valid`, `complete` and the issue list
             // untouched, so on their own they cannot catch a stale validation cache.
             'setModule filling a required core mount',

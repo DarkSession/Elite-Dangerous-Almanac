@@ -597,11 +597,14 @@
       }
     },
     "requiredSlot": {
-      "ship": "SideWinder",
+      "input": {
+        "Ship": "FutureShip",
+        "Modules": [{ "Slot": "powerplant", "Item": "FuturePowerPlant" }]
+      },
       "slot": "PowerPlant",
       "expected": {
-        "code": "immutableSlot",
-        "params": { "slot": "PowerPlant" }
+        "code": "requiredSlot",
+        "params": { "slot": "powerplant" }
       }
     },
     "immutableSlotReplacement": {
