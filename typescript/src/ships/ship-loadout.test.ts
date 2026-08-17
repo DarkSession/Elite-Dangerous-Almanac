@@ -4490,6 +4490,247 @@ test('setExperimentalEffect returns structured refusals without changing the mod
     }
 });
 
+test('completeEngineeringGrade recomputes imported ordinary and Mercenary rolls at quality one', () => {
+    const partial = ShipLoadout.default('SideWinder').applyBlueprint(
+        'FrameShiftDrive',
+        'FSD_LongRange',
+        { grade: 5, quality: 0.42, experimental: 'special_fsd_heavy' },
+    );
+    const imported = ShipLoadout.fromLoadout(partial.toLoadoutEvent());
+    const expected = ShipLoadout.default('SideWinder').applyBlueprint(
+        'FrameShiftDrive',
+        'FSD_LongRange',
+        { grade: 5, quality: 1, experimental: 'special_fsd_heavy' },
+    );
+
+    const result = imported.completeEngineeringGrade('FrameShiftDrive');
+    assert.deepEqual(result, { kind: 'normalized', previousQuality: 0.42, quality: 1 });
+    assert.ok(Object.isFrozen(result));
+    assert.deepEqual(
+        imported.fittedModuleAt('FrameShiftDrive')!.effectiveStats,
+        expected.fittedModuleAt('FrameShiftDrive')!.effectiveStats,
+    );
+
+    const variant = getPreEngineeredVariants('Int_PowerDistributor_Size6_Class5').find(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )!;
+    const mercenary = ShipLoadout.empty('Anaconda')
+        .setPreEngineeredVariant('PowerDistributor', variant)
+        .applyBlueprint('PowerDistributor', variant.blueprint, { grade: 2, quality: 0.5 });
+    assert.equal(mercenary.completeEngineeringGrade('PowerDistributor').kind, 'normalized');
+    assert.equal(mercenary.fittedModuleAt('PowerDistributor')!.engineering!.Quality, 1);
+    assert.equal(mercenary.fittedModuleAt('PowerDistributor')!.preEngineeredVariant, variant);
+
+    const converted = ShipLoadout.empty('Anaconda')
+        .setModule('MediumHardpoint1', mod('Hpt_BasicMissileRack_Fixed_Medium', HARDPOINT_MODULES))
+        .applyBlueprint('MediumHardpoint1', 'Weapon_HighCapacity', {
+            grade: 5,
+            quality: 0.42,
+            experimental: 'special_overload_munitions',
+        });
+    const importedConverted = ShipLoadout.fromLoadout(converted.toLoadoutEvent());
+    assert.equal(importedConverted.completeEngineeringGrade('MediumHardpoint1').kind, 'normalized');
+    assert.equal(importedConverted.fittedModuleAt('MediumHardpoint1')!.engineering!.Quality, 1);
+});
+
+test('completeEngineeringGrade preserves an imported fixed reward', () => {
+    const variant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
+        (candidate) => candidate.acquisition === 'techBroker',
+    )!;
+    const loadout = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'FrameShiftDrive',
+        variant,
+    );
+    loadout.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
+    const captured = loadout.toLoadoutEvent();
+    const drive = captured.Modules.find((module) => module.Slot === 'FrameShiftDrive')!;
+    const imported = ShipLoadout.fromLoadout({
+        ...captured,
+        Modules: captured.Modules.map((module) =>
+            module === drive
+                ? {
+                      ...module,
+                      Engineering: { ...module.Engineering!, Quality: 0.42 },
+                  }
+                : module,
+        ),
+    });
+    const fixedOptimalMass = loadout.fittedModuleAt('FrameShiftDrive')!.effectiveStats!.optMass;
+
+    assert.deepEqual(imported.completeEngineeringGrade('FrameShiftDrive'), {
+        kind: 'normalized',
+        previousQuality: 0.42,
+        quality: 1,
+    });
+    const normalized = imported.fittedModuleAt('FrameShiftDrive')!;
+    assert.equal(normalized.engineering!.ExperimentalEffect, 'special_fsd_heavy');
+    assert.equal(normalized.effectiveStats!.optMass, fixedOptimalMass);
+    assert.equal(normalized.preEngineeredVariant, variant);
+
+    const shieldVariant = getPreEngineeredVariants('Int_ShieldGenerator_Size3_Class5').find(
+        (candidate) => candidate.acquisition === 'communityGoal',
+    )!;
+    const shield = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'Slot08_Size4',
+        shieldVariant,
+    );
+    shield.setExperimentalEffect('Slot08_Size4', 'special_shield_efficient');
+    const shieldEvent = shield.toLoadoutEvent();
+    const partialShield = ShipLoadout.fromLoadout({
+        ...shieldEvent,
+        Modules: shieldEvent.Modules.map((module) =>
+            module.Slot === 'Slot08_Size4'
+                ? { ...module, Engineering: { ...module.Engineering!, Quality: 0.42 } }
+                : module,
+        ),
+    });
+    assert.equal(partialShield.completeEngineeringGrade('Slot08_Size4').kind, 'normalized');
+    const completedMultiplier =
+        partialShield.fittedModuleAt('Slot08_Size4')!.effectiveStats!.minMultiplier!;
+    assert.ok(near(completedMultiplier, 0.686000035));
+    assert.ok(
+        near(
+            ShipLoadout.fromLoadout(partialShield.toLoadoutEvent()).fittedModuleAt('Slot08_Size4')!
+                .effectiveStats!.minMultiplier!,
+            completedMultiplier,
+        ),
+    );
+});
+
+test('completeEngineeringGrade returns lossless refusals and leaves the module unchanged', () => {
+    const empty = ShipLoadout.empty('Anaconda');
+    assert.deepEqual(empty.completeEngineeringGrade('FrameShiftDrive'), {
+        kind: 'unsupported',
+        code: 'emptySlot',
+        params: { slot: 'FrameShiftDrive' },
+    });
+    assert.deepEqual(ShipLoadout.default('Anaconda').completeEngineeringGrade('FrameShiftDrive'), {
+        kind: 'unchanged',
+    });
+
+    const unknown = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'FrameShiftDrive',
+                Item: 'FutureDrive',
+                Engineering: { BlueprintName: 'FutureBlueprint', Level: 5, Quality: 0.5 },
+            },
+        ],
+    });
+    const unknownBefore = unknown.fittedModuleAt('FrameShiftDrive')!.raw;
+    const unknownResult = unknown.completeEngineeringGrade('FrameShiftDrive');
+    assert.equal(unknownResult.kind, 'unsupported');
+    assert.equal(unknownResult.code, 'unknownModule');
+    assert.ok(Object.isFrozen(unknownResult.params));
+    assert.deepEqual(unknown.fittedModuleAt('FrameShiftDrive')!.raw, unknownBefore);
+
+    const unsupported = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'FrameShiftDrive',
+                Item: 'Int_Hyperdrive_Size6_Class5',
+                Engineering: { BlueprintName: 'FutureBlueprint', Level: 5, Quality: 0.5 },
+            },
+        ],
+    });
+    const unsupportedResult = unsupported.completeEngineeringGrade('FrameShiftDrive');
+    assert.equal(unsupportedResult.kind, 'unsupported');
+    assert.equal(unsupportedResult.code, 'unsupportedEngineering');
+
+    const partial = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'FrameShiftDrive',
+                Item: 'Int_Hyperdrive_Size6_Class5',
+                Engineering: { Quality: 0.5 },
+            },
+        ],
+    } as unknown as LoadoutEvent);
+    assert.deepEqual(partial.completeEngineeringGrade('FrameShiftDrive'), {
+        kind: 'unsupported',
+        code: 'unsupportedEngineering',
+        params: { slot: 'FrameShiftDrive', symbol: 'Int_Hyperdrive_Size6_Class5' },
+    });
+
+    const fixedVariant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
+        (candidate) => candidate.acquisition === 'techBroker',
+    )!;
+    const unidentified = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'FrameShiftDrive',
+                Item: fixedVariant.symbol,
+                Engineering: {
+                    BlueprintName: fixedVariant.blueprint,
+                    Level: fixedVariant.grade,
+                    Quality: 0.5,
+                    Modifiers: getPreEngineeredJournalModifiers(fixedVariant).slice(0, 1),
+                },
+            },
+        ],
+    });
+    const unidentifiedResult = unidentified.completeEngineeringGrade('FrameShiftDrive');
+    assert.equal(unidentifiedResult.kind, 'unsupported');
+    assert.equal(unidentifiedResult.code, 'unidentifiedPreEngineeredVariant');
+
+    const fixed = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'FrameShiftDrive',
+        fixedVariant,
+    );
+    const fixedEvent = fixed.toLoadoutEvent();
+    const incompatible = ShipLoadout.fromLoadout({
+        ...fixedEvent,
+        Modules: fixedEvent.Modules.map((module) =>
+            module.Slot === 'FrameShiftDrive'
+                ? {
+                      ...module,
+                      Engineering: {
+                          ...module.Engineering!,
+                          Quality: 0.5,
+                          ExperimentalEffect: 'special_weapon_damage',
+                      },
+                  }
+                : module,
+        ),
+    });
+    assert.deepEqual(incompatible.completeEngineeringGrade('FrameShiftDrive'), {
+        kind: 'unsupported',
+        code: 'unsupportedExperimentalEffect',
+        params: {
+            slot: 'FrameShiftDrive',
+            symbol: fixedEvent.Modules.find((module) => module.Slot === 'FrameShiftDrive')!.Item,
+            experimental: 'special_weapon_damage',
+        },
+    });
+
+    const finalVariant = getPreEngineeredVariants('Hpt_Guardian_GaussCannon_Fixed_Medium')[0]!;
+    const final = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'MediumHardpoint1',
+        finalVariant,
+    );
+    const finalEvent = final.toLoadoutEvent();
+    const partialFinal = ShipLoadout.fromLoadout({
+        ...finalEvent,
+        Modules: finalEvent.Modules.map((module) =>
+            module.Slot === 'MediumHardpoint1'
+                ? { ...module, Engineering: { ...module.Engineering!, Quality: 0.5 } }
+                : module,
+        ),
+    });
+    assert.deepEqual(partialFinal.completeEngineeringGrade('MediumHardpoint1'), {
+        kind: 'unsupported',
+        code: 'finalArticle',
+        params: {
+            slot: 'MediumHardpoint1',
+            symbol: finalEvent.Modules.find((module) => module.Slot === 'MediumHardpoint1')!.Item,
+        },
+    });
+});
+
 test('a burst-pattern variant identifies before and after export', () => {
     const variant = getPreEngineeredVariants('Hpt_Slugshot_Gimbal_Large').find(
         (candidate) => candidate.acquisition === 'communityGoal',
@@ -4868,6 +5109,7 @@ test('every slot-key method names a wrong-typed key rather than failing inside t
         (key) => build.setModulePriority(key, 1),
         (key) => build.applyBlueprint(key, 'FSD_LongRange', { grade: 5 }),
         (key) => build.setExperimentalEffect(key, null),
+        (key) => build.completeEngineeringGrade(key),
         (key) =>
             build.setPreEngineeredVariant(
                 key,
