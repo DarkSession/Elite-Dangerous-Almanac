@@ -630,6 +630,8 @@ export class ShipLoadout {
      * per-ship count allowances, and any aggregate violation is reported by
      * {@link validation}. Use this factory rather than replaying a complete loadout
      * through the incremental {@link setModule} editor.
+     * A known hull's non-removable cargo hatch is restored from its default loadout when
+     * the capture omits it or supplies an unresolved item for that mount.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -670,6 +672,33 @@ export class ShipLoadout {
             );
         }
         const imported = normalizeLoadoutEvent(event);
+        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find(
+            (module) => module.slot.toLowerCase() === 'cargohatch',
+        );
+        if (defaultHatch) {
+            const key = matchingKeyIn(imported.modules, defaultHatch.slot);
+            const captured = key === null ? undefined : imported.modules.get(key);
+            if (captured === undefined) {
+                const ownSlot =
+                    imported.modules.size > 0 &&
+                    [...imported.modules.keys()].every((slot) => slot === slot.toLowerCase())
+                        ? defaultHatch.slot.toLowerCase()
+                        : defaultHatch.slot;
+                imported.modules.set(ownSlot, {
+                    Slot: ownSlot,
+                    Item: defaultHatch.symbol,
+                });
+            } else if (!isBuiltInHullModule(captured)) {
+                imported.modules.set(key!, {
+                    Slot: captured.Slot,
+                    Item: defaultHatch.symbol,
+                    ...(captured.On === undefined ? {} : { On: captured.On }),
+                    ...(captured.Priority === undefined ? {} : { Priority: captured.Priority }),
+                    ...(captured.Health === undefined ? {} : { Health: captured.Health }),
+                });
+                imported.moduleStats.delete(key!);
+            }
+        }
         return new ShipLoadout(
             imported.shipSymbol,
             imported.modules,

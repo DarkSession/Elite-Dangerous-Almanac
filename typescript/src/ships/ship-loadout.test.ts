@@ -495,6 +495,82 @@ test('loadout validation makes empty and unknown builds explicit', () => {
     assert.ok(disguised.validation.issues.some((issue) => issue.code === 'unknownSlot'));
 });
 
+test('fromLoadout restores a known hull cargo hatch when omitted or unresolved', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const defaultHatch = source.Modules.find(
+        (module) => module.Slot.toLowerCase() === 'cargohatch',
+    )!;
+    const withoutHatch = source.Modules.filter(
+        (module) => module.Slot.toLowerCase() !== 'cargohatch',
+    );
+
+    const omitted = ShipLoadout.fromLoadout({ ...source, Modules: withoutHatch });
+    assert.equal(
+        omitted.fittedModuleAt('CargoHatch')!.symbol.toLowerCase(),
+        defaultHatch.Item.toLowerCase(),
+    );
+    assert.deepEqual(omitted.validation, { valid: true, complete: true, issues: [] });
+
+    const unresolved = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: [
+            ...withoutHatch,
+            {
+                Slot: 'cargohatch',
+                Item: 'FutureCargoHatch',
+                On: false,
+                Value: 999,
+                Engineering: {
+                    BlueprintName: 'FutureBlueprint',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'PowerDraw', Value: 999 }],
+                },
+            },
+        ],
+    }).fittedModuleAt('CargoHatch')!;
+    assert.equal(unresolved.symbol.toLowerCase(), defaultHatch.Item.toLowerCase());
+    assert.equal(unresolved.on, false);
+    assert.equal(unresolved.engineering, undefined);
+    assert.equal(unresolved.effectiveStats!.powerDraw, 0.6);
+    assert.equal(unresolved.raw.Value, undefined);
+
+    const futureVariant = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: [
+            ...withoutHatch,
+            { Slot: 'cargohatch', Item: 'ModularCargoBayDoorUnknown', Value: 999 },
+        ],
+    }).fittedModuleAt('CargoHatch')!;
+    assert.equal(futureVariant.symbol, 'ModularCargoBayDoorUnknown');
+    assert.equal(futureVariant.raw.Value, 999);
+
+    const fdl = ShipLoadout.default('FerDeLance').toLoadoutEvent();
+    const wrongHatch = fdl.Modules.map((module) =>
+        module.Slot.toLowerCase() === 'cargohatch'
+            ? { ...module, Item: 'ModularCargoBayDoor', On: false }
+            : module,
+    );
+    const capturedFdlHatch = ShipLoadout.fromLoadout({
+        ...fdl,
+        Modules: wrongHatch,
+    }).fittedModuleAt('CargoHatch')!;
+    assert.equal(capturedFdlHatch.symbol, 'ModularCargoBayDoor');
+    assert.equal(capturedFdlHatch.on, false);
+
+    const lowerCaseModules = withoutHatch.map((module) => ({
+        ...module,
+        Slot: module.Slot.toLowerCase(),
+    }));
+    const lowerCase = ShipLoadout.fromLoadout({ ...source, Modules: lowerCaseModules });
+    assert.equal(lowerCase.fittedModuleAt('CargoHatch')!.slot, 'cargohatch');
+    assert.ok(
+        lowerCase
+            .toLoadoutEvent()
+            .Modules.every((module) => module.Slot === module.Slot.toLowerCase()),
+    );
+});
+
 test('default builds fit every stock module and remain independently editable', () => {
     for (const ship of SHIPS) {
         const build = ShipLoadout.default(ship.symbol);
@@ -4139,8 +4215,8 @@ test('a build imported from Inara binds every one of its lower-cased slots', () 
     // Inara lower-cases every slot key, as the SLEF specification's own example does.
     // The build is otherwise ordinary, so every mount it names must bind.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.fittedModules().length, 27);
-    assert.equal(build.slots().filter((s) => s.module !== null).length, 27);
+    assert.equal(build.fittedModules().length, 28);
+    assert.equal(build.slots().filter((s) => s.module !== null).length, 28);
 
     // ...reached by the journal's own spelling, which is not the one it wrote.
     assert.equal(
@@ -4249,7 +4325,7 @@ test('a lower-cased build exports in slot order', () => {
         .map((s) => s.key.toLowerCase())
         .filter((key) => ordered.includes(key));
     assert.deepEqual(ordered, layoutOrder);
-    assert.equal(ordered.length, 27);
+    assert.equal(ordered.length, 28);
 });
 
 test("a core mount's function name reaches its slot only where casing is the difference", () => {

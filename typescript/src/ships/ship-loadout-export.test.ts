@@ -1071,6 +1071,7 @@ test('a restricted mount survives a SLEF round trip under its journal name', () 
     assert.deepEqual(
         back
             .fittedModules()
+            .filter((module) => module.slot !== 'CargoHatch')
             .map((module) => module.slot)
             .sort(),
         build
@@ -1100,7 +1101,7 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
         ],
     };
     const build = ShipLoadout.fromLoadout(foreign);
-    assert.equal(build.fittedModules().length, 3);
+    assert.equal(build.fittedModules().length, 4);
     assert.equal(
         build.fittedModuleAt('MediumHardpoint1')?.symbol,
         'hpt_mining_subsurfdispmisle_fixed_medium',
@@ -1113,7 +1114,7 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
     );
     assert.deepEqual(
         build.toLoadoutEvent().Modules.map((m) => m.Slot),
-        ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank'],
+        ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank', 'CargoHatch'],
     );
 });
 
@@ -1189,9 +1190,9 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
 
 test('every figure the Type-11 export needs is computable from it', () => {
     // A build carrying an unpriced or unrecognised module exports no credits at all, so
-    // this doubles as a check that all 27 of its modules resolve in the catalogues.
+    // this doubles as a check that all 27 captured modules and the restored hatch resolve.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.fittedModules().length, 27);
+    assert.equal(build.fittedModules().length, 28);
     const ours = build.toLoadoutEvent();
     for (const key of [
         'UnladenMass',

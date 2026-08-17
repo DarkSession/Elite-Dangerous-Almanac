@@ -86,8 +86,10 @@ function assemble(build: CorpusBuild): ShipLoadout {
             ...(entry.priority === undefined ? {} : { Priority: entry.priority }),
         };
     });
-    // A corpus record is a complete loadout, so import it atomically. `setModule` is the
-    // invariant-preserving editor API and intentionally makes fitting order observable.
+    // A corpus record is an outfitting build that omits the hull's built-in cargo hatch,
+    // which `fromLoadout` restores from the default loadout while importing the stated
+    // modules atomically. `setModule` is the invariant-preserving editor API and
+    // intentionally makes fitting order observable.
     return ShipLoadout.fromLoadout({ Ship: build.ship, Modules: modules });
 }
 
@@ -139,7 +141,7 @@ test('the corpus covers every hull with 2-5 builds and unique ids', () => {
     assert.equal(perHull.size, SHIPS.length, 'every hull in the shipyard has builds');
 });
 
-test('every build fits: each module exists and its slot accepts it', () => {
+test('every corpus module fits and import restores the omitted cargo hatch', () => {
     for (const build of builds) {
         const loadout = assemble(build);
         const validation = loadout.validation;
@@ -151,8 +153,8 @@ test('every build fits: each module exists and its slot accepts it', () => {
         const occupied = loadout.slots().filter((slot) => slot.module !== null);
         assert.equal(
             occupied.length,
-            build.modules.length,
-            `${build.id}: fitted ${occupied.length} of ${build.modules.length} modules`,
+            build.modules.length + 1,
+            `${build.id}: fitted modules plus built-in cargo hatch`,
         );
         // A build always fills its seven core internals; that is what makes it flyable.
         assert.equal(
