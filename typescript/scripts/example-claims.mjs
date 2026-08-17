@@ -286,30 +286,28 @@ function literalPrefix(text) {
     const initializer = statement.declarationList.declarations[0]?.initializer;
     if (initializer === undefined) return null;
 
-    const start = initializer.getStart(source);
-    let match = null;
-    function visit(node) {
-        if (node.getStart(source) !== start) return;
-        const spec = decodeLiteralNode(node);
-        if (spec !== null && (match === null || node.end > match.node.end)) match = { node, spec };
-        ts.forEachChild(node, visit);
+    function longestDecodableFrom(root, position) {
+        let longest = null;
+        function visit(node) {
+            if (node.getStart(source) !== position) return;
+            const spec = decodeLiteralNode(node);
+            if (spec !== null && (longest === null || node.end > longest.node.end)) {
+                longest = { node, spec };
+            }
+            ts.forEachChild(node, visit);
+        }
+        visit(root);
+        return longest;
     }
-    visit(initializer);
+
+    const start = initializer.getStart(source);
+    let match = longestDecodableFrom(initializer, start);
 
     // TypeScript parses `-0.2 (annotation)` as unary minus applied to a call. Recover
     // the numeric operand prefix, then apply the unary operator to its decoded value.
     if (match === null && ts.isPrefixUnaryExpression(initializer)) {
         const operandStart = initializer.operand.getStart(source);
-        let operandMatch = null;
-        function visitOperand(node) {
-            if (node.getStart(source) !== operandStart) return;
-            const spec = decodeLiteralNode(node);
-            if (spec !== null && (operandMatch === null || node.end > operandMatch.node.end)) {
-                operandMatch = { node, spec };
-            }
-            ts.forEachChild(node, visitOperand);
-        }
-        visitOperand(initializer.operand);
+        const operandMatch = longestDecodableFrom(initializer.operand, operandStart);
         const spec =
             operandMatch === null
                 ? null

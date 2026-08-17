@@ -273,7 +273,7 @@ Do not disable either setting to land an update, and treat `minimumReleaseAgeExc
 
 `onlyBuiltDependencies` is not used; `allowBuilds` names the packages permitted to run install scripts, and only `esbuild` is on it — its postinstall is what puts the platform binary in place. A postinstall appearing anywhere else in the tree fails the install rather than executing unnoticed, which is the point.
 
-**TypeScript is held at 5.x.** TypeDoc 0.28 declares support through 6.0 only, so 7.x is out; 6.x additionally breaks `check:examples`, whose scratch `tsconfig.json` puts snippets under the system temporary directory while they import the library from `src/`, and 6.x rejects the resulting program with `TS6059` because no single `rootDir` covers both trees. Moving that scratch directory inside the package would be the fix, and is a change in its own right rather than something to fold into a dependency bump.
+**TypeScript is held at 5.x.** TypeDoc 0.28 declares support through 6.0 only, so 7.x is out; 6.x additionally breaks `check:examples`, whose in-memory compiler configuration puts generated snippets under the system temporary directory while they import the library from `src/`, and 6.x rejects the resulting program with `TS6059` because no single `rootDir` covers both trees. Moving that scratch directory inside the package would be the fix, and is a change in its own right rather than something to fold into a dependency bump.
 
 ## Releasing to npm
 

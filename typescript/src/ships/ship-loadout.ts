@@ -553,6 +553,8 @@ export class ShipLoadout {
     readonly #primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
+    /** Frozen slot views by filter; the two module mutation paths clear it. */
+    readonly #slotCache = new Map<SlotKind | undefined, readonly LoadoutSlot[]>();
     /**
      * The hull's expanded mounts: `undefined` until first asked, `null` for a hull
      * with no known layout. Needs no version — `#shipSymbol` is `readonly`, so a
@@ -977,7 +979,8 @@ export class ShipLoadout {
      * Frozen point-in-time views of the hull's mounts in outfitting-panel order.
      *
      * @param kind - Optionally keep only one mount kind. Omit it for every mount.
-     * @returns Detached, frozen slot views.
+     * @returns Detached, frozen slot views. Repeated reads for the same `kind` reuse the
+     * same snapshots until a state-changing edit.
      * @throws {TypeError} If the hull has no known slot layout.
      * @example
      * ```ts
@@ -988,12 +991,14 @@ export class ShipLoadout {
      * ```
      */
     slots(kind?: SlotKind): readonly LoadoutSlot[] {
+        const cached = this.#slotCache.get(kind);
+        if (cached !== undefined) return cached;
         const slots =
             kind === undefined
                 ? this.#layout()
                 : this.#layout().filter((slot) => slot.kind === kind);
         const currentLimits = this.#moduleLimits();
-        return deepFreeze(
+        const value = deepFreeze(
             slots.map((slot) => {
                 const stats = this.#moduleStatsAt(slot.key);
                 const fixedReason = fixedSlotReason(slot);
@@ -1014,6 +1019,8 @@ export class ShipLoadout {
                 };
             }),
         );
+        this.#slotCache.set(kind, value);
+        return value;
     }
 
     /**
@@ -1754,6 +1761,7 @@ export class ShipLoadout {
             throw new RangeError(`ShipLoadout: slot "${truncate(slotKey)}" is empty`);
         }
         this.#modules.set(module.Slot, cloneLoadoutModule({ ...module, ...patch }));
+        this.#slotCache.clear();
     }
 
     /**
@@ -2713,6 +2721,7 @@ export class ShipLoadout {
             if (primitiveModifiers === undefined) this.#primitiveModifiers.delete(slotKey);
             else this.#primitiveModifiers.set(slotKey, primitiveModifiers);
         }
+        this.#slotCache.clear();
     }
 
     /**

@@ -86,5 +86,34 @@ export function matchingKeyIn(keyed: ReadonlyMap<string, unknown>, slotKey: stri
 
 /** Snapshot caller-supplied stats so later caller mutation cannot alter the build. */
 export function cloneModuleStats(module: OutfittingModule): OutfittingModule {
-    return deepFreeze(structuredClone(module));
+    try {
+        return deepFreeze(structuredClone(module));
+    } catch (error) {
+        if (!(error instanceof Error && error.name === 'DataCloneError')) throw error;
+        return deepFreeze({
+            ...module,
+            ...(module.restrictedToShips === undefined
+                ? {}
+                : { restrictedToShips: [...module.restrictedToShips] }),
+            ...(module.limitIncrease === undefined
+                ? {}
+                : { limitIncrease: { ...module.limitIncrease } }),
+            ...(module.damageDistribution === undefined
+                ? {}
+                : { damageDistribution: { ...module.damageDistribution } }),
+            ...(module.damageComponents === undefined
+                ? {}
+                : {
+                      damageComponents: {
+                          ...module.damageComponents,
+                          ...(module.damageComponents.unclassified === undefined
+                              ? {}
+                              : { unclassified: [...module.damageComponents.unclassified] }),
+                      },
+                  }),
+            ...(module.projectileRange === undefined
+                ? {}
+                : { projectileRange: { ...module.projectileRange } }),
+        });
+    }
 }

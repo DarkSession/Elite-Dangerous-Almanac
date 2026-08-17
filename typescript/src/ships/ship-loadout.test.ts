@@ -2615,6 +2615,13 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
     assert.doesNotThrow(() => (supplied.damageComponents!.unclassified as number[]).push(2));
 });
 
+test('fitting accepts a Proxy-wrapped module record', () => {
+    const module = mod('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
+    const build = ShipLoadout.empty('Anaconda').setModule('FrameShiftDrive', new Proxy(module, {}));
+
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.stats?.symbol, module.symbol);
+});
+
 // ── Immutable slot and fitted-module views ───────────────────────────────────
 
 test('slots optionally filters the mounts by kind', () => {
@@ -4273,12 +4280,13 @@ test("a core mount's function name reaches its slot only where casing is the dif
 });
 
 // ── Derived views
-test('slot and fitted-module snapshots are frozen and detached', () => {
+test('slot snapshots are cached until an edit and fitted-module snapshots are detached', () => {
     const build = ShipLoadout.default('Anaconda');
     const first = build.slots();
     const drive = build.fittedModuleAt('FrameShiftDrive')!;
     assert.throws(() => (first as LoadoutSlot[]).pop(), TypeError);
     assert.throws(() => Object.assign(first[0]!, { name: 'changed' }), TypeError);
+    assert.equal(build.slots(), first);
 
     build.setModuleEnabled('FrameShiftDrive', !drive.on);
     const second = build.slots();
@@ -4290,11 +4298,10 @@ test('slot and fitted-module snapshots are frozen and detached', () => {
     assert.equal(drive.on, first.find((slot) => slot.key === 'FrameShiftDrive')?.module?.on);
 });
 
-test('a validation result cannot be edited through by one consumer', () => {
+test('validation issues are frozen', () => {
     const build = ShipLoadout.empty('Anaconda');
     const issue = build.validation.issues[0]!;
     assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
-    assert.notEqual(build.validation.issues[0]!.message, 'rewritten');
 });
 
 test('every slot-key method names a wrong-typed key rather than failing inside the build', () => {
