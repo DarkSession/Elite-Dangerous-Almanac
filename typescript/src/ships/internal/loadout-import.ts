@@ -239,7 +239,26 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     for (const module of modules.values()) {
         const engineering = module.Engineering;
         const variant = identifyPreEngineeredVariant(module);
-        const variantStats = variant ? getPreEngineeredStats(variant) : null;
+        const catalogueVariantStats = variant ? getPreEngineeredStats(variant) : null;
+        let variantStats = catalogueVariantStats;
+        const retainsBakedExperimental =
+            variant?.experimental !== undefined &&
+            typeof engineering?.ExperimentalEffect === 'string' &&
+            variant.experimental.trim().toLowerCase() ===
+                engineering.ExperimentalEffect.trim().toLowerCase();
+        if (
+            variant &&
+            catalogueVariantStats &&
+            !catalogueVariantStats.engineeringLocked &&
+            !retainsBakedExperimental
+        ) {
+            const { experimental: originalExperimental, ...withoutExperimental } = variant;
+            void originalExperimental;
+            // The capture's modifier block applies its current experimental below. Seed
+            // only the fixed article here, or an original baked effect would survive a
+            // removal and a replacement effect would be counted twice.
+            variantStats = getPreEngineeredStats(withoutExperimental);
+        }
         if (variantStats) moduleStats.set(module.Slot, cloneModuleStats(variantStats));
         if (
             variantStats?.engineeringLocked ||

@@ -301,6 +301,80 @@ export interface ApplyBlueprintOptions {
     readonly experimental?: string;
 }
 
+/** Stable reason {@link ShipLoadout.setExperimentalEffect} cannot perform an edit. */
+export type ExperimentalEffectMutationCode =
+    | 'emptySlot'
+    | 'unknownModule'
+    | 'notEngineered'
+    | 'unknownExperimentalEffect'
+    | 'unsupportedExperimentalEffect'
+    | 'finalArticle'
+    | 'unsupportedEngineering'
+    | 'unidentifiedPreEngineeredVariant'
+    | 'unresolvedModifiers';
+
+/** Successful effect-only engineering edit. */
+export interface ExperimentalEffectUpdated {
+    /** Discriminator for an edit that changed the fitted module. */
+    readonly kind: 'updated';
+    /** Effect id before the edit, or `null` when none was present. */
+    readonly previousExperimental: string | null;
+    /** Effect id after the edit, or `null` when it was removed. */
+    readonly experimental: string | null;
+}
+
+/** Effect-only edit that requested the fitted module's current effect. */
+export interface ExperimentalEffectUnchanged {
+    /** Discriminator for a no-op edit. */
+    readonly kind: 'unchanged';
+    /** Current effect id, or `null` when none is present. */
+    readonly experimental: string | null;
+}
+
+/** Effect-only edit that cannot be performed losslessly. */
+export interface ExperimentalEffectUnsupported {
+    /** Discriminator for a refused edit. */
+    readonly kind: 'unsupported';
+    /** Stable machine-readable reason for the refusal. */
+    readonly code: ExperimentalEffectMutationCode;
+    /** Language-neutral values describing the fitted article and requested edit. */
+    readonly params: LoadoutIssueParams;
+}
+
+/** Result of {@link ShipLoadout.setExperimentalEffect}. */
+export type ExperimentalEffectMutationResult =
+    ExperimentalEffectUpdated | ExperimentalEffectUnchanged | ExperimentalEffectUnsupported;
+
+/** Construct a detached immutable refusal result. */
+const experimentalEffectUnsupported = (
+    code: ExperimentalEffectMutationCode,
+    params: LoadoutIssueParams,
+): ExperimentalEffectUnsupported => deepFreeze({ kind: 'unsupported', code, params });
+
+/** Whether a captured modifier block proves the calculator's ordinary result. */
+const matchesCalculatedModifiers = (
+    captured: readonly EngineeringModifier[] | undefined,
+    calculated: readonly EngineeringModifier[],
+): boolean => {
+    if (!captured || captured.length !== calculated.length) return false;
+    const byLabel = new Map(
+        captured.map((modifier) => [modifier.Label.trim().toLowerCase(), modifier]),
+    );
+    if (byLabel.size !== captured.length) return false;
+    return calculated.every((expected) => {
+        const actual = byLabel.get(expected.Label.trim().toLowerCase());
+        if (!actual) return false;
+        if (expected.Value !== undefined) {
+            return (
+                actual.Value !== undefined &&
+                Math.abs(actual.Value - expected.Value) <=
+                    1e-6 * Math.max(1, Math.abs(expected.Value))
+            );
+        }
+        return actual.ValueStr === expected.ValueStr;
+    });
+};
+
 /** Options for the defence figures a build reports. */
 export interface DefenceOptions {
     /**
@@ -1579,6 +1653,254 @@ export class ShipLoadout {
             primitiveModifiers,
         );
         return this;
+    }
+
+    /**
+     * Add, replace or remove only the fitted module's experimental effect.
+     *
+     * Ordinary and Mercenary engineering is recomputed at its current blueprint, grade
+     * and quality. A fixed reward instead retains its hand-authored modifiers and
+     * purchase identity while the requested effect is composed with them. Refused edits
+     * leave the build unchanged and return stable structured data.
+     *
+     * @param slotKey - The engineered slot, matched case-insensitively.
+     * @param experimental - Experimental-effect `fdname`, or `null` to remove the effect.
+     * @returns A frozen result identifying an update, no-op or lossless refusal.
+     * @throws {TypeError} If `slotKey` or a non-null `experimental` is not a string.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
+     * build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
+     * build.setExperimentalEffect('FrameShiftDrive', null);
+     * ```
+     */
+    setExperimentalEffect(
+        slotKey: string,
+        experimental: string | null,
+    ): ExperimentalEffectMutationResult {
+        if (experimental !== null) {
+            requireString(experimental, 'ShipLoadout.setExperimentalEffect: experimental');
+        }
+        const wanted = experimental;
+        const module = this.#fittedModuleFor(slotKey);
+        if (!module) return experimentalEffectUnsupported('emptySlot', { slot: slotKey });
+
+        const stats = this.#statsFor(module);
+        if (!stats) {
+            return experimentalEffectUnsupported('unknownModule', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        const engineering = module.Engineering;
+        if (!engineering) {
+            return experimentalEffectUnsupported('notEngineered', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        if (stats.engineeringLocked) {
+            return experimentalEffectUnsupported('finalArticle', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+
+        let effect;
+        if (wanted !== null) {
+            effect = getExperimentalEffect(wanted);
+            if (!effect) {
+                return experimentalEffectUnsupported('unknownExperimentalEffect', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    experimental: wanted,
+                });
+            }
+            if (!experimentalAvailableFor(module.Item, wanted)) {
+                return experimentalEffectUnsupported('unsupportedExperimentalEffect', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    experimental: wanted,
+                });
+            }
+        }
+
+        const previous = engineering.ExperimentalEffect ?? null;
+        if (
+            (previous === null && wanted === null) ||
+            (previous !== null &&
+                wanted !== null &&
+                previous.trim().toLowerCase() === wanted.trim().toLowerCase())
+        ) {
+            return deepFreeze({ kind: 'unchanged', experimental: previous });
+        }
+
+        const variant = identifyPreEngineeredVariant(module);
+        if (variant && variant.acquisition !== 'mercenary') {
+            const stock = this.#engineeringBaseStats(module);
+            if (!stock) {
+                return experimentalEffectUnsupported('unknownModule', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                });
+            }
+            const missing = missingBaseLabels(stock, baseStats(stock), [], effect?.modifiers);
+            if (missing.length > 0) {
+                return experimentalEffectUnsupported('unresolvedModifiers', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    labels: missing,
+                });
+            }
+
+            const { experimental: originalEffect, ...withoutEffect } = variant;
+            void originalEffect;
+            const adjusted: PreEngineeredVariant =
+                wanted === null ? withoutEffect : { ...withoutEffect, experimental: wanted };
+            const resolved = getPreEngineeredStats(withoutEffect);
+            if (!resolved) {
+                return experimentalEffectUnsupported('unknownModule', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                });
+            }
+            const replacement: ModuleEngineering = {
+                BlueprintName: engineering.BlueprintName,
+                Level: engineering.Level,
+                Quality: engineering.Quality,
+                ...(wanted === null ? {} : { ExperimentalEffect: wanted }),
+                Modifiers: getPreEngineeredJournalModifiers(adjusted),
+            };
+            this.#replaceModule(
+                module.Slot,
+                { ...module, Engineering: replacement },
+                cloneModuleStats(resolved),
+                getPreEngineeredModifiers(adjusted),
+            );
+        } else {
+            const blueprint = engineering.BlueprintName;
+            const grade = engineering.Level;
+            const quality = engineering.Quality;
+            if (typeof blueprint !== 'string' || typeof grade !== 'number') {
+                return experimentalEffectUnsupported('unsupportedEngineering', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                });
+            }
+            const recipe = resolveBlueprintForModule(module.Item, blueprint);
+            const blueprintGrade = getBlueprintGrade(recipe, grade);
+            const fixedCandidate = getPreEngineeredVariants(module.Item).some(
+                (candidate) =>
+                    candidate.acquisition !== 'mercenary' &&
+                    candidate.blueprint.trim().toLowerCase() === blueprint.trim().toLowerCase(),
+            );
+            let provenOrdinary = !fixedCandidate;
+            const currentEffect =
+                previous === null ? undefined : (getExperimentalEffect(previous) ?? null);
+            const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
+            if (
+                fixedCandidate &&
+                stock &&
+                blueprintGrade &&
+                currentEffect !== null &&
+                Number.isFinite(quality) &&
+                quality >= 0 &&
+                quality <= 1
+            ) {
+                const current = primitiveEngineeringInputsFor(stock, blueprintGrade, currentEffect);
+                if (
+                    missingBaseLabels(
+                        stock,
+                        baseStats(stock),
+                        current.grade.features,
+                        current.experimental?.modifiers,
+                    ).length === 0
+                ) {
+                    const calculated = journalModifiersFor(
+                        stock,
+                        computeModifiers(
+                            baseStats(stock),
+                            current.grade,
+                            quality,
+                            current.experimental,
+                        ),
+                    );
+                    const damageDistribution =
+                        current.experimental?.damageDistribution ??
+                        current.grade.damageDistribution;
+                    if (damageDistribution) {
+                        for (const type of [
+                            'kinetic',
+                            'thermal',
+                            'explosive',
+                            'absolute',
+                        ] as const) {
+                            const value = damageDistribution[type];
+                            if (value === undefined) continue;
+                            const label = labelsForDamageType(type)[0];
+                            if (label === undefined) continue;
+                            calculated.push({
+                                Label: label,
+                                Value: value * scaleForLabel(label),
+                                OriginalValue:
+                                    (stock.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
+                            });
+                        }
+                    }
+                    provenOrdinary = matchesCalculatedModifiers(engineering.Modifiers, calculated);
+                }
+            }
+            if (!provenOrdinary) {
+                return experimentalEffectUnsupported('unidentifiedPreEngineeredVariant', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    blueprint,
+                });
+            }
+            if (
+                !blueprintGrade ||
+                !blueprintAvailableFor(module.Item, blueprint) ||
+                !Number.isFinite(quality) ||
+                quality < 0 ||
+                quality > 1
+            ) {
+                return experimentalEffectUnsupported('unsupportedEngineering', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    blueprint,
+                    grade,
+                });
+            }
+            const base = this.#engineeringBaseStats(module) ?? stats;
+            const canonical = primitiveEngineeringInputsFor(base, blueprintGrade, effect);
+            const missing = missingBaseLabels(
+                base,
+                baseStats(base),
+                canonical.grade.features,
+                canonical.experimental?.modifiers,
+            );
+            if (missing.length > 0) {
+                return experimentalEffectUnsupported('unresolvedModifiers', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    labels: missing,
+                });
+            }
+            this.applyBlueprint(module.Slot, blueprint, {
+                grade,
+                quality,
+                ...(wanted === null ? {} : { experimental: wanted }),
+            });
+        }
+
+        return deepFreeze({
+            kind: 'updated',
+            previousExperimental: previous,
+            experimental: wanted,
+        });
     }
 
     /**

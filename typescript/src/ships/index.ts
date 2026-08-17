@@ -288,6 +288,11 @@ export {
     type BuildWeaponMetrics,
     type AvailableBlueprint,
     type ApplyBlueprintOptions,
+    type ExperimentalEffectMutationCode,
+    type ExperimentalEffectMutationResult,
+    type ExperimentalEffectUnchanged,
+    type ExperimentalEffectUnsupported,
+    type ExperimentalEffectUpdated,
     type LoadoutExportOptions,
     type SlefExportOptions,
 } from './ship-loadout.js';
