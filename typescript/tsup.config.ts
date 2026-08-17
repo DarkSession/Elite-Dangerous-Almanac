@@ -61,6 +61,13 @@ export default defineConfig({
     // generated sources. That same pass drops mappings into inlined JSONC literals:
     // they cannot produce consumer stack frames and otherwise dominate map size. The
     // remaining mappings point only at stable TypeScript sources.
+    //
+    // Two cheaper-looking alternatives are worse, and `package.test.mjs` catches both.
+    // esbuild's own `minifyWhitespace` strips every /* @__PURE__ */ marker, so unused
+    // catalogue indexes stop being droppable. Emitting each catalogue from the `jsonc`
+    // plugin below as `JSON.parse('…')` keeps the data compact but escapes it into a
+    // string literal a consumer's own minifier cannot touch, overrunning the
+    // consumer-bundle budgets. Either way, dropping Terser also unchains the source maps.
     minify: 'terser',
     terserOptions: {
         compress: false,
