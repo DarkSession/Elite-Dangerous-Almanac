@@ -375,6 +375,54 @@ const matchesCalculatedModifiers = (
     });
 };
 
+/** Stable reason {@link ShipLoadout.completeEngineeringGrade} cannot normalize a grade. */
+export type EngineeringNormalizationCode =
+    | 'emptySlot'
+    | 'unknownModule'
+    | 'invalidQuality'
+    | 'unknownExperimentalEffect'
+    | 'unsupportedExperimentalEffect'
+    | 'finalArticle'
+    | 'unsupportedEngineering'
+    | 'unidentifiedPreEngineeredVariant'
+    | 'unresolvedModifiers';
+
+/** Engineering state that already needs no normalization. */
+export interface EngineeringNormalizationUnchanged {
+    /** Discriminator for a no-op normalization. */
+    readonly kind: 'unchanged';
+}
+
+/** Engineering state recomputed at completed quality. */
+export interface EngineeringNormalized {
+    /** Discriminator for a successful normalization. */
+    readonly kind: 'normalized';
+    /** Quality reported by the fitted module before normalization, in `[0, 1)`. */
+    readonly previousQuality: number;
+    /** Completed engineering quality. Always `1`. */
+    readonly quality: 1;
+}
+
+/** Engineering state that cannot be normalized losslessly. */
+export interface EngineeringNormalizationUnsupported {
+    /** Discriminator for a refused normalization. */
+    readonly kind: 'unsupported';
+    /** Stable machine-readable reason for the refusal. */
+    readonly code: EngineeringNormalizationCode;
+    /** Language-neutral values describing the fitted engineering identity. */
+    readonly params: LoadoutIssueParams;
+}
+
+/** Result of {@link ShipLoadout.completeEngineeringGrade}. */
+export type EngineeringNormalizationResult =
+    EngineeringNormalizationUnchanged | EngineeringNormalized | EngineeringNormalizationUnsupported;
+
+/** Construct a detached immutable normalization refusal. */
+const engineeringNormalizationUnsupported = (
+    code: EngineeringNormalizationCode,
+    params: LoadoutIssueParams,
+): EngineeringNormalizationUnsupported => deepFreeze({ kind: 'unsupported', code, params });
+
 /** Options for the defence figures a build reports. */
 export interface DefenceOptions {
     /**
@@ -1901,6 +1949,227 @@ export class ShipLoadout {
             previousExperimental: previous,
             experimental: wanted,
         });
+    }
+
+    /**
+     * Recompute the fitted module's current engineering identity at quality `1`.
+     *
+     * Imported modifier values remain authoritative until this method is called. An
+     * ordinary or Mercenary recipe is rerolled through the package calculator; a fixed
+     * reward rebuilds its hand-authored modifiers and optional effect without losing its
+     * purchase identity. A refusal never changes the loadout.
+     *
+     * @param slotKey - The engineered slot, matched case-insensitively.
+     * @returns A frozen result identifying a normalized, unchanged or unsupported state.
+     * @throws {TypeError} If `slotKey` is not a string.
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const partial = ShipLoadout.default('SideWinder').applyBlueprint(
+     *     'FrameShiftDrive',
+     *     'FSD_LongRange',
+     *     { grade: 5, quality: 0.42 },
+     * );
+     * const imported = ShipLoadout.fromLoadout(partial.toLoadoutEvent());
+     * imported.completeEngineeringGrade('FrameShiftDrive').kind; // -> 'normalized'
+     * imported.fittedModuleAt('FrameShiftDrive')?.engineering?.Quality; // -> 1
+     * ```
+     */
+    completeEngineeringGrade(slotKey: string): EngineeringNormalizationResult {
+        const module = this.#fittedModuleFor(slotKey);
+        if (!module) return engineeringNormalizationUnsupported('emptySlot', { slot: slotKey });
+
+        const engineering = module.Engineering;
+        if (!engineering || engineering.Quality === 1) {
+            return deepFreeze({ kind: 'unchanged' });
+        }
+        const previousQuality = engineering.Quality;
+        if (!Number.isFinite(previousQuality) || previousQuality < 0 || previousQuality > 1) {
+            return engineeringNormalizationUnsupported('invalidQuality', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+
+        const stats = this.#statsFor(module);
+        if (!stats) {
+            return engineeringNormalizationUnsupported('unknownModule', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        const experimental = engineering.ExperimentalEffect ?? null;
+        const effect =
+            experimental === null ? undefined : (getExperimentalEffect(experimental) ?? undefined);
+        if (experimental !== null && !effect) {
+            return engineeringNormalizationUnsupported('unknownExperimentalEffect', {
+                slot: module.Slot,
+                symbol: module.Item,
+                experimental,
+            });
+        }
+        const blueprint = engineering.BlueprintName;
+        const grade = engineering.Level;
+        if (typeof blueprint !== 'string' || typeof grade !== 'number') {
+            return engineeringNormalizationUnsupported('unsupportedEngineering', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        if (stats.engineeringLocked) {
+            return engineeringNormalizationUnsupported('finalArticle', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        if (experimental !== null && !experimentalAvailableFor(module.Item, experimental)) {
+            return engineeringNormalizationUnsupported('unsupportedExperimentalEffect', {
+                slot: module.Slot,
+                symbol: module.Item,
+                experimental,
+            });
+        }
+
+        const variant = identifyPreEngineeredVariant(module);
+        if (variant && variant.acquisition !== 'mercenary') {
+            const stock = this.#engineeringBaseStats(module);
+            if (!stock) {
+                return engineeringNormalizationUnsupported('unknownModule', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                });
+            }
+            const missing = missingBaseLabels(stock, baseStats(stock), [], effect?.modifiers);
+            if (missing.length > 0) {
+                return engineeringNormalizationUnsupported('unresolvedModifiers', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    labels: missing,
+                });
+            }
+
+            const { experimental: originalEffect, ...withoutEffect } = variant;
+            void originalEffect;
+            const adjusted: PreEngineeredVariant =
+                experimental === null ? withoutEffect : { ...withoutEffect, experimental };
+            const resolved = getPreEngineeredStats(withoutEffect);
+            if (!resolved) {
+                return engineeringNormalizationUnsupported('unknownModule', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                });
+            }
+            const replacement: ModuleEngineering = {
+                BlueprintName: engineering.BlueprintName,
+                Level: engineering.Level,
+                Quality: 1,
+                ...(experimental === null ? {} : { ExperimentalEffect: experimental }),
+                Modifiers: getPreEngineeredJournalModifiers(adjusted),
+            };
+            this.#replaceModule(
+                module.Slot,
+                { ...module, Engineering: replacement },
+                cloneModuleStats(resolved),
+                getPreEngineeredModifiers(adjusted),
+            );
+        } else {
+            const recipe = resolveBlueprintForModule(module.Item, blueprint);
+            const blueprintGrade = getBlueprintGrade(recipe, grade);
+            const fixedCandidate = getPreEngineeredVariants(module.Item).some(
+                (candidate) =>
+                    candidate.acquisition !== 'mercenary' &&
+                    candidate.blueprint.trim().toLowerCase() === blueprint.trim().toLowerCase(),
+            );
+            let provenOrdinary = !fixedCandidate;
+            const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
+            if (
+                fixedCandidate &&
+                stock &&
+                blueprintGrade &&
+                blueprintAvailableFor(module.Item, blueprint)
+            ) {
+                const current = primitiveEngineeringInputsFor(stock, blueprintGrade, effect);
+                if (
+                    missingBaseLabels(
+                        stock,
+                        baseStats(stock),
+                        current.grade.features,
+                        current.experimental?.modifiers,
+                    ).length === 0
+                ) {
+                    const calculated = journalModifiersFor(
+                        stock,
+                        computeModifiers(
+                            baseStats(stock),
+                            current.grade,
+                            previousQuality,
+                            current.experimental,
+                        ),
+                    );
+                    const damageDistribution =
+                        current.experimental?.damageDistribution ??
+                        current.grade.damageDistribution;
+                    if (damageDistribution) {
+                        for (const type of [
+                            'kinetic',
+                            'thermal',
+                            'explosive',
+                            'absolute',
+                        ] as const) {
+                            const value = damageDistribution[type];
+                            if (value === undefined) continue;
+                            const label = labelsForDamageType(type)[0];
+                            if (label === undefined) continue;
+                            calculated.push({
+                                Label: label,
+                                Value: value * scaleForLabel(label),
+                                OriginalValue:
+                                    (stock.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
+                            });
+                        }
+                    }
+                    provenOrdinary = matchesCalculatedModifiers(engineering.Modifiers, calculated);
+                }
+            }
+            if (!provenOrdinary) {
+                return engineeringNormalizationUnsupported('unidentifiedPreEngineeredVariant', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    blueprint,
+                });
+            }
+            if (!blueprintGrade || !blueprintAvailableFor(module.Item, blueprint)) {
+                return engineeringNormalizationUnsupported('unsupportedEngineering', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    blueprint,
+                    grade,
+                });
+            }
+            const base = this.#engineeringBaseStats(module) ?? stats;
+            const canonical = primitiveEngineeringInputsFor(base, blueprintGrade, effect);
+            const missing = missingBaseLabels(
+                base,
+                baseStats(base),
+                canonical.grade.features,
+                canonical.experimental?.modifiers,
+            );
+            if (missing.length > 0) {
+                return engineeringNormalizationUnsupported('unresolvedModifiers', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    labels: missing,
+                });
+            }
+            this.applyBlueprint(module.Slot, blueprint, {
+                grade,
+                quality: 1,
+                ...(experimental === null ? {} : { experimental }),
+            });
+        }
+
+        return deepFreeze({ kind: 'normalized', previousQuality, quality: 1 });
     }
 
     /**
