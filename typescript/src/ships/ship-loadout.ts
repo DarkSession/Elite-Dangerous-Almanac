@@ -340,7 +340,11 @@ export interface DistributorOptions {
     readonly weaponsPips?: number;
 }
 
-/** Retail catalogue credits for an assembled build. */
+/**
+ * Retail catalogue credits for an assembled build.
+ *
+ * @see {@link ShipLoadout.mercCoinCost} for Mercenary purchase prices.
+ */
 export interface RetailCredits {
     /** Bare hull list price in credits, or `null` for an unknown hull. */
     readonly hull: number | null;
@@ -2333,6 +2337,7 @@ export class ShipLoadout {
      *
      * ShipLoadout.default('Anaconda').retailCredits().hull; // -> 142456440
      * ```
+     * @see {@link mercCoinCost} for Mercenary purchase prices.
      */
     retailCredits(): RetailCredits {
         const hull = getShipBySymbol(this.#shipSymbol)?.hullCost ?? null;
@@ -2363,9 +2368,10 @@ export class ShipLoadout {
      * @returns The total in Merc Coin, or `0` when no fitted article is a Mercenary
      * purchase. Credit prices and rebuy remain available from {@link retailCredits}.
      * @remarks
-     * The total counts each fitted article. Its Mercenary-only blueprint identifies the
-     * purchase at grade 1 and after later upgrades; the current grade does not change the
-     * original shop price.
+     * The total counts both articles fitted through {@link setPreEngineeredVariant} and
+     * purchases implied by applying their Mercenary-only blueprint through
+     * {@link applyBlueprint}. The blueprint identifies the purchase at grade 1 and after
+     * later upgrades; the current grade does not change the original shop price.
      * @example
      * ```ts
      * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -2380,8 +2386,8 @@ export class ShipLoadout {
      */
     mercCoinCost(): number {
         let total = 0;
-        for (const module of this.#modules.values()) {
-            total += identifyPreEngineeredVariant(module)?.mercCoinCost ?? 0;
+        for (const slotKey of this.#modules.keys()) {
+            total += this.fittedModuleAt(slotKey)?.preEngineeredVariant?.mercCoinCost ?? 0;
         }
         return total;
     }

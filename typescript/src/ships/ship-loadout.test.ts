@@ -423,6 +423,9 @@ test('mercCoinCost totals the fitted purchases and follows live edits', () => {
     const removed = expected.modules[0]!;
     build.setModule(removed.slot, getModuleBySymbol(removed.symbol, ALL_MODULES)!);
     assert.equal(build.mercCoinCost(), expected.expected - removed.cost);
+
+    build.applyBlueprint(removed.slot, removed.blueprint, { grade: 5 });
+    assert.equal(build.mercCoinCost(), expected.expected);
 });
 
 test('fromSlef reads the ship identity and top-level figures', () => {
