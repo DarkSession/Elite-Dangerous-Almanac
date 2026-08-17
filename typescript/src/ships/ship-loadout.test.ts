@@ -407,6 +407,27 @@ test('retailCredits prices assembled builds directly and qualifies missing modul
     assert.ok(unknown.retailCredits().unpriced.length > 0);
 });
 
+test('mercCoinCost totals the fitted purchases and follows live edits', () => {
+    const expected = operationsFixture.mercCoinCost;
+    const build = ShipLoadout.default(expected.ship);
+    assert.equal(build.mercCoinCost(), 0);
+
+    for (const module of expected.modules) {
+        const variant = getPreEngineeredVariants(module.symbol).find(
+            (candidate) => candidate.blueprint === module.blueprint,
+        )!;
+        build.setPreEngineeredVariant(module.slot, variant);
+    }
+    assert.equal(build.mercCoinCost(), expected.expected);
+
+    const removed = expected.modules[0]!;
+    build.setModule(removed.slot, getModuleBySymbol(removed.symbol, ALL_MODULES)!);
+    assert.equal(build.mercCoinCost(), expected.expected - removed.cost);
+
+    build.applyBlueprint(removed.slot, removed.blueprint, { grade: 5 });
+    assert.equal(build.mercCoinCost(), expected.expected);
+});
+
 test('fromSlef reads the ship identity and top-level figures', () => {
     const build = ShipLoadout.fromSlef(slefString);
     assert.equal(build.shipSymbol, 'explorer_nx');

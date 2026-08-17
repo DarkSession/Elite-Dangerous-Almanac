@@ -10,6 +10,7 @@ import { validateLoadout } from './loadout-validation.js';
 import { calculateModuleLimits, type ModuleLimitEntry } from './module-limits.js';
 import { getModuleBySymbol, type ModuleExclusionGroup } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import { LoadoutEditError, ShipLoadout } from './ship-loadout.js';
 import { inspectSlef } from './slef.js';
 import { sumWeaponMetrics, weaponMetrics } from './weapons.js';
@@ -99,6 +100,16 @@ test('shared catalogue-backed operation cases reproduce', () => {
         { hull: retail.hull, modules: retail.modules, rebuy: retail.rebuy },
         fixture.retailCredits.expected,
     );
+    const mercCoinBuild = ShipLoadout.default(fixture.mercCoinCost.ship);
+    for (const module of fixture.mercCoinCost.modules) {
+        const variant = getPreEngineeredVariants(module.symbol).find(
+            (candidate) => candidate.blueprint === module.blueprint,
+        );
+        assert.ok(variant);
+        assert.equal(variant.mercCoinCost, module.cost);
+        mercCoinBuild.setPreEngineeredVariant(module.slot, variant);
+    }
+    assert.equal(mercCoinBuild.mercCoinCost(), fixture.mercCoinCost.expected);
     const validation = validateLoadout({
         shipSymbol: 'FutureShip',
         slots: null,
