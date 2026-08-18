@@ -4290,7 +4290,12 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
         params: { slot: 'FrameShiftDrive' },
     });
     assert.deepEqual(ShipLoadout.default('Anaconda').completeEngineeringGrade('FrameShiftDrive'), {
-        kind: 'unchanged',
+        kind: 'unsupported',
+        code: 'notEngineered',
+        params: {
+            slot: 'FrameShiftDrive',
+            symbol: 'Int_Hyperdrive_Size6_Class1',
+        },
     });
 
     const unknown = ShipLoadout.fromLoadout({
@@ -4340,6 +4345,26 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
         params: { slot: 'FrameShiftDrive', symbol: 'Int_Hyperdrive_Size6_Class5' },
     });
 
+    for (const grade of [0, 7, 2.5, Number.NaN]) {
+        const invalidGrade = ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: {
+                        BlueprintName: 'FSD_LongRange',
+                        Level: grade,
+                        Quality: 0.5,
+                    },
+                },
+            ],
+        });
+        const result = invalidGrade.completeEngineeringGrade('FrameShiftDrive');
+        assert.equal(result.kind, 'unsupported');
+        assert.equal(result.code, 'unsupportedEngineering');
+    }
+
     const fixedVariant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
         (candidate) => candidate.acquisition === 'techBroker',
     )!;
@@ -4361,6 +4386,61 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
     const unidentifiedResult = unidentified.completeEngineeringGrade('FrameShiftDrive');
     assert.equal(unidentifiedResult.kind, 'unsupported');
     assert.equal(unidentifiedResult.code, 'unidentifiedPreEngineeredVariant');
+
+    const axVariant = getPreEngineeredVariants('Hpt_ATMultiCannon_Gimbal_Medium').find(
+        (candidate) => candidate.blueprint === 'MC_Overcharged',
+    )!;
+    const axEvent = ShipLoadout.empty('Anaconda')
+        .setPreEngineeredVariant('MediumHardpoint1', axVariant)
+        .toLoadoutEvent();
+    const aliased = ShipLoadout.fromLoadout({
+        ...axEvent,
+        Modules: axEvent.Modules.map((module) =>
+            module.Slot === 'MediumHardpoint1'
+                ? {
+                      ...module,
+                      Engineering: {
+                          ...module.Engineering!,
+                          BlueprintName: 'Weapon_Overcharged',
+                          Quality: 0.5,
+                          Modifiers: module.Engineering!.Modifiers!.slice(0, 1),
+                      },
+                  }
+                : module,
+        ),
+    });
+    const aliasedBefore = aliased.fittedModuleAt('MediumHardpoint1')!.effectiveStats;
+    assert.deepEqual(aliased.completeEngineeringGrade('MediumHardpoint1'), {
+        kind: 'unsupported',
+        code: 'unidentifiedPreEngineeredVariant',
+        params: {
+            slot: 'MediumHardpoint1',
+            symbol: 'hpt_atmulticannon_gimbal_medium',
+            blueprint: 'Weapon_Overcharged',
+        },
+    });
+    assert.deepEqual(aliased.fittedModuleAt('MediumHardpoint1')!.effectiveStats, aliasedBefore);
+
+    const miningLance = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
+        (candidate) => candidate.experimental === 'special_incendiary_rounds',
+    )!;
+    const lanceEvent = ShipLoadout.empty('Anaconda')
+        .setPreEngineeredVariant('SmallHardpoint1', miningLance)
+        .toLoadoutEvent();
+    const partialLance = ShipLoadout.fromLoadout({
+        ...lanceEvent,
+        Modules: lanceEvent.Modules.map((module) =>
+            module.Slot === 'SmallHardpoint1'
+                ? { ...module, Engineering: { ...module.Engineering!, Quality: 0.5 } }
+                : module,
+        ),
+    });
+    assert.equal(partialLance.completeEngineeringGrade('SmallHardpoint1').kind, 'normalized');
+    assert.equal(
+        partialLance.fittedModuleAt('SmallHardpoint1')!.engineering!.ExperimentalEffect,
+        miningLance.experimental,
+    );
+    assert.equal(partialLance.fittedModuleAt('SmallHardpoint1')!.preEngineeredVariant, miningLance);
 
     const fixed = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
         'FrameShiftDrive',
@@ -4414,6 +4494,25 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
             symbol: finalEvent.Modules.find((module) => module.Slot === 'MediumHardpoint1')!.Item,
         },
     });
+
+    const oddlyEngineeredFinal = ShipLoadout.fromLoadout({
+        ...finalEvent,
+        Modules: finalEvent.Modules.map((module) =>
+            module.Slot === 'MediumHardpoint1'
+                ? {
+                      ...module,
+                      Engineering: {
+                          ...module.Engineering!,
+                          Quality: 0.5,
+                          ExperimentalEffect: 'future_effect',
+                      },
+                  }
+                : module,
+        ),
+    });
+    const oddlyEngineeredResult = oddlyEngineeredFinal.completeEngineeringGrade('MediumHardpoint1');
+    assert.equal(oddlyEngineeredResult.kind, 'unsupported');
+    assert.equal(oddlyEngineeredResult.code, 'finalArticle');
 });
 
 test('a burst-pattern variant identifies before and after export', () => {
