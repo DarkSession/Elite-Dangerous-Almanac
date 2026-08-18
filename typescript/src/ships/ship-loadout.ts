@@ -78,7 +78,7 @@ import {
     type FrameShiftDriveParams,
     type TotalRangeDetails,
 } from './jump-range.js';
-import { getShipBySymbol, getShipSlots } from './ships.js';
+import { getShipBySymbol, type Ship } from './ships.js';
 import { getDefaultLoadout } from './default-loadouts.js';
 import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
 import { computeModifiers } from './engineering.js';
@@ -166,6 +166,7 @@ import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js'
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
     normalizeLoadoutEvent,
+    type ImportedLoadoutState,
     type ImportedTopFigures as TopFigures,
 } from './internal/loadout-import.js';
 import type { SourcePurchaseRecord } from './source-purchase.js';
@@ -234,8 +235,8 @@ const requireSystemsPips = (scope: string, systemsPips: number): number => {
 /**
  * Stable machine-readable reason a {@link ShipLoadout} edit was refused. `immutableSlot`
  * identifies a mount that cannot be changed at all; `requiredSlot` identifies a core or
- * armour mount that must remain occupied. A required mount can be replaced when the
- * hull's slot layout is known, but it cannot be emptied even when the hull is unknown.
+ * armour mount that must remain occupied. A required mount can be replaced but not
+ * emptied.
  * The remaining codes identify an incompatible fit, a duplicate one-per-ship family,
  * or a module count beyond the build's current allowance.
  */
@@ -505,12 +506,12 @@ export interface DistributorOptions {
  * @see {@link ShipLoadout.mercCoinCost} for Mercenary purchase prices.
  */
 export interface RetailCredits {
-    /** Bare hull list price in credits, or `null` for an unknown hull. */
-    readonly hull: number | null;
+    /** Bare hull list price in credits. */
+    readonly hull: number;
     /** Sum of every priced fitted module, in credits. A lower bound when `unpriced` is non-empty. */
     readonly modules: number;
-    /** Five percent of the priced hull and modules, truncated to credits, or `null` for an unknown hull. */
-    readonly rebuy: number | null;
+    /** Five percent of the priced hull and modules, truncated to credits. */
+    readonly rebuy: number;
     /** Fitted modules that could not be priced from the catalogue. */
     readonly unpriced: readonly { readonly slot: string; readonly symbol: string }[];
 }
@@ -693,7 +694,7 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * build.maxJumpRange(); // -> 60.5478   (ly, best single jump)
  * build.powerBudget().withinBudget; // -> true
  * build.shieldMetrics()?.strength; // -> 743.12  (MJ)
- * build.armourMetrics()?.hitPoints; // -> 307.8
+ * build.armourMetrics().hitPoints; // -> 307.8
  * ```
  *
  * @example
@@ -730,6 +731,7 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * ```
  */
 export class ShipLoadout {
+    readonly #ship: Ship;
     readonly #shipSymbol: string;
     readonly #modules: Map<string, LoadoutModule>;
     readonly #moduleStats: Map<string, OutfittingModule>;
@@ -739,14 +741,11 @@ export class ShipLoadout {
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /** Frozen slot views by filter; the two module mutation paths clear it. */
     readonly #slotCache = new Map<SlotKind | undefined, readonly LoadoutSlot[]>();
-    /**
-     * The hull's expanded mounts: `undefined` until first asked, `null` for a hull
-     * with no known layout. Needs no version — `#shipSymbol` is `readonly`, so a
-     * build's layout is fixed for its whole life.
-     */
-    #layoutCache: readonly BuildSlot[] | null | undefined;
+    /** The hull's expanded mounts, populated on first use. */
+    #layoutCache: readonly BuildSlot[] | undefined;
 
     private constructor(
+        ship: Ship,
         shipSymbol: string,
         modules: Map<string, LoadoutModule>,
         top: TopFigures,
@@ -754,6 +753,7 @@ export class ShipLoadout {
         moduleStats = new Map<string, OutfittingModule>(),
         primitiveModifiers = new Map<string, readonly EngineeringModifier[]>(),
     ) {
+        this.#ship = ship;
         this.#shipSymbol = shipSymbol;
         this.#modules = modules;
         this.#top = top;
@@ -771,8 +771,8 @@ export class ShipLoadout {
      * Defaults to the first.
      * @returns The loadout for that entry.
      * @throws {SyntaxError} If `input` is a string that is not valid JSON.
-     * @throws {TypeError} If the export holds no usable loadout, or `index` is out of
-     * range.
+     * @throws {TypeError} If the export holds no usable loadout, `index` is out of range,
+     * or the selected entry names a hull absent from the catalogue.
      */
     static fromSlef(input: unknown, index = 0): ShipLoadout {
         const entries = parseSlef(input);
@@ -782,7 +782,14 @@ export class ShipLoadout {
                 `ShipLoadout.fromSlef: no entry at index ${truncate(index)} (have ${entries.length})`,
             );
         }
-        return ShipLoadout.fromLoadout(entry.data);
+        const imported = normalizeLoadoutEvent(entry.data);
+        const ship = getShipBySymbol(imported.shipSymbol);
+        if (!ship) {
+            throw new TypeError(
+                `ShipLoadout.fromSlef: unknown hull "${truncate(imported.shipSymbol)}"`,
+            );
+        }
+        return ShipLoadout.#fromImported(imported, ship);
     }
 
     /**
@@ -828,8 +835,9 @@ export class ShipLoadout {
      * module needs a string `Slot` and `Item`, and no two may claim the same slot; a
      * module's `Engineering` must be an object, and that block's `Modifiers` an array of
      * objects each carrying a string `Label`, whenever their key is there **at all**;
-     * and `event.Ship`, the block's `BlueprintName` and its `ExperimentalEffect` must be
-     * strings **when they carry a value**. Every remaining field — every number, every
+     * `event.Ship` must name a known hull; the block's `BlueprintName` and its
+     * `ExperimentalEffect` must be strings **when they carry a value**. Every remaining
+     * field — every number, every
      * flag, a modifier's value beside its label — is trusted, so use
      * {@link ShipLoadout.fromSlef} (or {@link parseSlef}) for input you did not produce,
      * which reports all of them.
@@ -839,12 +847,10 @@ export class ShipLoadout {
      * pre-engineered identification both read it unconditionally, so an entry without
      * one would import cleanly and then break the build it produced.
      *
-     * `Engineering` and its `Modifiers` are the fields where a `null` is not the same as
-     * an omission, because a relay writing `null` for a block or list it does not have
-     * would otherwise be read as one. An **absent** `Ship` *is* an omission, and not a
-     * failure: it is a hull nothing can name, which {@link validation} reports as
-     * `unknownHull`. Nor is a partial `Engineering` block — a capture may state
-     * modifiers without naming the recipe.
+     * `Ship`, `Engineering` and `Modifiers` are fields where `null` is not an omission:
+     * `Ship` is required, while a relay writing `null` for an optional block or list it
+     * does not have would otherwise be read as one. A partial `Engineering` block is
+     * accepted because a capture may state modifiers without naming the recipe.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
         // Is it an object at all? Everything past that is `normalizeLoadoutEvent`'s,
@@ -852,15 +858,23 @@ export class ShipLoadout {
         // accessor cannot answer the check and the use differently. Only the structure
         // and the fields that name things are checked there; every value in them is
         // trusted, and `fromSlef` is the entry point that reports a bad one.
-        //
-        // An absent `Ship` is deliberately not one of these: it is a hull the catalogue
-        // cannot name, which `validation` reports as `unknownHull` rather than throwing.
         if (event === null || typeof event !== 'object') {
             throw new TypeError(
                 `ShipLoadout.fromLoadout: event must be a Loadout event, received ${describeValue(event)}`,
             );
         }
         const imported = normalizeLoadoutEvent(event);
+        const ship = getShipBySymbol(imported.shipSymbol);
+        if (!ship) {
+            throw new TypeError(
+                `ShipLoadout.fromLoadout: unknown hull "${truncate(imported.shipSymbol)}"`,
+            );
+        }
+        return ShipLoadout.#fromImported(imported, ship);
+    }
+
+    /** Assemble already-normalized state whose hull has been resolved. */
+    static #fromImported(imported: ImportedLoadoutState, ship: Ship): ShipLoadout {
         const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find((module) =>
             isCargoHatchSlot(module.slot),
         );
@@ -876,6 +890,7 @@ export class ShipLoadout {
             });
         }
         const build = new ShipLoadout(
+            ship,
             imported.shipSymbol,
             imported.modules,
             imported.top,
@@ -907,8 +922,9 @@ export class ShipLoadout {
      * ```
      */
     static empty(shipSymbol: string): ShipLoadout {
-        const layout = getShipSlots(requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol'));
-        if (!layout) {
+        const requested = requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol');
+        const ship = getShipBySymbol(requested);
+        if (!ship) {
             // Shortened so this method's two failures agree: the guard above describes an
             // oversized argument in bounded form, and quoting one back in full here would
             // undo that. Messages elsewhere still reproduce a caller's string in full —
@@ -917,14 +933,14 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        const hatch = getDefaultLoadout(layout.symbol)?.modules.find((module) =>
+        const hatch = getDefaultLoadout(ship.symbol)?.modules.find((module) =>
             isCargoHatchSlot(module.slot),
         );
         const modules = new Map<string, LoadoutModule>();
         if (hatch) {
             modules.set(hatch.slot, { Slot: hatch.slot, Item: hatch.symbol });
         }
-        return new ShipLoadout(layout.symbol, modules, {});
+        return new ShipLoadout(ship, ship.symbol, modules, {});
     }
 
     /**
@@ -952,13 +968,15 @@ export class ShipLoadout {
      */
     static default(shipSymbol: string): ShipLoadout {
         const requested = requireString(shipSymbol, 'ShipLoadout.default: shipSymbol');
-        const loadout = getDefaultLoadout(requested);
-        if (!loadout) {
+        const ship = getShipBySymbol(requested);
+        if (!ship) {
             throw new TypeError(
                 `ShipLoadout.default: no default loadout for hull "${truncate(shipSymbol)}"`,
             );
         }
+        const loadout = getDefaultLoadout(ship.symbol)!;
         return new ShipLoadout(
+            ship,
             loadout.symbol,
             new Map(
                 loadout.modules.map((module) => [
@@ -987,8 +1005,8 @@ export class ShipLoadout {
 
     /**
      * Hull + modules mass with an empty tank and no cargo, in tonnes, or `null` if it
-     * cannot be determined (no `UnladenMass` in the export and either the hull or a
-     * fitted module has no known mass).
+     * cannot be determined (no `UnladenMass` in the export and a fitted module has no
+     * known mass).
      *
      * @remarks
      * A SLEF export's `UnladenMass` is trusted verbatim. Otherwise the mass is the
@@ -1002,8 +1020,8 @@ export class ShipLoadout {
     /**
      * Unladen mass with diagnostics for every missing input.
      *
-     * @returns A complete imported or computed mass, otherwise `null` plus the hull or
-     * module fields that prevented the calculation.
+     * @returns A complete imported or computed mass, otherwise `null` plus the module
+     * fields that prevented the calculation.
      */
     get unladenMassResult(): CalculationResult<number> {
         return this.#top.UnladenMass === undefined
@@ -1013,18 +1031,15 @@ export class ShipLoadout {
 
     /**
      * Unladen mass worked out from the hull and the fitted modules, ignoring any figure
-     * an import supplied — incomplete when the hull's mass or any module's is unknown.
+     * an import supplied — incomplete when any module's mass is unknown.
      */
     #computedUnladenMass(): CalculationResult<number> {
-        return calculateUnladenMass(
-            getShipBySymbol(this.#shipSymbol)?.hullMass ?? null,
-            this.#calculationModules(),
-        );
+        return calculateUnladenMass(this.#ship.hullMass, this.#calculationModules());
     }
 
     /**
-     * Fuel-tank capacities, in tonnes, or `null` when a tank or the hull's reserve
-     * capacity is unknown. A SLEF export's `FuelCapacity` is used when present;
+     * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
+     * SLEF export's `FuelCapacity` is used when present;
      * otherwise the main capacity is the sum of the fitted fuel tanks and the reserve
      * comes from the hull's stats.
      */
@@ -1075,13 +1090,10 @@ export class ShipLoadout {
 
     /**
      * Fuel capacity from the fitted tanks and the hull, ignoring any import — incomplete
-     * if a tank is unknown or the hull's reserve is (an unrecognised hull).
+     * if a tank's capacity is unknown.
      */
     #computedFuelCapacity(): CalculationResult<FuelCapacity> {
-        return calculateFuelCapacity(
-            getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? null,
-            this.#calculationModules(),
-        );
+        return calculateFuelCapacity(this.#ship.reserveFuelCapacity, this.#calculationModules());
     }
 
     /**
@@ -1159,13 +1171,13 @@ export class ShipLoadout {
      *
      * @remarks
      * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
-     * mounts must be filled for `complete` to be true. An unknown hull or module is
-     * incomplete; a module in a nonexistent or incompatible slot is invalid. Exclusive
+     * mounts must be filled for `complete` to be true. An unknown module is incomplete;
+     * a module in a nonexistent or incompatible slot is invalid. Exclusive
      * families and per-ship module-count allowances must also be satisfied.
      */
     get validation(): LoadoutValidation {
-        const slots = this.#layoutOrNull();
-        const byKey = new Map(slots?.map((slot) => [slot.key.toLowerCase(), slot]) ?? []);
+        const slots = this.#layout();
+        const byKey = new Map(slots.map((slot) => [slot.key.toLowerCase(), slot]));
         const modules: ValidationModule[] = [...this.#modules.values()].map((module) => {
             const stats = this.#statsFor(module);
             const slot = byKey.get(module.Slot.toLowerCase());
@@ -1199,7 +1211,6 @@ export class ShipLoadout {
      * @param kind - Optionally keep only one mount kind. Omit it for every mount.
      * @returns Detached, frozen slot views. Repeated reads for the same `kind` reuse the
      * same snapshots until a state-changing edit.
-     * @throws {TypeError} If the hull has no known slot layout.
      * @example
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1353,8 +1364,7 @@ export class ShipLoadout {
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
      * @throws {RangeError} If the hull has no slot with that key.
-     * @throws {TypeError} If `slotKey` is not a string, or the hull has no known slot
-     * layout (a SLEF build on an unrecognised hull).
+     * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1409,14 +1419,11 @@ export class ShipLoadout {
     repairFixedMount(slotKey: string): FixedMountRepairResult {
         const requested = requireString(slotKey, SLOT_KEY);
         const wanted = requested.toLowerCase();
-        const layout = this.#layoutOrNull();
-        const slot = layout?.find((candidate) => candidate.key.toLowerCase() === wanted);
-        if (layout !== null && slot === undefined) this.#requireSlot(requested);
-        const classification = slot ?? parseSlotName(requested);
+        const slot = this.#requireSlot(requested);
         const fittedKey = this.#fittedKey(requested);
         const resultSlot = fittedKey ?? requested;
-        const canonicalKey = slot?.key ?? requested;
-        if (classification === null || fixedSlotReason(classification) === null) {
+        const canonicalKey = slot.key;
+        if (fixedSlotReason(slot) === null) {
             return deepFreeze({ status: 'refused', slot: resultSlot, reason: 'notFixedMount' });
         }
 
@@ -1425,10 +1432,9 @@ export class ShipLoadout {
         const valid =
             current !== undefined &&
             currentStats !== null &&
-            (classification.kind === 'cargoHatch'
+            (slot.kind === 'cargoHatch'
                 ? isBuiltInHullModule(current)
-                : slot !== undefined &&
-                  moduleFitProblem(this.#shipSymbol, slot, currentStats) === null);
+                : moduleFitProblem(this.#shipSymbol, slot, currentStats) === null);
         if (valid) {
             return deepFreeze({
                 status: 'unchanged',
@@ -1490,8 +1496,7 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
-     * `getModuleBySymbol` miss) or is not an outfitting module at all; or the hull has no
-     * known slot layout (a SLEF build on an unrecognised hull).
+     * `getModuleBySymbol` miss) or is not an outfitting module at all.
      * @throws {LoadoutEditError} If the module does not fit the slot (wrong kind, too
      * large, or a restriction the module does not satisfy), conflicts with a one-per-ship
      * family already fitted elsewhere, or worsens a per-ship module-count excess.
@@ -1596,8 +1601,8 @@ export class ShipLoadout {
      * @throws {TypeError} If `slotKey` is not a string.
      * @throws {LoadoutEditError} If the slot is the built-in cargo hatch; is a required
      * core or armour mount; or removing the module would worsen a per-ship module-count
-     * excess. Required mounts may be replaced with {@link setModule} when the hull's
-     * slot layout is known, but cannot be emptied even when the hull is unknown.
+     * excess. Required mounts may be replaced with {@link setModule} but cannot be
+     * emptied.
      */
     removeModule(slotKey: string): this {
         // Read before `#fittedKey` does, so this one method guards for itself.
@@ -1610,9 +1615,7 @@ export class ShipLoadout {
             );
         }
         const parsed = parseSlotName(slotKey);
-        const slot = this.#layoutOrNull()?.find(
-            (candidate) => candidate.key.toLowerCase() === wanted,
-        );
+        const slot = this.#layout().find((candidate) => candidate.key.toLowerCase() === wanted);
         if (parsed !== null && fixedSlotReason(parsed) === 'requiredSlot') {
             const fittedKey = this.#fittedKey(slotKey);
             const key = slot?.key ?? fittedKey ?? slotKey;
@@ -2482,7 +2485,6 @@ export class ShipLoadout {
      * ```
      */
     toLoadoutEvent(options: LoadoutExportOptions = {}): LoadoutEvent {
-        const hull = getShipBySymbol(this.#shipSymbol);
         const unladenMass = this.#computedUnladenMass().value;
         const cargoCapacity = this.#computedCargoCapacity().value;
         const fuel = this.#computedFuelCapacity().value;
@@ -2493,9 +2495,9 @@ export class ShipLoadout {
                 ...(this.#top.ShipName === undefined ? {} : { shipName: this.#top.ShipName }),
                 ...(this.#top.ShipIdent === undefined ? {} : { shipIdent: this.#top.ShipIdent }),
                 modules: this.#modules,
-                ...(options.moduleOrder === 'slots' ? { layout: this.#layoutOrNull() } : {}),
+                layout: this.#layout(),
                 sourcePurchase: this.#sourcePurchase,
-                retailHullValue: hull?.hullCost ?? null,
+                retailHullValue: this.#ship.hullCost,
                 unladenMass,
                 cargoCapacity,
                 fuelCapacity: fuel,
@@ -2899,7 +2901,7 @@ export class ShipLoadout {
      * cannot keep lit — contributes nothing.
      *
      * @returns The {@link HeatMetrics}, or `null` when the build has no powered power
-     * plant or its hull is unknown. A build carrying a module the catalogues cannot
+     * plant. A build carrying a module the catalogues cannot
      * resolve is answered rather than refused, with that module named in
      * {@link HeatMetrics.unknownDraws}: read what that entry says about the figures
      * before showing them, because they are then a projection over the rest of the build
@@ -2918,7 +2920,7 @@ export class ShipLoadout {
      */
     heatMetrics(): HeatMetrics | null {
         const input = heatInputFor(
-            this.#shipSymbol,
+            this.#ship,
             this.#modulesForEffectiveStats(),
             this.powerBudget(),
             (module) => this.#statsFor(module),
@@ -2957,8 +2959,8 @@ export class ShipLoadout {
     }
 
     /**
-     * The build's mobility with a diagnostic when its hull, thrusters or retracted
-     * power supply is unavailable.
+     * The build's mobility with a diagnostic when its thrusters or retracted power
+     * supply is unavailable.
      *
      * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
      * @returns A complete {@link MobilityMetrics} value, otherwise `null` plus the input
@@ -2983,7 +2985,7 @@ export class ShipLoadout {
         );
         requireLoadOptions('ShipLoadout.mobilityMetricsResult', options);
         const input = mobilityInputResultFor(
-            this.#shipSymbol,
+            this.#ship,
             [...this.#modules.values()],
             () => this.powerBudget(),
             () => {
@@ -3012,8 +3014,8 @@ export class ShipLoadout {
      * @param options - {@link DefenceOptions}. `systemsPips` (0–4) folds the SYS
      * capacitor's own resistance into the reported figures; it defaults to `0`, which
      * is what an outfitting screen shows.
-     * @returns The {@link ShieldMetrics}, or `null` when the hull is unresolved or the
-     * build has no shield generator powered with hardpoints retracted. Use
+     * @returns The {@link ShieldMetrics}, or `null` when the build has no shield
+     * generator powered with hardpoints retracted. Use
      * {@link shieldMetricsResult} to distinguish the unavailable conditions.
      * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example
@@ -3057,7 +3059,7 @@ export class ShipLoadout {
             options.systemsPips ?? 0,
         );
         const input = shieldInputResultFor(
-            this.#shipSymbol,
+            this.#ship,
             [...this.#modules.values()],
             () => this.powerBudget(),
             systemsPips,
@@ -3071,8 +3073,8 @@ export class ShipLoadout {
      * Time for this build's shield to rise after collapse and then regenerate to full.
      *
      * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
-     * @returns Recovery rates and seconds, or `null` with an unresolved hull or no
-     * shield generator powered with hardpoints retracted. Use
+     * @returns Recovery rates and seconds, or `null` when no shield generator is powered
+     * with hardpoints retracted. Use
      * {@link shieldRecoveryResult} to distinguish the unavailable conditions.
      * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
      * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
@@ -3113,7 +3115,7 @@ export class ShipLoadout {
             options.systemsPips ?? 4,
         );
         const input = shieldRecoveryInputResultFor(
-            this.#shipSymbol,
+            this.#ship,
             [...this.#modules.values()],
             () => this.powerBudget(),
             systemsPips,
@@ -3147,7 +3149,7 @@ export class ShipLoadout {
         const modules = [...this.#modules.values()];
         const banks = orderBySlotLayout(
             cellBankInputsFor(modules, this.powerBudget(), (module) => this.#statsFor(module)),
-            this.#layoutOrNull(),
+            this.#layout(),
             (bank) => bank.slot,
         );
         return cellBankSummary(banks);
@@ -3167,7 +3169,7 @@ export class ShipLoadout {
      * @see {@link mercCoinCost} for Mercenary purchase prices.
      */
     retailCredits(): RetailCredits {
-        const hull = getShipBySymbol(this.#shipSymbol)?.hullCost ?? null;
+        const hull = this.#ship.hullCost;
         let modules = 0;
         const unpriced: { slot: string; symbol: string }[] = [];
         for (const module of this.#modules.values()) {
@@ -3184,7 +3186,7 @@ export class ShipLoadout {
         return deepFreeze({
             hull,
             modules,
-            rebuy: hull === null ? null : Math.trunc((hull + modules) * 0.05),
+            rebuy: Math.trunc((hull + modules) * 0.05),
             unpriced,
         });
     }
@@ -3223,8 +3225,8 @@ export class ShipLoadout {
      * The build's armour: hull hit points, the bulkhead and reinforcement each
      * contribute, and the effective resistances.
      *
-     * @returns The {@link ArmourMetrics}, or `null` when the hull is unresolved. A build
-     * with no armour module fitted is reported on the stock lightweight alloy the hull
+     * @returns The {@link ArmourMetrics}. A build with no armour module fitted is
+     * reported on the stock lightweight alloy the hull
      * leaves the shipyard with, which is what the game does.
      * @example
      * ```ts
@@ -3233,15 +3235,14 @@ export class ShipLoadout {
      * declare const build: ShipLoadout;
      *
      * const hull = build.armourMetrics();
-     * hull?.hitPoints;                  // -> total hull points
-     * hull?.resistances.explosive;      // -> lightweight alloy is explosively weak
-     * hull?.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
+     * hull.hitPoints;                  // -> total hull points
+     * hull.resistances.explosive;      // -> lightweight alloy is explosively weak
+     * hull.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
      * ```
      */
-    armourMetrics(): ArmourMetrics | null {
-        if (!getShipBySymbol(this.#shipSymbol)) return null;
+    armourMetrics(): ArmourMetrics {
         return armourMetrics(
-            armourInputFor(this.#shipSymbol, [...this.#modules.values()], (module) =>
+            armourInputFor(this.#ship, [...this.#modules.values()], (module) =>
                 this.#statsFor(module),
             ),
         );
@@ -3295,11 +3296,7 @@ export class ShipLoadout {
                     : { armourPiercing: stats.armourPiercing }),
             });
         }
-        const orderedWeapons = orderBySlotLayout(
-            weapons,
-            this.#layoutOrNull(),
-            (weapon) => weapon.slot,
-        );
+        const orderedWeapons = orderBySlotLayout(weapons, this.#layout(), (weapon) => weapon.slot);
         return {
             weapons: orderedWeapons,
             total: sumWeaponMetrics(
@@ -3395,29 +3392,12 @@ export class ShipLoadout {
         return input ? distributorMetrics(input) : null;
     }
 
-    /**
-     * The hull's mounts, or `null` when its layout is unknown. Expanded and cached once
-     * per build because fitting methods query the layout repeatedly.
-     *
-     * The cached array is frozen to prevent internal callers from sorting or splicing it
-     * in place. No reference to the array or its elements escapes the class.
-     */
-    #layoutOrNull(): readonly BuildSlot[] | null {
+    /** The hull's mounts, expanded and cached once per build. */
+    #layout(): readonly BuildSlot[] {
         if (this.#layoutCache === undefined) {
-            const layout = getShipSlots(this.#shipSymbol);
-            this.#layoutCache = layout === null ? null : Object.freeze(enumerateSlots(layout));
+            this.#layoutCache = Object.freeze(enumerateSlots(this.#ship));
         }
         return this.#layoutCache;
-    }
-
-    #layout(): readonly BuildSlot[] {
-        const layout = this.#layoutOrNull();
-        if (!layout) {
-            throw new TypeError(
-                `ShipLoadout: no slot layout for hull "${truncate(this.#shipSymbol)}"`,
-            );
-        }
-        return layout;
     }
 
     #requireSlot(slotKey: string): BuildSlot {

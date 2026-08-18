@@ -150,7 +150,7 @@ function captureEngineering(engineering: ModuleEngineering): ModuleEngineering {
 /** Normalize a journal event before the mutable facade takes ownership of it. */
 export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutState {
     const event = captureLoadoutEvent(rawEvent);
-    requireStringIfPresent(event.Ship, 'ShipLoadout.fromLoadout: event.Ship');
+    requireString(event.Ship, 'ShipLoadout.fromLoadout: event.Ship');
     if (!Array.isArray(event.Modules)) {
         throw new TypeError(
             `ShipLoadout.fromLoadout: event.Modules must be an array, received ${describeValue(event.Modules)}`,

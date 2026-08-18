@@ -74,8 +74,9 @@ worth knowing before you write a `catch`:
   build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
   each, no two modules claiming one slot, and an `Engineering` that is an object holding
   an array of `Modifiers`, each a labelled object, whenever their key is there at all —
-  plus `Ship` and the block's two ids when they carry a value. It trusts every value
-  inside, so use `fromSlef` for an event you did not produce yourself.
+  plus a required `Ship` that names a known hull, and the block's two ids when they carry
+  a value. It trusts the remaining numeric and boolean values, so use `fromSlef` for an
+  event you did not produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:
 
@@ -208,8 +209,7 @@ Each issue carries a stable `code` and a `severity`:
   reaches you from `validateLoadout` on a module list you assembled yourself — a
   `ShipLoadout` throws `TypeError` on a duplicate rather than reporting one, so do not
   write a UI branch for it on a build.)
-- **`incomplete`** — the build does not add up to a finished answer, for one of two
-  quite different reasons.
+- **`incomplete`** — the build does not add up to a finished answer.
 
 **Branch on the code, not on the severity**, because the two `incomplete` reasons belong
 in different places in your UI:
@@ -217,8 +217,9 @@ in different places in your UI:
 - `missingRequiredSlot` is the **user's** problem — a core or armour mount is empty. A
   hull straight from `ShipLoadout.empty()` reports eight of these, and "you have not
   fitted a power plant" is exactly what an outfitting screen must show as actionable.
-- `unknownHull` and `unknownModule` are **ours** — the catalogue cannot classify the
-  record. The build may be valid in game, so do not present this as a user mistake.
+- `unknownModule` is **ours** — the catalogue cannot classify the record. The build may
+  be valid in game, so do not present this as a user mistake. An unknown hull is refused
+  at import because none of the build-level figures can be completed reliably.
 
 That is why the codes are stable: the severity alone does not tell you whose problem an
 issue is.

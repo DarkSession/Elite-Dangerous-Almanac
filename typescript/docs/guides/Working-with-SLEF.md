@@ -54,6 +54,11 @@ Use `parseSlef` when the payload is yours and a malformed entry is a bug you wan
 hear about. Use `inspectSlef` when you are importing a file a user handed you and would
 rather show them which of their five builds failed than reject all five.
 
+Inspection validates the SLEF structure, not catalogue support. A structurally valid
+entry whose `Ship` is absent from the hull catalogue remains in `entries`, but
+`ShipLoadout.fromSlef` rejects it when selected. Catch that `TypeError` when converting
+each inspected entry into a build.
+
 **Neither survives input that is not JSON.** Both call `JSON.parse` on a string first,
 so a truncated or non-JSON file throws `SyntaxError` from both — catch that separately.
 

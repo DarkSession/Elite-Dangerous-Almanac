@@ -42,8 +42,8 @@ test('calculation issues abbreviate caller-supplied slot and module symbols', ()
     assert.match(result.issues[0]!.message, /….*…/);
 });
 
-test('mass reports every missing dependency instead of returning a partial sum', () => {
-    const result = calculateUnladenMass(null, [
+test('mass reports every unknown module instead of returning a partial sum', () => {
+    const result = calculateUnladenMass(10, [
         known,
         { slot: 'Slot01_Size4', symbol: 'UnknownModule', mass: null },
     ]);
@@ -51,10 +51,7 @@ test('mass reports every missing dependency instead of returning a partial sum',
     assert.equal(result.complete, false);
     assert.deepEqual(
         result.issues.map((issue) => [issue.field, issue.slot]),
-        [
-            ['hullMass', undefined],
-            ['mass', 'Slot01_Size4'],
-        ],
+        [['mass', 'Slot01_Size4']],
     );
     assert.equal(Object.isFrozen(result.issues[0]), true);
     assert.equal(Object.isFrozen(result.issues[0]?.params), true);
@@ -79,10 +76,10 @@ test('cargo and fuel name unknown capacity modules while ignoring unrelated modu
         },
         message: 'Slot01_Size4: UnknownRack has no known cargoCapacity',
     });
-    const fuel = calculateFuelCapacity(null, modules);
+    const fuel = calculateFuelCapacity(0.5, modules);
     assert.equal(fuel.value, null);
     assert.deepEqual(
         fuel.issues.map((issue) => issue.field),
-        ['reserveFuelCapacity', 'fuelCapacity'],
+        ['fuelCapacity'],
     );
 });
