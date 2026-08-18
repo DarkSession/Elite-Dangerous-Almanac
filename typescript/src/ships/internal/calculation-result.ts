@@ -11,7 +11,7 @@
  * @internal
  */
 
-import type { CalculationResult } from '../loadout-calculations.js';
+import type { CalculationIssue, CalculationResult } from '../loadout-calculations.js';
 
 /** The issues of every complete result, shared so no caller can hand back a mutable one. */
 const NO_ISSUES: readonly [] = Object.freeze([]);
@@ -29,4 +29,22 @@ const NO_ISSUES: readonly [] = Object.freeze([]);
  */
 export function completeResult<T>(value: T & {}): CalculationResult<T> {
     return Object.freeze({ value, complete: true, issues: NO_ISSUES });
+}
+
+/** Wrap one or more missing dependencies as an incomplete calculation result. */
+export function incompleteResult<T>(
+    issues: readonly [CalculationIssue, ...CalculationIssue[]],
+): CalculationResult<T> {
+    return Object.freeze({
+        value: null,
+        complete: false,
+        issues: Object.freeze(
+            issues.map((issue) =>
+                Object.freeze({
+                    ...issue,
+                    ...(issue.params ? { params: Object.freeze({ ...issue.params }) } : {}),
+                }),
+            ),
+        ) as readonly [CalculationIssue, ...CalculationIssue[]],
+    });
 }
