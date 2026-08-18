@@ -69,9 +69,9 @@ the installed package into their own public or bundled asset directory.
 
 The two schematics expose a stable annotation contract for hull-anatomy interfaces:
 
-- Every feature shape has a `data-feature` category. The current categories are
-  `canopy`, `cargo_hatch`, `engine`, `fighter_bay`, `hardpoint`, `heat_vent`,
-  `landing_gear`, `thruster`, and `utility_mount`.
+- Each annotated feature is a `<g>` group carrying a `data-feature` category. The
+  current categories are `canopy`, `cargo_hatch`, `engine`, `fighter_bay`, `hardpoint`,
+  `heat_vent`, `landing_gear`, `thruster`, and `utility_mount`.
 - A weapon mount has `data-feature="hardpoint"`; a utility mount has
   `data-feature="utility_mount"`. Both carry `data-journal-slot`, whose value is the
   exact journal-compatible slot key returned by `enumerateSlots`. Other feature
@@ -80,7 +80,8 @@ The two schematics expose a stable annotation contract for hull-anatomy interfac
   two schematics. A slot occurs at most once per side, but the same slot may occur once
   on both sides. Treat those as two views of one game slot, not two mounts.
 - Drawing order, element IDs, `data-model-socket`, coordinates, colours, and other SVG
-  details are presentation data, not stable identities. Select interactive geometry by
+  details are presentation data, not stable identities. IDs repeat between asset files,
+  so scope each schematic when inlining more than one. Select interactive geometry by
   `data-feature` and `data-journal-slot` only.
 
 The schematic documents are safe to embed inline as supplied: they contain only static

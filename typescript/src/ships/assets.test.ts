@@ -69,8 +69,32 @@ function svgElements(source: string, asset: string): readonly SvgElement[] {
     assert.notEqual(content, source, `${asset} has an unexpected XML declaration`);
     assert.doesNotMatch(content, /<\?|<!/, `${asset} has an unsupported XML construct`);
 
-    return [...content.matchAll(/<([A-Za-z][\w:-]*)\b([^<>]*?)\/?\s*>/g)].map((match) => {
-        const rawAttributes = match[2] as string;
+    const elements: SvgElement[] = [];
+    const openElements: string[] = [];
+    const tags = content.matchAll(
+        /<(\/?)([A-Za-z][\w:-]*)((?:\s+[\w:-]+\s*=\s*"[^"]*")*)\s*(\/?)>/g,
+    );
+    let offset = 0;
+
+    for (const match of tags) {
+        assert.match(
+            content.slice(offset, match.index),
+            /^\s*$/,
+            `${asset} has unsupported markup syntax`,
+        );
+        offset = (match.index ?? 0) + match[0].length;
+
+        const closing = match[1] as string;
+        const name = match[2] as string;
+        const rawAttributes = match[3] as string;
+        const selfClosing = match[4] as string;
+        if (closing) {
+            assert.equal(rawAttributes, '', `${asset} has attributes on a closing tag`);
+            assert.equal(selfClosing, '', `${asset} has an invalid closing tag`);
+            assert.equal(openElements.pop(), name, `${asset} has mismatched element tags`);
+            continue;
+        }
+
         const attributes = new Map(
             [...rawAttributes.matchAll(/\s([\w:-]+)\s*=\s*"([^"]*)"/g)].map(
                 (attribute) => [attribute[1] as string, attribute[2] as string] as const,
@@ -88,6 +112,7 @@ function svgElements(source: string, asset: string): readonly SvgElement[] {
         );
         assert.deepEqual([...attributes.keys()], assignedNames, `${asset} repeats an attribute`);
         for (const [name, value] of attributes) {
+            assert.doesNotMatch(value, /[<>]/, `${asset} contains an unsupported attribute value`);
             if (name === 'fill' || name === 'stroke' || name === 'color') {
                 assert.match(
                     value,
@@ -96,8 +121,13 @@ function svgElements(source: string, asset: string): readonly SvgElement[] {
                 );
             }
         }
-        return { name: match[1] as string, attributes };
-    });
+        elements.push({ name, attributes });
+        if (!selfClosing) openElements.push(name);
+    }
+
+    assert.match(content.slice(offset), /^\s*$/, `${asset} has unsupported markup syntax`);
+    assert.deepEqual(openElements, [], `${asset} has unclosed element tags`);
+    return elements;
 }
 
 test('schematic parsing rejects active XML constructs', () => {
@@ -113,7 +143,11 @@ test('schematic parsing rejects active XML constructs', () => {
     }
     assert.throws(
         () => svgElements(`${declaration}<svg/onload="alert(1)"></svg>`, 'active.svg'),
-        /unsupported start-tag syntax/,
+        /unsupported markup syntax/,
+    );
+    assert.throws(
+        () => svgElements(`${declaration}<svg><path onload="alert(1)" d="<"/></svg>`, 'active.svg'),
+        /unsupported attribute value/,
     );
     for (const paint of [
         '&#117;rl(https://example.invalid/paint.svg)',
@@ -124,6 +158,14 @@ test('schematic parsing rejects active XML constructs', () => {
             /unsafe paint value/,
         );
     }
+});
+
+test('the README publishes the exact schematic feature categories', async () => {
+    const readme = await readFile(new URL('../../README.md', import.meta.url), 'utf8');
+    const categoryList = readme.match(/current categories are\s+([\s\S]*?)\.\n/)?.[1];
+    assert.ok(categoryList, 'README is missing the schematic feature categories');
+    const documented = [...categoryList.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
+    assert.deepEqual(documented.sort(), [...FEATURE_CATEGORIES].sort());
 });
 
 test('ship illustrations and schematics follow the catalogue symbols one for one', async () => {
@@ -205,6 +247,7 @@ test('ship schematics expose complete, passive slot annotations', async () => {
                     assert.equal(journalSlot, undefined, `${asset} has an unclassified slot`);
                     continue;
                 }
+                assert.equal(element.name, 'g', `${asset} annotates a non-group feature`);
                 assert.ok(FEATURE_CATEGORIES.has(feature), `${asset} has feature ${feature}`);
 
                 if (feature !== 'hardpoint' && feature !== 'utility_mount') {
