@@ -22,6 +22,16 @@ const TEST_SLEF_OPTIONS = { header: { appName: 'Test', appVersion: '1.0.0' } } a
 const round6 = (v: number): number => Math.round(v * 1e6) / 1e6;
 const module = (symbol: string) => getModuleBySymbol(symbol, ALL_MODULES)!;
 
+const normalizedModule = (module: ReturnType<ShipLoadout['fittedModules']>[number]) => ({
+    slot: module.slot,
+    symbol: module.symbol,
+    ...(module.on === undefined ? {} : { on: module.on }),
+    ...(module.priority === undefined ? {} : { priority: module.priority }),
+    ...(module.health === undefined ? {} : { health: module.health }),
+    ...(module.value === undefined ? {} : { value: module.value }),
+    ...(module.engineering === undefined ? {} : { engineering: module.engineering }),
+});
+
 /** The recomputed figures, rounded the way the fixture stores them. */
 const figuresOf = (event: LoadoutEvent, wanted: Record<string, unknown>) => {
     const out: Record<string, unknown> = {};
@@ -293,6 +303,28 @@ test('the classification examples in the fixture come out as the fixture says', 
         assert.equal(event.ModulesValue, empty.ModulesValue! + stats.cost!, slot);
         assert.equal(event.UnladenMass, empty.UnladenMass! + stats.mass!, slot);
     }
+});
+
+test('shared import normalization strips unknown modules and defaults the core set', () => {
+    const expected = fixture.importNormalization.expected;
+    const build = ShipLoadout.fromLoadout(fixture.importNormalization.input);
+    assert.deepEqual(build.fittedModules().map(normalizedModule), expected.modules);
+    assert.deepEqual(
+        {
+            unladenMass: build.unladenMass,
+            cargoCapacity: build.cargoCapacity,
+            fuelCapacity: build.fuelCapacity,
+            modulesValue: build.modulesValue,
+            rebuy: build.rebuy,
+        },
+        {
+            unladenMass: expected.unladenMass,
+            cargoCapacity: expected.cargoCapacity,
+            fuelCapacity: expected.fuelCapacity,
+            modulesValue: expected.modulesValue,
+            rebuy: expected.rebuy,
+        },
+    );
 });
 
 test('the fixture’s mount and non-outfitting patterns agree with the classification', () => {

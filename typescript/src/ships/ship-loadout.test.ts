@@ -592,39 +592,6 @@ test('fromSlef reads the ship identity and top-level figures', () => {
     assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length);
 });
 
-test('fromLoadout strips unknown modules and restores default core internals', () => {
-    const build = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        UnladenMass: 999,
-        CargoCapacity: 999,
-        FuelCapacity: { Main: 999, Reserve: 999 },
-        ModulesValue: 999,
-        Rebuy: 999,
-        Modules: [
-            { Slot: 'PowerPlant', Item: 'FuturePowerPlant', On: false, Priority: 2, Value: 99 },
-            { Slot: 'Slot01_Size2', Item: 'FutureOptional' },
-            { Slot: 'SmallHardpoint1', Item: 'FutureWeapon' },
-            { Slot: 'TinyHardpoint1', Item: 'FutureUtility' },
-            { Slot: 'Armour', Item: 'FutureArmour' },
-            { Slot: 'FutureMount', Item: 'FutureModule' },
-        ],
-    });
-
-    assert.equal(build.fittedModuleAt('PowerPlant')?.symbol, 'Int_Powerplant_Size2_Class1');
-    assert.equal(build.fittedModuleAt('PowerPlant')?.on, false);
-    assert.equal(build.fittedModuleAt('PowerPlant')?.priority, 2);
-    assert.equal(build.fittedModuleAt('PowerPlant')?.value, undefined);
-    assert.equal(build.fittedModuleAt('Armour')?.symbol, 'SideWinder_Armour_Grade1');
-    for (const slot of ['Slot01_Size2', 'SmallHardpoint1', 'TinyHardpoint1', 'FutureMount']) {
-        assert.equal(build.fittedModuleAt(slot), null, slot);
-    }
-    assert.equal(build.unladenMass, 27.5);
-    assert.equal(build.cargoCapacity, 0);
-    assert.deepEqual(build.fuelCapacity, { main: 0, reserve: 0.3 });
-    assert.equal(build.modulesValue, null);
-    assert.equal(build.rebuy, null);
-});
-
 test('loadout validation makes empty builds explicit', () => {
     const captured = ShipLoadout.fromSlef(slefString);
     assert.equal(captured.validation.valid, true);
@@ -690,7 +657,7 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     });
     const unresolved = unresolvedBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(unresolved.symbol.toLowerCase(), defaultHatch.Item.toLowerCase());
-    assert.equal(unresolved.on, false);
+    assert.equal(unresolved.on, undefined);
     assert.equal(unresolved.engineering, undefined);
     assert.equal(unresolved.effectiveStats!.powerDraw, 0.6);
     assert.equal(unresolved.raw.Value, undefined);

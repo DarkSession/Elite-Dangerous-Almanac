@@ -4349,6 +4349,50 @@ type FixtureShipsSlefExport = {
         modifiersRequired: boolean;
         note: string;
     };
+    importNormalization: {
+        expected: {
+            cargoCapacity: number;
+            fuelCapacity: {
+                main: number;
+                reserve: number;
+            };
+            modules: {
+                slot: string;
+                symbol: string;
+            }[];
+            modulesValue: null;
+            rebuy: null;
+            unladenMass: number;
+        };
+        input: {
+            CargoCapacity: number;
+            FuelCapacity: {
+                Main: number;
+                Reserve: number;
+            };
+            Modules: {
+                Engineering?: {
+                    BlueprintName: string;
+                    Level: number;
+                    Modifiers: {
+                        Label: string;
+                        Value: number;
+                    }[];
+                    Quality: number;
+                };
+                Health?: number;
+                Item: string;
+                On?: boolean;
+                Priority?: number;
+                Slot: string;
+                Value?: number;
+            }[];
+            ModulesValue: number;
+            Rebuy: number;
+            Ship: string;
+            UnladenMass: number;
+        };
+    };
     journalFieldExclusions: {
         engineering: string[];
         engineeringBuild: string;

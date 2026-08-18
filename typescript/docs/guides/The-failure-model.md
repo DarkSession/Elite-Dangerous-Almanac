@@ -178,9 +178,8 @@ mistaken for an answer.
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and
-`FuelCapacity` directly. If import discards an unrecognised module or replaces one in a
-required core mount, it discards those aggregates too and recomputes them from the fit
-that remains.
+`FuelCapacity` directly. If import strips or replaces an unrecognised module, it discards
+those aggregates too and recomputes them from the fit that remains.
 
 **Absent is not zero, anywhere in the library.** A catalogue field the source did not
 carry is omitted rather than defaulted, and a capture that priced no module for a slot

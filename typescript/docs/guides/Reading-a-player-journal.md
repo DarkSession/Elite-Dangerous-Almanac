@@ -149,7 +149,9 @@ Journals can contain hulls or modules absent from the catalogues. A direct looku
 finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import:
 an unknown hull is refused, unknown modules are discarded, and unknown armour or core
 internals are replaced by that hull's stock modules. When the fitted set changes,
-captured mass, capacity and credit aggregates are recomputed rather than trusted.
+captured mass, capacity and credit aggregates are recomputed rather than trusted. A
+stock replacement does not inherit the unknown module's engineering, power state,
+health or captured value.
 
 `build.validation` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while the required core mounts

@@ -2033,10 +2033,7 @@
             "additionalProperties": false,
             "properties": {
               "empty": { "type": "array", "items": { "type": "string" } },
-              "modules": {
-                "type": "array",
-                "items": { "$ref": "#/definitions/sharedf570f3651544" }
-              },
+              "modules": { "$ref": "#/definitions/shared804cf70a4333" },
               "ship": { "type": "string" }
             },
             "required": ["empty", "modules", "ship"]
@@ -6355,6 +6352,113 @@
           },
           "required": ["exportInventsEmptyArray", "modifiersRequired", "note"]
         },
+        "importNormalization": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "cargoCapacity": { "type": "integer" },
+                "fuelCapacity": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "main": { "type": "integer" },
+                    "reserve": { "type": "number" }
+                  },
+                  "required": ["main", "reserve"]
+                },
+                "modules": { "$ref": "#/definitions/shared804cf70a4333" },
+                "modulesValue": { "type": "null" },
+                "rebuy": { "type": "null" },
+                "unladenMass": { "type": "number" }
+              },
+              "required": [
+                "cargoCapacity",
+                "fuelCapacity",
+                "modules",
+                "modulesValue",
+                "rebuy",
+                "unladenMass"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "CargoCapacity": { "type": "integer" },
+                "FuelCapacity": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Main": { "type": "integer" },
+                    "Reserve": { "type": "integer" }
+                  },
+                  "required": ["Main", "Reserve"]
+                },
+                "Modules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "Engineering": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "BlueprintName": { "type": "string" },
+                          "Level": { "type": "integer" },
+                          "Modifiers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "Label": { "type": "string" },
+                                "Value": { "type": "integer" }
+                              },
+                              "required": ["Label", "Value"]
+                            }
+                          },
+                          "Quality": { "type": "integer" }
+                        },
+                        "required": [
+                          "BlueprintName",
+                          "Level",
+                          "Modifiers",
+                          "Quality"
+                        ]
+                      },
+                      "Health": { "type": "number" },
+                      "Item": { "type": "string" },
+                      "On": { "type": "boolean" },
+                      "Priority": { "type": "integer" },
+                      "Slot": { "type": "string" },
+                      "Value": { "type": "integer" }
+                    },
+                    "required": ["Item", "Slot"]
+                  }
+                },
+                "ModulesValue": { "type": "integer" },
+                "Rebuy": { "type": "integer" },
+                "Ship": { "type": "string" },
+                "UnladenMass": { "type": "integer" }
+              },
+              "required": [
+                "CargoCapacity",
+                "FuelCapacity",
+                "Modules",
+                "ModulesValue",
+                "Rebuy",
+                "Ship",
+                "UnladenMass"
+              ]
+            }
+          },
+          "required": ["expected", "input"]
+        },
         "journalFieldExclusions": {
           "type": "object",
           "additionalProperties": false,
@@ -6537,6 +6641,7 @@
         "classification",
         "deepBlack",
         "engineeringWithoutModifiers",
+        "importNormalization",
         "journalFieldExclusions",
         "kraitPhantom",
         "pythonMkII",
@@ -7712,6 +7817,10 @@
         "thermal": { "type": "number" }
       },
       "required": ["absolute", "thermal"]
+    },
+    "shared804cf70a4333": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/sharedf570f3651544" }
     },
     "shared8064b9491813": {
       "type": "object",

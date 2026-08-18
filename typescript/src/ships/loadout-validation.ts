@@ -57,7 +57,7 @@ export type LoadoutIssueParams = Readonly<Record<string, LoadoutIssueParam>>;
 export interface LoadoutIssue {
     /** Machine-readable reason. */
     readonly code: LoadoutIssueCode;
-    /** Invalid input is an error; missing catalogue/build data makes the build incomplete. */
+    /** Invalid input is an error; a missing required module makes the build incomplete. */
     readonly severity: 'error' | 'incomplete';
     /** Slot involved, in the build's own spelling when possible. */
     readonly slot?: string;

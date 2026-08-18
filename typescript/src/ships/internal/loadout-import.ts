@@ -262,9 +262,6 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             modules.set(slot, {
                 Slot: slot,
                 Item: fallback.symbol,
-                ...(module.On === undefined ? {} : { On: module.On }),
-                ...(module.Priority === undefined ? {} : { Priority: module.Priority }),
-                ...(module.Health === undefined ? {} : { Health: module.Health }),
             });
         } else {
             modules.delete(slot);

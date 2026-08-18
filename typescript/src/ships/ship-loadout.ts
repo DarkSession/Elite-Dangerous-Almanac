@@ -824,10 +824,12 @@ export class ShipLoadout {
      * Catalogue-backed modules are imported as one complete snapshot: their array order
      * does not affect per-ship count allowances, and any aggregate violation is reported
      * by {@link validation}. An unrecognised module is discarded; in an armour or
-     * core-internal mount the hull's stock module is installed instead. If discarding a
-     * module or replacing a required core mount changes the captured fit, live mass,
-     * capacity and credit aggregates are recomputed rather than trusted. Use this factory rather than
-     * replaying a complete loadout through the incremental {@link setModule} editor.
+     * core-internal mount the hull's stock module is installed instead. If stripping or
+     * replacing a module changes the captured fit, live mass, capacity and credit
+     * aggregates are recomputed rather than trusted. Use this factory rather than
+     * replaying a complete loadout through the incremental {@link setModule} editor. A
+     * stock replacement retains none of the unrecognised module's engineering, power
+     * state, health or captured value.
      * A known hull's non-removable cargo hatch is restored from its default loadout when
      * the capture omits it or supplies an unresolved item for that mount. Because that
      * hatch has zero mass, capacity and price, restoration preserves the build's live
@@ -1052,7 +1054,7 @@ export class ShipLoadout {
         return this.fuelCapacityResult.value;
     }
 
-    /** Fuel capacity with diagnostics instead of unknown tanks collapsing to zero. */
+    /** Fuel capacity with diagnostics when a fitted tank has no capacity stat. */
     get fuelCapacityResult(): CalculationResult<FuelCapacity> {
         const cap = this.#top.FuelCapacity;
         if (cap?.Main !== undefined && cap.Reserve !== undefined) {
@@ -1069,15 +1071,15 @@ export class ShipLoadout {
     }
 
     /**
-     * Cargo capacity, in tonnes, or `null` when a fitted optional module cannot be
-     * classified. A SLEF export's `CargoCapacity` is used when present; otherwise it is
-     * the sum of the fitted cargo racks.
+     * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
+     * SLEF export's `CargoCapacity` is used when present; otherwise it is the sum of the
+     * fitted cargo racks.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;
     }
 
-    /** Cargo capacity with diagnostics instead of unknown racks collapsing to zero. */
+    /** Cargo capacity with diagnostics when a fitted rack has no capacity stat. */
     get cargoCapacityResult(): CalculationResult<number> {
         return this.#top.CargoCapacity === undefined
             ? this.#computedCargoCapacity()
@@ -3683,9 +3685,9 @@ export class ShipLoadout {
         if (!fsdModule) return null;
         const base = this.#statsFor(fsdModule);
         if (!base || base.fuelMul === undefined || base.fuelPower === undefined) {
-            // A drive is fitted, but the stats catalogue has no jump constants for its
-            // unrecognised id. Fail with a diagnosable message
-            // rather than the "no frame shift drive" one the caller would otherwise get.
+            // A drive is fitted, but its supplied stats have no jump constants. Fail
+            // with a diagnosable message rather than the "no frame shift drive" one the
+            // caller would otherwise get.
             throw new TypeError(
                 `ShipLoadout: no jump constants in the stats catalogue for frame shift drive "${truncate(fsdModule.Item)}"`,
             );

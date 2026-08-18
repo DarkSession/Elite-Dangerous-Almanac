@@ -1,9 +1,9 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build
- * serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits
- * and which it leaves out, module order, and the lower-cased journal casing. This is the DEFAULT
+ * Expected ShipLoadout import and export behavior for journal `Loadout` events and SLEF builds.
+ * Pins the decisions rather than whole blobs: import normalization, which top-level keys an export
+ * emits and leaves out, module order, and lower-cased journal casing. This is the DEFAULT
  * export: every top-level figure is recomputed from the hull and the fitted modules, never echoed
  * from the import. Credits are quoted at RETAIL — the bare hull's `hullCost` plus every module's
  * catalogue list price — so they deliberately differ from what a source build reports, since that
@@ -14,7 +14,7 @@
 {
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except an unknown core internal, which is replaced by that hull's stock module. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
+    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown armour and core internals, which are replaced by that hull's stock modules. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -69,6 +69,52 @@
         "why": "Neither the article nor the slot family is known, so the entry is removed during import."
       }
     ]
+  },
+  "importNormalization": {
+    "input": {
+      "Ship": "sidewinder",
+      "UnladenMass": 999,
+      "CargoCapacity": 999,
+      "FuelCapacity": { "Main": 999, "Reserve": 999 },
+      "ModulesValue": 999,
+      "Rebuy": 999,
+      "Modules": [
+        {
+          "Slot": "PowerPlant",
+          "Item": "FuturePowerPlant",
+          "On": false,
+          "Priority": 2,
+          "Health": 0.5,
+          "Value": 99,
+          "Engineering": {
+            "BlueprintName": "FutureBlueprint",
+            "Level": 5,
+            "Quality": 1,
+            "Modifiers": [{ "Label": "PowerDraw", "Value": 999 }]
+          }
+        },
+        { "Slot": "Slot01_Size2", "Item": "FutureOptional" },
+        { "Slot": "SmallHardpoint1", "Item": "FutureWeapon" },
+        { "Slot": "TinyHardpoint1", "Item": "FutureUtility" },
+        { "Slot": "Armour", "Item": "FutureArmour" },
+        { "Slot": "FutureMount", "Item": "FutureModule" }
+      ]
+    },
+    "expected": {
+      "modules": [
+        {
+          "slot": "PowerPlant",
+          "symbol": "Int_Powerplant_Size2_Class1"
+        },
+        { "slot": "Armour", "symbol": "SideWinder_Armour_Grade1" },
+        { "slot": "CargoHatch", "symbol": "ModularCargoBayDoor" }
+      ],
+      "unladenMass": 27.5,
+      "cargoCapacity": 0,
+      "fuelCapacity": { "main": 0, "reserve": 0.3 },
+      "modulesValue": null,
+      "rebuy": null
+    }
   },
   "engineeringWithoutModifiers": {
     "note": "SLEF requires only Ship, Modules, Slot and Item; the specification's own example carries an Engineering block with BlueprintName, Level, Quality and ExperimentalEffect but NO Modifiers array. A parser that requires Modifiers cannot read the format it implements. Absent means 'not stated', not 'changed nothing': the module performs at its catalogue stats, modifier lookups return null, and an export must not invent an empty array on the way back out. Source: https://inara.cz/elite/inara-impexp-slef/",
