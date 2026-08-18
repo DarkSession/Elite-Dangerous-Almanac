@@ -105,6 +105,20 @@ test('ordinary and under-specified engineering is not guessed to be pre-engineer
                 BlueprintName: 'Weapon_HighCapacity',
                 Level: 5,
                 Quality: 1,
+                Modifiers: null,
+            },
+        } as unknown as LoadoutModule),
+        null,
+        'a null modifier block is incomplete evidence, not an identity-only capture',
+    );
+    assert.equal(
+        identifyPreEngineeredVariant({
+            Slot: 'x',
+            Item: 'Hpt_ATDumbfireMissile_Fixed_Medium',
+            Engineering: {
+                BlueprintName: 'Weapon_HighCapacity',
+                Level: 5,
+                Quality: 1,
                 ExperimentalEffect_Localised: 'Corrosive Shell',
             },
         }),

@@ -812,7 +812,9 @@ export class ShipLoadout {
      * symbol/blueprint/grade/experimental identity when a SLEF capture omits the
      * `Modifiers` key entirely. A present modifier array must pass the stat-signature
      * match instead, so an older exported stock roll sharing that identity remains stock.
-     * Other under-specified or ambiguous evidence stays unidentified.
+     * A third-party export could also omit the array from an ordinary historical AX roll;
+     * that record is indistinguishable from the fixed reward, so the catalogue identity
+     * wins. Other under-specified or ambiguous evidence stays unidentified.
      * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
      * article; the import preserves that identity, uses the catalogue's complete hand-set
      * stat block when the exact article is known, exposes no engineering options for it,

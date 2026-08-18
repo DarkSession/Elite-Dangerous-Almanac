@@ -212,7 +212,9 @@ function matchesModifierSignature(
  * symbol/blueprint/grade/experimental tuple when a SLEF capture omits the `Modifiers` key
  * entirely. A present empty or partial array does not use this shortcut: older library
  * exports can carry an ordinary roll with the same tuple, and its values must not be
- * replaced by reward stats.
+ * replaced by reward stats. A third-party export can omit the array from such a roll;
+ * that record is indistinguishable from the fixed article, so the catalogue identity
+ * wins.
  *
  * Frontier journals and captures may omit a derived modifier, so one predicted value may
  * be absent. Every stated predicted value must agree within journal float noise, and all
@@ -281,7 +283,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
         );
         return identityMatches.length === 1 ? identityMatches[0]! : null;
     }
-    if (engineering.Modifiers.length === 0) return null;
+    if (!engineering.Modifiers?.length) return null;
 
     const actualByKey = new Map<string, EngineeringModifier>();
     for (const modifier of engineering.Modifiers) {

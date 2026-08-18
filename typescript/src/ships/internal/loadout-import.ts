@@ -248,7 +248,9 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     // captured modifiers remain authoritative. Some SLEF captures omit Modifiers from a
     // fixed article entirely; its full identity can still select the catalogue row. A
     // present array cannot: older releases exported ordinary AX rolls with the same
-    // symbol/blueprint/grade tuple. Guardian weapons retain their broader recipe fallback
+    // symbol/blueprint/grade tuple. A third-party exporter can omit that array from an
+    // ordinary historical roll too; no evidence can separate it from the reward, so the
+    // catalogue identity wins. Guardian weapons retain their broader recipe fallback
     // because an ordinary weapon recipe on one already identifies a final article.
     for (const module of modules.values()) {
         const engineering = module.Engineering;
@@ -314,15 +316,13 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                 candidate.grade === engineering.Level &&
                 candidate.experimental?.toLowerCase() === normalizedExperimental,
         );
-        const guardianBase = guardianFinal
-            ? variants.find(
-                  (candidate) =>
-                      candidate.engineeringLocked === true &&
-                      candidate.blueprint.toLowerCase() === normalizedBlueprint &&
-                      candidate.grade === engineering.Level &&
-                      candidate.experimental === undefined,
-              )
-            : undefined;
+        const guardianBase = variants.find(
+            (candidate) =>
+                candidate.engineeringLocked === true &&
+                candidate.blueprint.toLowerCase() === normalizedBlueprint &&
+                candidate.grade === engineering.Level &&
+                candidate.experimental === undefined,
+        );
         const stats = exact
             ? getPreEngineeredStats(exact)
             : guardianBase && engineering.ExperimentalEffect !== undefined
@@ -330,9 +330,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                     ...guardianBase,
                     experimental: engineering.ExperimentalEffect,
                 })
-              : guardianFinal
-                ? builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item')
-                : null;
+              : builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
         if (stats) {
             moduleStats.set(module.Slot, cloneModuleStats({ ...stats, engineeringLocked: true }));
         }
