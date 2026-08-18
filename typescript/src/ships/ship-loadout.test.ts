@@ -1985,6 +1985,32 @@ test('damage-converting experimentals replace the weapon split and export journa
     }
 });
 
+test('the first captured damage modifier remains authoritative when labels repeat', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'Sidewinder',
+        Modules: [
+            {
+                Slot: 'SmallHardpoint1',
+                Item: 'Hpt_Cannon_Fixed_Small',
+                Engineering: {
+                    BlueprintName: 'Weapon_Sturdy',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: '$Kinetic;', Value: 25 },
+                        { Label: '$Kinetic;', Value: 75 },
+                    ],
+                },
+            },
+        ],
+    });
+
+    assert.equal(
+        build.fittedModuleAt('SmallHardpoint1')?.effectiveStats?.damageDistribution?.kinetic,
+        0.25,
+    );
+});
+
 test('thermal plasma conversion blueprints expose their absolute damage split', () => {
     const conversion = engineeringFixture.thermalPlasmaConversions;
     const expected = conversion.grades['5'];
