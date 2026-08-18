@@ -855,6 +855,7 @@ export function heatInputFor(
     let fsdHeatRate = 0;
     let weaponsCapacity = 0;
     const weapons: HeatWeapon[] = [];
+    const unknownWeaponHeat: string[] = [];
 
     for (const module of modules) {
         const stats = statsFor(module);
@@ -881,7 +882,13 @@ export function heatInputFor(
         }
         const weapon = weaponStatsFor(module, stats);
         // A weapon in a group the plant sheds once the hardpoints are out cannot fire.
-        if (!weapon || !running.deployed) continue;
+        if (!running.deployed) continue;
+        if (!weapon) {
+            if (stats === null && parseSlotName(module.Slot)?.kind === 'hardpoint') {
+                unknownWeaponHeat.push(module.Slot);
+            }
+            continue;
+        }
         weapons.push({
             heatPerSecond: weaponMetrics(weapon).sustainedHeatPerSecond,
             distributorDraw: weapon.distributorDraw ?? 0,
@@ -901,6 +908,7 @@ export function heatInputFor(
         weaponsCapacity,
         weapons,
         unknownDraws: budget.unknownDraws.map((consumer) => consumer.label ?? '(unnamed module)'),
+        unknownWeaponHeat,
     };
 }
 

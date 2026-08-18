@@ -176,6 +176,15 @@ export interface HeatInput {
      * states what goes wrong and in which directions.
      */
     readonly unknownDraws?: readonly string[];
+    /**
+     * Enabled, powered hardpoints whose weapon stats could not be resolved, named.
+     * Defaults to none.
+     *
+     * @remarks
+     * Passing them does not change a figure; it carries the omitted heat sources into
+     * {@link HeatMetrics.unknownWeaponHeat}. Only the two firing scenarios are affected.
+     */
+    readonly unknownWeaponHeat?: readonly string[];
 }
 
 /** A build's heat under one set of circumstances. */
@@ -259,6 +268,19 @@ export interface HeatMetrics {
      * settled level. A caller showing these figures should say what they are.
      */
     readonly unknownDraws: readonly string[];
+    /**
+     * Enabled, powered hardpoints omitted because their weapon heat could not be
+     * resolved, named by slot. Normally empty.
+     *
+     * @remarks
+     * While this is not empty, {@link firingSustained} and {@link firingDrained} are
+     * projections over the weapons that did resolve. Taken alone, the missing
+     * contribution is non-negative, so their thermal loads are lower bounds, but their
+     * heat levels, `overheats` flags and overheating times are not complete answers for
+     * the build. If {@link unknownDraws} is also non-empty, its priority-group uncertainty
+     * means no bound holds. The non-firing scenarios are unaffected.
+     */
+    readonly unknownWeaponHeat: readonly string[];
 }
 
 /**
@@ -554,6 +576,7 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
         firingSustained: state(firingBase + weaponHeat(1), firingBase),
         firingDrained: state(firingBase + weaponHeat(0), firingBase),
         unknownDraws: [...(input.unknownDraws ?? [])],
+        unknownWeaponHeat: [...(input.unknownWeaponHeat ?? [])],
     };
 }
 

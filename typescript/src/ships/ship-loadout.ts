@@ -2907,11 +2907,12 @@ export class ShipLoadout {
      * cannot keep lit — contributes nothing.
      *
      * @returns The {@link HeatMetrics}, or `null` when the build has no powered power
-     * plant. A build carrying a module the catalogues cannot
-     * resolve is answered rather than refused, with that module named in
-     * {@link HeatMetrics.unknownDraws}: read what that entry says about the figures
-     * before showing them, because they are then a projection over the rest of the build
-     * rather than an answer for it.
+     * plant. A build carrying a module the catalogues cannot resolve is answered rather
+     * than refused. {@link HeatMetrics.unknownDraws} names unknown power contributions;
+     * {@link HeatMetrics.unknownWeaponHeat} names unresolved hardpoints omitted from the
+     * firing scenarios. Read those entries before showing the figures, because a
+     * non-empty diagnostic makes the affected results projections over the rest of the
+     * build rather than complete answers.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
