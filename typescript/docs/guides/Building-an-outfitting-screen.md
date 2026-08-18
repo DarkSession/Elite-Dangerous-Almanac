@@ -14,7 +14,7 @@ what fits, fit it, and report what the build now does. All of it hangs off
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
-// An empty hull straight from the shipyard layout…
+// A hull with only its built-in cargo hatch fitted…
 const fresh = ShipLoadout.empty('Anaconda');
 
 // …or the build a commander is already flying.

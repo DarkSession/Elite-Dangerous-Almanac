@@ -31,6 +31,23 @@ test('an empty known hull is valid but operationally incomplete', () => {
     assert.equal(result.issues.filter((issue) => issue.code === 'missingRequiredSlot').length, 8);
 });
 
+test('a cargo hatch is immutable without becoming required for editor-built loadouts', () => {
+    const slots = enumerateSlots(layout);
+    const result = validateLoadout({
+        shipSymbol: layout.symbol,
+        slots,
+        modules: slots
+            .filter((slot) => slot.kind === 'core' || slot.kind === 'armour')
+            .map((slot) => ({
+                slot: slot.key,
+                symbol: `Test_${slot.key}`,
+                known: true,
+                fitError: null,
+            })),
+    });
+    assert.deepEqual(result, { valid: true, complete: true, issues: [] });
+});
+
 test('validation distinguishes invalid structure from missing catalogue data', () => {
     const result = validateLoadout({
         shipSymbol: layout.symbol,

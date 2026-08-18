@@ -25,11 +25,11 @@
  * What a build file records: what is fitted where (journal slot key + module symbol), the module's
  * power priority when it is not 0, `on: false` when the author left a module unpowered, and the
  * engineering the author declared (blueprint + grade, and the experimental effect where one is
- * fitted). The fixed cargo hatch is omitted. `metrics` is what this library derives from the build
- * as fitted, with the declared engineering NOT applied — every figure comes from stock module
- * stats, so a build designed around an engineered power plant reads `withinBudget: false`. That is
- * the contract, not a defect: it keeps the pinned numbers a pure function of the catalogues, and
- * one that is cheap for a port to reach.
+ * fitted). The fixed cargo hatch is omitted from `modules` and restored from the hull's default
+ * loadout before `metrics` is derived. Declared engineering is NOT applied — every figure comes
+ * from stock module stats, so a build designed around an engineered power plant reads
+ * `withinBudget: false`. That is the contract, not a defect: it keeps the pinned numbers a pure
+ * function of the catalogues, and one that is cheap for a port to reach.
  *
  * An implementation passes by fitting the same modules into the same slots and reproducing every
  * figure to within 1e-5 (figures are rounded to 6 decimal places; `cargoCapacity` and
