@@ -1813,18 +1813,19 @@ test('applyBlueprint reconstructs captured journal modifier values', () => {
     }
 });
 
-test('assembled builds include engineered cargo capacity in their aggregates', () => {
-    const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
-    const build = ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack);
-    assert.equal(build.cargoCapacity, 32);
-
-    build.applyBlueprint('Slot05_Size5', 'CargoRack_IncreasedCapacity', { grade: 5 });
-    assert.equal(build.cargoCapacity, 43.007999);
+test('stock cargo racks cannot acquire a fixed reward identity as engineering', () => {
+    const build = ShipLoadout.default('Python');
+    const slot = 'Slot01_Size6';
+    assert.equal(build.fittedModuleAt(slot)?.effectiveStats?.cargoCapacity, 32);
     assert.equal(
         build
-            .fittedModuleAt('Slot05_Size5')
-            ?.engineering?.Modifiers?.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
-        43.007999,
+            .availableBlueprints(slot)
+            .some(({ fdname }) => fdname === 'CargoRack_IncreasedCapacity'),
+        false,
+    );
+    assert.throws(
+        () => build.applyBlueprint(slot, 'CargoRack_IncreasedCapacity', { grade: 5 }),
+        /not offered/,
     );
 });
 
