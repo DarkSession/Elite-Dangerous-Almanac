@@ -113,7 +113,7 @@ build.powerBudget().withinBudget; // -> true
 build.powerBudget().bands.length; // -> 5        the five priority groups
 
 build.shieldMetrics()?.strength; // -> 3940.4   MJ
-build.armourMetrics()?.hitPoints; // -> 5062.6
+build.armourMetrics().hitPoints; // -> 5062.6
 
 build.weaponMetrics().total.damagePerSecond; // -> 137.04
 build.weaponMetrics().total.sustainedDamagePerSecond; // -> 133.98
@@ -165,12 +165,12 @@ the nullable/`…Result` pairs for mass, capacity, mobility, shields and shield 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
-through to an off-panel list if it does not. That list is not an edge case — `unknownHull`
-carries no `slot` at all, `unknownSlot` carries a key that is by definition no mount on
-this hull, and `unknownModule` reports whatever key the build used, which for a module in
-a slot the hull does not have is the same unrenderable one. And an empty core or armour
-mount arrives as an ordinary issue rather than as a special case — it is what your screen
-exists to get filled, so render it as work to do, not as a fault.
+through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
+carries a key that is by definition no mount on this hull, and `unknownModule` reports
+whatever key the build used, which for a module in a slot the hull does not have is the
+same unrenderable one. And an empty core or armour mount arrives as an ordinary issue
+rather than as a special case — it is what your screen exists to get filled, so render it
+as work to do, not as a fault.
 
 ## Next
 

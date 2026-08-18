@@ -31,6 +31,21 @@ test('an empty known hull is valid but operationally incomplete', () => {
     assert.equal(result.issues.filter((issue) => issue.code === 'missingRequiredSlot').length, 8);
 });
 
+test('validation names a non-array slot layout', () => {
+    assert.throws(
+        () =>
+            validateLoadout({
+                shipSymbol: layout.symbol,
+                slots: null,
+                modules: [],
+            } as unknown as Parameters<typeof validateLoadout>[0]),
+        {
+            name: 'TypeError',
+            message: 'validateLoadout: input.slots must be an array, received null',
+        },
+    );
+});
+
 test('a cargo hatch is immutable without becoming required for editor-built loadouts', () => {
     const slots = enumerateSlots(layout);
     const result = validateLoadout({
@@ -86,13 +101,6 @@ test('fitting params cannot replace canonical diagnostic identity fields', () =>
         symbol: 'Actual',
         constraint: 'oversized',
     });
-});
-
-test('an unknown hull is incomplete without inventing a slot layout', () => {
-    const result = validateLoadout({ shipSymbol: 'FutureShip', slots: null, modules: [] });
-    assert.equal(result.valid, true);
-    assert.equal(result.complete, false);
-    assert.equal(result.issues[0]?.code, 'unknownHull');
 });
 
 test('known non-outfitting entries do not have to name a hull mount', () => {
@@ -155,7 +163,7 @@ test('validation abbreviates message previews without changing structured values
     const longSymbol = `FutureModule${'z'.repeat(20_000)}`;
     const result = validateLoadout({
         shipSymbol: longHull,
-        slots: null,
+        slots: [],
         modules: [
             { slot: longSlot, symbol: longSymbol, known: false, fitError: null },
             { slot: longSlot, symbol: longSymbol, known: true, fitError: 'q'.repeat(20_000) },

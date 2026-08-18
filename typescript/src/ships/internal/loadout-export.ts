@@ -1,7 +1,6 @@
 /** Serialization policy for the mutable loadout facade. @internal */
 
 import { normalizeKey } from '../../internal/registry-index.js';
-import { truncate } from '../../internal/argument-guards.js';
 import type { OutfittingModule } from '../modules.js';
 import { getSourceModuleValue, type SourcePurchaseRecord } from '../source-purchase.js';
 import type { LoadoutEvent, LoadoutModule } from '../slef.js';
@@ -29,9 +28,9 @@ export interface LoadoutExportInput {
     readonly shipName?: string;
     readonly shipIdent?: string;
     readonly modules: ReadonlyMap<string, LoadoutModule>;
-    readonly layout?: readonly BuildSlot[] | null;
+    readonly layout: readonly BuildSlot[];
     readonly sourcePurchase: SourcePurchaseRecord | null;
-    readonly retailHullValue: number | null;
+    readonly retailHullValue: number;
     readonly unladenMass: number | null;
     readonly cargoCapacity: number | null;
     readonly fuelCapacity: { readonly main: number; readonly reserve: number } | null;
@@ -90,7 +89,7 @@ function exportModules(
 ): LoadoutModule[] {
     const ordered =
         options.moduleOrder === 'slots'
-            ? slotOrderedModules(input.shipSymbol, input.modules, input.layout)
+            ? slotOrderedModules(input.modules, input.layout)
             : [...input.modules.values()];
     return ordered.map((module) => {
         const on = module.On ?? (options.explicitPower ? true : undefined);
@@ -113,15 +112,9 @@ function exportModules(
 }
 
 function slotOrderedModules(
-    shipSymbol: string,
     modules: ReadonlyMap<string, LoadoutModule>,
-    layout: readonly BuildSlot[] | null | undefined,
+    layout: readonly BuildSlot[],
 ): LoadoutModule[] {
-    if (!layout) {
-        throw new TypeError(
-            `ShipLoadout.toLoadoutEvent: no slot layout for hull "${truncate(shipSymbol)}", so modules cannot be ordered by slot`,
-        );
-    }
     return orderBySlotLayout([...modules.values()], layout, (module) => module.Slot);
 }
 

@@ -26,12 +26,9 @@ export type CalculationIssueReason = 'missing' | 'unresolved' | 'disabled' | 'sh
 export interface CalculationIssue {
     /** Calculation input that is missing or unavailable. */
     readonly field:
-        | 'hull'
-        | 'hullMass'
         | 'mass'
         | 'cargoCapacity'
         | 'fuelCapacity'
-        | 'reserveFuelCapacity'
         | 'frameShiftDrive'
         | 'powerCapacity'
         | 'powerDraw'
@@ -43,8 +40,6 @@ export interface CalculationIssue {
     readonly slot?: string;
     /** Module symbol, when the dependency belongs to a module. */
     readonly symbol?: string;
-    /** Hull symbol, when the catalogue cannot resolve the build's hull. */
-    readonly hull?: string;
     /** Human-readable diagnostic suitable for a log or validation panel. */
     readonly message: string;
     /** Values interpolated into `message`, for consumers composing localized text. */
@@ -124,7 +119,7 @@ function result<T>(
 /**
  * Sum hull and fitted-module mass.
  *
- * @param hullMass - Empty-hull mass in tonnes, or `null` when unknown.
+ * @param hullMass - Empty-hull mass in tonnes.
  * @param modules - Resolved fitted-module contributions.
  * @returns Mass in tonnes, or a result listing every missing dependency.
  * @example
@@ -136,19 +131,11 @@ function result<T>(
  * ```
  */
 export function calculateUnladenMass(
-    hullMass: number | null,
+    hullMass: number,
     modules: readonly LoadoutCalculationModule[],
 ): CalculationResult<number> {
     const issues: CalculationIssue[] = [];
-    let value = hullMass ?? 0;
-    if (hullMass === null) {
-        issues.push({
-            field: 'hullMass',
-            reason: 'unresolved',
-            params: { field: 'hullMass', reason: 'unresolved' },
-            message: 'The hull has no known hullMass',
-        });
-    }
+    let value = hullMass;
     for (const module of modules) {
         if (module.mass === null) issues.push(moduleIssue(module, 'mass'));
         else value += module.mass;
@@ -183,7 +170,7 @@ export function calculateCargoCapacity(
 /**
  * Sum fitted fuel tanks and the hull reserve.
  *
- * @param reserveFuelCapacity - Hull reserve in tonnes, or `null` when unknown.
+ * @param reserveFuelCapacity - Hull reserve in tonnes.
  * @param modules - Resolved fitted-module contributions.
  * @returns Main and reserve capacity. No fitted tank is the complete main value `0`.
  * @example
@@ -197,25 +184,17 @@ export function calculateCargoCapacity(
  * ```
  */
 export function calculateFuelCapacity(
-    reserveFuelCapacity: number | null,
+    reserveFuelCapacity: number,
     modules: readonly LoadoutCalculationModule[],
 ): CalculationResult<FuelCapacity> {
     const issues: CalculationIssue[] = [];
     let main = 0;
-    if (reserveFuelCapacity === null) {
-        issues.push({
-            field: 'reserveFuelCapacity',
-            reason: 'unresolved',
-            params: { field: 'reserveFuelCapacity', reason: 'unresolved' },
-            message: 'The hull has no known reserveFuelCapacity',
-        });
-    }
     for (const module of modules) {
         if (module.fuelCapacity === null) issues.push(moduleIssue(module, 'fuelCapacity'));
         else if (module.fuelCapacity !== undefined) main += module.fuelCapacity;
     }
     return result(
-        issues.length === 0 ? Object.freeze({ main, reserve: reserveFuelCapacity! }) : null,
+        issues.length === 0 ? Object.freeze({ main, reserve: reserveFuelCapacity }) : null,
         Object.freeze(issues),
     );
 }

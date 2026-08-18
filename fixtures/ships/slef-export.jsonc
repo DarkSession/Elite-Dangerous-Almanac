@@ -468,23 +468,5 @@
         "Value": 1000
       }
     ]
-  },
-  "unknownHull": {
-    "note": "A hull the catalogues do not know. Its mass, hull price, rebuy, jump range and reserve fuel cannot be worked out, so those keys are left out rather than emitted as zero — an unknown reserve would make FuelCapacity a lie, and it is the whole object or nothing.",
-    "ship": "not_a_real_hull",
-    "topLevelKeys": [
-      "event",
-      "Ship",
-      "ModulesValue",
-      "CargoCapacity",
-      "Modules"
-    ],
-    "omittedKeys": [
-      "HullValue",
-      "UnladenMass",
-      "MaxJumpRange",
-      "FuelCapacity",
-      "Rebuy"
-    ]
   }
 }
