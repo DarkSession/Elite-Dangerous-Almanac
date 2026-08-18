@@ -64,8 +64,9 @@ export interface PowerConsumer {
      * `true` for a module that only draws while the hardpoints are deployed — every
      * weapon, and the utility fittings that are not
      * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false`.
-     * `null` preserves an unavailable classification; totals conservatively count that
-     * draw in both retracted and deployed states.
+     * For a known draw, `null` preserves an unavailable classification and totals
+     * conservatively count that draw in both retracted and deployed states. A consumer
+     * with {@link drawUnknown} is excluded from every total regardless.
      */
     readonly deployedOnly?: boolean | null;
     /**
@@ -156,6 +157,9 @@ export interface PowerBudget {
      * {@link ShipLoadout.powerBudget} built the list, or by identity for a
      * hand-assembled one. A switched-off module is skipped before the flag is read, so
      * it never appears here. Normally empty.
+     *
+     * Entries retain the caller's original fields; unlike {@link consumers}, their
+     * priority and optional flags are not normalized.
      *
      * **While it is not empty, every other figure here is a lower bound.** The unknown
      * draws contribute nothing to `retracted`, `deployed` or the bands, so `headroom`
