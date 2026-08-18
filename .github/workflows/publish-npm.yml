@@ -1,14 +1,7 @@
 name: Publish npm Package
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
-    inputs:
-      dry-run:
-        description: Run the checks and build and pack the tarball, but do not publish it
-        type: boolean
-        default: true
 
 concurrency:
   group: publish-npm
@@ -22,44 +15,35 @@ jobs:
     name: Check and pack npm package
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Not every release in this repository is a release of this package. A tag
-    # belonging to a second language implementation has to leave this job
-    # unstarted rather than fail it — a red X and a spent `npm` deployment on
-    # someone else's release would be this workflow's bug, not theirs.
-    if: >-
-      github.event_name != 'release'
-      || startsWith(github.event.release.tag_name, 'v')
-      || startsWith(github.event.release.tag_name, 'typescript-v')
     outputs:
-      dist-tag: ${{ steps.package.outputs.dist-tag }}
       tarball: ${{ steps.pack.outputs.tarball }}
       tarball-sha256: ${{ steps.pack.outputs.tarball-sha256 }}
+      version: ${{ steps.package.outputs.version }}
     defaults:
       run:
         working-directory: typescript
-    env:
-      # Every guard below asks the same question — is this run going to take a
-      # version number? A release always is; a manual run only when its dry-run
-      # input was unticked. Decided once, so no two steps can disagree about it.
-      #
-      # Compared as text on purpose: the input is a real boolean when the button
-      # is clicked, but a string when the run comes from the API or `gh workflow
-      # run`, and `!inputs.dry-run` reads every non-empty string as "not a dry
-      # run" — including the string `true`.
-      REAL_PUBLISH: ${{ github.event_name == 'release' || format('{0}', inputs.dry-run) != 'true' }}
     steps:
+      - name: Verify the release branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          RELEASE_REF: ${{ github.ref }}
+        run: |
+          if [ "$RELEASE_REF" != "refs/heads/$DEFAULT_BRANCH" ]; then
+            echo "::error::releases must run from the default branch ($DEFAULT_BRANCH), not $RELEASE_REF"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-tags: true
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
 
-      # Normalize the tag and pack with a pinned npm 11 client rather than
+      # Stamp and pack with a pinned npm 11 client rather than
       # whichever npm release happens to ship with Node 22.
       - name: Install the packing npm client
         run: |
@@ -88,97 +72,41 @@ jobs:
 
       - name: Resolve what to publish
         id: package
-        env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-          REF_TYPE: ${{ github.ref_type }}
-          REF_NAME: ${{ github.ref_name }}
-          EVENT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
 
           name=$(node -p 'require("./package.json").name')
-          version=$(node -p 'require("./package.json").version')
+          manifest_version=$(node -p 'require("./package.json").version')
+          published_versions=$(npm view "$name" versions --json)
+          version=$(
+            MANIFEST_VERSION="$manifest_version" PUBLISHED_VERSIONS="$published_versions" node <<'NODE'
+          const match = /^(\d+)\.(\d+)\./.exec(process.env.MANIFEST_VERSION);
+          if (!match) throw new Error(`Invalid package version: ${process.env.MANIFEST_VERSION}`);
 
-          # A release event names its tag directly; a manual run has to use a tag
-          # as its workflow ref. Nothing takes a version number off a branch: a
-          # real publish is permanent, and npm provenance records the event ref
-          # and SHA rather than a different commit checked out afterward.
-          tag=$RELEASE_TAG
-          expected_sha=$EVENT_SHA
-          if [ -z "$tag" ] && [ "$REF_TYPE" = tag ]; then
-            tag=$REF_NAME
-          fi
-          if [ "$REAL_PUBLISH" = true ] && [ -z "$tag" ]; then
-            echo "::error::a real publish must run from a tag, not from $REF_TYPE $REF_NAME"
-            exit 1
-          fi
+          const [, major, minor] = match;
+          const versions = JSON.parse(process.env.PUBLISHED_VERSIONS);
+          const list = Array.isArray(versions) ? versions : [versions];
+          const patches = list.flatMap((version) => {
+            const published = new RegExp(`^${major}\\.${minor}\\.(\\d+)(?:$|-)`).exec(version);
+            return published ? [Number(published[1])] : [];
+          });
 
-          # A release tag is the version's single source of truth. Stamp that
-          # version into the package built from the immutable tag so creating a
-          # release does not require a separate manifest-only commit first. Both
-          # `v1.2.3` and `typescript-v1.2.3` name version 1.2.3; the prefixed form
-          # is there for the day a second language implementation releases too.
-          if [ -n "$tag" ]; then
-            case "$tag" in
-              v*|typescript-v*) ;;
-              *)
-                echo "::error::TypeScript release tag $tag must start with v or typescript-v"
-                exit 1
-                ;;
-            esac
+          console.log(`${major}.${minor}.${Math.max(-1, ...patches) + 1}`);
+          NODE
+          )
 
-            if ! git show-ref --verify --quiet "refs/tags/$tag"; then
-              echo "::error::$tag is not a tag in the checked-out repository"
-              exit 1
-            fi
-            if ! [[ "$expected_sha" =~ ^[0-9a-fA-F]{40}$ ]]; then
-              echo "::error::release commit must be a full 40-character SHA"
-              exit 1
-            fi
-
-            expected_commit=$(git rev-parse "$expected_sha^{commit}")
-            tagged_commit=$(git rev-list -n 1 "refs/tags/$tag")
-            if [ "$tagged_commit" != "$expected_commit" ]; then
-              echo "::error::tag $tag does not match release commit $expected_commit"
-              exit 1
-            fi
-            if [ "$(git rev-parse HEAD)" != "$expected_commit" ]; then
-              echo "::error::checked-out commit does not match release commit $expected_commit"
-              exit 1
-            fi
-
-            tagged=${tag#typescript-}
-            tagged=${tagged#v}
-            npm version "$tagged" \
-              --no-git-tag-version \
-              --allow-same-version \
-              --ignore-scripts >/dev/null
-            version=$(node -p 'require("./package.json").version')
-            if [ "$version" != "$tagged" ]; then
-              echo "::error::tag $tag does not contain a canonical npm version (npm normalized it to $version)"
-              exit 1
-            fi
-          fi
-
-          # A prerelease must never become the version `npm install` picks by
-          # default, so anything carrying a SemVer prerelease suffix goes to
-          # `next`. Build metadata is dropped first: `1.2.3+build.7` has a hyphen
-          # nowhere near a prerelease, and `1.2.3-rc.1+build.7` has both.
-          case "${version%%+*}" in
-            *-*) dist_tag=next ;;
-            *) dist_tag=latest ;;
-          esac
+          # npm is the release ledger. The manifest chooses the major/minor line;
+          # every version already published on that line advances its patch.
+          npm version "$version" --no-git-tag-version --ignore-scripts >/dev/null
 
           {
             echo "name=$name"
             echo "version=$version"
-            echo "dist-tag=$dist_tag"
           } >>"$GITHUB_OUTPUT"
 
-          echo "$name@$version -> dist-tag $dist_tag" >>"$GITHUB_STEP_SUMMARY"
+          echo "$name@$version -> dist-tag latest" >>"$GITHUB_STEP_SUMMARY"
 
       - name: Check the version is still unpublished
-        if: env.REAL_PUBLISH == 'true'
         env:
           SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
         run: |
@@ -196,7 +124,7 @@ jobs:
           # a version that already exists.
           if answer=$(npm view --json "$SPEC" version 2>/dev/null); then
             if [ -n "$answer" ] && [ "$answer" != null ]; then
-              echo "::error::$SPEC is already on the registry — create a release with a new version tag"
+              echo "::error::$SPEC is already on the registry — rerun the workflow to calculate the next patch"
               exit 1
             fi
           else
@@ -219,7 +147,6 @@ jobs:
         run: pnpm run check && pnpm run build && pnpm run test:package
 
       - name: Pack for publishing
-        if: env.REAL_PUBLISH == 'true'
         id: pack
         run: |
           set -euo pipefail
@@ -235,8 +162,10 @@ jobs:
             echo "tarball-sha256=$(sha256sum "$tarball" | cut -d ' ' -f 1)"
           } >>"$GITHUB_OUTPUT"
 
+          published_version=$(tar -xOf "$tarball" package/package.json | node -p 'JSON.parse(require("fs").readFileSync(0)).version')
+          test "$published_version" = "${{ steps.package.outputs.version }}"
+
       - name: Upload package for the OIDC job
-        if: env.REAL_PUBLISH == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: npm-package
@@ -244,21 +173,47 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Pack without publishing
-        if: env.REAL_PUBLISH != 'true'
+  tag:
+    name: Create Git tag
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Create and verify tag
         env:
-          DIST_TAG: ${{ steps.package.outputs.dist-tag }}
-        # A dry run never authenticates or exercises Trusted Publishing. It also
-        # produces no registry provenance, so this rehearses the checks, build and
-        # tarball contents, and nothing about the upload.
-        run: npm publish --access public --tag "$DIST_TAG" --dry-run --ignore-scripts
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          if ! create_error=$(gh api --method POST "repos/$GH_REPO/git/refs" \
+            -f ref="refs/tags/v$VERSION" \
+            -f sha="$GITHUB_SHA" 2>&1 >/dev/null); then
+            case "$create_error" in
+              *"(HTTP 422)") ;;
+              *)
+                echo "$create_error"
+                exit 1
+                ;;
+            esac
+            if ! gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" >/dev/null 2>&1; then
+              echo "$create_error"
+              exit 1
+            fi
+          fi
+
+          tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" --jq .object.sha)
+          if [ "$tag_sha" != "$GITHUB_SHA" ]; then
+            echo "::error::v$VERSION points to $tag_sha instead of $GITHUB_SHA"
+            exit 1
+          fi
 
   publish:
     name: Publish to npm with OIDC
-    needs: prepare
-    if: >-
-      github.event_name == 'release'
-      || format('{0}', inputs.dry-run) != 'true'
+    needs: [prepare, tag]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment:
@@ -315,7 +270,6 @@ jobs:
 
       - name: Publish
         env:
-          DIST_TAG: ${{ needs.prepare.outputs.dist-tag }}
           TARBALL: ${{ needs.prepare.outputs.tarball }}
         # `npm`, not `pnpm`, and deliberately so: npm exchanges the job's OIDC
         # identity for short-lived publish access and automatically attaches its
@@ -332,6 +286,25 @@ jobs:
           npm publish "./$TARBALL"
           --registry=https://registry.npmjs.org
           --access public
-          --tag "$DIST_TAG"
+          --tag latest
           --provenance
           --ignore-scripts
+
+  release:
+    name: Create GitHub release
+    needs: [prepare, publish, tag]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: >-
+          gh release create "v$VERSION"
+          --verify-tag
+          --title "v$VERSION"
+          --generate-notes
