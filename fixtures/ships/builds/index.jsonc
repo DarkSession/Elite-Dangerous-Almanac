@@ -30,6 +30,9 @@
  * from stock module stats, so a build designed around an engineered power plant reads
  * `withinBudget: false`. That is the contract, not a defect: it keeps the pinned numbers a pure
  * function of the catalogues, and one that is cheap for a port to reach.
+ * Power-dependent metrics follow that same stock retracted budget: a generator or
+ * booster the unengineered plant sheds with hardpoints stowed is absent from the pinned
+ * shield result.
  *
  * An implementation passes by fitting the same modules into the same slots and reproducing every
  * figure to within 1e-5 (figures are rounded to 6 decimal places; `cargoCapacity` and

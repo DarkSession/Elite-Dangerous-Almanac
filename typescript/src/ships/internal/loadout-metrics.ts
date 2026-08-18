@@ -91,6 +91,13 @@ function isPowerDistributor(module: LoadoutModule, stats: OutfittingModule | nul
         : startsWithAny(module.Item, PREFIX.powerDistributor);
 }
 
+/** Whether a fitted module is the power plant, by record or symbol fallback. */
+function isPowerPlant(module: LoadoutModule, stats: OutfittingModule | null): boolean {
+    return stats?.slot
+        ? stats.slot === 'powerPlant'
+        : startsWithAny(module.Item, PREFIX.powerPlant);
+}
+
 /** Whether a fitted module is switched on (the journal's `On`, defaulting to `true`). */
 function isEnabled(module: LoadoutModule): boolean {
     return module.On !== false;
@@ -359,14 +366,36 @@ export function powerAvailable(
         // — an `Item` this snapshot's catalogue has no record for, or a record a caller
         // assembled without a `slot`. Falling back on the *absent field* rather than on
         // the absent record is what keeps a hand-built record reading as it always has.
-        const isPlant = stats?.slot
-            ? stats.slot === 'powerPlant'
-            : startsWithAny(module.Item, PREFIX.powerPlant);
-        if (!isPlant) continue;
+        if (!isPowerPlant(module, stats)) continue;
         if (!isEnabled(module)) return 0; // a switched-off plant powers nothing
         return effectiveStat(module, 'powerCapacity', stats) ?? 0;
     }
     return 0;
+}
+
+/** Whether the fitted, enabled plant's capacity is unavailable from this snapshot. */
+function powerCapacityUnknown(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): boolean {
+    for (const module of modules) {
+        const stats = statsFor(module);
+        if (!isPowerPlant(module, stats)) continue;
+        return isEnabled(module) && effectiveStat(module, 'powerCapacity', stats) === undefined;
+    }
+    return false;
+}
+
+/** Whether a module is fed retracted, projecting through an unresolved plant capacity. */
+function poweredWhileRetracted(
+    module: LoadoutModule,
+    stats: OutfittingModule | null,
+    budget: PowerBudget,
+    capacityUnknown: boolean,
+): boolean {
+    return (
+        capacityUnknown || (budget.available > 0 && poweredStates(module, stats, budget).retracted)
+    );
 }
 
 /** The four resistances a defensive module can carry, every one of them answered. */
@@ -401,6 +430,7 @@ function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): M
 export function shieldInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
+    budget: PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldInput {
@@ -408,10 +438,12 @@ export function shieldInputFor(
     let generator: ShieldGeneratorParams | null = null;
     const boosters: ShieldBoosterParams[] = [];
     let reinforcement = 0;
+    const capacityUnknown = powerCapacityUnknown(modules, statsFor);
 
     for (const module of modules) {
         if (!isEnabled(module)) continue;
         const stats = statsFor(module);
+        if (!poweredWhileRetracted(module, stats, budget, capacityUnknown)) continue;
         if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
             const massRatio = modifierRatio(module, stats, 'optMass');
             const strengthRatio = modifierRatio(module, stats, 'optMultiplier');
@@ -465,6 +497,7 @@ export function mobilityInputFor(
 ): MobilityInput | null {
     const hull = getShipBySymbol(shipSymbol);
     if (!hull) return null;
+    const capacityUnknown = powerCapacityUnknown(modules, statsFor);
     let thrusters: ThrusterParams | null = null;
     for (const module of modules) {
         const stats = statsFor(module);
@@ -472,11 +505,7 @@ export function mobilityInputFor(
             ? stats.slot === 'thrusters'
             : startsWithAny(module.Item, PREFIX.thrusters);
         if (!isThruster) continue;
-        if (
-            !isEnabled(module) ||
-            budget.available === 0 ||
-            !poweredStates(module, stats, budget).retracted
-        )
+        if (!isEnabled(module) || !poweredWhileRetracted(module, stats, budget, capacityUnknown))
             return null;
         const effective = effectiveModule(module, stats);
         const minMass = effective?.minMass;
@@ -555,6 +584,7 @@ export function shieldRecoveryInputFor(
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldRecoveryInput | null {
     if (!getShipBySymbol(shipSymbol)) return null;
+    const capacityUnknown = powerCapacityUnknown(modules, statsFor);
     let generator: LoadoutModule | null = null;
     let distributor: LoadoutModule | null = null;
     for (const module of modules) {
@@ -562,8 +592,7 @@ export function shieldRecoveryInputFor(
         if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
             if (
                 !isEnabled(module) ||
-                budget.available === 0 ||
-                !poweredStates(module, stats, budget).retracted
+                !poweredWhileRetracted(module, stats, budget, capacityUnknown)
             )
                 return null;
             generator = module;
@@ -571,15 +600,16 @@ export function shieldRecoveryInputFor(
         if (
             isPowerDistributor(module, stats) &&
             isEnabled(module) &&
-            budget.available > 0 &&
-            poweredStates(module, stats, budget).retracted
+            poweredWhileRetracted(module, stats, budget, capacityUnknown)
         )
             distributor = module;
     }
     if (!generator) return null;
     const generatorStats = statsFor(generator);
     const distributorStats = distributor ? statsFor(distributor) : null;
-    const strength = shieldMetrics(shieldInputFor(shipSymbol, modules, 0, statsFor)).strength;
+    const strength = shieldMetrics(
+        shieldInputFor(shipSymbol, modules, budget, 0, statsFor),
+    ).strength;
     return {
         strength,
         regenRate: effectiveStat(generator, 'shieldRegenRate', generatorStats) ?? 0,
@@ -694,10 +724,7 @@ export function heatInputFor(
 
     for (const module of modules) {
         const stats = statsFor(module);
-        const isPlant = stats?.slot
-            ? stats.slot === 'powerPlant'
-            : startsWithAny(module.Item, PREFIX.powerPlant);
-        if (isPlant) {
+        if (isPowerPlant(module, stats)) {
             // A plant that is switched off feeds nothing, so there is no build to model.
             if (!isEnabled(module)) return null;
             heatEfficiency = effectiveStat(module, 'heatEfficiency', stats);

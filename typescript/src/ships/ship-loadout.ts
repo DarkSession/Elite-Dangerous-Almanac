@@ -2830,7 +2830,9 @@ export class ShipLoadout {
      * towards the deployed total.
      *
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered. A fitted module whose draw the catalogue cannot supply is
+     * and nothing is powered. An unresolved plant also reports `available: 0`; it is
+     * identified by {@link validation}, not {@link PowerBudget.unknownDraws}. A fitted
+     * module whose draw the catalogue cannot supply is
      * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
      * which makes every total a lower bound while that list is non-empty. `consumers`
      * includes modules with positive or unknown draw; passive and zero-draw fittings are
@@ -2906,9 +2908,13 @@ export class ShipLoadout {
      * mass, ten observed builds reproduce their angular rates only when the reserve is
      * excluded from the thruster mass curve.
      *
+     * When the fitted power plant's capacity is unresolved, priority shedding cannot
+     * be determined, so the result is a projection that treats the thrusters as powered.
+     * {@link validation} identifies the unresolved plant.
+     *
      * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
-     * @returns Loaded {@link MobilityMetrics}, or `null` when no powered, fully described
-     * thrusters are fitted.
+     * @returns Loaded {@link MobilityMetrics}, or `null` when no fully described
+     * thrusters are powered with hardpoints retracted.
      * @throws {TypeError} If mass or an omitted main-tank fuel load cannot be determined.
      * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
      * `enginesPips` is outside `[0, 4]`.
@@ -2951,13 +2957,16 @@ export class ShipLoadout {
      *
      * Shield strength scales with the **hull's** mass, not the build's, so fitting
      * more modules never weakens it. Boosters, Guardian shield reinforcement and any
-     * engineering are all folded in; switched-off modules are ignored.
+     * engineering are all folded in; modules switched off or shed with hardpoints
+     * retracted are ignored.
+     * When the fitted power plant's capacity is unresolved, its dependants are projected
+     * as powered; {@link validation} identifies the unresolved plant.
      *
      * @param options - {@link DefenceOptions}. `systemsPips` (0–4) folds the SYS
      * capacitor's own resistance into the reported figures; it defaults to `0`, which
      * is what an outfitting screen shows.
      * @returns The {@link ShieldMetrics}, or `null` when the hull is unresolved or the
-     * build has no enabled shield generator fitted.
+     * build has no shield generator powered with hardpoints retracted.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2975,6 +2984,7 @@ export class ShipLoadout {
         const input = shieldInputFor(
             this.#shipSymbol,
             [...this.#modules.values()],
+            this.powerBudget(),
             options.systemsPips ?? 0,
             (module) => this.#statsFor(module),
         );
@@ -2984,10 +2994,12 @@ export class ShipLoadout {
 
     /**
      * Time for this build's shield to rise after collapse and then regenerate to full.
+     * When the fitted power plant's capacity is unresolved, its dependants are projected
+     * as powered; {@link validation} identifies the unresolved plant.
      *
      * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
      * @returns Recovery rates and seconds, or `null` with an unresolved hull or no
-     * powered shield generator.
+     * shield generator powered with hardpoints retracted.
      * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
      * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example

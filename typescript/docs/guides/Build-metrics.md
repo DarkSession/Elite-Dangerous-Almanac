@@ -143,8 +143,11 @@ curve against the **bare hull mass**, not the loaded ship — so fitting more mo
 weakens your shields. And past the generator's `maxMass` it will not raise a shield at
 all, which the curve reports as `0` rather than as a small number.
 
-`shieldMetrics()` returns `null` when the build has no generator; `armourMetrics()` always
-returns a figure, because every hull has armour.
+`shieldMetrics()` evaluates the generator, boosters and reinforcement against the
+hardpoints-stowed (`retracted`) budget. It returns `null` when no generator is powered in
+that state. Both it and `armourMetrics()` return `null` when the hull is unresolved; every
+known hull still has armour. `mobilityMetrics()` and `shieldRecovery()` use the same
+retracted power state for their thrusters, generator and distributor.
 
 ## Weapon output
 
@@ -326,9 +329,13 @@ load-bearing:
   nullable/`…Result` pairs: the property is `null` and the result names what was missing.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
-- `shieldMetrics()` and `armourMetrics()` take an unresolved module's contribution as
-  zero and report a figure anyway, and `weaponMetrics()` omits a hardpoint it cannot
-  resolve from `weapons` and from the totals. None of the three carries a diagnostic.
+- `shieldMetrics()` and `armourMetrics()` return `null` when the hull is unresolved.
+  Otherwise they take an unresolved module's contribution as zero, and `weaponMetrics()`
+  omits an unresolved hardpoint from `weapons` and the totals. None carries a diagnostic.
+- An unresolved power plant is the producer-side exception: `powerBudget()` reports
+  `available: 0` without adding the plant to `unknownDraws`, while `mobilityMetrics()`,
+  `shieldMetrics()` and `shieldRecovery()` project their dependants as powered. The
+  plant's `unknownModule` validation issue is the diagnostic for those projections.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
 - `heatMetrics()` returns `null` outright when the build has no powered plant or its

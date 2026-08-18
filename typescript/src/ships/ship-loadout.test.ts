@@ -408,7 +408,44 @@ test('mobility and shield recovery stop when the power budget sheds their module
     assert.ok(budget.available > 0);
     assert.equal(budget.bands[4]?.poweredRetracted, false);
     assert.equal(overloaded.mobilityMetrics(), null);
+    assert.equal(overloaded.shieldMetrics(), null);
     assert.equal(overloaded.shieldRecovery(), null);
+});
+
+test('an unresolved power plant does not masquerade as an unpowered build', () => {
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
+    const unresolved = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant'
+                ? { ...module, Item: 'Int_Powerplant_Size99_Class9_MadeUp' }
+                : module,
+        ),
+    });
+
+    assert.equal(unresolved.powerBudget().available, 0);
+    assert.ok(unresolved.validation.issues.some((issue) => issue.code === 'unknownModule'));
+    assert.ok(unresolved.mobilityMetrics());
+    assert.ok(unresolved.shieldMetrics());
+    assert.ok(unresolved.shieldRecovery());
+});
+
+test('an unresolved generator stays unavailable behind a disabled known plant', () => {
+    const source = ShipLoadout.default('SideWinder')
+        .setModuleEnabled('PowerPlant', false)
+        .toLoadoutEvent();
+    const unresolved = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Item.toLowerCase().startsWith('int_shieldgenerator')
+                ? { ...module, Item: 'Int_ShieldGenerator_Size99_Class9_MadeUp' }
+                : module,
+        ),
+    });
+
+    assert.equal(unresolved.powerBudget().available, 0);
+    assert.equal(unresolved.shieldMetrics(), null);
+    assert.equal(unresolved.shieldRecovery(), null);
 });
 
 test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {
@@ -4140,10 +4177,9 @@ test('power budgets expose every known, unknown and disabled fitted consumer', (
 });
 
 test("a build whose hull is beyond the generator's maximum mass has no shields", () => {
-    const build = ShipLoadout.empty('Anaconda').setModule(
-        'Slot01_Size7',
-        mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES),
-    );
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
+        .setModule('Slot01_Size7', mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES));
     // A size-1 generator cannot cover a 400 t hull.
     assert.equal(build.shieldMetrics()!.strength, 0);
 });
