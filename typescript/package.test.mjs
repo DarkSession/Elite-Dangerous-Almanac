@@ -43,10 +43,14 @@ import {
 import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
 import {
     getBlueprintName,
+    getEngineeringGroupName,
     getExperimentalEffectName,
+    getExperimentalEffectDescription,
     getMaterialName,
     getMicroResourceName,
     getModuleName,
+    getShipManufacturer,
+    getShipName,
 } from '@elite-dangerous-almanac/core/i18n';
 
 async function readReachableJs(entry, seen = new Set()) {
@@ -285,10 +289,29 @@ test('fine-grained package subpaths resolve', () => {
     );
     assert.equal(getMaterialName('GridResistors', 'de-DE'), 'Gitterwiderstände');
     assert.equal(getMicroResourceName('graphene', 'fr'), 'Graphène');
+    assert.equal(getShipName('empire_trader', 'fr'), 'Imperial Clipper');
+    assert.equal(getShipManufacturer('SideWinder', 'en-GB'), 'Faulcon DeLacy');
+    assert.equal(getEngineeringGroupName('frameShiftDrives', 'en'), 'Frame Shift Drives');
+    assert.equal(
+        getExperimentalEffectDescription('special_auto_loader', 'en'),
+        'Reloads the weapon while it continues firing.',
+    );
 });
 
 test('localized-name datasets stay on their own leaf subpaths', async () => {
-    const [modules, blueprints, effects, materials, microResources] = await Promise.all([
+    const [
+        modules,
+        blueprints,
+        effects,
+        materials,
+        microResources,
+        ships,
+        preEngineered,
+        engineeringGroups,
+        effectDescriptions,
+        slots,
+        diagnostics,
+    ] = await Promise.all([
         consumerBundle(
             "import { getModuleName as value } from '@elite-dangerous-almanac/core/i18n/modules'; console.log(value);",
         ),
@@ -304,6 +327,24 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         consumerBundle(
             "import { getMicroResourceName as value } from '@elite-dangerous-almanac/core/i18n/micro-resources'; console.log(value);",
         ),
+        consumerBundle(
+            "import { getShipName as value } from '@elite-dangerous-almanac/core/i18n/ships'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getPreEngineeredVariantName as value } from '@elite-dangerous-almanac/core/i18n/pre-engineered'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getEngineeringGroupName as value } from '@elite-dangerous-almanac/core/i18n/engineering-groups'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getExperimentalEffectDescription as value } from '@elite-dangerous-almanac/core/i18n/experimental-effect-descriptions'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getLoadoutSlotName as value } from '@elite-dangerous-almanac/core/i18n/slots'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getLoadoutIssueMessage as value } from '@elite-dangerous-almanac/core/i18n/diagnostics'; console.log(value);",
+        ),
     ]);
 
     assert.ok(modules.length < 128 * 1024, `module-name bundle is ${modules.length} bytes`);
@@ -314,11 +355,50 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         microResources.length < 72 * 1024,
         `micro-resource-name bundle is ${microResources.length} bytes`,
     );
+    assert.ok(ships.length < 72 * 1024, `ship-name bundle is ${ships.length} bytes`);
+    assert.ok(
+        preEngineered.length < 72 * 1024,
+        `pre-engineered-name bundle is ${preEngineered.length} bytes`,
+    );
+    assert.ok(
+        engineeringGroups.length < 32 * 1024,
+        `engineering-group-name bundle is ${engineeringGroups.length} bytes`,
+    );
+    assert.ok(
+        effectDescriptions.length < 32 * 1024,
+        `effect-description bundle is ${effectDescriptions.length} bytes`,
+    );
+    assert.ok(slots.length < 32 * 1024, `slot-name bundle is ${slots.length} bytes`);
+    assert.ok(
+        diagnostics.length < 24 * 1024,
+        `diagnostic-message bundle is ${diagnostics.length} bytes`,
+    );
     assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);
     assert.doesNotMatch(blueprints, /Frameshiftantrieb|Konkordante Sequenz/);
     assert.doesNotMatch(effects, /Frameshiftantrieb|Erhöhte FSA-Reichweite/);
     assert.doesNotMatch(materials, /Graphène|Frameshiftantrieb/);
     assert.doesNotMatch(microResources, /Gitterwiderstände|Frameshiftantrieb/);
+    assert.doesNotMatch(
+        ships,
+        /Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
+    );
+    assert.doesNotMatch(preEngineered, /Faulcon DeLacy|Frame Shift Drives|Reloads the weapon/);
+    assert.doesNotMatch(
+        engineeringGroups,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Reloads the weapon/,
+    );
+    assert.doesNotMatch(
+        effectDescriptions,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives/,
+    );
+    assert.doesNotMatch(
+        slots,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
+    );
+    assert.doesNotMatch(
+        diagnostics,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
+    );
 });
 
 test('the ship-loadout subpath exports its facade and structured edit error', async () => {

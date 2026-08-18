@@ -100,6 +100,15 @@ function selectLocalizedName(
     return null;
 }
 
+/** Select a localized value without building an identifier index. @internal */
+export function getLocalizedText(
+    names: LocalizedName | null,
+    locale: string,
+    functionName: string,
+): string | null {
+    return selectLocalizedName(names, locale, functionName);
+}
+
 /** Look up a localized name in a normalized identifier index. @internal */
 export function getLocalizedName(
     names: LocalizedNameIndex,

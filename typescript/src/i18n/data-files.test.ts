@@ -8,9 +8,14 @@ import { test } from 'node:test';
 
 import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with { type: 'json' };
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
+import effectDescriptionsData from '../../../data/i18n/experimental-effect-descriptions.jsonc' with { type: 'json' };
+import engineeringGroupNamesData from '../../../data/i18n/engineering-group-names.jsonc' with { type: 'json' };
 import materialNamesData from '../../../data/i18n/material-names.jsonc' with { type: 'json' };
 import microResourceNamesData from '../../../data/i18n/micro-resource-names.jsonc' with { type: 'json' };
 import moduleNamesData from '../../../data/i18n/module-names.jsonc' with { type: 'json' };
+import preEngineeredNamesData from '../../../data/i18n/pre-engineered-variant-names.jsonc' with { type: 'json' };
+import shipManufacturerNamesData from '../../../data/i18n/ship-manufacturer-names.jsonc' with { type: 'json' };
+import shipNamesData from '../../../data/i18n/ship-names.jsonc' with { type: 'json' };
 import materialsEncodedData from '../../../data/materials/materials-encoded.jsonc' with { type: 'json' };
 import materialsManufacturedData from '../../../data/materials/materials-manufactured.jsonc' with { type: 'json' };
 import materialsRawData from '../../../data/materials/materials-raw.jsonc' with { type: 'json' };
@@ -20,19 +25,27 @@ import microResourcesDataData from '../../../data/materials/micro-resources-data
 import microResourcesItemData from '../../../data/materials/micro-resources-item.jsonc' with { type: 'json' };
 import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: 'json' };
 import effectsData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
+import engineeringOptionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import coreModulesData from '../../../data/ships/modules-core.jsonc' with { type: 'json' };
 import hardpointModulesData from '../../../data/ships/modules-hardpoint.jsonc' with { type: 'json' };
 import internalModulesData from '../../../data/ships/modules-internal.jsonc' with { type: 'json' };
 import utilityModulesData from '../../../data/ships/modules-utility.jsonc' with { type: 'json' };
+import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
+import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { registerCatalogueDataTests } from '../internal/catalogue-data-tests.js';
 import type { LocalizedNameCatalogue, LocalizedNameMap } from './internal/localized-name.js';
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'blueprint-names.jsonc': 'localizedNameMap',
     'experimental-effect-names.jsonc': 'localizedNameMap',
+    'experimental-effect-descriptions.jsonc': 'localizedNameMap',
+    'engineering-group-names.jsonc': 'localizedNameMap',
     'material-names.jsonc': 'localizedNameMap',
     'micro-resource-names.jsonc': 'localizedNameMap',
     'module-names.jsonc': 'localizedNameCatalogue',
+    'pre-engineered-variant-names.jsonc': 'localizedNameCatalogue',
+    'ship-manufacturer-names.jsonc': 'localizedNameMap',
+    'ship-names.jsonc': 'localizedNameMap',
 };
 
 registerCatalogueDataTests({
@@ -46,6 +59,12 @@ test('every deduplicated module identifier resolves to one used name record', ()
     assert.deepEqual([...usedKeys].sort(), Object.keys(catalogue.names).sort());
 });
 
+test('every deduplicated pre-engineered identity resolves to one used name record', () => {
+    const catalogue = preEngineeredNamesData as LocalizedNameCatalogue;
+    const usedKeys = new Set(Object.values(catalogue.nameKeys));
+    assert.deepEqual([...usedKeys].sort(), Object.keys(catalogue.names).sort());
+});
+
 interface NamedSymbol {
     readonly symbol: string;
     readonly name: string;
@@ -53,6 +72,21 @@ interface NamedSymbol {
 
 interface NamedValue {
     readonly name: string;
+    readonly description?: string;
+}
+
+interface ShipValue extends NamedSymbol {
+    readonly manufacturer: string;
+}
+
+interface EngineeringOptionsData {
+    readonly groups: Readonly<Record<string, NamedValue>>;
+}
+
+interface PreEngineeredValue extends NamedSymbol {
+    readonly blueprint: string;
+    readonly experimental?: string;
+    readonly acquisition: string;
 }
 
 function assertEnglishNames(
@@ -98,6 +132,51 @@ test('English names and identifiers stay aligned with every owning ships catalog
     assertDirectEnglishNames(
         effectNamesData as LocalizedNameMap,
         Object.fromEntries(Object.entries(effects).map(([key, value]) => [key, value.name])),
+    );
+});
+
+test('new display text stays aligned with its owning ships catalogues', () => {
+    const ships = shipsData as readonly ShipValue[];
+    const effects = effectsData as Readonly<Record<string, NamedValue>>;
+    const groups = (engineeringOptionsData as EngineeringOptionsData).groups;
+    const variants = preEngineeredData as readonly PreEngineeredValue[];
+
+    assertDirectEnglishNames(
+        shipNamesData as LocalizedNameMap,
+        Object.fromEntries(ships.map(({ symbol, name }) => [symbol, name])),
+    );
+    assertDirectEnglishNames(
+        shipManufacturerNamesData as LocalizedNameMap,
+        Object.fromEntries(ships.map(({ symbol, manufacturer }) => [symbol, manufacturer])),
+    );
+    assertDirectEnglishNames(
+        engineeringGroupNamesData as LocalizedNameMap,
+        Object.fromEntries(Object.entries(groups).map(([groupId, group]) => [groupId, group.name])),
+    );
+    assertDirectEnglishNames(
+        effectDescriptionsData as LocalizedNameMap,
+        Object.fromEntries(
+            Object.entries(effects)
+                .filter(
+                    (entry): entry is [string, NamedValue & { readonly description: string }] =>
+                        entry[1].description !== undefined,
+                )
+                .map(([fdname, effect]) => [fdname, effect.description]),
+        ),
+    );
+    assertEnglishNames(
+        preEngineeredNamesData as LocalizedNameCatalogue,
+        Object.fromEntries(
+            variants.map((variant) => [
+                [
+                    variant.symbol,
+                    variant.blueprint,
+                    variant.experimental ?? '',
+                    variant.acquisition,
+                ].join('|'),
+                variant.name,
+            ]),
+        ),
     );
 });
 

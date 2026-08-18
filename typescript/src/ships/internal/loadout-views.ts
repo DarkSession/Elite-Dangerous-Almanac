@@ -34,7 +34,7 @@ function trailingDigits(key: string): string | null {
 export function loadoutSlotName(slot: BuildSlot): string {
     switch (slot.kind) {
         case 'core':
-            return CORE_NAMES[slot.core];
+            return Object.hasOwn(CORE_NAMES, slot.core) ? CORE_NAMES[slot.core] : slot.key;
         case 'hardpoint': {
             const match = /^(Small|Medium|Large|Huge)(Mining)?Hardpoint(\d+)$/.exec(slot.key);
             if (!match) return slot.key;
@@ -48,7 +48,9 @@ export function loadoutSlotName(slot: BuildSlot): string {
             if (slot.restriction === 'planetaryApproachSuite') return 'Planetary Approach Suite';
             if (slot.restriction) {
                 const numbered = trailingDigits(slot.key);
-                const label = RESTRICTED_OPTIONAL_NAMES[slot.restriction];
+                const label = Object.hasOwn(RESTRICTED_OPTIONAL_NAMES, slot.restriction)
+                    ? RESTRICTED_OPTIONAL_NAMES[slot.restriction]
+                    : undefined;
                 return label && numbered ? `${label} ${Number(numbered)}` : slot.key;
             }
             const optional = /^Slot(\d+)_Size(\d+)$/.exec(slot.key);

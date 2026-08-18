@@ -4,11 +4,23 @@ import { test } from 'node:test';
 import fixture from '../../../fixtures/i18n/names.jsonc' with { type: 'json' };
 import { getBlueprintName } from './blueprints.js';
 import { getExperimentalEffectName } from './experimental-effects.js';
+import { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
+import { getEngineeringGroupName } from './engineering-groups.js';
 import { getMaterialName } from './materials.js';
 import { getMicroResourceName } from './micro-resources.js';
 import { getModuleName } from './modules.js';
+import { getShipManufacturer, getShipName } from './ships.js';
 
-type LookupKind = 'module' | 'blueprint' | 'experimentalEffect' | 'material' | 'microResource';
+type LookupKind =
+    | 'module'
+    | 'blueprint'
+    | 'experimentalEffect'
+    | 'material'
+    | 'microResource'
+    | 'ship'
+    | 'shipManufacturer'
+    | 'engineeringGroup'
+    | 'experimentalEffectDescription';
 type NameLookup = (identifier: string, locale: string) => string | null;
 
 const LOOKUP_BY_KIND: Readonly<Record<LookupKind, NameLookup>> = {
@@ -17,6 +29,10 @@ const LOOKUP_BY_KIND: Readonly<Record<LookupKind, NameLookup>> = {
     experimentalEffect: getExperimentalEffectName,
     material: getMaterialName,
     microResource: getMicroResourceName,
+    ship: getShipName,
+    shipManufacturer: getShipManufacturer,
+    engineeringGroup: getEngineeringGroupName,
+    experimentalEffectDescription: getExperimentalEffectDescription,
 };
 
 for (const lookup of fixture.lookups) {

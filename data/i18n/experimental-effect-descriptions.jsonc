@@ -1,0 +1,97 @@
+/*
+ * Display descriptions for experimental effects.
+ *
+ * Source: the Elite Dangerous Almanac experimental-effects catalogue, derived from EDSY.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Derivation and known gaps:
+ * data/i18n/SOURCES.md.
+ */
+{
+  "special_auto_loader": {
+    "en": "Reloads the weapon while it continues firing."
+  },
+  "special_corrosive_shell": {
+    "en": "Reduces the target armour hardness; costs 20% maximum ammo."
+  },
+  "special_blinding_shell": {
+    "en": "Reduces the target's sensor acuity."
+  },
+  "special_dispersal_field": {
+    "en": "Reduces the target's gimbal and turret tracking."
+  },
+  "special_drag_munitions": {
+    "en": "Reduces the target's speed and prevents it from boosting engine thrust."
+  },
+  "special_force_shell": {
+    "en": "Pushes the target off course."
+  },
+  "special_fsd_interrupt": {
+    "en": "Reboots the target's frame shift drive."
+  },
+  "special_high_yield_shell": {
+    "en": "Deals 50/50 kinetic/explosive damage with module splash damage."
+  },
+  "special_distortion_field": {
+    "en": "Deals 50/50 kinetic/thermal damage."
+  },
+  "special_choke_canister": {
+    "en": "Reboots the target's thrusters."
+  },
+  "special_mass_lock": {
+    "en": "Inhibits the target's frame shift drive."
+  },
+  "special_overload_munitions": {
+    "en": "Converts damage to 50/50 explosive/thermal."
+  },
+  "special_penetrator_munitions": {
+    "en": "Deals damage to the target's modules."
+  },
+  "special_deep_cut_payload": {
+    "en": "Deals damage to the target's modules."
+  },
+  "special_phasing_sequence": {
+    "en": "10% of damage bypasses shields."
+  },
+  "special_plasma_slug": {
+    "en": "Reloads from ship fuel instead of ammunition."
+  },
+  "special_radiant_canister": {
+    "en": "Emits an area of heat and sensor disruption."
+  },
+  "special_regeneration_sequence": {
+    "en": "Regenerates wingmates’ shields on hits."
+  },
+  "special_reverberating_cascade": {
+    "en": "Damages the target's shield generator."
+  },
+  "special_scramble_spectrum": {
+    "en": "Causes the target's modules to malfunction."
+  },
+  "special_screening_shell": {
+    "en": "Effective against munitions (e.g. missiles)."
+  },
+  "special_shiftlock_canister": {
+    "en": "Reboots the frame shift drives of ships in the area."
+  },
+  "special_smart_rounds": {
+    "en": "Deals no damage to ships that are not the current target."
+  },
+  "special_super_penetrator": {
+    "en": "Deals damage to the target's modules."
+  },
+  "special_lock_breaker": {
+    "en": "Causes the target to lose its lock."
+  },
+  "special_thermal_cascade": {
+    "en": "Increases heat on a shielded target."
+  },
+  "special_thermal_conduit": {
+    "en": "Damage scales with the attacker's heat level."
+  },
+  "special_thermalshock": {
+    "en": "Increases the target's heat."
+  },
+  "special_thermal_vent": {
+    "en": "Reduces the attacker's heat when hitting a target."
+  }
+}
