@@ -11,10 +11,9 @@
  *
  * Each blueprint id maps grade "1".."5" directly to a material list. Every material is
  * { symbol, name, count }; join `symbol` to the materials domain for its own grade and
- * category. `count` is the amount consumed by one roll. A grade may have an empty list
- * (CargoRack_IncreasedCapacity G5). Blueprint ids and grade sets exactly match
- * `blueprints.jsonc`, which carries the mechanics without pulling this shopping data
- * into build calculations.
+ * category. `count` is the amount consumed by one roll. Craftable blueprint ids and
+ * grade sets match `blueprints.jsonc`; fixed reward identities remain mechanics-only
+ * records there and have no entry here.
  */
 {
   "AFM_Shielded": {
@@ -5578,9 +5577,6 @@
         "count": 1
       }
     ]
-  },
-  "CargoRack_IncreasedCapacity": {
-    "5": []
   },
   "FuelScoop_Efficiency": {
     "1": [

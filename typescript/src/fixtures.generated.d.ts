@@ -1370,7 +1370,7 @@ type FixtureShipsEngineering = {
             modules: number;
             refuses: string;
         }[];
-        unreachableBlueprints: never[];
+        unreachableBlueprints: string[];
         unreachableExperimentals: never[];
     };
     scannerIdCollision: {
@@ -1491,7 +1491,6 @@ type FixtureShipsEngineeringOptions = {
         bulkheads: number;
         burstLasers: number;
         cannons: number;
-        cargoRacks: number;
         chaffLaunchers: number;
         collectionLimpets: number;
         ecms: number;

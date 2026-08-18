@@ -240,12 +240,12 @@ export interface ProjectileRangeBoundaries {
  * import type { OutfittingModuleIdentity } from '@elite-dangerous-almanac/core/ships/modules';
  *
  * const identity: OutfittingModuleIdentity = {
- *   symbol: 'CustomCargoRack',
- *   category: 'internal',
- *   engineeringGroup: 'cargoRacks',
- *   name: 'Custom Cargo Rack',
+ *   symbol: 'CustomBeamLaser',
+ *   category: 'hardpoint',
+ *   engineeringGroup: 'beamLasers',
+ *   name: 'Custom Beam Laser',
  *   class: 2,
- *   rating: 'E',
+ *   rating: 'D',
  * };
  * ```
  */
