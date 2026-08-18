@@ -17,4 +17,6 @@ consistent for consumers.
 
 These assets and imagery remain the property of Frontier Developments plc and are used
 under the media-usage terms in [`ATTRIBUTIONS.md`](../ATTRIBUTIONS.md). They are shared
-repository assets and are not bundled into the TypeScript package.
+repository assets; the TypeScript build copies them byte-for-byte into its npm package.
+The installed package's [ship-assets documentation](../typescript/README.md#ship-assets)
+defines the supported schematic annotations and embedding constraints.
