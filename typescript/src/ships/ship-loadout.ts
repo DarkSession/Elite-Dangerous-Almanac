@@ -2448,11 +2448,12 @@ export class ShipLoadout {
         let maximumFuel: number | null = null;
         if (load === 'maximum') {
             const fitted = this.#frameShiftDriveModule();
-            let driveError: unknown;
+            let driveError: Error | null = null;
             try {
                 drive = this.#resolveDrive();
                 maximumFuel = drive?.maxFuel ?? null;
             } catch (error) {
+                if (!(error instanceof Error)) throw error;
                 driveError = error;
             }
             if (maximumFuel === null) {
@@ -2461,11 +2462,7 @@ export class ShipLoadout {
                     slot: fitted?.Slot ?? 'FrameShiftDrive',
                     ...(fitted ? { symbol: fitted.Item } : {}),
                     message:
-                        driveError instanceof Error
-                            ? driveError.message
-                            : fitted
-                              ? `${truncate(fitted.Slot)}: ${truncate(fitted.Item)} has no known frameShiftDrive constants`
-                              : 'FrameShiftDrive: no frame shift drive is fitted',
+                        driveError?.message ?? 'FrameShiftDrive: no frame shift drive is fitted',
                     params: fitted
                         ? {
                               field: 'frameShiftDrive',
@@ -2504,9 +2501,7 @@ export class ShipLoadout {
                 return incompleteResult([
                     {
                         field,
-                        ...(field === 'frameShiftDrive' && fitted
-                            ? { slot: fitted.Slot, symbol: fitted.Item }
-                            : {}),
+                        ...driveParams,
                         message: error.message,
                         params: { field, ...driveParams },
                     },
