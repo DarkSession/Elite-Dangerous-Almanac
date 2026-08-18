@@ -63,12 +63,11 @@ export interface PowerConsumer {
     /**
      * `true` for a module that only draws while the hardpoints are deployed — every
      * weapon, and the utility fittings that are not
-     * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false` for
-     * a known draw. An unresolved utility consumer may omit this along with `draw`,
-     * because whether that fitting is always powered cannot be determined either;
-     * {@link powerBudget} ignores both fields when {@link drawUnknown} is `true`.
+     * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false`.
+     * `null` preserves an unavailable classification; totals conservatively count that
+     * draw in both retracted and deployed states.
      */
-    readonly deployedOnly?: boolean;
+    readonly deployedOnly?: boolean | null;
     /**
      * `true` when the module's power draw cannot be determined. Its
      * {@link PowerConsumer.draw | draw} is ignored and the consumer is named in
@@ -81,6 +80,24 @@ export interface PowerConsumer {
      * is how a consumer reported in {@link PowerBudget.unknownDraws} names itself.
      */
     readonly label?: string;
+    /** Optional module symbol retained in {@link PowerBudget.consumers}. */
+    readonly symbol?: string;
+}
+
+/** One power consumer as normalized for presentation and reconciliation. */
+export interface PowerConsumerResult {
+    /** Caller label, normally the fitted module's exact journal slot key. */
+    readonly label?: string;
+    /** Module symbol when the caller supplied one. */
+    readonly symbol?: string;
+    /** Post-engineering draw in megawatts, or `null` when unavailable. */
+    readonly draw: number | null;
+    /** Whether the module is switched on. Only known enabled draws contribute to totals. */
+    readonly enabled: boolean;
+    /** Effective outfitting-panel priority group, `1`–`5`. */
+    readonly priority: number;
+    /** Whether it draws only with hardpoints deployed, or `null` when unavailable. */
+    readonly deployedOnly: boolean | null;
 }
 
 /** One priority group's share of the power budget. */
@@ -127,6 +144,11 @@ export interface PowerBudget {
      * its own draw plus every higher-priority group's — fits in `available`.
      */
     readonly bands: readonly PowerBand[];
+    /**
+     * Every supplied consumer in source order, including switched-off and unresolved
+     * entries. Known enabled entries reconcile with the band and aggregate totals.
+     */
+    readonly consumers: readonly PowerConsumerResult[];
     /**
      * The **enabled** consumers whose draw is unknown ({@link PowerConsumer.drawUnknown}),
      * handed straight back so a caller can name them — by
@@ -191,6 +213,24 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const unknownDraws: PowerConsumer[] = [];
+    const consumerResults: PowerConsumerResult[] = consumers.map((consumer) => ({
+        ...(consumer.label === undefined ? {} : { label: consumer.label }),
+        ...(consumer.symbol === undefined ? {} : { symbol: consumer.symbol }),
+        draw:
+            consumer.drawUnknown ||
+            consumer.draw === undefined ||
+            !Number.isFinite(consumer.draw) ||
+            consumer.draw < 0
+                ? null
+                : consumer.draw,
+        enabled: consumer.enabled !== false,
+        priority: bandIndex(consumer.priority) + 1,
+        deployedOnly:
+            consumer.deployedOnly === null ||
+            (consumer.deployedOnly === undefined && consumer.drawUnknown)
+                ? null
+                : (consumer.deployedOnly ?? false),
+    }));
 
     for (const consumer of consumers) {
         if (consumer.enabled === false) continue;
@@ -239,6 +279,7 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
         utilisation: available > 0 ? deployedTotal / available : deployedTotal > 0 ? Infinity : 0,
         withinBudget: deployedTotal <= available + EPSILON,
         bands,
+        consumers: consumerResults,
         unknownDraws,
     };
 }

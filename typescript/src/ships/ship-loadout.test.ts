@@ -3822,6 +3822,7 @@ test('modules the catalogues do not carry report no stats and unknown power draw
     assert.equal(budget.retracted, expected.retracted);
     assert.equal(budget.deployed, expected.deployed);
     assert.deepEqual(budget.unknownDraws, expected.unknownDraws);
+    assert.deepEqual(budget.consumers, expected.consumers);
 });
 
 test('a fitted zero-mass module contributes zero to unladen mass', () => {
@@ -3850,6 +3851,63 @@ test('always-powered utility modules draw with the hardpoints stowed', () => {
     // The shield booster is always powered; the kill warrant scanner is not.
     assert.ok(near(budget.retracted, hatch + booster.powerDraw!));
     assert.ok(near(budget.deployed, hatch + booster.powerDraw! + scanner.powerDraw!));
+});
+
+test('power budgets expose every known, unknown and disabled fitted consumer', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: [
+            ...source.Modules.map((module) =>
+                module.Slot === 'SmallHardpoint1'
+                    ? {
+                          ...module,
+                          Item: 'Unresolved_Test_Module',
+                          On: true,
+                          Priority: 4,
+                          Engineering: {
+                              BlueprintName: 'Unknown',
+                              Level: 1,
+                              Quality: 1,
+                              Modifiers: [{ Label: 'PowerDraw', Value: 1.5 }],
+                          },
+                      }
+                    : module.Slot === 'SmallHardpoint2'
+                      ? { ...module, On: false, Priority: 2 }
+                      : module,
+            ),
+            {
+                Slot: 'TinyHardpoint1',
+                Item: 'Unresolved_Test_Utility',
+                On: true,
+                Engineering: {
+                    BlueprintName: 'Unknown',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'PowerDraw', Value: 0.75 }],
+                },
+            },
+        ],
+    });
+    const budget = build.powerBudget();
+    const unresolved = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint1');
+    const disabled = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint2');
+    const utility = budget.consumers.find((consumer) => consumer.label === 'TinyHardpoint1');
+
+    assert.deepEqual(unresolved, {
+        label: 'SmallHardpoint1',
+        symbol: 'Unresolved_Test_Module',
+        draw: 1.5,
+        enabled: true,
+        priority: 5,
+        deployedOnly: true,
+    });
+    assert.equal(budget.bands[4]?.deployed, 1.5);
+    assert.equal(disabled?.enabled, false);
+    assert.equal(disabled?.priority, 3);
+    assert.equal(utility?.draw, 0.75);
+    assert.equal(utility?.deployedOnly, null);
+    assert.equal(budget.unknownDraws.length, 0);
 });
 
 test("a build whose hull is beyond the generator's maximum mass has no shields", () => {
