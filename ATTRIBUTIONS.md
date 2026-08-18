@@ -193,8 +193,8 @@ and
 [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),
 with the rules those files follow in
 [`data/SNAPSHOTS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md).
-The npm package includes matching copies under `PROVENANCE/`; the links above point to
-the canonical repository files.
+The npm package includes matching copies under `PROVENANCE/` (without the `data/`
+prefix); the links above are absolute so they resolve from inside the package too.
 
 If you add or change data, port an algorithm, or add a dependency that warrants credit,
 add it here and record the provenance where the data lives.
