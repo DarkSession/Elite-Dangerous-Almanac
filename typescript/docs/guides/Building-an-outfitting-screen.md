@@ -152,7 +152,7 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // does it have every operational mount, fully classified?
+build.validation.complete; // does it have every operational mount?
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
@@ -166,9 +166,8 @@ Two things follow for the panel itself. **An issue's `slot` is not a promise tha
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
-carries a key that is by definition no mount on this hull, and `unknownModule` reports
-whatever key the build used, which for a module in a slot the hull does not have is the
-same unrenderable one. And an empty core or armour mount arrives as an ordinary issue
+carries a key that is by definition no mount on this hull. And an empty core or armour
+mount arrives as an ordinary issue
 rather than as a special case — it is what your screen exists to get filled, so render it
 as work to do, not as a fault.
 

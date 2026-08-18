@@ -117,14 +117,12 @@ test('shared catalogue-backed operation cases reproduce', () => {
             {
                 slot: 'A',
                 symbol: 'first',
-                known: true,
                 fitError: null,
                 exclusionGroup: fixture.exclusivity.group as ModuleExclusionGroup,
             },
             {
                 slot: 'B',
                 symbol: 'second',
-                known: true,
                 fitError: null,
                 exclusionGroup: fixture.exclusivity.group as ModuleExclusionGroup,
             },
@@ -192,7 +190,6 @@ test('shared module-count limits resolve allowances and structural diagnostics',
         modules: input.map((metadata, index) => ({
             slot: `Slot${index}`,
             symbol: `Module${index}`,
-            known: true,
             fitError: null,
             ...metadata,
         })),

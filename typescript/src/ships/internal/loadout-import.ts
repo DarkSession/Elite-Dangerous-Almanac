@@ -7,6 +7,8 @@ import {
     identifyPreEngineeredVariant,
 } from '../pre-engineered-stats.js';
 import { sourcePurchaseFromLoadout, type SourcePurchaseRecord } from '../source-purchase.js';
+import { getDefaultLoadout } from '../default-loadouts.js';
+import { parseSlotName } from '../slots.js';
 import type { OutfittingModule } from '../modules.js';
 import type {
     EngineeringModifier,
@@ -16,7 +18,7 @@ import type {
 } from '../slef.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
-import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
+import { cloneLoadoutModule, cloneModuleStats, isNonOutfittingSlot } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
 import {
     describeValue,
@@ -240,6 +242,42 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     if (event.UnladenMass !== undefined) top.UnladenMass = event.UnladenMass;
     if (event.CargoCapacity !== undefined) top.CargoCapacity = event.CargoCapacity;
     if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
+
+    let invalidatesAggregates = false;
+    const defaults = getDefaultLoadout(event.Ship)?.modules ?? [];
+    for (const [slot, module] of modules) {
+        if (
+            builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item') ||
+            isNonOutfittingSlot(slot)
+        ) {
+            continue;
+        }
+
+        const slotKind = parseSlotName(slot)?.kind;
+        const fallback =
+            slotKind === 'core' || slotKind === 'armour' || slotKind === 'cargoHatch'
+                ? defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase())
+                : undefined;
+        if (fallback) {
+            modules.set(slot, {
+                Slot: slot,
+                Item: fallback.symbol,
+                ...(module.On === undefined ? {} : { On: module.On }),
+                ...(module.Priority === undefined ? {} : { Priority: module.Priority }),
+                ...(module.Health === undefined ? {} : { Health: module.Health }),
+            });
+        } else {
+            modules.delete(slot);
+        }
+        if (slotKind !== 'cargoHatch') invalidatesAggregates = true;
+    }
+    if (invalidatesAggregates) {
+        delete top.ModulesValue;
+        delete top.Rebuy;
+        delete top.UnladenMass;
+        delete top.CargoCapacity;
+        delete top.FuelCapacity;
+    }
 
     const moduleStats = new Map<string, OutfittingModule>();
     const primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();

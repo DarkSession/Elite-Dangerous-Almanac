@@ -39,7 +39,6 @@ import type {
 import type { DamageResistanceParams } from '../resistances.js';
 import { combinedRateOfFire, weaponMetrics, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
-import { isNonOutfittingSlot } from './loadout-state.js';
 import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
 import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
@@ -344,18 +343,10 @@ export function powerConsumerFor(
     stats: OutfittingModule | null,
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
-    const parsedSlot = parseSlotName(module.Slot);
     // Weapons and most utility fittings only draw while the hardpoints are out; the
     // ones flagged `alwaysPowered` (shield boosters, chaff, heat sinks, …) always draw.
     const mounted = stats?.category === 'hardpoint' || stats?.category === 'utility';
-    const deployedOnly =
-        stats !== null
-            ? mounted && stats.alwaysPowered !== true
-            : parsedSlot?.kind === 'hardpoint'
-              ? true
-              : parsedSlot?.kind === 'utility'
-                ? null
-                : false;
+    const deployedOnly = mounted && stats?.alwaysPowered !== true;
     const common = {
         priority: priorityOf(module),
         enabled: isEnabled(module),
@@ -364,16 +355,7 @@ export function powerConsumerFor(
         symbol: module.Item,
     };
     if (draw === undefined) {
-        // A known record without a draw is a passive fitting (bulkheads, cargo racks,
-        // cabins, reinforcement packages, …). Unknown modules in recognised powered
-        // mounts are different: omitting them would make the budget quietly optimistic.
-        const inherentlyPassiveSlot =
-            parsedSlot?.kind === 'armour' ||
-            (parsedSlot?.kind === 'core' &&
-                (parsedSlot.core === 'powerPlant' || parsedSlot.core === 'fuelTank'));
-        if (stats !== null || inherentlyPassiveSlot || isNonOutfittingSlot(module.Slot))
-            return null;
-        return { drawUnknown: true, ...common };
+        return null;
     }
     if (draw === 0) return null;
     return { draw, ...common };
@@ -476,11 +458,7 @@ function powerDrawIssueFor(
 ): CalculationIssue | null {
     for (const module of modules) {
         const consumer = powerConsumerFor(module, statsFor(module));
-        if (
-            consumer &&
-            !consumer.drawUnknown &&
-            (consumer.draw === undefined || !Number.isFinite(consumer.draw) || consumer.draw < 0)
-        ) {
+        if (consumer && (!Number.isFinite(consumer.draw) || consumer.draw < 0)) {
             return metricIssue('powerDraw', 'invalid', module);
         }
     }
@@ -855,7 +833,6 @@ export function heatInputFor(
     let fsdHeatRate = 0;
     let weaponsCapacity = 0;
     const weapons: HeatWeapon[] = [];
-    const unknownWeaponHeat: string[] = [];
 
     for (const module of modules) {
         const stats = statsFor(module);
@@ -883,12 +860,7 @@ export function heatInputFor(
         const weapon = weaponStatsFor(module, stats);
         // A weapon in a group the plant sheds once the hardpoints are out cannot fire.
         if (!running.deployed) continue;
-        if (!weapon) {
-            if (stats === null && parseSlotName(module.Slot)?.kind === 'hardpoint') {
-                unknownWeaponHeat.push(module.Slot);
-            }
-            continue;
-        }
+        if (!weapon) continue;
         weapons.push({
             heatPerSecond: weaponMetrics(weapon).sustainedHeatPerSecond,
             distributorDraw: weapon.distributorDraw ?? 0,
@@ -907,8 +879,6 @@ export function heatInputFor(
         fsdHeatRate,
         weaponsCapacity,
         weapons,
-        unknownDraws: budget.unknownDraws.map((consumer) => consumer.label ?? '(unnamed module)'),
-        unknownWeaponHeat,
     };
 }
 
@@ -922,13 +892,7 @@ function poweredDraw(budget: PowerBudget, state: 'retracted' | 'deployed'): numb
  * Whether the plant keeps one fitted module running, with the hardpoints stowed and
  * with them out.
  *
- * A module that asks for no power depends on no priority group and always runs. One
- * whose draw the catalogue cannot supply is taken as running too — it is named in
- * {@link PowerBudget.unknownDraws} rather than silently dropped, and
- * {@link HeatMetrics.unknownDraws} carries that forward as the reason the profile is a
- * projection over the modules that did resolve. Its absence from the band totals is
- * also why the answer here can be optimistic: the groups below an unknown draw read as
- * powered when the real plant might shed them.
+ * A module that asks for no power depends on no priority group and always runs.
  */
 function poweredStates(
     module: LoadoutModule,

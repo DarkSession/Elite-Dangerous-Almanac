@@ -145,30 +145,26 @@ Pass `StarSystem` to the permit-lock lookup described in
 
 ## When the game hands you something unknown
 
-Journals can contain hulls or modules absent from the catalogues, so consumers must handle
-gaps.
+Journals can contain hulls or modules absent from the catalogues. A direct lookup that
+finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import:
+an unknown hull is refused, unknown modules are discarded, and unknown armour or core
+internals are replaced by that hull's stock modules. When the fitted set changes,
+captured mass, capacity and credit aggregates are recomputed rather than trusted.
 
-A lookup that finds nothing returns `null` — check it. On a build imported from a journal,
-though, **`validation` is the signal to read, not the aggregate figures.** Because the
-event stated `UnladenMass`, `CargoCapacity` and `FuelCapacity`, those are trusted verbatim
-and come back complete even when a fitted module is one the catalogue cannot classify —
-the `…Result` diagnostics that would name it never fire here. What does fire is
-`build.validation`, which reports a fit the game would reject as an `error`, against an
-`incomplete` for a build that does not add up: an empty core or armour mount, or a hull or
-module absent from the catalogue. Only the second of those is the library's own gap, so
-branch on the issue's `code` rather than its `severity`:
+`build.validation` therefore reports the fit that remains: optional, hardpoint and
+utility modules leave empty mounts and need no diagnostic, while the required core mounts
+remain complete through their stock replacements.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
-build.validation.issues; // -> each with a stable code and a severity
-build.cargoCapacityResult; // -> complete here: the event's own figure, not recomputed
+build.validation.issues; // -> structural problems in the normalized fit
+build.fittedModuleAt('Slot01_Size5'); // -> null if its imported symbol was unknown
 ```
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-sets both patterns out in full — including which codes are the user's to fix and which
-are the library's own gaps.
+sets the validation and calculation patterns out in full.
 
 A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
 `SyntaxError`, and a structurally impossible event — two slot keys differing only in

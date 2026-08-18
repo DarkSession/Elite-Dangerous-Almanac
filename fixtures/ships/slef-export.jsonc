@@ -14,7 +14,7 @@
 {
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is decided to be an outfitting module, a non-outfitting fitting, or unknown — the rule that governs every mass and credit figure below. The catalogue has the FIRST say: an article it can identify contributes its mass and list price whatever its slot is called. Only an unidentifiable article is classified by slot. Known cosmetic/hull families are explicitly non-outfitting and contribute no mass or list price; a recognised outfitting mount, or any unfamiliar family, is unknown. Unknown omits the figures that depend on it rather than being counted as free and weightless, so a genuinely new mount cannot silently understate a build. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
+    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except an unknown core internal, which is replaced by that hull's stock module. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -59,14 +59,14 @@
       {
         "slot": "Slot99_Size4",
         "item": "int_something_we_have_never_seen",
-        "verdict": "unknown",
-        "why": "The key names an optional mount, so something outfitting-like is fitted there, but no catalogue can price or weigh it — ModulesValue, UnladenMass, MaxJumpRange and Rebuy are all omitted."
+        "verdict": "stripped",
+        "why": "The catalogue cannot resolve the item, so it is removed during import."
       },
       {
         "slot": "FutureMount",
         "item": "int_something_we_have_never_seen",
-        "verdict": "unknown",
-        "why": "Neither the article nor the slot family is known, so the library refuses to call it free and weightless."
+        "verdict": "stripped",
+        "why": "Neither the article nor the slot family is known, so the entry is removed during import."
       }
     ]
   },

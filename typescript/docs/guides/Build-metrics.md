@@ -89,7 +89,7 @@ power.retracted; // MW drawn with hardpoints in
 power.deployed; // MW drawn with hardpoints out
 power.withinBudget; // does it fit?
 power.bands; // the five priority groups
-power.consumers; // positive and unknown draws, normalized in source order
+power.consumers; // positive draws, normalized in source order
 ```
 
 `bands` is what drives a priority-group table. A group is powered when its **running
@@ -97,13 +97,8 @@ total** — its own draw plus every higher-priority group's — fits in `availab
 shuts off the first group that would go over and everything below it, rather than the
 individual module that broke the budget.
 
-A module whose draw the library cannot determine is named in
-{@link ships!PowerBudget.unknownDraws | unknownDraws} rather than counted as zero, so a
-budget is never quietly optimistic about a module absent from the catalogue. While that
-list is non-empty every other figure is a lower bound, so show it alongside them.
-`consumers` keeps every positive or unresolved power draw in source order and normalizes
-the fields used by the budget; passive and zero-draw fittings are absent. `unknownDraws`
-retains the caller's original unresolved entries for diagnostics.
+`consumers` keeps every positive power draw in source order and normalizes the fields
+used by the budget; passive and zero-draw fittings are absent.
 
 ## Shields and armour share a resistance model
 
@@ -202,8 +197,7 @@ the capacitor to recover, so burst draw would understate endurance.
 The general distributor facade applies the **retracted** power budget: all three
 capacitors recharge while hardpoints are stowed. Weapons endurance instead applies the
 **deployed** budget, because its result models firing. A distributor or weapon shed in
-the relevant state contributes nothing; unresolved power draws keep the power budget's
-optimistic assumption, so inspect `build.powerBudget().unknownDraws` when present.
+the relevant state contributes nothing.
 
 One asymmetry is deliberate. Frontier's Rapid Fire and High Capacity recipes shorten the
 **fire interval** rather than raising the rate of fire, so that is the label those
@@ -259,7 +253,6 @@ heat?.idle.gauge; // hardpoints stowed, as the cockpit gauge reads it: 1 is 100%
 heat?.fsdCharging.gauge; // spooling a jump, the hottest thing most ships do
 heat?.firingSustained.overheats; // holding the trigger with the WEP capacitor keeping up
 heat?.firingDrained.secondsToOverheat; // and the alpha strike, on an empty capacitor
-heat?.unknownWeaponHeat; // powered hardpoints whose omitted heat makes firing incomplete
 ```
 
 Two numbers decide everything, and they are not interchangeable. **Dissipation** is a
@@ -323,11 +316,9 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 
 ## When a metric cannot be computed
 
-A build can contain a module the catalogue cannot classify. Each metric handles that
-differently, so do not assume a figure is
-load-bearing:
+A required module can be absent, and a known or caller-supplied record can omit a stat a
+metric needs. Do not assume a nullable figure is load-bearing:
 
-- `powerBudget()` names it, in the `unknownDraws` the Power section above describes.
 - `unladenMass`, `fuelCapacity`, `cargoCapacity`, `mobilityMetrics()`, `shieldMetrics()`
   and `shieldRecovery()` come in nullable/`…Result` pairs: the convenience value is
   `null` and the result names what was missing, switched off or shed. Each issue's typed
@@ -335,36 +326,20 @@ load-bearing:
   parsing the diagnostic message.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
-- `armourMetrics()` always has the known hull's base figures. Shield boosters and
-  reinforcement whose records are unresolved contribute zero, while `weaponMetrics()`
-  omits an unresolved hardpoint from `weapons` and the totals.
-- An unresolved power plant makes every power-dependent metric unavailable rather than
-  projecting its dependants as powered. `powerBudget()` reports `available: 0`; the
-  mobility, shield and recovery result companions identify `powerCapacity` directly,
-  including when a resolved caller-supplied plant record merely lacks that field. Those
+- `armourMetrics()` always has the known hull's base figures.
+- A caller-supplied power plant without a usable capacity makes every power-dependent
+  metric unavailable rather than projecting its dependants as powered. `powerBudget()`
+  reports `available: 0`; the mobility, shield and recovery result companions identify
+  `powerCapacity` directly. Those
   result companions report a non-positive or non-finite capacity as `invalid` rather than
   asking `powerBudget()` to accept it; they likewise identify a malformed known module
   draw as `powerDraw`. The direct budget remains strict and throws for either invalid
   numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
-- `heatMetrics()` returns `null` outright when the build has no powered plant. When it
-  does answer, it names modules with unresolved power draw in its own `unknownDraws`,
-  mirroring the power budget: a module the catalogue
-  cannot resolve draws power the model cannot see and makes heat it cannot count — and,
-  because an unknown draw is left out of the priority-group totals, it also leaves the
-  groups below it reading as powered when the real plant would shed them. The two errors
-  pull opposite ways, so while that list is non-empty the profile is a projection over
-  the modules that did resolve rather than a bound: `overheats` can be wrong in either
-  direction, and a settled level with it.
-- `heatMetrics().unknownWeaponHeat` separately names enabled, powered hardpoints whose
-  weapon stats could not be resolved. Those hardpoints are omitted from the two firing
-  scenarios. When `unknownDraws` is empty, their reported thermal loads are lower bounds;
-  either way, the derived heat levels, `overheats` flags and times are incomplete. Idle,
-  thruster and FSD heat do not depend on that list.
+- `heatMetrics()` returns `null` outright when the build has no powered plant.
 
-Use each available `…Result` companion before trusting a nullable metric, and check
-`build.validation.issues` for `unknownModule` on a build you did not assemble yourself.
+Use each available `…Result` companion before trusting a nullable metric.
 
 ## Next
 

@@ -268,26 +268,20 @@ const withOneModule = (slot: string, item: string): LoadoutEvent =>
     }).toLoadoutEvent();
 
 test('the classification examples in the fixture come out as the fixture says', () => {
-    // The rule that governs every mass and credit figure: the catalogue first, the slot
-    // only for an article it cannot identify, and then only to ask whether the key names
-    // an outfitting mount at all. Anything else is unknown, and an unknown omits figures
-    // rather than counting as 0.
+    // The catalogue wins. Recognised outfitting and non-outfitting entries survive;
+    // everything else is stripped at import.
     const empty = ShipLoadout.fromLoadout({ Ship: 'krait_light', Modules: [] }).toLoadoutEvent();
-    const dependent = ['ModulesValue', 'UnladenMass', 'MaxJumpRange', 'Rebuy'];
 
     for (const { slot, item, verdict } of fixture.classification.examples) {
         const event = withOneModule(slot, item);
-        const exported = event.Modules[0]!;
         // The hull is knowable whatever is fitted, so it is emitted in every case.
         assert.equal(event.HullValue, fixture.kraitPhantom.recomputed.HullValue, slot);
 
-        if (verdict === 'unknown') {
-            for (const key of dependent) {
-                assert.equal(Object.hasOwn(event, key), false, `${slot}.${key}`);
-            }
-            assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
+        if (verdict === 'stripped') {
+            assert.deepEqual(event, empty, slot);
             continue;
         }
+        const exported = event.Modules[0]!;
         if (verdict === 'nonOutfitting') {
             assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
             assert.equal(event.ModulesValue, empty.ModulesValue, slot);
@@ -343,7 +337,7 @@ test('the fixture’s mount and non-outfitting patterns agree with the classific
 
     // A pattern nothing above matches is a pattern this test does not pin, and an
     // unpinned one fails *silently*: the fixture names the mounts, so a pattern a port
-    // transcribes wrongly makes a fitted module weightless and free rather than unknown.
+    // transcribes wrongly silently strips a fitted module.
     // Assert the sample exercises all of them rather than trusting that it does.
     const unexercised = fixture.classification.outfittingSlotPatterns.filter(
         (p) => !checked.some((slot) => new RegExp(p).test(slot.toLowerCase())),
@@ -737,9 +731,7 @@ test('a build survives repeated export/import hops without its price drifting', 
     assert.deepEqual(seen, [seen[0], seen[0], seen[0]], 'ModulesValue drifted across hops');
 });
 
-test('an unknown capacity is omitted rather than reported as zero', () => {
-    // A rack the catalogues do not know cannot be summed, and a hull they do not know
-    // has no reserve — reporting either as 0 would silently contradict the import.
+test('an unknown capacity module is stripped on import', () => {
     const unknownRack = ShipLoadout.fromLoadout({
         Ship: 'krait_light',
         CargoCapacity: 512,
@@ -754,7 +746,11 @@ test('an unknown capacity is omitted rather than reported as zero', () => {
         Modules: [{ Slot: 'Slot01_Size6', Item: 'int_cargorack_size9_class1' }],
     });
     const event = stillUnknown.toLoadoutEvent();
-    assert.ok(!Object.hasOwn(event, 'CargoCapacity'), `got ${event.CargoCapacity}`);
+    assert.equal(event.CargoCapacity, 0);
+    assert.equal(
+        event.Modules.some((module) => module.Slot === 'Slot01_Size6'),
+        false,
+    );
 });
 
 test('a build we cannot price stays unpriced however many times it is re-exported', () => {
@@ -950,14 +946,18 @@ test('power state is omitted unless explicitly asked for', () => {
 
 // ── Omission rather than stale or zero values ────────────────────────────────
 
-test('an unpriceable module omits the value figures rather than under-reporting', () => {
+test('an unknown core module is replaced by the hull default', () => {
     const build = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',
         Modules: [{ Slot: 'PowerPlant', Item: 'no_such_module_symbol' }],
     });
     const event = build.toLoadoutEvent();
-    assert.ok(!Object.hasOwn(event, 'ModulesValue'));
-    assert.ok(!Object.hasOwn(event, 'Rebuy'));
+    assert.equal(
+        event.Modules.find((module) => module.Slot === 'PowerPlant')?.Item,
+        'int_powerplant_size2_class1',
+    );
+    assert.ok(Object.hasOwn(event, 'ModulesValue'));
+    assert.ok(Object.hasOwn(event, 'Rebuy'));
 });
 
 test('editing a build recomputes rather than echoing the import', () => {
@@ -1166,8 +1166,8 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
 });
 
 test('every figure the Type-11 export needs is computable from it', () => {
-    // A build carrying an unpriced or unrecognised module exports no credits at all, so
-    // this doubles as a check that all 27 captured modules and the restored hatch resolve.
+    // A build carrying an unpriced module exports no credits at all, so this doubles as
+    // a check that all 27 captured modules and the restored hatch resolve and are priced.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
     assert.equal(build.fittedModules().length, 28);
     const ours = build.toLoadoutEvent();

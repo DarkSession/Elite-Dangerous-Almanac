@@ -732,8 +732,7 @@
                   "index": { "type": "integer" },
                   "message": { "type": "string" },
                   "params": { "$ref": "#/definitions/sharedbb0c12b7a5ac" },
-                  "path": { "type": "string" },
-                  "severity": { "type": "string" }
+                  "path": { "type": "string" }
                 },
                 "required": ["message"]
               },
@@ -1545,56 +1544,6 @@
                 "retracted"
               ]
             },
-            "powerBudgetUnknownDraw": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "available": { "type": "integer" },
-                "consumers": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "draw": { "type": "integer" },
-                      "drawUnknown": { "type": "boolean" },
-                      "label": { "type": "string" },
-                      "priority": { "type": "integer" }
-                    },
-                    "required": ["draw", "label", "priority"]
-                  }
-                },
-                "deployed": { "type": "integer" },
-                "headroom": { "type": "integer" },
-                "note": { "type": "string" },
-                "retracted": { "type": "integer" },
-                "unknownDraws": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "draw": { "type": "integer" },
-                      "drawUnknown": { "type": "boolean" },
-                      "label": { "type": "string" },
-                      "priority": { "type": "integer" }
-                    },
-                    "required": ["draw", "drawUnknown", "label", "priority"]
-                  }
-                },
-                "withinBudget": { "type": "boolean" }
-              },
-              "required": [
-                "available",
-                "consumers",
-                "deployed",
-                "headroom",
-                "note",
-                "retracted",
-                "unknownDraws",
-                "withinBudget"
-              ]
-            },
             "stackArmourResistance": {
               "type": "array",
               "items": {
@@ -1644,7 +1593,6 @@
             "armourPiercingFactor",
             "damageFalloff",
             "powerBudget",
-            "powerBudgetUnknownDraw",
             "stackArmourResistance",
             "stackShieldResistance",
             "systemsResistance"
@@ -2014,98 +1962,6 @@
           },
           "required": ["active", "blueprint", "grade", "note", "records"]
         },
-        "unknownPowerDraw": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "available": { "type": "integer" },
-            "consumers": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "deployedOnly": {
-                    "anyOf": [{ "type": "boolean" }, { "type": "null" }]
-                  },
-                  "draw": {
-                    "anyOf": [{ "type": "null" }, { "type": "number" }]
-                  },
-                  "enabled": { "type": "boolean" },
-                  "label": { "type": "string" },
-                  "priority": { "type": "integer" },
-                  "symbol": { "type": "string" }
-                },
-                "required": [
-                  "deployedOnly",
-                  "draw",
-                  "enabled",
-                  "label",
-                  "priority",
-                  "symbol"
-                ]
-              }
-            },
-            "deployed": { "type": "number" },
-            "loadout": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "Modules": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "Item": { "type": "string" },
-                      "On": { "type": "boolean" },
-                      "Priority": { "type": "integer" },
-                      "Slot": { "type": "string" }
-                    },
-                    "required": ["Item", "Slot"]
-                  }
-                },
-                "Ship": { "type": "string" },
-                "UnladenMass": { "type": "integer" }
-              },
-              "required": ["Modules", "Ship", "UnladenMass"]
-            },
-            "retracted": { "type": "number" },
-            "unknownDraws": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "deployedOnly": {
-                    "anyOf": [{ "type": "boolean" }, { "type": "null" }]
-                  },
-                  "drawUnknown": { "type": "boolean" },
-                  "enabled": { "type": "boolean" },
-                  "label": { "type": "string" },
-                  "priority": { "type": "integer" },
-                  "symbol": { "type": "string" }
-                },
-                "required": [
-                  "deployedOnly",
-                  "drawUnknown",
-                  "enabled",
-                  "label",
-                  "priority",
-                  "symbol"
-                ]
-              }
-            }
-          },
-          "required": [
-            "available",
-            "consumers",
-            "deployed",
-            "loadout",
-            "retracted",
-            "unknownDraws"
-          ]
-        },
         "weapons": {
           "type": "array",
           "items": {
@@ -2139,7 +1995,6 @@
         "functions",
         "inGame",
         "observedGuardianShardCannons",
-        "unknownPowerDraw",
         "weapons"
       ]
     },
@@ -3233,79 +3088,6 @@
             ]
           }
         },
-        "unknownDraws": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "fixture": { "type": "string" },
-            "idleThermalLoad": { "type": "number" },
-            "labels": { "type": "array", "items": { "type": "string" } },
-            "overheats": { "type": "boolean" },
-            "projection": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "powerPlant": { "type": "string" },
-                "resolved": { "$ref": "#/definitions/shared251de358abd5" },
-                "resolvedItem": { "type": "string" },
-                "ship": { "type": "string" },
-                "thrusterPriority": { "type": "integer" },
-                "thrusters": { "type": "string" },
-                "unresolved": { "$ref": "#/definitions/shared251de358abd5" },
-                "unresolvedItem": { "type": "string" }
-              },
-              "required": [
-                "powerPlant",
-                "resolved",
-                "resolvedItem",
-                "ship",
-                "thrusterPriority",
-                "thrusters",
-                "unresolved",
-                "unresolvedItem"
-              ]
-            }
-          },
-          "required": [
-            "fixture",
-            "idleThermalLoad",
-            "labels",
-            "overheats",
-            "projection"
-          ]
-        },
-        "unknownWeaponHeat": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "labels": { "type": "array", "items": { "type": "string" } },
-            "loadout": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "Modules": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "Engineering": {
-                        "$ref": "#/definitions/shared708c2dabdd3a"
-                      },
-                      "Item": { "type": "string" },
-                      "Slot": { "type": "string" }
-                    },
-                    "required": ["Item", "Slot"]
-                  }
-                },
-                "Ship": { "type": "string" }
-              },
-              "required": ["Modules", "Ship"]
-            },
-            "projectedFiringThermalLoad": { "type": "number" }
-          },
-          "required": ["labels", "loadout", "projectedFiringThermalLoad"]
-        },
         "unpowered": {
           "type": "object",
           "additionalProperties": false,
@@ -3353,8 +3135,6 @@
         "hulls",
         "overheatHeatLevel",
         "transient",
-        "unknownDraws",
-        "unknownWeaponHeat",
         "unpowered",
         "weaponThermalLoad"
       ]
@@ -3606,7 +3386,7 @@
           },
           "required": ["error", "fuel", "mass", "maxFuel"]
         },
-        "explicitFuelWithoutKnownTank": {
+        "explicitFuel": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -3715,7 +3495,7 @@
         "cargoCapacity",
         "edsyMaxJumpRange",
         "excessiveJumpCount",
-        "explicitFuelWithoutKnownTank",
+        "explicitFuel",
         "frameShiftDrive",
         "fuelPerJump50Ly",
         "invalidInputs",
@@ -4533,7 +4313,31 @@
                         "additionalProperties": false,
                         "properties": {
                           "Engineering": {
-                            "$ref": "#/definitions/shared708c2dabdd3a"
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "BlueprintName": { "type": "string" },
+                              "Level": { "type": "integer" },
+                              "Modifiers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "Label": { "type": "string" },
+                                    "Value": { "type": "number" }
+                                  },
+                                  "required": ["Label", "Value"]
+                                }
+                              },
+                              "Quality": { "type": "integer" }
+                            },
+                            "required": [
+                              "BlueprintName",
+                              "Level",
+                              "Modifiers",
+                              "Quality"
+                            ]
                           },
                           "Item": { "type": "string" },
                           "Priority": { "type": "integer" },
@@ -4854,7 +4658,7 @@
                 "yaw"
               ]
             },
-            "facadeExplicitFuel": {
+            "facadeFuelOverride": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
@@ -4900,33 +4704,9 @@
                   }
                 },
                 "loadout": { "$ref": "#/definitions/sharedeff85db8445f" },
-                "omittedFuelFails": { "type": "boolean" },
-                "options": { "$ref": "#/definitions/shared03f655aa24ed" },
-                "partialCapacityLoadout": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "FuelCapacity": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": { "Main": { "type": "integer" } },
-                      "required": ["Main"]
-                    },
-                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
-                    "Ship": { "type": "string" },
-                    "UnladenMass": { "type": "integer" }
-                  },
-                  "required": ["FuelCapacity", "Modules", "Ship", "UnladenMass"]
-                }
+                "options": { "$ref": "#/definitions/shared03f655aa24ed" }
               },
-              "required": [
-                "expected",
-                "invalidLoads",
-                "loadout",
-                "omittedFuelFails",
-                "options",
-                "partialCapacityLoadout"
-              ]
+              "required": ["expected", "invalidLoads", "loadout", "options"]
             },
             "input": {
               "type": "object",
@@ -5055,7 +4835,7 @@
           },
           "required": [
             "expected",
-            "facadeExplicitFuel",
+            "facadeFuelOverride",
             "input",
             "invalidSpeedEndpoints",
             "pipAllocation",
@@ -7638,15 +7418,6 @@
         "UnladenMass"
       ]
     },
-    "shared251de358abd5": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "idleThermalLoad": { "type": "number" },
-        "thrustersThermalLoad": { "type": "number" }
-      },
-      "required": ["idleThermalLoad", "thrustersThermalLoad"]
-    },
     "shared28704cd9e15a": {
       "type": "object",
       "additionalProperties": false,
@@ -7901,17 +7672,6 @@
         "yaw"
       ]
     },
-    "shared708c2dabdd3a": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "BlueprintName": { "type": "string" },
-        "Level": { "type": "integer" },
-        "Modifiers": { "$ref": "#/definitions/sharede967a33c6e70" },
-        "Quality": { "type": "integer" }
-      },
-      "required": ["BlueprintName", "Level", "Modifiers", "Quality"]
-    },
     "shared7481e15ca29a": {
       "type": "object",
       "additionalProperties": false,
@@ -8048,15 +7808,6 @@
         "speed"
       ]
     },
-    "shared9c6f165bfa88": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Label": { "type": "string" },
-        "Value": { "type": "number" }
-      },
-      "required": ["Label", "Value"]
-    },
     "shared9ee0d2bef36a": {
       "type": "object",
       "additionalProperties": false,
@@ -8175,10 +7926,6 @@
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
-    },
-    "sharede967a33c6e70": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/shared9c6f165bfa88" }
     },
     "sharedeff85db8445f": {
       "type": "object",

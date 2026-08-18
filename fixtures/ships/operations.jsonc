@@ -121,24 +121,14 @@
         "rotationMassCurveMultiplier": 1
       }
     },
-    "facadeExplicitFuel": {
+    "facadeFuelOverride": {
       "loadout": {
         "Ship": "SideWinder",
         "UnladenMass": 26,
         "Modules": [
           { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
-        ]
-      },
-      "partialCapacityLoadout": {
-        "Ship": "SideWinder",
-        "UnladenMass": 26,
-        "FuelCapacity": { "Main": 2 },
-        "Modules": [
-          { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
-          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+          { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" }
         ]
       },
       "options": { "fuel": 2 },
@@ -151,7 +141,6 @@
         "massCurveMultiplier": 1.058085527868117,
         "rotationMassCurveMultiplier": 1.058085527868117
       },
-      "omittedFuelFails": true,
       "invalidLoads": [
         { "options": { "fuel": -1 }, "expectedError": "RangeError" },
         { "options": { "cargo": -1 }, "expectedError": "RangeError" }

@@ -382,16 +382,12 @@ test('the Corsair capture recomputes to the figures Frontier reports for it', ()
     assert.equal(build.cargoCapacity, pinned.cargoCapacity);
 });
 
-test('a module the catalogues do not know reports no capacity', () => {
-    // `fromLoadout` accepts what a journal carries, including a module this library has no
-    // record for; a capacity it cannot compute is `null` rather than a guess.
+test('a module the catalogues do not know is stripped', () => {
     const build = ShipLoadout.fromLoadout({
         Ship: 'viper',
         Modules: [{ Slot: 'SmallHardpoint1', Item: 'hpt_not_a_real_module' }],
     });
-    const fitted = build.fittedModuleAt('SmallHardpoint1')!;
-    assert.equal(fitted.stats, null);
-    assert.equal(fitted.ammunition, null);
+    assert.equal(build.fittedModuleAt('SmallHardpoint1'), null);
 });
 
 test('every journal capture in the fixtures is read for its ammunition', () => {

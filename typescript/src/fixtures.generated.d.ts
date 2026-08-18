@@ -253,7 +253,6 @@ type FixtureI18nDisplayText = {
                 slot: string;
             };
             path?: string;
-            severity?: string;
         };
         expected: string | null;
         kind: string;
@@ -592,26 +591,6 @@ type FixtureShipsBuildMetrics = {
             }[];
             deployed: number;
             retracted: number;
-        };
-        powerBudgetUnknownDraw: {
-            available: number;
-            consumers: {
-                draw: number;
-                drawUnknown?: boolean;
-                label: string;
-                priority: number;
-            }[];
-            deployed: number;
-            headroom: number;
-            note: string;
-            retracted: number;
-            unknownDraws: {
-                draw: number;
-                drawUnknown: boolean;
-                label: string;
-                priority: number;
-            }[];
-            withinBudget: boolean;
         };
         stackArmourResistance: {
             bulkhead: number;
@@ -1130,37 +1109,6 @@ type FixtureShipsBuildMetrics = {
             shotSpeed: number;
             symbol: string;
             thermalLoad: number;
-        }[];
-    };
-    unknownPowerDraw: {
-        available: number;
-        consumers: {
-            deployedOnly: boolean | null;
-            draw: null | number;
-            enabled: boolean;
-            label: string;
-            priority: number;
-            symbol: string;
-        }[];
-        deployed: number;
-        loadout: {
-            Modules: {
-                Item: string;
-                On?: boolean;
-                Priority?: number;
-                Slot: string;
-            }[];
-            Ship: string;
-            UnladenMass: number;
-        };
-        retracted: number;
-        unknownDraws: {
-            deployedOnly: boolean | null;
-            drawUnknown: boolean;
-            enabled: boolean;
-            label: string;
-            priority: number;
-            symbol: string;
         }[];
     };
     weapons: {
@@ -1692,48 +1640,6 @@ type FixtureShipsHeat = {
         targetLevel?: number;
         thermalLoad: number;
     }[];
-    unknownDraws: {
-        fixture: string;
-        idleThermalLoad: number;
-        labels: string[];
-        overheats: boolean;
-        projection: {
-            powerPlant: string;
-            resolved: {
-                idleThermalLoad: number;
-                thrustersThermalLoad: number;
-            };
-            resolvedItem: string;
-            ship: string;
-            thrusterPriority: number;
-            thrusters: string;
-            unresolved: {
-                idleThermalLoad: number;
-                thrustersThermalLoad: number;
-            };
-            unresolvedItem: string;
-        };
-    };
-    unknownWeaponHeat: {
-        labels: string[];
-        loadout: {
-            Modules: {
-                Engineering?: {
-                    BlueprintName: string;
-                    Level: number;
-                    Modifiers: {
-                        Label: string;
-                        Value: number;
-                    }[];
-                    Quality: number;
-                };
-                Item: string;
-                Slot: string;
-            }[];
-            Ship: string;
-        };
-        projectedFiringThermalLoad: number;
-    };
     unpowered: {
         fixture: string;
         heatLevel: number;
@@ -2770,7 +2676,7 @@ type FixtureShipsJumpRange = {
         mass: number;
         maxFuel: number;
     };
-    explicitFuelWithoutKnownTank: {
+    explicitFuel: {
         expected: {
             jumps: number;
             range: number;
@@ -3457,7 +3363,7 @@ type FixtureShipsOperations = {
             speed: number;
             yaw: number;
         };
-        facadeExplicitFuel: {
+        facadeFuelOverride: {
             expected: {
                 boost: number;
                 massCurveMultiplier: number;
@@ -3482,20 +3388,8 @@ type FixtureShipsOperations = {
                 Ship: string;
                 UnladenMass: number;
             };
-            omittedFuelFails: boolean;
             options: {
                 fuel: number;
-            };
-            partialCapacityLoadout: {
-                FuelCapacity: {
-                    Main: number;
-                };
-                Modules: {
-                    Item: string;
-                    Slot: string;
-                }[];
-                Ship: string;
-                UnladenMass: number;
             };
         };
         input: {

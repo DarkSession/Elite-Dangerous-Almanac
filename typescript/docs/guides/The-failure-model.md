@@ -176,12 +176,11 @@ counted as zero, or shed thrusters treated as powered, would produce a plausible
 answer that no one would question. A `null` with the reason it is unavailable cannot be
 mistaken for an answer.
 
-**A figure the import already stated wins, and comes back complete.** The three aggregate
-properties are computed only when the source did not supply them, so a build read from a `Loadout` event
-— which states `UnladenMass`, `CargoCapacity` and `FuelCapacity` — reports the game's own
-numbers with no issues, whatever the catalogue made of the modules. The pair engages for a
-build you assembled yourself, or one whose source left the figure out. On an imported
-build, `validation` is what tells you a module went unrecognised.
+**A figure the import already stated wins while its fitted set remains intact.** A build
+read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and
+`FuelCapacity` directly. If import discards an unrecognised module or replaces one in a
+required core mount, it discards those aggregates too and recomputes them from the fit
+that remains.
 
 **Absent is not zero, anywhere in the library.** A catalogue field the source did not
 carry is omitted rather than defaulted, and a capture that priced no module for a slot
@@ -197,7 +196,7 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // every operational mount present and fully classified?
+build.validation.complete; // every operational mount present?
 build.validation.issues; // what specifically
 ```
 
@@ -211,18 +210,11 @@ Each issue carries a stable `code` and a `severity`:
   write a UI branch for it on a build.)
 - **`incomplete`** — the build does not add up to a finished answer.
 
-**Branch on the code, not on the severity**, because the two `incomplete` reasons belong
-in different places in your UI:
-
-- `missingRequiredSlot` is the **user's** problem — a core or armour mount is empty. A
-  hull straight from `ShipLoadout.empty()` reports eight of these, and "you have not
-  fitted a power plant" is exactly what an outfitting screen must show as actionable.
-- `unknownModule` is **ours** — the catalogue cannot classify the record. The build may
-  be valid in game, so do not present this as a user mistake. An unknown hull is refused
-  at import because none of the build-level figures can be completed reliably.
-
-That is why the codes are stable: the severity alone does not tell you whose problem an
-issue is.
+`missingRequiredSlot` is the incomplete case: a core or armour mount is empty. A hull
+straight from `ShipLoadout.empty()` reports eight of these, and "you have not fitted a
+power plant" is exactly what an outfitting screen must show as actionable. Unknown
+module symbols do not reach validation: imports discard them, replacing unknown armour
+and core internals with the hull defaults.
 
 ## Strict about input, forgiving about spelling
 

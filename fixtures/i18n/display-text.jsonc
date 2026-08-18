@@ -125,16 +125,6 @@
   ],
   "diagnostics": [
     {
-      "kind": "loadout",
-      "diagnostic": {
-        "code": "unknownModule",
-        "severity": "incomplete",
-        "message": "Unknown module"
-      },
-      "locale": "en",
-      "expected": "Unknown module"
-    },
-    {
       "kind": "calculation",
       "diagnostic": {
         "field": "mass",
