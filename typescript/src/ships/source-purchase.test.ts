@@ -464,7 +464,7 @@ test('an edited build re-exports a record whose parts still add up', () => {
     );
 });
 
-test('fixed-mount normalization installs the hull default and invalidates stale purchase figures', () => {
+test('fixed-mount normalization preserves totals because the cargo hatch is free', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const captured: LoadoutEvent = {
         ...source,
@@ -480,8 +480,8 @@ test('fixed-mount normalization installs the hull default and invalidates stale 
     const build = ShipLoadout.fromLoadout(captured);
     const record = build.sourcePurchase;
 
-    assert.equal(build.modulesValue, null);
-    assert.equal(build.rebuy, null);
+    assert.equal(build.modulesValue, 2_000);
+    assert.equal(build.rebuy, 150);
     assert.equal(build.fittedModuleAt('CargoHatch')?.effectiveStats?.powerDraw, 0.6);
     assert.deepEqual(build.repairFixedMount('CargoHatch'), {
         status: 'unchanged',
@@ -492,47 +492,14 @@ test('fixed-mount normalization installs the hull default and invalidates stale 
 
     const exported = build.toLoadoutEvent({ credits: 'source' });
     assert.equal(exported.HullValue, 1_000);
-    assert.equal(exported.ModulesValue, undefined);
-    assert.equal(exported.Rebuy, undefined);
+    assert.equal(exported.ModulesValue, 2_000);
+    assert.equal(exported.Rebuy, 150);
     assert.equal(exported.Modules.find((fitted) => fitted.Slot === 'CargoHatch')?.Value, undefined);
     assert.ok(
         exported.Modules.some(
             (fitted) => fitted.Slot !== 'CargoHatch' && fitted.Value !== undefined,
         ),
     );
-});
-
-test('fixed-mount repair returns structured refusal and unavailable outcomes', () => {
-    const build = ShipLoadout.default('SideWinder');
-    const before = build.toLoadoutEvent();
-    assert.deepEqual(build.repairFixedMount('Slot01_Size2'), {
-        status: 'refused',
-        slot: 'Slot01_Size2',
-        reason: 'notFixedMount',
-    });
-    assert.deepEqual(build.toLoadoutEvent(), before);
-
-    const source = build.toLoadoutEvent();
-    const unresolvedCore = ShipLoadout.fromLoadout({
-        ...source,
-        Modules: source.Modules.map((module) =>
-            module.Slot === 'PowerPlant' ? { ...module, Item: 'FuturePowerPlant' } : module,
-        ),
-    });
-    assert.deepEqual(unresolvedCore.repairFixedMount('PowerPlant'), {
-        status: 'repaired',
-        slot: 'PowerPlant',
-        symbol: 'Int_Powerplant_Size2_Class1',
-    });
-
-    const unknownHull = ShipLoadout.fromLoadout({
-        Ship: 'FutureHull',
-        Modules: [{ Slot: 'PowerPlant', Item: 'FuturePowerPlant' }],
-    });
-    assert.deepEqual(unknownHull.repairFixedMount('PowerPlant'), {
-        status: 'defaultUnavailable',
-        slot: 'PowerPlant',
-    });
 });
 
 test('a purchase query names a wrong-typed slot key and answers a missing one', () => {

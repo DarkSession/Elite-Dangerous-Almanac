@@ -516,8 +516,12 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     assert.equal(omittedSource.ModulesValue, source.ModulesValue);
     assert.equal(omittedSource.Rebuy, source.Rebuy);
 
-    const unresolved = ShipLoadout.fromLoadout({
+    const capturedMass = 55.6;
+    const capturedCargo = 12;
+    const unresolvedBuild = ShipLoadout.fromLoadout({
         ...source,
+        UnladenMass: capturedMass,
+        CargoCapacity: capturedCargo,
         Modules: [
             ...withoutHatch,
             {
@@ -533,12 +537,17 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
                 },
             },
         ],
-    }).fittedModuleAt('CargoHatch')!;
+    });
+    const unresolved = unresolvedBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(unresolved.symbol.toLowerCase(), defaultHatch.Item.toLowerCase());
     assert.equal(unresolved.on, false);
     assert.equal(unresolved.engineering, undefined);
     assert.equal(unresolved.effectiveStats!.powerDraw, 0.6);
     assert.equal(unresolved.raw.Value, undefined);
+    assert.equal(unresolvedBuild.unladenMass, capturedMass);
+    assert.equal(unresolvedBuild.cargoCapacity, capturedCargo);
+    assert.equal(unresolvedBuild.modulesValue, source.ModulesValue);
+    assert.equal(unresolvedBuild.rebuy, source.Rebuy);
 
     const futureVariant = ShipLoadout.fromLoadout({
         ...source,
@@ -574,6 +583,61 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
             .toLoadoutEvent()
             .Modules.every((module) => module.Slot === module.Slot.toLowerCase()),
     );
+});
+
+test('fixed-mount repair distinguishes an unknown slot from an editable one', () => {
+    const build = ShipLoadout.default('SideWinder');
+    const before = build.toLoadoutEvent();
+    assert.throws(() => build.repairFixedMount('NoSuchSlotAtAll'), {
+        name: 'RangeError',
+        message: 'ShipLoadout: hull "SideWinder" has no slot "NoSuchSlotAtAll"',
+    });
+    assert.throws(() => build.repairFixedMount(''), {
+        name: 'RangeError',
+        message: 'ShipLoadout: hull "SideWinder" has no slot ""',
+    });
+    assert.deepEqual(build.repairFixedMount('Slot01_Size2'), {
+        status: 'refused',
+        slot: 'Slot01_Size2',
+        reason: 'notFixedMount',
+    });
+    assert.deepEqual(build.toLoadoutEvent(), before);
+
+    const source = build.toLoadoutEvent();
+    const unresolvedCore = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant' ? { ...module, Item: 'FuturePowerPlant' } : module,
+        ),
+    });
+    assert.deepEqual(unresolvedCore.repairFixedMount('PowerPlant'), {
+        status: 'repaired',
+        slot: 'PowerPlant',
+        symbol: 'Int_Powerplant_Size2_Class1',
+    });
+
+    const unknownHull = ShipLoadout.fromLoadout({
+        Ship: 'FutureHull',
+        Modules: [{ Slot: 'PowerPlant', Item: 'FuturePowerPlant' }],
+    });
+    assert.deepEqual(unknownHull.repairFixedMount('PowerPlant'), {
+        status: 'defaultUnavailable',
+        slot: 'PowerPlant',
+    });
+
+    const lowerCaseUnknownHull = ShipLoadout.fromLoadout({
+        Ship: 'FutureHull',
+        Modules: [{ Slot: 'slot01_size1', Item: 'FutureModule' }],
+    });
+    assert.deepEqual(lowerCaseUnknownHull.repairFixedMount('PowerPlant'), {
+        status: 'defaultUnavailable',
+        slot: 'PowerPlant',
+    });
+    assert.deepEqual(lowerCaseUnknownHull.repairFixedMount('Slot02_Size1'), {
+        status: 'refused',
+        slot: 'Slot02_Size1',
+        reason: 'notFixedMount',
+    });
 });
 
 test('default builds fit every stock module and remain independently editable', () => {

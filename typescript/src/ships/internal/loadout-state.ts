@@ -20,11 +20,15 @@ export function isNonOutfittingSlot(slotKey: string): boolean {
     );
 }
 
+/** Whether a journal key names the cargo-hatch mount. */
+export function isCargoHatchSlot(slotKey: string): boolean {
+    return slotKey.toLowerCase() === 'cargohatch';
+}
+
 /** Whether a module is the zero-mass, zero-price cargo hatch built into every hull. */
 export function isBuiltInHullModule(module: LoadoutModule): boolean {
     return (
-        module.Slot.toLowerCase() === 'cargohatch' &&
-        module.Item.toLowerCase().startsWith('modularcargobaydoor')
+        isCargoHatchSlot(module.Slot) && module.Item.toLowerCase().startsWith('modularcargobaydoor')
     );
 }
 
@@ -83,6 +87,16 @@ export function matchingKeyIn(keyed: ReadonlyMap<string, unknown>, slotKey: stri
         if (key.toLowerCase() === wanted) return key;
     }
     return null;
+}
+
+/** Existing spelling for a slot, or the map's casing convention for a new key. */
+export function ownKeyIn(keyed: ReadonlyMap<string, unknown>, canonicalKey: string): string {
+    return (
+        matchingKeyIn(keyed, canonicalKey) ??
+        (keyed.size > 0 && [...keyed.keys()].every((key) => key === key.toLowerCase())
+            ? canonicalKey.toLowerCase()
+            : canonicalKey)
+    );
 }
 
 /** Order values by a hull's slots, retaining source order for slots outside the layout. */
