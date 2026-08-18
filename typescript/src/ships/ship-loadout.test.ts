@@ -3937,6 +3937,50 @@ test('a long-range weapon keeps its damage all the way out', () => {
     assert.equal(damageFalloff(engineered, engineered.maximumRange! - 1), 1);
 });
 
+test('weapon metrics expose effective range, projectile boundaries and piercing', () => {
+    const build = ShipLoadout.default('SideWinder');
+    const stock = build.weaponMetrics().weapons[0]!;
+    assert.equal(stock.maximumRange, 3000);
+    assert.equal(stock.falloffRange, 500);
+    assert.equal(stock.armourPiercing, 20);
+
+    build.applyBlueprint(stock.slot, 'Weapon_LongRange', { grade: 5 });
+    const engineered = build.weaponMetrics().weapons[0]!;
+    assert.equal(engineered.maximumRange, 6000);
+    assert.equal(engineered.falloffRange, 6000);
+
+    const projectile = ShipLoadout.empty('Anaconda')
+        .setModule('MediumHardpoint1', mod('Hpt_ATDumbfireMissile_Fixed_Medium', HARDPOINT_MODULES))
+        .weaponMetrics().weapons[0]!;
+    assert.deepEqual(projectile.projectileRange, {
+        maximumBoundary: 0,
+        falloffBoundary: 100000,
+    });
+
+    const laser = ShipLoadout.empty('SideWinder')
+        .setModule('SmallHardpoint1', mod('Hpt_BeamLaser_Fixed_Small', HARDPOINT_MODULES))
+        .weaponMetrics().weapons[0]!;
+    assert.equal('projectileRange' in laser, false);
+});
+
+test('weapon metrics use hull slot order and append unmapped slots in source order', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const weapon = source.Modules.find((module) => module.Slot === 'SmallHardpoint1')!;
+    const build = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: [
+            { ...weapon, Slot: 'FutureHardpointB' },
+            ...[...source.Modules].reverse(),
+            { ...weapon, Slot: 'FutureHardpointA' },
+        ],
+    });
+
+    assert.deepEqual(
+        build.weaponMetrics().weapons.map(({ slot }) => slot),
+        ['SmallHardpoint1', 'SmallHardpoint2', 'FutureHardpointB', 'FutureHardpointA'],
+    );
+});
+
 test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', () => {
     const build = ShipLoadout.empty('Vulture').setModule(
         'LargeHardpoint1',
