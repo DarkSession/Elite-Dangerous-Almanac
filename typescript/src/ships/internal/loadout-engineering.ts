@@ -174,17 +174,14 @@ export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableB
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
  * on a menu carrying one of the three colliding ids were recorded under the journal
  * spelling, the gate would accept it here while `applyBlueprint` folded the resolved
- * recipe. Three of the five such menus have variants: the Kill Warrant Scanners'
- * `Sensor_FastScan` (its own journal id, and offered anyway), the anti-xeno multi-cannons'
- * Enhanced AX Multi-Cannon, and the ordinary multi-cannons' two rows, `Weapon_RapidFire`
- * and the Merc-Coin `MultiCannon_Rapid` — the last menu being where the hazard would most
+ * recipe. One such menu has a Mercenary variant: the ordinary multi-cannons'
+ * `MultiCannon_Rapid`. That menu is where the hazard would most
  * likely arrive, since `Weapon_Overcharged` on a multi-cannon is the collision consumers
  * actually meet. None is recorded that way:
- * `pre-engineered.jsonc` names the recipe the module rolls, never a spelling that would
- * resolve to a different one, and `pre-engineered.test.ts` asserts exactly that over the
- * whole catalogue — each row's `blueprint`, resolved on its own module, comes back
- * unchanged. That is a narrower claim than menu membership, which the 22 Mercenary rows
- * do not have and are not meant to: this leg exists for them. So the question does not arise; it is
+ * Mercenary rows in `pre-engineered.jsonc` name the recipe the module rolls, never a
+ * spelling that would resolve to a different one, and `pre-engineered.test.ts` asserts
+ * exactly that. That is a narrower claim than menu membership, which the 22 Mercenary
+ * rows do not have and are not meant to: this leg exists for them. So the question does not arise; it is
  * written down because the gate itself cannot catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families

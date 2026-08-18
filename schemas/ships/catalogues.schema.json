@@ -277,7 +277,6 @@
             "missiles",
             "mines",
             "torpedoes",
-            "antiXenoMultiCannons",
             "shieldBoosters",
             "bulkheads",
             "lifeSupports",
@@ -301,8 +300,6 @@
             "manifestScanners",
             "pointDefence",
             "wakeScanners",
-            "experimentalWeapons",
-            "antiXenoMissileRacks",
             "guardianGauss",
             "guardianPlasma",
             "guardianShard"

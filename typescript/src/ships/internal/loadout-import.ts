@@ -245,8 +245,13 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     const primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
     // A reward has no distinct module symbol. Identify its hand-set stat signature so
     // values absent from the capture still come from the fitted article; explicit
-    // captured modifiers remain authoritative. Guardian weapons retain the recipe
-    // fallback because a capture without modifiers can still identify a final article.
+    // captured modifiers remain authoritative. Some SLEF captures omit Modifiers from a
+    // fixed article entirely; its full identity can still select the catalogue row. A
+    // present array cannot: older releases exported ordinary AX rolls with the same
+    // symbol/blueprint/grade tuple. A third-party exporter can omit that array from an
+    // ordinary historical roll too; no evidence can separate it from the reward, so the
+    // catalogue identity wins. Guardian weapons retain their broader recipe fallback
+    // because an ordinary weapon recipe on one already identifies a final article.
     for (const module of modules.values()) {
         const engineering = module.Engineering;
         const variant = identifyPreEngineeredVariant(module);
@@ -282,12 +287,15 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             ]);
         }
         if (variantStats) moduleStats.set(module.Slot, cloneModuleStats(variantStats));
+        const guardianFinal =
+            typeof engineering?.BlueprintName === 'string' &&
+            isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName);
         if (
             variantStats?.engineeringLocked ||
             // A partial block naming no recipe identifies no final article, and the
             // resolver below requires one rather than handing a nullish id back.
             typeof engineering?.BlueprintName !== 'string' ||
-            !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)
+            !guardianFinal
         ) {
             continue;
         }
@@ -300,15 +308,29 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             engineering.ExperimentalEffect,
             'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
         );
-        const exact = getPreEngineeredVariants(module.Item).find(
+        const variants = getPreEngineeredVariants(module.Item);
+        const exact = variants.find(
             (candidate) =>
+                candidate.engineeringLocked === true &&
                 candidate.blueprint.toLowerCase() === normalizedBlueprint &&
                 candidate.grade === engineering.Level &&
                 candidate.experimental?.toLowerCase() === normalizedExperimental,
         );
+        const guardianBase = variants.find(
+            (candidate) =>
+                candidate.engineeringLocked === true &&
+                candidate.blueprint.toLowerCase() === normalizedBlueprint &&
+                candidate.grade === engineering.Level &&
+                candidate.experimental === undefined,
+        );
         const stats = exact
             ? getPreEngineeredStats(exact)
-            : builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
+            : guardianBase && engineering.ExperimentalEffect !== undefined
+              ? getPreEngineeredStats({
+                    ...guardianBase,
+                    experimental: engineering.ExperimentalEffect,
+                })
+              : builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
         if (stats) {
             moduleStats.set(module.Slot, cloneModuleStats({ ...stats, engineeringLocked: true }));
         }

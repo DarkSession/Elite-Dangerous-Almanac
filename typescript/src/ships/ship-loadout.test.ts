@@ -3002,6 +3002,114 @@ test('a final pre-engineered Guardian weapon exposes no engineering', () => {
     assert.equal(build.fittedModuleAt('MediumHardpoint1')?.stats?.engineeringLocked, true);
 });
 
+test('fixed Enzyme and AX variants expose no engineering', () => {
+    for (const [symbol, acquisition] of [
+        ['Hpt_CausticMissile_Fixed_Medium', 'communityGoal'],
+        ['Hpt_ATDumbfireMissile_Fixed_Medium', 'techBroker'],
+        ['Hpt_ATMultiCannon_Gimbal_Medium', 'techBroker'],
+    ] as const) {
+        const variant = getPreEngineeredVariants(symbol).find(
+            (candidate) => candidate.acquisition === acquisition,
+        )!;
+        const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+            'MediumHardpoint1',
+            variant,
+        );
+        assert.equal(variant.engineeringLocked, true, symbol);
+        assert.deepEqual(build.availableBlueprints('MediumHardpoint1'), [], symbol);
+        assert.deepEqual(build.availableExperimentalEffects('MediumHardpoint1'), [], symbol);
+        assert.throws(
+            () => build.applyBlueprint('MediumHardpoint1', variant.blueprint, { grade: 5 }),
+            /is a final pre-engineered article and accepts no further engineering/,
+        );
+
+        const event = build.toLoadoutEvent();
+        if (symbol === 'Hpt_ATMultiCannon_Gimbal_Medium') {
+            assert.equal(
+                event.Modules.find((module) => module.Slot === 'MediumHardpoint1')?.Engineering
+                    ?.BlueprintName,
+                'Weapon_Overcharged',
+            );
+        }
+        const imported = ShipLoadout.fromLoadout({
+            ...event,
+            Modules: event.Modules.map((module) => {
+                if (module.Slot !== 'MediumHardpoint1') return module;
+                const { Modifiers: omitted, ...identity } = module.Engineering!;
+                void omitted;
+                return { ...module, Engineering: identity };
+            }),
+        });
+        assert.equal(
+            imported.fittedModuleAt('MediumHardpoint1')?.stats?.engineeringLocked,
+            true,
+            symbol,
+        );
+        assert.throws(
+            () => imported.clearEngineering('MediumHardpoint1'),
+            /is a final pre-engineered article and its engineering cannot be removed/,
+        );
+    }
+});
+
+test('the modifier-less Inara AX capture restores its fixed articles', () => {
+    const build = ShipLoadout.fromSlef(cutterCapture);
+    const captured = cutterCapture[0]!.data.Modules.filter((module) =>
+        module.Item.includes('atmulticannon'),
+    );
+    assert.equal(captured.length, 4);
+    for (const module of captured) {
+        assert.ok(module.Engineering);
+        assert.equal('Modifiers' in module.Engineering, false, module.Slot);
+        const fitted = build.fittedModuleAt(module.Slot)!;
+        const variant = getPreEngineeredVariants(module.Item).find(
+            (candidate) => candidate.acquisition === 'techBroker',
+        )!;
+        assert.equal(fitted.stats?.engineeringLocked, true, module.Slot);
+        assert.equal(fitted.stats?.damage, getPreEngineeredStats(variant)?.damage, module.Slot);
+        assert.equal(fitted.preEngineeredVariant, variant, module.Slot);
+        assert.throws(
+            () => build.clearEngineering(module.Slot),
+            /is a final pre-engineered article and its engineering cannot be removed/,
+        );
+    }
+    assert.equal(build.fittedModuleAt('mediumhardpoint3')?.stats?.damage, 1.232);
+});
+
+test('an imported legacy AX stock roll is not mistaken for a fixed reward', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: 'Hpt_ATDumbfireMissile_Fixed_Medium',
+                Engineering: {
+                    BlueprintName: 'Weapon_HighCapacity',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: 'AmmoMaximum', Value: 128, OriginalValue: 64 },
+                        { Label: 'Mass', Value: 6.4, OriginalValue: 4 },
+                    ],
+                },
+            },
+        ],
+    });
+    const fitted = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.equal(fitted.stats?.engineeringLocked, undefined);
+    assert.equal(fitted.stats?.damage, 27);
+    assert.equal(fitted.stats?.ammoMaximum, 64);
+    assert.equal(fitted.stats?.mass, 4);
+    assert.equal(fitted.effectiveStats?.damage, 27);
+    assert.equal(fitted.effectiveStats?.ammoMaximum, 128);
+    assert.equal(fitted.effectiveStats?.mass, 6.4);
+    build.clearEngineering('MediumHardpoint1');
+    const cleared = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.equal(cleared.engineering, undefined);
+    assert.equal(cleared.effectiveStats?.ammoMaximum, 64);
+    assert.equal(cleared.effectiveStats?.mass, 4);
+});
+
 test('imported Guardian purchase identities remain final articles', () => {
     // The first two identities occur in the build corpus but are not rows in the narrower
     // pre-engineered catalogue. The Engineering tuple itself still identifies a final
@@ -3060,6 +3168,27 @@ test('imported Guardian purchase identities remain final articles', () => {
             /is a final pre-engineered article and its engineering cannot be removed/,
         );
     }
+});
+
+test('a Guardian catalogue article with an added experimental keeps article stats', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: 'Hpt_Guardian_PlasmaLauncher_Fixed_Medium',
+                Engineering: {
+                    BlueprintName: 'Weapon_Overcharged',
+                    Level: 1,
+                    Quality: 1,
+                    ExperimentalEffect: 'special_super_penetrator_cooled',
+                },
+            },
+        ],
+    });
+    const fitted = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.equal(fitted.stats?.engineeringLocked, true);
+    assert.equal(fitted.stats?.damage, 4.15);
 });
 
 test('imported Anti-Guardian Zone Resistance remains an engineerable stock article', () => {
@@ -4826,33 +4955,6 @@ test('setExperimentalEffect returns structured refusals without changing the mod
         assert.equal(result.code, 'unsupportedEngineering');
     }
 
-    const axVariant = getPreEngineeredVariants('Hpt_ATMultiCannon_Gimbal_Medium').find(
-        (candidate) => candidate.blueprint === 'MC_Overcharged',
-    )!;
-    const axEvent = ShipLoadout.empty('Anaconda')
-        .setPreEngineeredVariant('MediumHardpoint1', axVariant)
-        .toLoadoutEvent();
-    for (const blueprint of ['MC_Overcharged', 'Weapon_Overcharged']) {
-        const ambiguous = ShipLoadout.fromLoadout({
-            ...axEvent,
-            Modules: axEvent.Modules.map((module) =>
-                module.Slot === 'MediumHardpoint1'
-                    ? {
-                          ...module,
-                          Engineering: {
-                              ...module.Engineering!,
-                              BlueprintName: blueprint,
-                              Modifiers: module.Engineering!.Modifiers!.slice(0, 1),
-                          },
-                      }
-                    : module,
-            ),
-        });
-        assert.equal(ambiguous.fittedModuleAt('MediumHardpoint1')!.preEngineeredVariant, null);
-        const result = ambiguous.setExperimentalEffect('MediumHardpoint1', null);
-        assert.equal(result.kind, 'unsupported');
-        assert.equal(result.code, 'unidentifiedPreEngineeredVariant');
-    }
     const fixedVariant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
         (candidate) => candidate.acquisition === 'techBroker',
     )!;
@@ -5115,40 +5217,6 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
     const unidentifiedResult = unidentified.completeEngineeringGrade('FrameShiftDrive');
     assert.equal(unidentifiedResult.kind, 'unsupported');
     assert.equal(unidentifiedResult.code, 'unidentifiedPreEngineeredVariant');
-
-    const axVariant = getPreEngineeredVariants('Hpt_ATMultiCannon_Gimbal_Medium').find(
-        (candidate) => candidate.blueprint === 'MC_Overcharged',
-    )!;
-    const axEvent = ShipLoadout.empty('Anaconda')
-        .setPreEngineeredVariant('MediumHardpoint1', axVariant)
-        .toLoadoutEvent();
-    const aliased = ShipLoadout.fromLoadout({
-        ...axEvent,
-        Modules: axEvent.Modules.map((module) =>
-            module.Slot === 'MediumHardpoint1'
-                ? {
-                      ...module,
-                      Engineering: {
-                          ...module.Engineering!,
-                          BlueprintName: 'Weapon_Overcharged',
-                          Quality: 0.5,
-                          Modifiers: module.Engineering!.Modifiers!.slice(0, 1),
-                      },
-                  }
-                : module,
-        ),
-    });
-    const aliasedBefore = aliased.fittedModuleAt('MediumHardpoint1')!.effectiveStats;
-    assert.deepEqual(aliased.completeEngineeringGrade('MediumHardpoint1'), {
-        kind: 'unsupported',
-        code: 'unidentifiedPreEngineeredVariant',
-        params: {
-            slot: 'MediumHardpoint1',
-            symbol: 'hpt_atmulticannon_gimbal_medium',
-            blueprint: 'Weapon_Overcharged',
-        },
-    });
-    assert.deepEqual(aliased.fittedModuleAt('MediumHardpoint1')!.effectiveStats, aliasedBefore);
 
     const miningLance = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
         (candidate) => candidate.experimental === 'special_incendiary_rounds',

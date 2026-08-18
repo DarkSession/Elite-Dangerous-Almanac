@@ -130,7 +130,7 @@ test('engineeringGroup exposes the stable family carried by the shared data', ()
         assert.equal(module.engineeringGroup, getEngineeringGroup(module.symbol), module.symbol);
         assert.equal(Object.hasOwn(module, 'kind'), false, module.symbol);
     }
-    assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1010);
+    assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1005);
 });
 
 test('identity, sparse stats, and required capabilities are independent contracts', () => {

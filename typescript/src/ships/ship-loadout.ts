@@ -807,8 +807,14 @@ export class ShipLoadout {
      * is included when matching and remains authoritative in the captured modifiers. A
      * Mercenary module is instead identified by the bespoke blueprint available only to its
      * purchase, including after a later grade upgrade. Its unpublished purchase modifiers
-     * are not inferred; the capture's current engineering remains authoritative.
-     * Under-specified or ambiguous evidence stays unidentified.
+     * are not inferred; the capture's current engineering remains authoritative. A fixed
+     * catalogue article can also be identified by its complete
+     * symbol/blueprint/grade/experimental identity when a SLEF capture omits the
+     * `Modifiers` key entirely. A present modifier array must pass the stat-signature
+     * match instead, so an older exported stock roll sharing that identity remains stock.
+     * A third-party export could also omit the array from an ordinary historical AX roll;
+     * that record is indistinguishable from the fixed reward, so the catalogue identity
+     * wins. Other under-specified or ambiguous evidence stays unidentified.
      * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
      * article; the import preserves that identity, uses the catalogue's complete hand-set
      * stat block when the exact article is known, exposes no engineering options for it,

@@ -268,10 +268,6 @@ test('one journal id rolls a clip penalty on a multi-cannon and none on the othe
         assert.ok(baseStats(getModuleBySymbol(symbol, ALL_MODULES)!)['AmmoClipSize'], symbol);
         assert.notDeepEqual(legs('Hpt_MultiCannon_Fixed_Medium'), legs(symbol), symbol);
     }
-    // An anti-xeno multi-cannon rolls the same recipe as an ordinary one. coriolis-data
-    // carries no blueprint list for an anti-xeno group, so this row is EDSY's alone — its
-    // single Overcharged carries the clip leg wherever it is offered.
-    assert.deepEqual(legs('Hpt_ATMultiCannon_Gimbal_Medium'), legs('Hpt_MultiCannon_Fixed_Medium'));
     // Resolution runs into a menu, never out of one: no other weapon is thereby offered the
     // multi-cannon's spelling.
     for (const row of collision.refused) {

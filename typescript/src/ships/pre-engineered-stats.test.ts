@@ -100,6 +100,34 @@ test('ordinary and under-specified engineering is not guessed to be pre-engineer
     assert.equal(
         identifyPreEngineeredVariant({
             Slot: 'x',
+            Item: 'Hpt_ATDumbfireMissile_Fixed_Medium',
+            Engineering: {
+                BlueprintName: 'Weapon_HighCapacity',
+                Level: 5,
+                Quality: 1,
+                Modifiers: null,
+            },
+        } as unknown as LoadoutModule),
+        null,
+        'a null modifier block is incomplete evidence, not an identity-only capture',
+    );
+    assert.equal(
+        identifyPreEngineeredVariant({
+            Slot: 'x',
+            Item: 'Hpt_ATDumbfireMissile_Fixed_Medium',
+            Engineering: {
+                BlueprintName: 'Weapon_HighCapacity',
+                Level: 5,
+                Quality: 1,
+                ExperimentalEffect_Localised: 'Corrosive Shell',
+            },
+        }),
+        null,
+        'a localized-only experimental is not a complete fixed identity',
+    );
+    assert.equal(
+        identifyPreEngineeredVariant({
+            Slot: 'x',
             Item: 'not_a_real_module',
             Engineering: matched.Engineering!,
         }),
@@ -423,7 +451,9 @@ test('a final pre-engineered Guardian weapon stays locked when resolved', () => 
 test('a pre-engineered damage modifier scales every exact damage component', () => {
     const symbol = 'Hpt_ATMultiCannon_Gimbal_Medium';
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
-    const fitted = getPreEngineeredStats(only({ symbol, blueprint: 'MC_Overcharged', grade: 5 }))!;
+    const fitted = getPreEngineeredStats(
+        only({ symbol, blueprint: 'Weapon_Overcharged', grade: 5 }),
+    )!;
     assert.ok(Math.abs(fitted.damage! - stock.damage! * 1.1) < 1e-9);
     assert.ok(
         Math.abs(fitted.damageComponents!.kinetic! - stock.damageComponents!.kinetic! * 1.1) < 1e-9,
