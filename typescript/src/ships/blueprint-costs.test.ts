@@ -16,9 +16,15 @@ const countFor = (materials: readonly { symbol: string; count: number }[] | null
     materials?.find((material) => material.symbol === symbol)?.count;
 
 test('every craft-cost entry matches its mechanics grades', () => {
+    // Costs are the craftable subset of the mechanics catalogue, so the two are checked
+    // both ways: which blueprints have no cost, and that nothing else diverges. Order is
+    // part of it — the files are written in the same sequence, so a cost entry that drifts
+    // out of place is a derivation that stopped tracking `blueprints.jsonc`.
+    const uncosted = Object.keys(BLUEPRINTS).filter((fdname) => !(fdname in BLUEPRINT_COSTS));
+    assert.deepEqual(uncosted, ['CargoRack_IncreasedCapacity']);
     assert.deepEqual(
-        Object.keys(BLUEPRINTS).filter((fdname) => !(fdname in BLUEPRINT_COSTS)),
-        ['CargoRack_IncreasedCapacity'],
+        Object.keys(BLUEPRINT_COSTS),
+        Object.keys(BLUEPRINTS).filter((fdname) => !uncosted.includes(fdname)),
     );
     for (const [fdname, costs] of Object.entries(BLUEPRINT_COSTS)) {
         assert.deepEqual(Object.keys(costs), Object.keys(BLUEPRINTS[fdname]!.grades), fdname);

@@ -1829,6 +1829,44 @@ test('stock cargo racks cannot acquire a fixed reward identity as engineering', 
     );
 });
 
+test('a fixed Expanded Cargo Rack still reaches the build aggregate at its reward capacity', () => {
+    // The stock rack cannot be engineered into one, so the community-goal article is the
+    // only route to a 43 t rack: fitted from `pre-engineered`, or read back from a journal
+    // reporting one. Both must be identified as the article and counted as 43 t, because
+    // the aggregate reads the modified capacity rather than the catalogue's 32.
+    const variant = getPreEngineeredVariants('Int_CargoRack_Size5_Class1').find(
+        (candidate) => candidate.acquisition === 'communityGoal',
+    );
+    assert.ok(variant, 'the size-5 community-goal rack is missing from the catalogue');
+    const article = getPreEngineeredStats(variant);
+    assert.equal(article?.cargoCapacity, 43);
+    assert.equal(
+        ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', article!).cargoCapacity,
+        43,
+    );
+
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [
+            {
+                Slot: 'Slot05_Size5',
+                Item: 'Int_CargoRack_Size5_Class1',
+                Engineering: {
+                    BlueprintName: 'CargoRack_IncreasedCapacity',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'CargoCapacity', Value: 43, OriginalValue: 32 }],
+                },
+            },
+        ],
+    });
+    assert.equal(imported.cargoCapacity, 43);
+    assert.equal(
+        imported.fittedModuleAt('Slot05_Size5')?.preEngineeredVariant?.acquisition,
+        'communityGoal',
+    );
+});
+
 test('applyBlueprint validates the slot, blueprint and experimental', () => {
     const build = ShipLoadout.empty('Anaconda');
     // empty slot

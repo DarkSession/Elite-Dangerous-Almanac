@@ -1150,12 +1150,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `components` map. Coriolis keys components by material **display name**; a join script
   resolves each to the material's Frontier `symbol` against the `materials` domain at
   generation time, emitting `{ symbol, name, count }` per requirement (join `symbol` to
-  `materials` for the material's own grade and category). **Kept as-is:**
-  `CargoRack_IncreasedCapacity` grade 5 has no components upstream. That absence does
-  not establish a zero-cost crafting route: the id describes the two fixed Expanded
-  Cargo Rack community-goal articles in `pre-engineered.jsonc`, so it remains in the
-  mechanics catalogue for their modifier block but is absent from
-  `blueprint-costs.jsonc`.
+  `materials` for the material's own grade and category). **Dropped:**
+  `CargoRack_IncreasedCapacity` grade 5 has no components upstream and gets no entry
+  here. The id is a fixed reward identity rather than a craftable recipe — see "Expanded
+  Cargo Rack is a fixed reward identity" under Engineering options for what establishes
+  that — so it stays in the mechanics catalogue for the two articles' modifier block and
+  is absent from this one.
 - **Operations pre-engineered blueprints — from the in-game / Inara blueprint registry**
   (not in coriolis at the acquired commit): the Merc-Coin weapon rewards and the
   general/core/optional recipes (the **Operations keys**, e.g. `FuelScoop_Efficiency`,
@@ -1491,15 +1491,31 @@ up straight through with no disambiguation at all. Both paths are evidence that
   correction by dropping both module mappings, the now-empty `miningToolsLasers` group,
   both projected `kind` fields in `modules-hardpoint.jsonc`, and the Abrasion Blaster's
   now-unreachable experimental exclusion.
-- **Expanded Cargo Rack is a fixed reward identity, not an ordinary cargo-rack recipe.**
-  EDSY and coriolis expose `CargoRack_IncreasedCapacity` as the grade-5 identity carried
-  by the size-5 and size-6 community-goal articles catalogued in `pre-engineered.jsonc`.
-  Coriolis supplies no components, which is silence about acquisition rather than
-  evidence of a free engineer roll. Cargo racks therefore have no ordinary engineering
-  group; the fixed articles keep their sourced modifier blocks and remain identifiable
-  without granting the same state to a stock rack. A re-derivation must drop the
-  `cargoRacks` group, all 16 module mappings, and the corresponding projected `kind`
-  fields in `modules-internal.jsonc`.
+- **Expanded Cargo Rack is a fixed reward identity, so the cargo-rack menu is empty and
+  the group is dropped.** `CargoRack_IncreasedCapacity` is the grade-5 identity of the
+  size-5 and size-6 community-goal articles recorded in `pre-engineered.jsonc`, each with
+  its own hand-set modifier block. A community-goal record identifies a fixed article and
+  does not grant its recipe to the stock module, which is the rule the whole
+  pre-engineered catalogue is built on. That id is also the only blueprint EDSY's
+  `cargoRacks` menu lists, so once it is read as a reward identity the menu has nothing
+  left in it, and a group with no blueprints is not a menu (see "A group is one menu").
+  The group is therefore dropped whole, exactly as `miningToolsLasers` was, and the 16
+  mappings go with it — the emptiness is a property of the menu, not a claim about each
+  rack. The two fixed articles keep their sourced modifier blocks and stay identifiable
+  without granting the same state to a stock rack. A re-derivation must reapply this
+  correction by dropping the `cargoRacks` group, all 16 module mappings, and the
+  corresponding projected `kind` fields in `modules-internal.jsonc`.
+  - **Coriolis's empty component list is not the evidence, and was never enough on its
+    own.** `CargoRack_IncreasedCapacity` grade 5 has no components upstream; that is
+    silence about acquisition, not proof of a free engineer roll. It is what made the
+    contradiction visible — a menu offering a recipe that costs nothing — rather than what
+    settles it. The reward-identity rule above is what settles it.
+  - **No pinned registry positively states that a cargo rack has no menu.** EDSY assigns
+    the family an `mtype` carrying a `blueprints:` key and this correction overrides that,
+    on the reasoning above rather than on a source that contradicts it. A direct in-game
+    menu observation would settle it the same way it settles the Mining Laser and Abrasion
+    Blaster above; none is recorded here, and recording one would replace this reasoning
+    rather than add to it.
 - **An empty experimental menu is still distinct from no menu.** 29 of the 51 groups offer
   no experimental at all, so 371 of the 1010 grouped modules have an empty experimental
   list while retaining blueprints.

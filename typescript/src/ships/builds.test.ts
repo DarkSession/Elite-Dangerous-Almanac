@@ -215,12 +215,12 @@ test('every declared engineering entry resolves against the base stats it needs'
 
 test('every applicable build declaration engineers through applyBlueprint', () => {
     // End to end, through the public API: the corpus is what real build tools wrote, so a
-    // refusal here is this library disagreeing with the game. Final pre-engineered
-    // Guardian and Expanded Cargo Rack articles are expected to refuse: their Engineering
-    // blocks identify the acquired article, not a recipe to apply. The Mk II Plasma Shock
-    // Accelerator entries are refused because that stock module cannot be engineered at all,
-    // and the Abrasion Blaster entry identifies its community-goal reward rather than an
-    // ordinary roll.
+    // refusal here is this library disagreeing with the game. Two kinds of declaration are
+    // expected to refuse, and the fixture separates them by why. Final pre-engineered
+    // articles — the Guardian weapons, the Expanded Cargo Racks and the Long Range Abrasion
+    // Blaster — have Engineering blocks that identify what was acquired, not a recipe to
+    // apply. The Mk II Plasma Shock Accelerator entries have no article behind them at all:
+    // upstream denies that stock module every blueprint.
     const notEngineerable = new Set(
         optionsFixture.corpus.notEngineerable.map((row) => `${row.symbol}|${row.blueprint}`),
     );

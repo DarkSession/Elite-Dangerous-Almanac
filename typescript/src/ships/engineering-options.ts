@@ -9,20 +9,20 @@
  * each group lists what it offers.
  *
  * The catalogue groups 1010 of the 1199 modules — every stock module with an ordinary
- * engineering menu. The other 189 have no ordinary menu: whole families (fuel tanks, cargo racks, passenger cabins,
- * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
- * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
- * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
- * Supercruise Assist, the module stabilisers, the planetary approach suites, the cargo
- * hatch and the AX utility modules), plus the individual
- * modules denied every ordinary blueprint — every anti-xeno multi-cannon but the two
- * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, all seven
- * mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Accelerator. Five module symbols without a menu still have a separately acquired
- * pre-engineered route: the fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2
- * Module Reinforcement Package, and size-5 and size-6 cargo racks. Their qualifying
- * Mercenary articles can take grades 2–5 of their bespoke recipes through
- * `ships/pre-engineered`; fixed community-goal cargo racks remain final articles.
+ * engineering menu. The other 189 have no ordinary menu: whole families (fuel tanks, cargo
+ * racks, passenger cabins, the repair, recon, research, decontamination and multi-limpet
+ * controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave Analyser, the
+ * mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars,
+ * docking computers and Supercruise Assist, the module stabilisers, the planetary approach
+ * suites, the cargo hatch and the AX utility modules), plus the individual modules denied
+ * every ordinary blueprint — every anti-xeno multi-cannon but the two gimballed, both
+ * Enhanced anti-xeno missile racks and every turreted plain one, all seven mining tools,
+ * the remote-release launchers and the Mk II Plasma Shock Accelerator. Five module symbols
+ * without a menu still have a separately acquired pre-engineered route: the fixed Mining
+ * Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement Package, and size-5
+ * and size-6 cargo racks. Their qualifying Mercenary articles can take grades 2–5 of their
+ * bespoke recipes through `ships/pre-engineered`; fixed community-goal cargo racks remain
+ * final articles.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
@@ -186,11 +186,14 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"this stock module has no ordinary engineering menu"**. For most
- * ungrouped modules that is the same as "cannot be engineered". Some instead have
- * separately acquired pre-engineered variants: the fixed Mining Laser and Abrasion
- * Blaster, cargo racks, and size-5 class-2 Module Reinforcement Package have no stock
- * menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
+ * `null` means **"this stock module has no ordinary engineering menu"**. For 184 of the
+ * 189 ungrouped modules that is the same as "cannot be engineered" — the families and the
+ * individually denied modules listed in the module overview above. The other five are the
+ * fixed Mining Laser, the fixed Abrasion Blaster, the size-5 class-2 Module Reinforcement
+ * Package and the size-5 and size-6 cargo racks: their stock articles take nothing, but
+ * their grade-1 Mercenary articles can be upgraded through the bespoke recipes recorded in
+ * `ships/pre-engineered`. The other 14 cargo racks have no such route, and the fixed
+ * community-goal Expanded Cargo Racks are final articles rather than an upgrade path.
  * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
  * Accelerator, which upstream denies every blueprint.
  *
@@ -315,8 +318,8 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * The groups name 85 of the 107 blueprints in `BLUEPRINTS`. Of the other 22, 21 are
  * Operations keys of modules sold already engineered rather than offered in a menu (see
  * `ships/pre-engineered`); the last is the fixed Expanded Cargo Rack reward identity.
- * All 22 answer `[]` here exactly as an unknown id would, so read this function's empty answer with
- * {@link getExperimentalsForModule} rather than as a claim about the recipe.
+ * All 22 answer `[]` here exactly as an unknown id would, so read this function's empty
+ * answer with {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
  * Four Operations keys **are** named by a group, because they are recipes a player applies
  * rather than a purchase: the Merc-Coin blueprints published with a full grade 1–5,

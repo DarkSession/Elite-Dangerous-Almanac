@@ -452,16 +452,23 @@ test('the final pre-engineered corpus entries are exactly the ones the fixture n
                 (entry.experimental ?? null) === (row.experimental ?? null),
         );
         assert.equal(matches.length, row.entries, `${row.symbol}: ${row.blueprint}`);
-        assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
         assert.deepEqual(getExperimentalsForModule(row.symbol), []);
-        assert.ok(
-            isFinalGuardianWeaponEngineering(row.symbol, row.blueprint) ||
+        // A final article is recognised one of two ways, and each way pins its own menu.
+        // A Guardian weapon has a menu — Anti-Guardian Zone Resistance, and nothing else —
+        // which the bought article is final against. Every other final article sits on a
+        // module with no ordinary menu at all, and is recognised by its own reward record.
+        if (isFinalGuardianWeaponEngineering(row.symbol, row.blueprint)) {
+            assert.deepEqual(getBlueprintsForModule(row.symbol), ['GuardianModule_Sturdy']);
+        } else {
+            assert.deepEqual(getBlueprintsForModule(row.symbol), [], row.symbol);
+            assert.ok(
                 getPreEngineeredVariants(row.symbol).some(
                     (variant) =>
                         variant.blueprint === row.blueprint && variant.acquisition !== 'mercenary',
                 ),
-            `${row.symbol}: ${row.blueprint} is not recognised as a final article`,
-        );
+                `${row.symbol}: ${row.blueprint} is not recognised as a final article`,
+            );
+        }
     }
 });
 
