@@ -310,8 +310,14 @@ test('thrusters the plant stops feeding once the hardpoints are out make no heat
 
 test('unresolved modules are named, and make the figures a projection over the rest', () => {
     assert.deepEqual(heatMetrics(INPUT).unknownDraws, []);
-    const incomplete = heatMetrics({ ...INPUT, unknownDraws: ['Slot01_Size7', 'HugeHardpoint1'] });
+    assert.deepEqual(heatMetrics(INPUT).unknownWeaponHeat, []);
+    const incomplete = heatMetrics({
+        ...INPUT,
+        unknownDraws: ['Slot01_Size7', 'HugeHardpoint1'],
+        unknownWeaponHeat: ['HugeHardpoint1'],
+    });
     assert.deepEqual(incomplete.unknownDraws, ['Slot01_Size7', 'HugeHardpoint1']);
+    assert.deepEqual(incomplete.unknownWeaponHeat, ['HugeHardpoint1']);
     // Naming them changes no figure — it is the caveat that is reported, not a correction.
     assert.equal(incomplete.idle.thermalLoad, heatMetrics(INPUT).idle.thermalLoad);
 });
