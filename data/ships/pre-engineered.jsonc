@@ -33,9 +33,9 @@
  *     rewards; this field records the one route the source states, not every route.
  *   - `"eventReward"`   — awarded already transformed by an event; no engineer applies it.
  *
- * `engineeringLocked: true` marks the seven pre-engineered Guardian weapons as final.
- * Their stock counterparts can take Anti-Guardian Zone Resistance; these bought or
- * awarded articles accept no blueprint or experimental effect at all.
+ * `engineeringLocked: true` marks the seven pre-engineered Guardian weapons and five
+ * fixed Enzyme/AX variants as final. These bought or awarded articles accept no
+ * blueprint or experimental effect at all.
  *
  * `mercCoinCost` is the shop price in **Merc Coin**, a separate currency with no credit
  * equivalent — which is why it is its own field rather than the `cost` modules carry.
@@ -302,6 +302,7 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1352,6 +1353,7 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1406,6 +1408,7 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1457,10 +1460,11 @@
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
     "name": "Enhanced AX Multi-Cannon",
-    "blueprint": "MC_Overcharged",
+    "blueprint": "Weapon_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
     "experimental": "special_auto_loader",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "Damage",
@@ -1482,10 +1486,11 @@
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
     "name": "Enhanced AX Multi-Cannon",
-    "blueprint": "MC_Overcharged",
+    "blueprint": "Weapon_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
     "experimental": "special_auto_loader",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "Damage",

@@ -34,10 +34,9 @@
  * computed. Resolve them against the base module with `getPreEngineeredStats` from
  * `./pre-engineered-stats.js`; it lives in its own module so that consumers who only
  * want the catalogue do not bundle the module and engineering tables.
- * The only pre-engineered Guardian variants are seven Guardian-weapon records. They are
- * final articles and carry {@link PreEngineeredVariant.engineeringLocked}; their stock
- * counterparts can take Anti-Guardian Zone Resistance, but the resolved pre-engineered
- * articles cannot.
+ * Final articles carry {@link PreEngineeredVariant.engineeringLocked}. These are the seven
+ * pre-engineered Guardian weapons, whose stock counterparts can take Anti-Guardian Zone
+ * Resistance, and five fixed Enzyme/AX rewards whose stock modules have no engineering menu.
  *
  * @packageDocumentation
  */
@@ -120,10 +119,10 @@ export interface PreEngineeredVariant {
      * Whether the article is final and accepts no further engineering.
      *
      * @remarks
-     * Present as `true` on the pre-engineered Guardian weapons. Their stock counterparts
-     * can take Anti-Guardian Zone Resistance, but the pre-engineered articles cannot:
-     * neither that recipe nor any ordinary weapon recipe may be applied to them.
-     * Absence means this catalogue does not lock further engineering.
+     * Present as `true` on the final pre-engineered Guardian, Enzyme and AX weapons.
+     * Neither a blueprint nor an experimental effect may be applied to these articles,
+     * and their baked engineering cannot be removed. Absence means this catalogue does
+     * not lock further engineering.
      */
     readonly engineeringLocked?: true;
     /**

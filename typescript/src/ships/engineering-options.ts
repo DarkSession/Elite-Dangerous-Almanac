@@ -8,19 +8,18 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1010 of the 1199 modules — every stock module with an ordinary
- * engineering menu. The other 189 have no ordinary menu: whole families (fuel tanks,
+ * The catalogue groups 1005 of the 1199 modules — every stock module with an ordinary
+ * engineering menu. The other 194 have no ordinary menu: whole families (fuel tanks,
  * cargo racks, passenger cabins, the repair, recon, research, decontamination and
  * multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
  * Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and vehicle
  * hangars, docking computers and Supercruise Assist, the module stabilisers, the planetary
  * approach suites, the cargo hatch and the AX utility modules), plus the individual
- * modules denied every ordinary blueprint — every anti-xeno multi-cannon but the two
- * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, all seven
- * mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Accelerator. Five module symbols without a menu still have a Mercenary upgrade route:
- * the fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement
- * Package, and size-5 and size-6 cargo racks. Their qualifying Mercenary articles can
+ * modules denied every ordinary blueprint — every anti-xeno multi-cannon and missile rack,
+ * the Enzyme Missile Rack, all seven mining tools, the remote-release launchers and the Mk II
+ * Plasma Shock Accelerator. Six module symbols without a menu still have a Mercenary upgrade
+ * route: the Enzyme Missile Rack, fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2
+ * Module Reinforcement Package, and size-5 and size-6 cargo racks. Their qualifying articles can
  * take grades 2–5 of their bespoke recipes through
  * `ships/pre-engineered`; fixed community-goal cargo racks remain final articles.
  *
@@ -108,7 +107,6 @@ export type EngineeringGroupId =
     | 'missiles'
     | 'mines'
     | 'torpedoes'
-    | 'antiXenoMultiCannons'
     | 'shieldBoosters'
     | 'bulkheads'
     | 'lifeSupports'
@@ -132,8 +130,6 @@ export type EngineeringGroupId =
     | 'manifestScanners'
     | 'pointDefence'
     | 'wakeScanners'
-    | 'experimentalWeapons'
-    | 'antiXenoMissileRacks'
     | 'guardianGauss'
     | 'guardianPlasma'
     | 'guardianShard';
@@ -186,11 +182,11 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"this stock module has no ordinary engineering menu"**. For 184 of the
- * 189 ungrouped modules that is the same as "has no engineering route". Five instead
- * retain Mercenary upgrade routes: the fixed Mining Laser and Abrasion Blaster, size-5
- * and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package have no stock
- * menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
+ * `null` means **"this stock module has no ordinary engineering menu"**. For 188 of the
+ * 194 ungrouped modules that is the same as "has no engineering route". Six instead
+ * retain Mercenary upgrade routes: the Enzyme Missile Rack, fixed Mining Laser and Abrasion
+ * Blaster, size-5 and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package
+ * have no stock menu while their qualifying Mercenary articles retain bespoke upgrade routes.
  * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
  * Accelerator, which upstream denies every blueprint.
  *
@@ -232,7 +228,7 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * `Sensor_LongRange` for both all the same, so a journal id has to be read against the
  * module it sits on: `resolveBlueprintForModule` in `ships/blueprint-journal` is that
  * lookup. `MC_Overcharged` is the third of that kind and the one most consumers will meet:
- * the multi-cannon menus — ordinary and anti-xeno — list it rather than the
+ * the ordinary multi-cannon menu lists it rather than the
  * `Weapon_Overcharged` every other weapon menu lists, because a multi-cannon's Overcharged
  * also cuts the clip by 3–15% — and the game writes `Weapon_Overcharged` for both.
  *
@@ -271,8 +267,8 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * missile racks are short of Penetrator Munitions or FSD Interrupt. Those are applied
  * here, so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 371
- * of the 1010 grouped modules have no experimental slot; all sit in the 29 of 51 groups
+ * **An empty array is the common answer, and it usually means "blueprints only".** 368
+ * of the 1005 grouped modules have no experimental slot; all sit in the 27 of 48 groups
  * that offer none — life support, sensors, the limpet controllers, the utility scanners,
  * and every Guardian group, weapons and modules alike. An ungrouped module answers empty
  * too; {@link getEngineeringGroup} tells the two apart.

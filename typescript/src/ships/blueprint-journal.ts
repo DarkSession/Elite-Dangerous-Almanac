@@ -50,11 +50,12 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * have. This is the common case of the three: 70 of the build corpus's 1902 declared
  * entries go through it, against one for the scanners.
  *
- * The clip penalty is folded on a multi-cannon — anti-xeno ones included — and on nothing
- * else. The cannons, fragment cannons and plasma accelerators take no clip leg, which is
- * the game's own answer on all three groups: journal captures of a large gimballed cannon
- * at grade 5, of a medium fragment cannon at grade 4 and of a medium plasma accelerator at
- * grade 1, each rolled under this id, report no `AmmoClipSize` modifier. See
+ * The clip penalty is folded only when a module's engineering menu offers the
+ * multi-cannon recipe. Anti-xeno multi-cannons have no ordinary engineering menu, so
+ * their journal id stays unchanged. Cannons, fragment cannons and plasma accelerators
+ * take no clip leg either: journal captures of a large gimballed cannon at grade 5, of a
+ * medium fragment cannon at grade 4 and of a medium plasma accelerator at grade 1, each
+ * rolled under this id, report no `AmmoClipSize` modifier. See
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
  * § "Multi-cannon Overcharged" for the captures.
  *
@@ -110,8 +111,6 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  *
  * // A multi-cannon's Overcharged is the multi-cannon recipe, clip penalty and all.
  * resolveBlueprintForModule('Hpt_MultiCannon_Fixed_Medium', 'Weapon_Overcharged');
- * // -> 'MC_Overcharged'
- * resolveBlueprintForModule('Hpt_ATMultiCannon_Gimbal_Medium', 'Weapon_Overcharged');
  * // -> 'MC_Overcharged'
  * resolveBlueprintForModule('Hpt_BeamLaser_Fixed_Small', 'Weapon_Overcharged');
  * // -> 'Weapon_Overcharged'

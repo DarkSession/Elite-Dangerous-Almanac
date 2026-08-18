@@ -208,6 +208,14 @@ function matchesModifierSignature(
  * loadout's current engineering state; the returned variant carries the original purchase
  * grade and Merc Coin price.
  *
+ * A locked fixed article is also identified by its unique
+ * symbol/blueprint/grade/experimental tuple when a SLEF capture omits the `Modifiers` key
+ * entirely. A present empty or partial array does not use this shortcut: older library
+ * exports can carry an ordinary roll with the same tuple, and its values must not be
+ * replaced by reward stats. A third-party export can omit the array from such a roll;
+ * that record is indistinguishable from the fixed article, so the catalogue identity
+ * wins.
+ *
  * Frontier journals and captures may omit a derived modifier, so one predicted value may
  * be absent. Every stated predicted value must agree within journal float noise, and all
  * but at most one must be present. Ambiguous or incomplete evidence returns `null` rather
@@ -258,6 +266,22 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
         capturedGrade <= MAX_ENGINEERING_GRADE
     ) {
         return blueprintMatch;
+    }
+    if (engineering.Modifiers === undefined) {
+        const capturedExperimental = normalizeKey(
+            engineering.ExperimentalEffect,
+            'identifyPreEngineeredVariant: module.Engineering.ExperimentalEffect',
+        );
+        const identityMatches = blueprintMatches.filter(
+            (candidate) =>
+                candidate.engineeringLocked === true &&
+                candidate.grade === capturedGrade &&
+                (candidate.experimental === undefined
+                    ? capturedExperimental === undefined &&
+                      engineering.ExperimentalEffect_Localised === undefined
+                    : candidate.experimental.toLowerCase() === capturedExperimental),
+        );
+        return identityMatches.length === 1 ? identityMatches[0]! : null;
     }
     if (!engineering.Modifiers?.length) return null;
 
