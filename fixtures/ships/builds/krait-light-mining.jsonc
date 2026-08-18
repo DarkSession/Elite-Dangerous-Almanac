@@ -39,7 +39,7 @@
     "cargoCapacity": 128,
     "fuelCapacity": 32,
     "maxJumpRange": 26.827706,
-    "power": { "available": 20.4, "retracted": 17.9, "deployed": 23.99, "withinBudget": false },
+    "power": { "available": 20.4, "retracted": 18.5, "deployed": 24.59, "withinBudget": false },
     "shields": { "strength": 266.064866, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
     "armour": { "hitPoints": 324, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
     "weapons": { "count": 4, "damagePerSecond": 57.5, "sustainedDamagePerSecond": 57.5 }

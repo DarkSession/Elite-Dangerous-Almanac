@@ -395,7 +395,7 @@
     }
   },
   "assembled": {
-    "note": "ShipLoadout.empty('Sidewinder') with a 2A drive and a 1C tank fitted. Catalogue-cased symbols are lower-cased on the way out, and power state is omitted unless asked for.",
+    "note": "ShipLoadout.empty('Sidewinder') with its built-in cargo hatch, a 2A drive and a 1C tank fitted. Catalogue-cased symbols are lower-cased on the way out, and power state is omitted unless asked for.",
     "ship": "Sidewinder",
     "fit": {
       "FrameShiftDrive": "Int_Hyperdrive_Size2_Class5",
@@ -430,6 +430,11 @@
     "valueNote": "Each module carries the price it was counted at, so the export's parts add up to its own ModulesValue. Without that a re-import cannot tell a free hull fitting from one we priced, and the total drifts on every export/import hop.",
     "modules": [
       {
+        "Slot": "CargoHatch",
+        "Item": "modularcargobaydoor",
+        "Value": 0
+      },
+      {
         "Slot": "FrameShiftDrive",
         "Item": "int_hyperdrive_size2_class5",
         "Value": 160224
@@ -441,6 +446,13 @@
       }
     ],
     "modulesWithExplicitPower": [
+      {
+        "Slot": "CargoHatch",
+        "Item": "modularcargobaydoor",
+        "On": true,
+        "Priority": 0,
+        "Value": 0
+      },
       {
         "Slot": "FrameShiftDrive",
         "Item": "int_hyperdrive_size2_class5",
