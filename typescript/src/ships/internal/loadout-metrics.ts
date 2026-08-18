@@ -425,7 +425,15 @@ function metricIssue(
                   ? 'MainEngines: no thrusters are fitted'
                   : 'no shield generator is fitted';
     } else if (reason === 'unresolved') {
-        message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} has no known ${field}`;
+        const unavailable =
+            field === 'thrusters'
+                ? 'thruster stats'
+                : field === 'shieldGenerator'
+                  ? 'shield-generator stats'
+                  : field === 'powerCapacity'
+                    ? 'power capacity'
+                    : field;
+        message = `${truncate(slot ?? field)}: ${unavailable} unavailable for ${truncate(symbol ?? field)}`;
     } else if (reason === 'disabled') {
         message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} is switched off`;
     } else if (reason === 'invalid') {
@@ -633,9 +641,7 @@ export function shieldInputResultFor(
     const fitted = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!fitted.complete) return fitted;
     const input = shieldInputFor(shipSymbol, modules, fitted.value.budget, systemsPips, statsFor);
-    return input.generator
-        ? completeResult(input)
-        : incompleteResult([metricIssue('shieldGenerator', 'unresolved', fitted.value.module)]);
+    return completeResult(input);
 }
 
 /** Gather a loaded hull and powered thruster curve, with an unavailable-state diagnostic. */

@@ -301,12 +301,13 @@ test('every build reproduces its pinned metrics', () => {
         let shields = loadout.shieldMetrics();
         if (expected.shieldsPowered === false) {
             assert.equal(shields, null, `${build.id}: expected shed shields`);
-            const fittedPlant = loadout.fittedModuleAt('PowerPlant');
+            const poweredLoadout = assemble(build);
+            const fittedPlant = poweredLoadout.fittedModuleAt('PowerPlant');
             assert.ok(fittedPlant, `${build.id}: power plant`);
             const plant = getModuleBySymbol(fittedPlant.symbol, ALL_MODULES);
             assert.ok(plant, `${build.id}: power plant stats`);
-            loadout.setModule('PowerPlant', { ...plant, powerCapacity: 1_000_000 });
-            shields = loadout.shieldMetrics();
+            poweredLoadout.setModule('PowerPlant', { ...plant, powerCapacity: 1_000_000 });
+            shields = poweredLoadout.shieldMetrics();
         }
         if (expected.shields === null) {
             assert.equal(shields, null, `${build.id}: expected no shields`);

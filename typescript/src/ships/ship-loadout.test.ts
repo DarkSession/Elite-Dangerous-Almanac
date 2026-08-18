@@ -485,7 +485,7 @@ test('an unresolved power plant makes every power-dependent metric unavailable',
             reason: 'unresolved',
             slot: 'PowerPlant',
             symbol: 'Int_MkiiPowerplant_Size8_Class5',
-            message: 'PowerPlant: Int_MkiiPowerplant_Size8_Class5 has no known powerCapacity',
+            message: 'PowerPlant: power capacity unavailable for Int_MkiiPowerplant_Size8_Class5',
             params: {
                 field: 'powerCapacity',
                 reason: 'unresolved',
@@ -660,8 +660,22 @@ test('an unresolved powered generator is diagnosed instead of producing zero shi
     assert.ok(build.powerBudget().available > 0);
     assert.equal(build.shieldMetrics(), null);
     assert.equal(build.shieldRecovery(), null);
-    assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
-    assert.equal(build.shieldRecoveryResult().issues[0]?.reason, 'unresolved');
+    const expected = {
+        field: 'shieldGenerator',
+        reason: 'unresolved',
+        slot: 'Slot01_Size2',
+        symbol: 'Int_ShieldGenerator_Size99_Class9_MadeUp',
+        message:
+            'Slot01_Size2: shield-generator stats unavailable for Int_ShieldGenerator_Size99_Class9_MadeUp',
+        params: {
+            field: 'shieldGenerator',
+            reason: 'unresolved',
+            slot: 'Slot01_Size2',
+            symbol: 'Int_ShieldGenerator_Size99_Class9_MadeUp',
+        },
+    };
+    assert.deepEqual(build.shieldMetricsResult().issues[0], expected);
+    assert.deepEqual(build.shieldRecoveryResult().issues[0], expected);
 
     const generator = source.Modules.find((module) =>
         module.Item.toLowerCase().startsWith('int_shieldgenerator'),
@@ -674,6 +688,23 @@ test('an unresolved powered generator is diagnosed instead of producing zero shi
             reason: build.shieldMetricsResult().issues[0]?.reason,
         },
         { field: 'shieldGenerator', reason: 'disabled' },
+    );
+});
+
+test('an unresolved thruster diagnostic names the missing stats', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'MainEngines'
+                ? { ...module, Item: 'Int_MkiiEngine_Size2_Class5' }
+                : module,
+        ),
+    });
+
+    assert.equal(
+        build.mobilityMetricsResult().issues[0]?.message,
+        'MainEngines: thruster stats unavailable for Int_MkiiEngine_Size2_Class5',
     );
 });
 
