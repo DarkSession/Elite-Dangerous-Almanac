@@ -63,10 +63,11 @@ export interface PowerConsumer {
     /**
      * `true` for a module that only draws while the hardpoints are deployed — every
      * weapon, and the utility fittings that are not
-     * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false`.
-     * For a known draw, `null` preserves an unavailable classification and totals
-     * conservatively count that draw in both retracted and deployed states. A consumer
-     * with {@link drawUnknown} is excluded from every total regardless.
+     * {@link OutfittingModule.alwaysPowered | always powered}. An omitted value defaults
+     * to `false` for a known draw and normalizes to `null` when {@link drawUnknown} is
+     * `true`. An explicit `null` preserves an unavailable classification; known totals
+     * conservatively count that draw in both retracted and deployed states. An unknown
+     * draw is excluded from every total regardless.
      */
     readonly deployedOnly?: boolean | null;
     /**
@@ -148,6 +149,8 @@ export interface PowerBudget {
     /**
      * Every supplied consumer in source order, including switched-off and unresolved
      * entries. Known enabled entries reconcile with the band and aggregate totals.
+     * {@link ShipLoadout.powerBudget} supplies only modules with a positive or unknown
+     * draw; passive and zero-draw fittings are absent.
      */
     readonly consumers: readonly PowerConsumerResult[];
     /**
@@ -183,12 +186,12 @@ function bandIndex(priority: number | undefined): number {
  *
  * @param available - Power the plant generates, in megawatts (`0` when no plant is
  * fitted — every group then reads as unpowered). Must be finite and non-negative.
- * @param consumers - One entry per fitted module. Modules with `enabled: false` are
- * skipped; the rest fall into their {@link PowerConsumer.priority | priority} group.
+ * @param consumers - Power consumers to include. Modules with `enabled: false` are
+ * skipped from totals; the rest fall into their {@link PowerConsumer.priority | priority}
+ * group. {@link ShipLoadout.powerBudget} omits passive and zero-draw fittings.
  * @returns The {@link PowerBudget}.
- * @throws {RangeError} If `available`, or an enabled known consumer's `draw`, is not a
- * finite non-negative number. Disabled consumers and consumers marked `drawUnknown`
- * are skipped before their placeholder draw is validated.
+ * @throws {RangeError} If `available` or any known consumer's `draw` is not a finite
+ * non-negative number. A consumer marked `drawUnknown` ignores its placeholder draw.
  * @remarks
  * A group that draws *exactly* the power available stays online, matching the game —
  * only going over shuts anything down.
@@ -217,16 +220,18 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const unknownDraws: PowerConsumer[] = [];
+    for (const consumer of consumers) {
+        if (
+            !consumer.drawUnknown &&
+            (consumer.draw === undefined || !Number.isFinite(consumer.draw) || consumer.draw < 0)
+        ) {
+            throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
+        }
+    }
     const consumerResults: PowerConsumerResult[] = consumers.map((consumer) => ({
         ...(consumer.label === undefined ? {} : { label: consumer.label }),
         ...(consumer.symbol === undefined ? {} : { symbol: consumer.symbol }),
-        draw:
-            consumer.drawUnknown ||
-            consumer.draw === undefined ||
-            !Number.isFinite(consumer.draw) ||
-            consumer.draw < 0
-                ? null
-                : consumer.draw,
+        draw: consumer.drawUnknown ? null : consumer.draw!,
         enabled: consumer.enabled !== false,
         priority: bandIndex(consumer.priority) + 1,
         deployedOnly:
@@ -244,10 +249,7 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
             unknownDraws.push(consumer);
             continue;
         }
-        const draw = consumer.draw;
-        if (draw === undefined || !Number.isFinite(draw) || draw < 0) {
-            throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
-        }
+        const draw = consumer.draw!;
         if (draw === 0) continue;
         const index = bandIndex(consumer.priority);
         if (consumer.deployedOnly) deployedByBand[index]! += draw;
