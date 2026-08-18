@@ -381,6 +381,7 @@ const matchesCalculatedModifiers = (
 export type EngineeringNormalizationCode =
     | 'emptySlot'
     | 'unknownModule'
+    | 'notEngineered'
     | 'invalidQuality'
     | 'unknownExperimentalEffect'
     | 'unsupportedExperimentalEffect'
@@ -2045,8 +2046,27 @@ export class ShipLoadout {
         const module = this.#fittedModuleFor(slotKey);
         if (!module) return engineeringNormalizationUnsupported('emptySlot', { slot: slotKey });
 
+        const stats = this.#statsFor(module);
+        if (!stats) {
+            return engineeringNormalizationUnsupported('unknownModule', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
         const engineering = module.Engineering;
-        if (!engineering || engineering.Quality === 1) {
+        if (!engineering) {
+            return engineeringNormalizationUnsupported('notEngineered', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        if (stats.engineeringLocked) {
+            return engineeringNormalizationUnsupported('finalArticle', {
+                slot: module.Slot,
+                symbol: module.Item,
+            });
+        }
+        if (engineering.Quality === 1) {
             return deepFreeze({ kind: 'unchanged' });
         }
         const previousQuality = engineering.Quality;
@@ -2057,13 +2077,6 @@ export class ShipLoadout {
             });
         }
 
-        const stats = this.#statsFor(module);
-        if (!stats) {
-            return engineeringNormalizationUnsupported('unknownModule', {
-                slot: module.Slot,
-                symbol: module.Item,
-            });
-        }
         const experimental = engineering.ExperimentalEffect ?? null;
         const effect =
             experimental === null ? undefined : (getExperimentalEffect(experimental) ?? undefined);
@@ -2076,19 +2089,21 @@ export class ShipLoadout {
         }
         const blueprint = engineering.BlueprintName;
         const grade = engineering.Level;
-        if (typeof blueprint !== 'string' || typeof grade !== 'number') {
+        if (typeof blueprint !== 'string' || !Number.isInteger(grade) || grade < 1 || grade > 5) {
             return engineeringNormalizationUnsupported('unsupportedEngineering', {
                 slot: module.Slot,
                 symbol: module.Item,
             });
         }
-        if (stats.engineeringLocked) {
-            return engineeringNormalizationUnsupported('finalArticle', {
-                slot: module.Slot,
-                symbol: module.Item,
-            });
-        }
-        if (experimental !== null && !experimentalAvailableFor(module.Item, experimental)) {
+        const variant = identifyPreEngineeredVariant(module);
+        const restoresBakedEffect =
+            variant?.experimental !== undefined &&
+            variant.experimental.trim().toLowerCase() === experimental?.trim().toLowerCase();
+        if (
+            experimental !== null &&
+            !experimentalAvailableFor(module.Item, experimental) &&
+            !restoresBakedEffect
+        ) {
             return engineeringNormalizationUnsupported('unsupportedExperimentalEffect', {
                 slot: module.Slot,
                 symbol: module.Item,
@@ -2096,7 +2111,6 @@ export class ShipLoadout {
             });
         }
 
-        const variant = identifyPreEngineeredVariant(module);
         if (variant && variant.acquisition !== 'mercenary') {
             const stock = this.#engineeringBaseStats(module);
             if (!stock) {
@@ -2144,7 +2158,7 @@ export class ShipLoadout {
             const fixedCandidate = getPreEngineeredVariants(module.Item).some(
                 (candidate) =>
                     candidate.acquisition !== 'mercenary' &&
-                    candidate.blueprint.trim().toLowerCase() === blueprint.trim().toLowerCase(),
+                    candidate.blueprint.trim().toLowerCase() === recipe.trim().toLowerCase(),
             );
             let provenOrdinary = !fixedCandidate;
             const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
