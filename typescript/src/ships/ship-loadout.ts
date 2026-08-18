@@ -107,6 +107,7 @@ import {
     experimentalAvailableFor,
     journalModifiersFor,
     missingBaseLabels,
+    ordinaryEngineeringProof,
     primitiveEngineeringInputsFor,
 } from './internal/loadout-engineering.js';
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
@@ -352,30 +353,6 @@ const experimentalEffectUnsupported = (
     code: ExperimentalEffectMutationCode,
     params: LoadoutIssueParams,
 ): ExperimentalEffectUnsupported => deepFreeze({ kind: 'unsupported', code, params });
-
-/** Whether a captured modifier block proves the calculator's ordinary result. */
-const matchesCalculatedModifiers = (
-    captured: readonly EngineeringModifier[] | undefined,
-    calculated: readonly EngineeringModifier[],
-): boolean => {
-    if (!captured || captured.length !== calculated.length) return false;
-    const byLabel = new Map(
-        captured.map((modifier) => [modifier.Label.trim().toLowerCase(), modifier]),
-    );
-    if (byLabel.size !== captured.length) return false;
-    return calculated.every((expected) => {
-        const actual = byLabel.get(expected.Label.trim().toLowerCase());
-        if (!actual) return false;
-        if (expected.Value !== undefined) {
-            return (
-                actual.Value !== undefined &&
-                Math.abs(actual.Value - expected.Value) <=
-                    1e-5 * Math.max(1, Math.abs(expected.Value))
-            );
-        }
-        return actual.ValueStr === expected.ValueStr;
-    });
-};
 
 /** Stable reason {@link ShipLoadout.completeEngineeringGrade} cannot normalize a grade. */
 export type EngineeringNormalizationCode =
@@ -1902,76 +1879,17 @@ export class ShipLoadout {
                     symbol: module.Item,
                 });
             }
-            const recipe = resolveBlueprintForModule(module.Item, blueprint);
-            const blueprintGrade = getBlueprintGrade(recipe, grade);
-            const fixedCandidate = getPreEngineeredVariants(module.Item).some(
-                (candidate) =>
-                    candidate.acquisition !== 'mercenary' &&
-                    candidate.blueprint.trim().toLowerCase() === recipe.trim().toLowerCase(),
-            );
-            let provenOrdinary = !fixedCandidate;
             const currentEffect =
                 previous === null ? undefined : (getExperimentalEffect(previous) ?? null);
-            const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
-            if (
-                fixedCandidate &&
-                stock &&
-                blueprintGrade &&
-                currentEffect !== null &&
-                Number.isFinite(quality) &&
-                quality >= 0 &&
-                quality <= 1
-            ) {
-                const current = primitiveEngineeringInputsFor(stock, blueprintGrade, currentEffect);
-                if (
-                    missingBaseLabels(
-                        stock,
-                        baseStats(stock),
-                        current.grade.features,
-                        current.experimental?.modifiers,
-                    ).length === 0
-                ) {
-                    const calculated = journalModifiersFor(
-                        stock,
-                        computeModifiers(
-                            baseStats(stock),
-                            current.grade,
-                            quality,
-                            current.experimental,
-                        ),
-                    );
-                    const damageDistribution =
-                        current.experimental?.damageDistribution ??
-                        current.grade.damageDistribution;
-                    if (damageDistribution) {
-                        for (const type of [
-                            'kinetic',
-                            'thermal',
-                            'explosive',
-                            'absolute',
-                        ] as const) {
-                            const value = damageDistribution[type];
-                            if (value === undefined) continue;
-                            const label = labelsForDamageType(type)[0];
-                            if (label === undefined) continue;
-                            calculated.push({
-                                Label: label,
-                                Value: value * scaleForLabel(label),
-                                OriginalValue:
-                                    (stock.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
-                            });
-                        }
-                    }
-                    provenOrdinary = matchesCalculatedModifiers(engineering.Modifiers, calculated);
-                }
-            }
-            if (!provenOrdinary) {
+            if (ordinaryEngineeringProof(module.Item, engineering, currentEffect) === 'unproven') {
                 return experimentalEffectUnsupported('unidentifiedPreEngineeredVariant', {
                     slot: module.Slot,
                     symbol: module.Item,
                     blueprint,
                 });
             }
+            const recipe = resolveBlueprintForModule(module.Item, blueprint);
+            const blueprintGrade = getBlueprintGrade(recipe, grade);
             if (
                 !blueprintGrade ||
                 !blueprintAvailableFor(module.Item, blueprint) ||
@@ -2151,71 +2069,19 @@ export class ShipLoadout {
                 getPreEngineeredModifiers(adjusted),
             );
         } else {
-            const recipe = resolveBlueprintForModule(module.Item, blueprint);
-            const blueprintGrade = getBlueprintGrade(recipe, grade);
-            const fixedCandidate = getPreEngineeredVariants(module.Item).some(
-                (candidate) =>
-                    candidate.acquisition !== 'mercenary' &&
-                    candidate.blueprint.trim().toLowerCase() === recipe.trim().toLowerCase(),
-            );
-            let provenOrdinary = !fixedCandidate;
-            const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
+            const proof = ordinaryEngineeringProof(module.Item, engineering, effect);
             if (
-                fixedCandidate &&
-                stock &&
-                blueprintGrade &&
-                blueprintAvailableFor(module.Item, blueprint)
+                proof === 'unproven' ||
+                (proof === 'proven' && !blueprintAvailableFor(module.Item, blueprint))
             ) {
-                const current = primitiveEngineeringInputsFor(stock, blueprintGrade, effect);
-                if (
-                    missingBaseLabels(
-                        stock,
-                        baseStats(stock),
-                        current.grade.features,
-                        current.experimental?.modifiers,
-                    ).length === 0
-                ) {
-                    const calculated = journalModifiersFor(
-                        stock,
-                        computeModifiers(
-                            baseStats(stock),
-                            current.grade,
-                            previousQuality,
-                            current.experimental,
-                        ),
-                    );
-                    const damageDistribution =
-                        current.experimental?.damageDistribution ??
-                        current.grade.damageDistribution;
-                    if (damageDistribution) {
-                        for (const type of [
-                            'kinetic',
-                            'thermal',
-                            'explosive',
-                            'absolute',
-                        ] as const) {
-                            const value = damageDistribution[type];
-                            if (value === undefined) continue;
-                            const label = labelsForDamageType(type)[0];
-                            if (label === undefined) continue;
-                            calculated.push({
-                                Label: label,
-                                Value: value * scaleForLabel(label),
-                                OriginalValue:
-                                    (stock.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
-                            });
-                        }
-                    }
-                    provenOrdinary = matchesCalculatedModifiers(engineering.Modifiers, calculated);
-                }
-            }
-            if (!provenOrdinary) {
                 return engineeringNormalizationUnsupported('unidentifiedPreEngineeredVariant', {
                     slot: module.Slot,
                     symbol: module.Item,
                     blueprint,
                 });
             }
+            const recipe = resolveBlueprintForModule(module.Item, blueprint);
+            const blueprintGrade = getBlueprintGrade(recipe, grade);
             if (!blueprintGrade || !blueprintAvailableFor(module.Item, blueprint)) {
                 return engineeringNormalizationUnsupported('unsupportedEngineering', {
                     slot: module.Slot,
