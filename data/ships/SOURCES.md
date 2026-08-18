@@ -379,11 +379,11 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     II's `Int_MkIIAgileBoost_Engine_*` thrusters.
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
-- **`kind` is the ordinary engineering-menu family.** The 1010 records mapped by
+- **`kind` is the ordinary engineering-menu family.** The 1005 records mapped by
   `engineering-options.jsonc` repeat that map's group key in the compact on-disk `kind`
-  field. The remaining 189 records carry no `kind` because they have no ordinary
-  engineering menu; this includes the fixed Mining Laser and Abrasion Blaster and the 16
-  cargo racks documented under Engineering options below.
+  field. The remaining 194 records carry no `kind` because they have no ordinary
+  engineering menu; this includes the five Enzyme/AX weapons, the fixed Mining Laser and
+  Abrasion Blaster, and the 16 cargo racks documented under Engineering options below.
   The group source, derivation, split
   Guardian families and coverage are documented under Engineering options below; this
   field is a projection of that map, not a separate classification source.
@@ -1350,7 +1350,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (51 groups covering 1010 ordinary engineering menus) and each group lists the
+  grouped (48 groups covering 1005 ordinary engineering menus) and each group lists the
   `blueprints` and `experimentals` it offers.
 - **Source:** EDSY `eddb.js`, whose module-group tables carry each group's `blueprints`
   and `expeffects` lists and which modules belong to each group, and whose module records
@@ -1359,14 +1359,14 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `modifications/modules.json`, which carries the same per-group lists keyed by the
   journal `BlueprintName`s this catalogue joins on.
 - **Coverage: every retained group EDSY's `mtype` table gives a `blueprints:` key.** After
-  the Mining Laser, Abrasion Blaster and cargo-rack corrections below, that is 51 groups over 1010
+  the corrections below, that is 48 groups over 1005
   modules, including
   bulkheads (the 241 ship armour records), life
   support, sensors, the Detailed Surface Scanner, refineries, AFMUs, fuel
   scoops, FSD interdictors and boosters, Guardian module and shield reinforcement, the
   four engineerable limpet controllers, chaff, heat sink and caustic sink launchers,
-  point defence, ECMs, the KWS/manifest/wake scanners, the Guardian Gauss/Plasma/Shard
-  weapons, the AX missile racks and the Enzyme Missile Rack.
+  point defence, ECMs, the KWS/manifest/wake scanners, and the Guardian
+  Gauss/Plasma/Shard weapons.
   - **A group is one menu, so `noblueprints` splits a family in two.** EDSY denies
     blueprints per module as well as per group (`edsy.js` `setBlueprintID` refuses a
     denied id; `'*'` means the module is not modifiable at all), and for three families
@@ -1385,16 +1385,16 @@ up straight through with no disambiguation at all. Both paths are evidence that
     Anti-Guardian recipe on a non-Guardian module and EDSY denies it. `powerPlants`,
     `powerDistributors` and `hullReinforcements` therefore hold ordinary modules only,
     and the 25 Guardian ones sit in the three groups above.
-  - **14 modules are absent because upstream denies them every blueprint:** eight AX
-    multi-cannons (all but the two gimballed), five of the seven mining tools, and the
-    Mk II Plasma Shock Accelerator — which is why `antiXenoMultiCannons` holds 2 of that
-    family's 10 modules and `plasmaAccelerators` 4 of its 5. The other two mining tools
+  - **14 modules are absent from the registry-derived result because upstream denies them
+    every blueprint:** eight AX multi-cannons, five of the seven mining tools, and the Mk II
+    Plasma Shock Accelerator. The two gimballed AX multi-cannons are removed by the in-game
+    correction below, while `plasmaAccelerators` retains 4 of its 5 modules. The other two mining tools
     are the manually corrected Mining Laser and Abrasion Blaster below, so all seven lack
     an ordinary menu and the empty `miningToolsLasers` group is not retained.
     The ten plain Module Reinforcement Packages are denied their family's only recipe
     and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
     packages.
-  - **The 189 modules absent have no ordinary engineering menu.** For 171 this comes from
+  - **The 194 modules absent have no ordinary engineering menu.** For 171 this comes from
     the pinned registries. Whole families first, both registries
     agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
     multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
@@ -1402,8 +1402,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     vehicle hangars, the docking computers and Supercruise Assist, the module stabilisers,
     the planetary approach suites, the cargo hatch and
     the AX utility modules (Xeno Scanners, Shutdown Field Neutralisers), followed by the
-    individually denied modules described above. The other 18 are the fixed Mining Laser,
-    Abrasion Blaster and 16 cargo racks, corrected from the registry-derived result below.
+    individually denied modules described above. The other 23 are the five weapons, fixed
+    Mining Laser, Abrasion Blaster and 16 cargo racks corrected from the registry-derived
+    result below.
     They and the size-5 class-2 Module Reinforcement Package within the registry-derived
     171 have no stock menu, but qualifying Mercenary articles remain upgradeable through
     their bespoke recipes.
@@ -1432,23 +1433,20 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the nine further groups it carries a list for —
     20 in all, every one an exact match. Chaff, heat sink, point defence and ECMs keep the
     generic `Misc_*` ids: there coriolis agrees with EDSY.
-  - **12 retained groups rest on EDSY alone**, because coriolis carries no blueprint list for
-    them at all: the nine Guardian-only groups (`guardianPowerPlants`,
+  - **Nine retained groups rest on EDSY alone**, because coriolis carries no blueprint list for
+    them at all: the Guardian-only groups (`guardianPowerPlants`,
     `guardianPowerDistributors`, `guardianHullReinforcements`, `moduleReinforcements`,
-    `shieldReinforcements`, `fsdBoosters`, `guardianGauss`, `guardianPlasma`,
-    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons` and
-    `antiXenoMultiCannons`. That is coriolis being
-    silent rather than contradicting — its Guardian and anti-xeno groups are empty
-    objects — but it means the second registry corroborates 39 of the 51 groups, not
+    `shieldReinforcements`, `fsdBoosters`, `guardianGauss`, `guardianPlasma` and
+    `guardianShard`). That is coriolis being
+    silent rather than contradicting — its Guardian groups are empty objects — but it
+    means the second registry corroborates 39 of the 48 groups, not
     all of them. The Guardian-weapon menus are independently settled by the in-game
     observations below: stock weapons take Anti-Guardian Zone Resistance alone, while
     the pre-engineered articles are final.
   - **The multi-cannon Overcharged is the one place a group follows coriolis over EDSY.**
     EDSY has a single Overcharged for every weapon; coriolis splits it, and `multiCannons`
-    lists coriolis's `MC_Overcharged`. `antiXenoMultiCannons` lists that key too, but not
-    for that reason — coriolis carries no blueprint list for an anti-xeno group, so it is
-    EDSY being followed into coriolis's spelling. See "Multi-cannon Overcharged: one
-    journal id, two recipes" below for the evidence and for what the split costs.
+    lists coriolis's `MC_Overcharged`. See "Multi-cannon Overcharged: one journal id, two
+    recipes" below for the evidence and for what the split costs.
   - **The groups name 85 of the 107 blueprints.** Of the other 22, 21 are Operations keys
     of modules sold already engineered rather than offered in a menu; the last is the
     fixed Expanded Cargo Rack reward identity. Four Operations keys _are_ named by a
@@ -1501,8 +1499,23 @@ up straight through with no disambiguation at all. Both paths are evidence that
   granting the same state to a stock rack. A re-derivation must drop the `cargoRacks`
   group, all 16 module mappings, and the corresponding projected `kind` fields in
   `modules-internal.jsonc`.
-- **An empty experimental menu is still distinct from no menu.** 29 of the 51 groups offer
-  no experimental at all, so 371 of the 1010 grouped modules have an empty experimental
+- **The Enzyme Missile Rack and AX weapons have no ordinary engineering menu.** Direct
+  in-game confirmation recorded 2026-08-18 UTC establishes that the Enzyme Missile Rack,
+  both plain fixed AX Missile Racks and both gimballed Enhanced AX Multi-Cannons cannot
+  receive ordinary engineering; there is no immutable revision for an in-game observation.
+  The Enzyme Missile Rack bought from a Mercenary contact at grade 1 remains upgradeable
+  through grades 2–5 of its bespoke `EnzymeMissileRack_HighYield` recipe. Its separately
+  catalogued grade-5 High Capacity community-goal article is final. The Enhanced AX
+  Multi-Cannons and AX Missile Racks in `pre-engineered.jsonc` are fixed tech-broker
+  variants and cannot be engineered further. All five fixed articles carry
+  `engineeringLocked: true`; the multi-cannons retain Frontier's journal identity
+  `Weapon_Overcharged`, not the ordinary multi-cannon menu key `MC_Overcharged`. A
+  re-derivation must drop the
+  `experimentalWeapons`, `antiXenoMissileRacks` and `antiXenoMultiCannons` groups, their
+  five module mappings and the corresponding projected `kind` fields in
+  `modules-hardpoint.jsonc`.
+- **An empty experimental menu is still distinct from no menu.** 27 of the 48 groups offer
+  no experimental at all, so 368 of the 1005 grouped modules have an empty experimental
   list while retaining blueprints.
 - **Key form:** the Anti-Guardian blueprint is listed under `GuardianModule_Sturdy`, the id
   a Loadout writes and the one EDSY uses — the same and only spelling `blueprints.jsonc`
@@ -1534,8 +1547,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `guardianPowerDistributors` and `guardianHullReinforcements`) therefore carry no
     experimental effects in the catalogue at all. Blueprints are unaffected on every
     module.
-- **Multi-cannon Overcharged uses a distinct stored key.** The `multiCannons` and
-  `antiXenoMultiCannons` menus list `MC_Overcharged`; other weapon menus list
+- **Multi-cannon Overcharged uses a distinct stored key.** The `multiCannons` menu lists
+  `MC_Overcharged`; other weapon menus list
   `Weapon_Overcharged`. Coriolis `modifications/modules.json` assigns the first key to
   multi-cannons and the second to six other weapon groups, while
   `modifications/blueprints.json` gives both the journal fdname
@@ -1544,8 +1557,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `modifications/blueprints.json` was acquired 2026-08-07 UTC and has SHA-256
   `cba5a11fc7728e0d1da63fcbbc8d9dfedf9fbc51c99692ee187c7bf0293b3fa1`.
   - EDSY uses one `wpn_oc` recipe and includes the clip reduction on every listed
-    multi-cannon group. Coriolis has no AX multi-cannon menu, so the AX binding combines
-    EDSY's group coverage with coriolis's key for the clip-bearing recipe.
+    multi-cannon group.
   - Frontier journal captures independently show `Weapon_Overcharged` without an
     `AmmoClipSize` modifier on a large gimballed cannon
     (`journal-federation-corvette.jsonc`), a medium fixed fragment cannon
@@ -1554,8 +1566,6 @@ up straight through with no disambiguation at all. Both paths are evidence that
     modifier legs reproduce the published recipe values. EDEngineer's
     `blueprints.json` likewise assigns the clip reduction to multi-cannon types and not
     to cannon, fragment-cannon or plasma-accelerator types.
-  - The two Merc-Coin AX multi-cannon rows in `pre-engineered.jsonc` use
-    `MC_Overcharged`, matching the menu binding and the clip-bearing recipe.
 - **An ordinary recipe on a Guardian weapon identifies a final purchase, not an engineer
   roll.** The three Guardian weapon groups list **only** Anti-Guardian Zone Resistance,
   exactly as the six Guardian _module_ groups do. `Weapon_RapidFire` on `guardianGauss`,
@@ -1679,8 +1689,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     and several rows are annotated as having been obtainable both ways — the six SCO "V1"
     drives most obviously. `acquisition` records the tag; it is not a claim that no other
     route ever existed.
-- **`engineeringLocked: true` marks all seven pre-engineered Guardian-weapon rows as
-  final.** The source and capture evidence are recorded once under Engineering options.
+- **`engineeringLocked: true` marks 12 final weapon rows:** the seven pre-engineered
+  Guardian weapons and the five fixed Enzyme/AX articles. Their evidence is recorded once
+  under Engineering options.
 - **A reward variant is not reproducible by engineering the same blueprint.** Alongside
   its blueprint and effect, each reward carries hand-set modifier overrides no blueprint
   grants — that is what makes it a reward rather than a shortcut. The `blueprint` /

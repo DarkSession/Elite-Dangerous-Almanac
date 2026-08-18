@@ -423,7 +423,9 @@ test('a final pre-engineered Guardian weapon stays locked when resolved', () => 
 test('a pre-engineered damage modifier scales every exact damage component', () => {
     const symbol = 'Hpt_ATMultiCannon_Gimbal_Medium';
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
-    const fitted = getPreEngineeredStats(only({ symbol, blueprint: 'MC_Overcharged', grade: 5 }))!;
+    const fitted = getPreEngineeredStats(
+        only({ symbol, blueprint: 'Weapon_Overcharged', grade: 5 }),
+    )!;
     assert.ok(Math.abs(fitted.damage! - stock.damage! * 1.1) < 1e-9);
     assert.ok(
         Math.abs(fitted.damageComponents!.kinetic! - stock.damageComponents!.kinetic! * 1.1) < 1e-9,

@@ -111,8 +111,6 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * // A multi-cannon's Overcharged is the multi-cannon recipe, clip penalty and all.
  * resolveBlueprintForModule('Hpt_MultiCannon_Fixed_Medium', 'Weapon_Overcharged');
  * // -> 'MC_Overcharged'
- * resolveBlueprintForModule('Hpt_ATMultiCannon_Gimbal_Medium', 'Weapon_Overcharged');
- * // -> 'MC_Overcharged'
  * resolveBlueprintForModule('Hpt_BeamLaser_Fixed_Small', 'Weapon_Overcharged');
  * // -> 'Weapon_Overcharged'
  * ```

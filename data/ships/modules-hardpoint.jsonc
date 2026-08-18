@@ -2578,7 +2578,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
-    "kind": "antiXenoMissileRacks",
     "name": "AX Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2616,7 +2615,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
-    "kind": "antiXenoMissileRacks",
     "name": "AX Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2926,7 +2924,6 @@
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
-    "kind": "experimentalWeapons",
     "name": "Enzyme Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -4372,7 +4369,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
-    "kind": "antiXenoMultiCannons",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Gimballed",
     "class": 3,
@@ -4407,7 +4403,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
-    "kind": "antiXenoMultiCannons",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Gimballed",
     "class": 2,

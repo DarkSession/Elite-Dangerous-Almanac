@@ -110,11 +110,6 @@
     "pt": "Torpedos",
     "ru": "Торпеды"
   },
-  "antiXenoMultiCannons": {
-    "en": "Exp - Anti-Xeno Multi-Cannons",
-    "pt": "Exp - Canhões de Repetição A-X",
-    "ru": "Экс - Многоствольные орудия АИ"
-  },
   "shieldBoosters": {
     "en": "Shield Boosters",
     "pt": "Potenciadores de Escudo",
@@ -229,14 +224,6 @@
     "en": "Wake Scanners",
     "pt": "Scanners de Rastro",
     "ru": "Сканеры следа FSD"
-  },
-  "experimentalWeapons": {
-    "en": "Experimental Weapons"
-  },
-  "antiXenoMissileRacks": {
-    "en": "Exp - Anti-Xeno Missile Racks",
-    "pt": "Exp - Estante de Mísseis A-X",
-    "ru": "Экс - Блоки ракет АИ"
   },
   "guardianGauss": {
     "en": "Exp - Guardian Gauss",

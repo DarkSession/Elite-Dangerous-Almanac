@@ -26,7 +26,7 @@
  *
  * **A menu lists the id of the recipe it rolls, which is not always the id the game
  * writes.** The three utility-scanner menus list `Scanner_LongRange` /
- * `Scanner_WideAngle`, and `multiCannons` / `antiXenoMultiCannons` list `MC_Overcharged`;
+ * `Scanner_WideAngle`, and the `multiCannons` group lists `MC_Overcharged`;
  * their three colliding journal spellings live once in `blueprint-journal-names.jsonc`.
  * What this file contributes is which of the two recipes sharing an id a given module is
  * offered.
@@ -44,8 +44,8 @@
  * expanded — subtract it from the group's `experimentals` to get the exact set. Modules
  * absent from `exclusions` take their whole group's list.
  *
- * Only modules with an ordinary engineering menu appear at all, 1010 of the 1199; the
- * other 189 are the families no ordinary blueprint reaches, plus the individual modules
+ * Only modules with an ordinary engineering menu appear at all, 1005 of the 1199; the
+ * other 194 are the families no ordinary blueprint reaches, plus the individual modules
  * upstream denies every blueprint. A purchased Mercenary module may still take the bespoke
  * grades 2–5 it is sold with; that purchase-specific route is not an ordinary menu and is
  * recorded by `pre-engineered.jsonc`. SOURCES.md lists both sets.
@@ -459,15 +459,6 @@
         "special_weapon_toughened"
       ]
     },
-    "antiXenoMultiCannons": {
-      "name": "Exp - Anti-Xeno Multi-Cannons",
-      "blueprints": [
-        "MC_Overcharged"
-      ],
-      "experimentals": [
-        "special_auto_loader"
-      ]
-    },
     "shieldBoosters": {
       "name": "Shield Boosters",
       "blueprints": [
@@ -686,20 +677,6 @@
         "Scanner_LongRange",
         "Scanner_WideAngle",
         "Sensor_FastScan"
-      ],
-      "experimentals": []
-    },
-    "experimentalWeapons": {
-      "name": "Experimental Weapons",
-      "blueprints": [
-        "Weapon_HighCapacity"
-      ],
-      "experimentals": []
-    },
-    "antiXenoMissileRacks": {
-      "name": "Exp - Anti-Xeno Missile Racks",
-      "blueprints": [
-        "Weapon_HighCapacity"
       ],
       "experimentals": []
     },
@@ -1142,8 +1119,6 @@
     "Hpt_AdvancedTorpPylon_Fixed_Small": "torpedoes",
     "Hpt_AdvancedTorpPylon_Fixed_Medium": "torpedoes",
     "Hpt_AdvancedTorpPylon_Fixed_Large": "torpedoes",
-    "Hpt_ATMultiCannon_Gimbal_Large": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Gimbal_Medium": "antiXenoMultiCannons",
     "Hpt_ShieldBooster_Size0_Class1": "shieldBoosters",
     "Hpt_ShieldBooster_Size0_Class2": "shieldBoosters",
     "Hpt_ShieldBooster_Size0_Class3": "shieldBoosters",
@@ -1719,9 +1694,6 @@
     "Hpt_CloudScanner_Size0_Class3": "wakeScanners",
     "Hpt_CloudScanner_Size0_Class4": "wakeScanners",
     "Hpt_CloudScanner_Size0_Class5": "wakeScanners",
-    "Hpt_CausticMissile_Fixed_Medium": "experimentalWeapons",
-    "Hpt_ATDumbfireMissile_Fixed_Medium": "antiXenoMissileRacks",
-    "Hpt_ATDumbfireMissile_Fixed_Large": "antiXenoMissileRacks",
     "Hpt_Guardian_GaussCannon_Fixed_Medium": "guardianGauss",
     "Hpt_Guardian_GaussCannon_Fixed_Small": "guardianGauss",
     "Hpt_Guardian_PlasmaLauncher_Fixed_Medium": "guardianPlasma",

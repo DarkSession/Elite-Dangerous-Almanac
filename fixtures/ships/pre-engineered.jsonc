@@ -6,9 +6,9 @@
  * unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs
  * a base module `symbol` (joins to the module catalogues) with the journal `blueprint` identity
  * baked in, the `grade` already applied, and an optional `experimental`. The three festive event
- * rewards carry grade-5 `Decorative_*` identities. `engineeringLocked` marks the seven
- * Guardian-weapon articles — the catalogue's only Guardian variants — that are final and accept
- * no further engineering. No narrower key than the (symbol, blueprint, grade, experimental)
+ * rewards carry grade-5 `Decorative_*` identities. `engineeringLocked` marks final articles that
+ * accept no further engineering: the seven Guardian-weapon variants and the five fixed Enzyme/AX
+ * variants. No narrower key than the (symbol, blueprint, grade, experimental)
  * tuple is unique across the catalogue — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the
  * catalogue size and its split by acquisition; `records` pins individual pairings;
@@ -33,8 +33,13 @@
     "withMercCoinCost": 22
   },
   "engineeringLocked": {
-    "count": 7,
+    "count": 12,
     "symbols": [
+      "Hpt_ATDumbfireMissile_Fixed_Large",
+      "Hpt_ATDumbfireMissile_Fixed_Medium",
+      "Hpt_ATMultiCannon_Gimbal_Large",
+      "Hpt_ATMultiCannon_Gimbal_Medium",
+      "Hpt_CausticMissile_Fixed_Medium",
       "Hpt_Guardian_GaussCannon_Fixed_Medium",
       "Hpt_Guardian_GaussCannon_Fixed_Small",
       "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
@@ -438,10 +443,11 @@
     {
       "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
       "name": "Enhanced AX Multi-Cannon",
-      "blueprint": "MC_Overcharged",
+      "blueprint": "Weapon_Overcharged",
       "grade": 5,
       "acquisition": "techBroker",
       "experimental": "special_auto_loader",
+      "engineeringLocked": true,
       "modifiers": [
         {
           "label": "Damage",
@@ -463,10 +469,11 @@
     {
       "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
       "name": "Enhanced AX Multi-Cannon",
-      "blueprint": "MC_Overcharged",
+      "blueprint": "Weapon_Overcharged",
       "grade": 5,
       "acquisition": "techBroker",
       "experimental": "special_auto_loader",
+      "engineeringLocked": true,
       "modifiers": [
         {
           "label": "Damage",

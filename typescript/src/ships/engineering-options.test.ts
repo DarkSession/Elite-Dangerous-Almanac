@@ -300,6 +300,20 @@ test('the stock Mining Laser and Abrasion Blaster have no ordinary engineering m
     }
 });
 
+test('the Enzyme and AX weapons have no ordinary engineering menu', () => {
+    for (const symbol of [
+        'Hpt_CausticMissile_Fixed_Medium',
+        'Hpt_ATDumbfireMissile_Fixed_Medium',
+        'Hpt_ATDumbfireMissile_Fixed_Large',
+        'Hpt_ATMultiCannon_Gimbal_Medium',
+        'Hpt_ATMultiCannon_Gimbal_Large',
+    ]) {
+        assert.equal(getEngineeringGroup(symbol), null, symbol);
+        assert.deepEqual(getBlueprintsForModule(symbol), [], symbol);
+        assert.deepEqual(getExperimentalsForModule(symbol), [], symbol);
+    }
+});
+
 test('a blueprint query returns the union across every group offering it', () => {
     const { blueprint, experimentals } = fixture.blueprintUnion;
     assert.deepEqual(getExperimentalsForBlueprint(blueprint), experimentals);

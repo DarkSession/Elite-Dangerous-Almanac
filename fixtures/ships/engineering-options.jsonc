@@ -19,10 +19,10 @@
  */
 {
   "counts": {
-    "groups": 51,
-    "modules": 1010,
+    "groups": 48,
+    "modules": 1005,
     "exclusions": 23,
-    "modulesWithoutExperimental": 371,
+    "modulesWithoutExperimental": 368,
     "blueprintsOffered": 85
   },
   "groupSizes": {
@@ -48,7 +48,6 @@
     "missiles": 10,
     "mines": 3,
     "torpedoes": 3,
-    "antiXenoMultiCannons": 2,
     "shieldBoosters": 5,
     "bulkheads": 241,
     "lifeSupports": 41,
@@ -72,8 +71,6 @@
     "manifestScanners": 5,
     "pointDefence": 1,
     "wakeScanners": 5,
-    "experimentalWeapons": 1,
-    "antiXenoMissileRacks": 2,
     "guardianGauss": 2,
     "guardianPlasma": 6,
     "guardianShard": 6
@@ -483,12 +480,6 @@
       ]
     },
     {
-      "id": "antiXenoMultiCannons",
-      "name": "Exp - Anti-Xeno Multi-Cannons",
-      "blueprints": ["MC_Overcharged"],
-      "experimentals": ["special_auto_loader"]
-    },
-    {
       "id": "shieldBoosters",
       "name": "Shield Boosters",
       "blueprints": [
@@ -711,18 +702,6 @@
       "experimentals": []
     },
     {
-      "id": "experimentalWeapons",
-      "name": "Experimental Weapons",
-      "blueprints": ["Weapon_HighCapacity"],
-      "experimentals": []
-    },
-    {
-      "id": "antiXenoMissileRacks",
-      "name": "Exp - Anti-Xeno Missile Racks",
-      "blueprints": ["Weapon_HighCapacity"],
-      "experimentals": []
-    },
-    {
       "id": "guardianGauss",
       "name": "Exp - Guardian Gauss",
       "blueprints": ["GuardianModule_Sturdy"],
@@ -831,10 +810,6 @@
       "group": "torpedoes"
     },
     {
-      "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
-      "group": "antiXenoMultiCannons"
-    },
-    {
       "symbol": "Hpt_ShieldBooster_Size0_Class1",
       "group": "shieldBoosters"
     },
@@ -927,14 +902,6 @@
       "group": "wakeScanners"
     },
     {
-      "symbol": "Hpt_CausticMissile_Fixed_Medium",
-      "group": "experimentalWeapons"
-    },
-    {
-      "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
-      "group": "antiXenoMissileRacks"
-    },
-    {
       "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
       "group": "guardianGauss"
     },
@@ -963,6 +930,11 @@
     "Int_PlanetApproachSuite",
     "Int_ModuleReinforcement_Size3_Class2",
     "Hpt_ATMultiCannon_Turret_Large",
+    "Hpt_ATMultiCannon_Gimbal_Medium",
+    "Hpt_ATMultiCannon_Gimbal_Large",
+    "Hpt_ATDumbfireMissile_Fixed_Medium",
+    "Hpt_ATDumbfireMissile_Fixed_Large",
+    "Hpt_CausticMissile_Fixed_Medium",
     "Hpt_MiningLaser_Fixed_Medium",
     "Hpt_FlechetteLauncher_Fixed_Medium"
   ],

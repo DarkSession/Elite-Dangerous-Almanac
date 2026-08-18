@@ -76,8 +76,8 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
     // `applyBlueprint` gates experimental effects on the engineering menu alone, with no
     // pre-engineered leg beside the one it has for blueprints. A fixed reward may arrive
     // carrying an effect outside the stock module's menu, but that identifies the article
-    // rather than making the effect applicable. The long-range Mining Laser is the one
-    // such record in this catalogue.
+    // rather than making the effect applicable. The two Enhanced AX Multi-Cannons and the
+    // long-range Mining Laser are the three such records in this catalogue.
     assert.deepEqual(
         PRE_ENGINEERED_MODULES.filter(
             (variant) =>
@@ -90,6 +90,18 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
             acquisition,
         })),
         [
+            {
+                symbol: 'Hpt_ATMultiCannon_Gimbal_Medium',
+                blueprint: 'Weapon_Overcharged',
+                experimental: 'special_auto_loader',
+                acquisition: 'techBroker',
+            },
+            {
+                symbol: 'Hpt_ATMultiCannon_Gimbal_Large',
+                blueprint: 'Weapon_Overcharged',
+                experimental: 'special_auto_loader',
+                acquisition: 'techBroker',
+            },
             {
                 symbol: 'Hpt_MiningLaser_Fixed_Small',
                 blueprint: 'Weapon_LongRange',
@@ -131,6 +143,7 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
     assert.equal(mercenary.length, fixture.counts.mercenary);
     for (const variant of mercenary) {
         assert.equal(variant.grade, 1, `${variant.symbol}: purchased grade`);
+        assert.equal(variant.engineeringLocked, undefined, `${variant.symbol}: locked purchase`);
         assert.ok(
             !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
             `${variant.symbol}: bespoke recipe leaked into the ordinary menu`,
@@ -181,19 +194,19 @@ test('every Mercenary blueprint is exclusive to its purchased article', () => {
     }
 });
 
-test('the only pre-engineered Guardian variants are the pinned final weapons', () => {
+test('the pinned final pre-engineered weapons are locked', () => {
     const guardian = PRE_ENGINEERED_MODULES.filter((variant) =>
         variant.symbol.toLowerCase().includes('guardian'),
     );
     const locked = PRE_ENGINEERED_MODULES.filter((variant) => variant.engineeringLocked);
-    assert.deepEqual(guardian, locked);
+    assert.equal(guardian.length, 7);
+    assert.ok(guardian.every((variant) => variant.engineeringLocked));
     assert.equal(locked.length, fixture.engineeringLocked.count);
     assert.deepEqual(
         [...new Set(locked.map((variant) => variant.symbol))].sort(),
         fixture.engineeringLocked.symbols,
     );
     for (const variant of locked) {
-        assert.deepEqual(getBlueprintsForModule(variant.symbol), ['GuardianModule_Sturdy']);
         assert.deepEqual(getExperimentalsForModule(variant.symbol), []);
         assert.ok(!blueprintAvailableFor(variant.symbol, variant.blueprint));
     }
@@ -237,16 +250,12 @@ test('a community-goal or tech-broker reward records a real blueprint grade', ()
     }
 });
 
-test('every variant names the recipe its own module rolls, not a colliding spelling', () => {
-    // `blueprint` joins to `BLUEPRINTS`, so it must name the recipe rather than the id a
-    // journal writes — and on the three colliding ids those differ. A row recorded under
-    // the journal spelling would be accepted by `blueprintAvailableFor` through the sale
-    // route while `applyBlueprint` folded the *other* recipe, which
-    // `loadout-engineering.ts` calls out as reachable and otherwise uncatchable. Asserted
-    // over the whole catalogue rather than only the rows that meet it, because the
-    // hazard arrives with the next row somebody transcribes from a journal.
+test('every Mercenary variant names the recipe its own module rolls', () => {
+    // A Mercenary row is an upgrade route, so a colliding journal spelling here would be
+    // accepted by the sale route while `applyBlueprint` folded a different recipe.
+    // Fixed rewards instead retain the journal identity that identifies the article.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition === 'eventReward') continue;
+        if (variant.acquisition !== 'mercenary') continue;
         assert.equal(
             resolveBlueprintForModule(variant.symbol, variant.blueprint),
             variant.blueprint,

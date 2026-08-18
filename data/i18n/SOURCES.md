@@ -149,17 +149,16 @@ translation.
   `9b199db635f7b968b75c8e9a14bdce68e37e4120`,
   `493fa09c4d4a11f0282e1e4076a67fed8d7f317e` and
   `36496372d056754c34da03ca6836e27987c96b6a` respectively.
-- **Derivation:** each of the 51 group ids and its canonical English name is projected
+- **Derivation:** each of the 48 group ids and its canonical English name is projected
   from `data/ships/engineering-options.jsonc`. That catalogue derives its group menus
   from EDSY, with the supplemental sources and corrections recorded in
   `data/ships/SOURCES.md`. Where a canonical English name matches an EDSY `mtype-*`
   value in `lang-en.json` byte-for-byte and uniquely, explicit values with the same key
   are copied from `lang-pt.json` and `lang-ru.json`.
 - **Coverage:** canonical English covers every engineering option group. Portuguese and
-  Russian each cover 46 of 51. The Guardian power-plant, power-distributor and
-  hull-reinforcement groups have no distinct EDSY label, `experimentalWeapons` does not
-  match EDSY's broader `Experimental` label, and EDSY carries no Portuguese or Russian
-  value for `frameShiftDrivesSCO`.
+  Russian each cover 44 of 48. The Guardian power-plant, power-distributor and
+  hull-reinforcement groups have no distinct EDSY label, and EDSY carries no Portuguese
+  or Russian value for `frameShiftDrivesSCO`.
 - **Manual corrections:** none.
 
 ## `experimental-effect-descriptions.jsonc`

@@ -1535,8 +1535,6 @@ type FixtureShipsEngineeringOptions = {
         symbol: string;
     }[];
     groupSizes: {
-        antiXenoMissileRacks: number;
-        antiXenoMultiCannons: number;
         autoFieldMaintenanceUnits: number;
         beamLasers: number;
         bulkheads: number;
@@ -1545,7 +1543,6 @@ type FixtureShipsEngineeringOptions = {
         chaffLaunchers: number;
         collectionLimpets: number;
         ecms: number;
-        experimentalWeapons: number;
         fragmentCannons: number;
         frameShiftDrives: number;
         frameShiftDrivesSCO: number;

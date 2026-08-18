@@ -245,8 +245,9 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     const primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
     // A reward has no distinct module symbol. Identify its hand-set stat signature so
     // values absent from the capture still come from the fitted article; explicit
-    // captured modifiers remain authoritative. Guardian weapons retain the recipe
-    // fallback because a capture without modifiers can still identify a final article.
+    // captured modifiers remain authoritative. A partial capture still retains a final
+    // catalogue article's lock from its symbol/blueprint/grade tuple; Guardian weapons
+    // retain the broader recipe fallback for final articles outside this catalogue.
     for (const module of modules.values()) {
         const engineering = module.Engineering;
         const variant = identifyPreEngineeredVariant(module);
@@ -286,8 +287,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             variantStats?.engineeringLocked ||
             // A partial block naming no recipe identifies no final article, and the
             // resolver below requires one rather than handing a nullish id back.
-            typeof engineering?.BlueprintName !== 'string' ||
-            !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)
+            typeof engineering?.BlueprintName !== 'string'
         ) {
             continue;
         }
@@ -296,16 +296,15 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             engineering.BlueprintName,
             'ShipLoadout.fromLoadout: module.Engineering.BlueprintName',
         );
-        const normalizedExperimental = normalizeKey(
-            engineering.ExperimentalEffect,
-            'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
-        );
         const exact = getPreEngineeredVariants(module.Item).find(
             (candidate) =>
+                candidate.engineeringLocked === true &&
                 candidate.blueprint.toLowerCase() === normalizedBlueprint &&
-                candidate.grade === engineering.Level &&
-                candidate.experimental?.toLowerCase() === normalizedExperimental,
+                candidate.grade === engineering.Level,
         );
+        if (!exact && !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)) {
+            continue;
+        }
         const stats = exact
             ? getPreEngineeredStats(exact)
             : builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');

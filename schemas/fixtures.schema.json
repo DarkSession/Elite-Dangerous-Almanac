@@ -2905,8 +2905,6 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "antiXenoMissileRacks": { "type": "integer" },
-            "antiXenoMultiCannons": { "type": "integer" },
             "autoFieldMaintenanceUnits": { "type": "integer" },
             "beamLasers": { "type": "integer" },
             "bulkheads": { "type": "integer" },
@@ -2915,7 +2913,6 @@
             "chaffLaunchers": { "type": "integer" },
             "collectionLimpets": { "type": "integer" },
             "ecms": { "type": "integer" },
-            "experimentalWeapons": { "type": "integer" },
             "fragmentCannons": { "type": "integer" },
             "frameShiftDrives": { "type": "integer" },
             "frameShiftDrivesSCO": { "type": "integer" },
@@ -2958,8 +2955,6 @@
             "wakeScanners": { "type": "integer" }
           },
           "required": [
-            "antiXenoMissileRacks",
-            "antiXenoMultiCannons",
             "autoFieldMaintenanceUnits",
             "beamLasers",
             "bulkheads",
@@ -2968,7 +2963,6 @@
             "chaffLaunchers",
             "collectionLimpets",
             "ecms",
-            "experimentalWeapons",
             "fragmentCannons",
             "frameShiftDrives",
             "frameShiftDrivesSCO",
