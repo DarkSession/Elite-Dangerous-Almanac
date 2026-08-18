@@ -246,6 +246,24 @@
       "expected": "Frame Shift Drives"
     },
     {
+      "kind": "engineeringGroup",
+      "identifier": "frameShiftDrives",
+      "locale": "pt-BR",
+      "expected": "Motores de Distorção de Fase"
+    },
+    {
+      "kind": "engineeringGroup",
+      "identifier": "guardianGauss",
+      "locale": "ru-RU",
+      "expected": "Экс - Пушки Гаусса Стражей"
+    },
+    {
+      "kind": "engineeringGroup",
+      "identifier": "guardianPowerPlants",
+      "locale": "pt",
+      "expected": null
+    },
+    {
       "kind": "experimentalEffectDescription",
       "identifier": "special_auto_loader",
       "locale": "en",

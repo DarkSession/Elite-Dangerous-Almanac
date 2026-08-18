@@ -144,13 +144,22 @@ translation.
 
 - **Acquired:** 2026-08-18 UTC.
 - **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`.
+  database version `424009901`, last-modified marker `20260810`; `lang-en.json`,
+  `lang-pt.json` and `lang-ru.json` have Git blob ids
+  `9b199db635f7b968b75c8e9a14bdce68e37e4120`,
+  `493fa09c4d4a11f0282e1e4076a67fed8d7f317e` and
+  `36496372d056754c34da03ca6836e27987c96b6a` respectively.
 - **Derivation:** each of the 51 group ids and its canonical English name is projected
   from `data/ships/engineering-options.jsonc`. That catalogue derives its group menus
   from EDSY, with the supplemental sources and corrections recorded in
-  `data/ships/SOURCES.md`.
-- **Coverage:** canonical English covers every engineering option group. The accepted
-  sources carry no group-label translation table.
+  `data/ships/SOURCES.md`. Where a canonical English name matches an EDSY `mtype-*`
+  value in `lang-en.json` byte-for-byte and uniquely, explicit values with the same key
+  are copied from `lang-pt.json` and `lang-ru.json`.
+- **Coverage:** canonical English covers every engineering option group. Portuguese and
+  Russian each cover 46 of 51. The Guardian power-plant, power-distributor and
+  hull-reinforcement groups have no distinct EDSY label, `experimentalWeapons` does not
+  match EDSY's broader `Experimental` label, and EDSY carries no Portuguese or Russian
+  value for `frameShiftDrivesSCO`.
 - **Manual corrections:** none.
 
 ## `experimental-effect-descriptions.jsonc`
@@ -182,7 +191,7 @@ translation.
 ## Known gaps
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
-locale. The accepted sources carry only canonical English for slot and restriction labels,
-fixed reward names, and structured loadout, calculation, SLEF and edit messages. Missing
-source-backed translations remain tracked by
+locale. The accepted sources carry only canonical English for some engineering-group labels,
+slot and restriction labels, fixed reward names, and structured loadout, calculation, SLEF
+and edit messages. Missing source-backed translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
