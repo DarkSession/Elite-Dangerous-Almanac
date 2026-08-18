@@ -378,6 +378,27 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
     assert.doesNotMatch(effects, /Frameshiftantrieb|Erhöhte FSA-Reichweite/);
     assert.doesNotMatch(materials, /Graphène|Frameshiftantrieb/);
     assert.doesNotMatch(microResources, /Gitterwiderstände|Frameshiftantrieb/);
+    assert.doesNotMatch(
+        ships,
+        /Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
+    );
+    assert.doesNotMatch(preEngineered, /Faulcon DeLacy|Frame Shift Drives|Reloads the weapon/);
+    assert.doesNotMatch(
+        engineeringGroups,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Reloads the weapon/,
+    );
+    assert.doesNotMatch(
+        effectDescriptions,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives/,
+    );
+    assert.doesNotMatch(
+        slots,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
+    );
+    assert.doesNotMatch(
+        diagnostics,
+        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
+    );
 });
 
 test('the ship-loadout subpath exports its facade and structured edit error', async () => {
