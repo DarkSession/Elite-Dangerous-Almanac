@@ -1152,6 +1152,11 @@ test('the publication manifest includes consumer assets, documentation and notic
         canonical,
         'THIRD_PARTY_NOTICES.md is stale — run `pnpm run build` (it copies ATTRIBUTIONS.md)',
     );
+    assert.match(
+        notices,
+        /npm package includes matching copies under `PROVENANCE\/`/,
+        'the shipped notice must identify its bundled provenance record',
+    );
     // Every source the library takes something from has to be named in the shipped
     // notice, with its terms: the file is the one place a source is described.
     for (const source of [
