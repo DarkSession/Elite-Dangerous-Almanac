@@ -38,6 +38,7 @@ interface CorpusBuild {
         fuelCapacity: number;
         maxJumpRange: number | null;
         power: { available: number; retracted: number; deployed: number; withinBudget: boolean };
+        shieldsPowered?: boolean;
         shields: {
             strength: number;
             resistances: { kinetic: number; thermal: number; explosive: number };
@@ -297,7 +298,17 @@ test('every build reproduces its pinned metrics', () => {
             `${build.id} power.withinBudget`,
         );
 
-        const shields = loadout.shieldMetrics();
+        let shields = loadout.shieldMetrics();
+        if (expected.shieldsPowered === false) {
+            assert.equal(shields, null, `${build.id}: expected shed shields`);
+            const poweredLoadout = assemble(build);
+            const fittedPlant = poweredLoadout.fittedModuleAt('PowerPlant');
+            assert.ok(fittedPlant, `${build.id}: power plant`);
+            const plant = getModuleBySymbol(fittedPlant.symbol, ALL_MODULES);
+            assert.ok(plant, `${build.id}: power plant stats`);
+            poweredLoadout.setModule('PowerPlant', { ...plant, powerCapacity: 1_000_000 });
+            shields = poweredLoadout.shieldMetrics();
+        }
         if (expected.shields === null) {
             assert.equal(shields, null, `${build.id}: expected no shields`);
         } else {
@@ -312,7 +323,7 @@ test('every build reproduces its pinned metrics', () => {
             }
         }
 
-        const armour = loadout.armourMetrics();
+        const armour = loadout.armourMetrics()!;
         close(armour.hitPoints, expected.armour.hitPoints, `${build.id} armour.hitPoints`);
         for (const type of ['kinetic', 'thermal', 'explosive'] as const) {
             close(
@@ -366,4 +377,10 @@ test('the corpus spans the roles, the hull sizes and the engineered/stock divide
     );
     const entries = builds.reduce((n, b) => n + b.modules.filter((m) => m.engineering).length, 0);
     assert.ok(entries >= 1800, `only ${entries} engineered modules, expected at least 1800`);
+
+    const shieldless = builds.filter((build) => build.metrics.shields === null);
+    const shedShields = builds.filter((build) => build.metrics.shieldsPowered === false);
+    assert.equal(shieldless.length, 27, 'genuinely shieldless corpus builds');
+    assert.equal(shedShields.length, 25, 'shed generators with retained shield arithmetic');
+    assert.ok(shedShields.every((build) => build.metrics.shields !== null));
 });

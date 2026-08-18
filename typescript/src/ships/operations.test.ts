@@ -226,6 +226,7 @@ test('shared diagnostic cases expose stable localization keys', () => {
     assert.deepEqual(
         {
             field: calculationIssue.field,
+            reason: calculationIssue.reason,
             slot: calculationIssue.slot,
             symbol: calculationIssue.symbol,
             params: calculationIssue.params,

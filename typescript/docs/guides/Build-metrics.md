@@ -41,7 +41,7 @@ declare const build: ShipLoadout; // a Federal Corvette
 
 build.powerBudget().deployed; // -> 46.8597
 build.shieldMetrics()?.strength; // -> 3940.4
-build.armourMetrics().hitPoints; // -> 5062.6
+build.armourMetrics()?.hitPoints; // -> 5062.6
 build.weaponMetrics().total.damagePerSecond; // -> 137.04
 ```
 
@@ -143,8 +143,13 @@ curve against the **bare hull mass**, not the loaded ship — so fitting more mo
 weakens your shields. And past the generator's `maxMass` it will not raise a shield at
 all, which the curve reports as `0` rather than as a small number.
 
-`shieldMetrics()` returns `null` when the build has no generator; `armourMetrics()` always
-returns a figure, because every hull has armour.
+`shieldMetrics()` evaluates the generator, boosters and reinforcement against the
+hardpoints-stowed (`retracted`) budget. It returns `null` when no generator is powered in
+that state. `shieldMetricsResult()` distinguishes a missing, switched-off or shed generator
+from an unresolved hull or power supply. Every known hull still has armour.
+`mobilityMetrics()` and `shieldRecovery()` use the same retracted power state for their
+thrusters, generator and distributor, and their `…Result` companions explain an unavailable
+answer in the same way.
 
 ## Weapon output
 
@@ -322,13 +327,24 @@ differently, so do not assume a figure is
 load-bearing:
 
 - `powerBudget()` names it, in the `unknownDraws` the Power section above describes.
-- `unladenMass`, `fuelCapacity` and `cargoCapacity` are the three that come in
-  nullable/`…Result` pairs: the property is `null` and the result names what was missing.
+- `unladenMass`, `fuelCapacity`, `cargoCapacity`, `mobilityMetrics()`, `shieldMetrics()`
+  and `shieldRecovery()` come in nullable/`…Result` pairs: the convenience value is
+  `null` and the result names what was missing, switched off or shed. Each issue's typed
+  `reason` is `missing`, `unresolved`, `disabled`, `shed` or `invalid`; use it instead of
+  parsing the diagnostic message.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
-- `shieldMetrics()` and `armourMetrics()` take an unresolved module's contribution as
-  zero and report a figure anyway, and `weaponMetrics()` omits a hardpoint it cannot
-  resolve from `weapons` and from the totals. None of the three carries a diagnostic.
+- `armourMetrics()` returns `null` when the hull is unresolved. Shield boosters and
+  reinforcement whose records are unresolved contribute zero, while `weaponMetrics()`
+  omits an unresolved hardpoint from `weapons` and the totals.
+- An unresolved power plant makes every power-dependent metric unavailable rather than
+  projecting its dependants as powered. `powerBudget()` reports `available: 0`; the
+  mobility, shield and recovery result companions identify `powerCapacity` directly,
+  including when a resolved caller-supplied plant record merely lacks that field. Those
+  result companions report a non-positive or non-finite capacity as `invalid` rather than
+  asking `powerBudget()` to accept it; they likewise identify a malformed known module
+  draw as `powerDraw`. The direct budget remains strict and throws for either invalid
+  numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
 - `heatMetrics()` returns `null` outright when the build has no powered plant or its
@@ -341,8 +357,8 @@ load-bearing:
   the modules that did resolve rather than a bound: `overheats` can be wrong in either
   direction, and a settled level with it.
 
-Check `build.validation.issues` for `unknownModule` before trusting any of the above on a
-build you did not assemble yourself.
+Use each available `…Result` companion before trusting a nullable metric, and check
+`build.validation.issues` for `unknownModule` on a build you did not assemble yourself.
 
 ## Next
 

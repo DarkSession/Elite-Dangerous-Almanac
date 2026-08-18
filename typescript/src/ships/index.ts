@@ -311,6 +311,7 @@ export {
     calculateFuelCapacity,
     calculateUnladenMass,
     type CalculationIssue,
+    type CalculationIssueReason,
     type CalculationResult,
     type FuelCapacity,
     type LoadoutCalculationModule,

@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 
 import { ShipLoadout } from './ship-loadout.js';
 import type { LoadoutSlot } from './loadout-slot.js';
+import { heatInputFor } from './internal/loadout-metrics.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import type { EngineeringModifier, LoadoutEvent } from './slef.js';
+import type { EngineeringModifier, LoadoutEvent, LoadoutModule } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
@@ -39,6 +40,7 @@ import { SHIPS, getShipBySymbol } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff, damagePerSecond } from './weapons.js';
 import type { HeatMetrics, HeatState } from './heat.js';
+import { powerBudget as calculatePowerBudget } from './power.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredJournalModifiers, getPreEngineeredStats } from './pre-engineered-stats.js';
@@ -199,10 +201,9 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(mobility.boost > mobility.speed);
     assert.ok(stock.mobilityMetrics({ enginesPips: 2 })!.speed < mobility.speed);
 
-    const enhanced = ShipLoadout.default('SideWinder').setModule(
-        'MainEngines',
-        mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES),
-    );
+    const enhanced = ShipLoadout.default('SideWinder')
+        .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class5', CORE_MODULES))
+        .setModule('MainEngines', mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES));
     const enhancedMobility = enhanced.mobilityMetrics()!;
     assert.notEqual(
         enhancedMobility.massCurveMultiplier,
@@ -380,10 +381,331 @@ test('explicit mobility fuel needs no tank capacity and excludes reserve mass', 
     }
 });
 
-test('shield recovery validates SYS pips even without a generator', () => {
+test('metric methods validate pips before build state and name their own scopes', () => {
     const empty = ShipLoadout.empty('SideWinder');
+    assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.mobilityMetricsResult({ enginesPips: 5 }), {
+        name: 'RangeError',
+        message:
+            'ShipLoadout.mobilityMetricsResult: enginesPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.shieldMetrics({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.shieldMetrics: systemsPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.shieldMetricsResult({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.shieldMetricsResult: systemsPips must be a finite number from 0 to 4',
+    });
     assert.equal(empty.shieldRecovery(), null);
-    assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), RangeError);
+    assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.shieldRecovery: systemsPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.shieldRecoveryResult({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message:
+            'ShipLoadout.shieldRecoveryResult: systemsPips must be a finite number from 0 to 4',
+    });
+});
+
+test('mobility and shield metrics stop when the power budget sheds their modules', () => {
+    const disabled = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
+    assert.equal(disabled.powerBudget().available, 0);
+    assert.equal(disabled.mobilityMetrics(), null);
+    assert.equal(disabled.shieldRecovery(), null);
+
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
+    const overloaded = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) => ({
+            ...module,
+            ...(module.Slot === 'PowerPlant' ? { Item: 'Int_Powerplant_Size2_Class1' } : {}),
+            Priority:
+                module.Slot === 'MainEngines' ||
+                module.Item.toLowerCase().startsWith('int_shieldgenerator')
+                    ? 4
+                    : 0,
+        })),
+    });
+    const budget = overloaded.powerBudget();
+    assert.ok(budget.available > 0);
+    assert.equal(budget.bands[4]?.poweredRetracted, false);
+    assert.equal(overloaded.mobilityMetrics(), null);
+    assert.equal(overloaded.shieldMetrics(), null);
+    assert.equal(overloaded.shieldRecovery(), null);
+    assert.equal(overloaded.mobilityMetricsResult().issues[0]?.reason, 'shed');
+    assert.deepEqual(overloaded.shieldMetricsResult().issues[0], {
+        field: 'shieldGenerator',
+        reason: 'shed',
+        slot: 'Slot03_Size6',
+        symbol: 'int_shieldgenerator_size6_class1',
+        message:
+            'Slot03_Size6: int_shieldgenerator_size6_class1 is not powered with hardpoints retracted',
+        params: {
+            field: 'shieldGenerator',
+            reason: 'shed',
+            slot: 'Slot03_Size6',
+            symbol: 'int_shieldgenerator_size6_class1',
+        },
+    });
+    assert.equal(overloaded.shieldRecoveryResult().issues[0]?.reason, 'shed');
+});
+
+test('an unresolved power plant makes every power-dependent metric unavailable', () => {
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
+    const unresolved = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant'
+                ? { ...module, Item: 'Int_MkiiPowerplant_Size8_Class5' }
+                : module,
+        ),
+    }).setModule('Slot02_Size6', mod('Int_ShieldCellBank_Size6_Class1', INTERNAL_MODULES));
+
+    assert.equal(unresolved.powerBudget().available, 0);
+    assert.ok(unresolved.validation.issues.some((issue) => issue.code === 'unknownModule'));
+    assert.equal(unresolved.mobilityMetrics(), null);
+    assert.equal(unresolved.shieldMetrics(), null);
+    assert.equal(unresolved.shieldRecovery(), null);
+    assert.equal(unresolved.heatMetrics(), null);
+    assert.equal(unresolved.distributorMetrics(), null);
+    assert.equal(unresolved.cellBanks().banks[0]?.powered, false);
+    for (const result of [
+        unresolved.mobilityMetricsResult(),
+        unresolved.shieldMetricsResult(),
+        unresolved.shieldRecoveryResult(),
+    ]) {
+        assert.equal(result.complete, false);
+        assert.deepEqual(result.issues[0], {
+            field: 'powerCapacity',
+            reason: 'unresolved',
+            slot: 'PowerPlant',
+            symbol: 'Int_MkiiPowerplant_Size8_Class5',
+            message: 'PowerPlant: power capacity unavailable for Int_MkiiPowerplant_Size8_Class5',
+            params: {
+                field: 'powerCapacity',
+                reason: 'unresolved',
+                slot: 'PowerPlant',
+                symbol: 'Int_MkiiPowerplant_Size8_Class5',
+            },
+        });
+    }
+});
+
+test('a resolved plant without usable capacity is diagnosed by metric results', () => {
+    const incompletePlant = { ...mod('Int_Powerplant_Size8_Class5') };
+    delete incompletePlant.powerCapacity;
+    const build = ShipLoadout.default('Anaconda').setModule('PowerPlant', incompletePlant);
+
+    assert.equal(build.validation.complete, true);
+    assert.deepEqual(build.validation.issues, []);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
+    assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+
+    const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
+        assert.equal(invalid.mobilityMetrics(), null);
+        assert.equal(invalid.shieldMetrics(), null);
+        assert.equal(invalid.shieldRecovery(), null);
+        for (const result of [
+            invalid.mobilityMetricsResult(),
+            invalid.shieldMetricsResult(),
+            invalid.shieldRecoveryResult(),
+        ]) {
+            assert.equal(result.issues[0]?.field, 'powerCapacity');
+            assert.equal(result.issues[0]?.reason, 'invalid');
+        }
+        if (budgetThrows) assert.throws(() => invalid.powerBudget(), RangeError);
+    };
+    for (const capacity of [0, Number.NaN, Number.POSITIVE_INFINITY]) {
+        const plant = { ...mod('Int_Powerplant_Size8_Class5'), powerCapacity: capacity };
+        assertInvalidPower(
+            ShipLoadout.default('Anaconda').setModule('PowerPlant', plant),
+            capacity !== 0,
+        );
+    }
+
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
+    const journalInvalid = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant'
+                ? {
+                      ...module,
+                      Engineering: {
+                          BlueprintName: 'PowerPlant_Overcharged',
+                          Level: 1,
+                          Quality: 1,
+                          Modifiers: [{ Label: 'PowerCapacity', Value: -5 }],
+                      },
+                  }
+                : module,
+        ),
+    });
+    assertInvalidPower(journalInvalid, true);
+});
+
+test('an unknown hull has its own calculation issue shape before power is evaluated', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'FutureHull',
+        Modules: [
+            {
+                Slot: 'PowerPlant',
+                Item: 'Int_Powerplant_Size2_Class1',
+                Engineering: {
+                    BlueprintName: 'PowerPlant_Overcharged',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'PowerCapacity', Value: -5 }],
+                },
+            },
+        ],
+    });
+    const expected = {
+        field: 'hull',
+        reason: 'unresolved',
+        hull: 'FutureHull',
+        message: 'FutureHull is not a known hull',
+        params: { field: 'hull', reason: 'unresolved', hull: 'FutureHull' },
+    };
+
+    assert.deepEqual(build.mobilityMetricsResult().issues[0], expected);
+    assert.deepEqual(build.shieldMetricsResult().issues[0], expected);
+    assert.deepEqual(build.shieldRecoveryResult().issues[0], expected);
+});
+
+test('metric results diagnose an invalid known power draw without weakening powerBudget', () => {
+    const build = ShipLoadout.default('Anaconda');
+    const utility = build.slots('utility')[0];
+    assert.ok(utility);
+    build.setModule(utility.key, {
+        ...mod('Hpt_ShieldBooster_Size0_Class1', UTILITY_MODULES),
+        powerDraw: -1,
+    });
+
+    assert.throws(() => build.powerBudget(), RangeError);
+    assert.equal(build.mobilityMetrics(), null);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.shieldRecovery(), null);
+    for (const result of [
+        build.mobilityMetricsResult(),
+        build.shieldMetricsResult(),
+        build.shieldRecoveryResult(),
+    ]) {
+        assert.deepEqual(result.issues[0], {
+            field: 'powerDraw',
+            reason: 'invalid',
+            slot: utility.key,
+            symbol: 'Hpt_ShieldBooster_Size0_Class1',
+            message: `${utility.key}: Hpt_ShieldBooster_Size0_Class1 has invalid powerDraw`,
+            params: {
+                field: 'powerDraw',
+                reason: 'invalid',
+                slot: utility.key,
+                symbol: 'Hpt_ShieldBooster_Size0_Class1',
+            },
+        });
+    }
+});
+
+test('shield results distinguish an absent generator from a shed one', () => {
+    const result = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
+        .shieldMetricsResult();
+    assert.equal(result.complete, false);
+    assert.equal(result.issues[0]?.field, 'shieldGenerator');
+    assert.equal(result.issues[0]?.reason, 'missing');
+});
+
+test('an unresolved generator stays unavailable behind a disabled known plant', () => {
+    const source = ShipLoadout.default('SideWinder')
+        .setModuleEnabled('PowerPlant', false)
+        .toLoadoutEvent();
+    const unresolved = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Item.toLowerCase().startsWith('int_shieldgenerator')
+                ? { ...module, Item: 'Int_ShieldGenerator_Size99_Class9_MadeUp' }
+                : module,
+        ),
+    });
+
+    assert.equal(unresolved.powerBudget().available, 0);
+    assert.equal(unresolved.shieldMetrics(), null);
+    assert.equal(unresolved.shieldRecovery(), null);
+    assert.deepEqual(
+        {
+            field: unresolved.shieldMetricsResult().issues[0]?.field,
+            reason: unresolved.shieldMetricsResult().issues[0]?.reason,
+        },
+        { field: 'powerCapacity', reason: 'disabled' },
+    );
+});
+
+test('an unresolved powered generator is diagnosed instead of producing zero shields', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Item.toLowerCase().startsWith('int_shieldgenerator')
+                ? { ...module, Item: 'Int_ShieldGenerator_Size99_Class9_MadeUp' }
+                : module,
+        ),
+    });
+
+    assert.ok(build.powerBudget().available > 0);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.shieldRecovery(), null);
+    const expected = {
+        field: 'shieldGenerator',
+        reason: 'unresolved',
+        slot: 'Slot01_Size2',
+        symbol: 'Int_ShieldGenerator_Size99_Class9_MadeUp',
+        message:
+            'Slot01_Size2: shield-generator stats unavailable for Int_ShieldGenerator_Size99_Class9_MadeUp',
+        params: {
+            field: 'shieldGenerator',
+            reason: 'unresolved',
+            slot: 'Slot01_Size2',
+            symbol: 'Int_ShieldGenerator_Size99_Class9_MadeUp',
+        },
+    };
+    assert.deepEqual(build.shieldMetricsResult().issues[0], expected);
+    assert.deepEqual(build.shieldRecoveryResult().issues[0], expected);
+
+    const generator = source.Modules.find((module) =>
+        module.Item.toLowerCase().startsWith('int_shieldgenerator'),
+    );
+    assert.ok(generator);
+    build.setModuleEnabled(generator.Slot, false);
+    assert.deepEqual(
+        {
+            field: build.shieldMetricsResult().issues[0]?.field,
+            reason: build.shieldMetricsResult().issues[0]?.reason,
+        },
+        { field: 'shieldGenerator', reason: 'disabled' },
+    );
+});
+
+test('an unresolved thruster diagnostic names the missing stats', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'MainEngines'
+                ? { ...module, Item: 'Int_MkiiEngine_Size2_Class5' }
+                : module,
+        ),
+    });
+
+    assert.equal(
+        build.mobilityMetricsResult().issues[0]?.message,
+        'MainEngines: thruster stats unavailable for Int_MkiiEngine_Size2_Class5',
+    );
 });
 
 test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {
@@ -3144,7 +3466,7 @@ test('the beam Corvette reproduces the externally observed in-game build totals'
         displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
         expected.mass.current,
     );
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3204,7 +3526,7 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
         displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
         expected.mass.current,
     );
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3264,7 +3586,7 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
         displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
         expected.mass.current,
     );
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3329,7 +3651,7 @@ test('The Deep Black reproduces every observed calculated total', () => {
     );
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(displayed(thrusters.maxMass!, 1), expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3389,7 +3711,7 @@ test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', 
     assert.ok(Math.abs(currentMass - expected.mass.current) <= 0.0501, `${currentMass}`);
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3450,7 +3772,7 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
     );
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3510,7 +3832,7 @@ test('Fat Arse reproduces every observed calculated total', () => {
     );
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3571,7 +3893,7 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
     );
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3632,7 +3954,7 @@ test('Spire Ops reproduces the observed totals', () => {
     );
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3687,7 +4009,7 @@ test('Slapaconda reproduces every observed calculated total', () => {
     );
     const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3775,7 +4097,7 @@ test('the SLEF build reproduces the fixture shield and armour metrics', () => {
 
     // The armour is engineered: the journal reports its hull boost as 137.6%, so the
     // Caspian Explorer's 345 base armour becomes 345 x 2.376.
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.ok(near(armour.hitPoints, metrics.deepBlack.armour.hitPoints), `${armour.hitPoints}`);
     assert.ok(near(armour.hitPoints, 345 * 2.376));
     assert.deepEqual(rounded(armour.resistances), metrics.deepBlack.armour.resistances);
@@ -3819,7 +4141,7 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
         expectedBuild.shields.resistancesAtFourPips,
     );
 
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.ok(near(armour.hitPoints, expectedBuild.armour.hitPoints));
     assert.ok(near(armour.bulkheads, expectedBuild.armour.bulkheads));
     assert.ok(near(armour.reinforcement, expectedBuild.armour.reinforcement));
@@ -3934,7 +4256,7 @@ test('a hull with no shield generator reports no shields', () => {
     );
     assert.equal(build.shieldMetrics(), null);
     // ...but still has the armour it left the shipyard with.
-    assert.equal(build.armourMetrics().hitPoints, 945);
+    assert.equal(build.armourMetrics()!.hitPoints, 945);
 });
 
 test('switched-off modules drop out of every metric', () => {
@@ -3965,9 +4287,9 @@ test('engineering moves the metrics it should', () => {
     const after = build.shieldMetrics()!;
     assert.ok(after.strength > before.strength, `${before.strength} -> ${after.strength}`);
 
-    const bareArmour = build.armourMetrics().hitPoints;
+    const bareArmour = build.armourMetrics()!.hitPoints;
     build.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
-    const heavyArmour = build.armourMetrics();
+    const heavyArmour = build.armourMetrics()!;
     // Heavy Duty compounds on the armour multiplier: x3.5 becomes x4.62.
     assert.ok(near(heavyArmour.bulkheads, 525 * 4.62));
     assert.ok(heavyArmour.hitPoints > bareArmour);
@@ -4115,20 +4437,26 @@ test('power budgets expose every known, unknown and disabled fitted consumer', (
 });
 
 test("a build whose hull is beyond the generator's maximum mass has no shields", () => {
-    const build = ShipLoadout.empty('Anaconda').setModule(
-        'Slot01_Size7',
-        mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES),
-    );
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
+        .setModule('Slot01_Size7', mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES));
     // A size-1 generator cannot cover a 400 t hull.
     assert.equal(build.shieldMetrics()!.strength, 0);
 });
 
-test('metrics on an unrecognised hull stay defined rather than throwing', () => {
+test('hull-dependent metrics are unavailable for an unrecognised hull', () => {
     const build = ShipLoadout.fromLoadout({ Ship: 'not_a_real_hull', Modules: [] });
-    assert.equal(build.armourMetrics().hitPoints, 0);
+    assert.equal(build.armourMetrics(), null);
     assert.equal(build.shieldMetrics(), null);
     assert.equal(build.powerBudget().available, 0);
     assert.deepEqual(build.weaponMetrics().weapons, []);
+
+    const powered = ShipLoadout.fromLoadout({
+        ...ShipLoadout.default('SideWinder').toLoadoutEvent(),
+        Ship: 'not_a_real_hull',
+    });
+    assert.ok(powered.powerBudget().available > 0);
+    assert.equal(powered.shieldRecovery(), null);
 });
 
 test('an engineered hull reinforcement package adds a share of the base armour', () => {
@@ -4153,7 +4481,7 @@ test('an engineered hull reinforcement package adds a share of the base armour',
             },
         ],
     });
-    const armour = build.armourMetrics();
+    const armour = build.armourMetrics()!;
     assert.equal(armour.reinforcement, 341 + 525 * 0.06);
     assert.equal(armour.hitPoints, 945 + 341 + 31.5);
 });
@@ -5307,12 +5635,15 @@ test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', ()
         const modules = data.Modules.map((m) =>
             m.Slot === 'armour' ? { ...m, Slot: slot, Item: 'lakonminer_armour_grade3' } : m,
         );
-        return ShipLoadout.fromLoadout({ ...data, Modules: modules }).armourMetrics().hitPoints;
+        return ShipLoadout.fromLoadout({ ...data, Modules: modules }).armourMetrics()!.hitPoints;
     };
     assert.equal(upgrade('Armour'), 1225);
     assert.equal(upgrade('armour'), upgrade('Armour'));
     // ...and the untouched fixture's stock-grade bulkhead is the 630 it should be.
-    assert.equal(ShipLoadout.fromSlef(JSON.stringify(inaraFixture)).armourMetrics().hitPoints, 630);
+    assert.equal(
+        ShipLoadout.fromSlef(JSON.stringify(inaraFixture)).armourMetrics()!.hitPoints,
+        630,
+    );
 });
 
 test('a lower-cased build exports in slot order', () => {
@@ -5851,6 +6182,59 @@ test('heatMetrics reproduces the pinned heat profile of each captured build', ()
             }
         }
     }
+});
+
+test('heat classifies caller-supplied core records from their fitted slots', () => {
+    const custom = (
+        base: string,
+        symbol: string,
+        values: Partial<OutfittingModule>,
+    ): OutfittingModule => {
+        const record = { ...mod(base), ...values, symbol };
+        delete record.slot;
+        return record;
+    };
+    const modules: LoadoutModule[] = [
+        { Slot: 'PowerPlant', Item: 'CustomPlant' },
+        { Slot: 'MainEngines', Item: 'CustomThrusters' },
+        { Slot: 'FrameShiftDrive', Item: 'CustomDrive' },
+    ];
+    const stats = new Map<string, OutfittingModule>([
+        [
+            'CustomPlant',
+            custom('Int_PowerPlant_Size2_Class5', 'CustomPlant', {
+                powerCapacity: 10,
+                heatEfficiency: 1,
+            }),
+        ],
+        [
+            'CustomThrusters',
+            custom('Int_Engine_Size2_Class2', 'CustomThrusters', {
+                powerDraw: 1,
+                engineHeatRate: 2,
+            }),
+        ],
+        [
+            'CustomDrive',
+            custom('Int_Hyperdrive_Size2_Class2', 'CustomDrive', {
+                powerDraw: 1,
+                fsdHeatRate: 3,
+            }),
+        ],
+    ]);
+    const input = heatInputFor(
+        'SideWinder',
+        modules,
+        calculatePowerBudget(10, [
+            { draw: 1, priority: 1 },
+            { draw: 1, priority: 1 },
+        ]),
+        (module) => stats.get(module.Item) ?? null,
+    );
+
+    assert.equal(input?.thrusterHeatRate, 2);
+    assert.equal(input?.deployedThrusterHeatRate, 2);
+    assert.equal(input?.fsdHeatRate, 3);
 });
 
 test('an unknown draw can make the projection overstate heat, not only understate it', () => {

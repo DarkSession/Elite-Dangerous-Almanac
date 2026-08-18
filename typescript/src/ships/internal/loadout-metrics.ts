@@ -46,21 +46,27 @@ import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
 import type { WeaponsCapacitorInput } from '../weapons-capacitor.js';
 import type { DistributorInput } from '../distributor.js';
 import { ammunitionCapacity } from '../ammunition.js';
+import type {
+    CalculationIssue,
+    CalculationIssueReason,
+    CalculationResult,
+} from '../loadout-calculations.js';
+import { completeResult, incompleteResult } from './calculation-result.js';
+import { truncate } from '../../internal/argument-guards.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.
  *
  * @remarks
- * Classifying by symbol is the weaker way to do this, and `powerPlant` is the one entry
- * that does not need it in the ordinary case: a power plant's record names the mount it fills, so
- * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this
- * whenever no mount is named — an `Item` absent from the catalogue, or a record a caller
- * assembled without a `slot`.
+ * Classifying by symbol is the weaker way to do this. Core modules can first be identified
+ * from the fitted slot, even when their symbol is absent from this snapshot; their catalogue
+ * record's {@link OutfittingModule.slot} is the next-best source. Prefixes remain the fallback
+ * for a hand-built module mounted outside a known hull layout.
  *
- * The other five have nothing better to read. A shield generator, shield booster or
- * reinforcement package fits any mount of its kind that is large enough, so it fills no
- * *one* mount and carries no `slot`; the group it belongs to is not a fact this record
- * shape holds. Match on the prefix here and the record wherever the record can answer.
+ * Optional-module families have nothing better to read. A shield generator, shield
+ * booster or reinforcement package fits any mount of its kind that is large enough, so
+ * it fills no *one* mount and carries no `slot`; the group it belongs to is not a fact
+ * this record shape holds. Match on the prefix here and the record wherever it can answer.
  *
  * @internal
  */
@@ -89,6 +95,31 @@ function isPowerDistributor(module: LoadoutModule, stats: OutfittingModule | nul
     return stats?.slot
         ? stats.slot === 'powerDistributor'
         : startsWithAny(module.Item, PREFIX.powerDistributor);
+}
+
+/** Whether a fitted module is the power plant, by fitted slot, record or symbol fallback. */
+function isPowerPlant(module: LoadoutModule, stats: OutfittingModule | null): boolean {
+    const parsed = parseSlotName(module.Slot);
+    if (parsed?.kind === 'core' && parsed.core === 'powerPlant') return true;
+    return stats?.slot
+        ? stats.slot === 'powerPlant'
+        : startsWithAny(module.Item, PREFIX.powerPlant);
+}
+
+/** Whether a fitted module is the thruster, by slot, record or symbol fallback. */
+function isThruster(module: LoadoutModule, stats: OutfittingModule | null): boolean {
+    const parsed = parseSlotName(module.Slot);
+    if (parsed?.kind === 'core' && parsed.core === 'thrusters') return true;
+    return stats?.slot ? stats.slot === 'thrusters' : startsWithAny(module.Item, PREFIX.thrusters);
+}
+
+/** Whether a fitted module is the frame-shift drive, by slot, record or symbol fallback. */
+function isFrameShiftDrive(module: LoadoutModule, stats: OutfittingModule | null): boolean {
+    const parsed = parseSlotName(module.Slot);
+    if (parsed?.kind === 'core' && parsed.core === 'frameShiftDrive') return true;
+    return stats?.slot
+        ? stats.slot === 'frameShiftDrive'
+        : startsWithAny(module.Item, PREFIX.frameShiftDrive);
 }
 
 /** Whether a fitted module is switched on (the journal's `On`, defaulting to `true`). */
@@ -348,25 +379,168 @@ export function powerConsumerFor(
     return { draw, ...common };
 }
 
-/** The build's power-plant capacity, post-engineering, or `0` when none is fitted. */
+/** The build's known power-plant capacity, or `0` when absent, disabled or unresolved. */
 export function powerAvailable(
     modules: readonly LoadoutModule[],
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): number {
     for (const module of modules) {
         const stats = statsFor(module);
-        // A record that names its mount is believed; the prefix answers when none does
-        // — an `Item` this snapshot's catalogue has no record for, or a record a caller
-        // assembled without a `slot`. Falling back on the *absent field* rather than on
-        // the absent record is what keeps a hand-built record reading as it always has.
-        const isPlant = stats?.slot
-            ? stats.slot === 'powerPlant'
-            : startsWithAny(module.Item, PREFIX.powerPlant);
-        if (!isPlant) continue;
+        // The fitted core slot remains authoritative when this snapshot has no record;
+        // record metadata and the prefix cover caller-supplied layouts and records.
+        if (!isPowerPlant(module, stats)) continue;
         if (!isEnabled(module)) return 0; // a switched-off plant powers nothing
         return effectiveStat(module, 'powerCapacity', stats) ?? 0;
     }
     return 0;
+}
+
+type PoweredMetricField = 'thrusters' | 'shieldGenerator';
+/** Build one stable diagnostic for a missing or unavailable metric dependency. */
+function metricIssue(
+    field: CalculationIssue['field'],
+    reason: CalculationIssueReason,
+    module?: LoadoutModule,
+): CalculationIssue {
+    const defaultSlot =
+        field === 'powerCapacity'
+            ? 'PowerPlant'
+            : field === 'thrusters'
+              ? 'MainEngines'
+              : undefined;
+    const slot = module?.Slot ?? defaultSlot;
+    const symbol = module?.Item;
+    const params = {
+        field,
+        reason,
+        ...(slot === undefined ? {} : { slot }),
+        ...(symbol === undefined ? {} : { symbol }),
+    };
+    let message: string;
+    if (reason === 'missing') {
+        message =
+            field === 'powerCapacity'
+                ? 'PowerPlant: no power plant is fitted'
+                : field === 'thrusters'
+                  ? 'MainEngines: no thrusters are fitted'
+                  : 'no shield generator is fitted';
+    } else if (reason === 'unresolved') {
+        const unavailable =
+            field === 'thrusters'
+                ? 'thruster stats'
+                : field === 'shieldGenerator'
+                  ? 'shield-generator stats'
+                  : field === 'powerCapacity'
+                    ? 'power capacity'
+                    : field;
+        message = `${truncate(slot ?? field)}: ${unavailable} unavailable for ${truncate(symbol ?? field)}`;
+    } else if (reason === 'disabled') {
+        message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} is switched off`;
+    } else if (reason === 'invalid') {
+        message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} has invalid ${field}`;
+    } else {
+        message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} is not powered with hardpoints retracted`;
+    }
+    return {
+        field,
+        reason,
+        ...(slot === undefined ? {} : { slot }),
+        ...(symbol === undefined ? {} : { symbol }),
+        message,
+        params,
+    };
+}
+
+/** Explain that the hull-dependent inputs cannot be resolved for this ship symbol. */
+function hullIssue(shipSymbol: string): CalculationIssue {
+    return {
+        field: 'hull',
+        reason: 'unresolved',
+        hull: shipSymbol,
+        message: `${truncate(shipSymbol)} is not a known hull`,
+        params: { field: 'hull', reason: 'unresolved', hull: shipSymbol },
+    };
+}
+
+/** Explain why the build cannot establish its retracted power supply, if anything. */
+function powerPlantIssueFor(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationIssue | null {
+    for (const module of modules) {
+        const stats = statsFor(module);
+        if (!isPowerPlant(module, stats)) continue;
+        if (!isEnabled(module)) return metricIssue('powerCapacity', 'disabled', module);
+        const capacity = effectiveStat(module, 'powerCapacity', stats);
+        if (capacity === undefined) return metricIssue('powerCapacity', 'unresolved', module);
+        return !Number.isFinite(capacity) || capacity <= 0
+            ? metricIssue('powerCapacity', 'invalid', module)
+            : null;
+    }
+    return metricIssue('powerCapacity', 'missing');
+}
+
+/** Explain the first known consumer draw the pure power budget would reject. */
+function powerDrawIssueFor(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationIssue | null {
+    for (const module of modules) {
+        const consumer = powerConsumerFor(module, statsFor(module));
+        if (
+            consumer &&
+            !consumer.drawUnknown &&
+            (consumer.draw === undefined || !Number.isFinite(consumer.draw) || consumer.draw < 0)
+        ) {
+            return metricIssue('powerDraw', 'invalid', module);
+        }
+    }
+    return null;
+}
+
+/** Explain why a fitted metric module is unavailable with hardpoints retracted. */
+function poweredMetricBudgetFor(
+    field: PoweredMetricField,
+    module: LoadoutModule,
+    stats: OutfittingModule | null,
+    modules: readonly LoadoutModule[],
+    getBudget: () => PowerBudget,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationResult<PowerBudget> {
+    if (!isEnabled(module)) return incompleteResult([metricIssue(field, 'disabled', module)]);
+    const plantIssue = powerPlantIssueFor(modules, statsFor);
+    if (plantIssue) return incompleteResult([plantIssue]);
+    const drawIssue = powerDrawIssueFor(modules, statsFor);
+    if (drawIssue) return incompleteResult([drawIssue]);
+    const budget = getBudget();
+    return budget.available > 0 && poweredStates(module, stats, budget).retracted
+        ? completeResult(budget)
+        : incompleteResult([metricIssue(field, 'shed', module)]);
+}
+
+/** Find the fitted shield generator and establish that the retracted budget feeds it. */
+function poweredShieldGeneratorResultFor(
+    modules: readonly LoadoutModule[],
+    getBudget: () => PowerBudget,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationResult<{ module: LoadoutModule; budget: PowerBudget }> {
+    for (const module of modules) {
+        if (!startsWithAny(module.Item, PREFIX.shieldGenerator)) continue;
+        const stats = statsFor(module);
+        const powered = poweredMetricBudgetFor(
+            'shieldGenerator',
+            module,
+            stats,
+            modules,
+            getBudget,
+            statsFor,
+        );
+        if (!powered.complete) return powered;
+        return stats === null
+            ? incompleteResult([metricIssue('shieldGenerator', 'unresolved', module)])
+            : completeResult({ module, budget: powered.value });
+    }
+    return incompleteResult([metricIssue('shieldGenerator', 'missing')]);
 }
 
 /** The four resistances a defensive module can carry, every one of them answered. */
@@ -401,6 +575,7 @@ function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): M
 export function shieldInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
+    budget: PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldInput {
@@ -408,10 +583,10 @@ export function shieldInputFor(
     let generator: ShieldGeneratorParams | null = null;
     const boosters: ShieldBoosterParams[] = [];
     let reinforcement = 0;
-
     for (const module of modules) {
         if (!isEnabled(module)) continue;
         const stats = statsFor(module);
+        if (!(budget.available > 0 && poweredStates(module, stats, budget).retracted)) continue;
         if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
             const massRatio = modifierRatio(module, stats, 'optMass');
             const strengthRatio = modifierRatio(module, stats, 'optMultiplier');
@@ -454,24 +629,45 @@ export function shieldInputFor(
     };
 }
 
-/** Gather a loaded hull and its fitted thruster curve. */
-export function mobilityInputFor(
+/** Gather powered shield inputs, with an unavailable-state diagnostic. */
+export function shieldInputResultFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
+    getBudget: () => PowerBudget,
+    systemsPips: number,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationResult<ShieldInput> {
+    if (!getShipBySymbol(shipSymbol)) return incompleteResult([hullIssue(shipSymbol)]);
+    const fitted = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
+    if (!fitted.complete) return fitted;
+    const input = shieldInputFor(shipSymbol, modules, fitted.value.budget, systemsPips, statsFor);
+    return completeResult(input);
+}
+
+/** Gather a loaded hull and powered thruster curve, with an unavailable-state diagnostic. */
+export function mobilityInputResultFor(
+    shipSymbol: string,
+    modules: readonly LoadoutModule[],
+    getBudget: () => PowerBudget,
     mass: number | (() => number),
     enginesPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
-): MobilityInput | null {
+): CalculationResult<MobilityInput> {
     const hull = getShipBySymbol(shipSymbol);
-    if (!hull) return null;
+    if (!hull) return incompleteResult([hullIssue(shipSymbol)]);
     let thrusters: ThrusterParams | null = null;
     for (const module of modules) {
         const stats = statsFor(module);
-        const isThruster = stats?.slot
-            ? stats.slot === 'thrusters'
-            : startsWithAny(module.Item, PREFIX.thrusters);
-        if (!isThruster) continue;
-        if (!isEnabled(module)) return null;
+        if (!isThruster(module, stats)) continue;
+        const powered = poweredMetricBudgetFor(
+            'thrusters',
+            module,
+            stats,
+            modules,
+            getBudget,
+            statsFor,
+        );
+        if (!powered.complete) return powered;
         const effective = effectiveModule(module, stats);
         const minMass = effective?.minMass;
         const optMass = effective?.optMass;
@@ -487,7 +683,7 @@ export function mobilityInputFor(
             optMultiplier === undefined ||
             maxMultiplier === undefined
         ) {
-            return null;
+            return incompleteResult([metricIssue('thrusters', 'unresolved', module)]);
         }
         thrusters = {
             minMass,
@@ -523,8 +719,8 @@ export function mobilityInputFor(
         };
         break;
     }
-    if (!thrusters) return null;
-    return {
+    if (!thrusters) return incompleteResult([metricIssue('thrusters', 'missing')]);
+    return completeResult({
         minimumSpeed: hull.minimumSpeed,
         maximumSpeed: hull.maximumSpeed,
         boost: hull.boost,
@@ -537,35 +733,43 @@ export function mobilityInputFor(
         mass: typeof mass === 'function' ? mass() : mass,
         thrusters,
         enginesPips,
-    };
+    });
 }
 
-/** Gather shield recovery rates and the fitted SYS capacitor. */
-export function shieldRecoveryInputFor(
+/** Gather shield recovery inputs, with an unavailable-state diagnostic. */
+export function shieldRecoveryInputResultFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
+    getBudget: () => PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
-): ShieldRecoveryInput | null {
-    let generator: LoadoutModule | null = null;
+): CalculationResult<ShieldRecoveryInput> {
+    if (!getShipBySymbol(shipSymbol)) return incompleteResult([hullIssue(shipSymbol)]);
+    const generator = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
+    if (!generator.complete) return generator;
+    const { module: generatorModule, budget } = generator.value;
     let distributor: LoadoutModule | null = null;
     for (const module of modules) {
         const stats = statsFor(module);
-        if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
-            if (!isEnabled(module)) return null;
-            generator = module;
-        }
-        if (isPowerDistributor(module, stats) && isEnabled(module)) distributor = module;
+        if (
+            isPowerDistributor(module, stats) &&
+            isEnabled(module) &&
+            budget.available > 0 &&
+            poweredStates(module, stats, budget).retracted
+        )
+            distributor = module;
     }
-    if (!generator) return null;
-    const generatorStats = statsFor(generator);
+    const generatorStats = statsFor(generatorModule);
     const distributorStats = distributor ? statsFor(distributor) : null;
-    const strength = shieldMetrics(shieldInputFor(shipSymbol, modules, 0, statsFor)).strength;
-    return {
+    const strength = shieldMetrics(
+        shieldInputFor(shipSymbol, modules, budget, 0, statsFor),
+    ).strength;
+    return completeResult({
         strength,
-        regenRate: effectiveStat(generator, 'shieldRegenRate', generatorStats) ?? 0,
-        brokenRegenRate: effectiveStat(generator, 'shieldBrokenRegenRate', generatorStats) ?? 0,
-        distributorDraw: effectiveStat(generator, 'distributorDraw', generatorStats) ?? 0.6,
+        regenRate: effectiveStat(generatorModule, 'shieldRegenRate', generatorStats) ?? 0,
+        brokenRegenRate:
+            effectiveStat(generatorModule, 'shieldBrokenRegenRate', generatorStats) ?? 0,
+        distributorDraw: effectiveStat(generatorModule, 'distributorDraw', generatorStats) ?? 0.6,
         systemsCapacity: distributor
             ? (effectiveStat(distributor, 'systemsCapacity', distributorStats) ?? 0)
             : 0,
@@ -573,7 +777,7 @@ export function shieldRecoveryInputFor(
             ? (effectiveStat(distributor, 'systemsRecharge', distributorStats) ?? 0)
             : 0,
         systemsPips,
-    };
+    });
 }
 
 /** Gather the powered WEP capacitor and weapons under the deployed power budget. */
@@ -675,10 +879,7 @@ export function heatInputFor(
 
     for (const module of modules) {
         const stats = statsFor(module);
-        const isPlant = stats?.slot
-            ? stats.slot === 'powerPlant'
-            : startsWithAny(module.Item, PREFIX.powerPlant);
-        if (isPlant) {
+        if (isPowerPlant(module, stats)) {
             // A plant that is switched off feeds nothing, so there is no build to model.
             if (!isEnabled(module)) return null;
             heatEfficiency = effectiveStat(module, 'heatEfficiency', stats);
@@ -686,17 +887,11 @@ export function heatInputFor(
         }
         if (!isEnabled(module)) continue;
         const running = poweredStates(module, stats, budget);
-        if (
-            stats?.slot ? stats.slot === 'thrusters' : startsWithAny(module.Item, PREFIX.thrusters)
-        ) {
+        if (isThruster(module, stats)) {
             const heat = effectiveStat(module, 'engineHeatRate', stats) ?? 0;
             if (running.retracted) thrusterHeatRate += heat;
             if (running.deployed) deployedThrusterHeatRate += heat;
-        } else if (
-            stats?.slot
-                ? stats.slot === 'frameShiftDrive'
-                : startsWithAny(module.Item, PREFIX.frameShiftDrive)
-        ) {
+        } else if (isFrameShiftDrive(module, stats)) {
             // Charging a jump is something a ship does with its hardpoints stowed.
             if (running.retracted) fsdHeatRate += effectiveStat(module, 'fsdHeatRate', stats) ?? 0;
         } else if (isPowerDistributor(module, stats)) {
