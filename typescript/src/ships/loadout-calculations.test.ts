@@ -68,10 +68,12 @@ test('cargo and fuel name unknown capacity modules while ignoring unrelated modu
     ];
     assert.deepEqual(calculateCargoCapacity(modules).issues[0], {
         field: 'cargoCapacity',
+        reason: 'unresolved',
         slot: 'Slot01_Size4',
         symbol: 'UnknownRack',
         params: {
             field: 'cargoCapacity',
+            reason: 'unresolved',
             slot: 'Slot01_Size4',
             symbol: 'UnknownRack',
         },

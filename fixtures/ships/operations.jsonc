@@ -544,10 +544,12 @@
       "input": { "slot": "Slot01_Size4", "symbol": "UnknownRack", "mass": 0 },
       "expected": {
         "field": "cargoCapacity",
+        "reason": "unresolved",
         "slot": "Slot01_Size4",
         "symbol": "UnknownRack",
         "params": {
           "field": "cargoCapacity",
+          "reason": "unresolved",
           "slot": "Slot01_Size4",
           "symbol": "UnknownRack"
         }

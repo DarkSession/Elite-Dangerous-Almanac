@@ -379,13 +379,15 @@ test('explicit mobility fuel needs no tank capacity and excludes reserve mass', 
     }
 });
 
-test('shield recovery validates SYS pips even without a generator', () => {
+test('shield metrics validate SYS pips even without a generator', () => {
     const empty = ShipLoadout.empty('SideWinder');
+    assert.throws(() => empty.shieldMetrics({ systemsPips: 5 }), RangeError);
+    assert.throws(() => empty.shieldMetricsResult({ systemsPips: 5 }), RangeError);
     assert.equal(empty.shieldRecovery(), null);
     assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), RangeError);
 });
 
-test('mobility and shield recovery stop when the power budget sheds their modules', () => {
+test('mobility and shield metrics stop when the power budget sheds their modules', () => {
     const disabled = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
     assert.equal(disabled.powerBudget().available, 0);
     assert.equal(disabled.mobilityMetrics(), null);
@@ -410,24 +412,84 @@ test('mobility and shield recovery stop when the power budget sheds their module
     assert.equal(overloaded.mobilityMetrics(), null);
     assert.equal(overloaded.shieldMetrics(), null);
     assert.equal(overloaded.shieldRecovery(), null);
+    assert.equal(overloaded.mobilityMetricsResult().issues[0]?.reason, 'shed');
+    assert.deepEqual(overloaded.shieldMetricsResult().issues[0], {
+        field: 'shieldGenerator',
+        reason: 'shed',
+        slot: 'Slot03_Size6',
+        symbol: 'int_shieldgenerator_size6_class1',
+        message:
+            'Slot03_Size6: int_shieldgenerator_size6_class1 is not powered with hardpoints retracted',
+        params: {
+            field: 'shieldGenerator',
+            reason: 'shed',
+            slot: 'Slot03_Size6',
+            symbol: 'int_shieldgenerator_size6_class1',
+        },
+    });
+    assert.equal(overloaded.shieldRecoveryResult().issues[0]?.reason, 'shed');
 });
 
-test('an unresolved power plant does not masquerade as an unpowered build', () => {
+test('an unresolved power plant makes every power-dependent metric unavailable', () => {
     const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
     const unresolved = ShipLoadout.fromLoadout({
         ...source,
         Modules: source.Modules.map((module) =>
             module.Slot === 'PowerPlant'
-                ? { ...module, Item: 'Int_Powerplant_Size99_Class9_MadeUp' }
+                ? { ...module, Item: 'Int_MkiiPowerplant_Size8_Class5' }
                 : module,
         ),
-    });
+    }).setModule('Slot02_Size6', mod('Int_ShieldCellBank_Size6_Class1', INTERNAL_MODULES));
 
     assert.equal(unresolved.powerBudget().available, 0);
     assert.ok(unresolved.validation.issues.some((issue) => issue.code === 'unknownModule'));
-    assert.ok(unresolved.mobilityMetrics());
-    assert.ok(unresolved.shieldMetrics());
-    assert.ok(unresolved.shieldRecovery());
+    assert.equal(unresolved.mobilityMetrics(), null);
+    assert.equal(unresolved.shieldMetrics(), null);
+    assert.equal(unresolved.shieldRecovery(), null);
+    assert.equal(unresolved.heatMetrics(), null);
+    assert.equal(unresolved.distributorMetrics(), null);
+    assert.equal(unresolved.cellBanks().banks[0]?.powered, false);
+    for (const result of [
+        unresolved.mobilityMetricsResult(),
+        unresolved.shieldMetricsResult(),
+        unresolved.shieldRecoveryResult(),
+    ]) {
+        assert.equal(result.complete, false);
+        assert.deepEqual(result.issues[0], {
+            field: 'powerCapacity',
+            reason: 'unresolved',
+            slot: 'PowerPlant',
+            symbol: 'Int_MkiiPowerplant_Size8_Class5',
+            message: 'PowerPlant: Int_MkiiPowerplant_Size8_Class5 has no known powerCapacity',
+            params: {
+                field: 'powerCapacity',
+                reason: 'unresolved',
+                slot: 'PowerPlant',
+                symbol: 'Int_MkiiPowerplant_Size8_Class5',
+            },
+        });
+    }
+});
+
+test('a resolved plant without capacity is diagnosed by metric results', () => {
+    const incompletePlant = { ...mod('Int_Powerplant_Size8_Class5') };
+    delete incompletePlant.powerCapacity;
+    const build = ShipLoadout.default('Anaconda').setModule('PowerPlant', incompletePlant);
+
+    assert.equal(build.validation.complete, true);
+    assert.deepEqual(build.validation.issues, []);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
+    assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+});
+
+test('shield results distinguish an absent generator from a shed one', () => {
+    const result = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
+        .shieldMetricsResult();
+    assert.equal(result.complete, false);
+    assert.equal(result.issues[0]?.field, 'shieldGenerator');
+    assert.equal(result.issues[0]?.reason, 'missing');
 });
 
 test('an unresolved generator stays unavailable behind a disabled known plant', () => {
@@ -446,6 +508,44 @@ test('an unresolved generator stays unavailable behind a disabled known plant', 
     assert.equal(unresolved.powerBudget().available, 0);
     assert.equal(unresolved.shieldMetrics(), null);
     assert.equal(unresolved.shieldRecovery(), null);
+    assert.deepEqual(
+        {
+            field: unresolved.shieldMetricsResult().issues[0]?.field,
+            reason: unresolved.shieldMetricsResult().issues[0]?.reason,
+        },
+        { field: 'powerCapacity', reason: 'disabled' },
+    );
+});
+
+test('an unresolved powered generator is diagnosed instead of producing zero shields', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Item.toLowerCase().startsWith('int_shieldgenerator')
+                ? { ...module, Item: 'Int_ShieldGenerator_Size99_Class9_MadeUp' }
+                : module,
+        ),
+    });
+
+    assert.ok(build.powerBudget().available > 0);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.shieldRecovery(), null);
+    assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(build.shieldRecoveryResult().issues[0]?.reason, 'unresolved');
+
+    const generator = source.Modules.find((module) =>
+        module.Item.toLowerCase().startsWith('int_shieldgenerator'),
+    );
+    assert.ok(generator);
+    build.setModuleEnabled(generator.Slot, false);
+    assert.deepEqual(
+        {
+            field: build.shieldMetricsResult().issues[0]?.field,
+            reason: build.shieldMetricsResult().issues[0]?.reason,
+        },
+        { field: 'shieldGenerator', reason: 'disabled' },
+    );
 });
 
 test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {

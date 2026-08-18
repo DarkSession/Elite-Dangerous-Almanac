@@ -31,7 +31,7 @@ export function completeResult<T>(value: T & {}): CalculationResult<T> {
     return Object.freeze({ value, complete: true, issues: NO_ISSUES });
 }
 
-/** Wrap one or more missing dependencies as an incomplete calculation result. */
+/** Wrap one or more missing or unavailable dependencies as an incomplete result. */
 export function incompleteResult<T>(
     issues: readonly [CalculationIssue, ...CalculationIssue[]],
 ): CalculationResult<T> {

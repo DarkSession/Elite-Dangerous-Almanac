@@ -160,8 +160,7 @@ Branch on each issue's `code`, not on its `severity` — on this screen more tha
 because the severities do not divide along "whose problem is it".
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 says which codes are the user's to fix and which are the library's own gaps, and covers
-the nullable/`…Result` pairs that `unladenMass`, `fuelCapacity` and `cargoCapacity` come
-in.
+the nullable/`…Result` pairs for mass, capacity, mobility, shields and shield recovery.
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look
