@@ -379,12 +379,35 @@ test('explicit mobility fuel needs no tank capacity and excludes reserve mass', 
     }
 });
 
-test('shield metrics validate SYS pips even without a generator', () => {
+test('metric methods validate pips before build state and name their own scopes', () => {
     const empty = ShipLoadout.empty('SideWinder');
-    assert.throws(() => empty.shieldMetrics({ systemsPips: 5 }), RangeError);
-    assert.throws(() => empty.shieldMetricsResult({ systemsPips: 5 }), RangeError);
+    assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.mobilityMetricsResult({ enginesPips: 5 }), {
+        name: 'RangeError',
+        message:
+            'ShipLoadout.mobilityMetricsResult: enginesPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.shieldMetrics({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.shieldMetrics: systemsPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.shieldMetricsResult({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.shieldMetricsResult: systemsPips must be a finite number from 0 to 4',
+    });
     assert.equal(empty.shieldRecovery(), null);
-    assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), RangeError);
+    assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message: 'ShipLoadout.shieldRecovery: systemsPips must be a finite number from 0 to 4',
+    });
+    assert.throws(() => empty.shieldRecoveryResult({ systemsPips: 5 }), {
+        name: 'RangeError',
+        message:
+            'ShipLoadout.shieldRecoveryResult: systemsPips must be a finite number from 0 to 4',
+    });
 });
 
 test('mobility and shield metrics stop when the power budget sheds their modules', () => {
@@ -471,7 +494,7 @@ test('an unresolved power plant makes every power-dependent metric unavailable',
     }
 });
 
-test('a resolved plant without capacity is diagnosed by metric results', () => {
+test('a resolved plant without usable capacity is diagnosed by metric results', () => {
     const incompletePlant = { ...mod('Int_Powerplant_Size8_Class5') };
     delete incompletePlant.powerCapacity;
     const build = ShipLoadout.default('Anaconda').setModule('PowerPlant', incompletePlant);
@@ -481,6 +504,17 @@ test('a resolved plant without capacity is diagnosed by metric results', () => {
     assert.equal(build.shieldMetrics(), null);
     assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
     assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+
+    const zeroPlant = { ...mod('Int_Powerplant_Size8_Class5'), powerCapacity: 0 };
+    const zeroCapacity = ShipLoadout.default('Anaconda').setModule('PowerPlant', zeroPlant);
+    for (const result of [
+        zeroCapacity.mobilityMetricsResult(),
+        zeroCapacity.shieldMetricsResult(),
+        zeroCapacity.shieldRecoveryResult(),
+    ]) {
+        assert.equal(result.issues[0]?.field, 'powerCapacity');
+        assert.equal(result.issues[0]?.reason, 'invalid');
+    }
 });
 
 test('shield results distinguish an absent generator from a shed one', () => {

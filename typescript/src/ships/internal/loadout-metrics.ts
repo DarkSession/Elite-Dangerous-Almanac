@@ -419,6 +419,8 @@ function metricIssue(
         message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} has no known ${field}`;
     } else if (reason === 'disabled') {
         message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} is switched off`;
+    } else if (reason === 'invalid') {
+        message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} has invalid ${field}`;
     } else {
         message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} is not powered with hardpoints retracted`;
     }
@@ -452,9 +454,9 @@ function powerPlantIssueFor(
         const stats = statsFor(module);
         if (!isPowerPlant(module, stats)) continue;
         if (!isEnabled(module)) return metricIssue('powerCapacity', 'disabled', module);
-        return effectiveStat(module, 'powerCapacity', stats) === undefined
-            ? metricIssue('powerCapacity', 'unresolved', module)
-            : null;
+        const capacity = effectiveStat(module, 'powerCapacity', stats);
+        if (capacity === undefined) return metricIssue('powerCapacity', 'unresolved', module);
+        return capacity === 0 ? metricIssue('powerCapacity', 'invalid', module) : null;
     }
     return metricIssue('powerCapacity', 'missing');
 }

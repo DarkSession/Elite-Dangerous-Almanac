@@ -130,8 +130,9 @@ tryToSystemAddress('not an address'); // -> null, never throws
 
 ## Nullable value, or diagnostic result?
 
-Aggregate figures that depend on catalogue data come in pairs. The property is the
-convenience; the `…Result` is what you show a user when the convenience is `null`.
+The following catalogue-dependent build figures expose diagnostic pairs. The nullable
+property or method is the convenience; its `…Result` companion is what you show a user
+when the convenience is `null`.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -145,14 +146,37 @@ build.unladenMass;
 build.unladenMassResult;
 build.fuelCapacity;
 build.fuelCapacityResult;
+
+build.mobilityMetrics();
+build.mobilityMetricsResult();
+build.shieldMetrics();
+build.shieldMetricsResult();
+build.shieldRecovery();
+build.shieldRecoveryResult();
 ```
 
-The reason for the pair is that the alternative is worse: an unclassifiable cargo rack
-counted as zero would produce a plausible, wrong total that no one would question. A
-`null` with a list of what was missing cannot be mistaken for an answer.
+Each result is a `CalculationResult`: `complete: true` carries a non-null `value` and no
+issues; `complete: false` carries `value: null` and one or more issues. The issue's stable
+`reason` says which unavailable state the caller should present:
 
-**A figure the import already stated wins, and comes back complete.** These three are
-computed only when the source did not supply them, so a build read from a `Loadout` event
+| Reason | Means |
+| --- | --- |
+| `missing` | A required module is not fitted |
+| `unresolved` | The catalogue or supplied record lacks a required module or numeric fact |
+| `disabled` | The required fitted module is switched off |
+| `shed` | The retracted priority budget does not power the required module |
+| `invalid` | A known build dependency is non-physical, such as a zero-capacity power plant |
+
+These reasons describe build state. A malformed method option still throws its documented
+`TypeError` or `RangeError` before a result is returned.
+
+The reason for the pair is that the alternative is worse: an unclassifiable cargo rack
+counted as zero, or shed thrusters treated as powered, would produce a plausible wrong
+answer that no one would question. A `null` with the reason it is unavailable cannot be
+mistaken for an answer.
+
+**A figure the import already stated wins, and comes back complete.** The three aggregate
+properties are computed only when the source did not supply them, so a build read from a `Loadout` event
 — which states `UnladenMass`, `CargoCapacity` and `FuelCapacity` — reports the game's own
 numbers with no issues, whatever the catalogue made of the modules. The pair engages for a
 build you assembled yourself, or one whose source left the figure out. On an imported

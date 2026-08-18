@@ -215,6 +215,14 @@ const requireLoadOptions = (scope: string, options: JumpOptions): void => {
     }
 };
 
+/** Validate a facade ENG-pip option before build state can short-circuit the metric. */
+const requireEnginesPips = (scope: string, enginesPips: number): number => {
+    if (!Number.isFinite(enginesPips) || enginesPips < 0 || enginesPips > 4) {
+        throw new RangeError(`${scope}: enginesPips must be a finite number from 0 to 4`);
+    }
+    return enginesPips;
+};
+
 /** Validate a facade SYS-pip option before build state can short-circuit the metric. */
 const requireSystemsPips = (scope: string, systemsPips: number): number => {
     if (!Number.isFinite(systemsPips) || systemsPips < 0 || systemsPips > 4) {
@@ -2941,6 +2949,8 @@ export class ShipLoadout {
      * ```
      */
     mobilityMetrics(options: MobilityOptions = {}): MobilityMetrics | null {
+        requireEnginesPips('ShipLoadout.mobilityMetrics', options.enginesPips ?? 4);
+        requireLoadOptions('ShipLoadout.mobilityMetrics', options);
         return this.mobilityMetricsResult(options).value;
     }
 
@@ -2965,13 +2975,11 @@ export class ShipLoadout {
      * ```
      */
     mobilityMetricsResult(options: MobilityOptions = {}): CalculationResult<MobilityMetrics> {
-        const enginesPips = options.enginesPips ?? 4;
-        if (!Number.isFinite(enginesPips) || enginesPips < 0 || enginesPips > 4) {
-            throw new RangeError(
-                'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
-            );
-        }
-        requireLoadOptions('ShipLoadout.mobilityMetrics', options);
+        const enginesPips = requireEnginesPips(
+            'ShipLoadout.mobilityMetricsResult',
+            options.enginesPips ?? 4,
+        );
+        requireLoadOptions('ShipLoadout.mobilityMetricsResult', options);
         const input = mobilityInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
@@ -3005,6 +3013,7 @@ export class ShipLoadout {
      * @returns The {@link ShieldMetrics}, or `null` when the hull is unresolved or the
      * build has no shield generator powered with hardpoints retracted. Use
      * {@link shieldMetricsResult} to distinguish the unavailable conditions.
+     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -3018,6 +3027,7 @@ export class ShipLoadout {
      * ```
      */
     shieldMetrics(options: DefenceOptions = {}): ShieldMetrics | null {
+        requireSystemsPips('ShipLoadout.shieldMetrics', options.systemsPips ?? 0);
         return this.shieldMetricsResult(options).value;
     }
 
@@ -3041,7 +3051,7 @@ export class ShipLoadout {
      */
     shieldMetricsResult(options: DefenceOptions = {}): CalculationResult<ShieldMetrics> {
         const systemsPips = requireSystemsPips(
-            'ShipLoadout.shieldMetrics',
+            'ShipLoadout.shieldMetricsResult',
             options.systemsPips ?? 0,
         );
         const input = shieldInputResultFor(
@@ -3073,6 +3083,7 @@ export class ShipLoadout {
      * ```
      */
     shieldRecovery(options: DefenceOptions = {}): ShieldRecovery | null {
+        requireSystemsPips('ShipLoadout.shieldRecovery', options.systemsPips ?? 4);
         return this.shieldRecoveryResult(options).value;
     }
 
@@ -3096,7 +3107,7 @@ export class ShipLoadout {
      */
     shieldRecoveryResult(options: DefenceOptions = {}): CalculationResult<ShieldRecovery> {
         const systemsPips = requireSystemsPips(
-            'ShipLoadout.shieldRecovery',
+            'ShipLoadout.shieldRecoveryResult',
             options.systemsPips ?? 4,
         );
         const input = shieldRecoveryInputResultFor(
