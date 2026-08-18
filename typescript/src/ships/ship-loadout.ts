@@ -2418,7 +2418,10 @@ export class ShipLoadout {
      * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
      * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
      * @returns Fuel and cargo in tonnes, or structured diagnostics for every capacity
-     * or frame-shift-drive fact needed by that load that is unavailable.
+     * or frame-shift-drive fact needed to use that load in a jump calculation. A
+     * complete `'maximum'` result can therefore be passed safely to {@link jumpRange};
+     * it validates the whole fitted drive, including an active jump booster, even
+     * though only the drive's maximum fuel determines the returned load.
      * @throws {RangeError} If `load` is not a recognised standard load.
      * @example
      * ```ts
@@ -2442,21 +2445,30 @@ export class ShipLoadout {
         let maximumFuel: number | null = null;
         if (load === 'maximum') {
             const fitted = this.#frameShiftDriveModule();
-            const stats = fitted ? this.#statsFor(fitted) : null;
-            maximumFuel = fitted
-                ? (getLoadoutModifier(fitted, 'MaxFuelPerJump') ?? stats?.maxFuel ?? null)
-                : null;
+            let driveError: unknown;
+            try {
+                maximumFuel = this.#resolveDrive()?.maxFuel ?? null;
+            } catch (error) {
+                driveError = error;
+            }
             if (maximumFuel === null) {
                 issues.push({
                     field: 'frameShiftDrive',
                     slot: fitted?.Slot ?? 'FrameShiftDrive',
                     ...(fitted ? { symbol: fitted.Item } : {}),
-                    message: fitted
-                        ? `${fitted.Slot}: ${fitted.Item} has no known frameShiftDrive constants`
-                        : 'FrameShiftDrive: no frame shift drive is fitted',
+                    message:
+                        driveError instanceof Error
+                            ? driveError.message
+                            : fitted
+                              ? `${truncate(fitted.Slot)}: ${truncate(fitted.Item)} has no known frameShiftDrive constants`
+                              : 'FrameShiftDrive: no frame shift drive is fitted',
                     params: fitted
-                        ? { slot: fitted.Slot, symbol: fitted.Item }
-                        : { slot: 'FrameShiftDrive' },
+                        ? {
+                              field: 'frameShiftDrive',
+                              slot: fitted.Slot,
+                              symbol: fitted.Item,
+                          }
+                        : { field: 'frameShiftDrive', slot: 'FrameShiftDrive' },
                 });
             }
         }

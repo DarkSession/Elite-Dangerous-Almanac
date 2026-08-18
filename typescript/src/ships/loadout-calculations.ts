@@ -95,19 +95,11 @@ function result<T>(
     value: (T & {}) | null,
     issues: readonly CalculationIssue[],
 ): CalculationResult<T> {
-    const frozenIssues = Object.freeze(
-        issues.map((issue) =>
-            Object.freeze({
-                ...issue,
-                ...(issue.params ? { params: Object.freeze({ ...issue.params }) } : {}),
-            }),
-        ),
-    ) as readonly CalculationIssue[];
-    if (value !== null && frozenIssues.length === 0) return completeResult(value);
-    if (frozenIssues.length === 0) {
+    if (value !== null && issues.length === 0) return completeResult(value);
+    if (issues.length === 0) {
         throw new TypeError('CalculationResult: an incomplete result needs at least one issue');
     }
-    return incompleteResult(frozenIssues as readonly [CalculationIssue, ...CalculationIssue[]]);
+    return incompleteResult(issues as readonly [CalculationIssue, ...CalculationIssue[]]);
 }
 
 /**

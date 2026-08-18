@@ -899,9 +899,18 @@ test('a build with no frame shift drive throws on a jump calculation', () => {
     const noFsd: LoadoutEvent = {
         Ship: 'sidewinder',
         UnladenMass: 50,
+        FuelCapacity: { Main: 2, Reserve: 0.3 },
         Modules: [{ Slot: 'CargoHatch', Item: 'modularcargobaydoor' }],
     };
     assert.throws(() => ShipLoadout.fromLoadout(noFsd).maxJumpRange(), /no frame shift drive/);
+    assert.throws(
+        () => ShipLoadout.fromLoadout(noFsd).jumpRangeSummary(),
+        (error: Error) => {
+            assert.equal(error.name, 'TypeError');
+            assert.match(error.message, /FrameShiftDrive.*no frame shift drive is fitted/);
+            return true;
+        },
+    );
 
     const unknownTank: LoadoutEvent = {
         Ship: 'sidewinder',
@@ -948,7 +957,7 @@ test('standard load results expose the jump summary load conditions', () => {
     );
 });
 
-test('standard maximum load needs only fuel capacity and the drive maximum', () => {
+test('standard maximum load reports every dependency needed by jump calculations', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const unresolvedBooster = ShipLoadout.fromLoadout({
         ...source,
@@ -958,11 +967,10 @@ test('standard maximum load needs only fuel capacity and the drive maximum', () 
         ],
     });
     assert.throws(() => unresolvedBooster.frameShiftDrive, /has no jumpBoost/);
-    assert.deepEqual(unresolvedBooster.standardLoadResult('maximum'), {
-        value: { fuel: 0.6, cargo: 0 },
-        complete: true,
-        issues: [],
-    });
+    const unresolved = unresolvedBooster.standardLoadResult('maximum');
+    assert.equal(unresolved.complete, false);
+    assert.match(unresolved.issues[0]!.message, /has no jumpBoost/);
+    assert.equal(unresolved.issues[0]!.params?.field, 'frameShiftDrive');
 
     const noFuel = ShipLoadout.fromLoadout({
         ...source,
