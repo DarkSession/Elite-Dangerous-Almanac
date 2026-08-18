@@ -41,7 +41,7 @@ declare const build: ShipLoadout; // a Federal Corvette
 
 build.powerBudget().deployed; // -> 46.8597
 build.shieldMetrics()?.strength; // -> 3940.4
-build.armourMetrics().hitPoints; // -> 5062.6
+build.armourMetrics()?.hitPoints; // -> 5062.6
 build.weaponMetrics().total.damagePerSecond; // -> 137.04
 ```
 

@@ -458,6 +458,7 @@ export function shieldInputFor(
 export function mobilityInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
+    budget: PowerBudget,
     mass: number | (() => number),
     enginesPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
@@ -471,7 +472,12 @@ export function mobilityInputFor(
             ? stats.slot === 'thrusters'
             : startsWithAny(module.Item, PREFIX.thrusters);
         if (!isThruster) continue;
-        if (!isEnabled(module)) return null;
+        if (
+            !isEnabled(module) ||
+            budget.available === 0 ||
+            !poweredStates(module, stats, budget).retracted
+        )
+            return null;
         const effective = effectiveModule(module, stats);
         const minMass = effective?.minMass;
         const optMass = effective?.optMass;
@@ -544,18 +550,31 @@ export function mobilityInputFor(
 export function shieldRecoveryInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
+    budget: PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldRecoveryInput | null {
+    if (!getShipBySymbol(shipSymbol)) return null;
     let generator: LoadoutModule | null = null;
     let distributor: LoadoutModule | null = null;
     for (const module of modules) {
         const stats = statsFor(module);
         if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
-            if (!isEnabled(module)) return null;
+            if (
+                !isEnabled(module) ||
+                budget.available === 0 ||
+                !poweredStates(module, stats, budget).retracted
+            )
+                return null;
             generator = module;
         }
-        if (isPowerDistributor(module, stats) && isEnabled(module)) distributor = module;
+        if (
+            isPowerDistributor(module, stats) &&
+            isEnabled(module) &&
+            budget.available > 0 &&
+            poweredStates(module, stats, budget).retracted
+        )
+            distributor = module;
     }
     if (!generator) return null;
     const generatorStats = statsFor(generator);

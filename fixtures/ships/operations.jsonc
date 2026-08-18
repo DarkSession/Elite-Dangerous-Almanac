@@ -126,6 +126,7 @@
         "Ship": "SideWinder",
         "UnladenMass": 26,
         "Modules": [
+          { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
           { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
         ]
@@ -135,6 +136,7 @@
         "UnladenMass": 26,
         "FuelCapacity": { "Main": 2 },
         "Modules": [
+          { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
           { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
         ]

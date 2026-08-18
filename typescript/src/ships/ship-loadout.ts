@@ -677,7 +677,7 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * build.maxJumpRange(); // -> 60.5478   (ly, best single jump)
  * build.powerBudget().withinBudget; // -> true
  * build.shieldMetrics()?.strength; // -> 743.12  (MJ)
- * build.armourMetrics().hitPoints; // -> 307.8
+ * build.armourMetrics()?.hitPoints; // -> 307.8
  * ```
  *
  * @example
@@ -2931,6 +2931,7 @@ export class ShipLoadout {
         const input = mobilityInputFor(
             this.#shipSymbol,
             [...this.#modules.values()],
+            this.powerBudget(),
             () => {
                 const main =
                     options.fuel ??
@@ -2955,8 +2956,8 @@ export class ShipLoadout {
      * @param options - {@link DefenceOptions}. `systemsPips` (0–4) folds the SYS
      * capacitor's own resistance into the reported figures; it defaults to `0`, which
      * is what an outfitting screen shows.
-     * @returns The {@link ShieldMetrics}, or `null` when the build has no shield
-     * generator fitted (or has one switched off).
+     * @returns The {@link ShieldMetrics}, or `null` when the hull is unresolved or the
+     * build has no enabled shield generator fitted.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2970,6 +2971,7 @@ export class ShipLoadout {
      * ```
      */
     shieldMetrics(options: DefenceOptions = {}): ShieldMetrics | null {
+        if (!getShipBySymbol(this.#shipSymbol)) return null;
         const input = shieldInputFor(
             this.#shipSymbol,
             [...this.#modules.values()],
@@ -2984,7 +2986,8 @@ export class ShipLoadout {
      * Time for this build's shield to rise after collapse and then regenerate to full.
      *
      * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
-     * @returns Recovery rates and seconds, or `null` with no powered shield generator.
+     * @returns Recovery rates and seconds, or `null` with an unresolved hull or no
+     * powered shield generator.
      * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
      * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example
@@ -3005,6 +3008,7 @@ export class ShipLoadout {
         const input = shieldRecoveryInputFor(
             this.#shipSymbol,
             [...this.#modules.values()],
+            this.powerBudget(),
             systemsPips,
             (module) => this.#statsFor(module),
         );
@@ -3111,9 +3115,9 @@ export class ShipLoadout {
      * The build's armour: hull hit points, the bulkhead and reinforcement each
      * contribute, and the effective resistances.
      *
-     * @returns The {@link ArmourMetrics}. A build with no armour module fitted is
-     * reported on the stock lightweight alloy the hull leaves the shipyard with, which
-     * is what the game does.
+     * @returns The {@link ArmourMetrics}, or `null` when the hull is unresolved. A build
+     * with no armour module fitted is reported on the stock lightweight alloy the hull
+     * leaves the shipyard with, which is what the game does.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -3121,12 +3125,13 @@ export class ShipLoadout {
      * declare const build: ShipLoadout;
      *
      * const hull = build.armourMetrics();
-     * hull.hitPoints;                  // -> total hull points
-     * hull.resistances.explosive;      // -> lightweight alloy is explosively weak
-     * hull.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
+     * hull?.hitPoints;                  // -> total hull points
+     * hull?.resistances.explosive;      // -> lightweight alloy is explosively weak
+     * hull?.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
      * ```
      */
-    armourMetrics(): ArmourMetrics {
+    armourMetrics(): ArmourMetrics | null {
+        if (!getShipBySymbol(this.#shipSymbol)) return null;
         return armourMetrics(
             armourInputFor(this.#shipSymbol, [...this.#modules.values()], (module) =>
                 this.#statsFor(module),

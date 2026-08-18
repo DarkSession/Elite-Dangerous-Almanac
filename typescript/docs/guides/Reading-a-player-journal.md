@@ -58,7 +58,7 @@ build.unladenMass; // -> 388.830017   tonnes
 build.maxJumpRange(); // -> 60.5478    ly, best single jump
 build.powerBudget().withinBudget; // -> true
 build.shieldMetrics()?.strength; // -> 743.12     MJ
-build.armourMetrics().hitPoints; // -> 307.8
+build.armourMetrics()?.hitPoints; // -> 307.8
 ```
 
 Figures the event already stated — `UnladenMass`, `CargoCapacity`, `FuelCapacity` — are

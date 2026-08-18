@@ -312,7 +312,7 @@ test('every build reproduces its pinned metrics', () => {
             }
         }
 
-        const armour = loadout.armourMetrics();
+        const armour = loadout.armourMetrics()!;
         close(armour.hitPoints, expected.armour.hitPoints, `${build.id} armour.hitPoints`);
         for (const type of ['kinetic', 'thermal', 'explosive'] as const) {
             close(

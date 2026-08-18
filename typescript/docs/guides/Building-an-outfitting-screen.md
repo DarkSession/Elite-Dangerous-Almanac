@@ -113,7 +113,7 @@ build.powerBudget().withinBudget; // -> true
 build.powerBudget().bands.length; // -> 5        the five priority groups
 
 build.shieldMetrics()?.strength; // -> 3940.4   MJ
-build.armourMetrics().hitPoints; // -> 5062.6
+build.armourMetrics()?.hitPoints; // -> 5062.6
 
 build.weaponMetrics().total.damagePerSecond; // -> 137.04
 build.weaponMetrics().total.sustainedDamagePerSecond; // -> 133.98
