@@ -977,12 +977,44 @@ test('standard maximum load reports every dependency needed by jump calculations
         FuelCapacity: { Main: 0, Reserve: 0 },
     });
     assert.deepEqual(noFuel.standardLoadResult('maximum').value, { fuel: 0, cargo: 0 });
+
+    const unknownHull = ShipLoadout.fromLoadout({
+        Ship: 'FutureHull',
+        FuelCapacity: { Main: 2, Reserve: 0.3 },
+        Modules: source.Modules.filter((module) => module.Slot === 'FrameShiftDrive'),
+    });
+    assert.deepEqual(
+        unknownHull.standardLoadResult('maximum').issues.map((issue) => issue.field),
+        ['hullMass'],
+    );
+
+    const invalidDrive = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'FrameShiftDrive'
+                ? {
+                      ...module,
+                      Engineering: {
+                          BlueprintName: 'FSD_LongRange',
+                          Level: 5,
+                          Quality: 1,
+                          Modifiers: [{ Label: 'MaxFuelPerJump', Value: -1, OriginalValue: 0.6 }],
+                      },
+                  }
+                : module,
+        ),
+    });
+    const invalid = invalidDrive.standardLoadResult('maximum');
+    assert.equal(invalid.complete, false);
+    assert.equal(invalid.issues[0]?.field, 'frameShiftDrive');
+    assert.match(invalid.issues[0]!.message, /fuel must be a finite non-negative number/);
 });
 
 test('standard load results report missing capacities and drive constants', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const build = ShipLoadout.fromLoadout({
         Ship: source.Ship,
+        UnladenMass: source.UnladenMass!,
         CargoCapacity: source.CargoCapacity!,
         Modules: source.Modules.map((module) =>
             module.Slot === 'FuelTank'

@@ -2417,11 +2417,12 @@ export class ShipLoadout {
      *
      * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
      * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
-     * @returns Fuel and cargo in tonnes, or structured diagnostics for every capacity
-     * or frame-shift-drive fact needed to use that load in a jump calculation. A
-     * complete `'maximum'` result can therefore be passed safely to {@link jumpRange};
-     * it validates the whole fitted drive, including an active jump booster, even
-     * though only the drive's maximum fuel determines the returned load.
+     * @returns Fuel and cargo in tonnes, or structured diagnostics for unavailable
+     * capacities. `'maximum'` also reports every mass or frame-shift-drive fact needed
+     * to use that load in a jump calculation. A complete maximum result can therefore
+     * be passed safely to {@link jumpRange}; it validates the whole fitted drive,
+     * including an active jump booster, even though only the drive's maximum fuel
+     * determines the returned load.
      * @throws {RangeError} If `load` is not a recognised standard load.
      * @example
      * ```ts
@@ -2441,13 +2442,16 @@ export class ShipLoadout {
 
         const fuel = this.fuelCapacityResult;
         const cargo = load === 'laden' ? this.cargoCapacityResult : completeResult(0);
-        const issues = [...fuel.issues, ...cargo.issues];
+        const mass = load === 'maximum' ? this.unladenMassResult : completeResult(0);
+        const issues = [...fuel.issues, ...cargo.issues, ...mass.issues];
+        let drive: FrameShiftDriveParams | null = null;
         let maximumFuel: number | null = null;
         if (load === 'maximum') {
             const fitted = this.#frameShiftDriveModule();
             let driveError: unknown;
             try {
-                maximumFuel = this.#resolveDrive()?.maxFuel ?? null;
+                drive = this.#resolveDrive();
+                maximumFuel = drive?.maxFuel ?? null;
             } catch (error) {
                 driveError = error;
             }
@@ -2475,15 +2479,41 @@ export class ShipLoadout {
         if (issues.length > 0) {
             return incompleteResult(issues as [CalculationIssue, ...CalculationIssue[]]);
         }
-        return completeResult(
-            Object.freeze({
-                fuel:
-                    load === 'maximum'
-                        ? Math.min(fuel.value!.main, maximumFuel!)
-                        : fuel.value!.main,
-                cargo: cargo.value!,
-            }),
-        );
+        const value = Object.freeze({
+            fuel: load === 'maximum' ? Math.min(fuel.value!.main, maximumFuel!) : fuel.value!.main,
+            cargo: cargo.value!,
+        });
+        if (load === 'maximum') {
+            try {
+                this.jumpRange(value);
+            } catch (error) {
+                if (!(error instanceof RangeError)) throw error;
+                const fitted = this.#frameShiftDriveModule();
+                const field: CalculationIssue['field'] =
+                    drive !== null && (!Number.isFinite(drive.maxFuel) || drive.maxFuel < 0)
+                        ? 'frameShiftDrive'
+                        : !Number.isFinite(value.fuel) || value.fuel < 0
+                          ? 'fuelCapacity'
+                          : !Number.isFinite(mass.value!) || mass.value! < 0
+                            ? 'mass'
+                            : 'frameShiftDrive';
+                const driveParams =
+                    field === 'frameShiftDrive' && fitted
+                        ? { slot: fitted.Slot, symbol: fitted.Item }
+                        : {};
+                return incompleteResult([
+                    {
+                        field,
+                        ...(field === 'frameShiftDrive' && fitted
+                            ? { slot: fitted.Slot, symbol: fitted.Item }
+                            : {}),
+                        message: error.message,
+                        params: { field, ...driveParams },
+                    },
+                ]);
+            }
+        }
+        return completeResult(value);
     }
 
     /**
