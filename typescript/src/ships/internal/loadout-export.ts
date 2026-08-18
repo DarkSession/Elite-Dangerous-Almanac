@@ -12,6 +12,7 @@ import {
     isBuiltInHullModule,
     isNonOutfittingSlot,
     matchingKeyIn,
+    orderBySlotLayout,
 } from './loadout-state.js';
 
 /** The public export options consumed by the serializer. */
@@ -120,17 +121,7 @@ function slotOrderedModules(
             `ShipLoadout.toLoadoutEvent: no slot layout for hull "${truncate(shipSymbol)}", so modules cannot be ordered by slot`,
         );
     }
-    const remaining = new Map(modules);
-    const ordered: LoadoutModule[] = [];
-    for (const slot of layout) {
-        const key = matchingKeyIn(remaining, slot.key);
-        const module = key === null ? undefined : remaining.get(key);
-        if (module && key !== null) {
-            ordered.push(module);
-            remaining.delete(key);
-        }
-    }
-    return [...ordered, ...remaining.values()];
+    return orderBySlotLayout([...modules.values()], layout, (module) => module.Slot);
 }
 
 function computedModulesValue(

@@ -97,6 +97,7 @@ import {
     isBuiltInHullModule,
     isNonOutfittingSlot,
     matchingKeyIn,
+    orderBySlotLayout,
 } from './internal/loadout-state.js';
 import {
     availableBlueprintsFor,
@@ -2647,20 +2648,11 @@ export class ShipLoadout {
      */
     cellBanks(): CellBankSummary {
         const modules = [...this.#modules.values()];
-        const banks = cellBankInputsFor(modules, this.powerBudget(), (module) =>
-            this.#statsFor(module),
+        const banks = orderBySlotLayout(
+            cellBankInputsFor(modules, this.powerBudget(), (module) => this.#statsFor(module)),
+            this.#layoutOrNull(),
+            (bank) => bank.slot,
         );
-        const layout = this.#layoutOrNull();
-        if (layout) {
-            const order = new Map(
-                layout.map((slot, index) => [slot.key.toLowerCase(), index] as const),
-            );
-            banks.sort(
-                (left, right) =>
-                    (order.get(left.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
-                    (order.get(right.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER),
-            );
-        }
         return cellBankSummary(banks);
     }
 
@@ -2805,21 +2797,15 @@ export class ShipLoadout {
                     : { armourPiercing: stats.armourPiercing }),
             });
         }
-        const layout = this.#layoutOrNull();
-        if (layout) {
-            const order = new Map(
-                layout.map((slot, index) => [slot.key.toLowerCase(), index] as const),
-            );
-            weapons.sort(
-                (left, right) =>
-                    (order.get(left.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
-                    (order.get(right.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER),
-            );
-        }
-        return {
+        const orderedWeapons = orderBySlotLayout(
             weapons,
+            this.#layoutOrNull(),
+            (weapon) => weapon.slot,
+        );
+        return {
+            weapons: orderedWeapons,
             total: sumWeaponMetrics(
-                weapons.filter((weapon) => weapon.enabled).map((weapon) => weapon.metrics),
+                orderedWeapons.filter((weapon) => weapon.enabled).map((weapon) => weapon.metrics),
             ),
         };
     }

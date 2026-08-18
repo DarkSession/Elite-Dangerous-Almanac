@@ -3,6 +3,7 @@
 import { deepFreeze } from '../../internal/deep-freeze.js';
 import type { OutfittingModule } from '../modules.js';
 import type { LoadoutModule } from '../slef.js';
+import type { BuildSlot } from '../slots.js';
 
 /**
  * How a fitted module's `Item` is named when a catalogue lookup rejects it as a wrong
@@ -82,6 +83,21 @@ export function matchingKeyIn(keyed: ReadonlyMap<string, unknown>, slotKey: stri
         if (key.toLowerCase() === wanted) return key;
     }
     return null;
+}
+
+/** Order values by a hull's slots, retaining source order for slots outside the layout. */
+export function orderBySlotLayout<T>(
+    values: readonly T[],
+    layout: readonly BuildSlot[] | null | undefined,
+    slotOf: (value: T) => string,
+): T[] {
+    if (!layout) return [...values];
+    const order = new Map(layout.map((slot, index) => [slot.key.toLowerCase(), index] as const));
+    return [...values].sort(
+        (left, right) =>
+            (order.get(slotOf(left).toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
+            (order.get(slotOf(right).toLowerCase()) ?? Number.MAX_SAFE_INTEGER),
+    );
 }
 
 /** Snapshot caller-supplied stats so later caller mutation cannot alter the build. */
