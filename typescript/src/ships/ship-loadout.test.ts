@@ -1456,7 +1456,7 @@ test('fromSlef rejects an unknown selected hull without poisoning another entry'
     assert.equal(ShipLoadout.fromSlef(input, 0).shipSymbol, 'SideWinder');
     assert.throws(
         () => ShipLoadout.fromSlef(input, 1),
-        /^TypeError: ShipLoadout\.fromLoadout: unknown hull "FutureHull"$/,
+        /^TypeError: ShipLoadout\.fromSlef: unknown hull "FutureHull"$/,
     );
 });
 

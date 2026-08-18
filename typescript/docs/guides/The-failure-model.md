@@ -74,8 +74,9 @@ worth knowing before you write a `catch`:
   build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
   each, no two modules claiming one slot, and an `Engineering` that is an object holding
   an array of `Modifiers`, each a labelled object, whenever their key is there at all —
-  plus `Ship` and the block's two ids when they carry a value. It trusts every value
-  inside, so use `fromSlef` for an event you did not produce yourself.
+  plus a required `Ship` that names a known hull, and the block's two ids when they carry
+  a value. It trusts the remaining numeric and boolean values, so use `fromSlef` for an
+  event you did not produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:
 

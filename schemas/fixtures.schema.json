@@ -4774,7 +4774,15 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "expectedError": { "type": "string" },
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "accepted": { "type": "boolean" },
+                    "reason": { "type": "string" }
+                  },
+                  "required": ["accepted", "reason"]
+                },
                 "input": {
                   "type": "object",
                   "additionalProperties": false,
@@ -4787,10 +4795,9 @@
                     "Ship": { "type": "string" }
                   },
                   "required": ["Modules", "Ship"]
-                },
-                "message": { "type": "string" }
+                }
               },
-              "required": ["expectedError", "input", "message"]
+              "required": ["expected", "input"]
             }
           },
           "required": ["unknownHull"]

@@ -476,8 +476,7 @@
   "importRejections": {
     "unknownHull": {
       "input": { "Ship": "FutureHull", "Modules": [] },
-      "expectedError": "TypeError",
-      "message": "ShipLoadout.fromLoadout: unknown hull \"FutureHull\""
+      "expected": { "accepted": false, "reason": "unknownHull" }
     }
   },
   "diagnostics": {

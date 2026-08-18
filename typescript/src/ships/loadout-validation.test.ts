@@ -31,6 +31,21 @@ test('an empty known hull is valid but operationally incomplete', () => {
     assert.equal(result.issues.filter((issue) => issue.code === 'missingRequiredSlot').length, 8);
 });
 
+test('validation names a non-array slot layout', () => {
+    assert.throws(
+        () =>
+            validateLoadout({
+                shipSymbol: layout.symbol,
+                slots: null,
+                modules: [],
+            } as unknown as Parameters<typeof validateLoadout>[0]),
+        {
+            name: 'TypeError',
+            message: 'validateLoadout: input.slots must be an array, received null',
+        },
+    );
+});
+
 test('a cargo hatch is immutable without becoming required for editor-built loadouts', () => {
     const slots = enumerateSlots(layout);
     const result = validateLoadout({

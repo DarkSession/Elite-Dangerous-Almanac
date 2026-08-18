@@ -166,6 +166,7 @@ import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js'
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
     normalizeLoadoutEvent,
+    type ImportedLoadoutState,
     type ImportedTopFigures as TopFigures,
 } from './internal/loadout-import.js';
 import type { SourcePurchaseRecord } from './source-purchase.js';
@@ -781,7 +782,14 @@ export class ShipLoadout {
                 `ShipLoadout.fromSlef: no entry at index ${truncate(index)} (have ${entries.length})`,
             );
         }
-        return ShipLoadout.fromLoadout(entry.data);
+        const imported = normalizeLoadoutEvent(entry.data);
+        const ship = getShipBySymbol(imported.shipSymbol);
+        if (!ship) {
+            throw new TypeError(
+                `ShipLoadout.fromSlef: unknown hull "${truncate(imported.shipSymbol)}"`,
+            );
+        }
+        return ShipLoadout.#fromImported(imported, ship);
     }
 
     /**
@@ -862,6 +870,11 @@ export class ShipLoadout {
                 `ShipLoadout.fromLoadout: unknown hull "${truncate(imported.shipSymbol)}"`,
             );
         }
+        return ShipLoadout.#fromImported(imported, ship);
+    }
+
+    /** Assemble already-normalized state whose hull has been resolved. */
+    static #fromImported(imported: ImportedLoadoutState, ship: Ship): ShipLoadout {
         const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find((module) =>
             isCargoHatchSlot(module.slot),
         );
@@ -955,18 +968,13 @@ export class ShipLoadout {
      */
     static default(shipSymbol: string): ShipLoadout {
         const requested = requireString(shipSymbol, 'ShipLoadout.default: shipSymbol');
-        const loadout = getDefaultLoadout(requested);
-        if (!loadout) {
+        const ship = getShipBySymbol(requested);
+        if (!ship) {
             throw new TypeError(
                 `ShipLoadout.default: no default loadout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        const ship = getShipBySymbol(loadout.symbol);
-        if (!ship) {
-            throw new TypeError(
-                `ShipLoadout.default: no hull data for "${truncate(loadout.symbol)}"`,
-            );
-        }
+        const loadout = getDefaultLoadout(ship.symbol)!;
         return new ShipLoadout(
             ship,
             loadout.symbol,

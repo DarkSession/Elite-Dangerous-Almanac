@@ -167,9 +167,16 @@ test('shared catalogue-backed operation cases reproduce', () => {
 
 test('shared import rejection cases apply to journal and SLEF entry points', () => {
     const rejection = fixture.importRejections.unknownHull;
-    const expected = { name: rejection.expectedError, message: rejection.message };
-    assert.throws(() => ShipLoadout.fromLoadout(rejection.input), expected);
-    assert.throws(() => ShipLoadout.fromSlef([rejection.input]), expected);
+    assert.deepEqual(rejection.expected, { accepted: false, reason: 'unknownHull' });
+    for (const [scope, importBuild] of [
+        ['ShipLoadout.fromLoadout', () => ShipLoadout.fromLoadout(rejection.input)],
+        ['ShipLoadout.fromSlef', () => ShipLoadout.fromSlef([rejection.input])],
+    ] as const) {
+        assert.throws(importBuild, {
+            name: 'TypeError',
+            message: `${scope}: unknown hull "${rejection.input.Ship}"`,
+        });
+    }
 });
 
 test('shared module-count limits resolve allowances and structural diagnostics', () => {

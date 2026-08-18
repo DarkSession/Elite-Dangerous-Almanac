@@ -3410,12 +3410,14 @@ type FixtureShipsOperations = {
     };
     importRejections: {
         unknownHull: {
-            expectedError: string;
+            expected: {
+                accepted: boolean;
+                reason: string;
+            };
             input: {
                 Modules: never[];
                 Ship: string;
             };
-            message: string;
         };
     };
     mercCoinCost: {

@@ -7,7 +7,7 @@
 import type { BuildSlot } from './slots.js';
 import type { ModuleExclusionGroup, ModuleLimitGroup, ModuleLimitIncrease } from './modules.js';
 import { calculateModuleLimits } from './module-limits.js';
-import { truncate } from '../internal/argument-guards.js';
+import { describeValue, truncate } from '../internal/argument-guards.js';
 import { isRequiredSlot } from './internal/loadout-slot-rules.js';
 
 /**
@@ -126,11 +126,18 @@ export interface LoadoutValidationInput {
  * ```ts
  * import { validateLoadout } from '@elite-dangerous-almanac/core/ships/loadout-validation';
  *
- * const result = validateLoadout({ shipSymbol: 'SideWinder', slots: [], modules: [] });
+ * const result = validateLoadout({ shipSymbol: 'CustomHull', slots: [], modules: [] });
  * result.valid; // -> true: no impossible fit was claimed
+ * result.complete; // -> true: the supplied layout has no required mounts
  * ```
+ * @throws {TypeError} If `input.slots` is not an array.
  */
 export function validateLoadout(input: LoadoutValidationInput): LoadoutValidation {
+    if (!Array.isArray(input.slots)) {
+        throw new TypeError(
+            `validateLoadout: input.slots must be an array, received ${describeValue(input.slots)}`,
+        );
+    }
     const issues: LoadoutIssue[] = [];
     const seen = new Map<string, string>();
     for (const module of input.modules) {
