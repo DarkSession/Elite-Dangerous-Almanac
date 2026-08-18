@@ -614,8 +614,9 @@ export interface LoadoutExportOptions {
      * removed, since they then cover an article no longer aboard. Removing a module the
      * capture listed but never priced is the one case this cannot detect: only the
      * capture ever knew which unpriced modules its total counted. The built-in cargo hatch
-     * is never purchasable, so normalising its captured identity does not invalidate the
-     * totals.
+     * is never purchasable, so normalising an unpriced or zero-priced captured hatch does
+     * not invalidate the totals. A non-zero captured hatch value is treated like any
+     * other priced replaced article.
      *
      * `HullValue` always stands: a captured hull figure names no slot, so no edit
      * narrows it. Note that on a game capture it counts the hull *with* its stock
@@ -801,8 +802,9 @@ export class ShipLoadout {
      * through the incremental {@link setModule} editor.
      * A known hull's non-removable cargo hatch is restored from its default loadout when
      * the capture omits it or supplies an unresolved item for that mount. Because that
-     * hatch has zero mass, capacity and price, restoration preserves the capture's
-     * aggregate mass, capacity and credit figures.
+     * hatch has zero mass, capacity and price, restoration preserves the build's live
+     * aggregate mass, capacity and credit figures. Source-credit export retains its
+     * totals only when the captured hatch was unpriced or valued at zero.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -843,8 +845,8 @@ export class ShipLoadout {
             );
         }
         const imported = normalizeLoadoutEvent(event);
-        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find(
-            (module) => module.slot.toLowerCase() === 'cargohatch',
+        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find((module) =>
+            isCargoHatchSlot(module.slot),
         );
         const capturedHatchKey =
             defaultHatch === undefined ? null : matchingKeyIn(imported.modules, defaultHatch.slot);
@@ -899,8 +901,8 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        const hatch = getDefaultLoadout(layout.symbol)?.modules.find(
-            (module) => module.slot.toLowerCase() === 'cargohatch',
+        const hatch = getDefaultLoadout(layout.symbol)?.modules.find((module) =>
+            isCargoHatchSlot(module.slot),
         );
         const modules = new Map<string, LoadoutModule>();
         if (hatch) {
@@ -1370,9 +1372,10 @@ export class ShipLoadout {
      * This is the narrow repair path for mounts that {@link setModule} deliberately does
      * not expose as ordinary edits, including the built-in cargo hatch. Live aggregates
      * are updated by the same rules as every package-owned refit. The immutable
-     * {@link sourcePurchase} record is unchanged; source-credit export suppresses figures
-     * tied to a replaced article, except for the free cargo hatch. Resolved valid core and
-     * armour alternatives are left unchanged.
+     * {@link sourcePurchase} record is unchanged; source-credit export leaves a replaced
+     * slot unpriced, while its aggregate totals remain valid for an unpriced or
+     * zero-priced cargo hatch. Resolved valid core and armour alternatives are left
+     * unchanged.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
@@ -3540,7 +3543,8 @@ export class ShipLoadout {
             return;
         }
         // A cargo hatch is part of the hull and has no purchase price. Normalising its
-        // captured identity therefore does not change either credit aggregate.
+        // captured identity therefore does not change either credit aggregate. Only
+        // repairFixedMount can replace this slot; the ordinary editors reject it.
         if (
             (previous !== null && isCargoHatchSlot(previous.Slot)) ||
             (next !== null && isCargoHatchSlot(next.Slot))

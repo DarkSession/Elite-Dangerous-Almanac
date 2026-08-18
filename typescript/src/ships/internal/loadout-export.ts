@@ -169,10 +169,8 @@ function sourceTotalsHold(
         const key = matchingKeyIn(modules, entry.slot);
         const fitted = key === null ? undefined : modules.get(key);
         if (!fitted) return false;
-        if (
-            !isCargoHatchSlot(entry.slot) &&
-            normalizeKey(fitted.Item, FITTED_ITEM) !== normalizeKey(entry.item, SOURCE_ITEM)
-        ) {
+        if (isCargoHatchSlot(entry.slot) && entry.value === 0) continue;
+        if (normalizeKey(fitted.Item, FITTED_ITEM) !== normalizeKey(entry.item, SOURCE_ITEM)) {
             return false;
         }
     }

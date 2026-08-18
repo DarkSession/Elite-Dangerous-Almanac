@@ -464,7 +464,7 @@ test('an edited build re-exports a record whose parts still add up', () => {
     );
 });
 
-test('fixed-mount normalization preserves totals because the cargo hatch is free', () => {
+test('fixed-mount normalization preserves source totals only for a free cargo hatch', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const captured: LoadoutEvent = {
         ...source,
@@ -492,13 +492,28 @@ test('fixed-mount normalization preserves totals because the cargo hatch is free
 
     const exported = build.toLoadoutEvent({ credits: 'source' });
     assert.equal(exported.HullValue, 1_000);
-    assert.equal(exported.ModulesValue, 2_000);
-    assert.equal(exported.Rebuy, 150);
+    assert.equal(exported.ModulesValue, undefined);
+    assert.equal(exported.Rebuy, undefined);
     assert.equal(exported.Modules.find((fitted) => fitted.Slot === 'CargoHatch')?.Value, undefined);
     assert.ok(
         exported.Modules.some(
             (fitted) => fitted.Slot !== 'CargoHatch' && fitted.Value !== undefined,
         ),
+    );
+
+    const freeCapture: LoadoutEvent = {
+        ...captured,
+        Modules: captured.Modules.map((fitted) =>
+            fitted.Slot === 'CargoHatch' ? { ...fitted, Value: 0 } : fitted,
+        ),
+    };
+    const freeExport = ShipLoadout.fromLoadout(freeCapture).toLoadoutEvent({ credits: 'source' });
+    assert.equal(freeExport.HullValue, 1_000);
+    assert.equal(freeExport.ModulesValue, 2_000);
+    assert.equal(freeExport.Rebuy, 150);
+    assert.equal(
+        freeExport.Modules.find((fitted) => fitted.Slot === 'CargoHatch')?.Value,
+        undefined,
     );
 });
 
