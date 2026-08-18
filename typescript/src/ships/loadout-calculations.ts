@@ -10,13 +10,19 @@
  * @packageDocumentation
  */
 
-import { completeResult } from './internal/calculation-result.js';
+import { completeResult, incompleteResult } from './internal/calculation-result.js';
 import { truncate } from '../internal/argument-guards.js';
 
 /** A dependency that prevented a loadout calculation from producing a complete value. */
 export interface CalculationIssue {
     /** Field whose value is missing, using the public catalogue spelling. */
-    readonly field: 'hullMass' | 'mass' | 'cargoCapacity' | 'fuelCapacity' | 'reserveFuelCapacity';
+    readonly field:
+        | 'hullMass'
+        | 'mass'
+        | 'cargoCapacity'
+        | 'fuelCapacity'
+        | 'reserveFuelCapacity'
+        | 'frameShiftDrive';
     /** Slot containing the incomplete module, when the dependency belongs to a module. */
     readonly slot?: string;
     /** Module symbol, when the dependency belongs to a module. */
@@ -101,11 +107,7 @@ function result<T>(
     if (frozenIssues.length === 0) {
         throw new TypeError('CalculationResult: an incomplete result needs at least one issue');
     }
-    return Object.freeze({
-        value: null,
-        complete: false,
-        issues: frozenIssues as readonly [CalculationIssue, ...CalculationIssue[]],
-    });
+    return incompleteResult(frozenIssues as readonly [CalculationIssue, ...CalculationIssue[]]);
 }
 
 /**

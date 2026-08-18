@@ -281,6 +281,8 @@ export {
     type JumpRangeSummary,
     type DefenceOptions,
     type MobilityOptions,
+    type StandardLoad,
+    type StandardLoadInputs,
     type DistributorOptions,
     type WeaponsOptions,
     type RetailCredits,
