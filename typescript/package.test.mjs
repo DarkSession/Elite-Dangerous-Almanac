@@ -1099,6 +1099,11 @@ test('the publication manifest includes consumer assets, documentation and notic
         /\]\(\.\/PROVENANCE\/SNAPSHOTS\.md\)/,
         'the packaged README must link to its local provenance record',
     );
+    assert.match(readme, /data-feature="hardpoint"/);
+    assert.match(readme, /data-feature="utility_mount"/);
+    assert.match(readme, /data-journal-slot/);
+    assert.match(readme, /same slot may occur once\s+on both sides/);
+    assert.match(readme, /no\s+scripts,\s+styles,\s+event-handler\s+attributes/);
 
     // Provenance is separate from the legal notice so THIRD_PARTY_NOTICES can stay
     // byte-identical to the canonical ATTRIBUTIONS.md. The generated directory must
