@@ -1019,14 +1019,14 @@ test('types are exposed by owning runtime entries, not type-only subpaths', asyn
             consumer,
             [
                 "import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';",
-                "import type { FittedModule } from '@elite-dangerous-almanac/core/ships';",
-                "import type { ImmovableReason, LoadoutSlot } from '@elite-dangerous-almanac/core/ships/ship-loadout';",
+                "import type { FittedModule as FittedModuleFromBarrel } from '@elite-dangerous-almanac/core/ships';",
+                "import type { FittedModule, ImmovableReason, LoadoutSlot } from '@elite-dangerous-almanac/core/ships/ship-loadout';",
                 "import type { SystemAddressInput as AddressFromSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';",
                 "import type { SystemAddressInput as AddressFromProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';",
                 "import type { SystemAddressInput as AddressFromCodexLookup } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';",
                 "import type { SystemAddressInput as AddressFromLockedSystems } from '@elite-dangerous-almanac/core/astro/permit-locked-systems';",
                 "import type { SystemAddressInput as AddressFromPermitLocks } from '@elite-dangerous-almanac/core/astro/permit-locks';",
-                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot, ImmovableReason, AddressFromSystemAddress, AddressFromProceduralSystem, AddressFromCodexLookup, AddressFromLockedSystems, AddressFromPermitLocks];',
+                'declare const values: [GalacticPosition, FittedModuleFromBarrel, FittedModule, LoadoutSlot, ImmovableReason, AddressFromSystemAddress, AddressFromProceduralSystem, AddressFromCodexLookup, AddressFromLockedSystems, AddressFromPermitLocks];',
                 'void values;',
             ].join('\n'),
         );
