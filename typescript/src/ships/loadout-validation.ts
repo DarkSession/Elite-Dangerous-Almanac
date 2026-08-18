@@ -21,7 +21,6 @@ import { isRequiredSlot } from './internal/loadout-slot-rules.js';
  * validate your own list; skip it when the input came from a build.
  */
 export type LoadoutIssueCode =
-    | 'unknownHull'
     | 'duplicateSlot'
     | 'unknownSlot'
     | 'missingRequiredSlot'
@@ -112,8 +111,8 @@ export interface ValidationModule {
 export interface LoadoutValidationInput {
     /** Hull symbol. */
     readonly shipSymbol: string;
-    /** Expanded hull layout, or `null` for an unknown hull. */
-    readonly slots: readonly BuildSlot[] | null;
+    /** Expanded hull layout. */
+    readonly slots: readonly BuildSlot[];
     /** Fitted modules. Duplicate keys must be retained here so they can be diagnosed. */
     readonly modules: readonly ValidationModule[];
 }
@@ -127,9 +126,8 @@ export interface LoadoutValidationInput {
  * ```ts
  * import { validateLoadout } from '@elite-dangerous-almanac/core/ships/loadout-validation';
  *
- * const result = validateLoadout({ shipSymbol: 'FutureShip', slots: null, modules: [] });
- * result.valid;    // -> true: no impossible fit was claimed
- * result.complete; // -> false: the hull layout is unknown
+ * const result = validateLoadout({ shipSymbol: 'SideWinder', slots: [], modules: [] });
+ * result.valid; // -> true: no impossible fit was claimed
  * ```
  */
 export function validateLoadout(input: LoadoutValidationInput): LoadoutValidation {
@@ -186,41 +184,32 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         });
     }
 
-    if (input.slots === null) {
-        issues.push({
-            code: 'unknownHull',
-            severity: 'incomplete',
-            message: `No slot layout is known for hull ${truncate(input.shipSymbol)}`,
-            params: { shipSymbol: input.shipSymbol },
-        });
-    } else {
-        const knownSlots = new Map(input.slots.map((slot) => [slot.key.toLowerCase(), slot]));
-        for (const module of input.modules) {
-            if (module.requiresKnownSlot !== false && !knownSlots.has(module.slot.toLowerCase())) {
-                issues.push({
-                    code: 'unknownSlot',
-                    severity: 'error',
+    const knownSlots = new Map(input.slots.map((slot) => [slot.key.toLowerCase(), slot]));
+    for (const module of input.modules) {
+        if (module.requiresKnownSlot !== false && !knownSlots.has(module.slot.toLowerCase())) {
+            issues.push({
+                code: 'unknownSlot',
+                severity: 'error',
+                slot: module.slot,
+                symbol: module.symbol,
+                message: `${truncate(module.slot)} is not a slot on ${truncate(input.shipSymbol)}`,
+                params: {
+                    shipSymbol: input.shipSymbol,
                     slot: module.slot,
                     symbol: module.symbol,
-                    message: `${truncate(module.slot)} is not a slot on ${truncate(input.shipSymbol)}`,
-                    params: {
-                        shipSymbol: input.shipSymbol,
-                        slot: module.slot,
-                        symbol: module.symbol,
-                    },
-                });
-            }
+                },
+            });
         }
-        for (const slot of input.slots) {
-            if (isRequiredSlot(slot) && !seen.has(slot.key.toLowerCase())) {
-                issues.push({
-                    code: 'missingRequiredSlot',
-                    severity: 'incomplete',
-                    slot: slot.key,
-                    message: `${truncate(slot.key)} is required for an operational build`,
-                    params: { slot: slot.key },
-                });
-            }
+    }
+    for (const slot of input.slots) {
+        if (isRequiredSlot(slot) && !seen.has(slot.key.toLowerCase())) {
+            issues.push({
+                code: 'missingRequiredSlot',
+                severity: 'incomplete',
+                slot: slot.key,
+                message: `${truncate(slot.key)} is required for an operational build`,
+                params: { slot: slot.key },
+            });
         }
     }
 

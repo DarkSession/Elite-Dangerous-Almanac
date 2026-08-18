@@ -1717,7 +1717,6 @@ type FixtureShipsHeat = {
             unresolvedItem: string;
         };
     };
-    unknownHull: string;
     unpowered: {
         fixture: string;
         heatLevel: number;
@@ -3409,6 +3408,16 @@ type FixtureShipsOperations = {
         expectedCode: string;
         group: string;
     };
+    importRejections: {
+        unknownHull: {
+            expectedError: string;
+            input: {
+                Modules: never[];
+                Ship: string;
+            };
+            message: string;
+        };
+    };
     mercCoinCost: {
         expected: number;
         modules: {
@@ -4514,12 +4523,6 @@ type FixtureShipsSlefExport = {
         topLevelKeys: string[];
     };
     rebuyFraction: number;
-    unknownHull: {
-        note: string;
-        omittedKeys: string[];
-        ship: string;
-        topLevelKeys: string[];
-    };
     viperMkIV: {
         build: string;
         discount: {

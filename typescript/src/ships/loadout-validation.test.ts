@@ -88,13 +88,6 @@ test('fitting params cannot replace canonical diagnostic identity fields', () =>
     });
 });
 
-test('an unknown hull is incomplete without inventing a slot layout', () => {
-    const result = validateLoadout({ shipSymbol: 'FutureShip', slots: null, modules: [] });
-    assert.equal(result.valid, true);
-    assert.equal(result.complete, false);
-    assert.equal(result.issues[0]?.code, 'unknownHull');
-});
-
 test('known non-outfitting entries do not have to name a hull mount', () => {
     const result = validateLoadout({
         shipSymbol: layout.symbol,
@@ -155,7 +148,7 @@ test('validation abbreviates message previews without changing structured values
     const longSymbol = `FutureModule${'z'.repeat(20_000)}`;
     const result = validateLoadout({
         shipSymbol: longHull,
-        slots: null,
+        slots: [],
         modules: [
             { slot: longSlot, symbol: longSymbol, known: false, fitError: null },
             { slot: longSlot, symbol: longSymbol, known: true, fitError: 'q'.repeat(20_000) },

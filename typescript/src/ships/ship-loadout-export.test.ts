@@ -905,11 +905,6 @@ test('moduleOrder "slots" drops no module, even in a slot the layout omits', () 
     assert.equal(event.Modules.at(-1)!.Slot, 'HugeHardpoint9');
 });
 
-test('moduleOrder "slots" throws when the hull has no known layout', () => {
-    const build = ShipLoadout.fromLoadout({ Ship: 'not_a_real_hull', Modules: [] });
-    assert.throws(() => build.toLoadoutEvent({ moduleOrder: 'slots' }), /no slot layout/);
-});
-
 test('catalogue-cased ids are lower-cased on the way out', () => {
     const build = ShipLoadout.empty(fixture.assembled.ship);
     for (const [slot, symbol] of Object.entries(fixture.assembled.fit)) {
@@ -954,23 +949,6 @@ test('power state is omitted unless explicitly asked for', () => {
 });
 
 // ── Omission rather than stale or zero values ────────────────────────────────
-
-test('figures that cannot be computed are left out, not emitted as zero', () => {
-    const build = ShipLoadout.fromLoadout({
-        Ship: fixture.unknownHull.ship,
-        Modules: [{ Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' }],
-    });
-    const event = build.toLoadoutEvent();
-    assert.deepEqual(Object.keys(event), fixture.unknownHull.topLevelKeys);
-    for (const key of fixture.unknownHull.omittedKeys) {
-        assert.ok(
-            !Object.hasOwn(event, key),
-            `expected ${key} to be omitted, got ${String(
-                (event as unknown as Record<string, unknown>)[key],
-            )}`,
-        );
-    }
-});
 
 test('an unpriceable module omits the value figures rather than under-reporting', () => {
     const build = ShipLoadout.fromLoadout({

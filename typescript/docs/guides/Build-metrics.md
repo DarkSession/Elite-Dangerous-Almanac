@@ -41,7 +41,7 @@ declare const build: ShipLoadout; // a Federal Corvette
 
 build.powerBudget().deployed; // -> 46.8597
 build.shieldMetrics()?.strength; // -> 3940.4
-build.armourMetrics()?.hitPoints; // -> 5062.6
+build.armourMetrics().hitPoints; // -> 5062.6
 build.weaponMetrics().total.damagePerSecond; // -> 137.04
 ```
 
@@ -146,7 +146,7 @@ all, which the curve reports as `0` rather than as a small number.
 `shieldMetrics()` evaluates the generator, boosters and reinforcement against the
 hardpoints-stowed (`retracted`) budget. It returns `null` when no generator is powered in
 that state. `shieldMetricsResult()` distinguishes a missing, switched-off or shed generator
-from an unresolved hull or power supply. Every known hull still has armour.
+from an unavailable power supply. Every imported build has a known hull and armour.
 `mobilityMetrics()` and `shieldRecovery()` use the same retracted power state for their
 thrusters, generator and distributor, and their `…Result` companions explain an unavailable
 answer in the same way.
@@ -334,7 +334,7 @@ load-bearing:
   parsing the diagnostic message.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
-- `armourMetrics()` returns `null` when the hull is unresolved. Shield boosters and
+- `armourMetrics()` always has the known hull's base figures. Shield boosters and
   reinforcement whose records are unresolved contribute zero, while `weaponMetrics()`
   omits an unresolved hardpoint from `weapons` and the totals.
 - An unresolved power plant makes every power-dependent metric unavailable rather than
@@ -347,9 +347,9 @@ load-bearing:
   numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
-- `heatMetrics()` returns `null` outright when the build has no powered plant or its
-  hull is unknown. When it does answer, it names unresolved
-  modules in its own `unknownDraws`, mirroring the power budget: a module the catalogue
+- `heatMetrics()` returns `null` outright when the build has no powered plant. When it
+  does answer, it names unresolved modules in its own `unknownDraws`, mirroring the power
+  budget: a module the catalogue
   cannot resolve draws power the model cannot see and makes heat it cannot count — and,
   because an unknown draw is left out of the priority-group totals, it also leaves the
   groups below it reading as powered when the real plant would shed them. The two errors

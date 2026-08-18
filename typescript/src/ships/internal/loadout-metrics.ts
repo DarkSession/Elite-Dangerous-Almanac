@@ -21,7 +21,7 @@ import type { DamageDistribution, OutfittingModule } from '../modules.js';
 import { getBulkheadsForShip } from '../modules.js';
 import { getExperimentalEffect } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
-import { getShipBySymbol } from '../ships.js';
+import type { Ship } from '../ships.js';
 import type { PowerBudget, PowerConsumer } from '../power.js';
 import type { HeatInput, HeatWeapon } from '../heat.js';
 import {
@@ -451,17 +451,6 @@ function metricIssue(
     };
 }
 
-/** Explain that the hull-dependent inputs cannot be resolved for this ship symbol. */
-function hullIssue(shipSymbol: string): CalculationIssue {
-    return {
-        field: 'hull',
-        reason: 'unresolved',
-        hull: shipSymbol,
-        message: `${truncate(shipSymbol)} is not a known hull`,
-        params: { field: 'hull', reason: 'unresolved', hull: shipSymbol },
-    };
-}
-
 /** Explain why the build cannot establish its retracted power supply, if anything. */
 function powerPlantIssueFor(
     modules: readonly LoadoutModule[],
@@ -573,13 +562,12 @@ function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): M
 
 /** Gather a build's shield generator, boosters and Guardian reinforcement. */
 export function shieldInputFor(
-    shipSymbol: string,
+    ship: Ship,
     modules: readonly LoadoutModule[],
     budget: PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldInput {
-    const hull = getShipBySymbol(shipSymbol);
     let generator: ShieldGeneratorParams | null = null;
     const boosters: ShieldBoosterParams[] = [];
     let reinforcement = 0;
@@ -620,8 +608,8 @@ export function shieldInputFor(
     }
 
     return {
-        hullMass: hull?.hullMass ?? 0,
-        baseShieldStrength: hull?.baseShieldStrength ?? 0,
+        hullMass: ship.hullMass,
+        baseShieldStrength: ship.baseShieldStrength,
         generator,
         boosters,
         reinforcement,
@@ -631,30 +619,27 @@ export function shieldInputFor(
 
 /** Gather powered shield inputs, with an unavailable-state diagnostic. */
 export function shieldInputResultFor(
-    shipSymbol: string,
+    ship: Ship,
     modules: readonly LoadoutModule[],
     getBudget: () => PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<ShieldInput> {
-    if (!getShipBySymbol(shipSymbol)) return incompleteResult([hullIssue(shipSymbol)]);
     const fitted = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!fitted.complete) return fitted;
-    const input = shieldInputFor(shipSymbol, modules, fitted.value.budget, systemsPips, statsFor);
+    const input = shieldInputFor(ship, modules, fitted.value.budget, systemsPips, statsFor);
     return completeResult(input);
 }
 
 /** Gather a loaded hull and powered thruster curve, with an unavailable-state diagnostic. */
 export function mobilityInputResultFor(
-    shipSymbol: string,
+    ship: Ship,
     modules: readonly LoadoutModule[],
     getBudget: () => PowerBudget,
     mass: number | (() => number),
     enginesPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<MobilityInput> {
-    const hull = getShipBySymbol(shipSymbol);
-    if (!hull) return incompleteResult([hullIssue(shipSymbol)]);
     let thrusters: ThrusterParams | null = null;
     for (const module of modules) {
         const stats = statsFor(module);
@@ -721,15 +706,15 @@ export function mobilityInputResultFor(
     }
     if (!thrusters) return incompleteResult([metricIssue('thrusters', 'missing')]);
     return completeResult({
-        minimumSpeed: hull.minimumSpeed,
-        maximumSpeed: hull.maximumSpeed,
-        boost: hull.boost,
-        minPitch: hull.minPitch,
-        pitch: hull.pitch,
-        minRoll: hull.minRoll,
-        roll: hull.roll,
-        minYaw: hull.minYaw,
-        yaw: hull.yaw,
+        minimumSpeed: ship.minimumSpeed,
+        maximumSpeed: ship.maximumSpeed,
+        boost: ship.boost,
+        minPitch: ship.minPitch,
+        pitch: ship.pitch,
+        minRoll: ship.minRoll,
+        roll: ship.roll,
+        minYaw: ship.minYaw,
+        yaw: ship.yaw,
         mass: typeof mass === 'function' ? mass() : mass,
         thrusters,
         enginesPips,
@@ -738,13 +723,12 @@ export function mobilityInputResultFor(
 
 /** Gather shield recovery inputs, with an unavailable-state diagnostic. */
 export function shieldRecoveryInputResultFor(
-    shipSymbol: string,
+    ship: Ship,
     modules: readonly LoadoutModule[],
     getBudget: () => PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<ShieldRecoveryInput> {
-    if (!getShipBySymbol(shipSymbol)) return incompleteResult([hullIssue(shipSymbol)]);
     const generator = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!generator.complete) return generator;
     const { module: generatorModule, budget } = generator.value;
@@ -761,9 +745,7 @@ export function shieldRecoveryInputResultFor(
     }
     const generatorStats = statsFor(generatorModule);
     const distributorStats = distributor ? statsFor(distributor) : null;
-    const strength = shieldMetrics(
-        shieldInputFor(shipSymbol, modules, budget, 0, statsFor),
-    ).strength;
+    const strength = shieldMetrics(shieldInputFor(ship, modules, budget, 0, statsFor)).strength;
     return completeResult({
         strength,
         regenRate: effectiveStat(generatorModule, 'shieldRegenRate', generatorStats) ?? 0,
@@ -862,14 +844,11 @@ export function distributorInputFor(
  * against the deployed state they fire in.
  */
 export function heatInputFor(
-    shipSymbol: string,
+    ship: Ship,
     modules: readonly LoadoutModule[],
     budget: PowerBudget,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): HeatInput | null {
-    const hull = getShipBySymbol(shipSymbol);
-    if (!hull) return null;
-
     let heatEfficiency: number | undefined;
     let thrusterHeatRate = 0;
     let deployedThrusterHeatRate = 0;
@@ -911,8 +890,8 @@ export function heatInputFor(
     if (heatEfficiency === undefined) return null;
 
     return {
-        heatCapacity: hull.heatCapacity,
-        heatDissipation: hull.heatDissipation,
+        heatCapacity: ship.heatCapacity,
+        heatDissipation: ship.heatDissipation,
         heatEfficiency,
         retractedPowerDraw: poweredDraw(budget, 'retracted'),
         deployedPowerDraw: poweredDraw(budget, 'deployed'),
@@ -988,10 +967,8 @@ export function cellBankInputsFor(
  * The armour a hull flies with when no bulkhead has been fitted explicitly — the stock
  * lightweight alloy every hull leaves the shipyard with.
  */
-function stockBulkhead(shipSymbol: string): OutfittingModule | null {
-    const hull = getShipBySymbol(shipSymbol);
-    if (!hull) return null;
-    const variants = getBulkheadsForShip(hull.name, CORE_MODULES);
+function stockBulkhead(ship: Ship): OutfittingModule | null {
+    const variants = getBulkheadsForShip(ship.name, CORE_MODULES);
     // The Caspian Explorer's stock alloy is spelled `..._Grade1_Default`; every other
     // hull's is the zero-mass first entry.
     return (
@@ -1004,11 +981,10 @@ function stockBulkhead(shipSymbol: string): OutfittingModule | null {
 
 /** Gather a build's bulkhead and reinforcement packages. */
 export function armourInputFor(
-    shipSymbol: string,
+    ship: Ship,
     modules: readonly LoadoutModule[],
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ArmourInput {
-    const hull = getShipBySymbol(shipSymbol);
     const reinforcements: HullReinforcementParams[] = [];
     const moduleReinforcements: ModuleReinforcementParams[] = [];
     let bulkhead: BulkheadParams | null = null;
@@ -1043,7 +1019,7 @@ export function armourInputFor(
     }
 
     if (!bulkhead) {
-        const stock = stockBulkhead(shipSymbol);
+        const stock = stockBulkhead(ship);
         bulkhead = stock
             ? {
                   hullBoost: stock.hullBoost ?? 0,
@@ -1053,7 +1029,7 @@ export function armourInputFor(
     }
 
     return {
-        baseArmour: hull?.baseArmour ?? 0,
+        baseArmour: ship.baseArmour,
         bulkhead,
         reinforcements,
         moduleReinforcements,

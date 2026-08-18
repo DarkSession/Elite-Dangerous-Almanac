@@ -102,10 +102,9 @@ export function ownKeyIn(keyed: ReadonlyMap<string, unknown>, canonicalKey: stri
 /** Order values by a hull's slots, retaining source order for slots outside the layout. */
 export function orderBySlotLayout<T>(
     values: readonly T[],
-    layout: readonly BuildSlot[] | null | undefined,
+    layout: readonly BuildSlot[],
     slotOf: (value: T) => string,
 ): T[] {
-    if (!layout) return [...values];
     const order = new Map(layout.map((slot, index) => [slot.key.toLowerCase(), index] as const));
     return [...values].sort(
         (left, right) =>

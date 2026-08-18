@@ -4,9 +4,9 @@
  * Cross-language parity cases for loaded mobility, shield recovery, distributor
  * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship and
  * counted-module validation, direct retail and Merc Coin pricing, alpha-strike thermal
- * load, structured diagnostics and editor failures. Inputs pin the public data-free and
- * ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship and
- * module snapshots.
+ * load, import rejections, structured diagnostics and editor failures. Inputs pin the
+ * public data-free and ShipLoadout facade contracts; catalogue-backed expectations pin
+ * the shared ship and module snapshots.
  */
 {
   "mobility": {
@@ -473,6 +473,13 @@
       "timeToDrain": 4.285024836397756
     }
   },
+  "importRejections": {
+    "unknownHull": {
+      "input": { "Ship": "FutureHull", "Modules": [] },
+      "expectedError": "TypeError",
+      "message": "ShipLoadout.fromLoadout: unknown hull \"FutureHull\""
+    }
+  },
   "diagnostics": {
     "slef": {
       "input": { "Ship": "sidewinder", "Modules": [{ "Slot": "PowerPlant" }] },
@@ -620,13 +627,13 @@
     },
     "requiredSlot": {
       "input": {
-        "Ship": "FutureShip",
+        "Ship": "SideWinder",
         "Modules": [{ "Slot": "powerplant", "Item": "FuturePowerPlant" }]
       },
       "slot": "PowerPlant",
       "expected": {
         "code": "requiredSlot",
-        "params": { "slot": "powerplant" }
+        "params": { "slot": "PowerPlant" }
       }
     },
     "immutableSlotReplacement": {

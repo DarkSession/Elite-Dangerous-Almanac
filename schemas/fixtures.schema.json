@@ -3280,7 +3280,6 @@
             "projection"
           ]
         },
-        "unknownHull": { "type": "string" },
         "unpowered": {
           "type": "object",
           "additionalProperties": false,
@@ -3329,7 +3328,6 @@
         "overheatHeatLevel",
         "transient",
         "unknownDraws",
-        "unknownHull",
         "unpowered",
         "weaponThermalLoad"
       ]
@@ -4768,6 +4766,35 @@
           },
           "required": ["expectedCode", "group"]
         },
+        "importRejections": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unknownHull": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expectedError": { "type": "string" },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "maxItems": 0,
+                      "items": false
+                    },
+                    "Ship": { "type": "string" }
+                  },
+                  "required": ["Modules", "Ship"]
+                },
+                "message": { "type": "string" }
+              },
+              "required": ["expectedError", "input", "message"]
+            }
+          },
+          "required": ["unknownHull"]
+        },
         "mercCoinCost": {
           "type": "object",
           "additionalProperties": false,
@@ -5378,6 +5405,7 @@
         "distributor",
         "editorErrors",
         "exclusivity",
+        "importRejections",
         "mercCoinCost",
         "mobility",
         "moduleLimits",
@@ -6686,17 +6714,6 @@
           ]
         },
         "rebuyFraction": { "type": "number" },
-        "unknownHull": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "note": { "type": "string" },
-            "omittedKeys": { "type": "array", "items": { "type": "string" } },
-            "ship": { "type": "string" },
-            "topLevelKeys": { "type": "array", "items": { "type": "string" } }
-          },
-          "required": ["note", "omittedKeys", "ship", "topLevelKeys"]
-        },
         "viperMkIV": {
           "type": "object",
           "additionalProperties": false,
@@ -6734,7 +6751,6 @@
         "kraitPhantom",
         "pythonMkII",
         "rebuyFraction",
-        "unknownHull",
         "viperMkIV"
       ]
     },

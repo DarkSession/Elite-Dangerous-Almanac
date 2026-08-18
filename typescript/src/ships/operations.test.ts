@@ -112,7 +112,7 @@ test('shared catalogue-backed operation cases reproduce', () => {
     assert.equal(mercCoinBuild.mercCoinCost(), fixture.mercCoinCost.expected);
     const validation = validateLoadout({
         shipSymbol: 'FutureShip',
-        slots: null,
+        slots: [],
         modules: [
             {
                 slot: 'A',
@@ -165,6 +165,13 @@ test('shared catalogue-backed operation cases reproduce', () => {
     );
 });
 
+test('shared import rejection cases apply to journal and SLEF entry points', () => {
+    const rejection = fixture.importRejections.unknownHull;
+    const expected = { name: rejection.expectedError, message: rejection.message };
+    assert.throws(() => ShipLoadout.fromLoadout(rejection.input), expected);
+    assert.throws(() => ShipLoadout.fromSlef([rejection.input]), expected);
+});
+
 test('shared module-count limits resolve allowances and structural diagnostics', () => {
     const input = fixture.moduleLimits.input as readonly ModuleLimitEntry[];
     const usage = calculateModuleLimits(input);
@@ -174,7 +181,7 @@ test('shared module-count limits resolve allowances and structural diagnostics',
 
     const validation = validateLoadout({
         shipSymbol: 'FutureShip',
-        slots: null,
+        slots: [],
         modules: input.map((metadata, index) => ({
             slot: `Slot${index}`,
             symbol: `Module${index}`,
