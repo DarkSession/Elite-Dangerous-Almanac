@@ -89,6 +89,7 @@ power.retracted; // MW drawn with hardpoints in
 power.deployed; // MW drawn with hardpoints out
 power.withinBudget; // does it fit?
 power.bands; // the five priority groups
+power.consumers; // every fitted consumer, normalized in source order
 ```
 
 `bands` is what drives a priority-group table. A group is powered when its **running
@@ -100,6 +101,8 @@ A module whose draw the library cannot determine is named in
 {@link ships!PowerBudget.unknownDraws | unknownDraws} rather than counted as zero, so a
 budget is never quietly optimistic about a module absent from the catalogue. While that
 list is non-empty every other figure is a lower bound, so show it alongside them.
+`consumers` keeps every supplied module in source order and normalizes the fields used by
+the budget; `unknownDraws` retains the caller's original entries for diagnostics.
 
 ## Shields and armour share a resistance model
 

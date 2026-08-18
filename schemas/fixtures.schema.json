@@ -1912,6 +1912,33 @@
           "additionalProperties": false,
           "properties": {
             "available": { "type": "integer" },
+            "consumers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "deployedOnly": {
+                    "anyOf": [{ "type": "boolean" }, { "type": "null" }]
+                  },
+                  "draw": {
+                    "anyOf": [{ "type": "null" }, { "type": "number" }]
+                  },
+                  "enabled": { "type": "boolean" },
+                  "label": { "type": "string" },
+                  "priority": { "type": "integer" },
+                  "symbol": { "type": "string" }
+                },
+                "required": [
+                  "deployedOnly",
+                  "draw",
+                  "enabled",
+                  "label",
+                  "priority",
+                  "symbol"
+                ]
+              }
+            },
             "deployed": { "type": "number" },
             "loadout": {
               "type": "object",
@@ -1943,18 +1970,29 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "deployedOnly": { "type": "boolean" },
+                  "deployedOnly": {
+                    "anyOf": [{ "type": "boolean" }, { "type": "null" }]
+                  },
                   "drawUnknown": { "type": "boolean" },
                   "enabled": { "type": "boolean" },
                   "label": { "type": "string" },
-                  "priority": { "type": "integer" }
+                  "priority": { "type": "integer" },
+                  "symbol": { "type": "string" }
                 },
-                "required": ["drawUnknown", "enabled", "label", "priority"]
+                "required": [
+                  "deployedOnly",
+                  "drawUnknown",
+                  "enabled",
+                  "label",
+                  "priority",
+                  "symbol"
+                ]
               }
             }
           },
           "required": [
             "available",
+            "consumers",
             "deployed",
             "loadout",
             "retracted",

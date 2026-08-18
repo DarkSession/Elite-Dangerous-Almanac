@@ -2445,6 +2445,7 @@ export class ShipLoadout {
      * power.deployed;                   // -> 19.02 MW drawn, hardpoints out
      * power.withinBudget;               // -> true
      * power.bands[4]?.poweredDeployed;  // -> is priority group 5 still lit?
+     * power.consumers[0]?.draw;          // fitted module draw in MW, or null
      * ```
      */
     powerBudget(): PowerBudget {

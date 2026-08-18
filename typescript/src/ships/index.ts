@@ -327,7 +327,13 @@ export {
 } from './source-purchase.js';
 
 // ── Build metrics: power, shields, armour and weapons (all data-free) ────────
-export { powerBudget, type PowerConsumer, type PowerBand, type PowerBudget } from './power.js';
+export {
+    powerBudget,
+    type PowerConsumer,
+    type PowerConsumerResult,
+    type PowerBand,
+    type PowerBudget,
+} from './power.js';
 export {
     stackShieldResistance,
     stackArmourResistance,
