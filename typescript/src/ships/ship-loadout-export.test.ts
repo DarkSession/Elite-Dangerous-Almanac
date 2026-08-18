@@ -1100,7 +1100,7 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
         ],
     };
     const build = ShipLoadout.fromLoadout(foreign);
-    assert.equal(build.fittedModules().length, 3);
+    assert.equal(build.fittedModules().length, 4);
     assert.equal(
         build.fittedModuleAt('MediumHardpoint1')?.symbol,
         'hpt_mining_subsurfdispmisle_fixed_medium',
@@ -1113,7 +1113,7 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
     );
     assert.deepEqual(
         build.toLoadoutEvent().Modules.map((m) => m.Slot),
-        ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank'],
+        ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank', 'CargoHatch'],
     );
 });
 
@@ -1189,9 +1189,9 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
 
 test('every figure the Type-11 export needs is computable from it', () => {
     // A build carrying an unpriced or unrecognised module exports no credits at all, so
-    // this doubles as a check that all 27 of its modules resolve in the catalogues.
+    // this doubles as a check that all 27 captured modules and the restored hatch resolve.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.fittedModules().length, 27);
+    assert.equal(build.fittedModules().length, 28);
     const ours = build.toLoadoutEvent();
     for (const key of [
         'UnladenMass',
@@ -1214,7 +1214,7 @@ test('a build assembled here exports the slot keys a game journal would use', ()
         .setModule('Slot13_Size2', module('Int_DetailedSurfaceScanner_Tiny'))
         .setModule('Slot14_Size1', module('Int_DockingComputer_Advanced'));
     const slots = build.toLoadoutEvent().Modules.map((m) => m.Slot);
-    assert.deepEqual(slots, ['Slot13_Size2', 'Slot14_Size1']);
+    assert.deepEqual(slots, ['CargoHatch', 'Slot13_Size2', 'Slot14_Size1']);
     assert.throws(
         () => build.setModule('Slot11_Size2', module('Int_DetailedSurfaceScanner_Tiny')),
         /has no slot "Slot11_Size2"/,

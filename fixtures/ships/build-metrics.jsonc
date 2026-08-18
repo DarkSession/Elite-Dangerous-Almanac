@@ -557,42 +557,42 @@
     },
     "power": {
       "available": 36,
-      "retracted": 7.3,
-      "deployed": 10.88,
+      "retracted": 7.9,
+      "deployed": 11.48,
       "bands": [
         {
           "priority": 1,
-          "retracted": 7.3,
-          "deployed": 10.88,
-          "deployedTotal": 10.88,
+          "retracted": 7.9,
+          "deployed": 11.48,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 2,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 3,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 4,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 5,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         }
       ]
@@ -679,8 +679,8 @@
           "Priority": 2
         },
         {
-          "Slot": "CargoHatch",
-          "Item": "FutureCargoHatch",
+          "Slot": "Slot03_Size6",
+          "Item": "Int_FuturePowerConsumer",
           "On": true,
           "Priority": 0
         },
@@ -693,8 +693,8 @@
       ]
     },
     "available": 36,
-    "retracted": 0,
-    "deployed": 0,
+    "retracted": 0.6,
+    "deployed": 0.6,
     "unknownDraws": [
       {
         "drawUnknown": true,
@@ -721,7 +721,7 @@
         "priority": 1,
         "enabled": true,
         "deployedOnly": false,
-        "label": "CargoHatch"
+        "label": "Slot03_Size6"
       }
     ]
   },

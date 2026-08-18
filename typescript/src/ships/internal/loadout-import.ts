@@ -1,10 +1,19 @@
 /** Durable state normalization for imported journal loadouts. @internal */
 
 import { getPreEngineeredVariants } from '../pre-engineered.js';
-import { getPreEngineeredStats, identifyPreEngineeredVariant } from '../pre-engineered-stats.js';
+import {
+    getPreEngineeredModifiers,
+    getPreEngineeredStats,
+    identifyPreEngineeredVariant,
+} from '../pre-engineered-stats.js';
 import { sourcePurchaseFromLoadout, type SourcePurchaseRecord } from '../source-purchase.js';
 import type { OutfittingModule } from '../modules.js';
-import type { LoadoutEvent, LoadoutModule, ModuleEngineering } from '../slef.js';
+import type {
+    EngineeringModifier,
+    LoadoutEvent,
+    LoadoutModule,
+    ModuleEngineering,
+} from '../slef.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
@@ -33,6 +42,7 @@ export interface ImportedLoadoutState {
     readonly shipSymbol: string;
     readonly modules: Map<string, LoadoutModule>;
     readonly moduleStats: Map<string, OutfittingModule>;
+    readonly primitiveModifiers: Map<string, readonly EngineeringModifier[]>;
     readonly top: ImportedTopFigures;
     readonly sourcePurchase: SourcePurchaseRecord | null;
 }
@@ -232,6 +242,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
 
     const moduleStats = new Map<string, OutfittingModule>();
+    const primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
     // A reward has no distinct module symbol. Identify its hand-set stat signature so
     // values absent from the capture still come from the fitted article; explicit
     // captured modifiers remain authoritative. Guardian weapons retain the recipe
@@ -254,10 +265,21 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         ) {
             const { experimental: originalExperimental, ...withoutExperimental } = variant;
             void originalExperimental;
-            // The capture's modifier block applies its current experimental below. Seed
-            // only the fixed article here, or an original baked effect would survive a
-            // removal and a replacement effect would be counted twice.
+            const currentExperimental = engineering?.ExperimentalEffect;
+            const currentVariant =
+                typeof currentExperimental === 'string'
+                    ? { ...withoutExperimental, experimental: currentExperimental }
+                    : withoutExperimental;
+            // Seed the effect-free fixed article, then retain the complete primitive
+            // inputs separately. Journal presentation omits recipe-only labels such as
+            // BurstInterval, while applying the effect to this baseline would make
+            // related-stat ratios count it zero times after import. Captured entries
+            // come first so their explicit values remain authoritative.
             variantStats = getPreEngineeredStats(withoutExperimental);
+            primitiveModifiers.set(module.Slot, [
+                ...(engineering?.Modifiers ?? []),
+                ...getPreEngineeredModifiers(currentVariant),
+            ]);
         }
         if (variantStats) moduleStats.set(module.Slot, cloneModuleStats(variantStats));
         if (
@@ -296,6 +318,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         shipSymbol: event.Ship,
         modules,
         moduleStats,
+        primitiveModifiers,
         top,
         sourcePurchase: sourcePurchaseFromLoadout(event),
     };

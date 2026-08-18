@@ -1912,7 +1912,7 @@
           "additionalProperties": false,
           "properties": {
             "available": { "type": "integer" },
-            "deployed": { "type": "integer" },
+            "deployed": { "type": "number" },
             "loadout": {
               "type": "object",
               "additionalProperties": false,
@@ -1936,7 +1936,7 @@
               },
               "required": ["Modules", "Ship", "UnladenMass"]
             },
-            "retracted": { "type": "integer" },
+            "retracted": { "type": "number" },
             "unknownDraws": {
               "type": "array",
               "items": {
@@ -3102,7 +3102,7 @@
           "additionalProperties": false,
           "properties": {
             "fixture": { "type": "string" },
-            "idleThermalLoad": { "type": "integer" },
+            "idleThermalLoad": { "type": "number" },
             "labels": { "type": "array", "items": { "type": "string" } },
             "overheats": { "type": "boolean" },
             "projection": {

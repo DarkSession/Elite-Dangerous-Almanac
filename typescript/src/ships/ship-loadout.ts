@@ -153,6 +153,7 @@ import {
 import { getPreEngineeredVariants, type PreEngineeredVariant } from './pre-engineered.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { FittedModule } from './fitted-module.js';
+export type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
@@ -368,7 +369,7 @@ const matchesCalculatedModifiers = (
             return (
                 actual.Value !== undefined &&
                 Math.abs(actual.Value - expected.Value) <=
-                    1e-6 * Math.max(1, Math.abs(expected.Value))
+                    1e-5 * Math.max(1, Math.abs(expected.Value))
             );
         }
         return actual.ValueStr === expected.ValueStr;
@@ -423,7 +424,6 @@ const engineeringNormalizationUnsupported = (
     code: EngineeringNormalizationCode,
     params: LoadoutIssueParams,
 ): EngineeringNormalizationUnsupported => deepFreeze({ kind: 'unsupported', code, params });
-
 /** Options for the defence figures a build reports. */
 export interface DefenceOptions {
     /**
@@ -673,7 +673,7 @@ export class ShipLoadout {
     readonly #modules: Map<string, LoadoutModule>;
     readonly #moduleStats: Map<string, OutfittingModule>;
     /** Primitive modifiers retained for calculations after journal presentation. */
-    readonly #primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
+    readonly #primitiveModifiers: Map<string, readonly EngineeringModifier[]>;
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /** Frozen slot views by filter; the two module mutation paths clear it. */
@@ -691,12 +691,14 @@ export class ShipLoadout {
         top: TopFigures,
         sourcePurchase: SourcePurchaseRecord | null = null,
         moduleStats = new Map<string, OutfittingModule>(),
+        primitiveModifiers = new Map<string, readonly EngineeringModifier[]>(),
     ) {
         this.#shipSymbol = shipSymbol;
         this.#modules = modules;
         this.#top = top;
         this.#sourcePurchase = sourcePurchase;
         this.#moduleStats = moduleStats;
+        this.#primitiveModifiers = primitiveModifiers;
     }
 
     /**
@@ -753,6 +755,8 @@ export class ShipLoadout {
      * per-ship count allowances, and any aggregate violation is reported by
      * {@link validation}. Use this factory rather than replaying a complete loadout
      * through the incremental {@link setModule} editor.
+     * A known hull's non-removable cargo hatch is restored from its default loadout when
+     * the capture omits it or supplies an unresolved item for that mount.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -793,22 +797,51 @@ export class ShipLoadout {
             );
         }
         const imported = normalizeLoadoutEvent(event);
+        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find(
+            (module) => module.slot.toLowerCase() === 'cargohatch',
+        );
+        if (defaultHatch) {
+            const key = matchingKeyIn(imported.modules, defaultHatch.slot);
+            const captured = key === null ? undefined : imported.modules.get(key);
+            if (captured === undefined) {
+                const ownSlot =
+                    imported.modules.size > 0 &&
+                    [...imported.modules.keys()].every((slot) => slot === slot.toLowerCase())
+                        ? defaultHatch.slot.toLowerCase()
+                        : defaultHatch.slot;
+                imported.modules.set(ownSlot, {
+                    Slot: ownSlot,
+                    Item: defaultHatch.symbol,
+                });
+            } else if (!isBuiltInHullModule(captured)) {
+                imported.modules.set(key!, {
+                    Slot: captured.Slot,
+                    Item: defaultHatch.symbol,
+                    ...(captured.On === undefined ? {} : { On: captured.On }),
+                    ...(captured.Priority === undefined ? {} : { Priority: captured.Priority }),
+                    ...(captured.Health === undefined ? {} : { Health: captured.Health }),
+                });
+                imported.moduleStats.delete(key!);
+            }
+        }
         return new ShipLoadout(
             imported.shipSymbol,
             imported.modules,
             imported.top,
             imported.sourcePurchase,
             imported.moduleStats,
+            imported.primitiveModifiers,
         );
     }
 
     /**
-     * Start a new, empty build for a hull — no modules fitted.
+     * Start a new build for a hull with no editable modules fitted.
      *
      * @param shipSymbol - The hull's internal symbol, e.g. `"Anaconda"`
      * (case-insensitive).
-     * @returns An empty loadout whose {@link slots} come from the hull's declared
-     * layout.
+     * @returns An otherwise empty loadout whose {@link slots} come from the hull's
+     * declared layout. The hull's immutable default cargo hatch is fitted because it
+     * is part of the ship rather than an outfitting choice.
      * @throws {TypeError} If `shipSymbol` is not a string, or no hull with that symbol
      * has a known slot layout.
      * @example
@@ -829,7 +862,14 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        return new ShipLoadout(layout.symbol, new Map(), {});
+        const hatch = getDefaultLoadout(layout.symbol)?.modules.find(
+            (module) => module.slot.toLowerCase() === 'cargohatch',
+        );
+        const modules = new Map<string, LoadoutModule>();
+        if (hatch) {
+            modules.set(hatch.slot, { Slot: hatch.slot, Item: hatch.symbol });
+        }
+        return new ShipLoadout(layout.symbol, modules, {});
     }
 
     /**
@@ -1758,25 +1798,6 @@ export class ShipLoadout {
             });
         }
 
-        let effect;
-        if (wanted !== null) {
-            effect = getExperimentalEffect(wanted);
-            if (!effect) {
-                return experimentalEffectUnsupported('unknownExperimentalEffect', {
-                    slot: module.Slot,
-                    symbol: module.Item,
-                    experimental: wanted,
-                });
-            }
-            if (!experimentalAvailableFor(module.Item, wanted)) {
-                return experimentalEffectUnsupported('unsupportedExperimentalEffect', {
-                    slot: module.Slot,
-                    symbol: module.Item,
-                    experimental: wanted,
-                });
-            }
-        }
-
         const previous = engineering.ExperimentalEffect ?? null;
         if (
             (previous === null && wanted === null) ||
@@ -1788,6 +1809,27 @@ export class ShipLoadout {
         }
 
         const variant = identifyPreEngineeredVariant(module);
+        let effect;
+        if (wanted !== null) {
+            effect = getExperimentalEffect(wanted);
+            if (!effect) {
+                return experimentalEffectUnsupported('unknownExperimentalEffect', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    experimental: wanted,
+                });
+            }
+            const restoresBakedEffect =
+                variant?.experimental !== undefined &&
+                variant.experimental.trim().toLowerCase() === wanted.trim().toLowerCase();
+            if (!experimentalAvailableFor(module.Item, wanted) && !restoresBakedEffect) {
+                return experimentalEffectUnsupported('unsupportedExperimentalEffect', {
+                    slot: module.Slot,
+                    symbol: module.Item,
+                    experimental: wanted,
+                });
+            }
+        }
         if (variant && variant.acquisition !== 'mercenary') {
             const stock = this.#engineeringBaseStats(module);
             if (!stock) {
@@ -1833,7 +1875,12 @@ export class ShipLoadout {
             const blueprint = engineering.BlueprintName;
             const grade = engineering.Level;
             const quality = engineering.Quality;
-            if (typeof blueprint !== 'string' || typeof grade !== 'number') {
+            if (
+                typeof blueprint !== 'string' ||
+                !Number.isInteger(grade) ||
+                grade < 1 ||
+                grade > 5
+            ) {
                 return experimentalEffectUnsupported('unsupportedEngineering', {
                     slot: module.Slot,
                     symbol: module.Item,
@@ -1844,7 +1891,7 @@ export class ShipLoadout {
             const fixedCandidate = getPreEngineeredVariants(module.Item).some(
                 (candidate) =>
                     candidate.acquisition !== 'mercenary' &&
-                    candidate.blueprint.trim().toLowerCase() === blueprint.trim().toLowerCase(),
+                    candidate.blueprint.trim().toLowerCase() === recipe.trim().toLowerCase(),
             );
             let provenOrdinary = !fixedCandidate;
             const currentEffect =

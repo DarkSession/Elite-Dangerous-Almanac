@@ -197,8 +197,8 @@
   // resolved one — whose 4.9 MW pushes group 2 past the 12 MW plant — does not.
   "unknownDraws": {
     "fixture": "build-metrics.jsonc unknownPowerDraw",
-    "labels": ["Slot01_Size7", "HugeHardpoint1", "TinyHardpoint1", "CargoHatch"],
-    "idleThermalLoad": 0,
+    "labels": ["Slot01_Size7", "HugeHardpoint1", "TinyHardpoint1", "Slot03_Size6"],
+    "idleThermalLoad": 0.24,
     "overheats": false,
     "projection": {
       "ship": "Anaconda",
@@ -207,8 +207,8 @@
       "thrusterPriority": 1,
       "unresolvedItem": "Int_FutureModule",
       "resolvedItem": "Int_ShieldGenerator_Size7_Class5",
-      "unresolved": { "idleThermalLoad": 3.648, "thrustersThermalLoad": 4.948 },
-      "resolved": { "idleThermalLoad": 1.96, "thrustersThermalLoad": 1.96 }
+      "unresolved": { "idleThermalLoad": 3.888, "thrustersThermalLoad": 5.188 },
+      "resolved": { "idleThermalLoad": 2.2, "thrustersThermalLoad": 2.2 }
     }
   },
 
