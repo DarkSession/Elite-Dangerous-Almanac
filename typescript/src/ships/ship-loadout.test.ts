@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 
 import { ShipLoadout } from './ship-loadout.js';
 import type { LoadoutSlot } from './loadout-slot.js';
+import { heatInputFor } from './internal/loadout-metrics.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import type { EngineeringModifier, LoadoutEvent } from './slef.js';
+import type { EngineeringModifier, LoadoutEvent, LoadoutModule } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
@@ -39,6 +40,7 @@ import { SHIPS, getShipBySymbol } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff, damagePerSecond } from './weapons.js';
 import type { HeatMetrics, HeatState } from './heat.js';
+import { powerBudget as calculatePowerBudget } from './power.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredJournalModifiers, getPreEngineeredStats } from './pre-engineered-stats.js';
@@ -505,15 +507,108 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
     assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
 
-    const zeroPlant = { ...mod('Int_Powerplant_Size8_Class5'), powerCapacity: 0 };
-    const zeroCapacity = ShipLoadout.default('Anaconda').setModule('PowerPlant', zeroPlant);
+    const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
+        assert.equal(invalid.mobilityMetrics(), null);
+        assert.equal(invalid.shieldMetrics(), null);
+        assert.equal(invalid.shieldRecovery(), null);
+        for (const result of [
+            invalid.mobilityMetricsResult(),
+            invalid.shieldMetricsResult(),
+            invalid.shieldRecoveryResult(),
+        ]) {
+            assert.equal(result.issues[0]?.field, 'powerCapacity');
+            assert.equal(result.issues[0]?.reason, 'invalid');
+        }
+        if (budgetThrows) assert.throws(() => invalid.powerBudget(), RangeError);
+    };
+    for (const capacity of [0, Number.NaN, Number.POSITIVE_INFINITY]) {
+        const plant = { ...mod('Int_Powerplant_Size8_Class5'), powerCapacity: capacity };
+        assertInvalidPower(
+            ShipLoadout.default('Anaconda').setModule('PowerPlant', plant),
+            capacity !== 0,
+        );
+    }
+
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
+    const journalInvalid = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant'
+                ? {
+                      ...module,
+                      Engineering: {
+                          BlueprintName: 'PowerPlant_Overcharged',
+                          Level: 1,
+                          Quality: 1,
+                          Modifiers: [{ Label: 'PowerCapacity', Value: -5 }],
+                      },
+                  }
+                : module,
+        ),
+    });
+    assertInvalidPower(journalInvalid, true);
+});
+
+test('an unknown hull has its own calculation issue shape before power is evaluated', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'FutureHull',
+        Modules: [
+            {
+                Slot: 'PowerPlant',
+                Item: 'Int_Powerplant_Size2_Class1',
+                Engineering: {
+                    BlueprintName: 'PowerPlant_Overcharged',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'PowerCapacity', Value: -5 }],
+                },
+            },
+        ],
+    });
+    const expected = {
+        field: 'hull',
+        reason: 'unresolved',
+        hull: 'FutureHull',
+        message: 'FutureHull is not a known hull',
+        params: { field: 'hull', reason: 'unresolved', hull: 'FutureHull' },
+    };
+
+    assert.deepEqual(build.mobilityMetricsResult().issues[0], expected);
+    assert.deepEqual(build.shieldMetricsResult().issues[0], expected);
+    assert.deepEqual(build.shieldRecoveryResult().issues[0], expected);
+});
+
+test('metric results diagnose an invalid known power draw without weakening powerBudget', () => {
+    const build = ShipLoadout.default('Anaconda');
+    const utility = build.slots('utility')[0];
+    assert.ok(utility);
+    build.setModule(utility.key, {
+        ...mod('Hpt_ShieldBooster_Size0_Class1', UTILITY_MODULES),
+        powerDraw: -1,
+    });
+
+    assert.throws(() => build.powerBudget(), RangeError);
+    assert.equal(build.mobilityMetrics(), null);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.shieldRecovery(), null);
     for (const result of [
-        zeroCapacity.mobilityMetricsResult(),
-        zeroCapacity.shieldMetricsResult(),
-        zeroCapacity.shieldRecoveryResult(),
+        build.mobilityMetricsResult(),
+        build.shieldMetricsResult(),
+        build.shieldRecoveryResult(),
     ]) {
-        assert.equal(result.issues[0]?.field, 'powerCapacity');
-        assert.equal(result.issues[0]?.reason, 'invalid');
+        assert.deepEqual(result.issues[0], {
+            field: 'powerDraw',
+            reason: 'invalid',
+            slot: utility.key,
+            symbol: 'Hpt_ShieldBooster_Size0_Class1',
+            message: `${utility.key}: Hpt_ShieldBooster_Size0_Class1 has invalid powerDraw`,
+            params: {
+                field: 'powerDraw',
+                reason: 'invalid',
+                slot: utility.key,
+                symbol: 'Hpt_ShieldBooster_Size0_Class1',
+            },
+        });
     }
 });
 
@@ -6056,6 +6151,59 @@ test('heatMetrics reproduces the pinned heat profile of each captured build', ()
             }
         }
     }
+});
+
+test('heat classifies caller-supplied core records from their fitted slots', () => {
+    const custom = (
+        base: string,
+        symbol: string,
+        values: Partial<OutfittingModule>,
+    ): OutfittingModule => {
+        const record = { ...mod(base), ...values, symbol };
+        delete record.slot;
+        return record;
+    };
+    const modules: LoadoutModule[] = [
+        { Slot: 'PowerPlant', Item: 'CustomPlant' },
+        { Slot: 'MainEngines', Item: 'CustomThrusters' },
+        { Slot: 'FrameShiftDrive', Item: 'CustomDrive' },
+    ];
+    const stats = new Map<string, OutfittingModule>([
+        [
+            'CustomPlant',
+            custom('Int_PowerPlant_Size2_Class5', 'CustomPlant', {
+                powerCapacity: 10,
+                heatEfficiency: 1,
+            }),
+        ],
+        [
+            'CustomThrusters',
+            custom('Int_Engine_Size2_Class2', 'CustomThrusters', {
+                powerDraw: 1,
+                engineHeatRate: 2,
+            }),
+        ],
+        [
+            'CustomDrive',
+            custom('Int_Hyperdrive_Size2_Class2', 'CustomDrive', {
+                powerDraw: 1,
+                fsdHeatRate: 3,
+            }),
+        ],
+    ]);
+    const input = heatInputFor(
+        'SideWinder',
+        modules,
+        calculatePowerBudget(10, [
+            { draw: 1, priority: 1 },
+            { draw: 1, priority: 1 },
+        ]),
+        (module) => stats.get(module.Item) ?? null,
+    );
+
+    assert.equal(input?.thrusterHeatRate, 2);
+    assert.equal(input?.deployedThrusterHeatRate, 2);
+    assert.equal(input?.fsdHeatRate, 3);
 });
 
 test('an unknown draw can make the projection overstate heat, not only understate it', () => {

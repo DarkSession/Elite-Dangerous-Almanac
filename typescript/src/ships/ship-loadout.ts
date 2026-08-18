@@ -2862,6 +2862,8 @@ export class ShipLoadout {
      * which makes every total a lower bound while that list is non-empty. `consumers`
      * includes modules with positive or unknown draw; passive and zero-draw fittings are
      * absent.
+     * @throws {RangeError} If a known power capacity or module draw is negative or not
+     * finite.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2983,7 +2985,7 @@ export class ShipLoadout {
         const input = mobilityInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
-            this.powerBudget(),
+            () => this.powerBudget(),
             () => {
                 const main =
                     options.fuel ??
@@ -3057,7 +3059,7 @@ export class ShipLoadout {
         const input = shieldInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
-            this.powerBudget(),
+            () => this.powerBudget(),
             systemsPips,
             (module) => this.#statsFor(module),
         );
@@ -3113,7 +3115,7 @@ export class ShipLoadout {
         const input = shieldRecoveryInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
-            this.powerBudget(),
+            () => this.powerBudget(),
             systemsPips,
             (module) => this.#statsFor(module),
         );

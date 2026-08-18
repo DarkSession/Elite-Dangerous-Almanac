@@ -113,6 +113,15 @@ function isThruster(module: LoadoutModule, stats: OutfittingModule | null): bool
     return stats?.slot ? stats.slot === 'thrusters' : startsWithAny(module.Item, PREFIX.thrusters);
 }
 
+/** Whether a fitted module is the frame-shift drive, by slot, record or symbol fallback. */
+function isFrameShiftDrive(module: LoadoutModule, stats: OutfittingModule | null): boolean {
+    const parsed = parseSlotName(module.Slot);
+    if (parsed?.kind === 'core' && parsed.core === 'frameShiftDrive') return true;
+    return stats?.slot
+        ? stats.slot === 'frameShiftDrive'
+        : startsWithAny(module.Item, PREFIX.frameShiftDrive);
+}
+
 /** Whether a fitted module is switched on (the journal's `On`, defaulting to `true`). */
 function isEnabled(module: LoadoutModule): boolean {
     return module.On !== false;
@@ -437,11 +446,11 @@ function metricIssue(
 /** Explain that the hull-dependent inputs cannot be resolved for this ship symbol. */
 function hullIssue(shipSymbol: string): CalculationIssue {
     return {
-        field: 'hullMass',
+        field: 'hull',
         reason: 'unresolved',
-        symbol: shipSymbol,
-        message: `${truncate(shipSymbol)} has no known hullMass`,
-        params: { field: 'hullMass', reason: 'unresolved', symbol: shipSymbol },
+        hull: shipSymbol,
+        message: `${truncate(shipSymbol)} is not a known hull`,
+        params: { field: 'hull', reason: 'unresolved', hull: shipSymbol },
     };
 }
 
@@ -456,49 +465,72 @@ function powerPlantIssueFor(
         if (!isEnabled(module)) return metricIssue('powerCapacity', 'disabled', module);
         const capacity = effectiveStat(module, 'powerCapacity', stats);
         if (capacity === undefined) return metricIssue('powerCapacity', 'unresolved', module);
-        return capacity === 0 ? metricIssue('powerCapacity', 'invalid', module) : null;
+        return !Number.isFinite(capacity) || capacity <= 0
+            ? metricIssue('powerCapacity', 'invalid', module)
+            : null;
     }
     return metricIssue('powerCapacity', 'missing');
 }
 
+/** Explain the first known consumer draw the pure power budget would reject. */
+function powerDrawIssueFor(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationIssue | null {
+    for (const module of modules) {
+        const consumer = powerConsumerFor(module, statsFor(module));
+        if (
+            consumer &&
+            !consumer.drawUnknown &&
+            (consumer.draw === undefined || !Number.isFinite(consumer.draw) || consumer.draw < 0)
+        ) {
+            return metricIssue('powerDraw', 'invalid', module);
+        }
+    }
+    return null;
+}
+
 /** Explain why a fitted metric module is unavailable with hardpoints retracted. */
-function poweredMetricIssueFor(
+function poweredMetricBudgetFor(
     field: PoweredMetricField,
     module: LoadoutModule,
     stats: OutfittingModule | null,
     modules: readonly LoadoutModule[],
-    budget: PowerBudget,
+    getBudget: () => PowerBudget,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
-): CalculationIssue | null {
-    if (!isEnabled(module)) return metricIssue(field, 'disabled', module);
+): CalculationResult<PowerBudget> {
+    if (!isEnabled(module)) return incompleteResult([metricIssue(field, 'disabled', module)]);
     const plantIssue = powerPlantIssueFor(modules, statsFor);
-    if (plantIssue) return plantIssue;
+    if (plantIssue) return incompleteResult([plantIssue]);
+    const drawIssue = powerDrawIssueFor(modules, statsFor);
+    if (drawIssue) return incompleteResult([drawIssue]);
+    const budget = getBudget();
     return budget.available > 0 && poweredStates(module, stats, budget).retracted
-        ? null
-        : metricIssue(field, 'shed', module);
+        ? completeResult(budget)
+        : incompleteResult([metricIssue(field, 'shed', module)]);
 }
 
 /** Find the fitted shield generator and establish that the retracted budget feeds it. */
 function poweredShieldGeneratorResultFor(
     modules: readonly LoadoutModule[],
-    budget: PowerBudget,
+    getBudget: () => PowerBudget,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
-): CalculationResult<LoadoutModule> {
+): CalculationResult<{ module: LoadoutModule; budget: PowerBudget }> {
     for (const module of modules) {
         if (!startsWithAny(module.Item, PREFIX.shieldGenerator)) continue;
         const stats = statsFor(module);
-        const issue = poweredMetricIssueFor(
+        const powered = poweredMetricBudgetFor(
             'shieldGenerator',
             module,
             stats,
             modules,
-            budget,
+            getBudget,
             statsFor,
         );
-        if (issue) return incompleteResult([issue]);
+        if (!powered.complete) return powered;
         return stats === null
             ? incompleteResult([metricIssue('shieldGenerator', 'unresolved', module)])
-            : completeResult(module);
+            : completeResult({ module, budget: powered.value });
     }
     return incompleteResult([metricIssue('shieldGenerator', 'missing')]);
 }
@@ -593,24 +625,24 @@ export function shieldInputFor(
 export function shieldInputResultFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
-    budget: PowerBudget,
+    getBudget: () => PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<ShieldInput> {
     if (!getShipBySymbol(shipSymbol)) return incompleteResult([hullIssue(shipSymbol)]);
-    const fitted = poweredShieldGeneratorResultFor(modules, budget, statsFor);
+    const fitted = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!fitted.complete) return fitted;
-    const input = shieldInputFor(shipSymbol, modules, budget, systemsPips, statsFor);
+    const input = shieldInputFor(shipSymbol, modules, fitted.value.budget, systemsPips, statsFor);
     return input.generator
         ? completeResult(input)
-        : incompleteResult([metricIssue('shieldGenerator', 'unresolved', fitted.value)]);
+        : incompleteResult([metricIssue('shieldGenerator', 'unresolved', fitted.value.module)]);
 }
 
 /** Gather a loaded hull and powered thruster curve, with an unavailable-state diagnostic. */
 export function mobilityInputResultFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
-    budget: PowerBudget,
+    getBudget: () => PowerBudget,
     mass: number | (() => number),
     enginesPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
@@ -621,8 +653,15 @@ export function mobilityInputResultFor(
     for (const module of modules) {
         const stats = statsFor(module);
         if (!isThruster(module, stats)) continue;
-        const issue = poweredMetricIssueFor('thrusters', module, stats, modules, budget, statsFor);
-        if (issue) return incompleteResult([issue]);
+        const powered = poweredMetricBudgetFor(
+            'thrusters',
+            module,
+            stats,
+            modules,
+            getBudget,
+            statsFor,
+        );
+        if (!powered.complete) return powered;
         const effective = effectiveModule(module, stats);
         const minMass = effective?.minMass;
         const optMass = effective?.optMass;
@@ -695,13 +734,14 @@ export function mobilityInputResultFor(
 export function shieldRecoveryInputResultFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
-    budget: PowerBudget,
+    getBudget: () => PowerBudget,
     systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<ShieldRecoveryInput> {
     if (!getShipBySymbol(shipSymbol)) return incompleteResult([hullIssue(shipSymbol)]);
-    const generator = poweredShieldGeneratorResultFor(modules, budget, statsFor);
+    const generator = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!generator.complete) return generator;
+    const { module: generatorModule, budget } = generator.value;
     let distributor: LoadoutModule | null = null;
     for (const module of modules) {
         const stats = statsFor(module);
@@ -713,17 +753,17 @@ export function shieldRecoveryInputResultFor(
         )
             distributor = module;
     }
-    const generatorStats = statsFor(generator.value);
+    const generatorStats = statsFor(generatorModule);
     const distributorStats = distributor ? statsFor(distributor) : null;
     const strength = shieldMetrics(
         shieldInputFor(shipSymbol, modules, budget, 0, statsFor),
     ).strength;
     return completeResult({
         strength,
-        regenRate: effectiveStat(generator.value, 'shieldRegenRate', generatorStats) ?? 0,
+        regenRate: effectiveStat(generatorModule, 'shieldRegenRate', generatorStats) ?? 0,
         brokenRegenRate:
-            effectiveStat(generator.value, 'shieldBrokenRegenRate', generatorStats) ?? 0,
-        distributorDraw: effectiveStat(generator.value, 'distributorDraw', generatorStats) ?? 0.6,
+            effectiveStat(generatorModule, 'shieldBrokenRegenRate', generatorStats) ?? 0,
+        distributorDraw: effectiveStat(generatorModule, 'distributorDraw', generatorStats) ?? 0.6,
         systemsCapacity: distributor
             ? (effectiveStat(distributor, 'systemsCapacity', distributorStats) ?? 0)
             : 0,
@@ -841,17 +881,11 @@ export function heatInputFor(
         }
         if (!isEnabled(module)) continue;
         const running = poweredStates(module, stats, budget);
-        if (
-            stats?.slot ? stats.slot === 'thrusters' : startsWithAny(module.Item, PREFIX.thrusters)
-        ) {
+        if (isThruster(module, stats)) {
             const heat = effectiveStat(module, 'engineHeatRate', stats) ?? 0;
             if (running.retracted) thrusterHeatRate += heat;
             if (running.deployed) deployedThrusterHeatRate += heat;
-        } else if (
-            stats?.slot
-                ? stats.slot === 'frameShiftDrive'
-                : startsWithAny(module.Item, PREFIX.frameShiftDrive)
-        ) {
+        } else if (isFrameShiftDrive(module, stats)) {
             // Charging a jump is something a ship does with its hardpoints stowed.
             if (running.retracted) fsdHeatRate += effectiveStat(module, 'fsdHeatRate', stats) ?? 0;
         } else if (isPowerDistributor(module, stats)) {

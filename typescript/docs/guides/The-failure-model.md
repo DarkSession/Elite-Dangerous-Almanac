@@ -165,7 +165,7 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 | `unresolved` | The catalogue or supplied record lacks a required module or numeric fact |
 | `disabled` | The required fitted module is switched off |
 | `shed` | The retracted priority budget does not power the required module |
-| `invalid` | A known build dependency is non-physical, such as a zero-capacity power plant |
+| `invalid` | A known build dependency is non-physical, such as a non-positive or non-finite power-plant capacity or a negative module draw |
 
 These reasons describe build state. A malformed method option still throws its documented
 `TypeError` or `RangeError` before a result is returned.

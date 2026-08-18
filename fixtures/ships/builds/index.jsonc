@@ -33,8 +33,9 @@
  * Power-dependent metrics follow that same stock retracted budget. A `shieldsPowered` value
  * of `false` pins that a shed generator makes the facade result unavailable; the accompanying
  * `shields` object still pins the generator, booster and reinforcement arithmetic with
- * sufficient power. The corpus has 27 genuinely shieldless builds and 25 such shed
- * generators. A shed booster is absent from an otherwise powered shield result.
+ * synthetic capacity sufficient to keep every priority band lit, regardless of the
+ * modules' stored priorities. The corpus has 27 genuinely shieldless builds and 25 such
+ * shed generators. A shed booster is absent from an otherwise powered shield result.
  *
  * An implementation passes by fitting the same modules into the same slots and reproducing every
  * figure to within 1e-5 (figures are rounded to 6 decimal places; `cargoCapacity` and

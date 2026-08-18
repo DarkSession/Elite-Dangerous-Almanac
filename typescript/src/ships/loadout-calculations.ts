@@ -26,6 +26,7 @@ export type CalculationIssueReason = 'missing' | 'unresolved' | 'disabled' | 'sh
 export interface CalculationIssue {
     /** Calculation input that is missing or unavailable. */
     readonly field:
+        | 'hull'
         | 'hullMass'
         | 'mass'
         | 'cargoCapacity'
@@ -33,6 +34,7 @@ export interface CalculationIssue {
         | 'reserveFuelCapacity'
         | 'frameShiftDrive'
         | 'powerCapacity'
+        | 'powerDraw'
         | 'thrusters'
         | 'shieldGenerator';
     /** Machine-readable unavailable-state discriminator. */
@@ -41,6 +43,8 @@ export interface CalculationIssue {
     readonly slot?: string;
     /** Module symbol, when the dependency belongs to a module. */
     readonly symbol?: string;
+    /** Hull symbol, when the catalogue cannot resolve the build's hull. */
+    readonly hull?: string;
     /** Human-readable diagnostic suitable for a log or validation panel. */
     readonly message: string;
     /** Values interpolated into `message`, for consumers composing localized text. */
