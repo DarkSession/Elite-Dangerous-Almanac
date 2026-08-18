@@ -464,6 +464,59 @@ test('an edited build re-exports a record whose parts still add up', () => {
     );
 });
 
+test('fixed-mount normalization preserves source totals only for a free cargo hatch', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const captured: LoadoutEvent = {
+        ...source,
+        HullValue: 1_000,
+        ModulesValue: 2_000,
+        Rebuy: 150,
+        Modules: source.Modules.map((fitted, index) =>
+            fitted.Slot === 'CargoHatch'
+                ? { ...fitted, Item: 'Future_Cargo_Hatch', Value: index + 10 }
+                : { ...fitted, Value: index + 10 },
+        ),
+    };
+    const build = ShipLoadout.fromLoadout(captured);
+    const record = build.sourcePurchase;
+
+    assert.equal(build.modulesValue, 2_000);
+    assert.equal(build.rebuy, 150);
+    assert.equal(build.fittedModuleAt('CargoHatch')?.effectiveStats?.powerDraw, 0.6);
+    assert.deepEqual(build.repairFixedMount('CargoHatch'), {
+        status: 'unchanged',
+        slot: 'CargoHatch',
+        symbol: 'ModularCargoBayDoor',
+    });
+    assert.equal(build.sourcePurchase, record);
+
+    const exported = build.toLoadoutEvent({ credits: 'source' });
+    assert.equal(exported.HullValue, 1_000);
+    assert.equal(exported.ModulesValue, undefined);
+    assert.equal(exported.Rebuy, undefined);
+    assert.equal(exported.Modules.find((fitted) => fitted.Slot === 'CargoHatch')?.Value, undefined);
+    assert.ok(
+        exported.Modules.some(
+            (fitted) => fitted.Slot !== 'CargoHatch' && fitted.Value !== undefined,
+        ),
+    );
+
+    const freeCapture: LoadoutEvent = {
+        ...captured,
+        Modules: captured.Modules.map((fitted) =>
+            fitted.Slot === 'CargoHatch' ? { ...fitted, Value: 0 } : fitted,
+        ),
+    };
+    const freeExport = ShipLoadout.fromLoadout(freeCapture).toLoadoutEvent({ credits: 'source' });
+    assert.equal(freeExport.HullValue, 1_000);
+    assert.equal(freeExport.ModulesValue, 2_000);
+    assert.equal(freeExport.Rebuy, 150);
+    assert.equal(
+        freeExport.Modules.find((fitted) => fitted.Slot === 'CargoHatch')?.Value,
+        undefined,
+    );
+});
+
 test('a purchase query names a wrong-typed slot key and answers a missing one', () => {
     const record = sourcePurchaseFromLoadout({
         Ship: 'Anaconda',

@@ -10,6 +10,7 @@ import {
     cloneLoadoutModule,
     FITTED_ITEM,
     isBuiltInHullModule,
+    isCargoHatchSlot,
     isNonOutfittingSlot,
     matchingKeyIn,
     orderBySlotLayout,
@@ -167,10 +168,9 @@ function sourceTotalsHold(
     for (const entry of source.moduleValues) {
         const key = matchingKeyIn(modules, entry.slot);
         const fitted = key === null ? undefined : modules.get(key);
-        if (
-            !fitted ||
-            normalizeKey(fitted.Item, FITTED_ITEM) !== normalizeKey(entry.item, SOURCE_ITEM)
-        ) {
+        if (!fitted) return false;
+        if (isCargoHatchSlot(entry.slot) && entry.value === 0) continue;
+        if (normalizeKey(fitted.Item, FITTED_ITEM) !== normalizeKey(entry.item, SOURCE_ITEM)) {
             return false;
         }
     }
