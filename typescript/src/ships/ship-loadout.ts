@@ -283,6 +283,22 @@ export class LoadoutEditError extends TypeError {
     }
 }
 
+/** Result of {@link ShipLoadout.repairFixedMount}. */
+export interface FixedMountRepairResult {
+    /**
+     * `repaired` when the default was installed; `unchanged` when the fixed mount was
+     * already valid; `defaultUnavailable` when no resolvable hull default exists; or
+     * `refused` when the requested slot is not fixed.
+     */
+    readonly status: 'repaired' | 'unchanged' | 'defaultUnavailable' | 'refused';
+    /** Slot key in the build's own spelling when one exists, otherwise the requested key. */
+    readonly slot: string;
+    /** Current or installed module symbol, when one is known. */
+    readonly symbol?: string;
+    /** Stable refusal reason, present only when `status` is `refused`. */
+    readonly reason?: 'notFixedMount';
+}
+
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
     /** Finite non-negative fuel load, in tonnes. Defaults to the full main tank. */
@@ -805,31 +821,22 @@ export class ShipLoadout {
         const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find(
             (module) => module.slot.toLowerCase() === 'cargohatch',
         );
-        if (defaultHatch) {
-            const key = matchingKeyIn(imported.modules, defaultHatch.slot);
-            const captured = key === null ? undefined : imported.modules.get(key);
-            if (captured === undefined) {
-                const ownSlot =
-                    imported.modules.size > 0 &&
-                    [...imported.modules.keys()].every((slot) => slot === slot.toLowerCase())
-                        ? defaultHatch.slot.toLowerCase()
-                        : defaultHatch.slot;
-                imported.modules.set(ownSlot, {
-                    Slot: ownSlot,
-                    Item: defaultHatch.symbol,
-                });
-            } else if (!isBuiltInHullModule(captured)) {
-                imported.modules.set(key!, {
-                    Slot: captured.Slot,
-                    Item: defaultHatch.symbol,
-                    ...(captured.On === undefined ? {} : { On: captured.On }),
-                    ...(captured.Priority === undefined ? {} : { Priority: captured.Priority }),
-                    ...(captured.Health === undefined ? {} : { Health: captured.Health }),
-                });
-                imported.moduleStats.delete(key!);
-            }
+        const capturedHatchKey =
+            defaultHatch === undefined ? null : matchingKeyIn(imported.modules, defaultHatch.slot);
+        const capturedHatch =
+            capturedHatchKey === null ? undefined : imported.modules.get(capturedHatchKey);
+        if (defaultHatch && capturedHatch === undefined) {
+            const ownSlot =
+                imported.modules.size > 0 &&
+                [...imported.modules.keys()].every((slot) => slot === slot.toLowerCase())
+                    ? defaultHatch.slot.toLowerCase()
+                    : defaultHatch.slot;
+            imported.modules.set(ownSlot, {
+                Slot: ownSlot,
+                Item: defaultHatch.symbol,
+            });
         }
-        return new ShipLoadout(
+        const build = new ShipLoadout(
             imported.shipSymbol,
             imported.modules,
             imported.top,
@@ -837,6 +844,10 @@ export class ShipLoadout {
             imported.moduleStats,
             imported.primitiveModifiers,
         );
+        if (capturedHatch !== undefined && !isBuiltInHullModule(capturedHatch)) {
+            build.repairFixedMount(capturedHatch.Slot);
+        }
+        return build;
     }
 
     /**
@@ -1329,6 +1340,97 @@ export class ShipLoadout {
                 (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)) &&
                 this.#moduleLimitRegression(slot.key, module, currentLimits, currentStats) === null,
         );
+    }
+
+    /**
+     * Restore a missing, unresolved or invalid fixed mount from this hull's stock loadout.
+     *
+     * @remarks
+     * This is the narrow repair path for mounts that {@link setModule} deliberately does
+     * not expose as ordinary edits, including the built-in cargo hatch. It uses the same
+     * aggregate and source-purchase invalidation rules as every package-owned refit.
+     * Resolved valid core and armour alternatives are left unchanged.
+     *
+     * @param slotKey - Fixed slot key, matched case-insensitively.
+     * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
+     * @throws {TypeError} If `slotKey` is not a string.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const imported: ShipLoadout;
+     * const result = imported.repairFixedMount('CargoHatch');
+     * console.log(result.status);
+     * ```
+     */
+    repairFixedMount(slotKey: string): FixedMountRepairResult {
+        const requested = requireString(slotKey, SLOT_KEY);
+        const wanted = requested.toLowerCase();
+        const slot = this.#layoutOrNull()?.find(
+            (candidate) => candidate.key.toLowerCase() === wanted,
+        );
+        const classification = slot ?? parseSlotName(requested);
+        const fittedKey = this.#fittedKey(requested);
+        const canonicalKey = slot?.key ?? requested;
+        const ownKey =
+            fittedKey ??
+            (this.#modules.size > 0 &&
+            [...this.#modules.keys()].every((key) => key === key.toLowerCase())
+                ? canonicalKey.toLowerCase()
+                : canonicalKey);
+        if (classification === null || fixedSlotReason(classification) === null) {
+            return deepFreeze({ status: 'refused', slot: ownKey, reason: 'notFixedMount' });
+        }
+
+        const current = this.#fittedModuleFor(requested);
+        const currentStats = current ? this.#statsFor(current) : null;
+        const valid =
+            current !== undefined &&
+            currentStats !== null &&
+            (classification.kind === 'cargoHatch'
+                ? isBuiltInHullModule(current)
+                : slot !== undefined &&
+                  moduleFitProblem(this.#shipSymbol, slot, currentStats) === null);
+        if (valid) {
+            return deepFreeze({
+                status: 'unchanged',
+                slot: current.Slot,
+                symbol: current.Item,
+            });
+        }
+
+        const defaultModule = getDefaultLoadout(this.#shipSymbol)?.modules.find(
+            (module) => module.slot.toLowerCase() === wanted,
+        );
+        if (!defaultModule) {
+            return deepFreeze({ status: 'defaultUnavailable', slot: ownKey });
+        }
+        const replacement = {
+            Slot: ownKey,
+            Item: defaultModule.symbol,
+            ...(current?.On === undefined ? {} : { On: current.On }),
+            ...(current?.Priority === undefined ? {} : { Priority: current.Priority }),
+            ...(current?.Health === undefined ? {} : { Health: current.Health }),
+        };
+        const replacementStats =
+            builtInModuleBySymbol(defaultModule.symbol, 'ShipLoadout.repairFixedMount') ??
+            (isBuiltInHullModule(replacement)
+                ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout.repairFixedMount')
+                : null);
+        if (!replacementStats) {
+            return deepFreeze({
+                status: 'defaultUnavailable',
+                slot: ownKey,
+                symbol: defaultModule.symbol,
+            });
+        }
+
+        this.#replaceModule(ownKey, replacement, replacementStats);
+        return deepFreeze({
+            status: 'repaired',
+            slot: ownKey,
+            symbol: defaultModule.symbol,
+        });
     }
 
     /**

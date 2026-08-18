@@ -277,6 +277,7 @@ export {
     LoadoutEditError,
     ShipLoadout,
     type LoadoutEditErrorCode,
+    type FixedMountRepairResult,
     type JumpOptions,
     type JumpRangeSummary,
     type DefenceOptions,

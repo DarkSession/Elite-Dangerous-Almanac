@@ -510,6 +510,11 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
         defaultHatch.Item.toLowerCase(),
     );
     assert.deepEqual(omitted.validation, { valid: true, complete: true, issues: [] });
+    assert.equal(omitted.modulesValue, source.ModulesValue);
+    assert.equal(omitted.rebuy, source.Rebuy);
+    const omittedSource = omitted.toLoadoutEvent({ credits: 'source' });
+    assert.equal(omittedSource.ModulesValue, source.ModulesValue);
+    assert.equal(omittedSource.Rebuy, source.Rebuy);
 
     const unresolved = ShipLoadout.fromLoadout({
         ...source,
