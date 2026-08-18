@@ -18,10 +18,10 @@
  * modules denied every ordinary blueprint — every anti-xeno multi-cannon but the two
  * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, all seven
  * mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Accelerator. Five module symbols without a menu still have a separately acquired
- * pre-engineered route: the fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2
- * Module Reinforcement Package, and size-5 and size-6 cargo racks. Their qualifying
- * Mercenary articles can take grades 2–5 of their bespoke recipes through
+ * Accelerator. Five module symbols without a menu still have a Mercenary upgrade route:
+ * the fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement
+ * Package, and size-5 and size-6 cargo racks. Their qualifying Mercenary articles can
+ * take grades 2–5 of their bespoke recipes through
  * `ships/pre-engineered`; fixed community-goal cargo racks remain final articles.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
@@ -187,10 +187,10 @@ const moduleExclusions = new Map(
  * it.
  *
  * `null` means **"this stock module has no ordinary engineering menu"**. For 184 of the
- * 189 ungrouped modules that is the same as "cannot be engineered". Five instead have
- * separately acquired pre-engineered variants: the fixed Mining Laser and Abrasion
- * Blaster, size-5 and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package
- * have no stock menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
+ * 189 ungrouped modules that is the same as "has no engineering route". Five instead
+ * retain Mercenary upgrade routes: the fixed Mining Laser and Abrasion Blaster, size-5
+ * and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package have no stock
+ * menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
  * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
  * Accelerator, which upstream denies every blueprint.
  *
