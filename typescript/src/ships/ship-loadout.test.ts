@@ -6328,3 +6328,23 @@ test('heat names the unresolved modules its figures are only a projection over',
         [],
     );
 });
+
+test('heat names powered unresolved hardpoints whose weapon heat is omitted', () => {
+    const expected = heatFixture.unknownWeaponHeat;
+    const build = ShipLoadout.fromLoadout(expected.loadout);
+    const heat = build.heatMetrics();
+    assert.ok(heat);
+    assert.deepEqual(heat.unknownWeaponHeat, expected.labels);
+    assert.deepEqual(heat.unknownDraws, [], 'the journal supplies this module power draw');
+    assert.equal(heat.firingSustained.thermalLoad, expected.projectedFiringThermalLoad);
+    assert.equal(heat.firingDrained.thermalLoad, expected.projectedFiringThermalLoad);
+
+    const disabled = ShipLoadout.fromLoadout({
+        ...expected.loadout,
+        Modules: expected.loadout.Modules.map((module) =>
+            module.Slot === expected.labels[0] ? { ...module, On: false } : module,
+        ),
+    }).heatMetrics();
+    assert.ok(disabled);
+    assert.deepEqual(disabled.unknownWeaponHeat, []);
+});

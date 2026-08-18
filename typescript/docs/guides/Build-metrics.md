@@ -259,6 +259,7 @@ heat?.idle.gauge; // hardpoints stowed, as the cockpit gauge reads it: 1 is 100%
 heat?.fsdCharging.gauge; // spooling a jump, the hottest thing most ships do
 heat?.firingSustained.overheats; // holding the trigger with the WEP capacitor keeping up
 heat?.firingDrained.secondsToOverheat; // and the alpha strike, on an empty capacitor
+heat?.unknownWeaponHeat; // powered hardpoints whose omitted heat makes firing incomplete
 ```
 
 Two numbers decide everything, and they are not interchangeable. **Dissipation** is a
@@ -348,14 +349,19 @@ load-bearing:
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
 - `heatMetrics()` returns `null` outright when the build has no powered plant. When it
-  does answer, it names unresolved modules in its own `unknownDraws`, mirroring the power
-  budget: a module the catalogue
+  does answer, it names modules with unresolved power draw in its own `unknownDraws`,
+  mirroring the power budget: a module the catalogue
   cannot resolve draws power the model cannot see and makes heat it cannot count — and,
   because an unknown draw is left out of the priority-group totals, it also leaves the
   groups below it reading as powered when the real plant would shed them. The two errors
   pull opposite ways, so while that list is non-empty the profile is a projection over
   the modules that did resolve rather than a bound: `overheats` can be wrong in either
   direction, and a settled level with it.
+- `heatMetrics().unknownWeaponHeat` separately names enabled, powered hardpoints whose
+  weapon stats could not be resolved. Those hardpoints are omitted from the two firing
+  scenarios. When `unknownDraws` is empty, their reported thermal loads are lower bounds;
+  either way, the derived heat levels, `overheats` flags and times are incomplete. Idle,
+  thruster and FSD heat do not depend on that list.
 
 Use each available `…Result` companion before trusting a nullable metric, and check
 `build.validation.issues` for `unknownModule` on a build you did not assemble yourself.

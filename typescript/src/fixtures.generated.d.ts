@@ -1714,6 +1714,26 @@ type FixtureShipsHeat = {
             unresolvedItem: string;
         };
     };
+    unknownWeaponHeat: {
+        labels: string[];
+        loadout: {
+            Modules: {
+                Engineering?: {
+                    BlueprintName: string;
+                    Level: number;
+                    Modifiers: {
+                        Label: string;
+                        Value: number;
+                    }[];
+                    Quality: number;
+                };
+                Item: string;
+                Slot: string;
+            }[];
+            Ship: string;
+        };
+        projectedFiringThermalLoad: number;
+    };
     unpowered: {
         fixture: string;
         heatLevel: number;

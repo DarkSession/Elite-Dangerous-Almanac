@@ -3274,6 +3274,38 @@
             "projection"
           ]
         },
+        "unknownWeaponHeat": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "labels": { "type": "array", "items": { "type": "string" } },
+            "loadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "Modules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "Engineering": {
+                        "$ref": "#/definitions/shared708c2dabdd3a"
+                      },
+                      "Item": { "type": "string" },
+                      "Slot": { "type": "string" }
+                    },
+                    "required": ["Item", "Slot"]
+                  }
+                },
+                "Ship": { "type": "string" }
+              },
+              "required": ["Modules", "Ship"]
+            },
+            "projectedFiringThermalLoad": { "type": "number" }
+          },
+          "required": ["labels", "loadout", "projectedFiringThermalLoad"]
+        },
         "unpowered": {
           "type": "object",
           "additionalProperties": false,
@@ -3322,6 +3354,7 @@
         "overheatHeatLevel",
         "transient",
         "unknownDraws",
+        "unknownWeaponHeat",
         "unpowered",
         "weaponThermalLoad"
       ]
@@ -4500,31 +4533,7 @@
                         "additionalProperties": false,
                         "properties": {
                           "Engineering": {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "BlueprintName": { "type": "string" },
-                              "Level": { "type": "integer" },
-                              "Modifiers": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "additionalProperties": false,
-                                  "properties": {
-                                    "Label": { "type": "string" },
-                                    "Value": { "type": "number" }
-                                  },
-                                  "required": ["Label", "Value"]
-                                }
-                              },
-                              "Quality": { "type": "integer" }
-                            },
-                            "required": [
-                              "BlueprintName",
-                              "Level",
-                              "Modifiers",
-                              "Quality"
-                            ]
+                            "$ref": "#/definitions/shared708c2dabdd3a"
                           },
                           "Item": { "type": "string" },
                           "Priority": { "type": "integer" },
@@ -7892,6 +7901,17 @@
         "yaw"
       ]
     },
+    "shared708c2dabdd3a": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BlueprintName": { "type": "string" },
+        "Level": { "type": "integer" },
+        "Modifiers": { "$ref": "#/definitions/sharede967a33c6e70" },
+        "Quality": { "type": "integer" }
+      },
+      "required": ["BlueprintName", "Level", "Modifiers", "Quality"]
+    },
     "shared7481e15ca29a": {
       "type": "object",
       "additionalProperties": false,
@@ -8028,6 +8048,15 @@
         "speed"
       ]
     },
+    "shared9c6f165bfa88": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Label": { "type": "string" },
+        "Value": { "type": "number" }
+      },
+      "required": ["Label", "Value"]
+    },
     "shared9ee0d2bef36a": {
       "type": "object",
       "additionalProperties": false,
@@ -8146,6 +8175,10 @@
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
+    },
+    "sharede967a33c6e70": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/shared9c6f165bfa88" }
     },
     "sharedeff85db8445f": {
       "type": "object",
