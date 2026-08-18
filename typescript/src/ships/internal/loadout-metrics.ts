@@ -170,10 +170,12 @@ function effectiveDamageDistribution(
         ...(fromEffect ?? stats.damageDistribution),
     };
     let resolved = fromEffect !== undefined || stats.damageDistribution !== undefined;
+    const seen = new Set<keyof DamageDistribution>();
     for (const modifier of module.Engineering?.Modifiers ?? []) {
-        if (modifier.Value === undefined) continue;
         const type = damageTypeForLabel(modifier.Label);
-        if (type === null) continue;
+        if (type === null || seen.has(type)) continue;
+        seen.add(type);
+        if (modifier.Value === undefined) continue;
         distribution[type] = modifier.Value / scaleForLabel(modifier.Label);
         resolved = true;
     }

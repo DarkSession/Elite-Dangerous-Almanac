@@ -51,13 +51,13 @@ const MAX_ENGINEERING_GRADE = 5;
 /** Compute a variant's fixed block together with an experimental added to the article. */
 function modifiersWithExperimental(
     variant: PreEngineeredVariant,
-    experimental?: string,
+    experimental?: string | null,
 ): EngineeringModifier[] | null {
     const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
-    const effectName = experimental ?? variant.experimental;
-    if (!module || (!variant.modifiers?.length && effectName === undefined)) return null;
-    const effect = effectName === undefined ? undefined : getExperimentalEffect(effectName);
-    if (effectName !== undefined && !effect) return null;
+    const effectName = experimental === undefined ? variant.experimental : experimental;
+    if (!module || (!variant.modifiers?.length && effectName == null)) return null;
+    const effect = effectName == null ? undefined : getExperimentalEffect(effectName);
+    if (effectName !== null && effectName !== undefined && !effect) return null;
     return computeModifiers(
         baseStats(module),
         fixedModifierFeatures(variant.modifiers ?? []),
@@ -98,7 +98,7 @@ export function getPreEngineeredModifiers(variant: PreEngineeredVariant): Engine
 /** Translate a variant and the effect present in a capture to journal-shaped modifiers. */
 function journalModifiersWithExperimental(
     variant: PreEngineeredVariant,
-    experimental?: string,
+    experimental?: string | null,
 ): EngineeringModifier[] {
     const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
     if (!module) return [];
@@ -106,7 +106,7 @@ function journalModifiersWithExperimental(
         module,
         modifiersWithExperimental(variant, experimental) ?? [],
     );
-    const effectName = experimental ?? variant.experimental;
+    const effectName = experimental === undefined ? variant.experimental : experimental;
     const damageDistribution = effectName
         ? getExperimentalEffect(effectName)?.damageDistribution
         : undefined;
@@ -265,7 +265,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     for (const modifier of engineering.Modifiers) {
         actualByKey.set(modifierKey(modifier, stock), modifier);
     }
-    const capturedExperimental = normalizeKey(
+    requireStringIfPresent(
         engineering.ExperimentalEffect,
         'identifyPreEngineeredVariant: module.Engineering.ExperimentalEffect',
     );
@@ -285,13 +285,10 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
         ) {
             continue;
         }
-        if (
-            candidate.experimental !== undefined &&
-            candidate.experimental.toLowerCase() !== capturedExperimental
-        ) {
-            continue;
-        }
-        const primitive = modifiersWithExperimental(candidate, engineering.ExperimentalEffect);
+        const primitive = modifiersWithExperimental(
+            candidate,
+            engineering.ExperimentalEffect ?? null,
+        );
         if (!primitive?.length) continue;
         // Captures in the wild use both Frontier's primitive stat labels and its derived
         // outfitting-panel labels. The setter emits the latter, so accept either complete
@@ -300,7 +297,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
             matchesModifierSignature(actualByKey, primitive, stock) ||
             matchesModifierSignature(
                 actualByKey,
-                journalModifiersWithExperimental(candidate, engineering.ExperimentalEffect),
+                journalModifiersWithExperimental(candidate, engineering.ExperimentalEffect ?? null),
                 stock,
             );
         if (matched) matches.push(candidate);
