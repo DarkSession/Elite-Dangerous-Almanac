@@ -1836,7 +1836,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size1_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 1,
     "rating": "E",
@@ -1846,7 +1845,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 2,
     "rating": "E",
@@ -1856,7 +1854,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size3_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 3,
     "rating": "E",
@@ -1866,7 +1863,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size4_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 4,
     "rating": "E",
@@ -1876,7 +1872,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 5,
     "rating": "E",
@@ -1886,7 +1881,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 6,
     "rating": "E",
@@ -1896,7 +1890,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size7_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 7,
     "rating": "E",
@@ -1906,7 +1899,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size8_Class1",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 8,
     "rating": "E",
@@ -2206,7 +2198,6 @@
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1_free",
-    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 2,
     "rating": "E",
@@ -5206,7 +5197,6 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size1_Class1",
-    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 1,
     "rating": "E",
@@ -5217,7 +5207,6 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
-    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 1,
     "rating": "F",
@@ -5228,7 +5217,6 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size5_Class1",
-    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 5,
     "rating": "E",
@@ -5238,7 +5226,6 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size6_Class1",
-    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 6,
     "rating": "E",
@@ -6065,7 +6052,6 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size4_Class1",
-    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 4,
     "rating": "E",
@@ -7081,7 +7067,6 @@
   },
   {
     "symbol": "Int_LargeCargoRack_Size7_Class1",
-    "kind": "cargoRacks",
     "name": "Mk II Cargo Rack",
     "class": 7,
     "rating": "D",
@@ -7095,7 +7080,6 @@
   },
   {
     "symbol": "Int_LargeCargoRack_Size8_class1",
-    "kind": "cargoRacks",
     "name": "Mk II Cargo Rack",
     "class": 8,
     "rating": "D",

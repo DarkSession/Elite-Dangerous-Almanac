@@ -22,7 +22,7 @@ import type { EngineeringMaterial } from './engineering.js';
 
 /**
  * Material recipes for one blueprint, keyed by grade (`"1"`–`"5"`). Each list is the
- * cost of one roll at that grade and may be empty for a known zero-material recipe.
+ * cost of one roll at that grade.
  *
  * @example
  * ```ts
@@ -36,12 +36,13 @@ import type { EngineeringMaterial } from './engineering.js';
 export type BlueprintGradeCosts = Readonly<Record<string, readonly EngineeringMaterial[]>>;
 
 /**
- * Every blueprint's per-roll material recipes, keyed by Frontier `fdname` and then grade.
+ * Every craftable blueprint's per-roll material recipes, keyed by Frontier `fdname` and then grade.
  *
  * @remarks
- * Its blueprint ids and grade sets exactly match `BLUEPRINTS` from `ships/blueprints`.
- * The catalogues are separate runtime payloads so a mechanics-only consumer pays for
- * neither material names nor counts.
+ * Its ids and grade sets are the craftable subset of `BLUEPRINTS` from
+ * `ships/blueprints`. Fixed reward identities with mechanics but no ordinary craft
+ * route are deliberately absent. The catalogues are separate runtime payloads so a
+ * mechanics-only consumer pays for neither material names nor counts.
  *
  * @example
  * ```ts
@@ -60,7 +61,8 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
- * @returns The frozen grade-to-material-list record, or `null` if unknown.
+ * @returns The frozen grade-to-material-list record, or `null` if no ordinary craft
+ * cost is catalogued (including a known fixed reward identity).
  * @throws {TypeError} If `fdname` is present and not a string. A nullish
  * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
@@ -81,8 +83,8 @@ export function getBlueprintCosts(fdname: string): BlueprintGradeCosts | null {
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @param grade - The grade, `1`–`5`.
- * @returns The frozen per-roll material list, or `null` if the blueprint or grade is
- * unknown. A known recipe that costs no materials returns `[]`.
+ * @returns The frozen per-roll material list, or `null` if no ordinary craft cost is
+ * catalogued for the blueprint and grade.
  * @throws {RangeError} If `grade` is not an integer from 1 through 5.
  * @example
  * ```ts
@@ -125,9 +127,9 @@ export function getBlueprintGradeCost(
  * @param currentGrade - The completed grade, `0`–`5`; defaults to `0` for an
  * unengineered module.
  * Only grades above it are charged; `currentGrade >= grade` costs nothing (`[]`).
- * @returns One entry per distinct material with its summed `count`, or `null` if the
- * catalogue holds no such blueprint or target grade. A blueprint that starts above grade
- * 1 charges only the grades it defines.
+ * @returns One entry per distinct material with its summed `count`, or `null` if no
+ * ordinary craft cost is catalogued for the blueprint and target grade. A blueprint that
+ * starts above grade 1 charges only the grades it defines.
  * @throws {RangeError} If `grade` is not an integer from 1 through 5, or `currentGrade`
  * is not an integer from 0 through 5.
  * @example

@@ -379,11 +379,11 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     II's `Int_MkIIAgileBoost_Engine_*` thrusters.
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
-- **`kind` is the ordinary engineering-menu family.** The 1026 records mapped by
+- **`kind` is the ordinary engineering-menu family.** The 1010 records mapped by
   `engineering-options.jsonc` repeat that map's group key in the compact on-disk `kind`
-  field. Of the remaining 173 records, 171 carry no `kind` because the pinned sources
-  publish no engineering family for them; the fixed Mining Laser and Abrasion Blaster
-  omit the family as the in-game correction documented under Engineering options below.
+  field. The remaining 189 records carry no `kind` because they have no ordinary
+  engineering menu; this includes the fixed Mining Laser and Abrasion Blaster and the 16
+  cargo racks documented under Engineering options below.
   The group source, derivation, split
   Guardian families and coverage are documented under Engineering options below; this
   field is a projection of that map, not a separate classification source.
@@ -1100,8 +1100,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   qualitative descriptions), and `experimental-effect-costs.jsonc` (the matching
   one-application material costs).
   Stored modifier labels use journal `Modifier` **Labels**. Each blueprint is `{ name, grades }`
-  (each grade `{ features, damageDistribution? }`), with its cost file keyed by the same
-  blueprint and grade ids. Each experimental effect is
+  (each grade `{ features, damageDistribution? }`). The cost file uses the same ids and
+  grades for the craftable subset; fixed reward identities without an ordinary cost are
+  absent. Each experimental effect is
   `{ name, modifiers, damageDistribution?, description? }`, with its cost file keyed by
   the same effect ids.
 - **Display names:** each blueprint and experimental effect carries its `name`.
@@ -1150,8 +1151,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
   resolves each to the material's Frontier `symbol` against the `materials` domain at
   generation time, emitting `{ symbol, name, count }` per requirement (join `symbol` to
   `materials` for the material's own grade and category). **Kept as-is:**
-  `CargoRack_IncreasedCapacity` grade 5 has no components upstream, so its `materials`
-  is an empty list (the grade still resolves) rather than being dropped.
+  `CargoRack_IncreasedCapacity` grade 5 has no components upstream. That absence does
+  not establish a zero-cost crafting route: the id describes the two fixed Expanded
+  Cargo Rack community-goal articles in `pre-engineered.jsonc`, so it remains in the
+  mechanics catalogue for their modifier block but is absent from
+  `blueprint-costs.jsonc`.
 - **Operations pre-engineered blueprints — from the in-game / Inara blueprint registry**
   (not in coriolis at the acquired commit): the Merc-Coin weapon rewards and the
   general/core/optional recipes (the **Operations keys**, e.g. `FuelScoop_Efficiency`,
@@ -1346,7 +1350,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (52 groups covering 1026 ordinary engineering menus) and each group lists the
+  grouped (51 groups covering 1010 ordinary engineering menus) and each group lists the
   `blueprints` and `experimentals` it offers.
 - **Source:** EDSY `eddb.js`, whose module-group tables carry each group's `blueprints`
   and `expeffects` lists and which modules belong to each group, and whose module records
@@ -1355,10 +1359,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `modifications/modules.json`, which carries the same per-group lists keyed by the
   journal `BlueprintName`s this catalogue joins on.
 - **Coverage: every retained group EDSY's `mtype` table gives a `blueprints:` key.** After
-  the Mining Laser and Abrasion Blaster corrections below, that is 52 groups over 1026
+  the Mining Laser, Abrasion Blaster and cargo-rack corrections below, that is 51 groups over 1010
   modules, including
   bulkheads (the 241 ship armour records), life
-  support, sensors, the Detailed Surface Scanner, cargo racks, refineries, AFMUs, fuel
+  support, sensors, the Detailed Surface Scanner, refineries, AFMUs, fuel
   scoops, FSD interdictors and boosters, Guardian module and shield reinforcement, the
   four engineerable limpet controllers, chaff, heat sink and caustic sink launchers,
   point defence, ECMs, the KWS/manifest/wake scanners, the Guardian Gauss/Plasma/Shard
@@ -1390,7 +1394,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     The ten plain Module Reinforcement Packages are denied their family's only recipe
     and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
     packages.
-  - **The 173 modules absent have no ordinary engineering menu.** For 171 this comes from
+  - **The 189 modules absent have no ordinary engineering menu.** For 171 this comes from
     the pinned registries. Whole families first, both registries
     agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
     multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
@@ -1398,11 +1402,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     vehicle hangars, the docking computers and Supercruise Assist, the module stabilisers,
     the planetary approach suites, the cargo hatch and
     the AX utility modules (Xeno Scanners, Shutdown Field Neutralisers), followed by the
-    individually denied modules described above. The other two are the fixed Mining Laser
-    and Abrasion Blaster, corrected from the registry-derived result below. They and the
-    size-5 class-2 Module Reinforcement Package within the registry-derived 171 have no
-    stock menu, but their purchased Mercenary articles remain upgradeable through their
-    bespoke recipes.
+    individually denied modules described above. The other 18 are the fixed Mining Laser,
+    Abrasion Blaster and 16 cargo racks, corrected from the registry-derived result below.
+    They and the size-5 class-2 Module Reinforcement Package within the registry-derived
+    171 have no stock menu, but qualifying Mercenary articles remain upgradeable through
+    their bespoke recipes.
   - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
     three other entries are `_X_`-marked. The `Decorative_*` entries on the remote-release
@@ -1435,7 +1439,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons` and
     `antiXenoMultiCannons`. That is coriolis being
     silent rather than contradicting — its Guardian and anti-xeno groups are empty
-    objects — but it means the second registry corroborates 40 of the 52 groups, not
+    objects — but it means the second registry corroborates 39 of the 51 groups, not
     all of them. The Guardian-weapon menus are independently settled by the in-game
     observations below: stock weapons take Anti-Guardian Zone Resistance alone, while
     the pre-engineered articles are final.
@@ -1445,10 +1449,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     for that reason — coriolis carries no blueprint list for an anti-xeno group, so it is
     EDSY being followed into coriolis's spelling. See "Multi-cannon Overcharged: one
     journal id, two recipes" below for the evidence and for what the split costs.
-  - **The groups name 86 of the 107 blueprints.** The other 21 are accounted for: they are
-    Operations keys of modules sold already engineered rather than offered in a menu. Four
-    Operations keys _are_ named by a group, because they are recipes a player applies — see
-    "Four Operations recipes are listed by a menu" below.
+  - **The groups name 85 of the 107 blueprints.** Of the other 22, 21 are Operations keys
+    of modules sold already engineered rather than offered in a menu; the last is the
+    fixed Expanded Cargo Rack reward identity. Four Operations keys _are_ named by a
+    group, because they are recipes a player applies — see "Four Operations recipes are
+    listed by a menu" below.
   - **14 modules are bound by the family rule, not by a source row.** EDSY has no live
     entry for `Int_Hyperdrive_Size8_Class{1..5}` or `Int_ShieldGenerator_Size1_Class4`
     (both present but commented out, and both naming their `mtype` — `cfsd` and `isg`),
@@ -1486,8 +1491,18 @@ up straight through with no disambiguation at all. Both paths are evidence that
   correction by dropping both module mappings, the now-empty `miningToolsLasers` group,
   both projected `kind` fields in `modules-hardpoint.jsonc`, and the Abrasion Blaster's
   now-unreachable experimental exclusion.
-- **An empty experimental menu is still distinct from no menu.** 30 of the 52 groups offer
-  no experimental at all, so 387 of the 1026 grouped modules have an empty experimental
+- **Expanded Cargo Rack is a fixed reward identity, not an ordinary cargo-rack recipe.**
+  EDSY and coriolis expose `CargoRack_IncreasedCapacity` as the grade-5 identity carried
+  by the size-5 and size-6 community-goal articles catalogued in `pre-engineered.jsonc`.
+  Direct in-game menu confirmation recorded 2026-08-18 UTC establishes that none of the
+  16 stock cargo-rack identities — ordinary, corrosion-resistant, or Mk II — has an
+  ordinary engineering menu; there is no immutable revision for an in-game observation.
+  The fixed articles keep their sourced modifier blocks and remain identifiable without
+  granting the same state to a stock rack. A re-derivation must drop the `cargoRacks`
+  group, all 16 module mappings, and the corresponding projected `kind` fields in
+  `modules-internal.jsonc`.
+- **An empty experimental menu is still distinct from no menu.** 29 of the 51 groups offer
+  no experimental at all, so 371 of the 1010 grouped modules have an empty experimental
   list while retaining blueprints.
 - **Key form:** the Anti-Guardian blueprint is listed under `GuardianModule_Sturdy`, the id
   a Loadout writes and the one EDSY uses — the same and only spelling `blueprints.jsonc`
