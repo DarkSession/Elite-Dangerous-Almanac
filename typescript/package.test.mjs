@@ -43,10 +43,14 @@ import {
 import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
 import {
     getBlueprintName,
+    getEngineeringGroupName,
     getExperimentalEffectName,
+    getExperimentalEffectDescription,
     getMaterialName,
     getMicroResourceName,
     getModuleName,
+    getShipManufacturer,
+    getShipName,
 } from '@elite-dangerous-almanac/core/i18n';
 
 async function readReachableJs(entry, seen = new Set()) {
@@ -285,6 +289,13 @@ test('fine-grained package subpaths resolve', () => {
     );
     assert.equal(getMaterialName('GridResistors', 'de-DE'), 'Gitterwiderstände');
     assert.equal(getMicroResourceName('graphene', 'fr'), 'Graphène');
+    assert.equal(getShipName('empire_trader', 'fr'), 'Imperial Clipper');
+    assert.equal(getShipManufacturer('SideWinder', 'en-GB'), 'Faulcon DeLacy');
+    assert.equal(getEngineeringGroupName('frameShiftDrives', 'en'), 'Frame Shift Drives');
+    assert.equal(
+        getExperimentalEffectDescription('special_auto_loader', 'en'),
+        'Reloads the weapon while it continues firing.',
+    );
 });
 
 test('localized-name datasets stay on their own leaf subpaths', async () => {

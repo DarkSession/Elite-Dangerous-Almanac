@@ -1,0 +1,363 @@
+/*
+ * Localized display names for pre-engineered module variants.
+ *
+ * Sources: the Elite Dangerous Almanac pre-engineered and localized module-name
+ * catalogues, derived from the sources named in data/ships/SOURCES.md and here.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Derivation and known gaps:
+ * data/i18n/SOURCES.md.
+ */
+{
+  "nameKeys": {
+    "Hpt_Mining_AbrBlstr_Fixed_Small|AbrasionBlaster_FarReaching||mercenary": "Abrasion Blaster",
+    "Hpt_CausticMissile_Fixed_Medium|EnzymeMissileRack_HighYield||mercenary": "Enzyme Missile Rack",
+    "Hpt_Slugshot_Gimbal_Small|FragmentCannonSmall_DoubleScreaming||mercenary": "Fragment Cannon",
+    "Hpt_Slugshot_Gimbal_Large|FragmentCannonLarge_DoubleScreaming||mercenary": "Fragment Cannon",
+    "Hpt_MiningLaser_Fixed_Small|MiningLaser_LongRange||mercenary": "Mining Laser",
+    "Hpt_MultiCannon_Fixed_Medium|MultiCannon_Rapid||mercenary": "Multi-Cannon",
+    "Hpt_Railgun_Fixed_Medium|RailGun_LongShot||mercenary": "Rail Gun",
+    "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRack_Drag||mercenary": "Seeker Missile Rack",
+    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRack_Drag||mercenary": "Seeker Missile Rack",
+    "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRack_LightWeightThermal||mercenary": "Seeker Missile Rack",
+    "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRackMedium_Lockdown||mercenary": "Seeker Missile Rack",
+    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRackLarge_Lockdown||mercenary": "Seeker Missile Rack",
+    "Int_CargoRack_Size5_Class1|CargoRackS5C1_Extended||mercenary": "Cargo Rack",
+    "Int_CargoRack_Size6_Class1|CargoRackS6C1_Extended||mercenary": "Cargo Rack",
+    "Int_DetailedSurfaceScanner_Tiny|DetailedSurfaceScanner_LongRange||mercenary": "Detailed Surface Scanner",
+    "Int_ModuleReinforcement_Size5_Class2|ModuleReinforcement_HeavyDuty||mercenary": "Module Reinforcement Package",
+    "Int_PowerDistributor_Size3_Class2|PowerDistributorS3C2_SupportFocused||mercenary": "Power Distributor",
+    "Int_PowerDistributor_Size3_Class5|PowerDistributorS3C5_SupportFocused||mercenary": "Power Distributor",
+    "Int_PowerDistributor_Size4_Class2|PowerDistributorS4C2_SupportFocused||mercenary": "Power Distributor",
+    "Int_PowerDistributor_Size4_Class5|PowerDistributorS4C5_SupportFocused||mercenary": "Power Distributor",
+    "Int_PowerDistributor_Size5_Class5|PowerDistributor_Balanced||mercenary": "Power Distributor",
+    "Int_PowerDistributor_Size6_Class5|PowerDistributorS6C5_SupportFocused||mercenary": "Power Distributor",
+    "Hpt_Mining_AbrBlstr_Fixed_Small|Weapon_LongRange||communityGoal": "Abrasion Blaster",
+    "Hpt_CausticMissile_Fixed_Medium|Weapon_HighCapacity||communityGoal": "Enzyme Missile Rack",
+    "Hpt_Slugshot_Gimbal_Small|Weapon_DoubleShot|special_screening_shell|communityGoal": "Fragment Cannon",
+    "Hpt_Slugshot_Gimbal_Large|Weapon_DoubleShot|special_screening_shell|communityGoal": "Fragment Cannon",
+    "Hpt_Guardian_ShardCannon_Fixed_Medium|Weapon_LongRange||communityGoal": "Guardian Shard Cannon",
+    "Hpt_MultiCannon_Fixed_Medium|Weapon_RapidFire|special_phasing_sequence|communityGoal": "Multi-Cannon",
+    "Hpt_Railgun_Fixed_Medium|Weapon_HighCapacity|special_feedback_cascade_cooled|communityGoal": "Rail Gun",
+    "Hpt_Railgun_Fixed_Medium_Burst|Weapon_HighCapacity|special_super_penetrator|communityGoal": "Imperial Hammer Rail Gun",
+    "Hpt_BasicMissileRack_Fixed_Medium|Weapon_HighCapacity|special_drag_munitions|communityGoal": "Seeker Missile Rack",
+    "Hpt_BasicMissileRack_Fixed_Medium|Weapon_HighCapacity|special_fsd_interrupt|communityGoal": "Seeker Missile Rack",
+    "Hpt_BasicMissileRack_Fixed_Large|Weapon_HighCapacity|special_fsd_interrupt|communityGoal": "Seeker Missile Rack",
+    "Hpt_ElectronicCountermeasure_Tiny|Misc_LightWeight||communityGoal": "Electronic Countermeasure",
+    "Hpt_CrimeScanner_Size0_Class5|Sensor_FastScan||communityGoal": "Kill Warrant Scanner",
+    "Hpt_CrimeScanner_Size0_Class3|Sensor_FastScan||communityGoal": "Kill Warrant Scanner",
+    "Hpt_PlasmaPointDefence_Turret_Tiny|Misc_LightWeight||communityGoal": "Point Defence",
+    "Int_PowerDistributor_Size3_Class5|PowerDistributor_PrioritySystems||communityGoal": "Power Distributor",
+    "Int_PowerDistributor_Size3_Class2|PowerDistributor_PrioritySystems||communityGoal": "Power Distributor",
+    "Int_PowerDistributor_Size4_Class5|PowerDistributor_PrioritySystems||communityGoal": "Power Distributor",
+    "Int_PowerDistributor_Size4_Class2|PowerDistributor_PrioritySystems||communityGoal": "Power Distributor",
+    "Int_PowerDistributor_Size6_Class5|PowerDistributor_PrioritySystems||communityGoal": "Power Distributor",
+    "Int_Powerplant_Size3_Class5|PowerPlant_Armoured||communityGoal": "Power Plant",
+    "Int_Powerplant_Size3_Class5|PowerPlant_Boosted||communityGoal": "Power Plant",
+    "Int_Powerplant_Size4_Class5|PowerPlant_Boosted||communityGoal": "Power Plant",
+    "Int_Powerplant_Size5_Class5|PowerPlant_Boosted||communityGoal": "Power Plant",
+    "Int_Hyperdrive_Size3_Class5|FSD_LongRange||communityGoal": "Frame Shift Drive",
+    "Int_Hyperdrive_Size4_Class5|FSD_LongRange||communityGoal": "Frame Shift Drive",
+    "Int_Hyperdrive_Size6_Class5|FSD_LongRange||communityGoal": "Frame Shift Drive",
+    "Int_CargoRack_Size5_Class1|CargoRack_IncreasedCapacity||communityGoal": "Cargo Rack",
+    "Int_CargoRack_Size6_Class1|CargoRack_IncreasedCapacity||communityGoal": "Cargo Rack",
+    "Int_ShieldGenerator_Size3_Class5|ShieldGenerator_Kinetic||communityGoal": "Shield Generator",
+    "Hpt_ATDumbfireMissile_Fixed_Medium|Weapon_HighCapacity||techBroker": "AX Missile Rack",
+    "Hpt_ATDumbfireMissile_Fixed_Large|Weapon_HighCapacity||techBroker": "AX Missile Rack",
+    "Hpt_ATMultiCannon_Gimbal_Medium|MC_Overcharged|special_auto_loader|techBroker": "Enhanced AX Multi-Cannon",
+    "Hpt_ATMultiCannon_Gimbal_Large|MC_Overcharged|special_auto_loader|techBroker": "Enhanced AX Multi-Cannon",
+    "Hpt_Guardian_GaussCannon_Fixed_Small|Weapon_RapidFire||techBroker": "Guardian Gauss Cannon",
+    "Hpt_Guardian_GaussCannon_Fixed_Medium|Weapon_RapidFire||techBroker": "Guardian Gauss Cannon",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Small|Weapon_Overcharged||techBroker": "Guardian Plasma Charger",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Medium|Weapon_Overcharged||techBroker": "Guardian Plasma Charger",
+    "Hpt_Guardian_ShardCannon_Fixed_Small|Weapon_LongRange||techBroker": "Guardian Shard Cannon",
+    "Hpt_Guardian_ShardCannon_Fixed_Medium|Weapon_LongRange||techBroker": "Guardian Shard Cannon",
+    "Hpt_MiningLaser_Fixed_Small|Weapon_LongRange|special_incendiary_rounds|techBroker": "Mining Laser",
+    "Hpt_BasicMissileRack_Fixed_Medium|Weapon_HighCapacity|special_thermal_cascade|techBroker": "Seeker Missile Rack",
+    "Hpt_HeatSinkLauncher_Turret_Tiny|Misc_HeatSinkCapacity||techBroker": "Heat Sink Launcher",
+    "Int_Hyperdrive_Size5_Class5|FSD_LongRange||techBroker": "Frame Shift Drive",
+    "Int_Hyperdrive_Overcharge_Size2_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
+    "Int_Hyperdrive_Overcharge_Size3_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
+    "Int_Hyperdrive_Overcharge_Size4_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
+    "Int_Hyperdrive_Overcharge_Size5_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
+    "Int_Hyperdrive_Overcharge_Size6_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
+    "Int_Hyperdrive_Overcharge_Size7_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
+    "Int_DetailedSurfaceScanner_Tiny|Sensor_Expanded||techBroker": "Detailed Surface Scanner",
+    "Hpt_FlakMortar_Turret_Medium|Decorative_Green||eventReward": "Festive Green Remote Release Flak Launcher",
+    "Hpt_FlakMortar_Turret_Medium|Decorative_Red||eventReward": "Festive Red Remote Release Flak Launcher",
+    "Hpt_FlakMortar_Turret_Medium|Decorative_Yellow||eventReward": "Festive Yellow Remote Release Flak Launcher"
+  },
+  "names": {
+    "Abrasion Blaster": {
+      "en": "Abrasion Blaster",
+      "de": "Abrasionsblaster",
+      "es": "Destructor de abrasión",
+      "fr": "Surfaceur abrasif",
+      "it": "Blaster Abrasivo",
+      "pt": "Detonador de abrasão",
+      "pt-BR": "Detonador de Abrasão",
+      "ru": "Шлифовальный бластер",
+      "zh-CN": "矿物侵蚀冲击波"
+    },
+    "Enzyme Missile Rack": {
+      "en": "Enzyme Missile Rack",
+      "de": "Enzymraketenwerfer",
+      "es": "Lanzamisiles de Enzimas",
+      "fr": "Batterie de missile enzymatique",
+      "hu": "Enzim rakéta kilövő",
+      "it": "Lanciamissili corrosivi",
+      "pt": "Míssil Enzimático",
+      "pt-BR": "Estante de Míssel Enzimático",
+      "ru": "Пусковая энзимных ракет",
+      "zh-CN": "生物酶导弹荚"
+    },
+    "Fragment Cannon": {
+      "en": "Fragment Cannon",
+      "de": "Splitterkanone",
+      "es": "Cañón de fragmentación",
+      "fr": "Canon à fragmentation",
+      "hu": "Repesz ágyú",
+      "it": "Cannone a Frammentazione",
+      "pt": "Canhão de frag.",
+      "pt-BR": "Canhão de Fragmentação",
+      "ru": "Залповое орудие",
+      "zh-CN": "破片炮"
+    },
+    "Mining Laser": {
+      "en": "Mining Laser",
+      "de": "Abbaulaser",
+      "es": "Láser de minería",
+      "fr": "Laser Minier",
+      "hu": "Bányász lézer",
+      "it": "Laser Minerario",
+      "pt": "Laser de mineração",
+      "pt-BR": "Laser de Mineração",
+      "ru": "Проходочный лазер",
+      "zh-CN": "采矿激光"
+    },
+    "Multi-Cannon": {
+      "en": "Multi-Cannon",
+      "de": "Mehrfachgeschütz",
+      "es": "Multicañón",
+      "fr": "Multi-canon",
+      "hu": "Gépágyú",
+      "it": "Cannone rotante",
+      "pt-BR": "Canhão de Repetição",
+      "ru": "Многоствольное орудие",
+      "zh-CN": "多管炮"
+    },
+    "Rail Gun": {
+      "en": "Rail Gun",
+      "de": "Schienenkanone",
+      "es": "Cañón de riel",
+      "fr": "Canon électrique",
+      "hu": "Sínágyú",
+      "it": "Cannone Elettromagnetico",
+      "pt": "Canhão elétrico",
+      "pt-BR": "Canhão Elétrico",
+      "ru": "Электромагнитная пушка",
+      "zh-CN": "磁轨炮"
+    },
+    "Seeker Missile Rack": {
+      "en": "Seeker Missile Rack",
+      "de": "Suchraketenrampe",
+      "es": "Lanzamisiles guiados",
+      "fr": "Missiles TC",
+      "pt": "Estante de Míssil Guiado",
+      "ru": "Блок ракет с самонаведением"
+    },
+    "Cargo Rack": {
+      "en": "Cargo Rack",
+      "de": "Frachtgestell",
+      "es": "Bodega de carga",
+      "fr": "Compartiment de soute",
+      "hu": "Raktér modul",
+      "it": "Modulo di Stoccaggio",
+      "pt-BR": "Estante de Carga",
+      "ru": "Грузовой стеллаж",
+      "zh-CN": "货仓架"
+    },
+    "Detailed Surface Scanner": {
+      "en": "Detailed Surface Scanner",
+      "de": "Detail-Oberflächenscanner",
+      "es": "Escáner de superficie detallado",
+      "fr": "Détecteur de surface détaillé",
+      "hu": "Részletes felszíni szkenner",
+      "it": "Scanner di Superficie Avanzato",
+      "pt": "Scanner de superfície",
+      "pt-BR": "Scanner de Superfície",
+      "ru": "Сканер поверхностей",
+      "zh-CN": "行星表面扫描仪"
+    },
+    "Module Reinforcement Package": {
+      "en": "Module Reinforcement Package",
+      "de": "Modulverstärkung (Paket)",
+      "es": "Paquete de refuerzo de módulo",
+      "fr": "Pack de renforcement de Modules",
+      "it": "Rafforzamento Moduli Interni",
+      "pt": "Reforço de módulo",
+      "pt-BR": "Pacote de Reforço de Módulo",
+      "ru": "Набор для усиления модуля",
+      "zh-CN": "组件增强"
+    },
+    "Power Distributor": {
+      "en": "Power Distributor",
+      "de": "Energieverteiler",
+      "es": "Distribuidor de energía",
+      "fr": "Répartiteur de puissance",
+      "hu": "Energia elosztó",
+      "it": "Distributore di Energia",
+      "pt": "Distribuidor de energia",
+      "pt-BR": "Distribuidor de Energia",
+      "ru": "Распределитель питания",
+      "zh-CN": "能量分配器"
+    },
+    "Guardian Shard Cannon": {
+      "en": "Guardian Shard Cannon",
+      "de": "Fragmentkanone",
+      "es": "Cañón de esquirlas",
+      "fr": "Canon à éclats",
+      "pt": "Canhão de fragmentos",
+      "ru": "Осколочное орудие"
+    },
+    "Imperial Hammer Rail Gun": {
+      "en": "Imperial Hammer Rail Gun",
+      "de": "Hammer",
+      "es": "Martillo",
+      "fr": "Marteleur",
+      "pt": "Martelo",
+      "ru": "«Молот»"
+    },
+    "Electronic Countermeasure": {
+      "en": "Electronic Countermeasure",
+      "de": "Elektronische Gegenmaßnahme",
+      "es": "Contramedidas electrónicas",
+      "fr": "Contre-mesures électroniques",
+      "it": "Contromisure Elettroniche",
+      "pt": "Contramedida Eletrônica",
+      "pt-BR": "Contramedida Eletrônica",
+      "ru": "Электр. противодействие",
+      "zh-CN": "电子对抗"
+    },
+    "Kill Warrant Scanner": {
+      "en": "Kill Warrant Scanner",
+      "de": "Tötungsbefehl-Scanner",
+      "es": "Escáner de recompensas",
+      "fr": "Détecteur d'avis de recherche",
+      "it": "Scanner di Mandati di Eliminazione",
+      "pt": "Scanner de Registro Criminal",
+      "pt-BR": "Scanner de Registro Criminal",
+      "ru": "Сканер преступников",
+      "zh-CN": "追杀令扫描仪"
+    },
+    "Point Defence": {
+      "en": "Point Defence",
+      "de": "Punktverteidigung",
+      "es": "Defensa de punto",
+      "fr": "Défense ponctuelle",
+      "it": "Torretta difensiva a puntamento",
+      "pt": "Defesa de Ponto",
+      "pt-BR": "Defesa de Ponto",
+      "ru": "Точечная оборона",
+      "zh-CN": "点防御"
+    },
+    "Power Plant": {
+      "en": "Power Plant",
+      "de": "Kraftwerk",
+      "es": "Núcleo de energía",
+      "fr": "Générateur",
+      "hu": "Reaktor",
+      "it": "Generatore di Energia",
+      "pt": "Gerador de energia",
+      "pt-BR": "Gerador de Energia",
+      "ru": "Силовая установка",
+      "zh-CN": "反应堆"
+    },
+    "Frame Shift Drive": {
+      "en": "Frame Shift Drive",
+      "de": "Frameshiftantrieb",
+      "es": "Motor de salto",
+      "fr": "Réacteur FSD",
+      "hu": "Varp drájv",
+      "it": "Motore a Modulazione",
+      "pt": "Motor de Distorção de Fase",
+      "pt-BR": "Motor de Distorção de Fase",
+      "ru": "Рамочно Сместительный двигатель",
+      "zh-CN": "超空间折叠引擎"
+    },
+    "Shield Generator": {
+      "en": "Shield Generator",
+      "de": "Schildgenerator",
+      "es": "Generador de escudos",
+      "fr": "Générateur de bouclier",
+      "hu": "Pajzsgenerátor",
+      "it": "Generatore di Scudi",
+      "pt": "Gerador de escudo",
+      "pt-BR": "Gerador de Escudo",
+      "ru": "Щитогенератор",
+      "zh-CN": "护盾发生器"
+    },
+    "AX Missile Rack": {
+      "en": "AX Missile Rack",
+      "de": "AX-Raketenrampe",
+      "es": "Lanzamisiles AX",
+      "fr": "Batterie de missiles AX",
+      "pt": "Estante de Mísseis AX",
+      "ru": "Блок ракет АИ"
+    },
+    "Enhanced AX Multi-Cannon": {
+      "en": "Enhanced AX Multi-Cannon",
+      "de": "Fortschrittliches AX Mehrfachgeschütz",
+      "pt": "Canhão de Repetição AX Melhorado",
+      "ru": "Улучш. многоствольное орудие АИ"
+    },
+    "Guardian Gauss Cannon": {
+      "en": "Guardian Gauss Cannon",
+      "de": "Guardian-Gausskanone",
+      "es": "Cañón Gauss Guardián",
+      "fr": "Canon de Gauss - Guardians",
+      "hu": "Őrző Gaussz ágyú",
+      "it": "Cannone Gauss dei Guardiani",
+      "pt": "Canhão Gauss",
+      "pt-BR": "Canhão Gauss Guardian",
+      "ru": "Пушка Гаусса",
+      "zh-CN": "守护者高斯炮"
+    },
+    "Guardian Plasma Charger": {
+      "en": "Guardian Plasma Charger",
+      "de": "Guardian-Plasmalader",
+      "es": "Cargador de Plasma Guardián",
+      "fr": "Chargeur à Plasma - Guardians",
+      "it": "Caricatore al Plasma dei Guardiani",
+      "pt": "Carregador de plasma",
+      "pt-BR": "Carregador de Plasma Guardian",
+      "ru": "Плазменная пушка",
+      "zh-CN": "守护者等离子炮"
+    },
+    "Heat Sink Launcher": {
+      "en": "Heat Sink Launcher",
+      "de": "Kühlkörperabwurf",
+      "es": "Eyector térmico",
+      "fr": "Éjecteur de dissipateur thermique",
+      "hu": "Hőcsapda kivető",
+      "it": "Espulsore dissipatori termici",
+      "pt": "Lançador de Dissipador Térmico",
+      "pt-BR": "Lançador de Dissipador Térmico",
+      "ru": "Теплоотводная катапульта",
+      "zh-CN": "散热器发射器"
+    },
+    "Frame Shift Drive (SCO)": {
+      "en": "Frame Shift Drive (SCO)",
+      "pt": "Motor de Distorção de Fase (SSV)",
+      "ru": "Двигатель FSD (ПГР)"
+    },
+    "Festive Green Remote Release Flak Launcher": {
+      "en": "Festive Green Remote Release Flak Launcher"
+    },
+    "Festive Red Remote Release Flak Launcher": {
+      "en": "Festive Red Remote Release Flak Launcher"
+    },
+    "Festive Yellow Remote Release Flak Launcher": {
+      "en": "Festive Yellow Remote Release Flak Launcher"
+    }
+  }
+}

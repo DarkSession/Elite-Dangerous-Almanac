@@ -195,6 +195,18 @@
             "types": "./dist/i18n/experimental-effects.d.ts",
             "import": "./dist/i18n/experimental-effects.js"
         },
+        "./i18n/experimental-effect-descriptions": {
+            "types": "./dist/i18n/experimental-effect-descriptions.d.ts",
+            "import": "./dist/i18n/experimental-effect-descriptions.js"
+        },
+        "./i18n/engineering-groups": {
+            "types": "./dist/i18n/engineering-groups.d.ts",
+            "import": "./dist/i18n/engineering-groups.js"
+        },
+        "./i18n/diagnostics": {
+            "types": "./dist/i18n/diagnostics.d.ts",
+            "import": "./dist/i18n/diagnostics.js"
+        },
         "./i18n/internal/*": null,
         "./i18n/materials": {
             "types": "./dist/i18n/materials.d.ts",
@@ -207,6 +219,18 @@
         "./i18n/modules": {
             "types": "./dist/i18n/modules.d.ts",
             "import": "./dist/i18n/modules.js"
+        },
+        "./i18n/pre-engineered": {
+            "types": "./dist/i18n/pre-engineered.d.ts",
+            "import": "./dist/i18n/pre-engineered.js"
+        },
+        "./i18n/ships": {
+            "types": "./dist/i18n/ships.d.ts",
+            "import": "./dist/i18n/ships.js"
+        },
+        "./i18n/slots": {
+            "types": "./dist/i18n/slots.d.ts",
+            "import": "./dist/i18n/slots.js"
         },
         "./materials": {
             "types": "./dist/materials/index.d.ts",

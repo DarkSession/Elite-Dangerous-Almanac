@@ -1,0 +1,155 @@
+/*
+ * Display names for ship manufacturers.
+ *
+ * Source: the Elite Dangerous Almanac ships catalogue, derived from the sources named
+ * in data/ships/SOURCES.md.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Derivation and known gaps:
+ * data/i18n/SOURCES.md.
+ */
+{
+  "SideWinder": {
+    "en": "Faulcon DeLacy"
+  },
+  "Eagle": {
+    "en": "Core Dynamics"
+  },
+  "Hauler": {
+    "en": "Zorgon Peterson"
+  },
+  "Adder": {
+    "en": "Zorgon Peterson"
+  },
+  "Viper": {
+    "en": "Faulcon DeLacy"
+  },
+  "CobraMkIII": {
+    "en": "Faulcon DeLacy"
+  },
+  "Type6": {
+    "en": "Lakon Spaceways"
+  },
+  "Dolphin": {
+    "en": "Saud Kruger"
+  },
+  "Type7": {
+    "en": "Lakon Spaceways"
+  },
+  "Asp": {
+    "en": "Lakon Spaceways"
+  },
+  "Vulture": {
+    "en": "Core Dynamics"
+  },
+  "Empire_Trader": {
+    "en": "Gutamaya"
+  },
+  "Federation_Dropship": {
+    "en": "Core Dynamics"
+  },
+  "Orca": {
+    "en": "Saud Kruger"
+  },
+  "Type9": {
+    "en": "Lakon Spaceways"
+  },
+  "Python": {
+    "en": "Faulcon DeLacy"
+  },
+  "BelugaLiner": {
+    "en": "Saud Kruger"
+  },
+  "FerDeLance": {
+    "en": "Zorgon Peterson"
+  },
+  "Anaconda": {
+    "en": "Faulcon DeLacy"
+  },
+  "Federation_Corvette": {
+    "en": "Core Dynamics"
+  },
+  "Cutter": {
+    "en": "Gutamaya"
+  },
+  "DiamondBack": {
+    "en": "Lakon Spaceways"
+  },
+  "Empire_Courier": {
+    "en": "Gutamaya"
+  },
+  "DiamondBackXL": {
+    "en": "Lakon Spaceways"
+  },
+  "Empire_Eagle": {
+    "en": "Gutamaya"
+  },
+  "Federation_Dropship_MkII": {
+    "en": "Core Dynamics"
+  },
+  "Federation_Gunship": {
+    "en": "Core Dynamics"
+  },
+  "Viper_MkIV": {
+    "en": "Faulcon DeLacy"
+  },
+  "CobraMkIV": {
+    "en": "Faulcon DeLacy"
+  },
+  "Independant_Trader": {
+    "en": "Lakon Spaceways"
+  },
+  "Asp_Scout": {
+    "en": "Lakon Spaceways"
+  },
+  "Type9_Military": {
+    "en": "Lakon Spaceways"
+  },
+  "Krait_MkII": {
+    "en": "Faulcon DeLacy"
+  },
+  "TypeX": {
+    "en": "Lakon Spaceways"
+  },
+  "TypeX_2": {
+    "en": "Lakon Spaceways"
+  },
+  "TypeX_3": {
+    "en": "Lakon Spaceways"
+  },
+  "Krait_Light": {
+    "en": "Faulcon DeLacy"
+  },
+  "Mamba": {
+    "en": "Zorgon Peterson"
+  },
+  "Python_NX": {
+    "en": "Faulcon DeLacy"
+  },
+  "Type8": {
+    "en": "Lakon Spaceways"
+  },
+  "Mandalay": {
+    "en": "Zorgon Peterson"
+  },
+  "CobraMkV": {
+    "en": "Faulcon DeLacy"
+  },
+  "Corsair": {
+    "en": "Gutamaya"
+  },
+  "PantherMkII": {
+    "en": "Zorgon Peterson"
+  },
+  "LakonMiner": {
+    "en": "Lakon Spaceways"
+  },
+  "Explorer_NX": {
+    "en": "Zorgon Peterson"
+  },
+  "SmallCombat01_NX": {
+    "en": "Core Dynamics"
+  },
+  "MediumTransport01": {
+    "en": "Zorgon Peterson"
+  }
+}

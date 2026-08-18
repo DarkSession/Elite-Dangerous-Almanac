@@ -48,8 +48,8 @@ The package has six feature areas:
 - `astro`: procedural names, id64 addresses, regions, nebulae and permit locks;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
 - `equipment`: Odyssey suits, handheld weapons, grade upgrades and modifications;
-- `i18n`: sparse localized module, blueprint, experimental-effect, material and
-  micro-resource names;
+- `i18n`: sparse localized catalogue names, descriptions, slot labels and structured
+  diagnostic messages;
 - `materials`: ship engineering materials and Odyssey micro resources;
 - `commodities`: standard and rare market goods.
 
@@ -129,15 +129,19 @@ pinned sources carry no translation instead of silently substituting English:
 ```ts
 import {
     getBlueprintName,
+    getEngineeringGroupName,
     getMaterialName,
     getMicroResourceName,
     getModuleName,
+    getShipName,
 } from '@elite-dangerous-almanac/core/i18n';
 
 getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> "Frameshiftantrieb"
 getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
 getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
 getMicroResourceName('graphene', 'fr'); // -> "Graphène"
+getShipName('empire_trader', 'fr'); // -> "Imperial Clipper"
+getEngineeringGroupName('frameShiftDrives', 'de'); // -> null
 ```
 
 The functions return an explicit source value verbatim, so a source-backed spelling may
@@ -145,6 +149,11 @@ happen to equal English; the library itself never supplies an English fallback.
 Unqualified `zh` selects the source's Simplified Chinese (`zh-CN`) names. Explicitly
 different Chinese scripts or regions such as `zh-TW` do not fall back to Simplified
 Chinese and return `null` unless a matching source is added.
+
+The same contract covers ship manufacturers, pre-engineered variant names, engineering
+group names, experimental-effect descriptions, loadout-slot and restriction labels, and
+structured loadout, calculation, SLEF and edit messages. A family whose accepted source
+currently supplies only English returns `null` for every non-English locale.
 
 Registry lookups ignore case and surrounding whitespace. Material, commodity and
 module lookups search their complete registry by default and accept an optional
