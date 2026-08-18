@@ -81,7 +81,7 @@ a verbatim copy produced at build time — edit this file, never the copy.
   engineering menus, per-ship module-count limits and fitted stabiliser increases, the
   baseline per-hull maximum heat dissipation, the
   Lynx Highliner's hull/slot figures and zero-pip minimum pitch, the journal slot names,
-  localized module, blueprint and experimental-effect names, and the
+  localized module, blueprint, experimental-effect and engineering option-group names, and the
   attribute-to-journal-Label mapping. The values are Elite Dangerous game data — see the
   Frontier notice below. Heat dissipation is the one entry the game never shows a player:
   it is community measurement of Frontier's game, described under Algorithms above, and
