@@ -265,7 +265,7 @@ type FixtureI18nDisplayText = {
         variant: {
             acquisition: string;
             blueprint: string;
-            experimental?: string;
+            experimental?: null | string;
             symbol: string;
         };
     }[];
@@ -278,6 +278,7 @@ type FixtureI18nDisplayText = {
         expected: string | null;
         locale: string;
         slot: {
+            core?: string;
             key: string;
             kind: string;
             restriction?: string;

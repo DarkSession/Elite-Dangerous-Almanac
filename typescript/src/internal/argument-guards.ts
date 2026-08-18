@@ -76,6 +76,20 @@ export function requireStringIfPresent(value: unknown, label: string): void {
     if (value !== null && value !== undefined) requireString(value, label);
 }
 
+/**
+ * Require a non-null object argument.
+ *
+ * @param value - The argument as received.
+ * @param label - How to name it in the message, `"function: parameter"`.
+ * @throws {TypeError} If `value` is not an object.
+ * @internal
+ */
+export function requireObject(value: unknown, label: string): asserts value is object {
+    if (value === null || typeof value !== 'object') {
+        throw new TypeError(`${label} must be an object, received ${describeValue(value)}`);
+    }
+}
+
 /** A short JSON rendering of a value, or `null` when it has none. */
 function previewOf(value: unknown): string | null {
     let json;

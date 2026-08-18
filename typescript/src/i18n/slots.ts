@@ -2,6 +2,7 @@
 
 import { loadoutSlotName } from '../ships/internal/loadout-views.js';
 import { SLOT_RESTRICTION_LABELS, type BuildSlot, type SlotRestriction } from '../ships/slots.js';
+import { requireObject } from '../internal/argument-guards.js';
 import { getLocalizedText } from './internal/localized-name.js';
 
 /**
@@ -10,7 +11,7 @@ import { getLocalizedText } from './internal/localized-name.js';
  * @param slot - A slot returned by `enumerateSlots` or `ShipLoadout.slots`.
  * @param locale - A BCP 47 locale. Current slot-label sources supply English only.
  * @returns The slot's English display name for an English locale, otherwise `null`.
- * @throws {TypeError} If `locale` is not a string.
+ * @throws {TypeError} If `slot` is not an object or `locale` is not a string.
  * @example
  * ```ts
  * import { getLoadoutSlotName } from '@elite-dangerous-almanac/core/i18n/slots';
@@ -24,7 +25,13 @@ import { getLocalizedText } from './internal/localized-name.js';
  * ```
  */
 export function getLoadoutSlotName(slot: BuildSlot, locale: string): string | null {
-    return getLocalizedText({ en: loadoutSlotName(slot) }, locale, 'getLoadoutSlotName');
+    requireObject(slot, 'getLoadoutSlotName: slot');
+    const name = loadoutSlotName(slot);
+    return getLocalizedText(
+        typeof name === 'string' ? { en: name } : null,
+        locale,
+        'getLoadoutSlotName',
+    );
 }
 
 /**

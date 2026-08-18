@@ -77,8 +77,35 @@ test('slot restrictions reject inherited object properties', () => {
     assert.equal(getSlotRestrictionLabel('constructor' as never, 'en'), null);
 });
 
+test('slot names reject invalid objects and inherited lookup values', () => {
+    assert.throws(
+        () => getLoadoutSlotName(null as never, 42 as never),
+        /slot must be an object, received null/,
+    );
+    assert.equal(getLoadoutSlotName({ kind: 'core', core: 'constructor' } as never, 'en'), null);
+    assert.equal(
+        getLoadoutSlotName(
+            {
+                kind: 'optional',
+                restriction: 'toString',
+                key: 'Slot01_Size4',
+                size: 4,
+            } as never,
+            'en',
+        ),
+        'Slot01_Size4',
+    );
+});
+
 test('diagnostic helpers validate public inputs', () => {
-    assert.throws(() => getLoadoutIssueMessage(null as never, 'en'), /issue must be an object/);
+    assert.throws(
+        () => getLoadoutIssueMessage(null as never, 'en'),
+        /issue must be an object, received null/,
+    );
+    assert.throws(
+        () => getLoadoutIssueMessage(42 as never, 'en'),
+        /issue must be an object, received number 42/,
+    );
     assert.throws(
         () => getLoadoutIssueMessage({ message: 42 } as never, 'en'),
         /issue\.message must be a string/,
@@ -92,7 +119,11 @@ test('diagnostic helpers validate public inputs', () => {
 test('malformed pre-engineered identities fail at the public boundary', () => {
     assert.throws(
         () => getPreEngineeredVariantName(null as never, 'en'),
-        /variant must be an object/,
+        /variant must be an object, received null/,
+    );
+    assert.throws(
+        () => getPreEngineeredVariantName(42 as never, 'en'),
+        /variant must be an object, received number 42/,
     );
     assert.throws(
         () =>

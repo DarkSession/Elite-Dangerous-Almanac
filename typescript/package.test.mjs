@@ -299,7 +299,19 @@ test('fine-grained package subpaths resolve', () => {
 });
 
 test('localized-name datasets stay on their own leaf subpaths', async () => {
-    const [modules, blueprints, effects, materials, microResources] = await Promise.all([
+    const [
+        modules,
+        blueprints,
+        effects,
+        materials,
+        microResources,
+        ships,
+        preEngineered,
+        engineeringGroups,
+        effectDescriptions,
+        slots,
+        diagnostics,
+    ] = await Promise.all([
         consumerBundle(
             "import { getModuleName as value } from '@elite-dangerous-almanac/core/i18n/modules'; console.log(value);",
         ),
@@ -315,6 +327,24 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         consumerBundle(
             "import { getMicroResourceName as value } from '@elite-dangerous-almanac/core/i18n/micro-resources'; console.log(value);",
         ),
+        consumerBundle(
+            "import { getShipName as value } from '@elite-dangerous-almanac/core/i18n/ships'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getPreEngineeredVariantName as value } from '@elite-dangerous-almanac/core/i18n/pre-engineered'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getEngineeringGroupName as value } from '@elite-dangerous-almanac/core/i18n/engineering-groups'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getExperimentalEffectDescription as value } from '@elite-dangerous-almanac/core/i18n/experimental-effect-descriptions'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getLoadoutSlotName as value } from '@elite-dangerous-almanac/core/i18n/slots'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getLoadoutIssueMessage as value } from '@elite-dangerous-almanac/core/i18n/diagnostics'; console.log(value);",
+        ),
     ]);
 
     assert.ok(modules.length < 128 * 1024, `module-name bundle is ${modules.length} bytes`);
@@ -324,6 +354,24 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
     assert.ok(
         microResources.length < 72 * 1024,
         `micro-resource-name bundle is ${microResources.length} bytes`,
+    );
+    assert.ok(ships.length < 72 * 1024, `ship-name bundle is ${ships.length} bytes`);
+    assert.ok(
+        preEngineered.length < 72 * 1024,
+        `pre-engineered-name bundle is ${preEngineered.length} bytes`,
+    );
+    assert.ok(
+        engineeringGroups.length < 32 * 1024,
+        `engineering-group-name bundle is ${engineeringGroups.length} bytes`,
+    );
+    assert.ok(
+        effectDescriptions.length < 32 * 1024,
+        `effect-description bundle is ${effectDescriptions.length} bytes`,
+    );
+    assert.ok(slots.length < 32 * 1024, `slot-name bundle is ${slots.length} bytes`);
+    assert.ok(
+        diagnostics.length < 24 * 1024,
+        `diagnostic-message bundle is ${diagnostics.length} bytes`,
     );
     assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);
     assert.doesNotMatch(blueprints, /Frameshiftantrieb|Konkordante Sequenz/);

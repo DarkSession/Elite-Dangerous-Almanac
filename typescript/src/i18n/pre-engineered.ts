@@ -1,7 +1,11 @@
 /** Localized pre-engineered variant names, isolated from module and modifier statistics. */
 
 import namesData from '../../../data/i18n/pre-engineered-variant-names.jsonc' with { type: 'json' };
-import { requireString } from '../internal/argument-guards.js';
+import {
+    requireObject,
+    requireString,
+    requireStringIfPresent,
+} from '../internal/argument-guards.js';
 import type { PreEngineeredAcquisition } from '../ships/pre-engineered.js';
 import {
     createDeduplicatedLocalizedNameIndex,
@@ -19,23 +23,19 @@ export interface PreEngineeredVariantIdentity {
     readonly symbol: string;
     /** Frontier blueprint or fixed-reward id. */
     readonly blueprint: string;
-    /** Frontier experimental-effect id, when fitted. */
-    readonly experimental?: string;
+    /** Frontier experimental-effect id, or `null`/omitted when none is fitted. */
+    readonly experimental?: string | null;
     /** Route through which the variant is obtained. */
     readonly acquisition: PreEngineeredAcquisition;
 }
 
 function identityKey(identity: PreEngineeredVariantIdentity): string {
-    if (identity === null || typeof identity !== 'object') {
-        throw new TypeError('getPreEngineeredVariantName: variant must be an object');
-    }
     const prefix = 'getPreEngineeredVariantName: variant';
+    requireObject(identity, prefix);
     const symbol = requireString(identity.symbol, `${prefix}.symbol`).trim();
     const blueprint = requireString(identity.blueprint, `${prefix}.blueprint`).trim();
-    const experimental =
-        identity.experimental === undefined
-            ? ''
-            : requireString(identity.experimental, `${prefix}.experimental`).trim();
+    requireStringIfPresent(identity.experimental, `${prefix}.experimental`);
+    const experimental = identity.experimental?.trim() ?? '';
     const acquisition = requireString(identity.acquisition, `${prefix}.acquisition`).trim();
     return `${symbol}|${blueprint}|${experimental}|${acquisition}`;
 }
@@ -48,8 +48,8 @@ function identityKey(identity: PreEngineeredVariantIdentity): string {
  * @param locale - A BCP 47 locale. Regional tags fall back to their supported language.
  * @returns The explicit localized name, or `null` for an unknown variant or unavailable
  * translation. Decorative reward names currently have English values only.
- * @throws {TypeError} If `variant` is not an object, an identity field is not a string,
- * or `locale` is not a string.
+ * @throws {TypeError} If `variant` is not an object, a required identity field or a
+ * non-null `experimental` value is not a string, or `locale` is not a string.
  * @example
  * ```ts
  * import { getPreEngineeredVariantName } from '@elite-dangerous-almanac/core/i18n/pre-engineered';

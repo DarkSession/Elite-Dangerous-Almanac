@@ -24,6 +24,16 @@
     },
     {
       "variant": {
+        "symbol": "Hpt_FlakMortar_Turret_Medium",
+        "blueprint": "Decorative_Red",
+        "experimental": null,
+        "acquisition": "eventReward"
+      },
+      "locale": "en",
+      "expected": "Festive Red Remote Release Flak Launcher"
+    },
+    {
+      "variant": {
         "symbol": "Hpt_Railgun_Fixed_Medium",
         "blueprint": "Weapon_HighCapacity",
         "experimental": "special_feedback_cascade_cooled",
@@ -46,6 +56,16 @@
   "slots": [
     {
       "slot": {
+        "kind": "core",
+        "key": "PowerPlant",
+        "size": 2,
+        "core": "powerPlant"
+      },
+      "locale": "en",
+      "expected": "Power Plant"
+    },
+    {
+      "slot": {
         "kind": "hardpoint",
         "key": "LargeMiningHardpoint2",
         "size": 3,
@@ -62,6 +82,33 @@
       },
       "locale": "fr",
       "expected": null
+    },
+    {
+      "slot": {
+        "kind": "optional",
+        "key": "Slot01_Size4",
+        "size": 4
+      },
+      "locale": "en",
+      "expected": "Optional Internal 1 (Size 4)"
+    },
+    {
+      "slot": {
+        "kind": "armour",
+        "key": "Armour",
+        "size": 0
+      },
+      "locale": "en",
+      "expected": "Armour"
+    },
+    {
+      "slot": {
+        "kind": "cargoHatch",
+        "key": "CargoHatch",
+        "size": 1
+      },
+      "locale": "en",
+      "expected": "Cargo Hatch"
     }
   ],
   "restrictions": [

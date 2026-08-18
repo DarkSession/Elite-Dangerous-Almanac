@@ -762,7 +762,9 @@
                 "properties": {
                   "acquisition": { "type": "string" },
                   "blueprint": { "type": "string" },
-                  "experimental": { "type": "string" },
+                  "experimental": {
+                    "anyOf": [{ "type": "null" }, { "type": "string" }]
+                  },
                   "symbol": { "type": "string" }
                 },
                 "required": ["acquisition", "blueprint", "symbol"]
@@ -800,6 +802,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
+                  "core": { "type": "string" },
                   "key": { "type": "string" },
                   "kind": { "type": "string" },
                   "restriction": { "type": "string" },

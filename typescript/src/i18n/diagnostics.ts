@@ -4,7 +4,7 @@ import type { CalculationIssue } from '../ships/loadout-calculations.js';
 import type { LoadoutIssue } from '../ships/loadout-validation.js';
 import type { LoadoutEditError } from '../ships/ship-loadout.js';
 import type { SlefDiagnostic } from '../ships/slef.js';
-import { requireString } from '../internal/argument-guards.js';
+import { requireObject, requireString } from '../internal/argument-guards.js';
 import { getLocalizedText } from './internal/localized-name.js';
 
 function diagnosticMessage(
@@ -13,9 +13,7 @@ function diagnosticMessage(
     functionName: string,
     parameterName: string,
 ): string | null {
-    if (diagnostic === null || typeof diagnostic !== 'object') {
-        throw new TypeError(`${functionName}: ${parameterName} must be an object`);
-    }
+    requireObject(diagnostic, `${functionName}: ${parameterName}`);
     const message = requireString(diagnostic.message, `${functionName}: ${parameterName}.message`);
     return getLocalizedText({ en: message }, locale, functionName);
 }
