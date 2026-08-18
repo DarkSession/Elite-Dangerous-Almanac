@@ -13,14 +13,15 @@ const NAMES = /* @__PURE__ */ createLocalizedNameIndex(namesData as LocalizedNam
  * Look up an engineering option group's display name.
  *
  * @param groupId - The stable group id used by `EngineeringOptionGroup.groupId`.
- * @param locale - A BCP 47 locale. The current source supplies canonical English only.
+ * @param locale - A BCP 47 locale. English covers every group; the current source also
+ * supplies Portuguese and Russian for 46 of 51 groups.
  * @returns The localized group name, or `null` for an unknown group or unavailable locale.
  * @throws {TypeError} If a present `groupId` or `locale` is not a string.
  * @example
  * ```ts
  * import { getEngineeringGroupName } from '@elite-dangerous-almanac/core/i18n/engineering-groups';
  *
- * getEngineeringGroupName('frameShiftDrives', 'en'); // -> 'Frame Shift Drives'
+ * getEngineeringGroupName('frameShiftDrives', 'pt-BR'); // -> 'Motores de Distorção de Fase'
  * getEngineeringGroupName('frameShiftDrives', 'de'); // -> null
  * ```
  */
