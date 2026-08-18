@@ -66,12 +66,13 @@ test('rejects invalid available power and known consumer draws', () => {
     }
     for (const draw of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
         assert.throws(() => powerBudget(10, [{ draw }]), RangeError);
+        assert.throws(() => powerBudget(10, [{ draw, enabled: false }]), RangeError);
     }
 });
 
-test('does not validate irrelevant disabled or explicitly unknown placeholder draws', () => {
-    const unknown = { drawUnknown: true, label: 'unknown' };
-    const budget = powerBudget(10, [unknown, { draw: -1, enabled: false }]);
+test('does not validate explicitly unknown placeholder draws', () => {
+    const unknown = { draw: -1, drawUnknown: true, label: 'unknown' };
+    const budget = powerBudget(10, [unknown]);
     assert.deepEqual(budget.unknownDraws, [unknown]);
     assert.equal(budget.deployed, 0);
 });

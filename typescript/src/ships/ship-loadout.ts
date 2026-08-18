@@ -2730,7 +2730,9 @@ export class ShipLoadout {
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
      * and nothing is powered. A fitted module whose draw the catalogue cannot supply is
      * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
-     * which makes every total a lower bound while that list is non-empty.
+     * which makes every total a lower bound while that list is non-empty. `consumers`
+     * includes modules with positive or unknown draw; passive and zero-draw fittings are
+     * absent.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2742,7 +2744,6 @@ export class ShipLoadout {
      * power.deployed;                   // -> 19.02 MW drawn, hardpoints out
      * power.withinBudget;               // -> true
      * power.bands[4]?.poweredDeployed;  // -> is priority group 5 still lit?
-     * power.consumers[0]?.draw;          // fitted module draw in MW, or null
      * ```
      */
     powerBudget(): PowerBudget {
