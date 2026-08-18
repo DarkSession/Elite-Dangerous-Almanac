@@ -174,11 +174,12 @@ import {
     requireStringIfPresent,
     truncate,
 } from '../internal/argument-guards.js';
-import { completeResult } from './internal/calculation-result.js';
+import { completeResult, incompleteResult } from './internal/calculation-result.js';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
     calculateUnladenMass,
+    type CalculationIssue,
     type CalculationResult,
     type FuelCapacity,
     type LoadoutCalculationModule,
@@ -439,6 +440,17 @@ export interface DefenceOptions {
 export interface MobilityOptions extends JumpOptions {
     /** Pips assigned to the engines capacitor, `0`–`4`. Defaults to `4`. */
     readonly enginesPips?: number;
+}
+
+/** A standard fuel-and-cargo condition shared by jump and mobility views. */
+export type StandardLoad = 'maximum' | 'unladen' | 'laden';
+
+/** Fuel and cargo carried for a {@link StandardLoad}, both in tonnes. */
+export interface StandardLoadInputs {
+    /** Main-tank fuel carried, in tonnes. */
+    readonly fuel: number;
+    /** Cargo carried, in tonnes. */
+    readonly cargo: number;
 }
 
 /** Optional WEP allocation for {@link ShipLoadout.weaponsCapacitorMetrics}. */
@@ -2682,6 +2694,105 @@ export class ShipLoadout {
     }
 
     /**
+     * Resolve one of the package's standard load conditions for jump and mobility views.
+     *
+     * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
+     * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
+     * @returns Fuel and cargo in tonnes, or structured diagnostics for unavailable
+     * capacities. `'maximum'` also reports every mass or frame-shift-drive fact needed
+     * to use that load in a jump calculation. A complete maximum result can therefore
+     * be passed safely to {@link jumpRange}; it validates the whole fitted drive,
+     * including an active jump booster, even though only the drive's maximum fuel
+     * determines the returned load.
+     * @throws {RangeError} If `load` is not a recognised standard load.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * const load = build.standardLoadResult('maximum');
+     * if (load.complete) build.mobilityMetrics({ ...load.value, enginesPips: 2 });
+     * ```
+     */
+    standardLoadResult(load: StandardLoad): CalculationResult<StandardLoadInputs> {
+        if (load !== 'maximum' && load !== 'unladen' && load !== 'laden') {
+            throw new RangeError(
+                "ShipLoadout.standardLoadResult: load must be 'maximum', 'unladen', or 'laden'",
+            );
+        }
+
+        const fuel = this.fuelCapacityResult;
+        const cargo = load === 'laden' ? this.cargoCapacityResult : completeResult(0);
+        const mass = load === 'maximum' ? this.unladenMassResult : completeResult(0);
+        const issues = [...fuel.issues, ...cargo.issues, ...mass.issues];
+        let drive: FrameShiftDriveParams | null = null;
+        let maximumFuel: number | null = null;
+        if (load === 'maximum') {
+            const fitted = this.#frameShiftDriveModule();
+            let driveError: Error | null = null;
+            try {
+                drive = this.#resolveDrive();
+                maximumFuel = drive?.maxFuel ?? null;
+            } catch (error) {
+                if (!(error instanceof Error)) throw error;
+                driveError = error;
+            }
+            if (maximumFuel === null) {
+                issues.push({
+                    field: 'frameShiftDrive',
+                    slot: fitted?.Slot ?? 'FrameShiftDrive',
+                    ...(fitted ? { symbol: fitted.Item } : {}),
+                    message:
+                        driveError?.message ?? 'FrameShiftDrive: no frame shift drive is fitted',
+                    params: fitted
+                        ? {
+                              field: 'frameShiftDrive',
+                              slot: fitted.Slot,
+                              symbol: fitted.Item,
+                          }
+                        : { field: 'frameShiftDrive', slot: 'FrameShiftDrive' },
+                });
+            }
+        }
+        if (issues.length > 0) {
+            return incompleteResult(issues as [CalculationIssue, ...CalculationIssue[]]);
+        }
+        const value = Object.freeze({
+            fuel: load === 'maximum' ? Math.min(fuel.value!.main, maximumFuel!) : fuel.value!.main,
+            cargo: cargo.value!,
+        });
+        if (load === 'maximum') {
+            try {
+                this.jumpRange(value);
+            } catch (error) {
+                if (!(error instanceof RangeError)) throw error;
+                const fitted = this.#frameShiftDriveModule();
+                const field: CalculationIssue['field'] =
+                    drive !== null && (!Number.isFinite(drive.maxFuel) || drive.maxFuel < 0)
+                        ? 'frameShiftDrive'
+                        : !Number.isFinite(value.fuel) || value.fuel < 0
+                          ? 'fuelCapacity'
+                          : !Number.isFinite(mass.value!) || mass.value! < 0
+                            ? 'mass'
+                            : 'frameShiftDrive';
+                const driveParams =
+                    field === 'frameShiftDrive' && fitted
+                        ? { slot: fitted.Slot, symbol: fitted.Item }
+                        : {};
+                return incompleteResult([
+                    {
+                        field,
+                        ...driveParams,
+                        message: error.message,
+                        params: { field, ...driveParams },
+                    },
+                ]);
+            }
+        }
+        return completeResult(value);
+    }
+
+    /**
      * Every jump figure at once — best, unladen, laden, and each load's total.
      *
      * @returns The {@link JumpRangeSummary}. Single-jump figures and each total's
@@ -2706,16 +2817,16 @@ export class ShipLoadout {
      * ```
      */
     jumpRangeSummary(): JumpRangeSummary {
-        const cargo = this.#requireCargoCapacity();
-        const fsd = this.frameShiftDrive;
-        const maxFuel = this.#maxJumpFuel(fsd);
+        const maximum = this.#require(this.standardLoadResult('maximum'), 'maximum load');
+        const unladen = this.#require(this.standardLoadResult('unladen'), 'unladen load');
+        const laden = this.#require(this.standardLoadResult('laden'), 'laden load');
         return {
-            max: this.maxJumpRange(),
-            unladen: this.jumpRange(),
-            laden: this.jumpRange({ cargo }),
-            totalMax: this.totalRange({ fuel: maxFuel }),
-            totalUnladen: this.totalRange(),
-            totalLaden: this.totalRange({ cargo }),
+            max: this.jumpRange(maximum),
+            unladen: this.jumpRange(unladen),
+            laden: this.jumpRange(laden),
+            totalMax: this.totalRange(maximum),
+            totalUnladen: this.totalRange(unladen),
+            totalLaden: this.totalRange(laden),
         };
     }
 
@@ -3495,8 +3606,8 @@ export class ShipLoadout {
         return shouldCarryCapacity ? null : 0;
     }
 
-    #resolveDrive(): FrameShiftDriveParams | null {
-        let fsdModule: LoadoutModule | undefined;
+    /** Find the module whose catalogue record or symbol identifies the FSD. */
+    #frameShiftDriveModule(): LoadoutModule | undefined {
         for (const m of this.#modules.values()) {
             // A record that names its mount is believed; the symbol answers when none
             // does — a drive this snapshot's catalogue has no record for, which is the
@@ -3506,10 +3617,14 @@ export class ShipLoadout {
                 ? stats.slot === 'frameShiftDrive'
                 : m.Item.toLowerCase().startsWith(FSD_PREFIX);
             if (isDrive) {
-                fsdModule = m;
-                break;
+                return m;
             }
         }
+        return undefined;
+    }
+
+    #resolveDrive(): FrameShiftDriveParams | null {
+        const fsdModule = this.#frameShiftDriveModule();
         if (!fsdModule) return null;
         const base = this.#statsFor(fsdModule);
         if (!base || base.fuelMul === undefined || base.fuelPower === undefined) {

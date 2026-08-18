@@ -899,19 +899,141 @@ test('a build with no frame shift drive throws on a jump calculation', () => {
     const noFsd: LoadoutEvent = {
         Ship: 'sidewinder',
         UnladenMass: 50,
+        FuelCapacity: { Main: 2, Reserve: 0.3 },
         Modules: [{ Slot: 'CargoHatch', Item: 'modularcargobaydoor' }],
     };
     assert.throws(() => ShipLoadout.fromLoadout(noFsd).maxJumpRange(), /no frame shift drive/);
+    assert.throws(
+        () => ShipLoadout.fromLoadout(noFsd).jumpRangeSummary(),
+        (error: Error) => {
+            assert.equal(error.name, 'TypeError');
+            assert.match(error.message, /FrameShiftDrive.*no frame shift drive is fitted/);
+            return true;
+        },
+    );
 
     const unknownTank: LoadoutEvent = {
         Ship: 'sidewinder',
         UnladenMass: 50,
         Modules: [{ Slot: 'FuelTank', Item: 'Unknown_Fuel_Tank' }],
     };
-    assert.throws(() => ShipLoadout.fromLoadout(unknownTank).jumpRangeSummary(), {
-        name: 'TypeError',
-        message: 'ShipLoadout: build has no frame shift drive',
+    assert.throws(
+        () => ShipLoadout.fromLoadout(unknownTank).jumpRangeSummary(),
+        /cannot determine maximum load/,
+    );
+});
+
+test('standard load results expose the jump summary load conditions', () => {
+    const build = ShipLoadout.default('SideWinder');
+    const maximum = build.standardLoadResult('maximum');
+    const unladen = build.standardLoadResult('unladen');
+    const laden = build.standardLoadResult('laden');
+
+    assert.deepEqual(maximum, {
+        value: { fuel: 0.6, cargo: 0 },
+        complete: true,
+        issues: [],
     });
+    assert.deepEqual(unladen, {
+        value: { fuel: 2, cargo: 0 },
+        complete: true,
+        issues: [],
+    });
+    assert.deepEqual(laden, {
+        value: { fuel: 2, cargo: 4 },
+        complete: true,
+        issues: [],
+    });
+    assert.equal(build.jumpRange(maximum.value!), build.jumpRangeSummary().max);
+    assert.equal(build.jumpRange(unladen.value!), build.jumpRangeSummary().unladen);
+    assert.equal(build.jumpRange(laden.value!), build.jumpRangeSummary().laden);
+    assert.deepEqual(
+        build.mobilityMetrics({ ...laden.value!, enginesPips: 2 }),
+        build.mobilityMetrics({ fuel: 2, cargo: 4, enginesPips: 2 }),
+    );
+    assert.throws(
+        () => build.standardLoadResult('other' as 'maximum'),
+        /load must be 'maximum', 'unladen', or 'laden'/,
+    );
+});
+
+test('standard maximum load reports every dependency needed by jump calculations', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const unresolvedBooster = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: [
+            ...source.Modules.filter((module) => module.Slot !== 'Slot01_Size2'),
+            { Slot: 'Slot01_Size2', Item: 'Int_GuardianFSDBooster_Future' },
+        ],
+    });
+    assert.throws(() => unresolvedBooster.frameShiftDrive, /has no jumpBoost/);
+    const unresolved = unresolvedBooster.standardLoadResult('maximum');
+    assert.equal(unresolved.complete, false);
+    assert.match(unresolved.issues[0]!.message, /has no jumpBoost/);
+    assert.equal(unresolved.issues[0]!.params?.field, 'frameShiftDrive');
+
+    const noFuel = ShipLoadout.fromLoadout({
+        ...source,
+        FuelCapacity: { Main: 0, Reserve: 0 },
+    });
+    assert.deepEqual(noFuel.standardLoadResult('maximum').value, { fuel: 0, cargo: 0 });
+
+    const unknownHull = ShipLoadout.fromLoadout({
+        Ship: 'FutureHull',
+        FuelCapacity: { Main: 2, Reserve: 0.3 },
+        Modules: source.Modules.filter((module) => module.Slot === 'FrameShiftDrive'),
+    });
+    assert.deepEqual(
+        unknownHull.standardLoadResult('maximum').issues.map((issue) => issue.field),
+        ['hullMass'],
+    );
+
+    const invalidDrive = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'FrameShiftDrive'
+                ? {
+                      ...module,
+                      Engineering: {
+                          BlueprintName: 'FSD_LongRange',
+                          Level: 5,
+                          Quality: 1,
+                          Modifiers: [{ Label: 'MaxFuelPerJump', Value: -1, OriginalValue: 0.6 }],
+                      },
+                  }
+                : module,
+        ),
+    });
+    const invalid = invalidDrive.standardLoadResult('maximum');
+    assert.equal(invalid.complete, false);
+    assert.equal(invalid.issues[0]?.field, 'frameShiftDrive');
+    assert.match(invalid.issues[0]!.message, /fuel must be a finite non-negative number/);
+});
+
+test('standard load results report missing capacities and drive constants', () => {
+    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        Ship: source.Ship,
+        UnladenMass: source.UnladenMass!,
+        CargoCapacity: source.CargoCapacity!,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'FuelTank'
+                ? { ...module, Item: 'Future_Fuel_Tank' }
+                : module.Slot === 'FrameShiftDrive'
+                  ? { ...module, Item: 'Future_Frame_Shift_Drive' }
+                  : module,
+        ),
+    });
+
+    assert.deepEqual(
+        build.standardLoadResult('maximum').issues.map((issue) => issue.field),
+        ['fuelCapacity', 'frameShiftDrive'],
+    );
+    assert.deepEqual(
+        build.standardLoadResult('laden').issues.map((issue) => issue.field),
+        ['fuelCapacity'],
+    );
+    assert.equal(build.standardLoadResult('unladen').complete, false);
 });
 
 test('a fitted drive with no stats-catalogue constants throws a distinct error', () => {
@@ -982,6 +1104,10 @@ test('the drive is found by `slot` too, wherever the module is mounted', () => {
     // A pulse laser carries no jump constants, so the build says so rather than
     // quietly answering with the real drive fitted alongside it.
     assert.throws(() => build.maxJumpRange(), /no jump constants/);
+    assert.deepEqual(
+        build.standardLoadResult('maximum').issues.map((issue) => issue.field),
+        ['frameShiftDrive'],
+    );
 
     // Left alone, the same build jumps on its actual drive.
     const sane = ShipLoadout.empty('Anaconda')
