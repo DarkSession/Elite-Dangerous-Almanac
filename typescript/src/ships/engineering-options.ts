@@ -8,8 +8,8 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1026 of the 1199 modules — every stock module with an ordinary
- * engineering menu. The other 173 have no ordinary menu: whole families (fuel tanks, passenger cabins,
+ * The catalogue groups 1010 of the 1199 modules — every stock module with an ordinary
+ * engineering menu. The other 189 have no ordinary menu: whole families (fuel tanks, cargo racks, passenger cabins,
  * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
  * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
  * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
@@ -18,10 +18,11 @@
  * modules denied every ordinary blueprint — every anti-xeno multi-cannon but the two
  * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, all seven
  * mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Accelerator. Three modules without a menu still have a purchase-specific route: the
- * fixed Mining Laser, fixed Abrasion Blaster and size-5 class-2 Module Reinforcement
- * Package are sold as grade-1 Mercenary articles that can take grades 2–5 of their
- * bespoke recipes through `ships/pre-engineered`.
+ * Accelerator. Five module symbols without a menu still have a separately acquired
+ * pre-engineered route: the fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2
+ * Module Reinforcement Package, and size-5 and size-6 cargo racks. Their qualifying
+ * Mercenary articles can take grades 2–5 of their bespoke recipes through
+ * `ships/pre-engineered`; fixed community-goal cargo racks remain final articles.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
@@ -113,7 +114,6 @@ export type EngineeringGroupId =
     | 'lifeSupports'
     | 'sensors'
     | 'autoFieldMaintenanceUnits'
-    | 'cargoRacks'
     | 'collectionLimpets'
     | 'fsdBoosters'
     | 'fsdInterdictors'
@@ -186,12 +186,11 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"this stock module has no ordinary engineering menu"**. For 170 of the
- * 173 ungrouped modules that is the same as "cannot be engineered" — the families and the
- * individually denied modules listed in the module overview above. The fixed Mining
- * Laser, fixed Abrasion Blaster and size-5 class-2 Module Reinforcement Package are the
- * exceptions: their stock articles take nothing, but their grade-1 Mercenary articles can
- * be upgraded through the bespoke recipes recorded in `ships/pre-engineered`.
+ * `null` means **"this stock module has no ordinary engineering menu"**. For most
+ * ungrouped modules that is the same as "cannot be engineered". Some instead have
+ * separately acquired pre-engineered variants: the fixed Mining Laser and Abrasion
+ * Blaster, cargo racks, and size-5 class-2 Module Reinforcement Package have no stock
+ * menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
  * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
  * Accelerator, which upstream denies every blueprint.
  *
@@ -205,7 +204,7 @@ const moduleExclusions = new Map(
  * import { getEngineeringGroup } from '@elite-dangerous-almanac/core/ships/engineering-options';
  *
  * getEngineeringGroup('Hpt_BeamLaser_Fixed_Small'); // -> 'beamLasers'
- * getEngineeringGroup('Int_CargoRack_Size2_Class1'); // -> 'cargoRacks'
+ * getEngineeringGroup('Int_CargoRack_Size2_Class1'); // -> null
  *
  * // Not listed — no registry gives a fuel tank a blueprint.
  * getEngineeringGroup('Int_FuelTank_Size3_Class3'); // -> null
@@ -272,8 +271,8 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * missile racks are short of Penetrator Munitions or FSD Interrupt. Those are applied
  * here, so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 387
- * of the 1026 grouped modules have no experimental slot; all sit in the 30 of 52 groups
+ * **An empty array is the common answer, and it usually means "blueprints only".** 371
+ * of the 1010 grouped modules have no experimental slot; all sit in the 29 of 51 groups
  * that offer none — life support, sensors, the limpet controllers, the utility scanners,
  * and every Guardian group, weapons and modules alike. An ungrouped module answers empty
  * too; {@link getEngineeringGroup} tells the two apart.
@@ -313,10 +312,10 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 86 of the 107 blueprints in `BLUEPRINTS`, and the other 21 are all
- * accounted for: they are the Operations keys of modules sold already engineered rather
- * than offered in a menu (see `ships/pre-engineered`). All 21 answer `[]` here exactly
- * as an unknown id would, so read this function's empty answer with
+ * The groups name 85 of the 107 blueprints in `BLUEPRINTS`. Of the other 22, 21 are
+ * Operations keys of modules sold already engineered rather than offered in a menu (see
+ * `ships/pre-engineered`); the last is the fixed Expanded Cargo Rack reward identity.
+ * All 22 answer `[]` here exactly as an unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
  * Four Operations keys **are** named by a group, because they are recipes a player applies

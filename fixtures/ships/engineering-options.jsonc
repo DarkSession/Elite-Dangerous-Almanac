@@ -19,11 +19,11 @@
  */
 {
   "counts": {
-    "groups": 52,
-    "modules": 1026,
+    "groups": 51,
+    "modules": 1010,
     "exclusions": 23,
-    "modulesWithoutExperimental": 387,
-    "blueprintsOffered": 86
+    "modulesWithoutExperimental": 371,
+    "blueprintsOffered": 85
   },
   "groupSizes": {
     "powerPlants": 36,
@@ -54,7 +54,6 @@
     "lifeSupports": 41,
     "sensors": 41,
     "autoFieldMaintenanceUnits": 40,
-    "cargoRacks": 16,
     "collectionLimpets": 20,
     "fsdBoosters": 5,
     "fsdInterdictors": 20,
@@ -552,12 +551,6 @@
       "experimentals": []
     },
     {
-      "id": "cargoRacks",
-      "name": "Cargo Racks",
-      "blueprints": ["CargoRack_IncreasedCapacity"],
-      "experimentals": []
-    },
-    {
       "id": "collectionLimpets",
       "name": "Collection Limpets",
       "blueprints": [
@@ -862,10 +855,6 @@
       "group": "autoFieldMaintenanceUnits"
     },
     {
-      "symbol": "Int_CargoRack_Size2_Class1",
-      "group": "cargoRacks"
-    },
-    {
       "symbol": "Int_DroneControl_Collection_Size3_Class5",
       "group": "collectionLimpets"
     },
@@ -1096,12 +1085,12 @@
     ]
   },
   "corpus": {
-    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` counts declarations on modules this catalogue does not group. `blueprintAliases` are recipes reachable under more than one current spelling: each is a family's generic id, where the catalogue lists the family-specific spelling and a build declaring the generic one is engineering the same thing. Anti-Guardian Zone Resistance is not among them — the nine groups offering it list `GuardianModule_Sturdy`, the only spelling of it a journal has been observed to write and the only one the catalogue keys. `journalSpellingsAccepted` counts declarations resolved against the blueprint journal-name collision catalogue rather than by signature — one journal id, two recipes, and only the fitted module says which. 70 of the 71 are `Weapon_Overcharged` on a multi-cannon, which rolls the `MC_Overcharged` the multi-cannon menu lists rather than the recipe every other weapon takes under that id; the 71st spells a wake scanner's Long Range `Sensor_LongRange`, the id the game writes for the sensor suite's different recipe of the same name. `finalPreEngineered` pins the 18 Guardian-weapon entries that describe final pre-engineered articles rather than recipes a player may apply. `notEngineerable` pins declarations that cannot be applied to the stock module: two Efficient Mk II Plasma Shock Accelerators denied by upstream and one Long Range Abrasion Blaster that identifies the separately catalogued community-goal reward.",
+    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` counts declarations on modules this catalogue does not group. `blueprintAliases` are recipes reachable under more than one current spelling: each is a family's generic id, where the catalogue lists the family-specific spelling and a build declaring the generic one is engineering the same thing. Anti-Guardian Zone Resistance is not among them — the nine groups offering it list `GuardianModule_Sturdy`, the only spelling of it a journal has been observed to write and the only one the catalogue keys. `journalSpellingsAccepted` counts declarations resolved against the blueprint journal-name collision catalogue rather than by signature — one journal id, two recipes, and only the fitted module says which. 70 of the 71 are `Weapon_Overcharged` on a multi-cannon, which rolls the `MC_Overcharged` the multi-cannon menu lists rather than the recipe every other weapon takes under that id; the 71st spells a wake scanner's Long Range `Sensor_LongRange`, the id the game writes for the sensor suite's different recipe of the same name. `finalPreEngineered` pins the 18 Guardian-weapon and six Expanded Cargo Rack entries that describe final pre-engineered articles rather than recipes a player may apply. `notEngineerable` pins declarations that cannot be applied to the stock module: two Efficient Mk II Plasma Shock Accelerators denied by upstream and one Long Range Abrasion Blaster that identifies the separately catalogued community-goal reward.",
     "declaredEngineering": 1902,
-    "ungroupedEntries": 3,
+    "ungroupedEntries": 9,
     "aliasSpellingsAccepted": 70,
     "journalSpellingsAccepted": 71,
-    "finalPreEngineeredEntries": 18,
+    "finalPreEngineeredEntries": 24,
     "blueprintAliases": {
       "Misc_LightWeight": [
         "CollectionLimpet_LightWeight",
@@ -1149,6 +1138,16 @@
         "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
         "blueprint": "Weapon_Overcharged",
         "entries": 2
+      },
+      {
+        "symbol": "Int_CargoRack_Size5_Class1",
+        "blueprint": "CargoRack_IncreasedCapacity",
+        "entries": 3
+      },
+      {
+        "symbol": "Int_CargoRack_Size6_Class1",
+        "blueprint": "CargoRack_IncreasedCapacity",
+        "entries": 3
       }
     ],
     "notEngineerable": [

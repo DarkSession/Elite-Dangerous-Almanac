@@ -2958,10 +2958,7 @@ export class ShipLoadout {
             const parsedSlot = parseSlotName(module.Slot);
             const unresolvedOutfitting =
                 stats === null && !isNonOutfittingSlot(module.Slot) && !isBuiltInHullModule(module);
-            const isCargoRack =
-                stats?.cargoCapacity !== undefined ||
-                stats?.engineeringGroup === 'cargoRacks' ||
-                symbol.includes('cargorack');
+            const isCargoRack = stats?.cargoCapacity !== undefined || symbol.includes('cargorack');
             const isFuelTank =
                 stats?.fuelCapacity !== undefined ||
                 stats?.slot === 'fuelTank' ||

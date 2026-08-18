@@ -44,8 +44,8 @@
  * expanded — subtract it from the group's `experimentals` to get the exact set. Modules
  * absent from `exclusions` take their whole group's list.
  *
- * Only modules with an ordinary engineering menu appear at all, 1026 of the 1199; the
- * other 173 are the families no ordinary blueprint reaches, plus the individual modules
+ * Only modules with an ordinary engineering menu appear at all, 1010 of the 1199; the
+ * other 189 are the families no ordinary blueprint reaches, plus the individual modules
  * upstream denies every blueprint. A purchased Mercenary module may still take the bespoke
  * grades 2–5 it is sold with; that purchase-specific route is not an ordinary menu and is
  * recorded by `pre-engineered.jsonc`. SOURCES.md lists both sets.
@@ -524,13 +524,6 @@
       "name": "Auto Field-Maintenance Units",
       "blueprints": [
         "AFM_Shielded"
-      ],
-      "experimentals": []
-    },
-    "cargoRacks": {
-      "name": "Cargo Racks",
-      "blueprints": [
-        "CargoRack_IncreasedCapacity"
       ],
       "experimentals": []
     },
@@ -1519,22 +1512,6 @@
     "Int_Repairer_Size6_Class5": "autoFieldMaintenanceUnits",
     "Int_Repairer_Size7_Class5": "autoFieldMaintenanceUnits",
     "Int_Repairer_Size8_Class5": "autoFieldMaintenanceUnits",
-    "Int_CargoRack_Size1_Class1": "cargoRacks",
-    "Int_CargoRack_Size2_Class1": "cargoRacks",
-    "Int_CargoRack_Size3_Class1": "cargoRacks",
-    "Int_CargoRack_Size4_Class1": "cargoRacks",
-    "Int_CargoRack_Size5_Class1": "cargoRacks",
-    "Int_CargoRack_Size6_Class1": "cargoRacks",
-    "Int_CargoRack_Size7_Class1": "cargoRacks",
-    "Int_CargoRack_Size8_Class1": "cargoRacks",
-    "Int_CargoRack_Size2_Class1_free": "cargoRacks",
-    "Int_CorrosionProofCargoRack_Size1_Class1": "cargoRacks",
-    "Int_CorrosionProofCargoRack_Size1_Class2": "cargoRacks",
-    "Int_CorrosionProofCargoRack_Size5_Class1": "cargoRacks",
-    "Int_CorrosionProofCargoRack_Size6_Class1": "cargoRacks",
-    "Int_CorrosionProofCargoRack_Size4_Class1": "cargoRacks",
-    "Int_LargeCargoRack_Size7_Class1": "cargoRacks",
-    "Int_LargeCargoRack_Size8_class1": "cargoRacks",
     "Int_DroneControl_Collection_Size1_Class1": "collectionLimpets",
     "Int_DroneControl_Collection_Size1_Class2": "collectionLimpets",
     "Int_DroneControl_Collection_Size1_Class3": "collectionLimpets",

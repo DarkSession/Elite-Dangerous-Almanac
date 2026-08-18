@@ -15,8 +15,11 @@ import { BLUEPRINTS } from './blueprints.js';
 const countFor = (materials: readonly { symbol: string; count: number }[] | null, symbol: string) =>
     materials?.find((material) => material.symbol === symbol)?.count;
 
-test('cost and mechanics catalogues have identical blueprint ids and grade sets', () => {
-    assert.deepEqual(Object.keys(BLUEPRINT_COSTS), Object.keys(BLUEPRINTS));
+test('every craft-cost entry matches its mechanics grades', () => {
+    assert.deepEqual(
+        Object.keys(BLUEPRINTS).filter((fdname) => !(fdname in BLUEPRINT_COSTS)),
+        ['CargoRack_IncreasedCapacity'],
+    );
     for (const [fdname, costs] of Object.entries(BLUEPRINT_COSTS)) {
         assert.deepEqual(Object.keys(costs), Object.keys(BLUEPRINTS[fdname]!.grades), fdname);
     }
@@ -72,14 +75,14 @@ test('every material requirement joins to a real material and occurs once per gr
     }
 });
 
-test('the one empty per-roll recipe is preserved as [] rather than null', () => {
-    assert.deepEqual(getBlueprintGradeCost('CargoRack_IncreasedCapacity', 5), []);
+test('fixed reward identities have no ordinary craft cost', () => {
+    assert.equal(getBlueprintGradeCost('CargoRack_IncreasedCapacity', 5), null);
     const empty = Object.entries(BLUEPRINT_COSTS).flatMap(([fdname, grades]) =>
         Object.entries(grades)
             .filter(([, materials]) => materials.length === 0)
             .map(([grade]) => `${fdname}:${grade}`),
     );
-    assert.deepEqual(empty, ['CargoRack_IncreasedCapacity:5']);
+    assert.deepEqual(empty, []);
 });
 
 test('a colliding journal spelling bills the same materials as the recipe it names', () => {
@@ -148,7 +151,7 @@ test('getBlueprintCost combines each material once and misses unknown requests',
 
     assert.equal(getBlueprintCost('nope', 5), null);
     assert.equal(getBlueprintCost('ModuleReinforcement_HeavyDuty', 1), null);
-    assert.deepEqual(getBlueprintCost('CargoRack_IncreasedCapacity', 5), []);
+    assert.equal(getBlueprintCost('CargoRack_IncreasedCapacity', 5), null);
 });
 
 test('getBlueprintCost rejects target and current grades outside their supported ranges', () => {

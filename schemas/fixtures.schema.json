@@ -2518,8 +2518,7 @@
             },
             "unreachableBlueprints": {
               "type": "array",
-              "maxItems": 0,
-              "items": false
+              "items": { "type": "string" }
             },
             "unreachableExperimentals": {
               "type": "array",
@@ -2768,7 +2767,6 @@
             "bulkheads": { "type": "integer" },
             "burstLasers": { "type": "integer" },
             "cannons": { "type": "integer" },
-            "cargoRacks": { "type": "integer" },
             "chaffLaunchers": { "type": "integer" },
             "collectionLimpets": { "type": "integer" },
             "ecms": { "type": "integer" },
@@ -2822,7 +2820,6 @@
             "bulkheads",
             "burstLasers",
             "cannons",
-            "cargoRacks",
             "chaffLaunchers",
             "collectionLimpets",
             "ecms",

@@ -34,12 +34,13 @@ would reject is not a state this library can reach.
 `ShipLoadout` includes the menu catalogue whether or not a consumer calls these methods.
 Using one catalogue keeps the editor and menu consistent.
 
-**Not every stock module has an ordinary engineering menu.** The catalogue groups 1026 of
+**Not every stock module has an ordinary engineering menu.** The catalogue groups 1010 of
 the 1199 modules; the rest include whole families like fuel tanks, passenger cabins and
-limpet controllers, plus individual modules denied every ordinary recipe. Three are
-purchase-specific exceptions: the fixed Mining Laser, fixed Abrasion Blaster and size-5
-class-2 Module Reinforcement Package have no stock menu, while their grade-1 Mercenary
-articles can be upgraded through grades 2–5 of their bespoke recipes. A module with no
+limpet controllers, plus individual modules denied every ordinary recipe. Five module
+symbols have separately acquired variants despite no stock menu: the fixed Mining Laser,
+fixed Abrasion Blaster, size-5 class-2 Module Reinforcement Package, and size-5 and size-6
+cargo racks. Qualifying Mercenary articles can be upgraded through grades 2–5 of their
+bespoke recipes; fixed community-goal cargo racks remain final articles. A module with no
 group is therefore not a gap in the data.
 
 ### Why there is no family map

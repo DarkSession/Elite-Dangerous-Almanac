@@ -22,6 +22,7 @@ import type { EngineeringGroupId } from './engineering-options.js';
 import { ALL_MODULES } from './modules-all.js';
 import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
 import { isFinalGuardianWeaponEngineering } from './internal/loadout-engineering.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering-options.jsonc' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 import buildIndex from '../../../fixtures/ships/builds/index.jsonc' with { type: 'json' };
@@ -346,9 +347,15 @@ const declared = corpus.flatMap((build) =>
 test('corpus engineering without an ordinary menu is explicitly classified', () => {
     assert.equal(declared.length, fixture.corpus.declaredEngineering);
     const ungrouped = declared.filter((entry) => getEngineeringGroup(entry.symbol) === null);
+    const fixedUngrouped = fixture.corpus.finalPreEngineered.filter(
+        (row) => getEngineeringGroup(row.symbol) === null,
+    );
     assert.deepEqual(
         [...new Set(ungrouped.map((entry) => entry.symbol))].sort(),
-        fixture.corpus.notEngineerable.map((row) => row.symbol).sort(),
+        [
+            ...fixture.corpus.notEngineerable.map((row) => row.symbol),
+            ...fixedUngrouped.map((row) => row.symbol),
+        ].sort(),
     );
     assert.equal(ungrouped.length, fixture.corpus.ungroupedEntries);
     for (const row of fixture.corpus.notEngineerable) {
@@ -396,8 +403,6 @@ test('every applicable corpus recipe is one its module offers', () => {
     let viaJournalSpelling = 0;
     let finalPreEngineered = 0;
     for (const entry of declared) {
-        const groupId = getEngineeringGroup(entry.symbol);
-        if (groupId === null) continue; // pinned by the previous test
         const final = fixture.corpus.finalPreEngineered.find(
             (row) =>
                 row.symbol === entry.symbol &&
@@ -408,6 +413,8 @@ test('every applicable corpus recipe is one its module offers', () => {
             finalPreEngineered += 1;
             continue;
         }
+        const groupId = getEngineeringGroup(entry.symbol);
+        if (groupId === null) continue; // pinned by the previous test
         const offered = getBlueprintsForModule(entry.symbol);
         if (!offered.includes(entry.blueprint)) {
             const resolved = resolveBlueprintForModule(entry.symbol, entry.blueprint);
@@ -445,10 +452,14 @@ test('the final pre-engineered corpus entries are exactly the ones the fixture n
                 (entry.experimental ?? null) === (row.experimental ?? null),
         );
         assert.equal(matches.length, row.entries, `${row.symbol}: ${row.blueprint}`);
-        assert.deepEqual(getBlueprintsForModule(row.symbol), ['GuardianModule_Sturdy']);
+        assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
         assert.deepEqual(getExperimentalsForModule(row.symbol), []);
         assert.ok(
-            isFinalGuardianWeaponEngineering(row.symbol, row.blueprint),
+            isFinalGuardianWeaponEngineering(row.symbol, row.blueprint) ||
+                getPreEngineeredVariants(row.symbol).some(
+                    (variant) =>
+                        variant.blueprint === row.blueprint && variant.acquisition !== 'mercenary',
+                ),
             `${row.symbol}: ${row.blueprint} is not recognised as a final article`,
         );
     }
