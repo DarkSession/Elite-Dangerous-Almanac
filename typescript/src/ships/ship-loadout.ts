@@ -709,12 +709,13 @@ export class ShipLoadout {
     }
 
     /**
-     * Start a new, empty build for a hull — no modules fitted.
+     * Start a new build for a hull with no editable modules fitted.
      *
      * @param shipSymbol - The hull's internal symbol, e.g. `"Anaconda"`
      * (case-insensitive).
-     * @returns An empty loadout whose {@link slots} come from the hull's declared
-     * layout.
+     * @returns An otherwise empty loadout whose {@link slots} come from the hull's
+     * declared layout. The hull's immutable default cargo hatch is fitted because it
+     * is part of the ship rather than an outfitting choice.
      * @throws {TypeError} If `shipSymbol` is not a string, or no hull with that symbol
      * has a known slot layout.
      * @example
@@ -735,7 +736,14 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        return new ShipLoadout(layout.symbol, new Map(), {});
+        const hatch = getDefaultLoadout(layout.symbol)?.modules.find(
+            (module) => module.slot.toLowerCase() === 'cargohatch',
+        );
+        const modules = new Map<string, LoadoutModule>();
+        if (hatch) {
+            modules.set(hatch.slot, { Slot: hatch.slot, Item: hatch.symbol });
+        }
+        return new ShipLoadout(layout.symbol, modules, {});
     }
 
     /**

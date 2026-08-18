@@ -557,42 +557,42 @@
     },
     "power": {
       "available": 36,
-      "retracted": 7.3,
-      "deployed": 10.88,
+      "retracted": 7.9,
+      "deployed": 11.48,
       "bands": [
         {
           "priority": 1,
-          "retracted": 7.3,
-          "deployed": 10.88,
-          "deployedTotal": 10.88,
+          "retracted": 7.9,
+          "deployed": 11.48,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 2,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 3,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 4,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         },
         {
           "priority": 5,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 10.88,
+          "deployedTotal": 11.48,
           "poweredDeployed": true
         }
       ]

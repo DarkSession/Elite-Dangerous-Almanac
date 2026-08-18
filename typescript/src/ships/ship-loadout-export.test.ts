@@ -1071,7 +1071,6 @@ test('a restricted mount survives a SLEF round trip under its journal name', () 
     assert.deepEqual(
         back
             .fittedModules()
-            .filter((module) => module.slot !== 'CargoHatch')
             .map((module) => module.slot)
             .sort(),
         build
@@ -1215,7 +1214,7 @@ test('a build assembled here exports the slot keys a game journal would use', ()
         .setModule('Slot13_Size2', module('Int_DetailedSurfaceScanner_Tiny'))
         .setModule('Slot14_Size1', module('Int_DockingComputer_Advanced'));
     const slots = build.toLoadoutEvent().Modules.map((m) => m.Slot);
-    assert.deepEqual(slots, ['Slot13_Size2', 'Slot14_Size1']);
+    assert.deepEqual(slots, ['CargoHatch', 'Slot13_Size2', 'Slot14_Size1']);
     assert.throws(
         () => build.setModule('Slot11_Size2', module('Int_DetailedSurfaceScanner_Tiny')),
         /has no slot "Slot11_Size2"/,
