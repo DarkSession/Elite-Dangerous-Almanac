@@ -4,7 +4,7 @@
  * @internal
  */
 
-import { BLUEPRINTS, getBlueprint } from '../blueprints.js';
+import { BLUEPRINTS, getBlueprint, getBlueprintGrade } from '../blueprints.js';
 import {
     getBlueprintsForModule,
     getEngineeringGroup,
@@ -13,14 +13,19 @@ import {
 import { resolveBlueprintForModule } from '../blueprint-journal.js';
 import { EXPERIMENTAL_EFFECTS } from '../experimental-effects.js';
 import { getPreEngineeredVariants } from '../pre-engineered.js';
-import { baseStats, fieldForLabel } from './module-stat-labels.js';
+import {
+    baseStats,
+    fieldForLabel,
+    labelsForDamageType,
+    scaleForLabel,
+} from './module-stat-labels.js';
 import type { OutfittingModule } from '../modules.js';
-import type { EngineeringModifier } from '../slef.js';
+import type { EngineeringModifier, ModuleEngineering } from '../slef.js';
 import type { AvailableBlueprint } from '../ship-loadout.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { FITTED_ITEM } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
-import type { BlueprintGrade, ExperimentalEffect } from '../engineering.js';
+import { computeModifiers, type BlueprintGrade, type ExperimentalEffect } from '../engineering.js';
 import { preciseModifierValue } from './engineering-precision.js';
 
 /** Engineering groups whose non-menu recipes identify final bought articles. */
@@ -286,6 +291,101 @@ export function primitiveEngineeringInputsFor(
             }),
         },
     };
+}
+
+/** Whether a captured modifier block matches the calculator's ordinary result. */
+function matchesCalculatedModifiers(
+    captured: readonly EngineeringModifier[] | undefined,
+    calculated: readonly EngineeringModifier[],
+): boolean {
+    if (!captured || captured.length !== calculated.length) return false;
+    const byLabel = new Map(
+        captured.map((modifier) => [modifier.Label.trim().toLowerCase(), modifier]),
+    );
+    if (byLabel.size !== captured.length) return false;
+    return calculated.every((expected) => {
+        const actual = byLabel.get(expected.Label.trim().toLowerCase());
+        if (!actual) return false;
+        if (expected.Value !== undefined) {
+            return (
+                actual.Value !== undefined &&
+                Math.abs(actual.Value - expected.Value) <=
+                    1e-5 * Math.max(1, Math.abs(expected.Value))
+            );
+        }
+        return actual.ValueStr === expected.ValueStr;
+    });
+}
+
+/**
+ * Decide whether an imported module overlapping a fixed reward is an ordinary roll.
+ *
+ * A recipe with no fixed candidate needs no proof. Otherwise the captured modifiers must
+ * exactly describe the resolved ordinary blueprint, grade, quality, experimental effect,
+ * and any journal damage-distribution entries. The result distinguishes those two safe
+ * cases so callers can preserve their existing validation and refusal ordering.
+ *
+ * @internal
+ */
+export function ordinaryEngineeringProof(
+    item: string,
+    engineering: ModuleEngineering,
+    experimental: ExperimentalEffect | null | undefined,
+): 'notFixedCandidate' | 'proven' | 'unproven' {
+    const recipe = resolveBlueprintForModule(item, engineering.BlueprintName);
+    const fixedCandidate = getPreEngineeredVariants(item).some(
+        (candidate) =>
+            candidate.acquisition !== 'mercenary' &&
+            candidate.blueprint.trim().toLowerCase() === recipe.trim().toLowerCase(),
+    );
+    if (!fixedCandidate) return 'notFixedCandidate';
+
+    const grade = getBlueprintGrade(recipe, engineering.Level);
+    const quality = engineering.Quality;
+    const stock = builtInModuleBySymbol(item, FITTED_ITEM);
+    if (
+        !stock ||
+        !grade ||
+        experimental === null ||
+        !Number.isFinite(quality) ||
+        quality < 0 ||
+        quality > 1
+    ) {
+        return 'unproven';
+    }
+
+    const current = primitiveEngineeringInputsFor(stock, grade, experimental);
+    if (
+        missingBaseLabels(
+            stock,
+            baseStats(stock),
+            current.grade.features,
+            current.experimental?.modifiers,
+        ).length > 0
+    ) {
+        return 'unproven';
+    }
+
+    const calculated = journalModifiersFor(
+        stock,
+        computeModifiers(baseStats(stock), current.grade, quality, current.experimental),
+    );
+    const damageDistribution =
+        current.experimental?.damageDistribution ?? current.grade.damageDistribution;
+    if (damageDistribution) {
+        for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
+            const value = damageDistribution[type];
+            if (value === undefined) continue;
+            const label = labelsForDamageType(type)[0];
+            if (label === undefined) continue;
+            calculated.push({
+                Label: label,
+                Value: value * scaleForLabel(label),
+                OriginalValue: (stock.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
+            });
+        }
+    }
+    return matchesCalculatedModifiers(engineering.Modifiers, calculated) ? 'proven' : 'unproven';
 }
 
 /** Round a journal number to Frontier's six serialized decimal places. */
