@@ -695,33 +695,80 @@
     "available": 36,
     "retracted": 0.6,
     "deployed": 0.6,
+    "consumers": [
+      {
+        "label": "Slot01_Size7",
+        "symbol": "Int_FutureModule",
+        "draw": null,
+        "enabled": true,
+        "priority": 2,
+        "deployedOnly": false
+      },
+      {
+        "label": "HugeHardpoint1",
+        "symbol": "Hpt_FutureWeapon_Huge",
+        "draw": null,
+        "enabled": true,
+        "priority": 4,
+        "deployedOnly": true
+      },
+      {
+        "label": "TinyHardpoint1",
+        "symbol": "Hpt_FutureUtility_Tiny",
+        "draw": null,
+        "enabled": true,
+        "priority": 3,
+        "deployedOnly": null
+      },
+      {
+        "label": "Slot03_Size6",
+        "symbol": "Int_FuturePowerConsumer",
+        "draw": null,
+        "enabled": true,
+        "priority": 1,
+        "deployedOnly": false
+      },
+      {
+        "label": "CargoHatch",
+        "symbol": "ModularCargoBayDoor",
+        "draw": 0.6,
+        "enabled": true,
+        "priority": 1,
+        "deployedOnly": false
+      }
+    ],
     "unknownDraws": [
       {
         "drawUnknown": true,
         "priority": 2,
         "enabled": true,
         "deployedOnly": false,
-        "label": "Slot01_Size7"
+        "label": "Slot01_Size7",
+        "symbol": "Int_FutureModule"
       },
       {
         "drawUnknown": true,
         "priority": 4,
         "enabled": true,
         "deployedOnly": true,
-        "label": "HugeHardpoint1"
+        "label": "HugeHardpoint1",
+        "symbol": "Hpt_FutureWeapon_Huge"
       },
       {
         "drawUnknown": true,
         "priority": 3,
         "enabled": true,
-        "label": "TinyHardpoint1"
+        "deployedOnly": null,
+        "label": "TinyHardpoint1",
+        "symbol": "Hpt_FutureUtility_Tiny"
       },
       {
         "drawUnknown": true,
         "priority": 1,
         "enabled": true,
         "deployedOnly": false,
-        "label": "Slot03_Size6"
+        "label": "Slot03_Size6",
+        "symbol": "Int_FuturePowerConsumer"
       }
     ]
   },

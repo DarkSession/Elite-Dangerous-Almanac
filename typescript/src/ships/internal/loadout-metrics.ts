@@ -323,13 +323,14 @@ export function powerConsumerFor(
             : parsedSlot?.kind === 'hardpoint'
               ? true
               : parsedSlot?.kind === 'utility'
-                ? undefined
+                ? null
                 : false;
     const common = {
         priority: priorityOf(module),
         enabled: isEnabled(module),
-        ...(deployedOnly === undefined ? {} : { deployedOnly }),
+        deployedOnly,
         label: module.Slot,
+        symbol: module.Item,
     };
     if (draw === undefined) {
         // A known record without a draw is a passive fitting (bulkheads, cargo racks,

@@ -1083,6 +1083,14 @@ type FixtureShipsBuildMetrics = {
     };
     unknownPowerDraw: {
         available: number;
+        consumers: {
+            deployedOnly: boolean | null;
+            draw: null | number;
+            enabled: boolean;
+            label: string;
+            priority: number;
+            symbol: string;
+        }[];
         deployed: number;
         loadout: {
             Modules: {
@@ -1096,11 +1104,12 @@ type FixtureShipsBuildMetrics = {
         };
         retracted: number;
         unknownDraws: {
-            deployedOnly?: boolean;
+            deployedOnly: boolean | null;
             drawUnknown: boolean;
             enabled: boolean;
             label: string;
             priority: number;
+            symbol: string;
         }[];
     };
     weapons: {

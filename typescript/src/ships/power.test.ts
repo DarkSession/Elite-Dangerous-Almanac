@@ -195,6 +195,31 @@ test('a build with nothing unknown says so with an empty list', () => {
     assert.deepEqual(powerBudget(0, []).unknownDraws, []);
 });
 
+test('consumer results preserve source order and normalize presentation fields', () => {
+    const budget = powerBudget(10, [
+        { label: 'A', symbol: 'Known', draw: 2, priority: 99, deployedOnly: true },
+        { label: 'B', symbol: 'Unknown', drawUnknown: true, enabled: false },
+    ]);
+    assert.deepEqual(budget.consumers, [
+        {
+            label: 'A',
+            symbol: 'Known',
+            draw: 2,
+            enabled: true,
+            priority: 5,
+            deployedOnly: true,
+        },
+        {
+            label: 'B',
+            symbol: 'Unknown',
+            draw: null,
+            enabled: false,
+            priority: 1,
+            deployedOnly: null,
+        },
+    ]);
+});
+
 test('the shared fixture pins an unknown draw', () => {
     const expected = fixture.functions.powerBudgetUnknownDraw;
     const budget = powerBudget(expected.available, expected.consumers);
