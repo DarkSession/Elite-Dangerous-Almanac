@@ -87,7 +87,7 @@ import { getExperimentalEffect } from './experimental-effects.js';
 import { getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
-import type { OutfittingModule } from './modules.js';
+import type { OutfittingModule, ProjectileRangeBoundaries } from './modules.js';
 import { calculateModuleLimits, type ModuleLimitUsage } from './module-limits.js';
 import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
@@ -97,6 +97,7 @@ import {
     isBuiltInHullModule,
     isNonOutfittingSlot,
     matchingKeyIn,
+    orderBySlotLayout,
 } from './internal/loadout-state.js';
 import {
     availableBlueprintsFor,
@@ -441,11 +442,26 @@ export interface FittedWeaponMetrics {
      * which carries none. A capacity, not a rearm state: see {@link FittedModule.ammunition}.
      */
     readonly ammunition: AmmunitionCapacity | null;
+    /** Maximum effective range in metres, absent when the fitted weapon does not state one. */
+    readonly maximumRange?: number;
+    /** Damage-falloff start in metres, absent when the fitted weapon does not state one. */
+    readonly falloffRange?: number;
+    /**
+     * Exact projectile boundary metadata, absent when unavailable. These are not
+     * effective distances and remain separate from {@link maximumRange} and
+     * {@link falloffRange}.
+     */
+    readonly projectileRange?: ProjectileRangeBoundaries;
+    /** Armour-piercing rating, absent when unavailable. */
+    readonly armourPiercing?: number;
 }
 
 /** A build's firepower: every fitted weapon, and the totals across the enabled ones. */
 export interface BuildWeaponMetrics {
-    /** Every fitted weapon, in slot order. */
+    /**
+     * Every fitted weapon in hull slot order. Weapons in unknown or unmapped slots
+     * follow the known slots in their original source order.
+     */
     readonly weapons: readonly FittedWeaponMetrics[];
     /** The additive totals across the **enabled** weapons. */
     readonly total: WeaponTotals;
@@ -2633,20 +2649,11 @@ export class ShipLoadout {
      */
     cellBanks(): CellBankSummary {
         const modules = [...this.#modules.values()];
-        const banks = cellBankInputsFor(modules, this.powerBudget(), (module) =>
-            this.#statsFor(module),
+        const banks = orderBySlotLayout(
+            cellBankInputsFor(modules, this.powerBudget(), (module) => this.#statsFor(module)),
+            this.#layoutOrNull(),
+            (bank) => bank.slot,
         );
-        const layout = this.#layoutOrNull();
-        if (layout) {
-            const order = new Map(
-                layout.map((slot, index) => [slot.key.toLowerCase(), index] as const),
-            );
-            banks.sort(
-                (left, right) =>
-                    (order.get(left.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
-                    (order.get(right.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER),
-            );
-        }
         return cellBankSummary(banks);
     }
 
@@ -2763,6 +2770,8 @@ export class ShipLoadout {
      * guns.total.energyPerSecond;          // -> MW asked of the WEP capacitor
      * guns.total.powerDraw;                // -> MW asked of the power plant when deployed
      * guns.weapons[0]?.metrics.damageByType.thermal;
+     * guns.weapons[0]?.maximumRange;        // post-engineering metres, when known
+     * guns.weapons[0]?.armourPiercing;      // post-engineering rating, when known
      * guns.weapons[0]?.ammunition?.total;  // -> rounds aboard when fully rearmed
      * ```
      */
@@ -2779,12 +2788,25 @@ export class ShipLoadout {
                 enabled: module.On !== false,
                 metrics: weaponMetrics(stats),
                 ammunition: ammunitionCapacity(stats),
+                ...(stats.maximumRange === undefined ? {} : { maximumRange: stats.maximumRange }),
+                ...(stats.falloffRange === undefined ? {} : { falloffRange: stats.falloffRange }),
+                ...(stats.projectileRange === undefined
+                    ? {}
+                    : { projectileRange: { ...stats.projectileRange } }),
+                ...(stats.armourPiercing === undefined
+                    ? {}
+                    : { armourPiercing: stats.armourPiercing }),
             });
         }
-        return {
+        const orderedWeapons = orderBySlotLayout(
             weapons,
+            this.#layoutOrNull(),
+            (weapon) => weapon.slot,
+        );
+        return {
+            weapons: orderedWeapons,
             total: sumWeaponMetrics(
-                weapons.filter((weapon) => weapon.enabled).map((weapon) => weapon.metrics),
+                orderedWeapons.filter((weapon) => weapon.enabled).map((weapon) => weapon.metrics),
             ),
         };
     }
