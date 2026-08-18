@@ -14,7 +14,7 @@ const NAMES = /* @__PURE__ */ createLocalizedNameIndex(namesData as LocalizedNam
  *
  * @param groupId - The stable group id used by `EngineeringOptionGroup.groupId`.
  * @param locale - A BCP 47 locale. English covers every group; the current source also
- * supplies Portuguese and Russian for 46 of 51 groups.
+ * supplies partial Portuguese and Russian coverage.
  * @returns The localized group name, or `null` for an unknown group or unavailable locale.
  * @throws {TypeError} If a present `groupId` or `locale` is not a string.
  * @example

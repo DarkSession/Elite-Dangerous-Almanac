@@ -156,9 +156,10 @@ translation.
   value in `lang-en.json` byte-for-byte and uniquely, explicit values with the same key
   are copied from `lang-pt.json` and `lang-ru.json`.
 - **Coverage:** canonical English covers every engineering option group. Portuguese and
-  Russian each cover 46 of 51. The three Guardian-specific groups have no distinct EDSY
-  label, `experimentalWeapons` does not match EDSY's broader `Experimental` label, and
-  EDSY carries no Portuguese or Russian value for `frameShiftDrivesSCO`.
+  Russian each cover 46 of 51. The Guardian power-plant, power-distributor and
+  hull-reinforcement groups have no distinct EDSY label, `experimentalWeapons` does not
+  match EDSY's broader `Experimental` label, and EDSY carries no Portuguese or Russian
+  value for `frameShiftDrivesSCO`.
 - **Manual corrections:** none.
 
 ## `experimental-effect-descriptions.jsonc`
