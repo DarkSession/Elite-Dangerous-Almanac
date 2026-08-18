@@ -113,7 +113,7 @@ build.powerBudget().withinBudget; // -> true
 build.powerBudget().bands.length; // -> 5        the five priority groups
 
 build.shieldMetrics()?.strength; // -> 3940.4   MJ
-build.armourMetrics().hitPoints; // -> 5062.6
+build.armourMetrics()?.hitPoints; // -> 5062.6
 
 build.weaponMetrics().total.damagePerSecond; // -> 137.04
 build.weaponMetrics().total.sustainedDamagePerSecond; // -> 133.98
@@ -160,8 +160,7 @@ Branch on each issue's `code`, not on its `severity` — on this screen more tha
 because the severities do not divide along "whose problem is it".
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 says which codes are the user's to fix and which are the library's own gaps, and covers
-the nullable/`…Result` pairs that `unladenMass`, `fuelCapacity` and `cargoCapacity` come
-in.
+the nullable/`…Result` pairs for mass, capacity, mobility, shields and shield recovery.
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look

@@ -119,11 +119,11 @@ import {
     distributorInputFor,
     effectiveModule,
     heatInputFor,
-    mobilityInputFor,
+    mobilityInputResultFor,
     powerAvailable,
     powerConsumerFor,
-    shieldInputFor,
-    shieldRecoveryInputFor,
+    shieldInputResultFor,
+    shieldRecoveryInputResultFor,
     weaponsCapacitorInputFor,
     weaponStatsFor,
 } from './internal/loadout-metrics.js';
@@ -213,6 +213,22 @@ const requireLoadOptions = (scope: string, options: JumpOptions): void => {
             throw new RangeError(`${scope}: ${field} must be a finite non-negative number`);
         }
     }
+};
+
+/** Validate a facade ENG-pip option before build state can short-circuit the metric. */
+const requireEnginesPips = (scope: string, enginesPips: number): number => {
+    if (!Number.isFinite(enginesPips) || enginesPips < 0 || enginesPips > 4) {
+        throw new RangeError(`${scope}: enginesPips must be a finite number from 0 to 4`);
+    }
+    return enginesPips;
+};
+
+/** Validate a facade SYS-pip option before build state can short-circuit the metric. */
+const requireSystemsPips = (scope: string, systemsPips: number): number => {
+    if (!Number.isFinite(systemsPips) || systemsPips < 0 || systemsPips > 4) {
+        throw new RangeError(`${scope}: systemsPips must be a finite number from 0 to 4`);
+    }
+    return systemsPips;
 };
 
 /**
@@ -677,7 +693,7 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * build.maxJumpRange(); // -> 60.5478   (ly, best single jump)
  * build.powerBudget().withinBudget; // -> true
  * build.shieldMetrics()?.strength; // -> 743.12  (MJ)
- * build.armourMetrics().hitPoints; // -> 307.8
+ * build.armourMetrics()?.hitPoints; // -> 307.8
  * ```
  *
  * @example
@@ -2731,6 +2747,7 @@ export class ShipLoadout {
             if (maximumFuel === null) {
                 issues.push({
                     field: 'frameShiftDrive',
+                    reason: fitted ? 'unresolved' : 'missing',
                     slot: fitted?.Slot ?? 'FrameShiftDrive',
                     ...(fitted ? { symbol: fitted.Item } : {}),
                     message:
@@ -2738,10 +2755,15 @@ export class ShipLoadout {
                     params: fitted
                         ? {
                               field: 'frameShiftDrive',
+                              reason: 'unresolved',
                               slot: fitted.Slot,
                               symbol: fitted.Item,
                           }
-                        : { field: 'frameShiftDrive', slot: 'FrameShiftDrive' },
+                        : {
+                              field: 'frameShiftDrive',
+                              reason: 'missing',
+                              slot: 'FrameShiftDrive',
+                          },
                 });
             }
         }
@@ -2773,9 +2795,10 @@ export class ShipLoadout {
                 return incompleteResult([
                     {
                         field,
+                        reason: 'invalid',
                         ...driveParams,
                         message: error.message,
-                        params: { field, ...driveParams },
+                        params: { field, reason: 'invalid', ...driveParams },
                     },
                 ]);
             }
@@ -2830,11 +2853,17 @@ export class ShipLoadout {
      * towards the deployed total.
      *
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered. A fitted module whose draw the catalogue cannot supply is
+     * and nothing is powered. An unresolved plant also reports `available: 0`; it is
+     * identified as `powerCapacity` by the mobility, shield and recovery result methods,
+     * not {@link PowerBudget.unknownDraws}. When the entire plant record is unresolved,
+     * {@link validation} also reports `unknownModule`. A fitted module whose draw the
+     * catalogue cannot supply is
      * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
      * which makes every total a lower bound while that list is non-empty. `consumers`
      * includes modules with positive or unknown draw; passive and zero-draw fittings are
      * absent.
+     * @throws {RangeError} If a known power capacity or module draw is negative or not
+     * finite.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2907,8 +2936,9 @@ export class ShipLoadout {
      * excluded from the thruster mass curve.
      *
      * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
-     * @returns Loaded {@link MobilityMetrics}, or `null` when no powered, fully described
-     * thrusters are fitted.
+     * @returns Loaded {@link MobilityMetrics}, or `null` when no fully described
+     * thrusters are powered with hardpoints retracted. Use
+     * {@link mobilityMetricsResult} to distinguish the unavailable conditions.
      * @throws {TypeError} If mass or an omitted main-tank fuel load cannot be determined.
      * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
      * `enginesPips` is outside `[0, 4]`.
@@ -2921,16 +2951,41 @@ export class ShipLoadout {
      * ```
      */
     mobilityMetrics(options: MobilityOptions = {}): MobilityMetrics | null {
-        const enginesPips = options.enginesPips ?? 4;
-        if (!Number.isFinite(enginesPips) || enginesPips < 0 || enginesPips > 4) {
-            throw new RangeError(
-                'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
-            );
-        }
+        requireEnginesPips('ShipLoadout.mobilityMetrics', options.enginesPips ?? 4);
         requireLoadOptions('ShipLoadout.mobilityMetrics', options);
-        const input = mobilityInputFor(
+        return this.mobilityMetricsResult(options).value;
+    }
+
+    /**
+     * The build's mobility with a diagnostic when its hull, thrusters or retracted
+     * power supply is unavailable.
+     *
+     * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
+     * @returns A complete {@link MobilityMetrics} value, otherwise `null` plus the input
+     * or fitted-module state that prevented the calculation.
+     * @throws {TypeError} If mass or an omitted main-tank fuel load cannot be determined.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
+     * `enginesPips` is outside `[0, 4]`.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * const result = build.mobilityMetricsResult({ enginesPips: 2 });
+     * if (result.complete) result.value.speed; // metres per second
+     * else result.issues[0].reason;            // unavailable-state discriminator
+     * ```
+     */
+    mobilityMetricsResult(options: MobilityOptions = {}): CalculationResult<MobilityMetrics> {
+        const enginesPips = requireEnginesPips(
+            'ShipLoadout.mobilityMetricsResult',
+            options.enginesPips ?? 4,
+        );
+        requireLoadOptions('ShipLoadout.mobilityMetricsResult', options);
+        const input = mobilityInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
+            () => this.powerBudget(),
             () => {
                 const main =
                     options.fuel ??
@@ -2941,7 +2996,8 @@ export class ShipLoadout {
             enginesPips,
             (module) => this.#statsFor(module),
         );
-        return input ? mobilityMetrics(input) : null;
+        if (!input.complete) return input;
+        return completeResult(mobilityMetrics(input.value)!);
     }
 
     /**
@@ -2950,13 +3006,16 @@ export class ShipLoadout {
      *
      * Shield strength scales with the **hull's** mass, not the build's, so fitting
      * more modules never weakens it. Boosters, Guardian shield reinforcement and any
-     * engineering are all folded in; switched-off modules are ignored.
+     * engineering are all folded in; switched-off or shed boosters and reinforcement
+     * are ignored, while a switched-off or shed generator makes the metric unavailable.
      *
      * @param options - {@link DefenceOptions}. `systemsPips` (0–4) folds the SYS
      * capacitor's own resistance into the reported figures; it defaults to `0`, which
      * is what an outfitting screen shows.
-     * @returns The {@link ShieldMetrics}, or `null` when the build has no shield
-     * generator fitted (or has one switched off).
+     * @returns The {@link ShieldMetrics}, or `null` when the hull is unresolved or the
+     * build has no shield generator powered with hardpoints retracted. Use
+     * {@link shieldMetricsResult} to distinguish the unavailable conditions.
+     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2970,21 +3029,51 @@ export class ShipLoadout {
      * ```
      */
     shieldMetrics(options: DefenceOptions = {}): ShieldMetrics | null {
-        const input = shieldInputFor(
+        requireSystemsPips('ShipLoadout.shieldMetrics', options.systemsPips ?? 0);
+        return this.shieldMetricsResult(options).value;
+    }
+
+    /**
+     * The build's shields with a diagnostic when its hull, generator or retracted
+     * power supply is unavailable.
+     *
+     * @param options - {@link DefenceOptions}. `systemsPips` defaults to `0`.
+     * @returns A complete {@link ShieldMetrics} value, otherwise `null` plus the input
+     * or fitted-module state that prevented the calculation.
+     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * const result = build.shieldMetricsResult();
+     * if (result.complete) result.value.strength; // megajoules
+     * else result.issues[0].reason;               // unavailable-state discriminator
+     * ```
+     */
+    shieldMetricsResult(options: DefenceOptions = {}): CalculationResult<ShieldMetrics> {
+        const systemsPips = requireSystemsPips(
+            'ShipLoadout.shieldMetricsResult',
+            options.systemsPips ?? 0,
+        );
+        const input = shieldInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
-            options.systemsPips ?? 0,
+            () => this.powerBudget(),
+            systemsPips,
             (module) => this.#statsFor(module),
         );
-        if (!input.generator) return null;
-        return shieldMetrics(input);
+        if (!input.complete) return input;
+        return completeResult(shieldMetrics(input.value));
     }
 
     /**
      * Time for this build's shield to rise after collapse and then regenerate to full.
      *
      * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
-     * @returns Recovery rates and seconds, or `null` with no powered shield generator.
+     * @returns Recovery rates and seconds, or `null` with an unresolved hull or no
+     * shield generator powered with hardpoints retracted. Use
+     * {@link shieldRecoveryResult} to distinguish the unavailable conditions.
      * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
      * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example
@@ -2996,19 +3085,42 @@ export class ShipLoadout {
      * ```
      */
     shieldRecovery(options: DefenceOptions = {}): ShieldRecovery | null {
-        const systemsPips = options.systemsPips ?? 4;
-        if (!Number.isFinite(systemsPips) || systemsPips < 0 || systemsPips > 4) {
-            throw new RangeError(
-                'ShipLoadout.shieldRecovery: systemsPips must be a finite number from 0 to 4',
-            );
-        }
-        const input = shieldRecoveryInputFor(
+        requireSystemsPips('ShipLoadout.shieldRecovery', options.systemsPips ?? 4);
+        return this.shieldRecoveryResult(options).value;
+    }
+
+    /**
+     * The build's shield recovery with a diagnostic when its hull, generator or
+     * retracted power supply is unavailable.
+     *
+     * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
+     * @returns A complete {@link ShieldRecovery} value, otherwise `null` plus the input
+     * or fitted-module state that prevented the calculation.
+     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * const result = build.shieldRecoveryResult();
+     * if (result.complete) result.value.recoveryTime; // seconds
+     * else result.issues[0].reason; // unavailable-state discriminator
+     * ```
+     */
+    shieldRecoveryResult(options: DefenceOptions = {}): CalculationResult<ShieldRecovery> {
+        const systemsPips = requireSystemsPips(
+            'ShipLoadout.shieldRecoveryResult',
+            options.systemsPips ?? 4,
+        );
+        const input = shieldRecoveryInputResultFor(
             this.#shipSymbol,
             [...this.#modules.values()],
+            () => this.powerBudget(),
             systemsPips,
             (module) => this.#statsFor(module),
         );
-        return input ? shieldRecovery(input) : null;
+        if (!input.complete) return input;
+        return completeResult(shieldRecovery(input.value));
     }
 
     /**
@@ -3111,9 +3223,9 @@ export class ShipLoadout {
      * The build's armour: hull hit points, the bulkhead and reinforcement each
      * contribute, and the effective resistances.
      *
-     * @returns The {@link ArmourMetrics}. A build with no armour module fitted is
-     * reported on the stock lightweight alloy the hull leaves the shipyard with, which
-     * is what the game does.
+     * @returns The {@link ArmourMetrics}, or `null` when the hull is unresolved. A build
+     * with no armour module fitted is reported on the stock lightweight alloy the hull
+     * leaves the shipyard with, which is what the game does.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -3121,12 +3233,13 @@ export class ShipLoadout {
      * declare const build: ShipLoadout;
      *
      * const hull = build.armourMetrics();
-     * hull.hitPoints;                  // -> total hull points
-     * hull.resistances.explosive;      // -> lightweight alloy is explosively weak
-     * hull.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
+     * hull?.hitPoints;                  // -> total hull points
+     * hull?.resistances.explosive;      // -> lightweight alloy is explosively weak
+     * hull?.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
      * ```
      */
-    armourMetrics(): ArmourMetrics {
+    armourMetrics(): ArmourMetrics | null {
+        if (!getShipBySymbol(this.#shipSymbol)) return null;
         return armourMetrics(
             armourInputFor(this.#shipSymbol, [...this.#modules.values()], (module) =>
                 this.#statsFor(module),

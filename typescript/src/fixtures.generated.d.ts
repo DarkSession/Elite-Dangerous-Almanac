@@ -3141,9 +3141,11 @@ type FixtureShipsOperations = {
                 field: string;
                 params: {
                     field: string;
+                    reason: string;
                     slot: string;
                     symbol: string;
                 };
+                reason: string;
                 slot: string;
                 symbol: string;
             };

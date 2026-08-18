@@ -980,6 +980,7 @@
                 { "type": "null" }
               ]
             },
+            "shieldsPowered": { "type": "boolean" },
             "unladenMass": { "type": "number" },
             "weapons": {
               "type": "object",
@@ -4301,15 +4302,17 @@
                       "additionalProperties": false,
                       "properties": {
                         "field": { "type": "string" },
+                        "reason": { "type": "string" },
                         "slot": { "type": "string" },
                         "symbol": { "type": "string" }
                       },
-                      "required": ["field", "slot", "symbol"]
+                      "required": ["field", "reason", "slot", "symbol"]
                     },
+                    "reason": { "type": "string" },
                     "slot": { "type": "string" },
                     "symbol": { "type": "string" }
                   },
-                  "required": ["field", "params", "slot", "symbol"]
+                  "required": ["field", "params", "reason", "slot", "symbol"]
                 },
                 "input": {
                   "type": "object",

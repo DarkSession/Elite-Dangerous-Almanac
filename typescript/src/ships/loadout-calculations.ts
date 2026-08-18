@@ -13,20 +13,38 @@
 import { completeResult, incompleteResult } from './internal/calculation-result.js';
 import { truncate } from '../internal/argument-guards.js';
 
-/** A dependency that prevented a loadout calculation from producing a complete value. */
+/**
+ * Stable reason a loadout calculation could not produce a value.
+ *
+ * `missing` means no required module is fitted; `unresolved` means a fitted module or
+ * numeric dependency is absent from the supplied data; `disabled` is the module switch;
+ * `shed` is the priority budget; and `invalid` identifies a non-physical known value.
+ */
+export type CalculationIssueReason = 'missing' | 'unresolved' | 'disabled' | 'shed' | 'invalid';
+
+/** An input or fitted-module state that prevented a complete loadout calculation. */
 export interface CalculationIssue {
-    /** Field whose value is missing, using the public catalogue spelling. */
+    /** Calculation input that is missing or unavailable. */
     readonly field:
+        | 'hull'
         | 'hullMass'
         | 'mass'
         | 'cargoCapacity'
         | 'fuelCapacity'
         | 'reserveFuelCapacity'
-        | 'frameShiftDrive';
+        | 'frameShiftDrive'
+        | 'powerCapacity'
+        | 'powerDraw'
+        | 'thrusters'
+        | 'shieldGenerator';
+    /** Machine-readable unavailable-state discriminator. */
+    readonly reason: CalculationIssueReason;
     /** Slot containing the incomplete module, when the dependency belongs to a module. */
     readonly slot?: string;
     /** Module symbol, when the dependency belongs to a module. */
     readonly symbol?: string;
+    /** Hull symbol, when the catalogue cannot resolve the build's hull. */
+    readonly hull?: string;
     /** Human-readable diagnostic suitable for a log or validation panel. */
     readonly message: string;
     /** Values interpolated into `message`, for consumers composing localized text. */
@@ -44,15 +62,15 @@ export type CalculationResult<T> =
           readonly value: T;
           /** Discriminator for a complete calculation. */
           readonly complete: true;
-          /** Complete calculations have no missing inputs. */
+          /** Complete calculations have no blocking issues. */
           readonly issues: readonly [];
       }
     | {
-          /** Incomplete calculations never expose a misleading partial value. */
+          /** Unavailable calculations never expose a misleading partial value. */
           readonly value: null;
           /** Discriminator for an incomplete calculation. */
           readonly complete: false;
-          /** One or more missing inputs. */
+          /** One or more missing or unavailable dependencies. */
           readonly issues: readonly [CalculationIssue, ...CalculationIssue[]];
       };
 
@@ -84,9 +102,10 @@ function moduleIssue(
 ): CalculationIssue {
     return {
         field,
+        reason: 'unresolved',
         slot: module.slot,
         symbol: module.symbol,
-        params: { field, slot: module.slot, symbol: module.symbol },
+        params: { field, reason: 'unresolved', slot: module.slot, symbol: module.symbol },
         message: `${truncate(module.slot)}: ${truncate(module.symbol)} has no known ${field}`,
     };
 }
@@ -125,7 +144,8 @@ export function calculateUnladenMass(
     if (hullMass === null) {
         issues.push({
             field: 'hullMass',
-            params: { field: 'hullMass' },
+            reason: 'unresolved',
+            params: { field: 'hullMass', reason: 'unresolved' },
             message: 'The hull has no known hullMass',
         });
     }
@@ -185,7 +205,8 @@ export function calculateFuelCapacity(
     if (reserveFuelCapacity === null) {
         issues.push({
             field: 'reserveFuelCapacity',
-            params: { field: 'reserveFuelCapacity' },
+            reason: 'unresolved',
+            params: { field: 'reserveFuelCapacity', reason: 'unresolved' },
             message: 'The hull has no known reserveFuelCapacity',
         });
     }
