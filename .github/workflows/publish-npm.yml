@@ -77,7 +77,15 @@ jobs:
 
           name=$(node -p 'require("./package.json").name')
           manifest_version=$(node -p 'require("./package.json").version')
-          published_versions=$(npm view "$name" versions --json)
+          if ! published_versions=$(npm view --json "$name" versions 2>/dev/null); then
+            case "$published_versions" in
+              *'"E404"'*) published_versions='[]' ;;
+              *)
+                echo "::error::could not ask the registry for $name versions: $published_versions"
+                exit 1
+                ;;
+            esac
+          fi
           version=$(
             MANIFEST_VERSION="$manifest_version" PUBLISHED_VERSIONS="$published_versions" node <<'NODE'
           const match = /^(\d+)\.(\d+)\./.exec(process.env.MANIFEST_VERSION);
@@ -90,8 +98,22 @@ jobs:
             const published = new RegExp(`^${major}\\.${minor}\\.(\\d+)(?:$|-)`).exec(version);
             return published ? [Number(published[1])] : [];
           });
+          const next = [Number(major), Number(minor), Math.max(-1, ...patches) + 1];
+          const stable = list.flatMap((version) => {
+            const published = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
+            return published ? [[Number(published[1]), Number(published[2]), Number(published[3])]] : [];
+          });
+          const compare = (left, right) =>
+            left[0] - right[0] || left[1] - right[1] || left[2] - right[2];
+          const highestStable = stable.sort(compare).at(-1);
 
-          console.log(`${major}.${minor}.${Math.max(-1, ...patches) + 1}`);
+          if (highestStable && compare(next, highestStable) <= 0) {
+            throw new Error(
+              `${next.join('.')} would move the latest tag behind ${highestStable.join('.')}`,
+            );
+          }
+
+          console.log(next.join('.'));
           NODE
           )
 
@@ -137,6 +159,23 @@ jobs:
             esac
           fi
 
+      - name: Check the release tag is unused
+        env:
+          VERSION: ${{ steps.package.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::v$VERSION already exists"
+            exit 1
+          else
+            status=$?
+            if [ "$status" -ne 2 ]; then
+              echo "::error::could not check whether v$VERSION exists"
+              exit "$status"
+            fi
+          fi
+
       - name: Audit dependencies
         run: pnpm run audit
 
@@ -148,6 +187,8 @@ jobs:
 
       - name: Pack for publishing
         id: pack
+        env:
+          EXPECTED_VERSION: ${{ steps.package.outputs.version }}
         run: |
           set -euo pipefail
 
@@ -163,7 +204,10 @@ jobs:
           } >>"$GITHUB_OUTPUT"
 
           published_version=$(tar -xOf "$tarball" package/package.json | node -p 'JSON.parse(require("fs").readFileSync(0)).version')
-          test "$published_version" = "${{ steps.package.outputs.version }}"
+          if [ "$published_version" != "$EXPECTED_VERSION" ]; then
+            echo "::error::package.json contains $published_version instead of $EXPECTED_VERSION"
+            exit 1
+          fi
 
       - name: Upload package for the OIDC job
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -173,47 +217,9 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  tag:
-    name: Create Git tag
-    needs: prepare
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    steps:
-      - name: Create and verify tag
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          VERSION: ${{ needs.prepare.outputs.version }}
-        run: |
-          set -euo pipefail
-
-          if ! create_error=$(gh api --method POST "repos/$GH_REPO/git/refs" \
-            -f ref="refs/tags/v$VERSION" \
-            -f sha="$GITHUB_SHA" 2>&1 >/dev/null); then
-            case "$create_error" in
-              *"(HTTP 422)") ;;
-              *)
-                echo "$create_error"
-                exit 1
-                ;;
-            esac
-            if ! gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" >/dev/null 2>&1; then
-              echo "$create_error"
-              exit 1
-            fi
-          fi
-
-          tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" --jq .object.sha)
-          if [ "$tag_sha" != "$GITHUB_SHA" ]; then
-            echo "::error::v$VERSION points to $tag_sha instead of $GITHUB_SHA"
-            exit 1
-          fi
-
   publish:
     name: Publish to npm with OIDC
-    needs: [prepare, tag]
+    needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment:
@@ -291,20 +297,34 @@ jobs:
           --ignore-scripts
 
   release:
-    name: Create GitHub release
-    needs: [prepare, publish, tag]
+    name: Create Git tag and GitHub release
+    needs: [prepare, publish]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
     steps:
-      - name: Create release
+      - name: Create tag and release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.prepare.outputs.version }}
-        run: >-
-          gh release create "v$VERSION"
-          --verify-tag
-          --title "v$VERSION"
-          --generate-notes
+        run: |
+          set -euo pipefail
+
+          if ! tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" --jq .object.sha 2>/dev/null); then
+            gh api --method POST "repos/$GH_REPO/git/refs" \
+              -f ref="refs/tags/v$VERSION" \
+              -f sha="$GITHUB_SHA" >/dev/null
+            tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" --jq .object.sha)
+          fi
+
+          if [ "$tag_sha" != "$GITHUB_SHA" ]; then
+            echo "::error::v$VERSION points to $tag_sha instead of $GITHUB_SHA"
+            exit 1
+          fi
+
+          gh release create "v$VERSION" \
+            --verify-tag \
+            --title "v$VERSION" \
+            --generate-notes
