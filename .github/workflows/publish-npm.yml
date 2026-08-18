@@ -119,7 +119,10 @@ jobs:
 
           # npm is the release ledger. The manifest chooses the major/minor line;
           # every version already published on that line advances its patch.
-          npm version "$version" --no-git-tag-version --ignore-scripts >/dev/null
+          npm version "$version" \
+            --no-git-tag-version \
+            --allow-same-version \
+            --ignore-scripts >/dev/null
 
           {
             echo "name=$name"
@@ -324,7 +327,9 @@ jobs:
             exit 1
           fi
 
-          gh release create "v$VERSION" \
-            --verify-tag \
-            --title "v$VERSION" \
-            --generate-notes
+          if ! gh release view "v$VERSION" >/dev/null 2>&1; then
+            gh release create "v$VERSION" \
+              --verify-tag \
+              --title "v$VERSION" \
+              --generate-notes
+          fi
