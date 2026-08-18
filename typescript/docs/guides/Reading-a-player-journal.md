@@ -147,15 +147,21 @@ Pass `StarSystem` to the permit-lock lookup described in
 
 Journals can contain hulls or modules absent from the catalogues. A direct lookup that
 finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import:
-an unknown hull is refused, unknown modules are discarded, and unknown armour or core
-internals are replaced by that hull's stock modules. When the fitted set changes,
-captured mass, capacity and credit aggregates are recomputed rather than trusted. A
-stock replacement does not inherit the unknown module's engineering, power state,
-health or captured value.
+an unknown hull is refused; unknown modules in hardpoints, utilities, optional internals
+and unrecognised slots are discarded; and unknown or omitted fixed mounts are filled with
+that hull's stock armour, core internal or cargo hatch when one is known. Without a
+default, the mount remains empty and a required mount makes the build incomplete. When
+normalization changes the fitted set, captured mass, capacity and credit aggregates are
+recomputed rather than trusted. Filling a wholly absent cargo hatch is the exception:
+the known stock hatch has zero mass, capacity and price, so those figures remain valid.
+A stock replacement does not inherit the unknown module's engineering, power state,
+priority, health, captured value or other fields.
 
 `build.validation` therefore reports the fit that remains: optional, hardpoint and
-utility modules leave empty mounts and need no diagnostic, while the required core mounts
-remain complete through their stock replacements.
+utility modules leave empty mounts and need no diagnostic, while required armour and core
+mounts with known defaults remain complete through their stock replacements. `build.importOutcomes`
+is the frozen, machine-readable account of each change: the exact slot and source module,
+whether it was `emptied` or `defaulted`, and the replacement symbol when one was fitted.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -163,6 +169,7 @@ declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from a
 
 build.validation.issues; // -> structural problems in the normalized fit
 build.fittedModuleAt('Slot01_Size5'); // -> null if its imported symbol was unknown
+build.importOutcomes; // exact import changes for display or logging
 ```
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)

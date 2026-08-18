@@ -661,10 +661,10 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     assert.equal(unresolved.engineering, undefined);
     assert.equal(unresolved.effectiveStats!.powerDraw, 0.6);
     assert.equal(unresolved.raw.Value, undefined);
-    assert.equal(unresolvedBuild.unladenMass, capturedMass);
-    assert.equal(unresolvedBuild.cargoCapacity, capturedCargo);
-    assert.equal(unresolvedBuild.modulesValue, source.ModulesValue);
-    assert.equal(unresolvedBuild.rebuy, source.Rebuy);
+    assert.equal(unresolvedBuild.unladenMass, source.UnladenMass);
+    assert.equal(unresolvedBuild.cargoCapacity, source.CargoCapacity);
+    assert.equal(unresolvedBuild.modulesValue, null);
+    assert.equal(unresolvedBuild.rebuy, null);
 
     const futureVariant = ShipLoadout.fromLoadout({
         ...source,
@@ -792,9 +792,9 @@ test('a figure an import stated is handed back in the same shape as a calculated
     // They build the result through the same constructor the calculations use, so a
     // consumer cannot tell a stated answer from a summed one by its shape — and cannot
     // mutate either.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const imported = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [],
+        ...stock,
         UnladenMass: 45,
         CargoCapacity: 4,
         FuelCapacity: { Main: 2, Reserve: 0.3 },
@@ -819,8 +819,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
         rating: tank.rating,
     };
     const merged = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [{ Slot: 'FuelTank', Item: tank.symbol }],
+        ...stock,
         FuelCapacity: { Main: 8, Reserve: 9.99 },
     })
         .setModule('FuelTank', mysteryTank)
@@ -841,8 +840,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
     // merge that ignored the stated `Main` would silently zero the build's fuel and
     // with it its jump range.
     const mainOnly = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [],
+        ...stock,
         FuelCapacity: { Main: 9 },
     } as unknown as LoadoutEvent);
     assert.deepEqual(mainOnly.fuelCapacityResult.value, { main: 9, reserve: 0.3 });
@@ -967,26 +965,30 @@ test('fromLoadout works on a bare journal event', () => {
 });
 
 test('loadout inputs and returned raw records cannot mutate internal state', () => {
+    const sourceDrive = {
+        Slot: 'FrameShiftDrive',
+        Item: 'Int_Hyperdrive_Size6_Class5',
+        Engineering: {
+            BlueprintName: 'FSD_LongRange',
+            Level: 1,
+            Quality: 1,
+            Modifiers: [{ Label: 'FSDOptimalMass', Value: 1980, OriginalValue: 1800 }],
+        },
+    };
     const source = {
         Ship: 'anaconda',
         UnladenMass: 500,
         Modules: [
-            {
-                Slot: 'FrameShiftDrive',
-                Item: 'Int_Hyperdrive_Size6_Class5',
-                Engineering: {
-                    BlueprintName: 'FSD_LongRange',
-                    Level: 1,
-                    Quality: 1,
-                    Modifiers: [{ Label: 'FSDOptimalMass', Value: 1980, OriginalValue: 1800 }],
-                },
-            },
+            sourceDrive,
+            ...ShipLoadout.default('Anaconda')
+                .toLoadoutEvent()
+                .Modules.filter((module) => module.Slot !== 'FrameShiftDrive'),
         ],
     };
     const build = ShipLoadout.fromLoadout(source);
 
-    source.Modules[0]!.Item = 'int_hyperdrive_size99_class9_madeup';
-    source.Modules[0]!.Engineering.Modifiers[0]!.Value = 1;
+    sourceDrive.Item = 'int_hyperdrive_size99_class9_madeup';
+    sourceDrive.Engineering!.Modifiers![0]!.Value = 1;
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(build.frameShiftDrive.optMass, 1980);
 
@@ -1058,15 +1060,10 @@ test('an unpowered Guardian booster contributes no jump bonus', () => {
 });
 
 test('a build with no frame shift drive throws on a jump calculation', () => {
-    const noFsd: LoadoutEvent = {
-        Ship: 'sidewinder',
-        UnladenMass: 50,
-        FuelCapacity: { Main: 2, Reserve: 0.3 },
-        Modules: [{ Slot: 'CargoHatch', Item: 'modularcargobaydoor' }],
-    };
-    assert.throws(() => ShipLoadout.fromLoadout(noFsd).maxJumpRange(), /no frame shift drive/);
+    const noFsd = ShipLoadout.empty('SideWinder');
+    assert.throws(() => noFsd.maxJumpRange(), /no frame shift drive/);
     assert.throws(
-        () => ShipLoadout.fromLoadout(noFsd).jumpRangeSummary(),
+        () => noFsd.jumpRangeSummary(),
         (error: Error) => {
             assert.equal(error.name, 'TypeError');
             assert.match(error.message, /FrameShiftDrive.*no frame shift drive is fitted/);
@@ -1157,11 +1154,15 @@ test('the power plant and fuel tank are found by their declared slots', () => {
     // is taken at its word and counted as a tank. Because it carries no fuel-capacity
     // stat, the result becomes unknown rather than pretending the tank holds zero.
     const rack = getModuleBySymbol('Int_CargoRack_Size5_Class1', ALL_MODULES)!;
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
     const imported = ShipLoadout.fromLoadout({
-        Ship: 'anaconda',
+        ...source,
         UnladenMass: 400,
         FuelCapacity: { Main: 999, Reserve: 1.07 },
-        Modules: [{ Slot: 'Slot05_Size5', Item: rack.symbol, On: true }],
+        Modules: [
+            ...source.Modules.filter((module) => module.Slot !== 'Slot05_Size5'),
+            { Slot: 'Slot05_Size5', Item: rack.symbol, On: true },
+        ],
     } as LoadoutEvent);
     assert.equal(imported.fuelCapacity!.main, 999);
     imported.setModule('Slot05_Size5', { ...rack, slot: 'fuelTank' } as OutfittingModule);
@@ -1223,19 +1224,19 @@ test('a build missing UnladenMass throws on a mass-dependent calculation', () =>
     assert.ok(ShipLoadout.fromLoadout(noMass).unladenMass! > 0);
 });
 
-test('fallback mass resolves bulkheads and ignores stripped modules', () => {
+test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules', () => {
     const reactive: LoadoutEvent = {
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
-    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 460);
+    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 1080);
 
     const unresolved: LoadoutEvent = {
         Ship: 'anaconda',
         Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
     };
     const unresolvedBuild = ShipLoadout.fromLoadout(unresolved);
-    assert.equal(unresolvedBuild.unladenMass, 400);
+    assert.equal(unresolvedBuild.unladenMass, 1020);
 
     const stripped = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',
@@ -1265,10 +1266,7 @@ test("empty starts a hull with only its built-in hatch and the hull's declared s
             .filter((slot) => slot.kind !== 'cargoHatch')
             .every((slot) => slot.module === null),
     );
-    assert.deepEqual(
-        conda.powerBudget(),
-        ShipLoadout.fromLoadout({ Ship: 'Anaconda', Modules: [] }).powerBudget(),
-    );
+    assert.equal(conda.powerBudget().available, 0);
 });
 
 test('empty rejects a hull with no known layout', () => {

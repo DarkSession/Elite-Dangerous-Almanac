@@ -299,9 +299,21 @@ test('the classification examples in the fixture come out as the fixture says', 
             continue;
         }
         const stats = module(item);
+        const previous = ShipLoadout.fromLoadout({
+            Ship: 'krait_light',
+            Modules: [],
+        }).fittedModuleAt(slot)?.stats;
         assert.equal(exported.Value, stats.cost, slot);
-        assert.equal(event.ModulesValue, empty.ModulesValue! + stats.cost!, slot);
-        assert.equal(event.UnladenMass, empty.UnladenMass! + stats.mass!, slot);
+        assert.equal(
+            event.ModulesValue,
+            empty.ModulesValue! - (previous?.cost ?? 0) + stats.cost!,
+            slot,
+        );
+        assert.equal(
+            event.UnladenMass,
+            empty.UnladenMass! - (previous?.mass ?? 0) + stats.mass!,
+            slot,
+        );
     }
 });
 
@@ -309,9 +321,16 @@ test('shared import normalization strips unknown modules and defaults the core s
     const expected = fixture.importNormalization.expected;
     const build = ShipLoadout.fromLoadout(fixture.importNormalization.input);
     assert.deepEqual(build.fittedModules().map(normalizedModule), expected.modules);
+    assert.deepEqual(build.importOutcomes, expected.outcomes);
+    assert.ok(Object.isFrozen(build.importOutcomes));
+    assert.ok(build.importOutcomes.every(Object.isFrozen));
+    assert.deepEqual(
+        ShipLoadout.fromSlef(fixture.importNormalization.input).importOutcomes,
+        expected.outcomes,
+    );
     assert.deepEqual(
         {
-            unladenMass: build.unladenMass,
+            unladenMass: round6(build.unladenMass!),
             cargoCapacity: build.cargoCapacity,
             fuelCapacity: build.fuelCapacity,
             modulesValue: build.modulesValue,
@@ -1078,16 +1097,12 @@ test('a restricted mount survives a SLEF round trip under its journal name', () 
     // Re-importing puts every module back in the mount it came from, and the mount
     // still knows what it takes — so an edit after a round trip is still checked.
     const back = ShipLoadout.fromSlef(exported);
-    assert.deepEqual(
-        back
-            .fittedModules()
-            .map((module) => module.slot)
-            .sort(),
-        build
-            .fittedModules()
-            .map((module) => module.slot)
-            .sort(),
-    );
+    for (const module of build.fittedModules()) {
+        assert.equal(
+            back.fittedModuleAt(module.slot)?.symbol.toLowerCase(),
+            module.symbol.toLowerCase(),
+        );
+    }
     const mount = back.slots().find((s) => s.key === 'MediumMiningHardpoint1');
     assert.equal(mount?.restriction, 'mining');
     assert.ok(mount?.module);
@@ -1110,7 +1125,6 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
         ],
     };
     const build = ShipLoadout.fromLoadout(foreign);
-    assert.equal(build.fittedModules().length, 4);
     assert.equal(
         build.fittedModuleAt('MediumHardpoint1')?.symbol,
         'hpt_mining_subsurfdispmisle_fixed_medium',
@@ -1121,8 +1135,11 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
         undefined,
         'the hull has no plain MediumHardpoint1 — its first two mediums are mining mounts',
     );
+    const exportedSlots = build.toLoadoutEvent().Modules.map((m) => m.Slot);
     assert.deepEqual(
-        build.toLoadoutEvent().Modules.map((m) => m.Slot),
+        exportedSlots.filter((slot) =>
+            ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank', 'CargoHatch'].includes(slot),
+        ),
         ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank', 'CargoHatch'],
     );
 });

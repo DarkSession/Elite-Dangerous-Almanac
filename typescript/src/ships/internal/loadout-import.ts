@@ -16,10 +16,18 @@ import type {
     LoadoutModule,
     ModuleEngineering,
 } from '../slef.js';
+import type { LoadoutImportOutcome } from '../loadout-import-outcome.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
-import { cloneLoadoutModule, cloneModuleStats, isNonOutfittingSlot } from './loadout-state.js';
+import {
+    cloneLoadoutModule,
+    cloneModuleStats,
+    isNonOutfittingSlot,
+    matchingKeyIn,
+    ownKeyIn,
+} from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
+import { deepFreeze } from '../../internal/deep-freeze.js';
 import {
     describeValue,
     requireString,
@@ -47,6 +55,7 @@ export interface ImportedLoadoutState {
     readonly primitiveModifiers: Map<string, readonly EngineeringModifier[]>;
     readonly top: ImportedTopFigures;
     readonly sourcePurchase: SourcePurchaseRecord | null;
+    readonly outcomes: readonly LoadoutImportOutcome[];
 }
 
 /**
@@ -244,6 +253,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
 
     let invalidatesAggregates = false;
+    const outcomes: LoadoutImportOutcome[] = [];
     const defaults = getDefaultLoadout(event.Ship)?.modules ?? [];
     for (const [slot, module] of modules) {
         if (
@@ -263,9 +273,34 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                 Slot: slot,
                 Item: fallback.symbol,
             });
+            outcomes.push({
+                action: 'defaulted',
+                slot,
+                sourceSymbol: module.Item,
+                replacementSymbol: fallback.symbol,
+            });
         } else {
             modules.delete(slot);
+            outcomes.push({ action: 'emptied', slot, sourceSymbol: module.Item });
         }
+        invalidatesAggregates = true;
+    }
+    for (const fallback of defaults) {
+        const slotKind = parseSlotName(fallback.slot)?.kind;
+        if (
+            (slotKind !== 'core' && slotKind !== 'armour' && slotKind !== 'cargoHatch') ||
+            matchingKeyIn(modules, fallback.slot) !== null
+        ) {
+            continue;
+        }
+        const slot = ownKeyIn(modules, fallback.slot);
+        modules.set(slot, { Slot: slot, Item: fallback.symbol });
+        outcomes.push({
+            action: 'defaulted',
+            slot,
+            sourceSymbol: null,
+            replacementSymbol: fallback.symbol,
+        });
         if (slotKind !== 'cargoHatch') invalidatesAggregates = true;
     }
     if (invalidatesAggregates) {
@@ -378,5 +413,6 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         primitiveModifiers,
         top,
         sourcePurchase: sourcePurchaseFromLoadout(event),
+        outcomes: deepFreeze(outcomes),
     };
 }

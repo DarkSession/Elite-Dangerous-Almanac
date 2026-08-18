@@ -4363,7 +4363,7 @@
                             "On": { "type": "boolean" },
                             "Slot": { "type": "string" }
                           },
-                          "required": ["Item", "Slot"]
+                          "required": ["Item", "On", "Slot"]
                         }
                       },
                       "Ship": { "type": "string" }
@@ -6372,6 +6372,22 @@
                 },
                 "modules": { "$ref": "#/definitions/shared804cf70a4333" },
                 "modulesValue": { "type": "null" },
+                "outcomes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": { "type": "string" },
+                      "replacementSymbol": { "type": "string" },
+                      "slot": { "type": "string" },
+                      "sourceSymbol": {
+                        "anyOf": [{ "type": "string" }, { "type": "null" }]
+                      }
+                    },
+                    "required": ["action", "slot", "sourceSymbol"]
+                  }
+                },
                 "rebuy": { "type": "null" },
                 "unladenMass": { "type": "number" }
               },
@@ -6380,6 +6396,7 @@
                 "fuelCapacity",
                 "modules",
                 "modulesValue",
+                "outcomes",
                 "rebuy",
                 "unladenMass"
               ]

@@ -35,8 +35,18 @@
       "Ship": "SideWinder",
       "UnladenMass": 26,
       "Modules": [
+        { "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" },
+        { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
+        { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class1" },
         { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class2" },
-        { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" }
+        { "Slot": "LifeSupport", "Item": "Int_LifeSupport_Size1_Class1" },
+        {
+          "Slot": "PowerDistributor",
+          "Item": "Int_PowerDistributor_Size1_Class1"
+        },
+        { "Slot": "Radar", "Item": "Int_Sensors_Size1_Class1" },
+        { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" },
+        { "Slot": "CargoHatch", "Item": "ModularCargoBayDoor" }
       ]
     },
     "options": { "fuel": 2 },

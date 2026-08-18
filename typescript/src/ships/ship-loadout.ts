@@ -160,6 +160,8 @@ import type { FittedModule } from './fitted-module.js';
 export type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
+import type { LoadoutImportOutcome } from './loadout-import-outcome.js';
+export type { LoadoutImportOutcome } from './loadout-import-outcome.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
 import { fixedSlotReason } from './internal/loadout-slot-rules.js';
 import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
@@ -735,6 +737,7 @@ export class ShipLoadout {
     readonly #primitiveModifiers: Map<string, readonly EngineeringModifier[]>;
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
+    readonly #importOutcomes: readonly LoadoutImportOutcome[];
     /** Frozen slot views by filter; the two module mutation paths clear it. */
     readonly #slotCache = new Map<SlotKind | undefined, readonly LoadoutSlot[]>();
     /** The hull's expanded mounts, populated on first use. */
@@ -748,6 +751,7 @@ export class ShipLoadout {
         sourcePurchase: SourcePurchaseRecord | null = null,
         moduleStats = new Map<string, OutfittingModule>(),
         primitiveModifiers = new Map<string, readonly EngineeringModifier[]>(),
+        importOutcomes: readonly LoadoutImportOutcome[] = deepFreeze([]),
     ) {
         this.#ship = ship;
         this.#shipSymbol = shipSymbol;
@@ -756,6 +760,7 @@ export class ShipLoadout {
         this.#sourcePurchase = sourcePurchase;
         this.#moduleStats = moduleStats;
         this.#primitiveModifiers = primitiveModifiers;
+        this.#importOutcomes = importOutcomes;
     }
 
     /**
@@ -766,6 +771,8 @@ export class ShipLoadout {
      * @param index - Which entry to take when the export holds several builds.
      * Defaults to the first.
      * @returns The loadout for that entry.
+     * @remarks Module normalization follows {@link ShipLoadout.fromLoadout}; inspect
+     * {@link importOutcomes} for modules that were emptied or defaulted.
      * @throws {SyntaxError} If `input` is a string that is not valid JSON.
      * @throws {TypeError} If the export holds no usable loadout, `index` is out of range,
      * or the selected entry names a hull absent from the catalogue.
@@ -823,18 +830,27 @@ export class ShipLoadout {
      *
      * Catalogue-backed modules are imported as one complete snapshot: their array order
      * does not affect per-ship count allowances, and any aggregate violation is reported
-     * by {@link validation}. An unrecognised module is discarded; in an armour or
-     * core-internal mount the hull's stock module is installed instead. If stripping or
-     * replacing a module changes the captured fit, live mass, capacity and credit
-     * aggregates are recomputed rather than trusted. Use this factory rather than
-     * replaying a complete loadout through the incremental {@link setModule} editor. A
-     * stock replacement retains none of the unrecognised module's engineering, power
-     * state, health or captured value.
-     * A known hull's non-removable cargo hatch is restored from its default loadout when
-     * the capture omits it or supplies an unresolved item for that mount. Because that
-     * hatch has zero mass, capacity and price, restoration preserves the build's live
-     * aggregate mass, capacity and credit figures. Source-credit export retains its
-     * totals only when the captured hatch was unpriced or valued at zero.
+     * by {@link validation}. An unrecognised module in a hardpoint, utility, optional
+     * internal, or unrecognised slot is discarded. Armour, all seven core internals,
+     * and the cargo hatch are fixed mounts: an unresolved module there is replaced with
+     * the hull's stock module, and an omitted fixed mount is filled from the same default
+     * loadout.
+     * If no default exists, the mount remains empty and {@link validation} reports an
+     * incomplete build where the mount is required. Every change is recorded by
+     * {@link importOutcomes}.
+     *
+     * Any normalization that changes mass, capacity, or price makes the corresponding
+     * captured aggregate untrustworthy, so live aggregates are recomputed from the fit
+     * that remains. Use this factory rather than replaying a complete loadout through
+     * the incremental {@link setModule} editor. A stock replacement retains none of the
+     * unrecognised module's engineering, power state, priority, health, captured value,
+     * or other source fields.
+     *
+     * The cargo hatch is the zero-mass, zero-capacity, zero-price exception only when it
+     * was absent: filling an empty hatch preserves the build's live aggregate mass,
+     * capacity and credit figures. Replacing an unresolved hatch invalidates them because
+     * the discarded source article's contributions are unknown. Source-credit export
+     * retains its totals only when the captured hatch was unpriced or valued at zero.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -882,21 +898,7 @@ export class ShipLoadout {
 
     /** Assemble already-normalized state whose hull has been resolved. */
     static #fromImported(imported: ImportedLoadoutState, ship: Ship): ShipLoadout {
-        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find((module) =>
-            isCargoHatchSlot(module.slot),
-        );
-        const capturedHatchKey =
-            defaultHatch === undefined ? null : matchingKeyIn(imported.modules, defaultHatch.slot);
-        const capturedHatch =
-            capturedHatchKey === null ? undefined : imported.modules.get(capturedHatchKey);
-        if (defaultHatch && capturedHatch === undefined) {
-            const ownSlot = ownKeyIn(imported.modules, defaultHatch.slot);
-            imported.modules.set(ownSlot, {
-                Slot: ownSlot,
-                Item: defaultHatch.symbol,
-            });
-        }
-        const build = new ShipLoadout(
+        return new ShipLoadout(
             ship,
             imported.shipSymbol,
             imported.modules,
@@ -904,11 +906,8 @@ export class ShipLoadout {
             imported.sourcePurchase,
             imported.moduleStats,
             imported.primitiveModifiers,
+            imported.outcomes,
         );
-        if (capturedHatch !== undefined && !isBuiltInHullModule(capturedHatch)) {
-            build.repairFixedMount(capturedHatch.Slot);
-        }
-        return build;
     }
 
     /**
@@ -1171,6 +1170,25 @@ export class ShipLoadout {
      */
     get sourcePurchase(): SourcePurchaseRecord | null {
         return this.#sourcePurchase;
+    }
+
+    /**
+     * Changes made while importing this build, in source order followed by absent
+     * fixed mounts in hull-default order.
+     *
+     * @returns A deeply frozen list. It is empty for builds created with
+     * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
+     * needed no normalization.
+     * @remarks
+     * Each entry names the exact slot and unresolved source identity. An `emptied`
+     * outcome means import removed an unknown module from a hardpoint, utility, optional
+     * internal, or unrecognised slot—or from a fixed mount for which no default exists.
+     * A `defaulted` outcome names the stock replacement fitted to armour, a core internal,
+     * or the cargo hatch; its `sourceSymbol` is `null` when the source omitted that fixed
+     * mount entirely.
+     */
+    get importOutcomes(): readonly LoadoutImportOutcome[] {
+        return this.#importOutcomes;
     }
 
     /**

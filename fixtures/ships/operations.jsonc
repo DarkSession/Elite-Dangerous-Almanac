@@ -128,7 +128,16 @@
         "Modules": [
           { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" }
+          { "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" },
+          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class1" },
+          { "Slot": "LifeSupport", "Item": "Int_LifeSupport_Size1_Class1" },
+          {
+            "Slot": "PowerDistributor",
+            "Item": "Int_PowerDistributor_Size1_Class1"
+          },
+          { "Slot": "Radar", "Item": "Int_Sensors_Size1_Class1" },
+          { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" },
+          { "Slot": "CargoHatch", "Item": "ModularCargoBayDoor" }
         ]
       },
       "options": { "fuel": 2 },
@@ -352,7 +361,7 @@
       "loadout": {
         "Ship": "Anaconda",
         "Modules": [
-          { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
+          { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class5" },
           {
             "Slot": "PowerDistributor",
             "Item": "Int_PowerDistributor_Size6_Class2",
@@ -413,33 +422,13 @@
         "pips": { "systems": 1, "engines": 3, "weapons": 2 }
       },
       "nullLoadouts": [
-        { "Ship": "Anaconda", "Modules": [] },
         {
           "Ship": "Anaconda",
           "Modules": [
-            { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size8_Class1" },
             {
               "Slot": "PowerDistributor",
               "Item": "Int_PowerDistributor_Size8_Class1",
               "On": false
-            }
-          ]
-        },
-        {
-          "Ship": "Anaconda",
-          "Modules": [
-            {
-              "Slot": "PowerDistributor",
-              "Item": "Int_PowerDistributor_Size8_Class1"
-            }
-          ]
-        },
-        {
-          "Ship": "Anaconda",
-          "Modules": [
-            {
-              "Slot": "PowerDistributor",
-              "Item": "Int_PowerDistributor_Future"
             }
           ]
         }
