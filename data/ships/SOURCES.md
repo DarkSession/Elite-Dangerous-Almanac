@@ -1494,12 +1494,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Expanded Cargo Rack is a fixed reward identity, not an ordinary cargo-rack recipe.**
   EDSY and coriolis expose `CargoRack_IncreasedCapacity` as the grade-5 identity carried
   by the size-5 and size-6 community-goal articles catalogued in `pre-engineered.jsonc`.
-  Coriolis supplies no components, which is silence about acquisition rather than
-  evidence of a free engineer roll. Cargo racks therefore have no ordinary engineering
-  group; the fixed articles keep their sourced modifier blocks and remain identifiable
-  without granting the same state to a stock rack. A re-derivation must drop the
-  `cargoRacks` group, all 16 module mappings, and the corresponding projected `kind`
-  fields in `modules-internal.jsonc`.
+  Direct in-game menu confirmation recorded 2026-08-18 UTC establishes that none of the
+  16 stock cargo-rack identities — ordinary, corrosion-resistant, or Mk II — has an
+  ordinary engineering menu; there is no immutable revision for an in-game observation.
+  The fixed articles keep their sourced modifier blocks and remain identifiable without
+  granting the same state to a stock rack. A re-derivation must drop the `cargoRacks`
+  group, all 16 module mappings, and the corresponding projected `kind` fields in
+  `modules-internal.jsonc`.
 - **An empty experimental menu is still distinct from no menu.** 29 of the 51 groups offer
   no experimental at all, so 371 of the 1010 grouped modules have an empty experimental
   list while retaining blueprints.

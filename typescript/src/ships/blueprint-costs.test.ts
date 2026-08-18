@@ -16,10 +16,14 @@ const countFor = (materials: readonly { symbol: string; count: number }[] | null
     materials?.find((material) => material.symbol === symbol)?.count;
 
 test('every craft-cost entry matches its mechanics grades', () => {
+    const craftable = Object.keys(BLUEPRINTS).filter(
+        (fdname) => fdname !== 'CargoRack_IncreasedCapacity',
+    );
     assert.deepEqual(
         Object.keys(BLUEPRINTS).filter((fdname) => !(fdname in BLUEPRINT_COSTS)),
         ['CargoRack_IncreasedCapacity'],
     );
+    assert.deepEqual(Object.keys(BLUEPRINT_COSTS), craftable);
     for (const [fdname, costs] of Object.entries(BLUEPRINT_COSTS)) {
         assert.deepEqual(Object.keys(costs), Object.keys(BLUEPRINTS[fdname]!.grades), fdname);
     }

@@ -452,7 +452,11 @@ test('the final pre-engineered corpus entries are exactly the ones the fixture n
                 (entry.experimental ?? null) === (row.experimental ?? null),
         );
         assert.equal(matches.length, row.entries, `${row.symbol}: ${row.blueprint}`);
-        assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
+        if (isFinalGuardianWeaponEngineering(row.symbol, row.blueprint)) {
+            assert.deepEqual(getBlueprintsForModule(row.symbol), ['GuardianModule_Sturdy']);
+        } else {
+            assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
+        }
         assert.deepEqual(getExperimentalsForModule(row.symbol), []);
         assert.ok(
             isFinalGuardianWeaponEngineering(row.symbol, row.blueprint) ||

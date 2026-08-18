@@ -9,12 +9,12 @@
  * each group lists what it offers.
  *
  * The catalogue groups 1010 of the 1199 modules — every stock module with an ordinary
- * engineering menu. The other 189 have no ordinary menu: whole families (fuel tanks, cargo racks, passenger cabins,
- * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
- * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
- * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
- * Supercruise Assist, the module stabilisers, the planetary approach suites, the cargo
- * hatch and the AX utility modules), plus the individual
+ * engineering menu. The other 189 have no ordinary menu: whole families (fuel tanks,
+ * cargo racks, passenger cabins, the repair, recon, research, decontamination and
+ * multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
+ * Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and vehicle
+ * hangars, docking computers and Supercruise Assist, the module stabilisers, the planetary
+ * approach suites, the cargo hatch and the AX utility modules), plus the individual
  * modules denied every ordinary blueprint — every anti-xeno multi-cannon but the two
  * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, all seven
  * mining tools, the remote-release launchers and the Mk II Plasma Shock
@@ -186,11 +186,11 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"this stock module has no ordinary engineering menu"**. For most
- * ungrouped modules that is the same as "cannot be engineered". Some instead have
+ * `null` means **"this stock module has no ordinary engineering menu"**. For 184 of the
+ * 189 ungrouped modules that is the same as "cannot be engineered". Five instead have
  * separately acquired pre-engineered variants: the fixed Mining Laser and Abrasion
- * Blaster, cargo racks, and size-5 class-2 Module Reinforcement Package have no stock
- * menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
+ * Blaster, size-5 and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package
+ * have no stock menu while their qualifying Mercenary articles retain their bespoke upgrade routes.
  * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
  * Accelerator, which upstream denies every blueprint.
  *

@@ -1913,6 +1913,14 @@ test('stock cargo racks cannot acquire a fixed reward identity as engineering', 
         () => build.applyBlueprint(slot, 'CargoRack_IncreasedCapacity', { grade: 5 }),
         /not offered/,
     );
+
+    const variant = getPreEngineeredVariants('Int_CargoRack_Size5_Class1').find(
+        (candidate) => candidate.blueprint === 'CargoRack_IncreasedCapacity',
+    )!;
+    assert.equal(getPreEngineeredStats(variant)?.cargoCapacity, 43);
+    const reward = ShipLoadout.empty('Python').setPreEngineeredVariant(slot, variant);
+    assert.equal(reward.cargoCapacity, 43);
+    assert.equal(reward.fittedModuleAt(slot)?.preEngineeredVariant?.acquisition, 'communityGoal');
 });
 
 test('applyBlueprint validates the slot, blueprint and experimental', () => {
