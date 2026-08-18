@@ -100,6 +100,20 @@ test('ordinary and under-specified engineering is not guessed to be pre-engineer
     assert.equal(
         identifyPreEngineeredVariant({
             Slot: 'x',
+            Item: 'Hpt_ATDumbfireMissile_Fixed_Medium',
+            Engineering: {
+                BlueprintName: 'Weapon_HighCapacity',
+                Level: 5,
+                Quality: 1,
+                ExperimentalEffect_Localised: 'Corrosive Shell',
+            },
+        }),
+        null,
+        'a localized-only experimental is not a complete fixed identity',
+    );
+    assert.equal(
+        identifyPreEngineeredVariant({
+            Slot: 'x',
             Item: 'not_a_real_module',
             Engineering: matched.Engineering!,
         }),

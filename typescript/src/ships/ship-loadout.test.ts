@@ -3031,7 +3031,15 @@ test('fixed Enzyme and AX variants expose no engineering', () => {
                 'Weapon_Overcharged',
             );
         }
-        const imported = ShipLoadout.fromLoadout(event);
+        const imported = ShipLoadout.fromLoadout({
+            ...event,
+            Modules: event.Modules.map((module) => {
+                if (module.Slot !== 'MediumHardpoint1') return module;
+                const { Modifiers: omitted, ...identity } = module.Engineering!;
+                void omitted;
+                return { ...module, Engineering: identity };
+            }),
+        });
         assert.equal(
             imported.fittedModuleAt('MediumHardpoint1')?.stats?.engineeringLocked,
             true,
@@ -3042,6 +3050,30 @@ test('fixed Enzyme and AX variants expose no engineering', () => {
             /is a final pre-engineered article and its engineering cannot be removed/,
         );
     }
+});
+
+test('the modifier-less Inara AX capture restores its fixed articles', () => {
+    const build = ShipLoadout.fromSlef(cutterCapture);
+    const captured = cutterCapture[0]!.data.Modules.filter((module) =>
+        module.Item.includes('atmulticannon'),
+    );
+    assert.equal(captured.length, 4);
+    for (const module of captured) {
+        assert.ok(module.Engineering);
+        assert.equal('Modifiers' in module.Engineering, false, module.Slot);
+        const fitted = build.fittedModuleAt(module.Slot)!;
+        const variant = getPreEngineeredVariants(module.Item).find(
+            (candidate) => candidate.acquisition === 'techBroker',
+        )!;
+        assert.equal(fitted.stats?.engineeringLocked, true, module.Slot);
+        assert.equal(fitted.stats?.damage, getPreEngineeredStats(variant)?.damage, module.Slot);
+        assert.equal(fitted.preEngineeredVariant, variant, module.Slot);
+        assert.throws(
+            () => build.clearEngineering(module.Slot),
+            /is a final pre-engineered article and its engineering cannot be removed/,
+        );
+    }
+    assert.equal(build.fittedModuleAt('mediumhardpoint3')?.stats?.damage, 1.232);
 });
 
 test('an imported legacy AX stock roll is not mistaken for a fixed reward', () => {
@@ -3136,6 +3168,27 @@ test('imported Guardian purchase identities remain final articles', () => {
             /is a final pre-engineered article and its engineering cannot be removed/,
         );
     }
+});
+
+test('a Guardian catalogue article with an added experimental keeps article stats', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: 'Hpt_Guardian_PlasmaLauncher_Fixed_Medium',
+                Engineering: {
+                    BlueprintName: 'Weapon_Overcharged',
+                    Level: 1,
+                    Quality: 1,
+                    ExperimentalEffect: 'special_super_penetrator_cooled',
+                },
+            },
+        ],
+    });
+    const fitted = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.equal(fitted.stats?.engineeringLocked, true);
+    assert.equal(fitted.stats?.damage, 4.15);
 });
 
 test('imported Anti-Guardian Zone Resistance remains an engineerable stock article', () => {
