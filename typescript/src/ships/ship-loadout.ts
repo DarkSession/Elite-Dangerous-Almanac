@@ -95,8 +95,10 @@ import {
     cloneModuleStats,
     FITTED_ITEM,
     isBuiltInHullModule,
+    isCargoHatchSlot,
     isNonOutfittingSlot,
     matchingKeyIn,
+    ownKeyIn,
     orderBySlotLayout,
 } from './internal/loadout-state.js';
 import {
@@ -282,6 +284,41 @@ export class LoadoutEditError extends TypeError {
         if (constraint !== undefined) this.constraint = constraint;
     }
 }
+
+/** Result of {@link ShipLoadout.repairFixedMount}, discriminated by `status`. */
+export type FixedMountRepairResult =
+    | {
+          /** The hull default was installed. */
+          readonly status: 'repaired';
+          /** Slot key in the build's own spelling. */
+          readonly slot: string;
+          /** Installed module symbol. */
+          readonly symbol: string;
+      }
+    | {
+          /** The fixed mount already held a valid module. */
+          readonly status: 'unchanged';
+          /** Slot key in the build's own spelling. */
+          readonly slot: string;
+          /** Current module symbol. */
+          readonly symbol: string;
+      }
+    | {
+          /** No resolvable hull default exists for the fixed mount. */
+          readonly status: 'defaultUnavailable';
+          /** Slot key in the build's own spelling when one exists, otherwise the request. */
+          readonly slot: string;
+          /** Default module symbol, when the loadout names one but its stats are unavailable. */
+          readonly symbol?: string;
+      }
+    | {
+          /** The requested mount is not fixed. */
+          readonly status: 'refused';
+          /** Slot key in the build's own spelling when one exists, otherwise the request. */
+          readonly slot: string;
+          /** Stable refusal reason. */
+          readonly reason: 'notFixedMount';
+      };
 
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
@@ -576,7 +613,10 @@ export interface LoadoutExportOptions {
      * `ModulesValue` and `Rebuy` are dropped once any priced module has been swapped or
      * removed, since they then cover an article no longer aboard. Removing a module the
      * capture listed but never priced is the one case this cannot detect: only the
-     * capture ever knew which unpriced modules its total counted.
+     * capture ever knew which unpriced modules its total counted. The built-in cargo hatch
+     * is never purchasable, so normalising an unpriced or zero-priced captured hatch does
+     * not invalidate the totals. A non-zero captured hatch value is treated like any
+     * other priced replaced article.
      *
      * `HullValue` always stands: a captured hull figure names no slot, so no edit
      * narrows it. Note that on a game capture it counts the hull *with* its stock
@@ -761,7 +801,10 @@ export class ShipLoadout {
      * {@link validation}. Use this factory rather than replaying a complete loadout
      * through the incremental {@link setModule} editor.
      * A known hull's non-removable cargo hatch is restored from its default loadout when
-     * the capture omits it or supplies an unresolved item for that mount.
+     * the capture omits it or supplies an unresolved item for that mount. Because that
+     * hatch has zero mass, capacity and price, restoration preserves the build's live
+     * aggregate mass, capacity and credit figures. Source-credit export retains its
+     * totals only when the captured hatch was unpriced or valued at zero.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -802,34 +845,21 @@ export class ShipLoadout {
             );
         }
         const imported = normalizeLoadoutEvent(event);
-        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find(
-            (module) => module.slot.toLowerCase() === 'cargohatch',
+        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find((module) =>
+            isCargoHatchSlot(module.slot),
         );
-        if (defaultHatch) {
-            const key = matchingKeyIn(imported.modules, defaultHatch.slot);
-            const captured = key === null ? undefined : imported.modules.get(key);
-            if (captured === undefined) {
-                const ownSlot =
-                    imported.modules.size > 0 &&
-                    [...imported.modules.keys()].every((slot) => slot === slot.toLowerCase())
-                        ? defaultHatch.slot.toLowerCase()
-                        : defaultHatch.slot;
-                imported.modules.set(ownSlot, {
-                    Slot: ownSlot,
-                    Item: defaultHatch.symbol,
-                });
-            } else if (!isBuiltInHullModule(captured)) {
-                imported.modules.set(key!, {
-                    Slot: captured.Slot,
-                    Item: defaultHatch.symbol,
-                    ...(captured.On === undefined ? {} : { On: captured.On }),
-                    ...(captured.Priority === undefined ? {} : { Priority: captured.Priority }),
-                    ...(captured.Health === undefined ? {} : { Health: captured.Health }),
-                });
-                imported.moduleStats.delete(key!);
-            }
+        const capturedHatchKey =
+            defaultHatch === undefined ? null : matchingKeyIn(imported.modules, defaultHatch.slot);
+        const capturedHatch =
+            capturedHatchKey === null ? undefined : imported.modules.get(capturedHatchKey);
+        if (defaultHatch && capturedHatch === undefined) {
+            const ownSlot = ownKeyIn(imported.modules, defaultHatch.slot);
+            imported.modules.set(ownSlot, {
+                Slot: ownSlot,
+                Item: defaultHatch.symbol,
+            });
         }
-        return new ShipLoadout(
+        const build = new ShipLoadout(
             imported.shipSymbol,
             imported.modules,
             imported.top,
@@ -837,6 +867,10 @@ export class ShipLoadout {
             imported.moduleStats,
             imported.primitiveModifiers,
         );
+        if (capturedHatch !== undefined && !isBuiltInHullModule(capturedHatch)) {
+            build.repairFixedMount(capturedHatch.Slot);
+        }
+        return build;
     }
 
     /**
@@ -867,8 +901,8 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        const hatch = getDefaultLoadout(layout.symbol)?.modules.find(
-            (module) => module.slot.toLowerCase() === 'cargohatch',
+        const hatch = getDefaultLoadout(layout.symbol)?.modules.find((module) =>
+            isCargoHatchSlot(module.slot),
         );
         const modules = new Map<string, LoadoutModule>();
         if (hatch) {
@@ -1329,6 +1363,97 @@ export class ShipLoadout {
                 (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)) &&
                 this.#moduleLimitRegression(slot.key, module, currentLimits, currentStats) === null,
         );
+    }
+
+    /**
+     * Restore a missing, unresolved or invalid fixed mount from this hull's stock loadout.
+     *
+     * @remarks
+     * This is the narrow repair path for mounts that {@link setModule} deliberately does
+     * not expose as ordinary edits, including the built-in cargo hatch. Live aggregates
+     * are updated by the same rules as every package-owned refit. The immutable
+     * {@link sourcePurchase} record is unchanged; source-credit export leaves a replaced
+     * slot unpriced, while its aggregate totals remain valid for an unpriced or
+     * zero-priced cargo hatch. Resolved valid core and armour alternatives are left
+     * unchanged.
+     *
+     * @param slotKey - Fixed slot key, matched case-insensitively.
+     * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
+     * @throws {TypeError} If `slotKey` is not a string.
+     * @throws {RangeError} If a known hull has no slot with that key.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const imported: ShipLoadout;
+     * const result = imported.repairFixedMount('CargoHatch');
+     * if (result.status === 'repaired') console.log(result.symbol.toLowerCase());
+     * ```
+     */
+    repairFixedMount(slotKey: string): FixedMountRepairResult {
+        const requested = requireString(slotKey, SLOT_KEY);
+        const wanted = requested.toLowerCase();
+        const layout = this.#layoutOrNull();
+        const slot = layout?.find((candidate) => candidate.key.toLowerCase() === wanted);
+        if (layout !== null && slot === undefined) this.#requireSlot(requested);
+        const classification = slot ?? parseSlotName(requested);
+        const fittedKey = this.#fittedKey(requested);
+        const resultSlot = fittedKey ?? requested;
+        const canonicalKey = slot?.key ?? requested;
+        if (classification === null || fixedSlotReason(classification) === null) {
+            return deepFreeze({ status: 'refused', slot: resultSlot, reason: 'notFixedMount' });
+        }
+
+        const current = this.#fittedModuleFor(requested);
+        const currentStats = current ? this.#statsFor(current) : null;
+        const valid =
+            current !== undefined &&
+            currentStats !== null &&
+            (classification.kind === 'cargoHatch'
+                ? isBuiltInHullModule(current)
+                : slot !== undefined &&
+                  moduleFitProblem(this.#shipSymbol, slot, currentStats) === null);
+        if (valid) {
+            return deepFreeze({
+                status: 'unchanged',
+                slot: current.Slot,
+                symbol: current.Item,
+            });
+        }
+
+        const defaultModule = getDefaultLoadout(this.#shipSymbol)?.modules.find(
+            (module) => module.slot.toLowerCase() === wanted,
+        );
+        if (!defaultModule) {
+            return deepFreeze({ status: 'defaultUnavailable', slot: resultSlot });
+        }
+        const ownKey = ownKeyIn(this.#modules, canonicalKey);
+        const replacement = {
+            Slot: ownKey,
+            Item: defaultModule.symbol,
+            ...(current?.On === undefined ? {} : { On: current.On }),
+            ...(current?.Priority === undefined ? {} : { Priority: current.Priority }),
+            ...(current?.Health === undefined ? {} : { Health: current.Health }),
+        };
+        const replacementStats =
+            builtInModuleBySymbol(defaultModule.symbol, 'ShipLoadout.repairFixedMount') ??
+            (isBuiltInHullModule(replacement)
+                ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout.repairFixedMount')
+                : null);
+        if (!replacementStats) {
+            return deepFreeze({
+                status: 'defaultUnavailable',
+                slot: resultSlot,
+                symbol: defaultModule.symbol,
+            });
+        }
+
+        this.#replaceModule(ownKey, replacement, replacementStats);
+        return deepFreeze({
+            status: 'repaired',
+            slot: ownKey,
+            symbol: defaultModule.symbol,
+        });
     }
 
     /**
@@ -3417,6 +3542,15 @@ export class ShipLoadout {
         if (normalizeKey(previous?.Item, FITTED_ITEM) === normalizeKey(next?.Item, FITTED_ITEM)) {
             return;
         }
+        // A cargo hatch is part of the hull and has no purchase price. Normalising its
+        // captured identity therefore does not change either credit aggregate. Only
+        // repairFixedMount can replace this slot; the ordinary editors reject it.
+        if (
+            (previous !== null && isCargoHatchSlot(previous.Slot)) ||
+            (next !== null && isCargoHatchSlot(next.Slot))
+        ) {
+            return;
+        }
 
         // No catalogue carries post-purchase module value or rebuy changes.
         delete this.#top.ModulesValue;
@@ -3427,27 +3561,23 @@ export class ShipLoadout {
      * A module's post-engineering mass, `0` for no module, or `null` if unknown.
      *
      * @remarks
-     * Classified the same way as {@link #moduleValue}: the catalogue first, the slot only
-     * for an article it cannot identify, and then only to ask whether it is a mount.
+     * The fixed cargo-hatch slot is always massless. Other modules use their engineering
+     * modifier or catalogue record; an unresolved non-outfitting slot is also massless.
      */
     #moduleMass(module: LoadoutModule | null, statsOverride?: OutfittingModule): number | null {
         if (module === null) return 0;
+        if (isCargoHatchSlot(module.Slot)) return 0;
         const modified = getLoadoutModifier(module, 'Mass');
         if (modified !== null) return modified;
         const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.mass !== undefined) return stats.mass;
-        // The cargo hatch is built into the hull and weighs nothing, and its id varies by
-        // hull family: a Lynx Highliner fits `ModularCargoBayDoorFDL` where most hulls fit
-        // `ModularCargoBayDoor`. Matching the family rather than the one id is what lets a
-        // capture of such a hull compute a mass at all — Frontier's own `UnladenMass` for
-        // that capture agrees once the hatch contributes zero.
-        if (isBuiltInHullModule(module)) return 0;
         return stats === null && isNonOutfittingSlot(module.Slot) ? 0 : null;
     }
 
     /**
-     * A fitted module's post-engineering cargo/fuel capacity. Missing stats are
-     * unknown only for symbols that identify the corresponding capacity module.
+     * A fitted module's post-engineering cargo/fuel capacity. The cargo hatch carries
+     * neither; elsewhere, missing stats are unknown only for symbols that identify the
+     * corresponding capacity module.
      */
     #moduleCapacity(
         module: LoadoutModule | null,
@@ -3456,6 +3586,7 @@ export class ShipLoadout {
         statsOverride?: OutfittingModule,
     ): number | null {
         if (module === null) return 0;
+        if (isCargoHatchSlot(module.Slot)) return 0;
         const modified = getLoadoutModifier(module, modifierLabel);
         if (modified !== null) return modified;
         const stats = statsOverride ?? this.#statsFor(module);
