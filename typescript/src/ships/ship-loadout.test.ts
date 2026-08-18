@@ -3031,30 +3031,51 @@ test('fixed Enzyme and AX variants expose no engineering', () => {
                 'Weapon_Overcharged',
             );
         }
-        const partial = ShipLoadout.fromLoadout({
-            ...event,
-            Modules: event.Modules.map((module) =>
-                module.Slot === 'MediumHardpoint1'
-                    ? {
-                          ...module,
-                          Engineering: {
-                              ...module.Engineering!,
-                              Modifiers: module.Engineering!.Modifiers!.slice(0, 1),
-                          },
-                      }
-                    : module,
-            ),
-        });
+        const imported = ShipLoadout.fromLoadout(event);
         assert.equal(
-            partial.fittedModuleAt('MediumHardpoint1')?.stats?.engineeringLocked,
+            imported.fittedModuleAt('MediumHardpoint1')?.stats?.engineeringLocked,
             true,
             symbol,
         );
         assert.throws(
-            () => partial.clearEngineering('MediumHardpoint1'),
+            () => imported.clearEngineering('MediumHardpoint1'),
             /is a final pre-engineered article and its engineering cannot be removed/,
         );
     }
+});
+
+test('an imported legacy AX stock roll is not mistaken for a fixed reward', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: 'Hpt_ATDumbfireMissile_Fixed_Medium',
+                Engineering: {
+                    BlueprintName: 'Weapon_HighCapacity',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: 'AmmoMaximum', Value: 128, OriginalValue: 64 },
+                        { Label: 'Mass', Value: 6.4, OriginalValue: 4 },
+                    ],
+                },
+            },
+        ],
+    });
+    const fitted = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.equal(fitted.stats?.engineeringLocked, undefined);
+    assert.equal(fitted.stats?.damage, 27);
+    assert.equal(fitted.stats?.ammoMaximum, 64);
+    assert.equal(fitted.stats?.mass, 4);
+    assert.equal(fitted.effectiveStats?.damage, 27);
+    assert.equal(fitted.effectiveStats?.ammoMaximum, 128);
+    assert.equal(fitted.effectiveStats?.mass, 6.4);
+    build.clearEngineering('MediumHardpoint1');
+    const cleared = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.equal(cleared.engineering, undefined);
+    assert.equal(cleared.effectiveStats?.ammoMaximum, 64);
+    assert.equal(cleared.effectiveStats?.mass, 4);
 });
 
 test('imported Guardian purchase identities remain final articles', () => {

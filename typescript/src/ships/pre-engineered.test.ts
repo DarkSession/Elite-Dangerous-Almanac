@@ -15,6 +15,7 @@ import {
     blueprintAvailableFor,
     missingBaseLabels,
 } from './internal/loadout-engineering.js';
+import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -260,6 +261,17 @@ test('every Mercenary variant names the recipe its own module rolls', () => {
             resolveBlueprintForModule(variant.symbol, variant.blueprint),
             variant.blueprint,
             `${variant.symbol}: ${variant.blueprint} resolves to another recipe on its own module`,
+        );
+    }
+});
+
+test('every fixed variant retains its journal blueprint identity', () => {
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        if (variant.acquisition === 'mercenary') continue;
+        assert.equal(
+            Object.hasOwn(BLUEPRINT_JOURNAL_NAMES, variant.blueprint),
+            false,
+            `${variant.symbol}: ${variant.blueprint} is a recipe id, not its journal identity`,
         );
     }
 });
