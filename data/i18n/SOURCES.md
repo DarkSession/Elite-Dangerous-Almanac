@@ -107,31 +107,82 @@ translation.
   same Brazilian Portuguese game text. `pt-BR` lookups resolve these values through the
   regional-to-language fallback.
 
-## Deliberate absence: ship names
+## `ship-names.jsonc`
 
-- **Acquired:** 2026-08-14 UTC.
+- **Acquired:** 2026-08-18 UTC.
 - **Odyssey Materials Helper revision:** commit
   `23343c453938e724f317c56e9eb7db0dbfa71f78`;
   `application/src/main/resources/locale/ships/ships.csv` has SHA-256
   `6785f7cea00f36ca0a853091fd88f8ed5481a60f55c269643bff1ab0c3d6993d`.
 - **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
   database version `424009901`, last-modified marker `20260810`.
-- **Evaluation:** each of the 48 current ship symbols is joined to Odyssey Materials
+- **Derivation:** each of the 48 current ship symbols and canonical English names comes
+  from `data/ships/ships.jsonc`. The symbol is joined to Odyssey Materials
   Helper's `ships.name.*` key after removing punctuation and folding case. EDSY's
   `eddb.js` `ship.fdname` supplies the second join, with explicit `ship-<id>` language
   entries filling locales absent from the CSV. The resulting source-backed coverage is
-  44 ships in Spanish, 42 in French, 38 in Portuguese, 45 in Russian and 44 in Chinese;
+  48 ships in Spanish, 44 in French, 38 in Portuguese, 48 in Russian, 48 in
+  Simplified Chinese and 47 in Georgian;
   no accepted source carries a German ship-name table.
-- **Standing conclusion:** all 213 resulting non-English values are byte-for-byte equal
-  to the canonical English ship names. A ship-name localization catalogue would
-  therefore publish no translated information and is deliberately absent. A source
-  carrying at least one genuinely localized ship name would justify revisiting this
-  conclusion.
+- **Standing conclusion:** every source-backed non-English value is byte-for-byte equal
+  to the canonical English ship name. The explicit values remain in the catalogue so a
+  lookup distinguishes a source-backed same spelling from an unavailable translation.
+- **Manual corrections:** none.
+
+## `ship-manufacturer-names.jsonc`
+
+- **Acquired:** 2026-08-18 UTC.
+- **Derivation:** all 48 symbol-to-manufacturer values are projected directly from
+  `data/ships/ships.jsonc`, whose pinned sources and corrections are recorded in
+  `data/ships/SOURCES.md`. Repeated manufacturer strings remain keyed by ship symbol so
+  consumers need no separate manufacturer identity space.
+- **Coverage:** canonical English covers every ship. The accepted sources carry no
+  localized manufacturer labels.
+- **Manual corrections:** none.
+
+## `engineering-group-names.jsonc`
+
+- **Acquired:** 2026-08-18 UTC.
+- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
+  database version `424009901`, last-modified marker `20260810`.
+- **Derivation:** each of the 51 group ids and its canonical English name is projected
+  from `data/ships/engineering-options.jsonc`. That catalogue derives its group menus
+  from EDSY, with the supplemental sources and corrections recorded in
+  `data/ships/SOURCES.md`.
+- **Coverage:** canonical English covers every engineering option group. The accepted
+  sources carry no group-label translation table.
+- **Manual corrections:** none.
+
+## `experimental-effect-descriptions.jsonc`
+
+- **Acquired:** 2026-08-18 UTC.
+- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
+  database version `424009901`, last-modified marker `20260810`.
+- **Derivation:** the 29 effects with a `description` project that canonical English
+  value from `data/ships/experimental-effects.jsonc`. Effects without a source-backed
+  description remain absent rather than receiving generated prose.
+- **Coverage:** canonical English covers 29 of 86 effects. The accepted sources carry no
+  localized description table.
+- **Manual corrections:** none.
+
+## `pre-engineered-variant-names.jsonc`
+
+- **Acquired:** 2026-08-18 UTC.
+- **Derivation:** all 76 compound identities and English names come from
+  `data/ships/pre-engineered.jsonc`. An identity combines the base module symbol,
+  blueprint, optional experimental effect and acquisition route. When a variant name
+  exactly matches its base module's canonical name, it reuses that record from
+  `module-names.jsonc`; the 28 distinct display records are stored once. Fixed reward
+  names such as the three `Decorative_*` festive launchers remain canonical English.
+- **Coverage:** English covers every variant. Ordinary names inherit the explicit
+  localized values available for their base module; fixed reward names have no accepted
+  translation source.
 - **Manual corrections:** none.
 
 ## Known gaps
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
-locale. Missing values are observable as `null`, never an English fallback. Expanding
-source-backed coverage, localized slot labels and higher-level generated text remains
-tracked by [#245](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/245).
+locale. The accepted sources carry only canonical English for slot and restriction labels,
+fixed reward names, and structured loadout, calculation, SLEF and edit messages. Missing
+source-backed translations remain tracked by
+[#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).

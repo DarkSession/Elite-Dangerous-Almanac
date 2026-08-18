@@ -26,6 +26,7 @@
       "definition": "equipmentEquipment",
       "files": ["equipment/equipment.jsonc"]
     },
+    { "definition": "i18nDisplayText", "files": ["i18n/display-text.jsonc"] },
     { "definition": "i18nNames", "files": ["i18n/names.jsonc"] },
     {
       "definition": "materialsMaterials",
@@ -710,6 +711,111 @@
         }
       },
       "required": ["counts", "modification", "suits", "upgradeCosts", "weapons"]
+    },
+    "i18nDisplayText": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "diagnostic": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "code": { "type": "string" },
+                  "constraint": { "type": "string" },
+                  "field": { "type": "string" },
+                  "index": { "type": "integer" },
+                  "message": { "type": "string" },
+                  "params": { "$ref": "#/definitions/sharedbb0c12b7a5ac" },
+                  "path": { "type": "string" },
+                  "severity": { "type": "string" }
+                },
+                "required": ["message"]
+              },
+              "expected": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "kind": { "type": "string" },
+              "locale": { "type": "string" }
+            },
+            "required": ["diagnostic", "expected", "kind", "locale"]
+          }
+        },
+        "preEngineered": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "expected": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "locale": { "type": "string" },
+              "variant": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "acquisition": { "type": "string" },
+                  "blueprint": { "type": "string" },
+                  "experimental": {
+                    "anyOf": [{ "type": "null" }, { "type": "string" }]
+                  },
+                  "symbol": { "type": "string" }
+                },
+                "required": ["acquisition", "blueprint", "symbol"]
+              }
+            },
+            "required": ["expected", "locale", "variant"]
+          }
+        },
+        "restrictions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "expected": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "locale": { "type": "string" },
+              "restriction": { "type": "string" }
+            },
+            "required": ["expected", "locale", "restriction"]
+          }
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "expected": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "locale": { "type": "string" },
+              "slot": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "core": { "type": "string" },
+                  "key": { "type": "string" },
+                  "kind": { "type": "string" },
+                  "restriction": { "type": "string" },
+                  "size": { "type": "integer" }
+                },
+                "required": ["key", "kind", "size"]
+              }
+            },
+            "required": ["expected", "locale", "slot"]
+          }
+        }
+      },
+      "required": ["diagnostics", "preEngineered", "restrictions", "slots"]
     },
     "i18nNames": {
       "type": "object",

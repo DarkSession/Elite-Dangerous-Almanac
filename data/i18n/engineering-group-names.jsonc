@@ -1,0 +1,163 @@
+/*
+ * Display names for engineering option groups.
+ *
+ * Source: the Elite Dangerous Almanac engineering-options catalogue, derived from EDSY.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Derivation and known gaps:
+ * data/i18n/SOURCES.md.
+ */
+{
+  "powerPlants": {
+    "en": "Power Plants"
+  },
+  "guardianPowerPlants": {
+    "en": "Guardian Power Plants"
+  },
+  "thrusters": {
+    "en": "Thrusters"
+  },
+  "frameShiftDrives": {
+    "en": "Frame Shift Drives"
+  },
+  "powerDistributors": {
+    "en": "Power Distributors"
+  },
+  "guardianPowerDistributors": {
+    "en": "Guardian Power Distributors"
+  },
+  "frameShiftDrivesSCO": {
+    "en": "Frame Shift Drives (SCO)"
+  },
+  "shieldGenerators": {
+    "en": "Shield Generators"
+  },
+  "shieldCellBanks": {
+    "en": "Shield Cell Banks"
+  },
+  "hullReinforcements": {
+    "en": "Hull Reinforcements"
+  },
+  "guardianHullReinforcements": {
+    "en": "Guardian Hull Reinforcements"
+  },
+  "pulseLasers": {
+    "en": "Pulse Lasers"
+  },
+  "burstLasers": {
+    "en": "Burst Lasers"
+  },
+  "beamLasers": {
+    "en": "Beam Lasers"
+  },
+  "cannons": {
+    "en": "Cannons"
+  },
+  "fragmentCannons": {
+    "en": "Fragment Cannons"
+  },
+  "multiCannons": {
+    "en": "Multi-Cannons"
+  },
+  "plasmaAccelerators": {
+    "en": "Plasma Accelerators"
+  },
+  "railGuns": {
+    "en": "Rail Guns"
+  },
+  "missiles": {
+    "en": "Missiles"
+  },
+  "mines": {
+    "en": "Mines"
+  },
+  "torpedoes": {
+    "en": "Torpedoes"
+  },
+  "antiXenoMultiCannons": {
+    "en": "Exp - Anti-Xeno Multi-Cannons"
+  },
+  "shieldBoosters": {
+    "en": "Shield Boosters"
+  },
+  "bulkheads": {
+    "en": "Bulkheads"
+  },
+  "lifeSupports": {
+    "en": "Life Supports"
+  },
+  "sensors": {
+    "en": "Sensors"
+  },
+  "autoFieldMaintenanceUnits": {
+    "en": "Auto Field-Maintenance Units"
+  },
+  "collectionLimpets": {
+    "en": "Collection Limpets"
+  },
+  "fsdBoosters": {
+    "en": "FSD Boosters"
+  },
+  "fsdInterdictors": {
+    "en": "FSD Interdictors"
+  },
+  "fuelScoops": {
+    "en": "Fuel Scoops"
+  },
+  "fuelTransferLimpets": {
+    "en": "Fuel Transfer Limpets"
+  },
+  "hatchBreakerLimpets": {
+    "en": "Hatch Breaker Limpets"
+  },
+  "moduleReinforcements": {
+    "en": "Module Reinforcements"
+  },
+  "prospectingLimpets": {
+    "en": "Prospecting Limpets"
+  },
+  "refineries": {
+    "en": "Refineries"
+  },
+  "shieldReinforcements": {
+    "en": "Shield Reinforcements"
+  },
+  "surfaceScanners": {
+    "en": "Surface Scanners"
+  },
+  "chaffLaunchers": {
+    "en": "Chaff Launchers"
+  },
+  "ecms": {
+    "en": "ECMs"
+  },
+  "heatSinkLaunchers": {
+    "en": "Heat Sink Launchers"
+  },
+  "killWarrantScanners": {
+    "en": "Kill Warrant Scanners"
+  },
+  "manifestScanners": {
+    "en": "Manifest Scanners"
+  },
+  "pointDefence": {
+    "en": "Point Defence"
+  },
+  "wakeScanners": {
+    "en": "Wake Scanners"
+  },
+  "experimentalWeapons": {
+    "en": "Experimental Weapons"
+  },
+  "antiXenoMissileRacks": {
+    "en": "Exp - Anti-Xeno Missile Racks"
+  },
+  "guardianGauss": {
+    "en": "Exp - Guardian Gauss"
+  },
+  "guardianPlasma": {
+    "en": "Exp - Guardian Plasma"
+  },
+  "guardianShard": {
+    "en": "Exp - Guardian Shard"
+  }
+}

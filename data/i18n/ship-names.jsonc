@@ -1,0 +1,430 @@
+/*
+ * Localized display names for ship hulls.
+ *
+ * Sources: Odyssey Materials Helper and EDSY.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * known gaps: data/i18n/SOURCES.md.
+ *
+ * Each Frontier ship symbol maps to canonical English plus only explicit source values;
+ * missing locale => null.
+ */
+{
+  "SideWinder": {
+    "en": "Sidewinder",
+    "es": "Sidewinder",
+    "fr": "Sidewinder",
+    "ru": "Sidewinder",
+    "zh-CN": "Sidewinder",
+    "pt": "Sidewinder",
+    "ka": "Sidewinder"
+  },
+  "Eagle": {
+    "en": "Eagle",
+    "es": "Eagle",
+    "fr": "Eagle",
+    "ru": "Eagle",
+    "zh-CN": "Eagle",
+    "pt": "Eagle",
+    "ka": "Eagle"
+  },
+  "Hauler": {
+    "en": "Hauler",
+    "es": "Hauler",
+    "fr": "Hauler",
+    "ru": "Hauler",
+    "zh-CN": "Hauler",
+    "pt": "Hauler",
+    "ka": "Hauler"
+  },
+  "Adder": {
+    "en": "Adder",
+    "es": "Adder",
+    "fr": "Adder",
+    "ru": "Adder",
+    "zh-CN": "Adder",
+    "pt": "Adder",
+    "ka": "Adder"
+  },
+  "Viper": {
+    "en": "Viper Mk III",
+    "es": "Viper Mk III",
+    "fr": "Viper Mk III",
+    "ru": "Viper Mk III",
+    "zh-CN": "Viper Mk III",
+    "pt": "Viper Mk III",
+    "ka": "Viper Mk III"
+  },
+  "CobraMkIII": {
+    "en": "Cobra Mk III",
+    "es": "Cobra Mk III",
+    "fr": "Cobra Mk III",
+    "ru": "Cobra Mk III",
+    "zh-CN": "Cobra Mk III",
+    "pt": "Cobra Mk III",
+    "ka": "Cobra Mk III"
+  },
+  "Type6": {
+    "en": "Type-6 Transporter",
+    "es": "Type-6 Transporter",
+    "fr": "Type-6 Transporter",
+    "ru": "Type-6 Transporter",
+    "zh-CN": "Type-6 Transporter",
+    "pt": "Type-6 Transporter",
+    "ka": "Type-6 Transporter"
+  },
+  "Dolphin": {
+    "en": "Dolphin",
+    "es": "Dolphin",
+    "fr": "Dolphin",
+    "ru": "Dolphin",
+    "zh-CN": "Dolphin",
+    "pt": "Dolphin",
+    "ka": "Dolphin"
+  },
+  "Type7": {
+    "en": "Type-7 Transporter",
+    "es": "Type-7 Transporter",
+    "fr": "Type-7 Transporter",
+    "ru": "Type-7 Transporter",
+    "zh-CN": "Type-7 Transporter",
+    "pt": "Type-7 Transporter",
+    "ka": "Type-7 Transporter"
+  },
+  "Asp": {
+    "en": "Asp Explorer",
+    "es": "Asp Explorer",
+    "fr": "Asp Explorer",
+    "ru": "Asp Explorer",
+    "zh-CN": "Asp Explorer",
+    "pt": "Asp Explorer",
+    "ka": "Asp Explorer"
+  },
+  "Vulture": {
+    "en": "Vulture",
+    "es": "Vulture",
+    "fr": "Vulture",
+    "ru": "Vulture",
+    "zh-CN": "Vulture",
+    "pt": "Vulture",
+    "ka": "Vulture"
+  },
+  "Empire_Trader": {
+    "en": "Imperial Clipper",
+    "es": "Imperial Clipper",
+    "fr": "Imperial Clipper",
+    "ru": "Imperial Clipper",
+    "zh-CN": "Imperial Clipper",
+    "pt": "Imperial Clipper",
+    "ka": "Imperial Clipper"
+  },
+  "Federation_Dropship": {
+    "en": "Federal Dropship",
+    "es": "Federal Dropship",
+    "fr": "Federal Dropship",
+    "ru": "Federal Dropship",
+    "zh-CN": "Federal Dropship",
+    "pt": "Federal Dropship",
+    "ka": "Federal Dropship"
+  },
+  "Orca": {
+    "en": "Orca",
+    "es": "Orca",
+    "fr": "Orca",
+    "ru": "Orca",
+    "zh-CN": "Orca",
+    "pt": "Orca",
+    "ka": "Orca"
+  },
+  "Type9": {
+    "en": "Type-9 Heavy",
+    "es": "Type-9 Heavy",
+    "fr": "Type-9 Heavy",
+    "ru": "Type-9 Heavy",
+    "zh-CN": "Type-9 Heavy",
+    "pt": "Type-9 Heavy",
+    "ka": "Type-9 Heavy"
+  },
+  "Python": {
+    "en": "Python",
+    "es": "Python",
+    "fr": "Python",
+    "ru": "Python",
+    "zh-CN": "Python",
+    "pt": "Python",
+    "ka": "Python"
+  },
+  "BelugaLiner": {
+    "en": "Beluga Liner",
+    "es": "Beluga Liner",
+    "fr": "Beluga Liner",
+    "ru": "Beluga Liner",
+    "zh-CN": "Beluga Liner",
+    "pt": "Beluga Liner",
+    "ka": "Beluga Liner"
+  },
+  "FerDeLance": {
+    "en": "Fer-de-Lance",
+    "es": "Fer-de-Lance",
+    "fr": "Fer-de-Lance",
+    "ru": "Fer-de-Lance",
+    "zh-CN": "Fer-de-Lance",
+    "pt": "Fer-de-Lance",
+    "ka": "Fer-de-Lance"
+  },
+  "Anaconda": {
+    "en": "Anaconda",
+    "es": "Anaconda",
+    "fr": "Anaconda",
+    "ru": "Anaconda",
+    "zh-CN": "Anaconda",
+    "pt": "Anaconda",
+    "ka": "Anaconda"
+  },
+  "Federation_Corvette": {
+    "en": "Federal Corvette",
+    "es": "Federal Corvette",
+    "fr": "Federal Corvette",
+    "ru": "Federal Corvette",
+    "zh-CN": "Federal Corvette",
+    "pt": "Federal Corvette",
+    "ka": "Federal Corvette"
+  },
+  "Cutter": {
+    "en": "Imperial Cutter",
+    "es": "Imperial Cutter",
+    "fr": "Imperial Cutter",
+    "ru": "Imperial Cutter",
+    "zh-CN": "Imperial Cutter",
+    "pt": "Imperial Cutter",
+    "ka": "Imperial Cutter"
+  },
+  "DiamondBack": {
+    "en": "Diamondback Scout",
+    "es": "Diamondback Scout",
+    "fr": "Diamondback Scout",
+    "ru": "Diamondback Scout",
+    "zh-CN": "Diamondback Scout",
+    "pt": "Diamondback Scout",
+    "ka": "Diamondback Scout"
+  },
+  "Empire_Courier": {
+    "en": "Imperial Courier",
+    "es": "Imperial Courier",
+    "fr": "Imperial Courier",
+    "ru": "Imperial Courier",
+    "zh-CN": "Imperial Courier",
+    "pt": "Imperial Courier",
+    "ka": "Imperial Courier"
+  },
+  "DiamondBackXL": {
+    "en": "Diamondback Explorer",
+    "es": "Diamondback Explorer",
+    "fr": "Diamondback Explorer",
+    "ru": "Diamondback Explorer",
+    "zh-CN": "Diamondback Explorer",
+    "pt": "Diamondback Explorer",
+    "ka": "Diamondback Explorer"
+  },
+  "Empire_Eagle": {
+    "en": "Imperial Eagle",
+    "es": "Imperial Eagle",
+    "fr": "Imperial Eagle",
+    "ru": "Imperial Eagle",
+    "zh-CN": "Imperial Eagle",
+    "pt": "Imperial Eagle",
+    "ka": "Imperial Eagle"
+  },
+  "Federation_Dropship_MkII": {
+    "en": "Federal Assault Ship",
+    "es": "Federal Assault Ship",
+    "fr": "Federal Assault Ship",
+    "ru": "Federal Assault Ship",
+    "zh-CN": "Federal Assault Ship",
+    "pt": "Federal Assault Ship",
+    "ka": "Federal Assault Ship"
+  },
+  "Federation_Gunship": {
+    "en": "Federal Gunship",
+    "es": "Federal Gunship",
+    "fr": "Federal Gunship",
+    "ru": "Federal Gunship",
+    "zh-CN": "Federal Gunship",
+    "pt": "Federal Gunship",
+    "ka": "Federal Gunship"
+  },
+  "Viper_MkIV": {
+    "en": "Viper Mk IV",
+    "es": "Viper Mk IV",
+    "fr": "Viper Mk IV",
+    "ru": "Viper Mk IV",
+    "zh-CN": "Viper Mk IV",
+    "pt": "Viper Mk IV",
+    "ka": "Viper Mk IV"
+  },
+  "CobraMkIV": {
+    "en": "Cobra Mk IV",
+    "es": "Cobra Mk IV",
+    "fr": "Cobra Mk IV",
+    "ru": "Cobra Mk IV",
+    "zh-CN": "Cobra Mk IV",
+    "pt": "Cobra Mk IV",
+    "ka": "Cobra Mk IV"
+  },
+  "Independant_Trader": {
+    "en": "Keelback",
+    "es": "Keelback",
+    "fr": "Keelback",
+    "ru": "Keelback",
+    "zh-CN": "Keelback",
+    "pt": "Keelback",
+    "ka": "Keelback"
+  },
+  "Asp_Scout": {
+    "en": "Asp Scout",
+    "es": "Asp Scout",
+    "fr": "Asp Scout",
+    "ru": "Asp Scout",
+    "zh-CN": "Asp Scout",
+    "pt": "Asp Scout",
+    "ka": "Asp Scout"
+  },
+  "Type9_Military": {
+    "en": "Type-10 Defender",
+    "es": "Type-10 Defender",
+    "fr": "Type-10 Defender",
+    "ru": "Type-10 Defender",
+    "zh-CN": "Type-10 Defender",
+    "pt": "Type-10 Defender",
+    "ka": "Type-10 Defender"
+  },
+  "Krait_MkII": {
+    "en": "Krait Mk II",
+    "es": "Krait Mk II",
+    "fr": "Krait Mk II",
+    "ru": "Krait Mk II",
+    "zh-CN": "Krait Mk II",
+    "pt": "Krait Mk II",
+    "ka": "Krait Mk II"
+  },
+  "TypeX": {
+    "en": "Alliance Chieftain",
+    "es": "Alliance Chieftain",
+    "fr": "Alliance Chieftain",
+    "ru": "Alliance Chieftain",
+    "zh-CN": "Alliance Chieftain",
+    "pt": "Alliance Chieftain",
+    "ka": "Alliance Chieftain"
+  },
+  "TypeX_2": {
+    "en": "Alliance Crusader",
+    "es": "Alliance Crusader",
+    "fr": "Alliance Crusader",
+    "ru": "Alliance Crusader",
+    "zh-CN": "Alliance Crusader",
+    "pt": "Alliance Crusader",
+    "ka": "Alliance Crusader"
+  },
+  "TypeX_3": {
+    "en": "Alliance Challenger",
+    "es": "Alliance Challenger",
+    "fr": "Alliance Challenger",
+    "ru": "Alliance Challenger",
+    "zh-CN": "Alliance Challenger",
+    "pt": "Alliance Challenger",
+    "ka": "Alliance Challenger"
+  },
+  "Krait_Light": {
+    "en": "Krait Phantom",
+    "es": "Krait Phantom",
+    "fr": "Krait Phantom",
+    "ru": "Krait Phantom",
+    "zh-CN": "Krait Phantom",
+    "pt": "Krait Phantom",
+    "ka": "Krait Phantom"
+  },
+  "Mamba": {
+    "en": "Mamba",
+    "es": "Mamba",
+    "fr": "Mamba",
+    "ru": "Mamba",
+    "zh-CN": "Mamba",
+    "pt": "Mamba",
+    "ka": "Mamba"
+  },
+  "Python_NX": {
+    "en": "Python Mk II",
+    "es": "Python Mk II",
+    "fr": "Python Mk II",
+    "ru": "Python Mk II",
+    "zh-CN": "Python Mk II",
+    "ka": "Python Mk II"
+  },
+  "Type8": {
+    "en": "Type-8 Transporter",
+    "es": "Type-8 Transporter",
+    "fr": "Type-8 Transporter",
+    "ru": "Type-8 Transporter",
+    "zh-CN": "Type-8 Transporter",
+    "ka": "Type-8 Transporter"
+  },
+  "Mandalay": {
+    "en": "Mandalay",
+    "es": "Mandalay",
+    "fr": "Mandalay",
+    "ru": "Mandalay",
+    "zh-CN": "Mandalay",
+    "ka": "Mandalay"
+  },
+  "CobraMkV": {
+    "en": "Cobra Mk V",
+    "es": "Cobra Mk V",
+    "fr": "Cobra Mk V",
+    "ru": "Cobra Mk V",
+    "zh-CN": "Cobra Mk V",
+    "ka": "Cobra Mk V"
+  },
+  "Corsair": {
+    "en": "Corsair",
+    "es": "Corsair",
+    "fr": "Corsair",
+    "ru": "Corsair",
+    "zh-CN": "Corsair",
+    "ka": "Corsair"
+  },
+  "PantherMkII": {
+    "en": "Panther Clipper Mk II",
+    "es": "Panther Clipper Mk II",
+    "fr": "Panther Clipper Mk II",
+    "ru": "Panther Clipper Mk II",
+    "zh-CN": "Panther Clipper Mk II",
+    "ka": "Panther Clipper Mk II"
+  },
+  "LakonMiner": {
+    "en": "Type-11 Prospector",
+    "es": "Type-11 Prospector",
+    "ru": "Type-11 Prospector",
+    "zh-CN": "Type-11 Prospector",
+    "ka": "Type-11 Prospector"
+  },
+  "Explorer_NX": {
+    "en": "Caspian Explorer",
+    "es": "Caspian Explorer",
+    "ru": "Caspian Explorer",
+    "zh-CN": "Caspian Explorer",
+    "ka": "Caspian Explorer"
+  },
+  "SmallCombat01_NX": {
+    "en": "Kestrel Mk II",
+    "es": "Kestrel Mk II",
+    "ru": "Kestrel Mk II",
+    "zh-CN": "Kestrel Mk II",
+    "ka": "Kestrel Mk II"
+  },
+  "MediumTransport01": {
+    "en": "Lynx Highliner",
+    "es": "Lynx Highliner",
+    "ru": "Lynx Highliner",
+    "zh-CN": "Lynx Highliner"
+  }
+}

@@ -1,7 +1,7 @@
 /*
  * Pins locale normalization, sparse misses and representative module, blueprint,
- * experimental-effect, material and micro-resource localized-name lookups for every
- * language implementation.
+ * experimental-effect, material, micro-resource, ship, manufacturer, engineering-group
+ * and experimental-description lookups for every language implementation.
  */
 {
   "lookups": [
@@ -220,6 +220,36 @@
       "identifier": "not_a_module",
       "locale": "en-GB",
       "expected": null
+    },
+    {
+      "kind": "ship",
+      "identifier": "empire_trader",
+      "locale": "fr-FR",
+      "expected": "Imperial Clipper"
+    },
+    {
+      "kind": "ship",
+      "identifier": "SideWinder",
+      "locale": "ka-GE",
+      "expected": "Sidewinder"
+    },
+    {
+      "kind": "shipManufacturer",
+      "identifier": "SideWinder",
+      "locale": "fr",
+      "expected": null
+    },
+    {
+      "kind": "engineeringGroup",
+      "identifier": "frameShiftDrives",
+      "locale": "en-GB",
+      "expected": "Frame Shift Drives"
+    },
+    {
+      "kind": "experimentalEffectDescription",
+      "identifier": "special_auto_loader",
+      "locale": "en",
+      "expected": "Reloads the weapon while it continues firing."
     }
   ]
 }

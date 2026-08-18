@@ -241,6 +241,57 @@ declare module '*/fixtures/equipment/equipment.jsonc' {
     export default value;
 }
 
+type FixtureI18nDisplayText = {
+    diagnostics: {
+        diagnostic: {
+            code?: string;
+            constraint?: string;
+            field?: string;
+            index?: number;
+            message: string;
+            params?: {
+                slot: string;
+            };
+            path?: string;
+            severity?: string;
+        };
+        expected: string | null;
+        kind: string;
+        locale: string;
+    }[];
+    preEngineered: {
+        expected: string | null;
+        locale: string;
+        variant: {
+            acquisition: string;
+            blueprint: string;
+            experimental?: null | string;
+            symbol: string;
+        };
+    }[];
+    restrictions: {
+        expected: string | null;
+        locale: string;
+        restriction: string;
+    }[];
+    slots: {
+        expected: string | null;
+        locale: string;
+        slot: {
+            core?: string;
+            key: string;
+            kind: string;
+            restriction?: string;
+            size: number;
+        };
+    }[];
+};
+
+declare module '*/fixtures/i18n/display-text.jsonc' {
+    const value: FixtureI18nDisplayText;
+    export default value;
+}
+
 type FixtureI18nNames = {
     lookups: {
         expected: string | null;

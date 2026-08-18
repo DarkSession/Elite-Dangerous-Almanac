@@ -1,0 +1,171 @@
+/*
+ * Pins locale-aware pre-engineered, slot, restriction and structured-diagnostic display
+ * text for every language implementation.
+ */
+{
+  "preEngineered": [
+    {
+      "variant": {
+        "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+        "blueprint": "AbrasionBlaster_FarReaching",
+        "acquisition": "mercenary"
+      },
+      "locale": "de-DE",
+      "expected": "Abrasionsblaster"
+    },
+    {
+      "variant": {
+        "symbol": "Hpt_FlakMortar_Turret_Medium",
+        "blueprint": "Decorative_Red",
+        "acquisition": "eventReward"
+      },
+      "locale": "fr",
+      "expected": null
+    },
+    {
+      "variant": {
+        "symbol": "Hpt_FlakMortar_Turret_Medium",
+        "blueprint": "Decorative_Red",
+        "experimental": null,
+        "acquisition": "eventReward"
+      },
+      "locale": "en",
+      "expected": "Festive Red Remote Release Flak Launcher"
+    },
+    {
+      "variant": {
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "experimental": "special_feedback_cascade_cooled",
+        "acquisition": "communityGoal"
+      },
+      "locale": "de",
+      "expected": "Schienenkanone"
+    },
+    {
+      "variant": {
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "experimental": "special_super_penetrator",
+        "acquisition": "communityGoal"
+      },
+      "locale": "en",
+      "expected": null
+    }
+  ],
+  "slots": [
+    {
+      "slot": {
+        "kind": "core",
+        "key": "PowerPlant",
+        "size": 2,
+        "core": "powerPlant"
+      },
+      "locale": "en",
+      "expected": "Power Plant"
+    },
+    {
+      "slot": {
+        "kind": "hardpoint",
+        "key": "LargeMiningHardpoint2",
+        "size": 3,
+        "restriction": "mining"
+      },
+      "locale": "en-AU",
+      "expected": "Large Mining Hardpoint 2"
+    },
+    {
+      "slot": {
+        "kind": "utility",
+        "key": "TinyHardpoint1",
+        "size": 0
+      },
+      "locale": "fr",
+      "expected": null
+    },
+    {
+      "slot": {
+        "kind": "optional",
+        "key": "Slot01_Size4",
+        "size": 4
+      },
+      "locale": "en",
+      "expected": "Optional Internal 1 (Size 4)"
+    },
+    {
+      "slot": {
+        "kind": "armour",
+        "key": "Armour",
+        "size": 0
+      },
+      "locale": "en",
+      "expected": "Armour"
+    },
+    {
+      "slot": {
+        "kind": "cargoHatch",
+        "key": "CargoHatch",
+        "size": 1
+      },
+      "locale": "en",
+      "expected": "Cargo Hatch"
+    }
+  ],
+  "restrictions": [
+    {
+      "restriction": "mining",
+      "locale": "en-GB",
+      "expected": "mining tools"
+    },
+    {
+      "restriction": "passenger",
+      "locale": "de",
+      "expected": null
+    }
+  ],
+  "diagnostics": [
+    {
+      "kind": "loadout",
+      "diagnostic": {
+        "code": "unknownModule",
+        "severity": "incomplete",
+        "message": "Unknown module"
+      },
+      "locale": "en",
+      "expected": "Unknown module"
+    },
+    {
+      "kind": "calculation",
+      "diagnostic": {
+        "field": "mass",
+        "message": "Mass unavailable"
+      },
+      "locale": "en-GB",
+      "expected": "Mass unavailable"
+    },
+    {
+      "kind": "slef",
+      "diagnostic": {
+        "index": 0,
+        "code": "invalidLoadout",
+        "path": "[0].Ship",
+        "constraint": "stringRequired",
+        "message": "Ship is required"
+      },
+      "locale": "fr",
+      "expected": null
+    },
+    {
+      "kind": "edit",
+      "diagnostic": {
+        "code": "requiredSlot",
+        "message": "Slot is required",
+        "params": {
+          "slot": "PowerPlant"
+        }
+      },
+      "locale": "de",
+      "expected": null
+    }
+  ]
+}
