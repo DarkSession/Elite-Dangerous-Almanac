@@ -155,17 +155,18 @@ decal, …), or when it is a `ModularCargoBayDoor*` article in the cargo-hatch m
 hull families name their own symbol for the one built-in article the catalogue carries.
 
 Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
-utilities, optional internals and unrecognised slots are discarded; and an unknown fixed
-mount is filled with that hull's stock armour, core internal or cargo hatch, carrying the
-source's `On`, `Priority` and `Health` across but none of its engineering or captured
-value. A fixed mount the event named no module for is left empty and makes a required
-mount incomplete — apart from the cargo hatch, which is part of the hull and is restored.
+utilities, optional internals and unrecognised slots are discarded; and a fixed mount is
+filled with that hull's stock armour, core internal or cargo hatch — whether the event
+named an article the catalogues cannot resolve there or named none at all. A stock
+replacement carries the source's `On`, `Priority` and `Health` across but none of its
+engineering or captured value.
 
 When normalization changes the fitted set, the capture's aggregates are dropped: mass,
 cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
 and `rebuy` read `null`, since nothing records what the discarded module cost;
 `sourcePurchase` still reports the captured figures. Restoring an absent cargo hatch is
-the exception, the stock hatch being weightless and free.
+the exception, the stock hatch being weightless and free; an absent armour or core mount
+stocked from the defaults invalidates them like any other change.
 
 `build.validation` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core

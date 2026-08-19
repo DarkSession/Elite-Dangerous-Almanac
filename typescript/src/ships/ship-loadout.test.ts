@@ -1438,7 +1438,8 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
-    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 460);
+    // The named bulkhead plus the six cores and the hatch import stocks it for.
+    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 1080);
 
     // An unresolved optional internal is stripped, so the hull and what remains still
     // add up rather than the whole figure going unknown.
@@ -1447,17 +1448,19 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
     };
     const unresolvedBuild = ShipLoadout.fromLoadout(unresolved);
-    assert.equal(unresolvedBuild.unladenMass, 400);
+    assert.equal(unresolvedBuild.unladenMass, 1020);
+    assert.equal(unresolvedBuild.fittedModuleAt('Armour')?.symbol, 'Anaconda_Armour_Grade1');
 
     // An unresolved fixed mount is stocked instead, and the stock article's mass counts.
     const unresolvedCore = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
         Modules: [{ Slot: 'PowerPlant', Item: 'int_future_module_without_stats' }],
     });
-    assert.equal(unresolvedCore.unladenMass, 560);
-    // Mounts the capture never named stay empty rather than being invented.
-    assert.equal(unresolvedCore.fittedModuleAt('MainEngines'), null);
-    assert.equal(unresolvedCore.validation.complete, false);
+    assert.equal(unresolvedCore.unladenMass, 1020);
+    // A mount the capture never named is stocked on the same terms as an unresolved one,
+    // so an import is short a fixed mount only where the hull carries no default.
+    assert.equal(unresolvedCore.fittedModuleAt('MainEngines')?.symbol, 'Int_Engine_Size7_Class1');
+    assert.equal(unresolvedCore.validation.complete, true);
 
     const stripped = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',

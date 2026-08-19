@@ -163,8 +163,8 @@ explains the codes and covers the nullable/`…Result` pairs for mass, capacity,
 shields and shield recovery. On an imported build, read `build.importOutcomes` alongside
 the issues: validation says nothing about normalization, so an empty mount on your panel
 may be one the player left empty or one import emptied for them. (A *fixed* mount is
-stocked rather than emptied, and a `null` `sourceSymbol` is just the cargo hatch restored
-to a capture that named none.)
+stocked rather than emptied, and a `null` `sourceSymbol` is a mount the capture named
+nothing for at all.)
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look

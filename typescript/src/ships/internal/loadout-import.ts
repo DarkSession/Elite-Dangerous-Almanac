@@ -297,14 +297,16 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         }
         invalidatesAggregates = true;
     }
-    // The hatch is part of the hull rather than an outfitting choice, and the stock one
-    // is free and weightless, so restoring it invents nothing and invalidates nothing. An
-    // absent armour or core mount stays absent: stocking it would report a build the
-    // source never described as `complete`, and would stop `ShipLoadout.empty` surviving
-    // an export/import round trip.
+    // A fixed mount is filled from the hull defaults whether the source named an article
+    // the catalogues cannot resolve or named none at all: both leave the same hole, and a
+    // build that cannot be flown is not the state to import a capture into. The hatch is
+    // part of the hull rather than an outfitting choice and its stock article is free and
+    // weightless, so restoring it invalidates nothing; stocking an absent armour or core
+    // mount adds mass and value the capture's own aggregates did not count.
     for (const fallback of defaults) {
+        const slotKind = parseSlotName(fallback.slot)?.kind;
         if (
-            parseSlotName(fallback.slot)?.kind !== 'cargoHatch' ||
+            (slotKind !== 'core' && slotKind !== 'armour' && slotKind !== 'cargoHatch') ||
             matchingKeyIn(modules, fallback.slot) !== null
         ) {
             continue;
@@ -317,6 +319,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             sourceSymbol: null,
             replacementSymbol: fallback.symbol,
         });
+        if (slotKind !== 'cargoHatch') invalidatesAggregates = true;
     }
     if (invalidatesAggregates) {
         delete top.ModulesValue;

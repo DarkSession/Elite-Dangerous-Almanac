@@ -4351,6 +4351,7 @@
                   },
                   "required": ["Modules", "Ship"]
                 },
+                "note": { "type": "string" },
                 "nullLoadouts": {
                   "type": "array",
                   "items": {
@@ -4365,6 +4366,7 @@
                           "properties": {
                             "Item": { "type": "string" },
                             "On": { "type": "boolean" },
+                            "Priority": { "type": "integer" },
                             "Slot": { "type": "string" }
                           },
                           "required": ["Item", "Slot"]
@@ -4375,6 +4377,7 @@
                     "required": ["Modules", "Ship"]
                   }
                 },
+                "nullLoadoutsNote": { "type": "string" },
                 "options": {
                   "type": "object",
                   "additionalProperties": false,
@@ -4386,7 +4389,14 @@
                   "required": ["enginesPips", "systemsPips", "weaponsPips"]
                 }
               },
-              "required": ["expected", "loadout", "nullLoadouts", "options"]
+              "required": [
+                "expected",
+                "loadout",
+                "note",
+                "nullLoadouts",
+                "nullLoadoutsNote",
+                "options"
+              ]
             },
             "input": {
               "type": "object",

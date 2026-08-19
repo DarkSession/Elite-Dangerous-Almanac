@@ -842,12 +842,11 @@ export class ShipLoadout {
      * Everything else is normalized, and every change is recorded by
      * {@link importOutcomes}. An unresolved module in a hardpoint, utility, optional
      * internal or unrecognised slot is discarded. Armour, all seven core internals and
-     * the cargo hatch are fixed mounts: an unresolved module there is replaced with the
-     * hull's stock module, which keeps the source's `On`, `Priority` and `Health` and
-     * none of its engineering or captured value. A fixed mount the event names no module
-     * for is left empty, and {@link validation} reports an incomplete build where such a
-     * mount is required — the cargo hatch excepted, which is part of the hull rather than
-     * an outfitting choice and is restored from the hull's default loadout.
+     * the cargo hatch are fixed mounts: one holding an unresolved module, and one the
+     * event names no module for at all, are both filled from the hull's default loadout.
+     * A stock replacement keeps the source's `On`, `Priority` and `Health` and none of
+     * its engineering or captured value. {@link validation} therefore reports an
+     * incomplete build only where the hull has no default for a required mount.
      *
      * Normalization makes the captured aggregates untrustworthy, so the event's figures
      * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}
@@ -856,7 +855,8 @@ export class ShipLoadout {
      * bought for — and {@link sourcePurchase} still reports the captured figures. The
      * cargo hatch is the exception, being weightless and free: restoring an absent one,
      * or importing a hull-family hatch the catalogue resolves, leaves every figure
-     * standing. Replacing an *unresolved* hatch does not, and source-credit export then
+     * standing. Stocking an absent armour or core mount does not — that article has mass
+     * and a price the capture never counted. Replacing an *unresolved* hatch does not, and source-credit export then
      * keeps its totals only when that hatch was unpriced or valued at zero.
      *
      * Use this factory rather than replaying a complete loadout through the incremental

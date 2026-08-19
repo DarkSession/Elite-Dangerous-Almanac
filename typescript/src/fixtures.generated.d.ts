@@ -3215,14 +3215,17 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             };
+            note: string;
             nullLoadouts: {
                 Modules: {
                     Item: string;
                     On?: boolean;
+                    Priority?: number;
                     Slot: string;
                 }[];
                 Ship: string;
             }[];
+            nullLoadoutsNote: string;
             options: {
                 enginesPips: number;
                 systemsPips: number;

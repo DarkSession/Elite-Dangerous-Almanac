@@ -14,7 +14,7 @@
 {
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown fixed mounts — armour, core internals and the cargo hatch — which are replaced by that hull's stock modules. A stock replacement carries the source's power state, priority and health — facts about the mount rather than about the article that failed to resolve — and none of its engineering or captured value. A fixed mount the source never named is left empty, so an incomplete build stays incomplete; only the cargo hatch, which is part of the hull rather than an outfitting choice, is restored when absent. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
+    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown fixed mounts — armour, core internals and the cargo hatch — which are replaced by that hull's stock modules. A stock replacement carries the source's power state, priority and health — facts about the mount rather than about the article that failed to resolve — and none of its engineering or captured value. A fixed mount the source never named at all is filled from the same defaults, so an imported build is short a fixed mount only where the hull carries no default for it. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -116,6 +116,12 @@
           "health": 0.5
         },
         { "slot": "Armour", "symbol": "SideWinder_Armour_Grade1" },
+        { "slot": "MainEngines", "symbol": "Int_Engine_Size2_Class1" },
+        { "slot": "FrameShiftDrive", "symbol": "Int_Hyperdrive_Size2_Class1" },
+        { "slot": "LifeSupport", "symbol": "Int_LifeSupport_Size1_Class1" },
+        { "slot": "PowerDistributor", "symbol": "Int_PowerDistributor_Size1_Class1" },
+        { "slot": "Radar", "symbol": "Int_Sensors_Size1_Class1" },
+        { "slot": "FuelTank", "symbol": "Int_FuelTank_Size1_Class3" },
         { "slot": "CargoHatch", "symbol": "ModularCargoBayDoor" }
       ],
       "outcomes": [
@@ -153,17 +159,53 @@
         },
         {
           "action": "defaulted",
+          "slot": "MainEngines",
+          "sourceSymbol": null,
+          "replacementSymbol": "Int_Engine_Size2_Class1"
+        },
+        {
+          "action": "defaulted",
+          "slot": "FrameShiftDrive",
+          "sourceSymbol": null,
+          "replacementSymbol": "Int_Hyperdrive_Size2_Class1"
+        },
+        {
+          "action": "defaulted",
+          "slot": "LifeSupport",
+          "sourceSymbol": null,
+          "replacementSymbol": "Int_LifeSupport_Size1_Class1"
+        },
+        {
+          "action": "defaulted",
+          "slot": "PowerDistributor",
+          "sourceSymbol": null,
+          "replacementSymbol": "Int_PowerDistributor_Size1_Class1"
+        },
+        {
+          "action": "defaulted",
+          "slot": "Radar",
+          "sourceSymbol": null,
+          "replacementSymbol": "Int_Sensors_Size1_Class1"
+        },
+        {
+          "action": "defaulted",
+          "slot": "FuelTank",
+          "sourceSymbol": null,
+          "replacementSymbol": "Int_FuelTank_Size1_Class3"
+        },
+        {
+          "action": "defaulted",
           "slot": "CargoHatch",
           "sourceSymbol": null,
           "replacementSymbol": "ModularCargoBayDoor"
         }
       ],
-      "unladenMass": 27.5,
+      "unladenMass": 36.4,
       "cargoCapacity": 0,
-      "fuelCapacity": { "main": 0, "reserve": 0.3 },
+      "fuelCapacity": { "main": 2, "reserve": 0.3 },
       "modulesValue": null,
       "rebuy": null,
-      "complete": false
+      "complete": true
     }
   },
   "engineeringWithoutModifiers": {

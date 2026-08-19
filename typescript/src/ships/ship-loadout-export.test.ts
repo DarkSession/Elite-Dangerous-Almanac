@@ -291,7 +291,9 @@ test('the classification examples in the fixture come out as the fixture says', 
             assert.deepEqual(event, empty, slot);
             continue;
         }
-        const exported = event.Modules[0]!;
+        const exported = event.Modules.find(
+            (module) => module.Slot.toLowerCase() === slot.toLowerCase(),
+        )!;
         if (verdict === 'nonOutfitting') {
             assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
             assert.equal(event.ModulesValue, empty.ModulesValue, slot);
@@ -306,7 +308,15 @@ test('the classification examples in the fixture come out as the fixture says', 
                 Ship: 'krait_light',
                 Modules: [{ Slot: slot, Item: item, On: false, Priority: 4, Health: 1 }],
             });
-            assert.deepEqual(build.importOutcomes, [], slot);
+            // Import stocks the eight fixed mounts this one-module event names nothing
+            // for; what matters here is that the hatch itself produced no outcome.
+            assert.deepEqual(
+                build.importOutcomes.filter(
+                    (outcome) => outcome.slot.toLowerCase() === slot.toLowerCase(),
+                ),
+                [],
+                slot,
+            );
             assert.equal(build.fittedModuleAt(slot)!.on, false, slot);
             assert.equal(exported.Item, item.toLowerCase(), slot);
             assert.equal(exported.Value, 0, slot);
@@ -360,8 +370,9 @@ test('shared import normalization strips unknown modules and defaults named moun
             rebuy: expected.rebuy,
         },
     );
-    // A fixed mount the source never named stays empty rather than being invented, so
-    // an incomplete capture still reports as incomplete.
+    // Every hull carries a default for all nine fixed mounts, and import fills them
+    // whether the source named an unresolvable article or named nothing, so a capture
+    // this thin still imports as a flyable build.
     assert.equal(build.validation.complete, expected.complete);
 });
 
