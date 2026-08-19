@@ -161,8 +161,12 @@ and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 lists the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
 shields and shield recovery. On a build imported rather than assembled here, read
-`build.importOutcomes` alongside the issues: a mount the catalogues could not resolve is
-already filled with the hull's stock article, and validation has nothing to say about it.
+`build.importOutcomes` alongside the issues: a *fixed* mount the catalogues could not
+resolve is already filled with the hull's stock article, while a module in a hardpoint,
+utility or optional internal is simply gone — and validation has nothing to say about
+either, so an empty mount on your panel may be one the player left empty or one import
+emptied for them. An entry whose `sourceSymbol` is `null` is neither: it is the cargo
+hatch restored to a capture that named none.
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look

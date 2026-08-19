@@ -1445,7 +1445,7 @@ export class ShipLoadout {
     }
 
     /**
-     * Restore a missing, unresolved or invalid fixed mount from this hull's stock loadout.
+     * Restore a missing or invalid fixed mount from this hull's stock loadout.
      *
      * @remarks
      * This is the narrow repair path for mounts that {@link setModule} deliberately does

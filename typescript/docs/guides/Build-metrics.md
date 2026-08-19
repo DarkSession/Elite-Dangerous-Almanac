@@ -347,12 +347,19 @@ cargo hatch is replaced with the hull's stock article. The metrics then answer f
 normalized fit, and nothing above reports the substitution itself: a stocked power plant
 states its own capacity, a discarded rack simply stops counting, and `validation` calls
 the result complete, because the fit that remains really is filled and really is legal.
-What a discard can still do is leave a companion incomplete for an ordinary reason —
-drop the build's only shield generator and `shieldMetricsResult` reports
-`shieldGenerator` / `missing`, exactly as an empty mount would, saying nothing about the
-module that was there. `build.importOutcomes` is the only account of that: it is empty
-when the capture came through untouched, so on a build you did not assemble yourself,
-read it before quoting a figure back as the player's own.
+What normalization can still do is leave a companion incomplete for an ordinary reason,
+saying nothing about the module that was there. Drop the build's only shield generator
+and `shieldMetricsResult` reports `shieldGenerator` / `missing`, exactly as an empty
+mount would. A stocked fixed mount does it too, because a hull's default is its class-1
+article: substitute one for an engineered power plant and a build sized for the original
+sheds groups, so the mobility, shield and recovery companions report `shed`.
+
+`build.importOutcomes` is the only account of any of this. Read it on a build you did
+not assemble yourself, and read the entries rather than the length: an entry whose
+`sourceSymbol` is `null` is the cargo hatch restored to a capture that named none, which
+is free and weightless and changes no figure — most third-party exports omit the hatch,
+so most produce exactly that one entry. Any other entry means the figures describe the
+normalized fit rather than the capture.
 
 ## Next
 

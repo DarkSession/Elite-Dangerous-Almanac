@@ -626,6 +626,18 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
         omitted.fittedModuleAt('CargoHatch')!.symbol.toLowerCase(),
         defaultHatch.Item.toLowerCase(),
     );
+    // The one outcome shape real captures produce: third-party exports omit the hatch,
+    // so this is what a consumer reading `importOutcomes` almost always sees. A `null`
+    // `sourceSymbol` is what marks it as the mount import fills unasked.
+    assert.deepEqual(omitted.importOutcomes, [
+        {
+            action: 'defaulted',
+            slot: 'CargoHatch',
+            sourceSymbol: null,
+            // The hull default's own casing, not the capture's — nothing was captured.
+            replacementSymbol: 'ModularCargoBayDoor',
+        },
+    ]);
     assert.deepEqual(omitted.validation, { valid: true, complete: true, issues: [] });
     assert.equal(omitted.modulesValue, source.ModulesValue);
     assert.equal(omitted.rebuy, source.Rebuy);
