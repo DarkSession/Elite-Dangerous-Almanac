@@ -37,9 +37,11 @@ export interface LoadoutExportInput {
     readonly maxJumpRange: number | null;
     readonly statsFor: (module: LoadoutModule) => OutfittingModule | null;
     /**
-     * Whether the fit gained an article the capture never listed, which no comparison
-     * against the priced slots can see — import stocking a fixed mount the source named
-     * no module for is the one way it happens.
+     * Whether *import* put an article aboard that the capture never listed — a fixed
+     * mount it named no module for, stocked from the hull defaults. No comparison
+     * against the priced slots can see an addition, only a swap or a removal, and
+     * filling an empty mount by an edit deliberately leaves the totals standing: the
+     * caller made that change and can see it. This one nobody asked for.
      */
     readonly sourceTotalsVoided?: boolean;
 }

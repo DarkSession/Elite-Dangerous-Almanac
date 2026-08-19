@@ -622,8 +622,8 @@ export interface LoadoutExportOptions {
      * `'source'` quotes the build's {@link ShipLoadout.sourcePurchase | source purchase
      * record} instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value`
      * figures exactly as the capture stated them, and nothing where it stated nothing.
-     * A capture whose every article resolves therefore re-exports its own credits
-     * unchanged until it is edited.
+     * A capture that names every fixed mount and whose every article resolves therefore
+     * re-exports its own credits unchanged until it is edited.
      *
      * Each captured figure is pinned to what it was paid for, so a fit that stops
      * matching the capture narrows the export rather than staling it — by an edit, or at
@@ -1204,7 +1204,8 @@ export class ShipLoadout {
      * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
      * needed no normalization.
      * @remarks
-     * Each entry names the exact slot and unresolved source identity. An `emptied`
+     * Each entry names the exact slot, and the source identity where the source gave
+     * one. An `emptied`
      * outcome means import removed an unknown module from a hardpoint, utility, optional
      * internal, or unrecognised slot. A `defaulted` outcome names the stock replacement
      * fitted to armour, a core internal, or the cargo hatch; its `sourceSymbol` is `null`
