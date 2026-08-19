@@ -4359,6 +4359,9 @@ type FixtureShipsSlefExport = {
             };
             issueCodes: string[];
             modules: {
+                health?: number;
+                on?: boolean;
+                priority?: number;
                 slot: string;
                 symbol: string;
             }[];

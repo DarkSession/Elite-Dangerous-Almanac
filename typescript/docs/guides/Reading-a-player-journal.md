@@ -63,9 +63,11 @@ build.armourMetrics().hitPoints; // -> 307.8
 
 Figures the event already stated — `UnladenMass`, `CargoCapacity`, `FuelCapacity` — are
 trusted verbatim rather than recomputed, so what you read back matches what the player
-sees in game. `MaxJumpRange` is the exception: it is recomputed from the drive rather than
-taken from the event, so it may differ in the last decimal places from the number the
-capture carried.
+sees in game. That holds while the fitted set the event described survives import intact;
+[when the game hands you something unknown](#when-the-game-hands-you-something-unknown)
+covers what happens when it does not. `MaxJumpRange` is the exception either way: it is
+recomputed from the drive rather than taken from the event, so it may differ in the last
+decimal places from the number the capture carried.
 
 ### Walking the modules
 
@@ -146,21 +148,29 @@ Pass `StarSystem` to the permit-lock lookup described in
 ## When the game hands you something unknown
 
 Journals can contain hulls or modules absent from the catalogues. A direct lookup that
-finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import:
-an unknown hull is refused; unknown modules in hardpoints, utilities, optional internals
-and unrecognised slots are discarded; and an unknown fixed mount is filled with that
-hull's stock armour, core internal or cargo hatch when one is known. Without a default,
-the mount remains empty and a required mount makes the build incomplete — as does a fixed
-mount the event named no module for, apart from the cargo hatch, which is part of the
-hull and is restored from the same defaults. When
-normalization changes the fitted set, the capture's own aggregates are dropped: mass,
+finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import.
+An entry is kept exactly as the event stated it on any of three grounds: the module
+catalogue identifies its `Item`; its slot is a known cosmetic or hull-geometry key
+(`PaintJob`, `ShipCockpit`, a numbered decal, …), which is kept with no catalogue record
+at all; or it is a `ModularCargoBayDoor*` article in the cargo-hatch mount, which
+resolves through the standard hatch's record because some hull families name their own
+symbol for the one built-in article.
+
+Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
+utilities, optional internals and unrecognised slots are discarded; and an unknown fixed
+mount is filled with that hull's stock armour, core internal or cargo hatch when one is
+known, carrying the source's `On`, `Priority` and `Health` across but none of its
+engineering or captured value. Without a default, the mount remains empty and a required
+mount makes the build incomplete — as does a fixed mount the event named no module for,
+apart from the cargo hatch, which is part of the hull and is restored from the same
+defaults.
+
+When normalization changes the fitted set, the capture's own aggregates are dropped: mass,
 cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
 and `rebuy` read `null`, since nothing records what the discarded module cost.
 `sourcePurchase` still reports the captured figures. Filling a wholly absent cargo hatch
 is the exception: the known stock hatch has zero mass, capacity and price, so those
 figures remain valid.
-A stock replacement does not inherit the unknown module's engineering, power state,
-priority, health, captured value or other fields.
 
 `build.validation` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core

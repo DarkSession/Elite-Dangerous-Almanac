@@ -2033,7 +2033,10 @@
             "additionalProperties": false,
             "properties": {
               "empty": { "type": "array", "items": { "type": "string" } },
-              "modules": { "$ref": "#/definitions/shared804cf70a4333" },
+              "modules": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/sharedf570f3651544" }
+              },
               "ship": { "type": "string" }
             },
             "required": ["empty", "modules", "ship"]
@@ -6375,7 +6378,21 @@
                   "type": "array",
                   "items": { "type": "string" }
                 },
-                "modules": { "$ref": "#/definitions/shared804cf70a4333" },
+                "modules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "health": { "type": "number" },
+                      "on": { "type": "boolean" },
+                      "priority": { "type": "integer" },
+                      "slot": { "type": "string" },
+                      "symbol": { "type": "string" }
+                    },
+                    "required": ["slot", "symbol"]
+                  }
+                },
                 "modulesValue": { "type": "null" },
                 "outcomes": {
                   "type": "array",
@@ -7839,10 +7856,6 @@
         "thermal": { "type": "number" }
       },
       "required": ["absolute", "thermal"]
-    },
-    "shared804cf70a4333": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/sharedf570f3651544" }
     },
     "shared8064b9491813": {
       "type": "object",

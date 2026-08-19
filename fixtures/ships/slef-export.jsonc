@@ -14,7 +14,7 @@
 {
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown fixed mounts — armour, core internals and the cargo hatch — which are replaced by that hull's stock modules. A fixed mount the source never named is left empty, so an incomplete build stays incomplete; only the cargo hatch, which is part of the hull rather than an outfitting choice, is restored when absent. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
+    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown fixed mounts — armour, core internals and the cargo hatch — which are replaced by that hull's stock modules. A stock replacement carries the source's power state, priority and health — facts about the mount rather than about the article that failed to resolve — and none of its engineering or captured value. A fixed mount the source never named is left empty, so an incomplete build stays incomplete; only the cargo hatch, which is part of the hull rather than an outfitting choice, is restored when absent. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -112,10 +112,19 @@
       "modules": [
         {
           "slot": "PowerPlant",
-          "symbol": "Int_Powerplant_Size2_Class1"
+          "symbol": "Int_Powerplant_Size2_Class1",
+          "on": false,
+          "priority": 2,
+          "health": 0.5
         },
         { "slot": "Armour", "symbol": "SideWinder_Armour_Grade1" },
-        { "slot": "CargoHatch", "symbol": "ModularCargoBayDoor" }
+        {
+          "slot": "CargoHatch",
+          "symbol": "ModularCargoBayDoor",
+          "on": false,
+          "priority": 3,
+          "health": 0.25
+        }
       ],
       "outcomes": [
         {

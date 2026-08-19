@@ -13,8 +13,10 @@
  *
  * Instances are **mutable**: `setModule`/`removeModule` change the build in place and
  * return `this` for chaining. Values a SLEF export already computed (its
- * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim; for a build assembled from
- * scratch those figures are computed from the fitted modules and the hull's stats.
+ * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim while the fitted set they
+ * describe survives import intact; for a build assembled from scratch, and for one
+ * import normalization changed, those figures are computed from the fitted modules and
+ * the hull's stats.
  * Editing an imported build adjusts the supplied aggregate figures by the changed
  * module's contribution; when that contribution is unknown, the affected figure is
  * discarded and recomputed rather than allowed to go stale.
@@ -828,12 +830,22 @@ export class ShipLoadout {
      * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
      * {@link sourcePurchase} record, which no edit touches.
      *
-     * Catalogue-backed modules are imported as one complete snapshot: their array order
-     * does not affect per-ship count allowances, and any aggregate violation is reported
-     * by {@link validation}. An unrecognised module in a hardpoint, utility, optional
-     * internal, or unrecognised slot is discarded. Armour, all seven core internals,
-     * and the cargo hatch are fixed mounts: an unresolved module there is replaced with
-     * the hull's stock module.
+     * Modules are imported as one complete snapshot: their array order does not affect
+     * per-ship count allowances, and any aggregate violation is reported by
+     * {@link validation}. An entry survives import on one of three grounds — the module
+     * catalogue identifies its `Item`; its slot is a known cosmetic or hull-geometry key
+     * (`PaintJob`, `ShipCockpit`, a numbered decal, …), which is kept with no catalogue
+     * record at all; or it is a `ModularCargoBayDoor*` article in the cargo-hatch mount,
+     * which resolves through the standard hatch's record because Frontier gives some
+     * hull families their own symbol for the one built-in article. Any of the three is
+     * imported exactly as the event stated it.
+     *
+     * Everything else is normalized. An unresolved module in a hardpoint, utility,
+     * optional internal, or unrecognised slot is discarded. Armour, all seven core
+     * internals, and the cargo hatch are fixed mounts: an unresolved module there is
+     * replaced with the hull's stock module, which keeps the source's `On`, `Priority`
+     * and `Health` — facts about the mount rather than about the identity that failed to
+     * resolve — and none of its engineering, captured value, or other source fields.
      * If no default exists, the mount remains empty and {@link validation} reports an
      * incomplete build where the mount is required. A fixed mount the event names no
      * module for is left empty for the same report to pick up — the cargo hatch
@@ -847,15 +859,14 @@ export class ShipLoadout {
      * from the fit that remains, while {@link modulesValue} and {@link rebuy} read
      * `null` — no catalogue records what the discarded module was bought for.
      * {@link sourcePurchase} still reports the captured figures. Use this factory rather
-     * than replaying a complete loadout through the incremental {@link setModule}
-     * editor. A stock replacement retains none of the unrecognised module's engineering,
-     * power state, priority, health, captured value, or other source fields.
+     * than replaying a complete loadout through the incremental {@link setModule} editor.
      *
-     * The cargo hatch is the zero-mass, zero-capacity, zero-price exception only when it
-     * was absent: filling an empty hatch preserves the build's live aggregate mass,
-     * capacity and credit figures. Replacing an unresolved hatch invalidates them because
-     * the discarded source article's contributions are unknown. Source-credit export
-     * retains its totals only when the captured hatch was unpriced or valued at zero.
+     * The cargo hatch is the zero-mass, zero-capacity, zero-price exception when it was
+     * absent: filling an empty hatch preserves the build's live aggregate mass, capacity
+     * and credit figures, as does importing a hull-family hatch the catalogue resolves.
+     * Replacing an *unresolved* hatch invalidates them, because the discarded source
+     * article's contributions are unknown, and source-credit export then retains its
+     * totals only when that replaced hatch was unpriced or valued at zero.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -1020,9 +1031,10 @@ export class ShipLoadout {
      * known mass).
      *
      * @remarks
-     * A SLEF export's `UnladenMass` is trusted verbatim. Otherwise the mass is the
-     * hull's `hullMass` plus every fitted module's mass (post-engineering), with armour
-     * at the zero-mass lightweight default.
+     * A SLEF export's `UnladenMass` is trusted verbatim, unless import normalization
+     * changed the fit it described. Otherwise the mass is the hull's `hullMass` plus
+     * every fitted module's mass (post-engineering), with armour at the zero-mass
+     * lightweight default.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -1121,9 +1133,11 @@ export class ShipLoadout {
 
     /**
      * Fitted-modules cost in credits represented by the build, or `null` if
-     * unknown — including after an edit discarded an import's figure, since no catalogue
-     * records what a replaced module was bought for. {@link sourcePurchase} keeps the
-     * captured figure regardless.
+     * unknown — including after an edit, or import normalization, discarded an import's
+     * figure, since no catalogue records what a replaced module was bought for. Unlike
+     * mass and capacity, this one is not recomputed from what remains.
+     * {@link sourcePurchase} keeps the captured figure regardless, and
+     * {@link retailCredits} prices the current fit at catalogue retail.
      */
     get modulesValue(): number | null {
         return this.#top.ModulesValue ?? null;
@@ -1131,8 +1145,8 @@ export class ShipLoadout {
 
     /**
      * Insurance rebuy cost in credits represented by the build, or `null` if
-     * unknown. Discarded by an edit for the same reason as {@link modulesValue}, and
-     * likewise preserved by {@link sourcePurchase}.
+     * unknown. Discarded by an edit or by import normalization for the same reason as
+     * {@link modulesValue}, and likewise preserved by {@link sourcePurchase}.
      */
     get rebuy(): number | null {
         return this.#top.Rebuy ?? null;
@@ -1187,7 +1201,7 @@ export class ShipLoadout {
      * @remarks
      * Each entry names the exact slot and unresolved source identity. An `emptied`
      * outcome means import removed an unknown module from a hardpoint, utility, optional
-     * internal, or unrecognised slot—or from a fixed mount for which no default exists.
+     * internal, or unrecognised slot — or from a fixed mount for which no default exists.
      * A `defaulted` outcome names the stock replacement fitted to armour, a core internal,
      * or the cargo hatch; its `sourceSymbol` is `null` only for a cargo hatch the source
      * left out, which is the one mount import fills without being asked.
@@ -2573,7 +2587,8 @@ export class ShipLoadout {
         try {
             drive = this.#resolveDrive();
         } catch {
-            // An unrecognised drive id has no jump constants; omit rather than fail.
+            // A supplied drive record without jump constants throws; omit rather than
+            // fail an export over it.
             return null;
         }
         if (drive === null) return null;
@@ -3695,19 +3710,25 @@ export class ShipLoadout {
         return shouldCarryCapacity ? null : 0;
     }
 
-    /** Find the module whose catalogue record identifies the FSD. */
-    #frameShiftDriveModule(): LoadoutModule | undefined {
+    /** Find the fitted FSD together with the record that identified it. */
+    #frameShiftDrive(): { module: LoadoutModule; stats: OutfittingModule } | undefined {
         for (const m of this.#modules.values()) {
-            if (this.#statsFor(m)?.slot === 'frameShiftDrive') return m;
+            const stats = this.#statsFor(m);
+            if (stats?.slot === 'frameShiftDrive') return { module: m, stats };
         }
         return undefined;
     }
 
+    /** Find the module whose catalogue record identifies the FSD. */
+    #frameShiftDriveModule(): LoadoutModule | undefined {
+        return this.#frameShiftDrive()?.module;
+    }
+
     #resolveDrive(): FrameShiftDriveParams | null {
-        const fsdModule = this.#frameShiftDriveModule();
-        if (!fsdModule) return null;
-        const base = this.#statsFor(fsdModule);
-        if (!base || base.fuelMul === undefined || base.fuelPower === undefined) {
+        const fsd = this.#frameShiftDrive();
+        if (!fsd) return null;
+        const { module: fsdModule, stats: base } = fsd;
+        if (base.fuelMul === undefined || base.fuelPower === undefined) {
             // A drive is fitted, but its supplied stats have no jump constants. Fail
             // with a diagnosable message rather than the "no frame shift drive" one the
             // caller would otherwise get.
@@ -3744,8 +3765,13 @@ export class ShipLoadout {
             // A booster is whatever supplies a jump bonus. `engineeringGroup` says only
             // which recipes may touch the article, and it is a field a caller-supplied
             // record is free to leave `null`; reading the bonus itself keeps such a
-            // record from contributing its mass while its boost goes uncounted.
-            if (stats?.engineeringGroup !== 'fsdBoosters' && stats?.jumpBoost === undefined) {
+            // record from contributing its mass while its boost goes uncounted. A `0`
+            // bonus is not evidence of one, though — the first match wins below, so
+            // believing it would let an unrelated record shadow a real booster.
+            if (
+                stats?.engineeringGroup !== 'fsdBoosters' &&
+                (stats?.jumpBoost === undefined || stats.jumpBoost === 0)
+            ) {
                 continue;
             }
             if (m.On === false) continue; // an unpowered booster gives no bonus

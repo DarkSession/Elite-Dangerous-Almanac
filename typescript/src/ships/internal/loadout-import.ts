@@ -275,9 +275,20 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                 ? defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase())
                 : undefined;
         if (fallback) {
+            // The article is unknown; how the commander ran it is not. `On`, `Priority`
+            // and `Health` are source facts about the mount rather than about the
+            // identity that failed to resolve, and dropping them would silently switch a
+            // disabled module back on and re-band it — moving `powerBudget`,
+            // `distributorMetrics` and `heatMetrics` with nothing but an outcome entry to
+            // say why. `repairFixedMount` carries them across the same substitution. The
+            // captured `Value` and engineering are not carried: both describe the article
+            // itself, and this is a different one.
             modules.set(slot, {
                 Slot: slot,
                 Item: fallback.symbol,
+                ...(module.On === undefined ? {} : { On: module.On }),
+                ...(module.Priority === undefined ? {} : { Priority: module.Priority }),
+                ...(module.Health === undefined ? {} : { Health: module.Health }),
             });
             outcomes.push({
                 action: 'defaulted',

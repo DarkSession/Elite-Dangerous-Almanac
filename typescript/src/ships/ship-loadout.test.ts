@@ -657,7 +657,10 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     });
     const unresolved = unresolvedBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(unresolved.symbol.toLowerCase(), defaultHatch.Item.toLowerCase());
-    assert.equal(unresolved.on, undefined);
+    // How the commander ran the mount survives the substitution; what the article was
+    // does not.
+    assert.equal(unresolved.on, false);
+    assert.equal(unresolved.priority, undefined);
     assert.equal(unresolved.engineering, undefined);
     assert.equal(unresolved.effectiveStats!.powerDraw, 0.6);
     assert.equal(unresolved.raw.Value, undefined);
@@ -1082,6 +1085,32 @@ test('an unpowered Guardian booster contributes no jump bonus', () => {
     };
     assert.equal(withBooster, 10.5);
     assert.equal(ShipLoadout.fromLoadout(off).frameShiftDrive.jumpBoost, 0);
+});
+
+test('a booster is identified by the bonus it supplies, not by its engineering menu', () => {
+    const booster = mod('Int_GuardianFSDBooster_Size5', INTERNAL_MODULES);
+    const withCatalogue = ShipLoadout.empty('Anaconda')
+        .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
+        .setModule('Slot02_Size6', booster);
+    // `engineeringGroup` says which recipes may touch an article, not what it does, and
+    // it is a field a caller-supplied record may legitimately leave null. Reading the
+    // bonus itself stops such a record counting its mass while its boost goes uncounted.
+    const withSupplied = ShipLoadout.empty('Anaconda')
+        .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
+        .setModule('Slot02_Size6', { ...booster, engineeringGroup: null });
+    assert.equal(withSupplied.frameShiftDrive.jumpBoost, booster.jumpBoost);
+    assert.equal(withSupplied.maxJumpRange(), withCatalogue.maxJumpRange());
+
+    // A zero bonus is not evidence of a booster: the first match wins, so believing one
+    // would let an unrelated record earlier in slot order shadow the real article.
+    const shadowed = ShipLoadout.empty('Anaconda')
+        .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
+        .setModule('Slot01_Size7', {
+            ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES),
+            jumpBoost: 0,
+        })
+        .setModule('Slot02_Size6', booster);
+    assert.equal(shadowed.frameShiftDrive.jumpBoost, booster.jumpBoost);
 });
 
 test('a build with no frame shift drive throws on a jump calculation', () => {
