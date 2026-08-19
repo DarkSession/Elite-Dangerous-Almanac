@@ -125,6 +125,16 @@
   ],
   "diagnostics": [
     {
+      "kind": "loadout",
+      "diagnostic": {
+        "code": "missingRequiredSlot",
+        "severity": "incomplete",
+        "message": "PowerPlant is required for an operational build"
+      },
+      "locale": "en",
+      "expected": "PowerPlant is required for an operational build"
+    },
+    {
       "kind": "calculation",
       "diagnostic": {
         "field": "mass",

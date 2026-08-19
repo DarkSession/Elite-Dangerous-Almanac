@@ -72,7 +72,7 @@
         "slot": "CargoHatch",
         "item": "modularcargobaydoorfdl",
         "verdict": "builtInHull",
-        "why": "Frontier gives the Fer-de-Lance family its own symbol for the one built-in hatch, which the catalogue carries once under ModularCargoBayDoor. Any modularcargobaydoor* article in the cargo-hatch mount resolves through that record, on this hull as on its own, so it survives import verbatim and costs and weighs nothing."
+        "why": "The Fer-de-Lance and the Lynx Highliner name their own symbol for the one built-in hatch, which the catalogue carries once under ModularCargoBayDoor, so any modularcargobaydoor* article in the cargo-hatch mount resolves through that record and survives import verbatim."
       }
     ]
   },

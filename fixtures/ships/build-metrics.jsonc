@@ -11,8 +11,8 @@
  * fixtures/ships/journal-panther-mkii-fat-arse.jsonc,
  * fixtures/ships/journal-python-mkii-spire-ops.jsonc, fixtures/ships/journal-the-deep-black.jsonc,
  * fixtures/ships/slef-the-deep-black.jsonc, fixtures/ships/slef-inara-panther-mkii.jsonc, an
- * Anaconda assembled from the catalogues, plus the
- * pure functions each metric is built from. Cross-language validation.
+ * Anaconda assembled from the catalogues, plus the pure functions each metric is built from.
+ * Cross-language validation.
  *
  * The in-game statistics- and outfitting-panel figures here were read 2026-08-10 UTC. A panel
  * exposes no immutable revision and no export, so the values are transcribed by hand at the game's

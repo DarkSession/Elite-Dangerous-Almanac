@@ -760,6 +760,58 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
         slot: 'PowerPlant',
         symbol: 'Int_Powerplant_Size2_Class1',
     });
+
+    // An oversized-but-resolvable core is not normalized at import — the catalogue knows
+    // the article — so this is the path that actually repairs. The stock replacement
+    // keeps how the mount was being run and none of what the article was.
+    const oversized = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant'
+                ? {
+                      ...module,
+                      Item: 'Int_Powerplant_Size8_Class1',
+                      On: false,
+                      Priority: 4,
+                      Health: 0.5,
+                      Value: 999,
+                  }
+                : module,
+        ),
+    });
+    assert.equal(oversized.repairFixedMount('PowerPlant').status, 'repaired');
+    const repaired = oversized.fittedModuleAt('PowerPlant')!;
+    assert.equal(repaired.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(repaired.on, false);
+    assert.equal(repaired.priority, 4);
+    assert.equal(repaired.health, 0.5);
+    assert.equal(repaired.value, undefined);
+});
+
+test('fitting a module resets the mount, while repairing one keeps how it was run', () => {
+    // Two substitutions that look alike and are not: a module the player chose carries
+    // no power state from the one it displaced, while a stock article standing in for one
+    // that failed to resolve keeps the state the source recorded for that mount.
+    const build = ShipLoadout.fromLoadout({
+        ...ShipLoadout.default('SideWinder').toLoadoutEvent(),
+        Modules: ShipLoadout.default('SideWinder')
+            .toLoadoutEvent()
+            .Modules.map((module) =>
+                module.Slot === 'Slot01_Size2'
+                    ? { Slot: module.Slot, Item: module.Item, On: false, Priority: 3, Health: 0.5 }
+                    : module,
+            ),
+    });
+    const before = build.fittedModuleAt('Slot01_Size2')!;
+    assert.equal(before.on, false);
+    assert.equal(before.priority, 3);
+
+    build.setModule('Slot01_Size2', mod('Int_CargoRack_Size2_Class1', INTERNAL_MODULES));
+    const after = build.fittedModuleAt('Slot01_Size2')!;
+    assert.equal(after.symbol, 'Int_CargoRack_Size2_Class1');
+    assert.equal(after.on, undefined);
+    assert.equal(after.priority, undefined);
+    assert.equal(after.health, undefined);
 });
 
 test('default builds fit every stock module and remain independently editable', () => {

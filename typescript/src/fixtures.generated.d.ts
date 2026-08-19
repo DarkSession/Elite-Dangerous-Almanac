@@ -253,6 +253,7 @@ type FixtureI18nDisplayText = {
                 slot: string;
             };
             path?: string;
+            severity?: string;
         };
         expected: string | null;
         kind: string;

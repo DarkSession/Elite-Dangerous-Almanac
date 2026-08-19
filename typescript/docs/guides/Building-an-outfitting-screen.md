@@ -156,11 +156,13 @@ build.validation.complete; // does it have every operational mount?
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
-Branch on each issue's `code`, not on its `severity` — on this screen more than anywhere,
-because the severities do not divide along "whose problem is it".
+Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
+and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-says which codes are the user's to fix and which are the library's own gaps, and covers
-the nullable/`…Result` pairs for mass, capacity, mobility, shields and shield recovery.
+lists the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
+shields and shield recovery. On a build imported rather than assembled here, read
+`build.importOutcomes` alongside the issues: a mount the catalogues could not resolve is
+already filled with the hull's stock article, and validation has nothing to say about it.
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look

@@ -340,16 +340,19 @@ metric needs. Do not assume a nullable figure is load-bearing:
 
 Use each available `…Result` companion before trusting a nullable metric.
 
-**On an imported build, a complete figure is a figure about the fit that remains.**
+**On an imported build, every figure here is a figure about the fit that remains.**
 `ShipLoadout.fromLoadout` and `ShipLoadout.fromSlef` normalize what the catalogues cannot
 resolve — a module in a removable mount is discarded, and armour, a core internal or the
-cargo hatch is replaced with the hull's stock article. Every metric here then answers for
-the normalized fit, completely and with no issue raised: a stocked power plant reports its
-own capacity, and a discarded rack simply stops counting. No `…Result` companion and no
-`validation` issue reports the substitution, because there is nothing missing to report.
-`build.importOutcomes` is where it is recorded — it is empty when the capture came through
-untouched, so on a build you did not assemble yourself, read it before quoting a figure
-back as the player's own.
+cargo hatch is replaced with the hull's stock article. The metrics then answer for the
+normalized fit, and nothing above reports the substitution itself: a stocked power plant
+states its own capacity, a discarded rack simply stops counting, and `validation` calls
+the result complete, because the fit that remains really is filled and really is legal.
+What a discard can still do is leave a companion incomplete for an ordinary reason —
+drop the build's only shield generator and `shieldMetricsResult` reports
+`shieldGenerator` / `missing`, exactly as an empty mount would, saying nothing about the
+module that was there. `build.importOutcomes` is the only account of that: it is empty
+when the capture came through untouched, so on a build you did not assemble yourself,
+read it before quoting a figure back as the player's own.
 
 ## Next
 

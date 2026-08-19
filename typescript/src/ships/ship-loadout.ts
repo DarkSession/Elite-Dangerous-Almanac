@@ -2622,8 +2622,8 @@ export class ShipLoadout {
      * The resolved frame-shift-drive constants for this build — post-engineering,
      * with any Guardian FSD Booster folded into `jumpBoost`.
      *
-     * @throws {TypeError} If the build has no frame shift drive, or its required jump
-     * constants are missing from the stats catalogue.
+     * @throws {TypeError} If the build has no frame shift drive, or the fitted record is
+     * missing any of its required jump constants.
      */
     get frameShiftDrive(): FrameShiftDriveParams {
         const drive = this.#resolveDrive();
@@ -3764,7 +3764,7 @@ export class ShipLoadout {
                 ...(maxFuel === undefined ? ['maxFuel'] : []),
             ];
             throw new TypeError(
-                `ShipLoadout: frame shift drive "${truncate(fsdModule.Item)}" has no ${missing.join(' or ')} in the stats catalogue`,
+                `ShipLoadout: the fitted record for frame shift drive "${truncate(fsdModule.Item)}" has no ${missing.join(' or ')}`,
             );
         }
 
