@@ -4721,6 +4721,20 @@ test('setExperimentalEffect returns structured refusals without changing the mod
         assert.deepEqual(engineered.fittedModuleAt('FrameShiftDrive')!.raw, before);
     }
 
+    // A cosmetic entry survives import as the capture stated it and has no catalogue
+    // record, so it is the one fitted module engineering cannot reason about.
+    const noRecord = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [{ Slot: 'PaintJob', Item: 'paintjob_anaconda_future' }],
+    });
+    for (const result of [
+        noRecord.setExperimentalEffect('PaintJob', null),
+        noRecord.completeEngineeringGrade('PaintJob'),
+    ]) {
+        assert.equal(result.kind, 'unsupported');
+        assert.equal(result.code, 'unsupportedEngineering');
+    }
+
     const unsupported = ShipLoadout.fromLoadout({
         Ship: 'Anaconda',
         Modules: [

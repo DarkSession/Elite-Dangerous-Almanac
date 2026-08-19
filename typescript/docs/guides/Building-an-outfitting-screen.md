@@ -159,7 +159,7 @@ build.validation.issues; // what specifically, with a stable code per issue
 Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
 and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-lists the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
+explains the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
 shields and shield recovery. On an imported build, read `build.importOutcomes` alongside
 the issues: validation says nothing about normalization, so an empty mount on your panel
 may be one the player left empty or one import emptied for them. (A *fixed* mount is
