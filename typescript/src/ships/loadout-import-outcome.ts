@@ -2,23 +2,15 @@
  * A change made while normalizing a journal or SLEF loadout against the catalogues.
  *
  * @remarks
- * An entry survives import unresolved on three grounds, and produces no outcome: the
- * module catalogue identifies it, its slot is a known cosmetic or hull-geometry key, or
- * it is a `ModularCargoBayDoor*` article in the cargo-hatch mount, which resolves
- * through the standard hatch's record. Everything else is normalized.
+ * Import removes an unresolved module from a hardpoint, utility, optional internal or
+ * unrecognised slot, and replaces one in a fixed mount — armour, the seven core
+ * internals, the cargo hatch — with the hull's stock module. `ShipLoadout.fromLoadout`
+ * states the rule in full, including what survives unresolved and produces no outcome.
  *
- * Import removes an unresolved module from a hardpoint, utility, optional internal, or
- * unrecognised slot. Armour, the seven core internals, and the cargo hatch are fixed
- * mounts, so import installs the hull's stock module there instead when one is known.
- * Without a default, an unresolved fixed module is emptied and a required mount remains
- * incomplete. A mount the source named no module for is left as the source left it —
- * except the cargo hatch, which is part of the hull rather than an outfitting choice and
- * is restored from the same defaults.
- *
- * `sourceSymbol` is `null` only for that restored hatch, which is the one mount import
- * fills unasked. A defaulted module is a fresh stock identity: it keeps the source's
- * `On`, `Priority` and `Health`, which describe the mount rather than the article, and
- * inherits no engineering or captured value from the module it replaced.
+ * `sourceSymbol` is `null` only for a cargo hatch restored to a source that named none,
+ * the one mount import fills unasked. A replacement keeps the source's `On`, `Priority`
+ * and `Health`, which describe the mount rather than the article, and none of its
+ * engineering or captured value.
  *
  * @example
  * ```ts

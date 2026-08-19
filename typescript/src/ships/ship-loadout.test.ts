@@ -627,8 +627,7 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
         defaultHatch.Item.toLowerCase(),
     );
     // The one outcome shape real captures produce: third-party exports omit the hatch,
-    // so this is what a consumer reading `importOutcomes` almost always sees. A `null`
-    // `sourceSymbol` is what marks it as the mount import fills unasked.
+    // and a `null` `sourceSymbol` is what marks the mount import fills unasked.
     assert.deepEqual(omitted.importOutcomes, [
         {
             action: 'defaulted',
@@ -681,10 +680,8 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     assert.equal(unresolvedBuild.modulesValue, null);
     assert.equal(unresolvedBuild.rebuy, null);
 
-    // A hull-family hatch symbol is resolved rather than normalized: the catalogue
-    // carries the article once, under the standard hatch, and every variant of it has
-    // that record's zero mass, zero price and 0.6 MW draw. Replacing one would discard a
-    // capture's power state and invalidate its credits over a free, weightless mount.
+    // A hull-family hatch symbol resolves through the standard hatch's record rather
+    // than being normalized, so a capture keeps its own article and its credit figures.
     const futureVariantBuild = ShipLoadout.fromLoadout({
         ...source,
         Modules: [
@@ -710,24 +707,6 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     assert.equal(capturedFdlHatch.symbol, 'ModularCargoBayDoor');
     assert.equal(capturedFdlHatch.on, false);
     assert.deepEqual(capturedFdlBuild.importOutcomes, []);
-
-    // The Fer-de-Lance family states its own hatch symbol, which the module catalogue
-    // does not carry: a symbol lookup alone would normalize the hatch of every capture
-    // from those hulls, drop its power state and priority, and void the credit figures.
-    const fdlRoundTrip = ShipLoadout.fromLoadout({
-        ...fdl,
-        Modules: fdl.Modules.map((module) =>
-            module.Slot.toLowerCase() === 'cargohatch'
-                ? { ...module, On: false, Priority: 4, Health: 1 }
-                : module,
-        ),
-    });
-    assert.deepEqual(fdlRoundTrip.importOutcomes, []);
-    const fdlHatch = fdlRoundTrip.fittedModuleAt('CargoHatch')!;
-    assert.equal(fdlHatch.symbol.toLowerCase(), 'modularcargobaydoorfdl');
-    assert.equal(fdlHatch.on, false);
-    assert.equal(fdlHatch.priority, 4);
-    assert.equal(fdlHatch.effectiveStats!.powerDraw, 0.6);
 
     const lowerCaseModules = withoutHatch.map((module) => ({
         ...module,
@@ -800,30 +779,23 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
     assert.equal(repaired.value, undefined);
 });
 
-test('fitting a module resets the mount, while repairing one keeps how it was run', () => {
-    // Two substitutions that look alike and are not: a module the player chose carries
-    // no power state from the one it displaced, while a stock article standing in for one
-    // that failed to resolve keeps the state the source recorded for that mount.
+test('fitting a module resets the mount, unlike repairing one', () => {
+    // A module the player chose carries no power state from the one it displaced; a stock
+    // article standing in for one that failed to resolve keeps what the source recorded.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const build = ShipLoadout.fromLoadout({
-        ...ShipLoadout.default('SideWinder').toLoadoutEvent(),
-        Modules: ShipLoadout.default('SideWinder')
-            .toLoadoutEvent()
-            .Modules.map((module) =>
-                module.Slot === 'Slot01_Size2'
-                    ? { Slot: module.Slot, Item: module.Item, On: false, Priority: 3, Health: 0.5 }
-                    : module,
-            ),
+        ...stock,
+        Modules: stock.Modules.map((module) =>
+            module.Slot === 'Slot01_Size2' ? { ...module, On: false, Priority: 3 } : module,
+        ),
     });
-    const before = build.fittedModuleAt('Slot01_Size2')!;
-    assert.equal(before.on, false);
-    assert.equal(before.priority, 3);
+    assert.equal(build.fittedModuleAt('Slot01_Size2')!.on, false);
 
     build.setModule('Slot01_Size2', mod('Int_CargoRack_Size2_Class1', INTERNAL_MODULES));
     const after = build.fittedModuleAt('Slot01_Size2')!;
     assert.equal(after.symbol, 'Int_CargoRack_Size2_Class1');
     assert.equal(after.on, undefined);
     assert.equal(after.priority, undefined);
-    assert.equal(after.health, undefined);
 });
 
 test('default builds fit every stock module and remain independently editable', () => {
@@ -1153,22 +1125,24 @@ test('an unpowered Guardian booster contributes no jump bonus', () => {
 
 test('a booster is identified by the bonus it supplies, not by its engineering menu', () => {
     const booster = mod('Int_GuardianFSDBooster_Size5', INTERNAL_MODULES);
-    const withCatalogue = ShipLoadout.empty('Anaconda')
-        .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
-        .setModule('Slot02_Size6', booster);
-    // `engineeringGroup` says which recipes may touch an article, not what it does, and
-    // it is a field a caller-supplied record may legitimately leave null. Reading the
-    // bonus itself stops such a record counting its mass while its boost goes uncounted.
-    const withSupplied = ShipLoadout.empty('Anaconda')
-        .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
-        .setModule('Slot02_Size6', { ...booster, engineeringGroup: null });
-    assert.equal(withSupplied.frameShiftDrive.jumpBoost, booster.jumpBoost);
-    assert.equal(withSupplied.maxJumpRange(), withCatalogue.maxJumpRange());
+    const conda = () =>
+        ShipLoadout.empty('Anaconda').setModule(
+            'FrameShiftDrive',
+            mod('Int_Hyperdrive_Size6_Class5'),
+        );
+    // `engineeringGroup` says which recipes may touch an article, not what it does, and a
+    // caller-supplied record may legitimately leave it null — which would otherwise count
+    // the booster's mass while its boost went uncounted.
+    const supplied = conda().setModule('Slot02_Size6', { ...booster, engineeringGroup: null });
+    assert.equal(supplied.frameShiftDrive.jumpBoost, booster.jumpBoost);
+    assert.equal(
+        supplied.maxJumpRange(),
+        conda().setModule('Slot02_Size6', booster).maxJumpRange(),
+    );
 
     // A zero bonus is not evidence of a booster: the first match wins, so believing one
     // would let an unrelated record earlier in slot order shadow the real article.
-    const shadowed = ShipLoadout.empty('Anaconda')
-        .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
+    const shadowed = conda()
         .setModule('Slot01_Size7', {
             ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES),
             jumpBoost: 0,

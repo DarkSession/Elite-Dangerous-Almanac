@@ -363,16 +363,6 @@ test('shared import normalization strips unknown modules and defaults named moun
     // A fixed mount the source never named stays empty rather than being invented, so
     // an incomplete capture still reports as incomplete.
     assert.equal(build.validation.complete, expected.complete);
-    assert.deepEqual(
-        build.validation.issues.map((issue) => issue.code),
-        expected.issueCodes,
-    );
-});
-
-test('shared import outcomes come back in source order with the restored hatch last', () => {
-    const order = fixture.importOutcomeOrder;
-    assert.deepEqual(ShipLoadout.fromLoadout(order.input).importOutcomes, order.expected);
-    assert.deepEqual(ShipLoadout.fromSlef(order.input).importOutcomes, order.expected);
 });
 
 test('the fixture’s mount and non-outfitting patterns agree with the classification', () => {

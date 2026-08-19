@@ -4358,7 +4358,6 @@ type FixtureShipsSlefExport = {
                 main: number;
                 reserve: number;
             };
-            issueCodes: string[];
             modules: {
                 health?: number;
                 on?: boolean;
@@ -4371,7 +4370,7 @@ type FixtureShipsSlefExport = {
                 action: string;
                 replacementSymbol?: string;
                 slot: string;
-                sourceSymbol: string;
+                sourceSymbol: string | null;
             }[];
             rebuy: null;
             unladenMass: number;
@@ -4404,24 +4403,6 @@ type FixtureShipsSlefExport = {
             Ship: string;
             UnladenMass: number;
         };
-    };
-    importOutcomeOrder: {
-        expected: {
-            action: string;
-            replacementSymbol?: string;
-            slot: string;
-            sourceSymbol: string | null;
-        }[];
-        input: {
-            Modules: {
-                Item: string;
-                On?: boolean;
-                Priority?: number;
-                Slot: string;
-            }[];
-            Ship: string;
-        };
-        note: string;
     };
     journalFieldExclusions: {
         engineering: string[];

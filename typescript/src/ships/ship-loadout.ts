@@ -13,10 +13,8 @@
  *
  * Instances are **mutable**: `setModule`/`removeModule` change the build in place and
  * return `this` for chaining. Values a SLEF export already computed (its
- * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim while the fitted set they
- * describe survives import intact; for a build assembled from scratch, and for one
- * import normalization changed, those figures are computed from the fitted modules and
- * the hull's stats.
+ * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim while the fit they describe
+ * survives import; otherwise they are computed from the fitted modules and the hull.
  * Editing an imported build adjusts the supplied aggregate figures by the changed
  * module's contribution; when that contribution is unknown, the affected figure is
  * discarded and recomputed rather than allowed to go stale.
@@ -668,16 +666,15 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * @remarks
  * Jump calculations resolve the frame shift drive's constants from the drive's module
  * record, applying any engineering the build carries (a Long Range blueprint's
- * `FSDOptimalMass`, for instance). For a SLEF build whose fitted set survived import
- * intact, mass comes from the export's `UnladenMass`; for an assembled build, and for
- * one import normalization changed, it is the hull mass plus every fitted module's mass
- * (armour defaults to the zero-mass lightweight alloy).
+ * `FSDOptimalMass`, for instance). Mass comes from the export's `UnladenMass` where
+ * {@link unladenMass} takes it; otherwise it is the hull mass plus every fitted module's
+ * mass (armour defaults to the zero-mass lightweight alloy).
  *
  * @example
  * Read a build a player already flies, and ask it what an outfitting screen shows.
  * Every figure below is one build's — a Krait Phantom explorer. Figures the capture
- * already stated — `unladenMass` here — are trusted verbatim while the fit it described
- * survives import intact; the rest are computed from the fit.
+ * already stated — `unladenMass` here — are trusted verbatim while the fit they
+ * describe survives import; the rest are computed from the fit.
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -833,41 +830,35 @@ export class ShipLoadout {
      *
      * Modules are imported as one complete snapshot: their array order does not affect
      * per-ship count allowances, and any aggregate violation is reported by
-     * {@link validation}. An entry survives import on one of three grounds — the module
-     * catalogue identifies its `Item`; its slot is a known cosmetic or hull-geometry key
-     * (`PaintJob`, `ShipCockpit`, a numbered decal, …), which is kept with no catalogue
-     * record at all; or it is a `ModularCargoBayDoor*` article in the cargo-hatch mount,
-     * which resolves through the standard hatch's record because Frontier gives some
-     * hull families their own symbol for the one built-in article. Any of the three is
-     * imported exactly as the event stated it.
+     * {@link validation}. An entry is kept as the event stated it when the catalogue
+     * identifies its `Item`, when its slot is a known cosmetic or hull-geometry key
+     * (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it is a
+     * `ModularCargoBayDoor*` article in the cargo-hatch mount — the catalogue carries
+     * that one built-in article once, for every hull family that names its own symbol.
      *
-     * Everything else is normalized. An unresolved module in a hardpoint, utility,
-     * optional internal, or unrecognised slot is discarded. Armour, all seven core
-     * internals, and the cargo hatch are fixed mounts: an unresolved module there is
-     * replaced with the hull's stock module, which keeps the source's `On`, `Priority`
-     * and `Health` — facts about the mount rather than about the identity that failed to
-     * resolve — and none of its engineering, captured value, or other source fields.
-     * If no default exists, the mount remains empty and {@link validation} reports an
-     * incomplete build where the mount is required. A fixed mount the event names no
-     * module for is left empty for the same report to pick up — the cargo hatch
+     * Everything else is normalized, and every change is recorded by
+     * {@link importOutcomes}. An unresolved module in a hardpoint, utility, optional
+     * internal or unrecognised slot is discarded. Armour, all seven core internals and
+     * the cargo hatch are fixed mounts: an unresolved module there is replaced with the
+     * hull's stock module, which keeps the source's `On`, `Priority` and `Health` and
+     * none of its engineering or captured value. A fixed mount the event names no module
+     * for is left empty, as is one whose hull has no default, and {@link validation}
+     * reports an incomplete build where such a mount is required — the cargo hatch
      * excepted, which is part of the hull rather than an outfitting choice and is
-     * restored from the hull's default loadout. Every change is recorded by
-     * {@link importOutcomes}.
+     * restored from the hull's default loadout.
      *
-     * Any normalization that changes mass, capacity, or price makes the corresponding
-     * captured aggregate untrustworthy, so the event's figures are dropped: live
-     * {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity} are recomputed
-     * from the fit that remains, while {@link modulesValue} and {@link rebuy} read
-     * `null` — no catalogue records what the discarded module was bought for.
-     * {@link sourcePurchase} still reports the captured figures. Use this factory rather
-     * than replaying a complete loadout through the incremental {@link setModule} editor.
+     * Normalization makes the captured aggregates untrustworthy, so the event's figures
+     * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}
+     * are recomputed from the fit that remains, while {@link modulesValue} and
+     * {@link rebuy} read `null` — no catalogue records what the discarded module was
+     * bought for — and {@link sourcePurchase} still reports the captured figures. The
+     * cargo hatch is the exception, being weightless and free: restoring an absent one,
+     * or importing a hull-family hatch the catalogue resolves, leaves every figure
+     * standing. Replacing an *unresolved* hatch does not, and source-credit export then
+     * keeps its totals only when that hatch was unpriced or valued at zero.
      *
-     * The cargo hatch is the zero-mass, zero-capacity, zero-price exception when it was
-     * absent: filling an empty hatch preserves the build's live aggregate mass, capacity
-     * and credit figures, as does importing a hull-family hatch the catalogue resolves.
-     * Replacing an *unresolved* hatch invalidates them, because the discarded source
-     * article's contributions are unknown, and source-credit export then retains its
-     * totals only when that replaced hatch was unpriced or valued at zero.
+     * Use this factory rather than replaying a complete loadout through the incremental
+     * {@link setModule} editor.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -1032,15 +1023,11 @@ export class ShipLoadout {
      * known mass).
      *
      * @remarks
-     * A SLEF export's `UnladenMass` is trusted verbatim, unless import normalization
-     * changed the fit it described — restoring an absent cargo hatch does not, the stock
-     * hatch being weightless. Otherwise the mass is the hull's `hullMass` plus every
-     * fitted module's mass (post-engineering), with armour at the zero-mass lightweight
-     * default — which, after normalization stocked a fixed mount or discarded a module,
-     * is the mass of the normalized fit rather than of the capture. An
-     * {@link importOutcomes} entry whose `sourceSymbol` is not `null` is the only report
-     * of that: this figure is complete either way, and no {@link unladenMassResult}
-     * issue names it.
+     * A SLEF export's `UnladenMass` is trusted verbatim unless import normalization
+     * changed the fit it described. Otherwise the mass is the hull's `hullMass` plus
+     * every fitted module's mass (post-engineering), with armour at the zero-mass
+     * lightweight default — the normalized fit's mass, then, not the capture's, and
+     * complete either way. {@link importOutcomes} is the only report of that.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -1069,9 +1056,8 @@ export class ShipLoadout {
     /**
      * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
      * SLEF export's `FuelCapacity` is used when present and import normalization left
-     * its fit alone, which restoring an absent cargo hatch does; otherwise the main
-     * capacity is the sum of the fitted fuel tanks and the reserve comes from the hull's
-     * stats.
+     * its fit alone; otherwise the main capacity is the sum of the fitted fuel tanks and
+     * the reserve comes from the hull's stats.
      */
     get fuelCapacity(): FuelCapacity | null {
         return this.fuelCapacityResult.value;
@@ -1096,11 +1082,7 @@ export class ShipLoadout {
     /**
      * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
      * SLEF export's `CargoCapacity` is used when present and import normalization left
-     * its fit alone, which restoring an absent cargo hatch does — the stock hatch carries
-     * nothing. Otherwise it is the sum of the fitted cargo racks, which after a rack was
-     * discarded or a fixed mount stocked describes the normalized fit rather than the
-     * capture. An {@link importOutcomes} entry whose `sourceSymbol` is not `null` is the
-     * only report of that.
+     * its fit alone; otherwise it is the sum of the fitted cargo racks.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;
@@ -1144,11 +1126,10 @@ export class ShipLoadout {
 
     /**
      * Fitted-modules cost in credits represented by the build, or `null` if
-     * unknown — including after an edit, or import normalization, discarded an import's
+     * unknown — including after an edit or import normalization discarded an import's
      * figure, since no catalogue records what a replaced module was bought for. Unlike
-     * mass and capacity, this one is not recomputed from what remains.
-     * {@link sourcePurchase} keeps the captured figure regardless, and
-     * {@link retailCredits} prices the current fit at catalogue retail.
+     * mass and capacity it is not recomputed from what remains; {@link sourcePurchase}
+     * keeps the captured figure and {@link retailCredits} prices the current fit.
      */
     get modulesValue(): number | null {
         return this.#top.ModulesValue ?? null;
@@ -1157,7 +1138,7 @@ export class ShipLoadout {
     /**
      * Insurance rebuy cost in credits represented by the build, or `null` if
      * unknown. Discarded by an edit or by import normalization for the same reason as
-     * {@link modulesValue}, and likewise preserved by {@link sourcePurchase}.
+     * {@link modulesValue}, and likewise kept by {@link sourcePurchase}.
      */
     get rebuy(): number | null {
         return this.#top.Rebuy ?? null;
@@ -1229,10 +1210,8 @@ export class ShipLoadout {
      * mounts must be filled for `complete` to be true. A module in a nonexistent or
      * incompatible slot is invalid. Exclusive families and per-ship module-count
      * allowances must also be satisfied.
-     *
-     * Neither question reports import normalization: a build whose unresolved power
-     * plant was stocked from the hull defaults is valid and complete, because the fit
-     * that remains really is both. {@link importOutcomes} is where that is recorded.
+     * Neither question reports import normalization — the fit that remains really is
+     * legal and really is filled — so read {@link importOutcomes} beside them.
      */
     get validation(): LoadoutValidation {
         const slots = this.#layout();
@@ -1455,10 +1434,8 @@ export class ShipLoadout {
      * @remarks
      * This is the narrow repair path for mounts that {@link setModule} deliberately does
      * not expose as ordinary edits, including the built-in cargo hatch. The stock article
-     * keeps the mount's `On`, `Priority` and `Health` — those describe how the mount was
-     * being run rather than which article filled it — and inherits none of the replaced
-     * module's engineering or captured value. Import normalization substitutes on the
-     * same terms. Live aggregates are updated by the same rules as every package-owned
+     * keeps the mount's `On`, `Priority` and `Health` and none of the replaced module's
+     * engineering or captured value, as import normalization does. Live aggregates are updated by the same rules as every package-owned
      * refit. The immutable {@link sourcePurchase} record is unchanged; source-credit
      * export leaves a replaced slot unpriced, while its aggregate totals remain valid for
      * an unpriced or zero-priced cargo hatch. Resolved valid core and armour alternatives
@@ -1548,11 +1525,10 @@ export class ShipLoadout {
      * it permits. To consume a complete order-independent snapshot, use
      * {@link ShipLoadout.fromLoadout}.
      *
-     * Fitting is a fresh mount: the slot's `On`, `Priority` and `Health` are reset, since
-     * a module the player just bought carries no power state from the one it displaced.
-     * Set them again if your screen keeps a priority group across a swap.
-     * {@link repairFixedMount} is the exception, because it substitutes for an article
-     * that failed rather than for one the player chose.
+     * Fitting is a fresh mount: the slot's `On`, `Priority` and `Health` are reset. Set
+     * them again if your screen keeps a priority group across a swap.
+     * {@link repairFixedMount} keeps them, standing in for an article that failed rather
+     * than for one the player chose.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively (journal
      * spelling). An occupied slot keeps the key the build already spells it with, so
@@ -2805,7 +2781,7 @@ export class ShipLoadout {
         let drive: FrameShiftDriveParams | null = null;
         let maximumFuel: number | null = null;
         if (load === 'maximum') {
-            const fitted = this.#frameShiftDriveModule();
+            const fitted = this.#frameShiftDrive()?.module;
             let driveError: Error | null = null;
             try {
                 drive = this.#resolveDrive();
@@ -2849,7 +2825,7 @@ export class ShipLoadout {
                 this.jumpRange(value);
             } catch (error) {
                 if (!(error instanceof RangeError)) throw error;
-                const fitted = this.#frameShiftDriveModule();
+                const fitted = this.#frameShiftDrive()?.module;
                 const field: CalculationIssue['field'] =
                     drive !== null && (!Number.isFinite(drive.maxFuel) || drive.maxFuel < 0)
                         ? 'frameShiftDrive'
@@ -3741,11 +3717,6 @@ export class ShipLoadout {
             if (stats?.slot === 'frameShiftDrive') return { module: m, stats };
         }
         return undefined;
-    }
-
-    /** Find the module whose catalogue record identifies the FSD. */
-    #frameShiftDriveModule(): LoadoutModule | undefined {
-        return this.#frameShiftDrive()?.module;
     }
 
     #resolveDrive(): FrameShiftDriveParams | null {

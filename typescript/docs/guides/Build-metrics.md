@@ -340,30 +340,22 @@ metric needs. Do not assume a nullable figure is load-bearing:
 
 Use each available `…Result` companion before trusting a nullable metric.
 
-**On an imported build, every figure here is a figure about the fit that remains.**
-`ShipLoadout.fromLoadout` and `ShipLoadout.fromSlef` normalize what the catalogues cannot
-resolve — a module in a removable mount is discarded, and armour, a core internal or the
-cargo hatch is replaced with the hull's stock article. The metrics then answer for the
-normalized fit, and nothing above reports the substitution itself: a stocked power plant
-states its own capacity, a discarded rack simply stops counting, and `validation` calls
-the result complete, because the fit that remains really is filled and really is legal.
-What normalization can still do is leave a companion incomplete for an ordinary reason,
-saying nothing about the module that was there. Drop the build's only shield generator
-and `shieldMetricsResult` reports `shieldGenerator` / `missing`, exactly as an empty
-mount would. A stocked fixed mount does it too, because a hull's default is the article
-it shipped with, near-always the lowest rating on offer: substitute one for an engineered
-power plant and a build sized for the original sheds groups, so the mobility, shield and
-recovery companions report `shed`.
+**On an imported build, every figure here describes the fit that remains.** Import
+discards a module in a removable mount and stocks a fixed one from the hull defaults, and
+nothing above says so: a stocked power plant states its own capacity, a discarded rack
+stops counting, and `validation` calls the result complete, because the fit that remains
+really is legal and really is filled. What normalization can still do is leave a
+companion incomplete for an ordinary reason — drop the only shield generator and
+`shieldMetricsResult` reports `shieldGenerator` / `missing`, exactly as an empty mount
+would; stock a plant over an engineered one and the mobility, shield and recovery
+companions report `shed`.
 
-`build.importOutcomes` is the only account of any of this. Read it on a build you did
-not assemble yourself, and read the entries rather than the length. An entry whose
-`sourceSymbol` is `null` is the cargo hatch restored to a capture that named none — most
-third-party exports omit it, so most produce exactly that one entry, and it leaves the
-capture's mass, capacity and credit figures standing, being free and weightless. It is
-not invisible here, though: like every ship's hatch it draws 0.6 MW, so it appears in
-`powerBudget().consumers` and in the heat profile, in the first priority band because
-the capture recorded none for it. Any other entry means the figures describe the
-normalized fit rather than the capture.
+`build.importOutcomes` is the only account of this, and it is the entries that matter,
+not the length. One whose `sourceSymbol` is `null` is the cargo hatch restored to a
+capture that named none: most third-party exports omit it, so most produce exactly that
+one entry, and it leaves mass, capacity and credit figures standing. It is not invisible
+here, though — like every ship's hatch it draws 0.6 MW, in the first priority band since
+the capture recorded none. Any other entry means the figures are the normalized fit's.
 
 ## Next
 

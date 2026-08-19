@@ -222,12 +222,10 @@ is part of the hull and is restored from the same defaults — and a required on
 validation as `missingRequiredSlot`, as does an unknown fixed mount whose hull has no
 default.
 
-**Neither question reports normalization.** A build whose unknown power plant was
-replaced with the hull's stock article is `valid` and `complete` with no issues, and so
-is one whose unrecognised cargo racks were discarded — the fit that remains really is
-legal and really is filled. What changed is that the figures now describe that fit
-rather than the capture, and `build.importOutcomes` is the only place it is recorded.
-Read it alongside `validation` on any build you did not assemble yourself.
+**Neither question reports normalization.** A build whose unknown power plant was stocked
+from the hull defaults is `valid` and `complete` with no issues — the fit that remains
+really is legal and really is filled. `build.importOutcomes` is the only record that the
+figures now describe that fit rather than the capture.
 
 ## Strict about input, forgiving about spelling
 

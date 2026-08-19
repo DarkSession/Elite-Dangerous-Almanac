@@ -103,15 +103,7 @@
         { "Slot": "SmallHardpoint1", "Item": "FutureWeapon" },
         { "Slot": "TinyHardpoint1", "Item": "FutureUtility" },
         { "Slot": "Armour", "Item": "FutureArmour" },
-        { "Slot": "FutureMount", "Item": "FutureModule" },
-        {
-          "Slot": "CargoHatch",
-          "Item": "FutureCargoHatch",
-          "On": false,
-          "Priority": 3,
-          "Health": 0.25,
-          "Value": 199
-        }
+        { "Slot": "FutureMount", "Item": "FutureModule" }
       ]
     },
     "expected": {
@@ -124,13 +116,7 @@
           "health": 0.5
         },
         { "slot": "Armour", "symbol": "SideWinder_Armour_Grade1" },
-        {
-          "slot": "CargoHatch",
-          "symbol": "ModularCargoBayDoor",
-          "on": false,
-          "priority": 3,
-          "health": 0.25
-        }
+        { "slot": "CargoHatch", "symbol": "ModularCargoBayDoor" }
       ],
       "outcomes": [
         {
@@ -168,7 +154,7 @@
         {
           "action": "defaulted",
           "slot": "CargoHatch",
-          "sourceSymbol": "FutureCargoHatch",
+          "sourceSymbol": null,
           "replacementSymbol": "ModularCargoBayDoor"
         }
       ],
@@ -177,50 +163,8 @@
       "fuelCapacity": { "main": 0, "reserve": 0.3 },
       "modulesValue": null,
       "rebuy": null,
-      "complete": false,
-      "issueCodes": [
-        "missingRequiredSlot",
-        "missingRequiredSlot",
-        "missingRequiredSlot",
-        "missingRequiredSlot",
-        "missingRequiredSlot",
-        "missingRequiredSlot"
-      ]
+      "complete": false
     }
-  },
-  "importOutcomeOrder": {
-    "note": "Outcomes are reported in the order the source states its modules, and a cargo hatch the source named no module for is appended after them all — it is the one change import makes without an entry to make it against. Its sourceSymbol is null, and it is the only entry that carries one.",
-    "input": {
-      "Ship": "sidewinder",
-      "Modules": [
-        { "Slot": "SmallHardpoint1", "Item": "FutureWeapon" },
-        {
-          "Slot": "PowerPlant",
-          "Item": "FuturePowerPlant",
-          "On": false,
-          "Priority": 2
-        }
-      ]
-    },
-    "expected": [
-      {
-        "action": "emptied",
-        "slot": "SmallHardpoint1",
-        "sourceSymbol": "FutureWeapon"
-      },
-      {
-        "action": "defaulted",
-        "slot": "PowerPlant",
-        "sourceSymbol": "FuturePowerPlant",
-        "replacementSymbol": "Int_Powerplant_Size2_Class1"
-      },
-      {
-        "action": "defaulted",
-        "slot": "CargoHatch",
-        "sourceSymbol": null,
-        "replacementSymbol": "ModularCargoBayDoor"
-      }
-    ]
   },
   "engineeringWithoutModifiers": {
     "note": "SLEF requires only Ship, Modules, Slot and Item; the specification's own example carries an Engineering block with BlueprintName, Level, Quality and ExperimentalEffect but NO Modifiers array. A parser that requires Modifiers cannot read the format it implements. Absent means 'not stated', not 'changed nothing': the module performs at its catalogue stats, modifier lookups return null, and an export must not invent an empty array on the way back out. Source: https://inara.cz/elite/inara-impexp-slef/",

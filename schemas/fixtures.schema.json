@@ -6375,10 +6375,6 @@
                   },
                   "required": ["main", "reserve"]
                 },
-                "issueCodes": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                },
                 "modules": {
                   "type": "array",
                   "items": {
@@ -6404,7 +6400,9 @@
                       "action": { "type": "string" },
                       "replacementSymbol": { "type": "string" },
                       "slot": { "type": "string" },
-                      "sourceSymbol": { "type": "string" }
+                      "sourceSymbol": {
+                        "anyOf": [{ "type": "string" }, { "type": "null" }]
+                      }
                     },
                     "required": ["action", "slot", "sourceSymbol"]
                   }
@@ -6416,7 +6414,6 @@
                 "cargoCapacity",
                 "complete",
                 "fuelCapacity",
-                "issueCodes",
                 "modules",
                 "modulesValue",
                 "outcomes",
@@ -6498,52 +6495,6 @@
             }
           },
           "required": ["expected", "input"]
-        },
-        "importOutcomeOrder": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "expected": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "action": { "type": "string" },
-                  "replacementSymbol": { "type": "string" },
-                  "slot": { "type": "string" },
-                  "sourceSymbol": {
-                    "anyOf": [{ "type": "string" }, { "type": "null" }]
-                  }
-                },
-                "required": ["action", "slot", "sourceSymbol"]
-              }
-            },
-            "input": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "Modules": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "Item": { "type": "string" },
-                      "On": { "type": "boolean" },
-                      "Priority": { "type": "integer" },
-                      "Slot": { "type": "string" }
-                    },
-                    "required": ["Item", "Slot"]
-                  }
-                },
-                "Ship": { "type": "string" }
-              },
-              "required": ["Modules", "Ship"]
-            },
-            "note": { "type": "string" }
-          },
-          "required": ["expected", "input", "note"]
         },
         "journalFieldExclusions": {
           "type": "object",
@@ -6728,7 +6679,6 @@
         "deepBlack",
         "engineeringWithoutModifiers",
         "importNormalization",
-        "importOutcomeOrder",
         "journalFieldExclusions",
         "kraitPhantom",
         "pythonMkII",

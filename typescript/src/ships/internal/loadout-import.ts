@@ -257,10 +257,9 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     const outcomes: LoadoutImportOutcome[] = [];
     const defaults = getDefaultLoadout(event.Ship)?.modules ?? [];
     for (const [slot, module] of modules) {
-        // `isBuiltInHullModule` is the third way a module resolves: Frontier gives some
-        // hull families their own cargo-hatch symbol (`ModularCargoBayDoorFDL`) that the
-        // catalogue carries once, under the standard hatch, so a symbol lookup alone
-        // would normalize a hatch every Fer-de-Lance and Lynx Highliner capture states.
+        // Some hull families name their own cargo-hatch symbol for the one article the
+        // catalogue carries under the standard hatch, so a symbol lookup alone would
+        // normalize the hatch of every Fer-de-Lance and Lynx Highliner capture.
         if (
             builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item') ||
             isNonOutfittingSlot(slot) ||
@@ -275,14 +274,10 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                 ? defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase())
                 : undefined;
         if (fallback) {
-            // The article is unknown; how the commander ran it is not. `On`, `Priority`
-            // and `Health` are source facts about the mount rather than about the
-            // identity that failed to resolve, and dropping them would silently switch a
-            // disabled module back on and re-band it — moving `powerBudget`,
-            // `distributorMetrics` and `heatMetrics` with nothing but an outcome entry to
-            // say why. `repairFixedMount` carries them across the same substitution. The
-            // captured `Value` and engineering are not carried: both describe the article
-            // itself, and this is a different one.
+            // The article is unknown; how the commander ran it is not. Dropping `On`
+            // would switch a disabled module back on and re-band it, moving the power and
+            // heat metrics silently. `repairFixedMount` carries the same three across the
+            // same substitution. `Value` and engineering describe the article, so they go.
             modules.set(slot, {
                 Slot: slot,
                 Item: fallback.symbol,
@@ -302,14 +297,11 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         }
         invalidatesAggregates = true;
     }
-    // Only the cargo hatch is restored when the source states no module for it. That
-    // mount is part of the hull rather than an outfitting choice, and the stock hatch is
-    // free and weightless, so filling it invents nothing and invalidates no aggregate.
-    // An absent armour or core mount stays absent: fitting the hull's stock module there
-    // would report a build the source never described, and would make `validation`
-    // call it complete — the empty mount is what an outfitting screen exists to fill,
-    // and what a partial build exported by `ShipLoadout.empty` has to survive a round
-    // trip as.
+    // The hatch is part of the hull rather than an outfitting choice, and the stock one
+    // is free and weightless, so restoring it invents nothing and invalidates nothing. An
+    // absent armour or core mount stays absent: stocking it would report a build the
+    // source never described as `complete`, and would stop `ShipLoadout.empty` surviving
+    // an export/import round trip.
     for (const fallback of defaults) {
         if (
             parseSlotName(fallback.slot)?.kind !== 'cargoHatch' ||
