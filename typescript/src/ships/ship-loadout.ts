@@ -622,13 +622,16 @@ export interface LoadoutExportOptions {
      * `'source'` quotes the build's {@link ShipLoadout.sourcePurchase | source purchase
      * record} instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value`
      * figures exactly as the capture stated them, and nothing where it stated nothing.
-     * An unedited capture therefore re-exports its own credits unchanged.
+     * A capture whose every article resolves therefore re-exports its own credits
+     * unchanged until it is edited.
      *
-     * Each captured figure is pinned to what it was paid for, so an edit narrows the
-     * export rather than staling it. A slot whose module has been swapped is left
-     * unpriced, because the figure was paid for the article that *was* fitted; and
-     * `ModulesValue` and `Rebuy` are dropped once any priced module has been swapped or
-     * removed, since they then cover an article no longer aboard. Removing a module the
+     * Each captured figure is pinned to what it was paid for, so losing an article
+     * narrows the export rather than staling it — by an edit, or at import, where
+     * normalization discards or replaces a module the catalogue cannot resolve and
+     * {@link ShipLoadout.importOutcomes} names the slots. A slot whose module has been
+     * swapped is left unpriced, because the figure was paid for the article that *was*
+     * fitted; and `ModulesValue` and `Rebuy` are dropped once any priced module has been
+     * swapped or removed, since they then cover an article no longer aboard. Removing a module the
      * capture listed but never priced is the one case this cannot detect: only the
      * capture ever knew which unpriced modules its total counted. The built-in cargo hatch
      * is never purchasable, so normalising an unpriced or zero-priced captured hatch does
