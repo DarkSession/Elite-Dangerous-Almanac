@@ -833,18 +833,23 @@ export class ShipLoadout {
      * by {@link validation}. An unrecognised module in a hardpoint, utility, optional
      * internal, or unrecognised slot is discarded. Armour, all seven core internals,
      * and the cargo hatch are fixed mounts: an unresolved module there is replaced with
-     * the hull's stock module, and an omitted fixed mount is filled from the same default
-     * loadout.
+     * the hull's stock module.
      * If no default exists, the mount remains empty and {@link validation} reports an
-     * incomplete build where the mount is required. Every change is recorded by
+     * incomplete build where the mount is required. A fixed mount the event names no
+     * module for is left empty for the same report to pick up — the cargo hatch
+     * excepted, which is part of the hull rather than an outfitting choice and is
+     * restored from the hull's default loadout. Every change is recorded by
      * {@link importOutcomes}.
      *
      * Any normalization that changes mass, capacity, or price makes the corresponding
-     * captured aggregate untrustworthy, so live aggregates are recomputed from the fit
-     * that remains. Use this factory rather than replaying a complete loadout through
-     * the incremental {@link setModule} editor. A stock replacement retains none of the
-     * unrecognised module's engineering, power state, priority, health, captured value,
-     * or other source fields.
+     * captured aggregate untrustworthy, so the event's figures are dropped: live
+     * {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity} are recomputed
+     * from the fit that remains, while {@link modulesValue} and {@link rebuy} read
+     * `null` — no catalogue records what the discarded module was bought for.
+     * {@link sourcePurchase} still reports the captured figures. Use this factory rather
+     * than replaying a complete loadout through the incremental {@link setModule}
+     * editor. A stock replacement retains none of the unrecognised module's engineering,
+     * power state, priority, health, captured value, or other source fields.
      *
      * The cargo hatch is the zero-mass, zero-capacity, zero-price exception only when it
      * was absent: filling an empty hatch preserves the build's live aggregate mass,
@@ -1173,8 +1178,8 @@ export class ShipLoadout {
     }
 
     /**
-     * Changes made while importing this build, in source order followed by absent
-     * fixed mounts in hull-default order.
+     * Changes made while importing this build, in source order, followed by a restored
+     * cargo hatch when the source named none.
      *
      * @returns A deeply frozen list. It is empty for builds created with
      * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
@@ -1184,8 +1189,8 @@ export class ShipLoadout {
      * outcome means import removed an unknown module from a hardpoint, utility, optional
      * internal, or unrecognised slot—or from a fixed mount for which no default exists.
      * A `defaulted` outcome names the stock replacement fitted to armour, a core internal,
-     * or the cargo hatch; its `sourceSymbol` is `null` when the source omitted that fixed
-     * mount entirely.
+     * or the cargo hatch; its `sourceSymbol` is `null` only for a cargo hatch the source
+     * left out, which is the one mount import fills without being asked.
      */
     get importOutcomes(): readonly LoadoutImportOutcome[] {
         return this.#importOutcomes;
@@ -3736,7 +3741,13 @@ export class ShipLoadout {
     #resolveJumpBoost(): number {
         for (const m of this.#modules.values()) {
             const stats = this.#statsFor(m);
-            if (stats?.engineeringGroup !== 'fsdBoosters') continue;
+            // A booster is whatever supplies a jump bonus. `engineeringGroup` says only
+            // which recipes may touch the article, and it is a field a caller-supplied
+            // record is free to leave `null`; reading the bonus itself keeps such a
+            // record from contributing its mass while its boost goes uncounted.
+            if (stats?.engineeringGroup !== 'fsdBoosters' && stats?.jumpBoost === undefined) {
+                continue;
+            }
             if (m.On === false) continue; // an unpowered booster gives no bonus
             if (stats?.jumpBoost === undefined) {
                 throw new TypeError(

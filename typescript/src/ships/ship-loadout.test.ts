@@ -666,15 +666,23 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     assert.equal(unresolvedBuild.modulesValue, null);
     assert.equal(unresolvedBuild.rebuy, null);
 
-    const futureVariant = ShipLoadout.fromLoadout({
+    // A hull-family hatch symbol is resolved rather than normalized: the catalogue
+    // carries the article once, under the standard hatch, and every variant of it has
+    // that record's zero mass, zero price and 0.6 MW draw. Replacing one would discard a
+    // capture's power state and invalidate its credits over a free, weightless mount.
+    const futureVariantBuild = ShipLoadout.fromLoadout({
         ...source,
         Modules: [
             ...withoutHatch,
             { Slot: 'cargohatch', Item: 'ModularCargoBayDoorUnknown', Value: 999 },
         ],
-    }).fittedModuleAt('CargoHatch')!;
-    assert.equal(futureVariant.symbol.toLowerCase(), defaultHatch.Item.toLowerCase());
-    assert.equal(futureVariant.raw.Value, undefined);
+    });
+    const futureVariant = futureVariantBuild.fittedModuleAt('CargoHatch')!;
+    assert.equal(futureVariant.symbol, 'ModularCargoBayDoorUnknown');
+    assert.equal(futureVariant.raw.Value, 999);
+    assert.deepEqual(futureVariantBuild.importOutcomes, []);
+    assert.equal(futureVariantBuild.modulesValue, source.ModulesValue);
+    assert.equal(futureVariantBuild.rebuy, source.Rebuy);
 
     const fdl = ShipLoadout.default('FerDeLance').toLoadoutEvent();
     const wrongHatch = fdl.Modules.map((module) =>
@@ -682,12 +690,29 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
             ? { ...module, Item: 'ModularCargoBayDoor', On: false }
             : module,
     );
-    const capturedFdlHatch = ShipLoadout.fromLoadout({
-        ...fdl,
-        Modules: wrongHatch,
-    }).fittedModuleAt('CargoHatch')!;
+    const capturedFdlBuild = ShipLoadout.fromLoadout({ ...fdl, Modules: wrongHatch });
+    const capturedFdlHatch = capturedFdlBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(capturedFdlHatch.symbol, 'ModularCargoBayDoor');
     assert.equal(capturedFdlHatch.on, false);
+    assert.deepEqual(capturedFdlBuild.importOutcomes, []);
+
+    // The Fer-de-Lance family states its own hatch symbol, which the module catalogue
+    // does not carry: a symbol lookup alone would normalize the hatch of every capture
+    // from those hulls, drop its power state and priority, and void the credit figures.
+    const fdlRoundTrip = ShipLoadout.fromLoadout({
+        ...fdl,
+        Modules: fdl.Modules.map((module) =>
+            module.Slot.toLowerCase() === 'cargohatch'
+                ? { ...module, On: false, Priority: 4, Health: 1 }
+                : module,
+        ),
+    });
+    assert.deepEqual(fdlRoundTrip.importOutcomes, []);
+    const fdlHatch = fdlRoundTrip.fittedModuleAt('CargoHatch')!;
+    assert.equal(fdlHatch.symbol.toLowerCase(), 'modularcargobaydoorfdl');
+    assert.equal(fdlHatch.on, false);
+    assert.equal(fdlHatch.priority, 4);
+    assert.equal(fdlHatch.effectiveStats!.powerDraw, 0.6);
 
     const lowerCaseModules = withoutHatch.map((module) => ({
         ...module,
@@ -1229,14 +1254,26 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
-    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 1080);
+    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 460);
 
+    // An unresolved optional internal is stripped, so the hull and what remains still
+    // add up rather than the whole figure going unknown.
     const unresolved: LoadoutEvent = {
         Ship: 'anaconda',
         Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
     };
     const unresolvedBuild = ShipLoadout.fromLoadout(unresolved);
-    assert.equal(unresolvedBuild.unladenMass, 1020);
+    assert.equal(unresolvedBuild.unladenMass, 400);
+
+    // An unresolved fixed mount is stocked instead, and the stock article's mass counts.
+    const unresolvedCore = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [{ Slot: 'PowerPlant', Item: 'int_future_module_without_stats' }],
+    });
+    assert.equal(unresolvedCore.unladenMass, 560);
+    // Mounts the capture never named stay empty rather than being invented.
+    assert.equal(unresolvedCore.fittedModuleAt('MainEngines'), null);
+    assert.equal(unresolvedCore.validation.complete, false);
 
     const stripped = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',

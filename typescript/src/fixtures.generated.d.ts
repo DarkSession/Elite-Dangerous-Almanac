@@ -3217,7 +3217,7 @@ type FixtureShipsOperations = {
             nullLoadouts: {
                 Modules: {
                     Item: string;
-                    On: boolean;
+                    On?: boolean;
                     Slot: string;
                 }[];
                 Ship: string;
@@ -4352,10 +4352,12 @@ type FixtureShipsSlefExport = {
     importNormalization: {
         expected: {
             cargoCapacity: number;
+            complete: boolean;
             fuelCapacity: {
                 main: number;
                 reserve: number;
             };
+            issueCodes: string[];
             modules: {
                 slot: string;
                 symbol: string;
@@ -4365,7 +4367,7 @@ type FixtureShipsSlefExport = {
                 action: string;
                 replacementSymbol?: string;
                 slot: string;
-                sourceSymbol: string | null;
+                sourceSymbol: string;
             }[];
             rebuy: null;
             unladenMass: number;

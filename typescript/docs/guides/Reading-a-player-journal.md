@@ -148,12 +148,17 @@ Pass `StarSystem` to the permit-lock lookup described in
 Journals can contain hulls or modules absent from the catalogues. A direct lookup that
 finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import:
 an unknown hull is refused; unknown modules in hardpoints, utilities, optional internals
-and unrecognised slots are discarded; and unknown or omitted fixed mounts are filled with
-that hull's stock armour, core internal or cargo hatch when one is known. Without a
-default, the mount remains empty and a required mount makes the build incomplete. When
-normalization changes the fitted set, captured mass, capacity and credit aggregates are
-recomputed rather than trusted. Filling a wholly absent cargo hatch is the exception:
-the known stock hatch has zero mass, capacity and price, so those figures remain valid.
+and unrecognised slots are discarded; and an unknown fixed mount is filled with that
+hull's stock armour, core internal or cargo hatch when one is known. Without a default,
+the mount remains empty and a required mount makes the build incomplete — as does a fixed
+mount the event named no module for, apart from the cargo hatch, which is part of the
+hull and is restored from the same defaults. When
+normalization changes the fitted set, the capture's own aggregates are dropped: mass,
+cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
+and `rebuy` read `null`, since nothing records what the discarded module cost.
+`sourcePurchase` still reports the captured figures. Filling a wholly absent cargo hatch
+is the exception: the known stock hatch has zero mass, capacity and price, so those
+figures remain valid.
 A stock replacement does not inherit the unknown module's engineering, power state,
 priority, health, captured value or other fields.
 

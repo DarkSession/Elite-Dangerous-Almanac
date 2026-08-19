@@ -5,8 +5,10 @@
  * Import removes an unresolved module from a hardpoint, utility, optional internal, or
  * unrecognized slot. Armour, the seven core internals, and the cargo hatch are fixed
  * mounts, so import installs the hull's stock module there instead when one is known.
- * It also fills an absent fixed mount from the same defaults. Without a default, an
- * unresolved fixed module is emptied and a required mount remains incomplete.
+ * Without a default, an unresolved fixed module is emptied and a required mount remains
+ * incomplete. A mount the source named no module for is left as the source left it —
+ * except the cargo hatch, which is part of the hull rather than an outfitting choice and
+ * is restored from the same defaults.
  *
  * `sourceSymbol` is `null` only when the source contained no module for that mount.
  * A defaulted module is a fresh stock identity: it inherits no engineering, power

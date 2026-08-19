@@ -361,7 +361,7 @@
       "loadout": {
         "Ship": "Anaconda",
         "Modules": [
-          { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class5" },
+          { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
           {
             "Slot": "PowerDistributor",
             "Item": "Int_PowerDistributor_Size6_Class2",
@@ -422,6 +422,7 @@
         "pips": { "systems": 1, "engines": 3, "weapons": 2 }
       },
       "nullLoadouts": [
+        { "Ship": "Anaconda", "Modules": [] },
         {
           "Ship": "Anaconda",
           "Modules": [
@@ -429,6 +430,15 @@
               "Slot": "PowerDistributor",
               "Item": "Int_PowerDistributor_Size8_Class1",
               "On": false
+            }
+          ]
+        },
+        {
+          "Ship": "Anaconda",
+          "Modules": [
+            {
+              "Slot": "PowerDistributor",
+              "Item": "Int_PowerDistributor_Size8_Class1"
             }
           ]
         }

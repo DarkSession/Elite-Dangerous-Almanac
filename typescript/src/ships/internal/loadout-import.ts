@@ -22,6 +22,7 @@ import { builtInModuleBySymbol } from './module-symbol-index.js';
 import {
     cloneLoadoutModule,
     cloneModuleStats,
+    isBuiltInHullModule,
     isNonOutfittingSlot,
     matchingKeyIn,
     ownKeyIn,
@@ -256,9 +257,14 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     const outcomes: LoadoutImportOutcome[] = [];
     const defaults = getDefaultLoadout(event.Ship)?.modules ?? [];
     for (const [slot, module] of modules) {
+        // `isBuiltInHullModule` is the third way a module resolves: Frontier gives some
+        // hull families their own cargo-hatch symbol (`ModularCargoBayDoorFDL`) that the
+        // catalogue carries once, under the standard hatch, so a symbol lookup alone
+        // would normalize a hatch every Fer-de-Lance and Lynx Highliner capture states.
         if (
             builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item') ||
-            isNonOutfittingSlot(slot)
+            isNonOutfittingSlot(slot) ||
+            isBuiltInHullModule(module)
         ) {
             continue;
         }
@@ -285,10 +291,17 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         }
         invalidatesAggregates = true;
     }
+    // Only the cargo hatch is restored when the source states no module for it. That
+    // mount is part of the hull rather than an outfitting choice, and the stock hatch is
+    // free and weightless, so filling it invents nothing and invalidates no aggregate.
+    // An absent armour or core mount stays absent: fitting the hull's stock module there
+    // would report a build the source never described, and would make `validation`
+    // call it complete — the empty mount is what an outfitting screen exists to fill,
+    // and what a partial build exported by `ShipLoadout.empty` has to survive a round
+    // trip as.
     for (const fallback of defaults) {
-        const slotKind = parseSlotName(fallback.slot)?.kind;
         if (
-            (slotKind !== 'core' && slotKind !== 'armour' && slotKind !== 'cargoHatch') ||
+            parseSlotName(fallback.slot)?.kind !== 'cargoHatch' ||
             matchingKeyIn(modules, fallback.slot) !== null
         ) {
             continue;
@@ -301,7 +314,6 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             sourceSymbol: null,
             replacementSymbol: fallback.symbol,
         });
-        if (slotKind !== 'cargoHatch') invalidatesAggregates = true;
     }
     if (invalidatesAggregates) {
         delete top.ModulesValue;

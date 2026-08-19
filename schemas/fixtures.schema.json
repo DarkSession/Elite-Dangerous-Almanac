@@ -4363,7 +4363,7 @@
                             "On": { "type": "boolean" },
                             "Slot": { "type": "string" }
                           },
-                          "required": ["Item", "On", "Slot"]
+                          "required": ["Item", "Slot"]
                         }
                       },
                       "Ship": { "type": "string" }
@@ -6361,6 +6361,7 @@
               "additionalProperties": false,
               "properties": {
                 "cargoCapacity": { "type": "integer" },
+                "complete": { "type": "boolean" },
                 "fuelCapacity": {
                   "type": "object",
                   "additionalProperties": false,
@@ -6369,6 +6370,10 @@
                     "reserve": { "type": "number" }
                   },
                   "required": ["main", "reserve"]
+                },
+                "issueCodes": {
+                  "type": "array",
+                  "items": { "type": "string" }
                 },
                 "modules": { "$ref": "#/definitions/shared804cf70a4333" },
                 "modulesValue": { "type": "null" },
@@ -6381,9 +6386,7 @@
                       "action": { "type": "string" },
                       "replacementSymbol": { "type": "string" },
                       "slot": { "type": "string" },
-                      "sourceSymbol": {
-                        "anyOf": [{ "type": "string" }, { "type": "null" }]
-                      }
+                      "sourceSymbol": { "type": "string" }
                     },
                     "required": ["action", "slot", "sourceSymbol"]
                   }
@@ -6393,7 +6396,9 @@
               },
               "required": [
                 "cargoCapacity",
+                "complete",
                 "fuelCapacity",
+                "issueCodes",
                 "modules",
                 "modulesValue",
                 "outcomes",

@@ -317,7 +317,7 @@ test('the classification examples in the fixture come out as the fixture says', 
     }
 });
 
-test('shared import normalization strips unknown modules and defaults the core set', () => {
+test('shared import normalization strips unknown modules and defaults named mounts', () => {
     const expected = fixture.importNormalization.expected;
     const build = ShipLoadout.fromLoadout(fixture.importNormalization.input);
     assert.deepEqual(build.fittedModules().map(normalizedModule), expected.modules);
@@ -343,6 +343,13 @@ test('shared import normalization strips unknown modules and defaults the core s
             modulesValue: expected.modulesValue,
             rebuy: expected.rebuy,
         },
+    );
+    // A fixed mount the source never named stays empty rather than being invented, so
+    // an incomplete capture still reports as incomplete.
+    assert.equal(build.validation.complete, expected.complete);
+    assert.deepEqual(
+        build.validation.issues.map((issue) => issue.code),
+        expected.issueCodes,
     );
 });
 
