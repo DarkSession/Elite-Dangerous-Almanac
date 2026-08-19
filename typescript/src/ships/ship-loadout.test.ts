@@ -440,6 +440,19 @@ test('mobility and shield metrics stop when the power budget sheds their modules
         },
     });
     assert.equal(overloaded.shieldRecoveryResult().issues[0]?.reason, 'shed');
+
+    // A mount switched off is diagnosed before anything downstream of it: the plant
+    // first, since nothing runs without it, then the generator itself.
+    const plantOff = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
+    assert.deepEqual(
+        plantOff.shieldMetricsResult().issues.map((issue) => [issue.field, issue.reason]),
+        [['powerCapacity', 'disabled']],
+    );
+    const generatorOff = ShipLoadout.default('SideWinder').setModuleEnabled('Slot01_Size2', false);
+    assert.deepEqual(
+        generatorOff.shieldMetricsResult().issues.map((issue) => [issue.field, issue.reason]),
+        [['shieldGenerator', 'disabled']],
+    );
 });
 
 test('a resolved plant without usable capacity is diagnosed by metric results', () => {
@@ -452,6 +465,29 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     assert.equal(build.shieldMetrics(), null);
     assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
     assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+
+    // The thruster reader answers the same way: a supplied record missing part of its
+    // mass curve leaves mobility unavailable rather than curving off whatever remains.
+    const incompleteThrusters = { ...mod('Int_Engine_Size7_Class5') };
+    delete incompleteThrusters.minMass;
+    const noCurve = ShipLoadout.default('Anaconda').setModule('MainEngines', incompleteThrusters);
+    assert.equal(noCurve.mobilityMetrics(), null);
+    assert.equal(noCurve.mobilityMetricsResult().issues[0]?.field, 'thrusters');
+    assert.equal(noCurve.mobilityMetricsResult().issues[0]?.reason, 'unresolved');
+
+    // The aggregates read the same way: a supplied record that omits its mass or the
+    // capacity its symbol promises makes the sum unknown rather than counting it as 0.
+    const noMass = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
+    delete noMass.mass;
+    const unweighed = ShipLoadout.default('Anaconda').setModule('Slot01_Size7', noMass);
+    assert.equal(unweighed.unladenMass, null);
+    assert.equal(unweighed.unladenMassResult.complete, false);
+
+    const noCapacity = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
+    delete noCapacity.cargoCapacity;
+    const uncounted = ShipLoadout.default('Anaconda').setModule('Slot01_Size7', noCapacity);
+    assert.equal(uncounted.cargoCapacity, null);
+    assert.equal(uncounted.cargoCapacityResult.issues[0]?.field, 'cargoCapacity');
 
     const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
         assert.equal(invalid.mobilityMetrics(), null);
@@ -536,6 +572,23 @@ test('shield results distinguish an absent generator from a shed one', () => {
     assert.equal(result.complete, false);
     assert.equal(result.issues[0]?.field, 'shieldGenerator');
     assert.equal(result.issues[0]?.reason, 'missing');
+
+    // A cosmetic entry keeps whatever symbol the capture spelled and has no catalogue
+    // record, so one spelled as a generator is the reader's only unresolved case — and
+    // it is diagnosed rather than answered with a zero curve.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const noRecord = ShipLoadout.fromLoadout({
+        ...stock,
+        Modules: [
+            ...stock.Modules.filter(
+                (module) => !module.Item.toLowerCase().startsWith('int_shieldgenerator'),
+            ),
+            { Slot: 'Decal1', Item: 'Int_ShieldGenerator_Size9_Class9_MadeUp' },
+        ],
+    });
+    assert.equal(noRecord.shieldMetrics(), null);
+    assert.equal(noRecord.shieldMetricsResult().issues[0]?.field, 'shieldGenerator');
+    assert.equal(noRecord.shieldMetricsResult().issues[0]?.reason, 'unresolved');
 });
 
 test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {
@@ -1160,6 +1213,14 @@ test('a booster is identified by the bonus it supplies, not by its engineering m
         })
         .setModule('Slot02_Size6', booster);
     assert.equal(shadowed.frameShiftDrive.jumpBoost, booster.jumpBoost);
+
+    // A record that claims the menu but carries no bonus is a fault, not a zero.
+    const menuOnly = { ...booster };
+    delete menuOnly.jumpBoost;
+    assert.throws(
+        () => conda().setModule('Slot02_Size6', menuOnly).frameShiftDrive,
+        /has no jumpBoost/,
+    );
 });
 
 test('a build with no frame shift drive throws on a jump calculation', () => {
@@ -1237,12 +1298,22 @@ test('standard maximum load reports invalid jump inputs', () => {
     assert.equal(invalid.complete, false);
     assert.equal(invalid.issues[0]?.field, 'frameShiftDrive');
     assert.match(invalid.issues[0]!.message, /fuel must be a finite non-negative number/);
+
+    // A drive whose supplied record has no jump constants reports that, rather than the
+    // "no frame shift drive is fitted" message a build without one gets.
+    const noConstants = { ...mod('Int_Hyperdrive_Size2_Class1') };
+    delete noConstants.fuelMul;
+    const unusable = ShipLoadout.default('SideWinder')
+        .setModule('FrameShiftDrive', noConstants)
+        .standardLoadResult('maximum');
+    assert.equal(unusable.issues[0]?.field, 'frameShiftDrive');
+    assert.match(unusable.issues[0]!.message, /has no jump constants/);
 });
 
 test('the power plant and fuel tank are found by their declared slots', () => {
-    // The readers outside the fit check. Each believes a record that names a mount and
-    // consults the symbol only when none does. Both halves need a hand-made record to
-    // show: a catalogue record carries both signals, so it cannot tell the rules apart.
+    // The readers outside the fit check believe a record that names a mount, whatever
+    // family its symbol suggests. It takes a hand-made record to show: a catalogue
+    // record carries both signals, so it cannot tell the rules apart.
     const plant = getModuleBySymbol('Int_PowerPlant_Size6_Class5', CORE_MODULES)!;
     assert.ok(
         ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available > 0,

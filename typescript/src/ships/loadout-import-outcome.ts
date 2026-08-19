@@ -27,7 +27,7 @@
  */
 export type LoadoutImportOutcome =
     | {
-          /** The unresolved module was removed because no replacement applies or exists. */
+          /** The unresolved module was removed because no stock replacement applies. */
           readonly action: 'emptied';
           /** Exact slot spelling used by the imported build. */
           readonly slot: string;

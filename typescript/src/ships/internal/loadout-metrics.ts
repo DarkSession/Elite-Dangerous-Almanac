@@ -343,22 +343,18 @@ export function powerConsumerFor(
     stats: OutfittingModule | null,
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
+    if (draw === undefined || draw === 0) return null;
     // Weapons and most utility fittings only draw while the hardpoints are out; the
     // ones flagged `alwaysPowered` (shield boosters, chaff, heat sinks, …) always draw.
     const mounted = stats?.category === 'hardpoint' || stats?.category === 'utility';
-    const deployedOnly = mounted && stats?.alwaysPowered !== true;
-    const common = {
+    return {
+        draw,
         priority: priorityOf(module),
         enabled: isEnabled(module),
-        deployedOnly,
+        deployedOnly: mounted && stats?.alwaysPowered !== true,
         label: module.Slot,
         symbol: module.Item,
     };
-    if (draw === undefined) {
-        return null;
-    }
-    if (draw === 0) return null;
-    return { draw, ...common };
 }
 
 /** The build's known power-plant capacity, or `0` when absent, disabled or unresolved. */

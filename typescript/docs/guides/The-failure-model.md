@@ -219,8 +219,7 @@ module symbols do not reach validation: imports discard them from removable moun
 stock unknown armour, core internals and the cargo hatch from the hull defaults. A mount
 the source named no module for is left as it found it — the cargo hatch excepted, which
 is part of the hull and is restored from the same defaults — and a required one reaches
-validation as `missingRequiredSlot`, as does an unknown fixed mount whose hull has no
-default.
+validation as `missingRequiredSlot`.
 
 **Neither question reports normalization.** A build whose unknown power plant was stocked
 from the hull defaults is `valid` and `complete` with no issues — the fit that remains

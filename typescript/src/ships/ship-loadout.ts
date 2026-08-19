@@ -846,10 +846,9 @@ export class ShipLoadout {
      * the cargo hatch are fixed mounts: an unresolved module there is replaced with the
      * hull's stock module, which keeps the source's `On`, `Priority` and `Health` and
      * none of its engineering or captured value. A fixed mount the event names no module
-     * for is left empty, as is one whose hull has no default, and {@link validation}
-     * reports an incomplete build where such a mount is required — the cargo hatch
-     * excepted, which is part of the hull rather than an outfitting choice and is
-     * restored from the hull's default loadout.
+     * for is left empty, and {@link validation} reports an incomplete build where such a
+     * mount is required — the cargo hatch excepted, which is part of the hull rather than
+     * an outfitting choice and is restored from the hull's default loadout.
      *
      * Normalization makes the captured aggregates untrustworthy, so the event's figures
      * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}
@@ -1201,10 +1200,10 @@ export class ShipLoadout {
      * @remarks
      * Each entry names the exact slot and unresolved source identity. An `emptied`
      * outcome means import removed an unknown module from a hardpoint, utility, optional
-     * internal, or unrecognised slot — or from a fixed mount for which no default exists.
-     * A `defaulted` outcome names the stock replacement fitted to armour, a core internal,
-     * or the cargo hatch; its `sourceSymbol` is `null` only for a cargo hatch the source
-     * left out, which is the one mount import fills without being asked.
+     * internal, or unrecognised slot. A `defaulted` outcome names the stock replacement
+     * fitted to armour, a core internal, or the cargo hatch; its `sourceSymbol` is `null`
+     * only for a cargo hatch the source left out, which is the one mount import fills
+     * without being asked.
      */
     get importOutcomes(): readonly LoadoutImportOutcome[] {
         return this.#importOutcomes;
