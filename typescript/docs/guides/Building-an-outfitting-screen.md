@@ -167,9 +167,8 @@ mount exists**, so drive the placement off your own layout rather than off the c
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
 carries a key that is by definition no mount on this hull. And an empty core or armour
-mount arrives as an ordinary issue
-rather than as a special case — it is what your screen exists to get filled, so render it
-as work to do, not as a fault.
+mount arrives as an ordinary issue rather than as a special case — it is what your screen
+exists to get filled, so render it as work to do, not as a fault.
 
 ## Next
 

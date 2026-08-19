@@ -330,16 +330,26 @@ metric needs. Do not assume a nullable figure is load-bearing:
 - A caller-supplied power plant without a usable capacity makes every power-dependent
   metric unavailable rather than projecting its dependants as powered. `powerBudget()`
   reports `available: 0`; the mobility, shield and recovery result companions identify
-  `powerCapacity` directly. Those
-  result companions report a non-positive or non-finite capacity as `invalid` rather than
-  asking `powerBudget()` to accept it; they likewise identify a malformed known module
-  draw as `powerDraw`. The direct budget remains strict and throws for either invalid
-  numeric input.
+  `powerCapacity` directly. Those result companions report a non-positive or non-finite
+  capacity as `invalid` rather than asking `powerBudget()` to accept it; they likewise
+  identify a malformed known module draw as `powerDraw`. The direct budget remains strict
+  and throws for either invalid numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
 - `heatMetrics()` returns `null` outright when the build has no powered plant.
 
 Use each available `…Result` companion before trusting a nullable metric.
+
+**On an imported build, a complete figure is a figure about the fit that remains.**
+`ShipLoadout.fromLoadout` and `ShipLoadout.fromSlef` normalize what the catalogues cannot
+resolve — a module in a removable mount is discarded, and armour, a core internal or the
+cargo hatch is replaced with the hull's stock article. Every metric here then answers for
+the normalized fit, completely and with no issue raised: a stocked power plant reports its
+own capacity, and a discarded rack simply stops counting. No `…Result` companion and no
+`validation` issue reports the substitution, because there is nothing missing to report.
+`build.importOutcomes` is where it is recorded — it is empty when the capture came through
+untouched, so on a build you did not assemble yourself, read it before quoting a figure
+back as the player's own.
 
 ## Next
 

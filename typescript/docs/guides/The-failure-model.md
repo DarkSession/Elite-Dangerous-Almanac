@@ -216,9 +216,18 @@ Each issue carries a stable `code` and a `severity`:
 straight from `ShipLoadout.empty()` reports eight of these, and "you have not fitted a
 power plant" is exactly what an outfitting screen must show as actionable. Unknown
 module symbols do not reach validation: imports discard them from removable mounts and
-stock unknown armour and core internals from the hull defaults. A mount the source named
-no module for is left as it found it, and a required one reaches validation as
-`missingRequiredSlot` — as does an unknown fixed mount whose hull has no default.
+stock unknown armour, core internals and the cargo hatch from the hull defaults. A mount
+the source named no module for is left as it found it — the cargo hatch excepted, which
+is part of the hull and is restored from the same defaults — and a required one reaches
+validation as `missingRequiredSlot`, as does an unknown fixed mount whose hull has no
+default.
+
+**Neither question reports normalization.** A build whose unknown power plant was
+replaced with the hull's stock article is `valid` and `complete` with no issues, and so
+is one whose unrecognised cargo racks were discarded — the fit that remains really is
+legal and really is filled. What changed is that the figures now describe that fit
+rather than the capture, and `build.importOutcomes` is the only place it is recorded.
+Read it alongside `validation` on any build you did not assemble yourself.
 
 ## Strict about input, forgiving about spelling
 

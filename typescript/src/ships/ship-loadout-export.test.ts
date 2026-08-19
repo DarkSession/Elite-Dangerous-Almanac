@@ -298,6 +298,22 @@ test('the classification examples in the fixture come out as the fixture says', 
             assert.equal(event.UnladenMass, empty.UnladenMass, slot);
             continue;
         }
+        if (verdict === 'builtInHull') {
+            // The catalogue has no row for a hull family's own hatch symbol, so a symbol
+            // lookup alone would normalize it — voiding the credit figures and dropping
+            // the mount's power state over a free, weightless article.
+            const build = ShipLoadout.fromLoadout({
+                Ship: 'krait_light',
+                Modules: [{ Slot: slot, Item: item, On: false, Priority: 4, Health: 1 }],
+            });
+            assert.deepEqual(build.importOutcomes, [], slot);
+            assert.equal(build.fittedModuleAt(slot)!.on, false, slot);
+            assert.equal(exported.Item, item.toLowerCase(), slot);
+            assert.equal(exported.Value, 0, slot);
+            assert.equal(event.ModulesValue, empty.ModulesValue, slot);
+            assert.equal(event.UnladenMass, empty.UnladenMass, slot);
+            continue;
+        }
         const stats = module(item);
         const previous = ShipLoadout.fromLoadout({
             Ship: 'krait_light',

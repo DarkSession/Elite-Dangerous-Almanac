@@ -67,6 +67,12 @@
         "item": "int_something_we_have_never_seen",
         "verdict": "stripped",
         "why": "Neither the article nor the slot family is known, so the entry is removed during import."
+      },
+      {
+        "slot": "CargoHatch",
+        "item": "modularcargobaydoorfdl",
+        "verdict": "builtInHull",
+        "why": "Frontier gives the Fer-de-Lance family its own symbol for the one built-in hatch, which the catalogue carries once under ModularCargoBayDoor. Any modularcargobaydoor* article in the cargo-hatch mount resolves through that record, on this hull as on its own, so it survives import verbatim and costs and weighs nothing."
       }
     ]
   },

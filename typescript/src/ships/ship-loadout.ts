@@ -668,15 +668,16 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * @remarks
  * Jump calculations resolve the frame shift drive's constants from the drive's module
  * record, applying any engineering the build carries (a Long Range blueprint's
- * `FSDOptimalMass`, for instance). For a SLEF build, mass comes from the export's
- * `UnladenMass`; for an assembled build it is the hull mass plus every fitted module's
- * mass (armour defaults to the zero-mass lightweight alloy).
+ * `FSDOptimalMass`, for instance). For a SLEF build whose fitted set survived import
+ * intact, mass comes from the export's `UnladenMass`; for an assembled build, and for
+ * one import normalization changed, it is the hull mass plus every fitted module's mass
+ * (armour defaults to the zero-mass lightweight alloy).
  *
  * @example
  * Read a build a player already flies, and ask it what an outfitting screen shows.
  * Every figure below is one build's — a Krait Phantom explorer. Figures the capture
- * already stated — `unladenMass` here — are trusted verbatim; the rest are computed
- * from the fit.
+ * already stated — `unladenMass` here — are trusted verbatim while the fit it described
+ * survives import intact; the rest are computed from the fit.
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1034,7 +1035,10 @@ export class ShipLoadout {
      * A SLEF export's `UnladenMass` is trusted verbatim, unless import normalization
      * changed the fit it described. Otherwise the mass is the hull's `hullMass` plus
      * every fitted module's mass (post-engineering), with armour at the zero-mass
-     * lightweight default.
+     * lightweight default — which, after normalization stocked a fixed mount or
+     * discarded a module, is the mass of the normalized fit rather than of the capture.
+     * A non-empty {@link importOutcomes} is the only report of that: this figure is
+     * complete either way, and no {@link unladenMassResult} issue names it.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -1062,9 +1066,9 @@ export class ShipLoadout {
 
     /**
      * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
-     * SLEF export's `FuelCapacity` is used when present;
-     * otherwise the main capacity is the sum of the fitted fuel tanks and the reserve
-     * comes from the hull's stats.
+     * SLEF export's `FuelCapacity` is used when present and import normalization left
+     * its fit alone; otherwise the main capacity is the sum of the fitted fuel tanks and
+     * the reserve comes from the hull's stats.
      */
     get fuelCapacity(): FuelCapacity | null {
         return this.fuelCapacityResult.value;
@@ -1088,8 +1092,10 @@ export class ShipLoadout {
 
     /**
      * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
-     * SLEF export's `CargoCapacity` is used when present; otherwise it is the sum of the
-     * fitted cargo racks.
+     * SLEF export's `CargoCapacity` is used when present and import normalization left
+     * its fit alone; otherwise it is the sum of the fitted cargo racks — which, after a
+     * rack was discarded or a fixed mount stocked, describes the normalized fit rather
+     * than the capture. {@link importOutcomes} is the only report of that.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;
@@ -1216,8 +1222,12 @@ export class ShipLoadout {
      * @remarks
      * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
      * mounts must be filled for `complete` to be true. A module in a nonexistent or
-     * incompatible slot is invalid. Exclusive
-     * families and per-ship module-count allowances must also be satisfied.
+     * incompatible slot is invalid. Exclusive families and per-ship module-count
+     * allowances must also be satisfied.
+     *
+     * Neither question reports import normalization: a build whose unresolved power
+     * plant was stocked from the hull defaults is valid and complete, because the fit
+     * that remains really is both. {@link importOutcomes} is where that is recorded.
      */
     get validation(): LoadoutValidation {
         const slots = this.#layout();
@@ -1439,12 +1449,15 @@ export class ShipLoadout {
      *
      * @remarks
      * This is the narrow repair path for mounts that {@link setModule} deliberately does
-     * not expose as ordinary edits, including the built-in cargo hatch. Live aggregates
-     * are updated by the same rules as every package-owned refit. The immutable
-     * {@link sourcePurchase} record is unchanged; source-credit export leaves a replaced
-     * slot unpriced, while its aggregate totals remain valid for an unpriced or
-     * zero-priced cargo hatch. Resolved valid core and armour alternatives are left
-     * unchanged.
+     * not expose as ordinary edits, including the built-in cargo hatch. The stock article
+     * keeps the mount's `On`, `Priority` and `Health` — those describe how the mount was
+     * being run rather than which article filled it — and inherits none of the replaced
+     * module's engineering or captured value. Import normalization substitutes on the
+     * same terms. Live aggregates are updated by the same rules as every package-owned
+     * refit. The immutable {@link sourcePurchase} record is unchanged; source-credit
+     * export leaves a replaced slot unpriced, while its aggregate totals remain valid for
+     * an unpriced or zero-priced cargo hatch. Resolved valid core and armour alternatives
+     * are left unchanged.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
@@ -1529,6 +1542,12 @@ export class ShipLoadout {
      * build's module-count excess. Fit an allowance-increasing module before the weapons
      * it permits. To consume a complete order-independent snapshot, use
      * {@link ShipLoadout.fromLoadout}.
+     *
+     * Fitting is a fresh mount: the slot's `On`, `Priority` and `Health` are reset, since
+     * a module the player just bought carries no power state from the one it displaced.
+     * Set them again if your screen keeps a priority group across a swap.
+     * {@link repairFixedMount} is the exception, because it substitutes for an article
+     * that failed rather than for one the player chose.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively (journal
      * spelling). An occupied slot keeps the key the build already spells it with, so
@@ -3733,7 +3752,7 @@ export class ShipLoadout {
             // with a diagnosable message rather than the "no frame shift drive" one the
             // caller would otherwise get.
             throw new TypeError(
-                `ShipLoadout: no jump constants in the stats catalogue for frame shift drive "${truncate(fsdModule.Item)}"`,
+                `ShipLoadout: the fitted record for frame shift drive "${truncate(fsdModule.Item)}" has no jump constants`,
             );
         }
 
@@ -3777,7 +3796,7 @@ export class ShipLoadout {
             if (m.On === false) continue; // an unpowered booster gives no bonus
             if (stats?.jumpBoost === undefined) {
                 throw new TypeError(
-                    `ShipLoadout: FSD booster "${truncate(m.Item)}" has no jumpBoost in the stats catalogue`,
+                    `ShipLoadout: the fitted record for FSD booster "${truncate(m.Item)}" has no jumpBoost`,
                 );
             }
             return stats.jumpBoost;
