@@ -1069,9 +1069,9 @@ export class ShipLoadout {
     /**
      * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
      * SLEF export's `FuelCapacity` is used when present and import normalization left
-     * its fit alone, restoring an absent cargo hatch excepted; otherwise the main
-     * capacity is the sum of the fitted fuel tanks and the reserve comes from the hull's
-     * stats.
+     * its fit alone, stocking an absent bulkhead or cargo hatch excepted — both weigh
+     * nothing and cost nothing; otherwise the main capacity is the sum of the fitted fuel
+     * tanks and the reserve comes from the hull's stats.
      */
     get fuelCapacity(): FuelCapacity | null {
         return this.fuelCapacityResult.value;
@@ -1096,8 +1096,8 @@ export class ShipLoadout {
     /**
      * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
      * SLEF export's `CargoCapacity` is used when present and import normalization left
-     * its fit alone, restoring an absent cargo hatch excepted; otherwise it is the sum of
-     * the fitted cargo racks.
+     * its fit alone, stocking an absent bulkhead or cargo hatch excepted — both weigh
+     * nothing and cost nothing; otherwise it is the sum of the fitted cargo racks.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;

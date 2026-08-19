@@ -181,8 +181,8 @@ read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` an
 `FuelCapacity` directly. If import strips an unrecognised module or stocks a fixed mount,
 it drops the capture's aggregates too: mass, cargo and fuel are recomputed from the
 normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing records
-what the discarded article cost. Restoring an absent cargo hatch changes none of them —
-the stock hatch is free and weightless.
+what the discarded article cost. Stocking an absent bulkhead or cargo hatch changes none
+of them — both stock articles are free and weightless.
 
 **Absent is not zero, anywhere in the library.** A catalogue field the source did not
 carry is omitted rather than defaulted, and a capture that priced no module for a slot
