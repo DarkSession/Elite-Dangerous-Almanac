@@ -79,8 +79,8 @@ The two schematics expose a stable annotation contract for hull-anatomy interfac
 - Every hardpoint and utility slot in the hull catalogue occurs on at least one of the
   two schematics. A slot occurs at most once per side, but the same slot may occur once
   on both sides. Treat those as two views of one game slot, not two mounts.
-- Drawing order, element IDs, `data-model-socket`, coordinates, colours, and other SVG
-  details are presentation data, not stable identities. IDs repeat between asset files,
+- Drawing order, element IDs, coordinates, colours, and other SVG details are
+  presentation data, not stable identities. IDs repeat between asset files,
   so scope each schematic when inlining more than one. Select interactive geometry by
   `data-feature` and `data-journal-slot` only.
 
