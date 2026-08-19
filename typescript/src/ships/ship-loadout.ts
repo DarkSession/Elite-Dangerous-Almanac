@@ -622,17 +622,17 @@ export interface LoadoutExportOptions {
      * `'source'` quotes the build's {@link ShipLoadout.sourcePurchase | source purchase
      * record} instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value`
      * figures exactly as the capture stated them, and nothing where it stated nothing.
-     * A capture that names every fixed mount and whose every article resolves therefore
-     * re-exports its own credits unchanged until it is edited.
+     * A capture that names every core internal and whose every article resolves
+     * therefore re-exports its own credits unchanged until it is edited.
      *
      * Each captured figure is pinned to what it was paid for, so a fit that stops
      * matching the capture narrows the export rather than staling it — by an edit, or at
      * import, where normalization discards or replaces a module the catalogue cannot
      * resolve, and stocks a fixed mount the capture named nothing for.
-     * {@link ShipLoadout.importOutcomes} names the slots. A stocked mount the capture
-     * never listed drops `ModulesValue` and `Rebuy` on its own, since no priced slot
-     * disagrees with an article that was never aboard when the figures were written —
-     * the cargo hatch excepted, which is never purchasable. A slot whose module has been
+     * {@link ShipLoadout.importOutcomes} names the slots. A stocked core internal drops
+     * `ModulesValue` and `Rebuy` on its own, since no priced slot disagrees with an
+     * article that was never aboard when the figures were written — a stocked bulkhead or
+     * cargo hatch costs nothing, so neither moves them. A slot whose module has been
      * swapped is left unpriced, because the figure was paid for the article that *was*
      * fitted; and `ModulesValue` and `Rebuy` are dropped once any priced module has been
      * swapped or removed, since they then cover an article no longer aboard. Losing a
@@ -849,21 +849,22 @@ export class ShipLoadout {
      * the cargo hatch are fixed mounts: one holding an unresolved module, and one the
      * event names no module for at all, are both filled from the hull's default loadout.
      * A stock replacement keeps the source's `On`, `Priority` and `Health` and none of
-     * its engineering or captured value. {@link validation} therefore reports an
-     * incomplete build only where the hull has no default for a required mount.
+     * its engineering or captured value. Every hull carries a default for all nine, so
+     * {@link validation} never reports an imported build incomplete.
      *
      * Normalization makes the captured aggregates untrustworthy, so the event's figures
      * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}
      * are recomputed from the fit that remains, while {@link modulesValue} and
      * {@link rebuy} read `null` — no catalogue records what the discarded module was
-     * bought for — and {@link sourcePurchase} still reports the captured figures. The
-     * cargo hatch is the exception, being weightless and free: restoring an absent one,
-     * or importing a hull-family hatch the catalogue resolves, leaves every figure
-     * standing. Stocking an absent armour or core mount does not — that article has mass
-     * and a price the capture never counted, so source-credit export drops its
-     * `ModulesValue` and `Rebuy` as well. Replacing an *unresolved* hatch invalidates
-     * the figures too, and source-credit export then keeps its totals only when that
-     * hatch was unpriced or valued at zero.
+     * bought for — and {@link sourcePurchase} still reports the captured figures. A mount
+     * stocked from *absence* is the exception where its stock article is free and
+     * weightless, which the bulkhead and the cargo hatch both are: restoring either, or
+     * importing a hull-family hatch the catalogue resolves, leaves every figure standing.
+     * A stocked core internal does not — that article has mass and a price the capture
+     * never counted, so source-credit export drops its `ModulesValue` and `Rebuy` as
+     * well. Replacing an *unresolved* hatch invalidates the figures too, and
+     * source-credit export then keeps its totals only when that hatch was unpriced or
+     * valued at zero.
      *
      * Use this factory rather than replaying a complete loadout through the incremental
      * {@link setModule} editor.
@@ -1032,12 +1033,12 @@ export class ShipLoadout {
      *
      * @remarks
      * A SLEF export's `UnladenMass` is trusted verbatim unless import normalization
-     * changed the fit it described — restoring an absent cargo hatch does not. Otherwise
-     * the mass is the hull's `hullMass` plus every fitted module's mass
-     * (post-engineering), with armour at the zero-mass lightweight default — the
-     * normalized fit's mass, then, not the capture's, and complete either way. Any
-     * {@link importOutcomes} entry other than a restored cargo hatch is the only report
-     * of that.
+     * changed the fit it described — stocking an absent bulkhead or cargo hatch does not,
+     * both weighing nothing. Otherwise the mass is the hull's `hullMass` plus every
+     * fitted module's mass (post-engineering), with armour at the zero-mass lightweight
+     * default — the normalized fit's mass, then, not the capture's, and complete either
+     * way. {@link importOutcomes} is the only report of that, in every entry but those
+     * two.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -2559,12 +2560,14 @@ export class ShipLoadout {
                 cargoCapacity,
                 fuelCapacity: fuel,
                 maxJumpRange,
-                // A stocked mount the capture never listed is an article aboard that
-                // nobody paid for, and comparing the priced slots cannot see it: the
-                // capture has no entry to disagree with. The hatch is free, so it does
-                // not move the totals.
+                // A stocked core internal the capture never listed is an article aboard
+                // that nobody paid for, and comparing the priced slots cannot see it: the
+                // capture has no entry to disagree with. A stock bulkhead or hatch costs
+                // nothing, so neither moves the totals.
                 sourceTotalsVoided: this.#importOutcomes.some(
-                    (outcome) => outcome.sourceSymbol === null && !isCargoHatchSlot(outcome.slot),
+                    (outcome) =>
+                        outcome.sourceSymbol === null &&
+                        parseSlotName(outcome.slot)?.kind === 'core',
                 ),
                 statsFor: (module) => this.#statsFor(module),
             },

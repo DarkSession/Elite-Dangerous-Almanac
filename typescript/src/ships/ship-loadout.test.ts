@@ -1458,7 +1458,7 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
     });
     assert.equal(unresolvedCore.unladenMass, 1020);
     // A mount the capture never named is stocked on the same terms as an unresolved one,
-    // so an import is short a fixed mount only where the hull carries no default.
+    // and every hull carries a default for all nine, so an import is never short one.
     assert.equal(unresolvedCore.fittedModuleAt('MainEngines')?.symbol, 'Int_Engine_Size7_Class1');
     assert.equal(unresolvedCore.validation.complete, true);
 

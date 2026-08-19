@@ -37,11 +37,12 @@ export interface LoadoutExportInput {
     readonly maxJumpRange: number | null;
     readonly statsFor: (module: LoadoutModule) => OutfittingModule | null;
     /**
-     * Whether *import* put an article aboard that the capture never listed — a fixed
-     * mount it named no module for, stocked from the hull defaults. No comparison
+     * Whether *import* put a priced article aboard that the capture never listed — a
+     * core internal it named no module for, stocked from the hull defaults. No comparison
      * against the priced slots can see an addition, only a swap or a removal, and
      * filling an empty mount by an edit deliberately leaves the totals standing: the
-     * caller made that change and can see it. This one nobody asked for.
+     * caller made that change and can see it. This one nobody asked for. A stocked
+     * bulkhead or cargo hatch is free, so it does not set this.
      */
     readonly sourceTotalsVoided?: boolean;
 }

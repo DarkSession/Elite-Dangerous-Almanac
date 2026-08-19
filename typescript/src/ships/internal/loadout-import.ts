@@ -299,10 +299,10 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     }
     // A fixed mount is filled from the hull defaults whether the source named an article
     // the catalogues cannot resolve or named none at all: both leave the same hole, and a
-    // build that cannot be flown is not the state to import a capture into. The hatch is
-    // part of the hull rather than an outfitting choice and its stock article is free and
-    // weightless, so restoring it invalidates nothing; stocking an absent armour or core
-    // mount adds mass and value the capture's own aggregates did not count.
+    // build that cannot be flown is not the state to import a capture into. Only a
+    // stocked core internal invalidates the capture's own aggregates: every hull's stock
+    // bulkhead and hatch cost nothing and weigh nothing, so fitting one moves no figure
+    // the capture stated — `default-loadouts.test.ts` fails if that stops being true.
     for (const fallback of defaults) {
         const slotKind = parseSlotName(fallback.slot)?.kind;
         if (
@@ -319,7 +319,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             sourceSymbol: null,
             replacementSymbol: fallback.symbol,
         });
-        if (slotKind !== 'cargoHatch') invalidatesAggregates = true;
+        if (slotKind === 'core') invalidatesAggregates = true;
     }
     if (invalidatesAggregates) {
         delete top.ModulesValue;

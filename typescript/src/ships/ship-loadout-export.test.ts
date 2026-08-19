@@ -1092,6 +1092,34 @@ test('a capture that omits a core mount pays for the article import stocks there
     assert.ok(!Object.hasOwn(sourceEvent, 'Rebuy'));
 });
 
+test('a capture that omits only its bulkhead keeps every figure it stated', () => {
+    // The stock bulkhead is free and weightless on every hull, as the cargo hatch is, so
+    // stocking one costs the capture's own aggregates nothing.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        ModulesValue: 5000,
+        Rebuy: 1000,
+        UnladenMass: 25,
+        Modules: [
+            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1', Value: 5000 },
+            { Slot: 'MainEngines', Item: 'int_engine_size2_class1' },
+            { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size2_class1' },
+            { Slot: 'LifeSupport', Item: 'int_lifesupport_size1_class1' },
+            { Slot: 'PowerDistributor', Item: 'int_powerdistributor_size1_class1' },
+            { Slot: 'Radar', Item: 'int_sensors_size1_class1' },
+            { Slot: 'FuelTank', Item: 'int_fueltank_size1_class3' },
+        ],
+    });
+    assert.equal(build.fittedModuleAt('Armour')?.symbol, 'SideWinder_Armour_Grade1');
+    assert.equal(build.fittedModuleAt('CargoHatch')?.symbol, 'ModularCargoBayDoor');
+    assert.equal(build.modulesValue, 5000);
+    assert.equal(build.rebuy, 1000);
+    assert.equal(build.unladenMass, 25);
+    const sourceEvent = build.toLoadoutEvent({ credits: 'source' });
+    assert.equal(sourceEvent.ModulesValue, 5000);
+    assert.equal(sourceEvent.Rebuy, 1000);
+});
+
 test('editing a build recomputes rather than echoing the import', () => {
     const { afterEdit } = fixture.deepBlack;
     const build = ShipLoadout.fromSlef(slefString);
