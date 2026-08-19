@@ -1439,11 +1439,11 @@ export class ShipLoadout {
      * This is the narrow repair path for mounts that {@link setModule} deliberately does
      * not expose as ordinary edits, including the built-in cargo hatch. The stock article
      * keeps the mount's `On`, `Priority` and `Health` and none of the replaced module's
-     * engineering or captured value, as import normalization does. Live aggregates are
-     * updated by the same rules as every package-owned refit. The immutable {@link sourcePurchase} record is unchanged; source-credit
-     * export leaves a replaced slot unpriced, while its aggregate totals remain valid for
-     * an unpriced or zero-priced cargo hatch. Resolved valid core and armour alternatives
-     * are left unchanged.
+     * engineering or captured value, as import normalization does. Live aggregates follow
+     * the same rules as every package-owned refit. The immutable {@link sourcePurchase}
+     * record is unchanged; source-credit export leaves a replaced slot unpriced, while its
+     * aggregate totals remain valid for an unpriced or zero-priced cargo hatch. Resolved
+     * valid core and armour alternatives are left unchanged.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
