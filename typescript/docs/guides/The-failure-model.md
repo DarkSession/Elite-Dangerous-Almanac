@@ -178,8 +178,11 @@ mistaken for an answer.
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and
-`FuelCapacity` directly. If import strips an unrecognised module or fills a fixed mount,
-it discards the affected aggregates too and recomputes them from the normalized fit.
+`FuelCapacity` directly. If import strips an unrecognised module or stocks a fixed mount,
+it drops the capture's aggregates too: mass, cargo and fuel are recomputed from the
+normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing records
+what the discarded article cost. Restoring an absent cargo hatch changes none of them —
+the stock hatch is free and weightless.
 
 **Absent is not zero, anywhere in the library.** A catalogue field the source did not
 carry is omitted rather than defaulted, and a capture that priced no module for a slot
@@ -213,8 +216,9 @@ Each issue carries a stable `code` and a `severity`:
 straight from `ShipLoadout.empty()` reports eight of these, and "you have not fitted a
 power plant" is exactly what an outfitting screen must show as actionable. Unknown
 module symbols do not reach validation: imports discard them from removable mounts and
-fill unknown or omitted armour and core internals with the hull defaults. If a required
-mount has no hull default, it remains empty and reaches validation as `missingRequiredSlot`.
+stock unknown armour and core internals from the hull defaults. A mount the source named
+no module for is left as it found it, and a required one reaches validation as
+`missingRequiredSlot` — as does an unknown fixed mount whose hull has no default.
 
 ## Strict about input, forgiving about spelling
 
