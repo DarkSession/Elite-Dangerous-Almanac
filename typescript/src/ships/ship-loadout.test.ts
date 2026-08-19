@@ -679,6 +679,14 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     assert.equal(unresolvedBuild.cargoCapacity, source.CargoCapacity);
     assert.equal(unresolvedBuild.modulesValue, null);
     assert.equal(unresolvedBuild.rebuy, null);
+    assert.deepEqual(unresolvedBuild.importOutcomes, [
+        {
+            action: 'defaulted',
+            slot: 'cargohatch',
+            sourceSymbol: 'FutureCargoHatch',
+            replacementSymbol: 'ModularCargoBayDoor',
+        },
+    ]);
 
     // A hull-family hatch symbol resolves through the standard hatch's record rather
     // than being normalized, so a capture keeps its own article and its credit figures.
@@ -786,7 +794,9 @@ test('fitting a module resets the mount, unlike repairing one', () => {
     const build = ShipLoadout.fromLoadout({
         ...stock,
         Modules: stock.Modules.map((module) =>
-            module.Slot === 'Slot01_Size2' ? { ...module, On: false, Priority: 3 } : module,
+            module.Slot === 'Slot01_Size2'
+                ? { ...module, On: false, Priority: 3, Health: 0.5 }
+                : module,
         ),
     });
     assert.equal(build.fittedModuleAt('Slot01_Size2')!.on, false);
@@ -796,6 +806,7 @@ test('fitting a module resets the mount, unlike repairing one', () => {
     assert.equal(after.symbol, 'Int_CargoRack_Size2_Class1');
     assert.equal(after.on, undefined);
     assert.equal(after.priority, undefined);
+    assert.equal(after.health, undefined);
 });
 
 test('default builds fit every stock module and remain independently editable', () => {

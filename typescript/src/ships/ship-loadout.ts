@@ -1024,10 +1024,12 @@ export class ShipLoadout {
      *
      * @remarks
      * A SLEF export's `UnladenMass` is trusted verbatim unless import normalization
-     * changed the fit it described. Otherwise the mass is the hull's `hullMass` plus
-     * every fitted module's mass (post-engineering), with armour at the zero-mass
-     * lightweight default — the normalized fit's mass, then, not the capture's, and
-     * complete either way. {@link importOutcomes} is the only report of that.
+     * changed the fit it described — restoring an absent cargo hatch does not. Otherwise
+     * the mass is the hull's `hullMass` plus every fitted module's mass
+     * (post-engineering), with armour at the zero-mass lightweight default — the
+     * normalized fit's mass, then, not the capture's, and complete either way. An
+     * {@link importOutcomes} entry whose `sourceSymbol` is not `null` is the only report
+     * of that.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -1056,8 +1058,9 @@ export class ShipLoadout {
     /**
      * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
      * SLEF export's `FuelCapacity` is used when present and import normalization left
-     * its fit alone; otherwise the main capacity is the sum of the fitted fuel tanks and
-     * the reserve comes from the hull's stats.
+     * its fit alone, restoring an absent cargo hatch excepted; otherwise the main
+     * capacity is the sum of the fitted fuel tanks and the reserve comes from the hull's
+     * stats.
      */
     get fuelCapacity(): FuelCapacity | null {
         return this.fuelCapacityResult.value;
@@ -1082,7 +1085,8 @@ export class ShipLoadout {
     /**
      * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
      * SLEF export's `CargoCapacity` is used when present and import normalization left
-     * its fit alone; otherwise it is the sum of the fitted cargo racks.
+     * its fit alone, restoring an absent cargo hatch excepted; otherwise it is the sum of
+     * the fitted cargo racks.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;
@@ -1435,8 +1439,8 @@ export class ShipLoadout {
      * This is the narrow repair path for mounts that {@link setModule} deliberately does
      * not expose as ordinary edits, including the built-in cargo hatch. The stock article
      * keeps the mount's `On`, `Priority` and `Health` and none of the replaced module's
-     * engineering or captured value, as import normalization does. Live aggregates are updated by the same rules as every package-owned
-     * refit. The immutable {@link sourcePurchase} record is unchanged; source-credit
+     * engineering or captured value, as import normalization does. Live aggregates are
+     * updated by the same rules as every package-owned refit. The immutable {@link sourcePurchase} record is unchanged; source-credit
      * export leaves a replaced slot unpriced, while its aggregate totals remain valid for
      * an unpriced or zero-priced cargo hatch. Resolved valid core and armour alternatives
      * are left unchanged.
