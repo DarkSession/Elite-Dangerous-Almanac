@@ -840,6 +840,12 @@ test('an aggregate a supplied record leaves unknown is omitted rather than expor
     delete tank.fuelCapacity;
     const noFuel = ShipLoadout.default('Krait_Light').setModule('FuelTank', tank).toLoadoutEvent();
     assert.equal(Object.hasOwn(noFuel, 'FuelCapacity'), false);
+
+    // The jump figure is the same promise: a build with no drive has no range to state.
+    assert.equal(
+        Object.hasOwn(ShipLoadout.empty('Krait_Light').toLoadoutEvent(), 'MaxJumpRange'),
+        false,
+    );
 });
 
 test('a build we cannot price stays unpriced however many times it is re-exported', () => {

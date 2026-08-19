@@ -73,7 +73,7 @@ export interface LoadoutIssue {
 export interface LoadoutValidation {
     /** No structurally invalid slots, duplicate keys, or incompatible modules. */
     readonly valid: boolean;
-    /** Valid, with every operational core slot filled. */
+    /** Valid, with armour and every operational core mount filled. */
     readonly complete: boolean;
     /** All validation diagnostics. */
     readonly issues: readonly LoadoutIssue[];

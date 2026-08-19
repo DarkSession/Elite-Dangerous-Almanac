@@ -172,9 +172,9 @@ These reasons describe build state. A malformed method option still throws its d
 `TypeError` or `RangeError` before a result is returned.
 
 The reason for the pair is that the alternative is worse: a cargo rack whose record omits
-its capacity counted as zero, or shed thrusters treated as powered, would produce a plausible wrong
-answer that no one would question. A `null` with the reason it is unavailable cannot be
-mistaken for an answer.
+its capacity counted as zero, or shed thrusters treated as powered, would produce a
+plausible wrong answer that no one would question. A `null` with the reason it is
+unavailable cannot be mistaken for an answer.
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and

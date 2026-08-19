@@ -465,6 +465,10 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     assert.equal(build.shieldMetrics(), null);
     assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
     assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(
+        build.shieldMetricsResult().issues[0]?.message,
+        'PowerPlant: power capacity unavailable for Int_Powerplant_Size8_Class5',
+    );
 
     // The thruster reader answers the same way: a supplied record missing part of its
     // mass curve leaves mobility unavailable rather than curving off whatever remains.
@@ -474,6 +478,10 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     assert.equal(noCurve.mobilityMetrics(), null);
     assert.equal(noCurve.mobilityMetricsResult().issues[0]?.field, 'thrusters');
     assert.equal(noCurve.mobilityMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(
+        noCurve.mobilityMetricsResult().issues[0]?.message,
+        'MainEngines: thruster stats unavailable for Int_Engine_Size7_Class5',
+    );
 
     // The aggregates read the same way: a supplied record that omits its mass or the
     // capacity its symbol promises makes the sum unknown rather than counting it as 0.
@@ -589,6 +597,10 @@ test('shield results distinguish an absent generator from a shed one', () => {
     assert.equal(noRecord.shieldMetrics(), null);
     assert.equal(noRecord.shieldMetricsResult().issues[0]?.field, 'shieldGenerator');
     assert.equal(noRecord.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(
+        noRecord.shieldMetricsResult().issues[0]?.message,
+        'Decal1: shield-generator stats unavailable for Int_ShieldGenerator_Size9_Class9_MadeUp',
+    );
 });
 
 test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {
@@ -988,6 +1000,29 @@ test('a figure an import stated is handed back in the same shape as a calculated
     // Both fuel sites hand back a frozen value object, not only the wrapper around it.
     assert.equal(Object.isFrozen(imported.fuelCapacityResult.value), true);
     assert.equal(Object.isFrozen(merged.fuelCapacityResult.value), true);
+});
+
+test('a stated fuel capacity outlives a tank the catalogue cannot sum', () => {
+    // A cosmetic slot keeps whatever symbol the capture spelled and gets no catalogue
+    // record, so one spelled as a fuel tank is the only fitted article import leaves
+    // unresolved — and the only way the tanks stop summing while the capture's own
+    // figures still stand. Stated in full, they are the answer; a stated `Main` alone
+    // still fuels the mobility load, which needs no reserve to weigh the ship.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const withMysteryTank = (FuelCapacity: { Main: number; Reserve?: number }): ShipLoadout =>
+        ShipLoadout.fromLoadout({
+            ...stock,
+            FuelCapacity,
+            Modules: [...stock.Modules, { Slot: 'Decal1', Item: 'Int_FuelTank_Size9_Class9' }],
+        } as unknown as LoadoutEvent);
+
+    const stated = withMysteryTank({ Main: 32, Reserve: 0.3 });
+    assert.deepEqual(stated.fuelCapacityResult.value, { main: 32, reserve: 0.3 });
+
+    const mainOnly = withMysteryTank({ Main: 32 });
+    assert.equal(mainOnly.fuelCapacityResult.complete, false);
+    assert.deepEqual(mainOnly.mobilityMetrics(), mainOnly.mobilityMetrics({ fuel: 32 }));
+    assert.notDeepEqual(mainOnly.mobilityMetrics(), mainOnly.mobilityMetrics({ fuel: 0 }));
 });
 
 test('fromLoadout rejects duplicate slot keys before its map can overwrite one', () => {

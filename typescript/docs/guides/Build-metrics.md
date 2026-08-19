@@ -342,20 +342,19 @@ Use each available `…Result` companion before trusting a nullable metric.
 
 **On an imported build, every figure here describes the fit that remains.** Import
 discards a module in a removable mount and stocks a fixed one from the hull defaults, and
-nothing above says so: a stocked power plant states its own capacity, a discarded rack
-stops counting, and `validation` calls the result complete, because the fit that remains
-really is legal and really is filled. What normalization can still do is leave a
-companion incomplete for an ordinary reason — drop the only shield generator and
-`shieldMetricsResult` reports `shieldGenerator` / `missing`, exactly as an empty mount
-would; stock a plant over an engineered one and the mobility, shield and recovery
-companions report `shed`.
+neither the figures nor `validation` say so —
+[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+says why. What normalization can still do is leave a companion incomplete for an ordinary
+reason: discard the only shield generator and `shieldMetricsResult` reports
+`shieldGenerator` / `missing`, exactly as an empty mount would; stock a plant over an
+engineered one and the mobility, shield and recovery companions report `shed`.
 
-`build.importOutcomes` is the only account of this, and it is the entries that matter,
-not the length. One whose `sourceSymbol` is `null` is the cargo hatch restored to a
-capture that named none: most third-party exports omit it, so most produce exactly that
-one entry, and it leaves mass, capacity and credit figures standing. It is not invisible
-here, though — like every ship's hatch it draws 0.6 MW, in the first priority band since
-the capture recorded none. Any other entry means the figures are the normalized fit's.
+`build.importOutcomes` is the account, and it is the entries that matter, not
+the length. One whose `sourceSymbol` is `null` is the cargo hatch restored to a capture
+that named none: most third-party exports omit it, so most produce exactly that one entry,
+and it leaves every figure standing but its own — like every ship's hatch it draws 0.6 MW,
+in the first priority band since the capture recorded none. Any other entry means the
+figures are the normalized fit's.
 
 ## Next
 

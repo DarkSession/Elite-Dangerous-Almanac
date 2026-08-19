@@ -634,10 +634,9 @@ export interface LoadoutExportOptions {
      * swapped or removed, since they then cover an article no longer aboard. Losing a
      * module the capture listed but never priced — to a removal or a replacement — is the
      * one case this cannot detect: only the capture ever knew which unpriced modules its
-     * total counted. The built-in cargo hatch
-     * is never purchasable, so normalising an unpriced or zero-priced captured hatch does
-     * not invalidate the totals. A non-zero captured hatch value is treated like any
-     * other priced replaced article.
+     * total counted. The built-in cargo hatch is never purchasable, so normalising an
+     * unpriced or zero-priced captured hatch does not invalidate the totals. A non-zero
+     * captured hatch value is treated like any other priced replaced article.
      *
      * `HullValue` always stands: a captured hull figure names no slot, so no edit
      * narrows it. Note that on a game capture it counts the hull *with* its stock
@@ -3028,7 +3027,10 @@ export class ShipLoadout {
             [...this.#modules.values()],
             () => this.powerBudget(),
             () => {
-                const main = options.fuel ?? this.#requireFuelCapacity().main;
+                const main =
+                    options.fuel ??
+                    this.#top.FuelCapacity?.Main ??
+                    this.#requireFuelCapacity().main;
                 return this.#requireMass(options.cargo ?? 0) + main;
             },
             enginesPips,
