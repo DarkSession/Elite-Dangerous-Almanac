@@ -3220,7 +3220,6 @@ type FixtureShipsOperations = {
                 Modules: {
                     Item: string;
                     On?: boolean;
-                    Priority?: number;
                     Slot: string;
                 }[];
                 Ship: string;

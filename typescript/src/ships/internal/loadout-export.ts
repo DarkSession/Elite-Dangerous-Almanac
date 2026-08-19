@@ -36,6 +36,12 @@ export interface LoadoutExportInput {
     readonly fuelCapacity: { readonly main: number; readonly reserve: number } | null;
     readonly maxJumpRange: number | null;
     readonly statsFor: (module: LoadoutModule) => OutfittingModule | null;
+    /**
+     * Whether the fit gained an article the capture never listed, which no comparison
+     * against the priced slots can see — import stocking a fixed mount the source named
+     * no module for is the one way it happens.
+     */
+    readonly sourceTotalsVoided?: boolean;
 }
 
 /** Insurance rebuy is a flat 5% of hull-plus-modules retail value, truncated. */
@@ -48,7 +54,10 @@ export function exportLoadoutEvent(
 ): LoadoutEvent {
     const fromSource = options.credits === 'source';
     const source = fromSource ? input.sourcePurchase : null;
-    const totals = source !== null && sourceTotalsHold(input.modules, source) ? source : null;
+    const totals =
+        source !== null && !input.sourceTotalsVoided && sourceTotalsHold(input.modules, source)
+            ? source
+            : null;
     const hullValue = fromSource ? (source?.hullValue ?? null) : input.retailHullValue;
     const modulesValue = fromSource
         ? (totals?.modulesValue ?? null)

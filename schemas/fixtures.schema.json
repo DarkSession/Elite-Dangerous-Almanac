@@ -4366,7 +4366,6 @@
                           "properties": {
                             "Item": { "type": "string" },
                             "On": { "type": "boolean" },
-                            "Priority": { "type": "integer" },
                             "Slot": { "type": "string" }
                           },
                           "required": ["Item", "Slot"]

@@ -218,8 +218,9 @@ power plant" is exactly what an outfitting screen must show as actionable. Unkno
 module symbols do not reach validation: imports discard them from removable mounts and
 stock armour, core internals and the cargo hatch from the hull defaults — a mount the
 source named an unresolvable article for and one it named nothing for are filled alike.
-An imported build therefore reaches `missingRequiredSlot` only on a hull carrying no
-default for that mount.
+Every hull in the catalogue carries a default for all nine fixed mounts, so an imported
+build never reports `missingRequiredSlot` — it reaches you from `ShipLoadout.empty()` and
+from `validateLoadout` on a module list you assembled yourself.
 
 **Neither question reports normalization.** A build whose unknown power plant was stocked
 from the hull defaults is `valid` and `complete` with no issues — the fit that remains

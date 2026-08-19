@@ -1066,6 +1066,32 @@ test('an unknown core module is replaced by the hull default', () => {
     assert.ok(Object.hasOwn(event, 'Rebuy'));
 });
 
+test('a capture that omits a core mount pays for the article import stocks there', () => {
+    // Every article here resolves, so nothing is discarded and only the absent mounts
+    // move: the captured credits still cover the fit the capture described, and no
+    // longer cover the one aboard.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        ModulesValue: 5000,
+        Rebuy: 1000,
+        UnladenMass: 25,
+        Modules: [
+            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1', Value: 5000 },
+            { Slot: 'Armour', Item: 'sidewinder_armour_grade1' },
+        ],
+    });
+    assert.equal(build.fittedModuleAt('MainEngines')?.symbol, 'Int_Engine_Size2_Class1');
+    assert.equal(build.modulesValue, null);
+    assert.equal(build.rebuy, null);
+    assert.notEqual(build.unladenMass, 25);
+    // The capture priced one slot and that slot is untouched, so nothing the source
+    // record can be compared against disagrees — the stocked mounts are what void it.
+    assert.equal(build.sourcePurchase?.modulesValue, 5000);
+    const sourceEvent = build.toLoadoutEvent({ credits: 'source' });
+    assert.ok(!Object.hasOwn(sourceEvent, 'ModulesValue'));
+    assert.ok(!Object.hasOwn(sourceEvent, 'Rebuy'));
+});
+
 test('editing a build recomputes rather than echoing the import', () => {
     const { afterEdit } = fixture.deepBlack;
     const build = ShipLoadout.fromSlef(slefString);

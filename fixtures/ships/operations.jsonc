@@ -358,7 +358,7 @@
       "pips": { "systems": 1, "engines": 2, "weapons": 3 }
     },
     "facade": {
-      "note": "Import stocks every fixed mount this event leaves unnamed, so the six stock cores draw power here too: 8.81 MW retracted, 16.28 MW deployed. The size-3 class-3 plant's 10 MW sits between them, which is what keeps the distributor's own band lit with the hardpoints stowed and dark with them run out.",
+      "note": "Import stocks every fixed mount this event leaves unnamed, so five stock core internals, the stock armour and the hatch draw power here too: 8.81 MW retracted, 16.28 MW deployed. The size-3 class-3 plant's 10 MW sits between them, which is what keeps the distributor's own band lit with the hardpoints stowed and dark with them run out.",
       "loadout": {
         "Ship": "Anaconda",
         "Modules": [
@@ -422,7 +422,7 @@
         },
         "pips": { "systems": 1, "engines": 3, "weapons": 2 }
       },
-      "nullLoadoutsNote": "An imported build always has a distributor — import stocks the mount from the hull defaults whether the event named an unresolvable article there or named none at all — so the metrics go null only when that distributor has no power: switched off at the mount, or in a priority band the plant cannot reach.",
+      "nullLoadoutsNote": "An imported build always has a distributor — import stocks the mount from the hull defaults whether the event named an unresolvable article there or named none at all — so the metrics go null only when that distributor has no power: switched off at the mount, or fitted to a plant that cannot carry the load.",
       "nullLoadouts": [
         {
           "Ship": "Anaconda",
@@ -438,11 +438,7 @@
           "Ship": "Anaconda",
           "Modules": [
             { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
-            {
-              "Slot": "PowerDistributor",
-              "Item": "Int_PowerDistributor_Size8_Class1",
-              "Priority": 4
-            }
+            { "Slot": "PowerDistributor", "Item": "Int_PowerDistributor_Size8_Class1" }
           ]
         }
       ]

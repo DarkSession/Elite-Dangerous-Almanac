@@ -350,11 +350,12 @@ reason: discard the only shield generator and `shieldMetricsResult` reports
 engineered one and the mobility, shield and recovery companions report `shed`.
 
 `build.importOutcomes` is the account, and it is the entries that matter, not
-the length. One whose `sourceSymbol` is `null` is the cargo hatch restored to a capture
-that named none: most third-party exports omit it, so most produce exactly that one entry,
-and it leaves every figure standing but its own — like every ship's hatch it draws 0.6 MW,
-in the first priority band since the capture recorded none. Any other entry means the
-figures are the normalized fit's.
+the length. A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for,
+which import stocks from the hull defaults. On the cargo hatch that costs nothing: most
+third-party exports omit it, so most produce exactly that one entry, and it leaves every
+figure standing but its own — like every ship's hatch it draws 0.6 MW, in the first
+priority band since the capture recorded none. Every other entry, `null` `sourceSymbol`
+or not, means the figures are the normalized fit's.
 
 ## Next
 
