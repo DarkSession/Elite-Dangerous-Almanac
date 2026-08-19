@@ -1033,12 +1033,14 @@ export class ShipLoadout {
      *
      * @remarks
      * A SLEF export's `UnladenMass` is trusted verbatim, unless import normalization
-     * changed the fit it described. Otherwise the mass is the hull's `hullMass` plus
-     * every fitted module's mass (post-engineering), with armour at the zero-mass
-     * lightweight default — which, after normalization stocked a fixed mount or
-     * discarded a module, is the mass of the normalized fit rather than of the capture.
-     * A non-empty {@link importOutcomes} is the only report of that: this figure is
-     * complete either way, and no {@link unladenMassResult} issue names it.
+     * changed the fit it described — restoring an absent cargo hatch does not, the stock
+     * hatch being weightless. Otherwise the mass is the hull's `hullMass` plus every
+     * fitted module's mass (post-engineering), with armour at the zero-mass lightweight
+     * default — which, after normalization stocked a fixed mount or discarded a module,
+     * is the mass of the normalized fit rather than of the capture. An
+     * {@link importOutcomes} entry whose `sourceSymbol` is not `null` is the only report
+     * of that: this figure is complete either way, and no {@link unladenMassResult}
+     * issue names it.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -1067,8 +1069,9 @@ export class ShipLoadout {
     /**
      * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
      * SLEF export's `FuelCapacity` is used when present and import normalization left
-     * its fit alone; otherwise the main capacity is the sum of the fitted fuel tanks and
-     * the reserve comes from the hull's stats.
+     * its fit alone, which restoring an absent cargo hatch does; otherwise the main
+     * capacity is the sum of the fitted fuel tanks and the reserve comes from the hull's
+     * stats.
      */
     get fuelCapacity(): FuelCapacity | null {
         return this.fuelCapacityResult.value;
@@ -1093,9 +1096,11 @@ export class ShipLoadout {
     /**
      * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
      * SLEF export's `CargoCapacity` is used when present and import normalization left
-     * its fit alone; otherwise it is the sum of the fitted cargo racks — which, after a
-     * rack was discarded or a fixed mount stocked, describes the normalized fit rather
-     * than the capture. {@link importOutcomes} is the only report of that.
+     * its fit alone, which restoring an absent cargo hatch does — the stock hatch carries
+     * nothing. Otherwise it is the sum of the fitted cargo racks, which after a rack was
+     * discarded or a fixed mount stocked describes the normalized fit rather than the
+     * capture. An {@link importOutcomes} entry whose `sourceSymbol` is not `null` is the
+     * only report of that.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;

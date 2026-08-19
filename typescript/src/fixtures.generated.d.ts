@@ -4405,6 +4405,24 @@ type FixtureShipsSlefExport = {
             UnladenMass: number;
         };
     };
+    importOutcomeOrder: {
+        expected: {
+            action: string;
+            replacementSymbol?: string;
+            slot: string;
+            sourceSymbol: string | null;
+        }[];
+        input: {
+            Modules: {
+                Item: string;
+                On?: boolean;
+                Priority?: number;
+                Slot: string;
+            }[];
+            Ship: string;
+        };
+        note: string;
+    };
     journalFieldExclusions: {
         engineering: string[];
         engineeringBuild: string;

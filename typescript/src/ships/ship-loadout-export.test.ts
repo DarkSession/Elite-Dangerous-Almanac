@@ -369,6 +369,12 @@ test('shared import normalization strips unknown modules and defaults named moun
     );
 });
 
+test('shared import outcomes come back in source order with the restored hatch last', () => {
+    const order = fixture.importOutcomeOrder;
+    assert.deepEqual(ShipLoadout.fromLoadout(order.input).importOutcomes, order.expected);
+    assert.deepEqual(ShipLoadout.fromSlef(order.input).importOutcomes, order.expected);
+});
+
 test('the fixture’s mount and non-outfitting patterns agree with the classification', () => {
     // Pins both sides explicitly: a new slot family matches neither and is unknown.
     const patterns = fixture.classification.outfittingSlotPatterns.map((p) => new RegExp(p));

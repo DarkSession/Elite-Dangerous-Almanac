@@ -350,15 +350,19 @@ the result complete, because the fit that remains really is filled and really is
 What normalization can still do is leave a companion incomplete for an ordinary reason,
 saying nothing about the module that was there. Drop the build's only shield generator
 and `shieldMetricsResult` reports `shieldGenerator` / `missing`, exactly as an empty
-mount would. A stocked fixed mount does it too, because a hull's default is its class-1
-article: substitute one for an engineered power plant and a build sized for the original
-sheds groups, so the mobility, shield and recovery companions report `shed`.
+mount would. A stocked fixed mount does it too, because a hull's default is the article
+it shipped with, near-always the lowest rating on offer: substitute one for an engineered
+power plant and a build sized for the original sheds groups, so the mobility, shield and
+recovery companions report `shed`.
 
 `build.importOutcomes` is the only account of any of this. Read it on a build you did
-not assemble yourself, and read the entries rather than the length: an entry whose
-`sourceSymbol` is `null` is the cargo hatch restored to a capture that named none, which
-is free and weightless and changes no figure — most third-party exports omit the hatch,
-so most produce exactly that one entry. Any other entry means the figures describe the
+not assemble yourself, and read the entries rather than the length. An entry whose
+`sourceSymbol` is `null` is the cargo hatch restored to a capture that named none — most
+third-party exports omit it, so most produce exactly that one entry, and it leaves the
+capture's mass, capacity and credit figures standing, being free and weightless. It is
+not invisible here, though: like every ship's hatch it draws 0.6 MW, so it appears in
+`powerBudget().consumers` and in the heat profile, in the first priority band because
+the capture recorded none for it. Any other entry means the figures describe the
 normalized fit rather than the capture.
 
 ## Next
