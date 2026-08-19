@@ -1,9 +1,9 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build
- * serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits
- * and which it leaves out, module order, and the lower-cased journal casing. This is the DEFAULT
+ * Expected ShipLoadout import and export behavior for journal `Loadout` events and SLEF builds.
+ * Pins the decisions rather than whole blobs: import normalization, which top-level keys an export
+ * emits and leaves out, module order, and lower-cased journal casing. This is the DEFAULT
  * export: every top-level figure is recomputed from the hull and the fitted modules, never echoed
  * from the import. Credits are quoted at RETAIL — the bare hull's `hullCost` plus every module's
  * catalogue list price — so they deliberately differ from what a source build reports, since that
@@ -14,7 +14,7 @@
 {
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is decided to be an outfitting module, a non-outfitting fitting, or unknown — the rule that governs every mass and credit figure below. The catalogue has the FIRST say: an article it can identify contributes its mass and list price whatever its slot is called. Only an unidentifiable article is classified by slot. Known cosmetic/hull families are explicitly non-outfitting and contribute no mass or list price; a recognised outfitting mount, or any unfamiliar family, is unknown. Unknown omits the figures that depend on it rather than being counted as free and weightless, so a genuinely new mount cannot silently understate a build. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
+    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown fixed mounts — armour, core internals and the cargo hatch — which are replaced by that hull's stock modules. A stock replacement carries the source's power state, priority and health — facts about the mount rather than about the article that failed to resolve — and none of its engineering or captured value. A fixed mount the source never named is left empty, so an incomplete build stays incomplete; only the cargo hatch, which is part of the hull rather than an outfitting choice, is restored when absent. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -59,16 +59,112 @@
       {
         "slot": "Slot99_Size4",
         "item": "int_something_we_have_never_seen",
-        "verdict": "unknown",
-        "why": "The key names an optional mount, so something outfitting-like is fitted there, but no catalogue can price or weigh it — ModulesValue, UnladenMass, MaxJumpRange and Rebuy are all omitted."
+        "verdict": "stripped",
+        "why": "The catalogue cannot resolve the item, so it is removed during import."
       },
       {
         "slot": "FutureMount",
         "item": "int_something_we_have_never_seen",
-        "verdict": "unknown",
-        "why": "Neither the article nor the slot family is known, so the library refuses to call it free and weightless."
+        "verdict": "stripped",
+        "why": "Neither the article nor the slot family is known, so the entry is removed during import."
+      },
+      {
+        "slot": "CargoHatch",
+        "item": "modularcargobaydoorfdl",
+        "verdict": "builtInHull",
+        "why": "The Fer-de-Lance and the Lynx Highliner name their own symbol for the one built-in hatch, which the catalogue carries once under ModularCargoBayDoor, so any modularcargobaydoor* article in the cargo-hatch mount resolves through that record and survives import verbatim."
       }
     ]
+  },
+  "importNormalization": {
+    "input": {
+      "Ship": "sidewinder",
+      "UnladenMass": 999,
+      "CargoCapacity": 999,
+      "FuelCapacity": { "Main": 999, "Reserve": 999 },
+      "ModulesValue": 999,
+      "Rebuy": 999,
+      "Modules": [
+        {
+          "Slot": "PowerPlant",
+          "Item": "FuturePowerPlant",
+          "On": false,
+          "Priority": 2,
+          "Health": 0.5,
+          "Value": 99,
+          "Engineering": {
+            "BlueprintName": "FutureBlueprint",
+            "Level": 5,
+            "Quality": 1,
+            "Modifiers": [{ "Label": "PowerDraw", "Value": 999 }]
+          }
+        },
+        { "Slot": "Slot01_Size2", "Item": "FutureOptional" },
+        { "Slot": "SmallHardpoint1", "Item": "FutureWeapon" },
+        { "Slot": "TinyHardpoint1", "Item": "FutureUtility" },
+        { "Slot": "Armour", "Item": "FutureArmour" },
+        { "Slot": "FutureMount", "Item": "FutureModule" }
+      ]
+    },
+    "expected": {
+      "modules": [
+        {
+          "slot": "PowerPlant",
+          "symbol": "Int_Powerplant_Size2_Class1",
+          "on": false,
+          "priority": 2,
+          "health": 0.5
+        },
+        { "slot": "Armour", "symbol": "SideWinder_Armour_Grade1" },
+        { "slot": "CargoHatch", "symbol": "ModularCargoBayDoor" }
+      ],
+      "outcomes": [
+        {
+          "action": "defaulted",
+          "slot": "PowerPlant",
+          "sourceSymbol": "FuturePowerPlant",
+          "replacementSymbol": "Int_Powerplant_Size2_Class1"
+        },
+        {
+          "action": "emptied",
+          "slot": "Slot01_Size2",
+          "sourceSymbol": "FutureOptional"
+        },
+        {
+          "action": "emptied",
+          "slot": "SmallHardpoint1",
+          "sourceSymbol": "FutureWeapon"
+        },
+        {
+          "action": "emptied",
+          "slot": "TinyHardpoint1",
+          "sourceSymbol": "FutureUtility"
+        },
+        {
+          "action": "defaulted",
+          "slot": "Armour",
+          "sourceSymbol": "FutureArmour",
+          "replacementSymbol": "SideWinder_Armour_Grade1"
+        },
+        {
+          "action": "emptied",
+          "slot": "FutureMount",
+          "sourceSymbol": "FutureModule"
+        },
+        {
+          "action": "defaulted",
+          "slot": "CargoHatch",
+          "sourceSymbol": null,
+          "replacementSymbol": "ModularCargoBayDoor"
+        }
+      ],
+      "unladenMass": 27.5,
+      "cargoCapacity": 0,
+      "fuelCapacity": { "main": 0, "reserve": 0.3 },
+      "modulesValue": null,
+      "rebuy": null,
+      "complete": false
+    }
   },
   "engineeringWithoutModifiers": {
     "note": "SLEF requires only Ship, Modules, Slot and Item; the specification's own example carries an Engineering block with BlueprintName, Level, Quality and ExperimentalEffect but NO Modifiers array. A parser that requires Modifiers cannot read the format it implements. Absent means 'not stated', not 'changed nothing': the module performs at its catalogue stats, modifier lookups return null, and an export must not invent an empty array on the way back out. Source: https://inara.cz/elite/inara-impexp-slef/",

@@ -39,7 +39,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { SHIPS, getShipBySymbol } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff, damagePerSecond } from './weapons.js';
-import type { HeatMetrics, HeatState } from './heat.js';
+import type { HeatState } from './heat.js';
 import { powerBudget as calculatePowerBudget } from './power.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
@@ -352,32 +352,19 @@ test('mobility returns null before requiring mass when no thrusters are fitted',
     assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), RangeError);
 });
 
-test('explicit mobility fuel needs no tank capacity and excludes reserve mass', () => {
-    const fixture = operationsFixture.mobility.facadeExplicitFuel;
+test('explicit mobility fuel overrides the tank load and excludes reserve mass', () => {
+    const fixture = operationsFixture.mobility.facadeFuelOverride;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
-    assert.equal(build.fuelCapacity, null);
+    assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.3 });
     const metrics = build.mobilityMetrics(fixture.options)!;
     for (const [field, expected] of Object.entries(fixture.expected)) {
         assert.ok(near(metrics[field as keyof typeof metrics], expected), field);
     }
-    if (fixture.omittedFuelFails) {
-        assert.throws(() => build.mobilityMetrics(), /cannot determine fuel capacity/);
-    }
+    assert.ok(build.mobilityMetrics()!.speed < metrics.speed);
     for (const invalid of fixture.invalidLoads) {
         assert.throws(() => build.mobilityMetrics(invalid.options), {
             name: invalid.expectedError,
         });
-    }
-
-    const partial = ShipLoadout.fromLoadout(
-        fixture.partialCapacityLoadout as unknown as LoadoutEvent,
-    );
-    assert.equal(partial.fuelCapacity, null);
-    // At this fixture's mass, using `Main: 2` produces 1.0580855; dropping the fuel
-    // term would clamp the curve to 1.06 and fail the expected metrics below.
-    const partialMetrics = partial.mobilityMetrics()!;
-    for (const [field, expected] of Object.entries(fixture.expected)) {
-        assert.ok(near(partialMetrics[field as keyof typeof partialMetrics], expected), field);
     }
 });
 
@@ -453,47 +440,19 @@ test('mobility and shield metrics stop when the power budget sheds their modules
         },
     });
     assert.equal(overloaded.shieldRecoveryResult().issues[0]?.reason, 'shed');
-});
 
-test('an unresolved power plant makes every power-dependent metric unavailable', () => {
-    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
-    const unresolved = ShipLoadout.fromLoadout({
-        ...source,
-        Modules: source.Modules.map((module) =>
-            module.Slot === 'PowerPlant'
-                ? { ...module, Item: 'Int_MkiiPowerplant_Size8_Class5' }
-                : module,
-        ),
-    }).setModule('Slot02_Size6', mod('Int_ShieldCellBank_Size6_Class1', INTERNAL_MODULES));
-
-    assert.equal(unresolved.powerBudget().available, 0);
-    assert.ok(unresolved.validation.issues.some((issue) => issue.code === 'unknownModule'));
-    assert.equal(unresolved.mobilityMetrics(), null);
-    assert.equal(unresolved.shieldMetrics(), null);
-    assert.equal(unresolved.shieldRecovery(), null);
-    assert.equal(unresolved.heatMetrics(), null);
-    assert.equal(unresolved.distributorMetrics(), null);
-    assert.equal(unresolved.cellBanks().banks[0]?.powered, false);
-    for (const result of [
-        unresolved.mobilityMetricsResult(),
-        unresolved.shieldMetricsResult(),
-        unresolved.shieldRecoveryResult(),
-    ]) {
-        assert.equal(result.complete, false);
-        assert.deepEqual(result.issues[0], {
-            field: 'powerCapacity',
-            reason: 'unresolved',
-            slot: 'PowerPlant',
-            symbol: 'Int_MkiiPowerplant_Size8_Class5',
-            message: 'PowerPlant: power capacity unavailable for Int_MkiiPowerplant_Size8_Class5',
-            params: {
-                field: 'powerCapacity',
-                reason: 'unresolved',
-                slot: 'PowerPlant',
-                symbol: 'Int_MkiiPowerplant_Size8_Class5',
-            },
-        });
-    }
+    // A mount switched off is diagnosed before anything downstream of it: the plant
+    // first, since nothing runs without it, then the generator itself.
+    const plantOff = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
+    assert.deepEqual(
+        plantOff.shieldMetricsResult().issues.map((issue) => [issue.field, issue.reason]),
+        [['powerCapacity', 'disabled']],
+    );
+    const generatorOff = ShipLoadout.default('SideWinder').setModuleEnabled('Slot01_Size2', false);
+    assert.deepEqual(
+        generatorOff.shieldMetricsResult().issues.map((issue) => [issue.field, issue.reason]),
+        [['shieldGenerator', 'disabled']],
+    );
 });
 
 test('a resolved plant without usable capacity is diagnosed by metric results', () => {
@@ -506,6 +465,37 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     assert.equal(build.shieldMetrics(), null);
     assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
     assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(
+        build.shieldMetricsResult().issues[0]?.message,
+        'PowerPlant: power capacity unavailable for Int_Powerplant_Size8_Class5',
+    );
+
+    // The thruster reader answers the same way: a supplied record missing part of its
+    // mass curve leaves mobility unavailable rather than curving off whatever remains.
+    const incompleteThrusters = { ...mod('Int_Engine_Size7_Class5') };
+    delete incompleteThrusters.minMass;
+    const noCurve = ShipLoadout.default('Anaconda').setModule('MainEngines', incompleteThrusters);
+    assert.equal(noCurve.mobilityMetrics(), null);
+    assert.equal(noCurve.mobilityMetricsResult().issues[0]?.field, 'thrusters');
+    assert.equal(noCurve.mobilityMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(
+        noCurve.mobilityMetricsResult().issues[0]?.message,
+        'MainEngines: thruster stats unavailable for Int_Engine_Size7_Class5',
+    );
+
+    // The aggregates read the same way: a supplied record that omits its mass or the
+    // capacity its symbol promises makes the sum unknown rather than counting it as 0.
+    const noMass = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
+    delete noMass.mass;
+    const unweighed = ShipLoadout.default('Anaconda').setModule('Slot01_Size7', noMass);
+    assert.equal(unweighed.unladenMass, null);
+    assert.equal(unweighed.unladenMassResult.complete, false);
+
+    const noCapacity = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
+    delete noCapacity.cargoCapacity;
+    const uncounted = ShipLoadout.default('Anaconda').setModule('Slot01_Size7', noCapacity);
+    assert.equal(uncounted.cargoCapacity, null);
+    assert.equal(uncounted.cargoCapacityResult.issues[0]?.field, 'cargoCapacity');
 
     const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
         assert.equal(invalid.mobilityMetrics(), null);
@@ -590,92 +580,26 @@ test('shield results distinguish an absent generator from a shed one', () => {
     assert.equal(result.complete, false);
     assert.equal(result.issues[0]?.field, 'shieldGenerator');
     assert.equal(result.issues[0]?.reason, 'missing');
-});
 
-test('an unresolved generator stays unavailable behind a disabled known plant', () => {
-    const source = ShipLoadout.default('SideWinder')
-        .setModuleEnabled('PowerPlant', false)
-        .toLoadoutEvent();
-    const unresolved = ShipLoadout.fromLoadout({
-        ...source,
-        Modules: source.Modules.map((module) =>
-            module.Item.toLowerCase().startsWith('int_shieldgenerator')
-                ? { ...module, Item: 'Int_ShieldGenerator_Size99_Class9_MadeUp' }
-                : module,
-        ),
+    // A cosmetic entry keeps whatever symbol the capture spelled and has no catalogue
+    // record, so one spelled as a generator is the reader's only unresolved case — and
+    // it is diagnosed rather than answered with a zero curve.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const noRecord = ShipLoadout.fromLoadout({
+        ...stock,
+        Modules: [
+            ...stock.Modules.filter(
+                (module) => !module.Item.toLowerCase().startsWith('int_shieldgenerator'),
+            ),
+            { Slot: 'Decal1', Item: 'Int_ShieldGenerator_Size9_Class9_MadeUp' },
+        ],
     });
-
-    assert.equal(unresolved.powerBudget().available, 0);
-    assert.equal(unresolved.shieldMetrics(), null);
-    assert.equal(unresolved.shieldRecovery(), null);
-    assert.deepEqual(
-        {
-            field: unresolved.shieldMetricsResult().issues[0]?.field,
-            reason: unresolved.shieldMetricsResult().issues[0]?.reason,
-        },
-        { field: 'powerCapacity', reason: 'disabled' },
-    );
-});
-
-test('an unresolved powered generator is diagnosed instead of producing zero shields', () => {
-    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
-    const build = ShipLoadout.fromLoadout({
-        ...source,
-        Modules: source.Modules.map((module) =>
-            module.Item.toLowerCase().startsWith('int_shieldgenerator')
-                ? { ...module, Item: 'Int_ShieldGenerator_Size99_Class9_MadeUp' }
-                : module,
-        ),
-    });
-
-    assert.ok(build.powerBudget().available > 0);
-    assert.equal(build.shieldMetrics(), null);
-    assert.equal(build.shieldRecovery(), null);
-    const expected = {
-        field: 'shieldGenerator',
-        reason: 'unresolved',
-        slot: 'Slot01_Size2',
-        symbol: 'Int_ShieldGenerator_Size99_Class9_MadeUp',
-        message:
-            'Slot01_Size2: shield-generator stats unavailable for Int_ShieldGenerator_Size99_Class9_MadeUp',
-        params: {
-            field: 'shieldGenerator',
-            reason: 'unresolved',
-            slot: 'Slot01_Size2',
-            symbol: 'Int_ShieldGenerator_Size99_Class9_MadeUp',
-        },
-    };
-    assert.deepEqual(build.shieldMetricsResult().issues[0], expected);
-    assert.deepEqual(build.shieldRecoveryResult().issues[0], expected);
-
-    const generator = source.Modules.find((module) =>
-        module.Item.toLowerCase().startsWith('int_shieldgenerator'),
-    );
-    assert.ok(generator);
-    build.setModuleEnabled(generator.Slot, false);
-    assert.deepEqual(
-        {
-            field: build.shieldMetricsResult().issues[0]?.field,
-            reason: build.shieldMetricsResult().issues[0]?.reason,
-        },
-        { field: 'shieldGenerator', reason: 'disabled' },
-    );
-});
-
-test('an unresolved thruster diagnostic names the missing stats', () => {
-    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
-    const build = ShipLoadout.fromLoadout({
-        ...source,
-        Modules: source.Modules.map((module) =>
-            module.Slot === 'MainEngines'
-                ? { ...module, Item: 'Int_MkiiEngine_Size2_Class5' }
-                : module,
-        ),
-    });
-
+    assert.equal(noRecord.shieldMetrics(), null);
+    assert.equal(noRecord.shieldMetricsResult().issues[0]?.field, 'shieldGenerator');
+    assert.equal(noRecord.shieldMetricsResult().issues[0]?.reason, 'unresolved');
     assert.equal(
-        build.mobilityMetricsResult().issues[0]?.message,
-        'MainEngines: thruster stats unavailable for Int_MkiiEngine_Size2_Class5',
+        noRecord.shieldMetricsResult().issues[0]?.message,
+        'Decal1: shield-generator stats unavailable for Int_ShieldGenerator_Size9_Class9_MadeUp',
     );
 });
 
@@ -733,36 +657,6 @@ test('fromSlef reads the ship identity and top-level figures', () => {
     assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length);
 });
 
-test('aggregate results distinguish unknown capacity from zero and explain it', () => {
-    const build = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [{ Slot: 'Slot01_Size2', Item: 'Int_CargoRack_Future' }],
-    });
-    assert.equal(build.cargoCapacity, null);
-    assert.equal(build.cargoCapacityResult.complete, false);
-    assert.deepEqual(
-        build.cargoCapacityResult.issues.map((issue) => issue.field),
-        ['cargoCapacity'],
-    );
-
-    const empty = ShipLoadout.empty('SideWinder');
-    assert.equal(empty.cargoCapacity, 0);
-    assert.equal(empty.cargoCapacityResult.complete, true);
-
-    const unclassified = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [{ Slot: 'Slot01_Size2', Item: 'Int_FutureModule' }],
-    });
-    assert.equal(unclassified.cargoCapacityResult.complete, false);
-    assert.equal(unclassified.fuelCapacityResult.complete, false);
-
-    const unknownTank = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [{ Slot: 'FuelTank', Item: 'Int_FutureTank' }],
-    });
-    assert.equal(unknownTank.fuelCapacityResult.complete, false);
-});
-
 test('loadout validation makes empty builds explicit', () => {
     const captured = ShipLoadout.fromSlef(slefString);
     assert.equal(captured.validation.valid, true);
@@ -797,6 +691,17 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
         omitted.fittedModuleAt('CargoHatch')!.symbol.toLowerCase(),
         defaultHatch.Item.toLowerCase(),
     );
+    // The one outcome shape real captures produce: third-party exports omit the hatch,
+    // and a `null` `sourceSymbol` is what marks the mount import fills unasked.
+    assert.deepEqual(omitted.importOutcomes, [
+        {
+            action: 'defaulted',
+            slot: 'CargoHatch',
+            sourceSymbol: null,
+            // The hull default's own casing, not the capture's — nothing was captured.
+            replacementSymbol: 'ModularCargoBayDoor',
+        },
+    ]);
     assert.deepEqual(omitted.validation, { valid: true, complete: true, issues: [] });
     assert.equal(omitted.modulesValue, source.ModulesValue);
     assert.equal(omitted.rebuy, source.Rebuy);
@@ -828,24 +733,41 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
     });
     const unresolved = unresolvedBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(unresolved.symbol.toLowerCase(), defaultHatch.Item.toLowerCase());
+    // How the commander ran the mount survives the substitution; what the article was
+    // does not.
     assert.equal(unresolved.on, false);
+    assert.equal(unresolved.priority, undefined);
     assert.equal(unresolved.engineering, undefined);
     assert.equal(unresolved.effectiveStats!.powerDraw, 0.6);
     assert.equal(unresolved.raw.Value, undefined);
-    assert.equal(unresolvedBuild.unladenMass, capturedMass);
-    assert.equal(unresolvedBuild.cargoCapacity, capturedCargo);
-    assert.equal(unresolvedBuild.modulesValue, source.ModulesValue);
-    assert.equal(unresolvedBuild.rebuy, source.Rebuy);
+    assert.equal(unresolvedBuild.unladenMass, source.UnladenMass);
+    assert.equal(unresolvedBuild.cargoCapacity, source.CargoCapacity);
+    assert.equal(unresolvedBuild.modulesValue, null);
+    assert.equal(unresolvedBuild.rebuy, null);
+    assert.deepEqual(unresolvedBuild.importOutcomes, [
+        {
+            action: 'defaulted',
+            slot: 'cargohatch',
+            sourceSymbol: 'FutureCargoHatch',
+            replacementSymbol: 'ModularCargoBayDoor',
+        },
+    ]);
 
-    const futureVariant = ShipLoadout.fromLoadout({
+    // A hull-family hatch symbol resolves through the standard hatch's record rather
+    // than being normalized, so a capture keeps its own article and its credit figures.
+    const futureVariantBuild = ShipLoadout.fromLoadout({
         ...source,
         Modules: [
             ...withoutHatch,
             { Slot: 'cargohatch', Item: 'ModularCargoBayDoorUnknown', Value: 999 },
         ],
-    }).fittedModuleAt('CargoHatch')!;
+    });
+    const futureVariant = futureVariantBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(futureVariant.symbol, 'ModularCargoBayDoorUnknown');
     assert.equal(futureVariant.raw.Value, 999);
+    assert.deepEqual(futureVariantBuild.importOutcomes, []);
+    assert.equal(futureVariantBuild.modulesValue, source.ModulesValue);
+    assert.equal(futureVariantBuild.rebuy, source.Rebuy);
 
     const fdl = ShipLoadout.default('FerDeLance').toLoadoutEvent();
     const wrongHatch = fdl.Modules.map((module) =>
@@ -853,12 +775,11 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
             ? { ...module, Item: 'ModularCargoBayDoor', On: false }
             : module,
     );
-    const capturedFdlHatch = ShipLoadout.fromLoadout({
-        ...fdl,
-        Modules: wrongHatch,
-    }).fittedModuleAt('CargoHatch')!;
+    const capturedFdlBuild = ShipLoadout.fromLoadout({ ...fdl, Modules: wrongHatch });
+    const capturedFdlHatch = capturedFdlBuild.fittedModuleAt('CargoHatch')!;
     assert.equal(capturedFdlHatch.symbol, 'ModularCargoBayDoor');
     assert.equal(capturedFdlHatch.on, false);
+    assert.deepEqual(capturedFdlBuild.importOutcomes, []);
 
     const lowerCaseModules = withoutHatch.map((module) => ({
         ...module,
@@ -899,10 +820,58 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
         ),
     });
     assert.deepEqual(unresolvedCore.repairFixedMount('PowerPlant'), {
-        status: 'repaired',
+        status: 'unchanged',
         slot: 'PowerPlant',
         symbol: 'Int_Powerplant_Size2_Class1',
     });
+
+    // An oversized-but-resolvable core is not normalized at import — the catalogue knows
+    // the article — so this is the path that actually repairs. The stock replacement
+    // keeps how the mount was being run and none of what the article was.
+    const oversized = ShipLoadout.fromLoadout({
+        ...source,
+        Modules: source.Modules.map((module) =>
+            module.Slot === 'PowerPlant'
+                ? {
+                      ...module,
+                      Item: 'Int_Powerplant_Size8_Class1',
+                      On: false,
+                      Priority: 4,
+                      Health: 0.5,
+                      Value: 999,
+                  }
+                : module,
+        ),
+    });
+    assert.equal(oversized.repairFixedMount('PowerPlant').status, 'repaired');
+    const repaired = oversized.fittedModuleAt('PowerPlant')!;
+    assert.equal(repaired.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(repaired.on, false);
+    assert.equal(repaired.priority, 4);
+    assert.equal(repaired.health, 0.5);
+    assert.equal(repaired.value, undefined);
+});
+
+test('fitting a module resets the mount, unlike repairing one', () => {
+    // A module the player chose carries no power state from the one it displaced; a stock
+    // article standing in for one that failed to resolve keeps what the source recorded.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const build = ShipLoadout.fromLoadout({
+        ...stock,
+        Modules: stock.Modules.map((module) =>
+            module.Slot === 'Slot01_Size2'
+                ? { ...module, On: false, Priority: 3, Health: 0.5 }
+                : module,
+        ),
+    });
+    assert.equal(build.fittedModuleAt('Slot01_Size2')!.on, false);
+
+    build.setModule('Slot01_Size2', mod('Int_CargoRack_Size2_Class1', INTERNAL_MODULES));
+    const after = build.fittedModuleAt('Slot01_Size2')!;
+    assert.equal(after.symbol, 'Int_CargoRack_Size2_Class1');
+    assert.equal(after.on, undefined);
+    assert.equal(after.priority, undefined);
+    assert.equal(after.health, undefined);
 });
 
 test('default builds fit every stock module and remain independently editable', () => {
@@ -963,11 +932,11 @@ test('a figure an import stated is handed back in the same shape as a calculated
     // They build the result through the same constructor the calculations use, so a
     // consumer cannot tell a stated answer from a summed one by its shape — and cannot
     // mutate either.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const imported = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [],
+        ...stock,
         UnladenMass: 45,
-        CargoCapacity: 4,
+        CargoCapacity: 512,
         FuelCapacity: { Main: 2, Reserve: 0.3 },
     });
     // The fourth site: a capture whose `Main` an edit discarded but whose `Reserve`
@@ -990,8 +959,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
         rating: tank.rating,
     };
     const merged = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [{ Slot: 'FuelTank', Item: tank.symbol }],
+        ...stock,
         FuelCapacity: { Main: 8, Reserve: 9.99 },
     })
         .setModule('FuelTank', mysteryTank)
@@ -1000,7 +968,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
 
     // The figure itself survives the trip, not just the wrapper's shape.
     assert.equal(imported.unladenMassResult.value, 45);
-    assert.equal(imported.cargoCapacityResult.value, 4);
+    assert.equal(imported.cargoCapacityResult.value, 512);
     assert.deepEqual(imported.fuelCapacityResult.value, { main: 2, reserve: 0.3 });
     // Main recalculated from the refitted tank; reserve still the captured figure.
     assert.deepEqual(merged.fuelCapacityResult.value, { main: 2, reserve: 9.99 });
@@ -1012,8 +980,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
     // merge that ignored the stated `Main` would silently zero the build's fuel and
     // with it its jump range.
     const mainOnly = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        Modules: [],
+        ...stock,
         FuelCapacity: { Main: 9 },
     } as unknown as LoadoutEvent);
     assert.deepEqual(mainOnly.fuelCapacityResult.value, { main: 9, reserve: 0.3 });
@@ -1033,6 +1000,29 @@ test('a figure an import stated is handed back in the same shape as a calculated
     // Both fuel sites hand back a frozen value object, not only the wrapper around it.
     assert.equal(Object.isFrozen(imported.fuelCapacityResult.value), true);
     assert.equal(Object.isFrozen(merged.fuelCapacityResult.value), true);
+});
+
+test('a stated fuel capacity outlives a tank the catalogue cannot sum', () => {
+    // A cosmetic slot keeps whatever symbol the capture spelled and gets no catalogue
+    // record, so one spelled as a fuel tank is the only fitted article import leaves
+    // unresolved — and the only way the tanks stop summing while the capture's own
+    // figures still stand. Stated in full, they are the answer; a stated `Main` alone
+    // still fuels the mobility load, which needs no reserve to weigh the ship.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const withMysteryTank = (FuelCapacity: { Main: number; Reserve?: number }): ShipLoadout =>
+        ShipLoadout.fromLoadout({
+            ...stock,
+            FuelCapacity,
+            Modules: [...stock.Modules, { Slot: 'Decal1', Item: 'Int_FuelTank_Size9_Class9' }],
+        } as unknown as LoadoutEvent);
+
+    const stated = withMysteryTank({ Main: 32, Reserve: 0.3 });
+    assert.deepEqual(stated.fuelCapacityResult.value, { main: 32, reserve: 0.3 });
+
+    const mainOnly = withMysteryTank({ Main: 32 });
+    assert.equal(mainOnly.fuelCapacityResult.complete, false);
+    assert.deepEqual(mainOnly.mobilityMetrics(), mainOnly.mobilityMetrics({ fuel: 32 }));
+    assert.notDeepEqual(mainOnly.mobilityMetrics(), mainOnly.mobilityMetrics({ fuel: 0 }));
 });
 
 test('fromLoadout rejects duplicate slot keys before its map can overwrite one', () => {
@@ -1113,15 +1103,14 @@ test('jump calculations honour explicit fuel and cargo', () => {
     assert.ok(build.totalRange({ fuel: 64 }).range < build.totalRange().range);
     assert.throws(() => build.totalRange({ fuel: 1e7 }), /more than 100000 jumps/);
 
-    const partial = expected.explicitFuelWithoutKnownTank;
-    const unknownTank = ShipLoadout.fromLoadout(partial.loadout as unknown as LoadoutEvent);
-    assert.equal(unknownTank.fuelCapacity, null);
-    const partialTotal = unknownTank.totalRange(partial.options);
+    const partial = expected.explicitFuel;
+    const partialTank = ShipLoadout.fromLoadout(partial.loadout as unknown as LoadoutEvent);
+    const partialTotal = partialTank.totalRange(partial.options);
     assert.equal(partialTotal.jumps, partial.expected.jumps);
     assert.ok(near(partialTotal.range, partial.expected.range));
-    assert.throws(() => unknownTank.totalRange(), /cannot determine fuel capacity/);
+    assert.ok(partialTank.totalRange().range > partialTotal.range);
 
-    for (const invalid of operationsFixture.mobility.facadeExplicitFuel.invalidLoads) {
+    for (const invalid of operationsFixture.mobility.facadeFuelOverride.invalidLoads) {
         assert.throws(() => build.jumpRange(invalid.options), { name: invalid.expectedError });
         assert.throws(() => build.fuelPerJump(1, invalid.options), {
             name: invalid.expectedError,
@@ -1139,26 +1128,30 @@ test('fromLoadout works on a bare journal event', () => {
 });
 
 test('loadout inputs and returned raw records cannot mutate internal state', () => {
+    const sourceDrive = {
+        Slot: 'FrameShiftDrive',
+        Item: 'Int_Hyperdrive_Size6_Class5',
+        Engineering: {
+            BlueprintName: 'FSD_LongRange',
+            Level: 1,
+            Quality: 1,
+            Modifiers: [{ Label: 'FSDOptimalMass', Value: 1980, OriginalValue: 1800 }],
+        },
+    };
     const source = {
         Ship: 'anaconda',
         UnladenMass: 500,
         Modules: [
-            {
-                Slot: 'FrameShiftDrive',
-                Item: 'Int_Hyperdrive_Size6_Class5',
-                Engineering: {
-                    BlueprintName: 'FSD_LongRange',
-                    Level: 1,
-                    Quality: 1,
-                    Modifiers: [{ Label: 'FSDOptimalMass', Value: 1980, OriginalValue: 1800 }],
-                },
-            },
+            sourceDrive,
+            ...ShipLoadout.default('Anaconda')
+                .toLoadoutEvent()
+                .Modules.filter((module) => module.Slot !== 'FrameShiftDrive'),
         ],
     };
     const build = ShipLoadout.fromLoadout(source);
 
-    source.Modules[0]!.Item = 'int_hyperdrive_size99_class9_madeup';
-    source.Modules[0]!.Engineering.Modifiers[0]!.Value = 1;
+    sourceDrive.Item = 'int_hyperdrive_size99_class9_madeup';
+    sourceDrive.Engineering!.Modifiers![0]!.Value = 1;
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(build.frameShiftDrive.optMass, 1980);
 
@@ -1229,31 +1222,52 @@ test('an unpowered Guardian booster contributes no jump bonus', () => {
     assert.equal(ShipLoadout.fromLoadout(off).frameShiftDrive.jumpBoost, 0);
 });
 
-test('a build with no frame shift drive throws on a jump calculation', () => {
-    const noFsd: LoadoutEvent = {
-        Ship: 'sidewinder',
-        UnladenMass: 50,
-        FuelCapacity: { Main: 2, Reserve: 0.3 },
-        Modules: [{ Slot: 'CargoHatch', Item: 'modularcargobaydoor' }],
-    };
-    assert.throws(() => ShipLoadout.fromLoadout(noFsd).maxJumpRange(), /no frame shift drive/);
+test('a booster is identified by the bonus it supplies, not by its engineering menu', () => {
+    const booster = mod('Int_GuardianFSDBooster_Size5', INTERNAL_MODULES);
+    const conda = () =>
+        ShipLoadout.empty('Anaconda').setModule(
+            'FrameShiftDrive',
+            mod('Int_Hyperdrive_Size6_Class5'),
+        );
+    // `engineeringGroup` says which recipes may touch an article, not what it does, and a
+    // caller-supplied record may legitimately leave it null — which would otherwise count
+    // the booster's mass while its boost went uncounted.
+    const supplied = conda().setModule('Slot02_Size6', { ...booster, engineeringGroup: null });
+    assert.equal(supplied.frameShiftDrive.jumpBoost, booster.jumpBoost);
+    assert.equal(
+        supplied.maxJumpRange(),
+        conda().setModule('Slot02_Size6', booster).maxJumpRange(),
+    );
+
+    // A zero bonus is not evidence of a booster: the first match wins, so believing one
+    // would let an unrelated record earlier in slot order shadow the real article.
+    const shadowed = conda()
+        .setModule('Slot01_Size7', {
+            ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES),
+            jumpBoost: 0,
+        })
+        .setModule('Slot02_Size6', booster);
+    assert.equal(shadowed.frameShiftDrive.jumpBoost, booster.jumpBoost);
+
+    // A record that claims the menu but carries no bonus is a fault, not a zero.
+    const menuOnly = { ...booster };
+    delete menuOnly.jumpBoost;
     assert.throws(
-        () => ShipLoadout.fromLoadout(noFsd).jumpRangeSummary(),
+        () => conda().setModule('Slot02_Size6', menuOnly).frameShiftDrive,
+        /has no jumpBoost/,
+    );
+});
+
+test('a build with no frame shift drive throws on a jump calculation', () => {
+    const noFsd = ShipLoadout.empty('SideWinder');
+    assert.throws(() => noFsd.maxJumpRange(), /no frame shift drive/);
+    assert.throws(
+        () => noFsd.jumpRangeSummary(),
         (error: Error) => {
             assert.equal(error.name, 'TypeError');
             assert.match(error.message, /FrameShiftDrive.*no frame shift drive is fitted/);
             return true;
         },
-    );
-
-    const unknownTank: LoadoutEvent = {
-        Ship: 'sidewinder',
-        UnladenMass: 50,
-        Modules: [{ Slot: 'FuelTank', Item: 'Unknown_Fuel_Tank' }],
-    };
-    assert.throws(
-        () => ShipLoadout.fromLoadout(unknownTank).jumpRangeSummary(),
-        /cannot determine maximum load/,
     );
 });
 
@@ -1291,21 +1305,8 @@ test('standard load results expose the jump summary load conditions', () => {
     );
 });
 
-test('standard maximum load reports every dependency needed by jump calculations', () => {
+test('standard maximum load reports invalid jump inputs', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
-    const unresolvedBooster = ShipLoadout.fromLoadout({
-        ...source,
-        Modules: [
-            ...source.Modules.filter((module) => module.Slot !== 'Slot01_Size2'),
-            { Slot: 'Slot01_Size2', Item: 'Int_GuardianFSDBooster_Future' },
-        ],
-    });
-    assert.throws(() => unresolvedBooster.frameShiftDrive, /has no jumpBoost/);
-    const unresolved = unresolvedBooster.standardLoadResult('maximum');
-    assert.equal(unresolved.complete, false);
-    assert.match(unresolved.issues[0]!.message, /has no jumpBoost/);
-    assert.equal(unresolved.issues[0]!.params?.field, 'frameShiftDrive');
-
     const noFuel = ShipLoadout.fromLoadout({
         ...source,
         FuelCapacity: { Main: 0, Reserve: 0 },
@@ -1332,47 +1333,22 @@ test('standard maximum load reports every dependency needed by jump calculations
     assert.equal(invalid.complete, false);
     assert.equal(invalid.issues[0]?.field, 'frameShiftDrive');
     assert.match(invalid.issues[0]!.message, /fuel must be a finite non-negative number/);
+
+    // A drive whose supplied record has no jump constants reports that, rather than the
+    // "no frame shift drive is fitted" message a build without one gets.
+    const noConstants = { ...mod('Int_Hyperdrive_Size2_Class1') };
+    delete noConstants.fuelMul;
+    const unusable = ShipLoadout.default('SideWinder')
+        .setModule('FrameShiftDrive', noConstants)
+        .standardLoadResult('maximum');
+    assert.equal(unusable.issues[0]?.field, 'frameShiftDrive');
+    assert.match(unusable.issues[0]!.message, /has no jump constants/);
 });
 
-test('standard load results report missing capacities and drive constants', () => {
-    const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
-    const build = ShipLoadout.fromLoadout({
-        Ship: source.Ship,
-        UnladenMass: source.UnladenMass!,
-        CargoCapacity: source.CargoCapacity!,
-        Modules: source.Modules.map((module) =>
-            module.Slot === 'FuelTank'
-                ? { ...module, Item: 'Future_Fuel_Tank' }
-                : module.Slot === 'FrameShiftDrive'
-                  ? { ...module, Item: 'Future_Frame_Shift_Drive' }
-                  : module,
-        ),
-    });
-
-    assert.deepEqual(
-        build.standardLoadResult('maximum').issues.map((issue) => issue.field),
-        ['fuelCapacity', 'frameShiftDrive'],
-    );
-    assert.deepEqual(
-        build.standardLoadResult('laden').issues.map((issue) => issue.field),
-        ['fuelCapacity'],
-    );
-    assert.equal(build.standardLoadResult('unladen').complete, false);
-});
-
-test('a fitted drive with no stats-catalogue constants throws a distinct error', () => {
-    const unknownFsd: LoadoutEvent = {
-        Ship: 'sidewinder',
-        UnladenMass: 50,
-        Modules: [{ Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size99_class9_madeup' }],
-    };
-    assert.throws(() => ShipLoadout.fromLoadout(unknownFsd).frameShiftDrive, /no jump constants/);
-});
-
-test('the power plant and fuel tank are found by `slot`, with the symbol as fallback', () => {
-    // The readers outside the fit check. Each believes a record that names a mount and
-    // consults the symbol only when none does. Both halves need a hand-made record to
-    // show: a catalogue record carries both signals, so it cannot tell the rules apart.
+test('the power plant and fuel tank are found by their declared slots', () => {
+    // The readers outside the fit check believe a record that names a mount, whatever
+    // family its symbol suggests. It takes a hand-made record to show: a catalogue
+    // record carries both signals, so it cannot tell the rules apart.
     const plant = getModuleBySymbol('Int_PowerPlant_Size6_Class5', CORE_MODULES)!;
     assert.ok(
         ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available > 0,
@@ -1383,31 +1359,19 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
     const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
     assert.equal(miswired.powerBudget().available, 0);
 
-    // The fallback: an `Item` no catalogue carries names no mount, so the symbol
-    // identifies its family and its own engineering supplies the capacity.
-    const unknownModule = ShipLoadout.fromLoadout({
-        Ship: 'anaconda',
-        UnladenMass: 400,
-        Modules: [
-            {
-                Slot: 'PowerPlant',
-                Item: 'int_powerplant_size9_class9_madeup',
-                On: true,
-                Engineering: { Modifiers: [{ Label: 'PowerCapacity', Value: 30 }] },
-            },
-        ],
-    } as unknown as LoadoutEvent);
-    assert.equal(unknownModule.powerBudget().available, 30);
-
     // Fuel capacity reads the same way: a cargo rack that declares the fuel-tank mount
     // is taken at its word and counted as a tank. Because it carries no fuel-capacity
     // stat, the result becomes unknown rather than pretending the tank holds zero.
     const rack = getModuleBySymbol('Int_CargoRack_Size5_Class1', ALL_MODULES)!;
+    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
     const imported = ShipLoadout.fromLoadout({
-        Ship: 'anaconda',
+        ...source,
         UnladenMass: 400,
         FuelCapacity: { Main: 999, Reserve: 1.07 },
-        Modules: [{ Slot: 'Slot05_Size5', Item: rack.symbol, On: true }],
+        Modules: [
+            ...source.Modules.filter((module) => module.Slot !== 'Slot05_Size5'),
+            { Slot: 'Slot05_Size5', Item: rack.symbol, On: true },
+        ],
     } as LoadoutEvent);
     assert.equal(imported.fuelCapacity!.main, 999);
     imported.setModule('Slot05_Size5', { ...rack, slot: 'fuelTank' } as OutfittingModule);
@@ -1469,21 +1433,33 @@ test('a build missing UnladenMass throws on a mass-dependent calculation', () =>
     assert.ok(ShipLoadout.fromLoadout(noMass).unladenMass! > 0);
 });
 
-test('fallback mass resolves bulkheads and rejects unknown module masses', () => {
+test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules', () => {
     const reactive: LoadoutEvent = {
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
     assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 460);
 
+    // An unresolved optional internal is stripped, so the hull and what remains still
+    // add up rather than the whole figure going unknown.
     const unresolved: LoadoutEvent = {
         Ship: 'anaconda',
         Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
     };
     const unresolvedBuild = ShipLoadout.fromLoadout(unresolved);
-    assert.equal(unresolvedBuild.unladenMass, null);
+    assert.equal(unresolvedBuild.unladenMass, 400);
 
-    const diagnosable = ShipLoadout.fromLoadout({
+    // An unresolved fixed mount is stocked instead, and the stock article's mass counts.
+    const unresolvedCore = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [{ Slot: 'PowerPlant', Item: 'int_future_module_without_stats' }],
+    });
+    assert.equal(unresolvedCore.unladenMass, 560);
+    // Mounts the capture never named stay empty rather than being invented.
+    assert.equal(unresolvedCore.fittedModuleAt('MainEngines'), null);
+    assert.equal(unresolvedCore.validation.complete, false);
+
+    const stripped = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',
         FuelCapacity: { Main: 2, Reserve: 0.3 },
         Modules: [
@@ -1491,10 +1467,7 @@ test('fallback mass resolves bulkheads and rejects unknown module masses', () =>
             { Slot: 'Slot01_Size2', Item: 'int_future_module_without_stats' },
         ],
     });
-    assert.throws(
-        () => diagnosable.maxJumpRange(),
-        /Slot01_Size2: int_future_module_without_stats has no known mass/,
-    );
+    assert.equal(stripped.fittedModuleAt('Slot01_Size2'), null);
 });
 
 // ── Build editor ────────────────────────────────────────────────────────────
@@ -1514,10 +1487,7 @@ test("empty starts a hull with only its built-in hatch and the hull's declared s
             .filter((slot) => slot.kind !== 'cargoHatch')
             .every((slot) => slot.module === null),
     );
-    assert.deepEqual(
-        conda.powerBudget(),
-        ShipLoadout.fromLoadout({ Ship: 'Anaconda', Modules: [] }).powerBudget(),
-    );
+    assert.equal(conda.powerBudget().available, 0);
 });
 
 test('empty rejects a hull with no known layout', () => {
@@ -4374,21 +4344,6 @@ test('a fitted module reports its stats before and after engineering', () => {
     assert.equal(after.effectiveStats!.symbol, after.stats!.symbol);
 });
 
-test('modules the catalogues do not carry report no stats and unknown power draws', () => {
-    const expected = metrics.unknownPowerDraw;
-    const build = ShipLoadout.fromLoadout(expected.loadout);
-    const unknown = build.fittedModuleAt('Slot01_Size7')!;
-    assert.equal(unknown.stats, null);
-    assert.equal(unknown.effectiveStats, null);
-
-    const budget = build.powerBudget();
-    assert.equal(budget.available, expected.available);
-    assert.equal(budget.retracted, expected.retracted);
-    assert.equal(budget.deployed, expected.deployed);
-    assert.deepEqual(budget.unknownDraws, expected.unknownDraws);
-    assert.deepEqual(budget.consumers, expected.consumers);
-});
-
 test('a fitted zero-mass module contributes zero to unladen mass', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
@@ -4417,61 +4372,29 @@ test('always-powered utility modules draw with the hardpoints stowed', () => {
     assert.ok(near(budget.deployed, hatch + booster.powerDraw! + scanner.powerDraw!));
 });
 
-test('power budgets expose every known, unknown and disabled fitted consumer', () => {
+test('power budgets expose known and disabled fitted consumers', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const build = ShipLoadout.fromLoadout({
         ...source,
         Modules: [
             ...source.Modules.map((module) =>
                 module.Slot === 'SmallHardpoint1'
-                    ? {
-                          ...module,
-                          Item: 'Unresolved_Test_Module',
-                          On: true,
-                          Priority: 4,
-                          Engineering: {
-                              BlueprintName: 'Unknown',
-                              Level: 1,
-                              Quality: 1,
-                              Modifiers: [{ Label: 'PowerDraw', Value: 1.5 }],
-                          },
-                      }
+                    ? { ...module, On: true, Priority: 4 }
                     : module.Slot === 'SmallHardpoint2'
                       ? { ...module, On: false, Priority: 2 }
                       : module,
             ),
-            {
-                Slot: 'TinyHardpoint1',
-                Item: 'Unresolved_Test_Utility',
-                On: true,
-                Engineering: {
-                    BlueprintName: 'Unknown',
-                    Level: 1,
-                    Quality: 1,
-                    Modifiers: [{ Label: 'PowerDraw', Value: 0.75 }],
-                },
-            },
         ],
     });
     const budget = build.powerBudget();
-    const unresolved = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint1');
+    const enabled = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint1');
     const disabled = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint2');
-    const utility = budget.consumers.find((consumer) => consumer.label === 'TinyHardpoint1');
 
-    assert.deepEqual(unresolved, {
-        label: 'SmallHardpoint1',
-        symbol: 'Unresolved_Test_Module',
-        draw: 1.5,
-        enabled: true,
-        priority: 5,
-        deployedOnly: true,
-    });
-    assert.equal(budget.bands[4]?.deployed, 1.5);
+    assert.equal(enabled?.enabled, true);
+    assert.equal(enabled?.priority, 5);
+    assert.equal(enabled?.deployedOnly, true);
     assert.equal(disabled?.enabled, false);
     assert.equal(disabled?.priority, 3);
-    assert.equal(utility?.draw, 0.75);
-    assert.equal(utility?.deployedOnly, null);
-    assert.equal(budget.unknownDraws.length, 0);
 });
 
 test("a build whose hull is beyond the generator's maximum mass has no shields", () => {
@@ -4904,19 +4827,19 @@ test('setExperimentalEffect returns structured refusals without changing the mod
         assert.deepEqual(engineered.fittedModuleAt('FrameShiftDrive')!.raw, before);
     }
 
-    const unknown = ShipLoadout.fromLoadout({
+    // A cosmetic entry survives import as the capture stated it and has no catalogue
+    // record, so it is the one fitted module engineering cannot reason about.
+    const noRecord = ShipLoadout.fromLoadout({
         Ship: 'Anaconda',
-        Modules: [
-            {
-                Slot: 'FrameShiftDrive',
-                Item: 'FutureDrive',
-                Engineering: { BlueprintName: 'FutureBlueprint', Level: 5, Quality: 0.5 },
-            },
-        ],
+        Modules: [{ Slot: 'PaintJob', Item: 'paintjob_anaconda_future' }],
     });
-    const unknownResult = unknown.setExperimentalEffect('FrameShiftDrive', null);
-    assert.equal(unknownResult.kind, 'unsupported');
-    assert.equal(unknownResult.code, 'unknownModule');
+    for (const result of [
+        noRecord.setExperimentalEffect('PaintJob', null),
+        noRecord.completeEngineeringGrade('PaintJob'),
+    ]) {
+        assert.equal(result.kind, 'unsupported');
+        assert.equal(result.code, 'unsupportedEngineering');
+    }
 
     const unsupported = ShipLoadout.fromLoadout({
         Ship: 'Anaconda',
@@ -5128,23 +5051,6 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
             symbol: 'Int_Hyperdrive_Size6_Class1',
         },
     });
-
-    const unknown = ShipLoadout.fromLoadout({
-        Ship: 'Anaconda',
-        Modules: [
-            {
-                Slot: 'FrameShiftDrive',
-                Item: 'FutureDrive',
-                Engineering: { BlueprintName: 'FutureBlueprint', Level: 5, Quality: 0.5 },
-            },
-        ],
-    });
-    const unknownBefore = unknown.fittedModuleAt('FrameShiftDrive')!.raw;
-    const unknownResult = unknown.completeEngineeringGrade('FrameShiftDrive');
-    assert.equal(unknownResult.kind, 'unsupported');
-    assert.equal(unknownResult.code, 'unknownModule');
-    assert.ok(Object.isFrozen(unknownResult.params));
-    assert.deepEqual(unknown.fittedModuleAt('FrameShiftDrive')!.raw, unknownBefore);
 
     const unsupported = ShipLoadout.fromLoadout({
         Ship: 'Anaconda',
@@ -6077,11 +5983,6 @@ const HEAT_BUILDS: Record<string, LoadoutEvent> = {
     'journal-anaconda-slapaconda.jsonc': slapacondaJournal as LoadoutEvent,
 };
 
-/** The heat fixture rounds to 12 dp; `1e-9` catches any real change in the maths. */
-const close = (actual: number, expected: number, what: string): void => {
-    assert.ok(Math.abs(actual - expected) < 1e-9, `${what}: got ${actual}, expected ${expected}`);
-};
-
 const HEAT_SCENARIOS = [
     'idle',
     'thrusters',
@@ -6187,51 +6088,6 @@ test('heat classifies caller-supplied core records from their fitted slots', () 
     assert.equal(input?.fsdHeatRate, 3);
 });
 
-test('an unknown draw can make the projection overstate heat, not only understate it', () => {
-    // An unknown draw is left out of its priority group's total, so the groups below it
-    // read as powered. These two builds differ only in whether the size-7 module
-    // resolves: unresolved, the thrusters read as fed and their heat is counted;
-    // resolved, the same 4.9 MW pushes group 2 past the plant and sheds them. The
-    // projection therefore reports heat the real build would not make — which is why
-    // `unknownDraws` promises no bound in either direction.
-    const expected = heatFixture.unknownDraws.projection;
-    const heatWith = (item: string): HeatMetrics => {
-        const build = ShipLoadout.fromLoadout({
-            Ship: expected.ship,
-            Modules: [
-                { Slot: 'PowerPlant', Item: expected.powerPlant, On: true, Priority: 0 },
-                { Slot: 'Slot01_Size7', Item: item, On: true, Priority: 0 },
-                {
-                    Slot: 'MainEngines',
-                    Item: expected.thrusters,
-                    On: true,
-                    Priority: expected.thrusterPriority,
-                },
-            ],
-        } as unknown as LoadoutEvent);
-        const heat = build.heatMetrics();
-        assert.ok(heat, item);
-        return heat;
-    };
-
-    const unresolved = heatWith(expected.unresolvedItem);
-    assert.deepEqual(unresolved.unknownDraws, ['Slot01_Size7']);
-    close(unresolved.idle.thermalLoad, expected.unresolved.idleThermalLoad, 'unresolved idle');
-    close(
-        unresolved.thrusters.thermalLoad,
-        expected.unresolved.thrustersThermalLoad,
-        'unresolved thrusters',
-    );
-
-    const resolved = heatWith(expected.resolvedItem);
-    assert.deepEqual(resolved.unknownDraws, []);
-    close(resolved.idle.thermalLoad, expected.resolved.idleThermalLoad, 'resolved idle');
-    close(resolved.thrusters.thermalLoad, expected.resolved.thrustersThermalLoad, 'resolved');
-    // The resolved build runs its thrusters unpowered: they add nothing over idle.
-    assert.equal(resolved.thrusters.thermalLoad, resolved.idle.thermalLoad);
-    assert.ok(unresolved.thrusters.thermalLoad > resolved.thrusters.thermalLoad);
-});
-
 test('the Lynx uses its pinned maximum dissipation in build heat metrics', () => {
     const build = ShipLoadout.fromLoadout(lynxJournal as LoadoutEvent);
     const expected = heatFixture.hulls.lynx;
@@ -6306,45 +6162,4 @@ test('a build the plant cannot feed at all generates no heat anywhere', () => {
         assert.equal(heat[scenario].overheats, expected.overheats, scenario);
         assert.equal(heat[scenario].heatLevel, expected.heatLevel, scenario);
     }
-});
-
-test('heat names the unresolved modules its figures are only a projection over', () => {
-    const expected = heatFixture.unknownDraws;
-    const heat = ShipLoadout.fromLoadout(metrics.unknownPowerDraw.loadout).heatMetrics();
-    assert.ok(heat);
-    assert.deepEqual(heat.unknownDraws, expected.labels);
-    assert.deepEqual(
-        heat.unknownDraws,
-        metrics.unknownPowerDraw.unknownDraws.map((consumer) => consumer.label),
-        'the same modules the power budget names',
-    );
-    // The figures themselves are still answered — a projection, not a refusal — and the
-    // list is what tells a caller not to read `overheats: false` as an all-clear.
-    assert.equal(heat.idle.thermalLoad, expected.idleThermalLoad);
-    assert.equal(heat.firingDrained.overheats, expected.overheats);
-    // A build with nothing unresolved says so with an empty list.
-    assert.deepEqual(
-        ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent).heatMetrics()!.unknownDraws,
-        [],
-    );
-});
-
-test('heat names powered unresolved hardpoints whose weapon heat is omitted', () => {
-    const expected = heatFixture.unknownWeaponHeat;
-    const build = ShipLoadout.fromLoadout(expected.loadout);
-    const heat = build.heatMetrics();
-    assert.ok(heat);
-    assert.deepEqual(heat.unknownWeaponHeat, expected.labels);
-    assert.deepEqual(heat.unknownDraws, [], 'the journal supplies this module power draw');
-    assert.equal(heat.firingSustained.thermalLoad, expected.projectedFiringThermalLoad);
-    assert.equal(heat.firingDrained.thermalLoad, expected.projectedFiringThermalLoad);
-
-    const disabled = ShipLoadout.fromLoadout({
-        ...expected.loadout,
-        Modules: expected.loadout.Modules.map((module) =>
-            module.Slot === expected.labels[0] ? { ...module, On: false } : module,
-        ),
-    }).heatMetrics();
-    assert.ok(disabled);
-    assert.deepEqual(disabled.unknownWeaponHeat, []);
 });

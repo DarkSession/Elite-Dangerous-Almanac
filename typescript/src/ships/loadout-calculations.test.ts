@@ -42,7 +42,7 @@ test('calculation issues abbreviate caller-supplied slot and module symbols', ()
     assert.match(result.issues[0]!.message, /….*…/);
 });
 
-test('mass reports every unknown module instead of returning a partial sum', () => {
+test('mass reports every unresolved contribution instead of returning a partial sum', () => {
     const result = calculateUnladenMass(10, [
         known,
         { slot: 'Slot01_Size4', symbol: 'UnknownModule', mass: null },

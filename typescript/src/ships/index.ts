@@ -302,6 +302,7 @@ export {
     type ExperimentalEffectUnsupported,
     type ExperimentalEffectUpdated,
     type LoadoutExportOptions,
+    type LoadoutImportOutcome,
     type SlefExportOptions,
 } from './ship-loadout.js';
 export type { FittedModule } from './fitted-module.js';

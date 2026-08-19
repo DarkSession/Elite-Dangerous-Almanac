@@ -24,7 +24,6 @@ export type LoadoutIssueCode =
     | 'duplicateSlot'
     | 'unknownSlot'
     | 'missingRequiredSlot'
-    | 'unknownModule'
     | 'incompatibleModule'
     | 'duplicateExclusiveModule'
     | 'moduleLimitExceeded';
@@ -58,7 +57,7 @@ export type LoadoutIssueParams = Readonly<Record<string, LoadoutIssueParam>>;
 export interface LoadoutIssue {
     /** Machine-readable reason. */
     readonly code: LoadoutIssueCode;
-    /** Invalid input is an error; missing catalogue/build data makes the build incomplete. */
+    /** Invalid input is an error; a missing required module makes the build incomplete. */
     readonly severity: 'error' | 'incomplete';
     /** Slot involved, in the build's own spelling when possible. */
     readonly slot?: string;
@@ -74,7 +73,7 @@ export interface LoadoutIssue {
 export interface LoadoutValidation {
     /** No structurally invalid slots, duplicate keys, or incompatible modules. */
     readonly valid: boolean;
-    /** Valid, operational core slots filled, and every fitted module classified. */
+    /** Valid, with armour and every operational core mount filled. */
     readonly complete: boolean;
     /** All validation diagnostics. */
     readonly issues: readonly LoadoutIssue[];
@@ -86,8 +85,6 @@ export interface ValidationModule {
     readonly slot: string;
     /** Module symbol. */
     readonly symbol: string;
-    /** Whether the caller's module catalogue resolved the symbol. */
-    readonly known: boolean;
     /** Whether this entry must name one of the hull's outfitting slots. */
     readonly requiresKnownSlot?: boolean;
     /** Why the resolved module does not fit, or `null` when it fits. */
@@ -221,16 +218,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
     }
 
     for (const module of input.modules) {
-        if (!module.known) {
-            issues.push({
-                code: 'unknownModule',
-                severity: 'incomplete',
-                slot: module.slot,
-                symbol: module.symbol,
-                message: `${truncate(module.slot)}: ${truncate(module.symbol)} is not in the module catalogue`,
-                params: { slot: module.slot, symbol: module.symbol },
-            });
-        } else if (module.fitError !== null) {
+        if (module.fitError !== null) {
             issues.push({
                 code: 'incompatibleModule',
                 severity: 'error',

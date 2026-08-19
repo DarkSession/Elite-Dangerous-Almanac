@@ -3,7 +3,7 @@
  *
  * Expected ShipLoadout jump/fuel outputs, FSD mass factor and tank jump count. The flat keys below cover
  * fixtures/ships/slef-the-deep-black.jsonc and match EDSY's own MaxJumpRange;
- * `explicitFuelWithoutKnownTank` pins the partial-load total when the fitted tank's capacity is unknown;
+ * `explicitFuel` pins a partial-load total;
  * `builds` adds further hulls, each naming the artifact it reads and the figure its source asserts.
  * Cross-language validation target.
  */
@@ -30,13 +30,23 @@
   "totalRange": 1625.166,
   "totalJumps": 19,
   "fuelPerJump50Ly": 1.9474,
-  "explicitFuelWithoutKnownTank": {
+  "explicitFuel": {
     "loadout": {
       "Ship": "SideWinder",
       "UnladenMass": 26,
       "Modules": [
+        { "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" },
+        { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
+        { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class1" },
         { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class2" },
-        { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+        { "Slot": "LifeSupport", "Item": "Int_LifeSupport_Size1_Class1" },
+        {
+          "Slot": "PowerDistributor",
+          "Item": "Int_PowerDistributor_Size1_Class1"
+        },
+        { "Slot": "Radar", "Item": "Int_Sensors_Size1_Class1" },
+        { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" },
+        { "Slot": "CargoHatch", "Item": "ModularCargoBayDoor" }
       ]
     },
     "options": { "fuel": 2 },

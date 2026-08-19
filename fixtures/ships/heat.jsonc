@@ -12,9 +12,7 @@
  * one is worked out from the stated formula rather than captured, and the round figures
  * are chosen so the arithmetic can be followed by hand. `builds` pins whole-build output
  * for the named journal captures, hull and module stats included, so a port reproduces
- * the whole pipeline and not just the maths. `unknownWeaponHeat` pins the diagnostic for
- * a powered hardpoint whose catalogue record cannot be resolved. Cross-language
- * validation target.
+ * the whole pipeline and not just the maths. Cross-language validation target.
  *
  * Heat levels are model units, where 1 is the level at which a hull's dissipation stops
  * rising and 1.5 is what the cockpit gauge shows as 100%; `gauge` is that same level as
@@ -187,59 +185,6 @@
     "thermalLoad": 0,
     "heatLevel": 0,
     "overheats": false
-  },
-
-  // A module the catalogue cannot resolve is named rather than the profile being
-  // withheld, and what is reported is a projection over the modules that did resolve —
-  // not a bound in either direction. The unresolved module's own heat is missing, which
-  // reads low; and because an unknown draw is left out of the priority-group totals, the
-  // groups below it read as powered when the real plant might shed them, which reads
-  // high. `projection` pins that second direction: two builds differing only in whether
-  // the size-7 module resolves, where the unresolved one reports thruster heat that the
-  // resolved one — whose 4.9 MW pushes group 2 past the 12 MW plant — does not.
-  "unknownDraws": {
-    "fixture": "build-metrics.jsonc unknownPowerDraw",
-    "labels": ["Slot01_Size7", "HugeHardpoint1", "TinyHardpoint1", "Slot03_Size6"],
-    "idleThermalLoad": 0.24,
-    "overheats": false,
-    "projection": {
-      "ship": "Anaconda",
-      "powerPlant": "Int_Powerplant_Size3_Class5",
-      "thrusters": "Int_Engine_Size7_Class5",
-      "thrusterPriority": 1,
-      "unresolvedItem": "Int_FutureModule",
-      "resolvedItem": "Int_ShieldGenerator_Size7_Class5",
-      "unresolved": { "idleThermalLoad": 3.888, "thrustersThermalLoad": 5.188 },
-      "resolved": { "idleThermalLoad": 2.2, "thrustersThermalLoad": 2.2 }
-    }
-  },
-
-  "unknownWeaponHeat": {
-    "loadout": {
-      "Ship": "SideWinder",
-      "Modules": [
-        {
-          "Slot": "PowerPlant",
-          "Item": "Int_Powerplant_Size2_Class1"
-        },
-        {
-          "Slot": "SmallHardpoint1",
-          "Item": "Unresolved_Test_Weapon",
-          "Engineering": {
-            "BlueprintName": "Unknown",
-            "Level": 1,
-            "Quality": 1,
-            "Modifiers": [
-              { "Label": "PowerDraw", "Value": 0.2 },
-              { "Label": "ThermalLoad", "Value": 20 },
-              { "Label": "DistributorDraw", "Value": 2 }
-            ]
-          }
-        }
-      ]
-    },
-    "labels": ["SmallHardpoint1"],
-    "projectedFiringThermalLoad": 0.8
   },
 
   "hulls": {

@@ -45,11 +45,8 @@ const EPSILON = 1e-9;
 
 /** One fitted module's claim on the power plant. */
 export interface PowerConsumer {
-    /**
-     * Power draw, in megawatts, post-engineering. Required and finite non-negative
-     * unless {@link drawUnknown} is `true`; ignored when the draw is unknown.
-     */
-    readonly draw?: number;
+    /** Power draw, in megawatts, post-engineering. Must be finite and non-negative. */
+    readonly draw: number;
     /**
      * Priority group, `1`–`5`, as the outfitting panel numbers them. Defaults to `1`.
      *
@@ -63,24 +60,10 @@ export interface PowerConsumer {
     /**
      * `true` for a module that only draws while the hardpoints are deployed — every
      * weapon, and the utility fittings that are not
-     * {@link OutfittingModule.alwaysPowered | always powered}. An omitted value defaults
-     * to `false` for a known draw and normalizes to `null` when {@link drawUnknown} is
-     * `true`. An explicit `null` preserves an unavailable classification; known totals
-     * conservatively count that draw in both retracted and deployed states. An unknown
-     * draw is excluded from every total regardless.
+     * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false`.
      */
-    readonly deployedOnly?: boolean | null;
-    /**
-     * `true` when the module's power draw cannot be determined. Its
-     * {@link PowerConsumer.draw | draw} is ignored and the consumer is named in
-     * {@link PowerBudget.unknownDraws} instead of being counted as `0`.
-     */
-    readonly drawUnknown?: boolean;
-    /**
-     * Optional label for the module — the journal slot key when
-     * {@link ShipLoadout.powerBudget} builds the consumer. Ignored by the maths, but it
-     * is how a consumer reported in {@link PowerBudget.unknownDraws} names itself.
-     */
+    readonly deployedOnly?: boolean;
+    /** Optional label for the module, ignored by the maths. */
     readonly label?: string;
     /** Optional module symbol retained in {@link PowerBudget.consumers}. */
     readonly symbol?: string;
@@ -92,14 +75,14 @@ export interface PowerConsumerResult {
     readonly label?: string;
     /** Module symbol when the caller supplied one. */
     readonly symbol?: string;
-    /** Post-engineering draw in megawatts, or `null` when unavailable. */
-    readonly draw: number | null;
-    /** Whether the module is switched on. Only known enabled draws contribute to totals. */
+    /** Post-engineering draw in megawatts. */
+    readonly draw: number;
+    /** Whether the module is switched on. Only enabled draws contribute to totals. */
     readonly enabled: boolean;
     /** Effective outfitting-panel priority group, `1`–`5`. */
     readonly priority: number;
-    /** Whether it draws only with hardpoints deployed, or `null` when unavailable. */
-    readonly deployedOnly: boolean | null;
+    /** Whether it draws only with hardpoints deployed. */
+    readonly deployedOnly: boolean;
 }
 
 /** One priority group's share of the power budget. */
@@ -147,31 +130,11 @@ export interface PowerBudget {
      */
     readonly bands: readonly PowerBand[];
     /**
-     * Every supplied consumer in source order, including switched-off and unresolved
-     * entries. Known enabled entries reconcile with the band and aggregate totals.
-     * {@link ShipLoadout.powerBudget} supplies only modules with a positive or unknown
-     * draw; passive and zero-draw fittings are absent.
+     * Every supplied consumer in source order, including switched-off entries. Enabled
+     * entries reconcile with the band and aggregate totals. {@link ShipLoadout.powerBudget}
+     * supplies only modules with a positive draw; passive and zero-draw fittings are absent.
      */
     readonly consumers: readonly PowerConsumerResult[];
-    /**
-     * The **enabled** consumers whose draw is unknown ({@link PowerConsumer.drawUnknown}),
-     * handed straight back so a caller can name them — by
-     * {@link PowerConsumer.label | label}, which is the journal slot key when
-     * {@link ShipLoadout.powerBudget} built the list, or by identity for a
-     * hand-assembled one. A switched-off module is skipped before the flag is read, so
-     * it never appears here. Normally empty.
-     *
-     * Entries retain the caller's original fields; unlike {@link consumers}, their
-     * priority and optional flags are not normalized.
-     *
-     * **While it is not empty, every other figure here is a lower bound.** The unknown
-     * draws contribute nothing to `retracted`, `deployed` or the bands, so `headroom`
-     * and `utilisation` read too favourably and `withinBudget` and `poweredDeployed`
-     * answer only for the draws that are known. The budget is still reported rather
-     * than refused — the per-band detail is worth having, and one unknown module is not
-     * a reason to withhold the other twenty — but a caller showing it should say so.
-     */
-    readonly unknownDraws: readonly PowerConsumer[];
 }
 
 /** Clamp a priority into `1`–`5`, defaulting an absent one to `1`. */
@@ -190,15 +153,12 @@ function bandIndex(priority: number | undefined): number {
  * skipped from totals; the rest fall into their {@link PowerConsumer.priority | priority}
  * group. {@link ShipLoadout.powerBudget} omits passive and zero-draw fittings.
  * @returns The {@link PowerBudget}.
- * @throws {RangeError} If `available` or any known consumer's `draw` is not a finite
- * non-negative number. A consumer marked `drawUnknown` ignores its placeholder draw.
+ * @throws {RangeError} If `available` or any consumer's `draw` is not a finite
+ * non-negative number.
  * @remarks
  * A group that draws *exactly* the power available stays online, matching the game —
  * only going over shuts anything down.
  *
- * A consumer flagged {@link PowerConsumer.drawUnknown} is left out of every total and
- * listed in {@link PowerBudget.unknownDraws}, which makes the rest of the answer a
- * lower bound rather than silently adding the module up as drawing nothing.
  * @example
  * ```ts
  * import { powerBudget } from '@elite-dangerous-almanac/core/ships/power';
@@ -219,37 +179,23 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
 
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
-    const unknownDraws: PowerConsumer[] = [];
     for (const consumer of consumers) {
-        if (
-            !consumer.drawUnknown &&
-            (consumer.draw === undefined || !Number.isFinite(consumer.draw) || consumer.draw < 0)
-        ) {
+        if (!Number.isFinite(consumer.draw) || consumer.draw < 0) {
             throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
         }
     }
     const consumerResults: PowerConsumerResult[] = consumers.map((consumer) => ({
         ...(consumer.label === undefined ? {} : { label: consumer.label }),
         ...(consumer.symbol === undefined ? {} : { symbol: consumer.symbol }),
-        draw: consumer.drawUnknown ? null : consumer.draw!,
+        draw: consumer.draw,
         enabled: consumer.enabled !== false,
         priority: bandIndex(consumer.priority) + 1,
-        deployedOnly:
-            consumer.deployedOnly === null ||
-            (consumer.deployedOnly === undefined && consumer.drawUnknown)
-                ? null
-                : (consumer.deployedOnly ?? false),
+        deployedOnly: consumer.deployedOnly ?? false,
     }));
 
     for (const consumer of consumers) {
         if (consumer.enabled === false) continue;
-        if (consumer.drawUnknown) {
-            // Counting an unknown draw as 0 would report headroom the build may not
-            // have; it is reported instead, and left out of every total.
-            unknownDraws.push(consumer);
-            continue;
-        }
-        const draw = consumer.draw!;
+        const draw = consumer.draw;
         if (draw === 0) continue;
         const index = bandIndex(consumer.priority);
         if (consumer.deployedOnly) deployedByBand[index]! += draw;
@@ -286,6 +232,5 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
         withinBudget: deployedTotal <= available + EPSILON,
         bands,
         consumers: consumerResults,
-        unknownDraws,
     };
 }

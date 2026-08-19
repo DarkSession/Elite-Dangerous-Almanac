@@ -13,8 +13,8 @@
  *
  * Instances are **mutable**: `setModule`/`removeModule` change the build in place and
  * return `this` for chaining. Values a SLEF export already computed (its
- * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim; for a build assembled from
- * scratch those figures are computed from the fitted modules and the hull's stats.
+ * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim while the fit they describe
+ * survives import; otherwise they are computed from the fitted modules and the hull.
  * Editing an imported build adjusts the supplied aggregate figures by the changed
  * module's contribution; when that contribution is unknown, the affected figure is
  * discarded and recomputed rather than allowed to go stale.
@@ -160,6 +160,8 @@ import type { FittedModule } from './fitted-module.js';
 export type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
+import type { LoadoutImportOutcome } from './loadout-import-outcome.js';
+export type { LoadoutImportOutcome } from './loadout-import-outcome.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
 import { fixedSlotReason } from './internal/loadout-slot-rules.js';
 import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
@@ -362,7 +364,6 @@ export interface ApplyBlueprintOptions {
 /** Stable reason {@link ShipLoadout.setExperimentalEffect} cannot perform an edit. */
 export type ExperimentalEffectMutationCode =
     | 'emptySlot'
-    | 'unknownModule'
     | 'notEngineered'
     | 'unknownExperimentalEffect'
     | 'unsupportedExperimentalEffect'
@@ -412,7 +413,6 @@ const experimentalEffectUnsupported = (
 /** Stable reason {@link ShipLoadout.completeEngineeringGrade} cannot normalize a grade. */
 export type EngineeringNormalizationCode =
     | 'emptySlot'
-    | 'unknownModule'
     | 'notEngineered'
     | 'invalidQuality'
     | 'unknownExperimentalEffect'
@@ -622,18 +622,21 @@ export interface LoadoutExportOptions {
      * `'source'` quotes the build's {@link ShipLoadout.sourcePurchase | source purchase
      * record} instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value`
      * figures exactly as the capture stated them, and nothing where it stated nothing.
-     * An unedited capture therefore re-exports its own credits unchanged.
+     * A capture whose every article resolves therefore re-exports its own credits
+     * unchanged until it is edited.
      *
-     * Each captured figure is pinned to what it was paid for, so an edit narrows the
-     * export rather than staling it. A slot whose module has been swapped is left
-     * unpriced, because the figure was paid for the article that *was* fitted; and
-     * `ModulesValue` and `Rebuy` are dropped once any priced module has been swapped or
-     * removed, since they then cover an article no longer aboard. Removing a module the
-     * capture listed but never priced is the one case this cannot detect: only the
-     * capture ever knew which unpriced modules its total counted. The built-in cargo hatch
-     * is never purchasable, so normalising an unpriced or zero-priced captured hatch does
-     * not invalidate the totals. A non-zero captured hatch value is treated like any
-     * other priced replaced article.
+     * Each captured figure is pinned to what it was paid for, so losing an article
+     * narrows the export rather than staling it — by an edit, or at import, where
+     * normalization discards or replaces a module the catalogue cannot resolve and
+     * {@link ShipLoadout.importOutcomes} names the slots. A slot whose module has been
+     * swapped is left unpriced, because the figure was paid for the article that *was*
+     * fitted; and `ModulesValue` and `Rebuy` are dropped once any priced module has been
+     * swapped or removed, since they then cover an article no longer aboard. Losing a
+     * module the capture listed but never priced — to a removal or a replacement — is the
+     * one case this cannot detect: only the capture ever knew which unpriced modules its
+     * total counted. The built-in cargo hatch is never purchasable, so normalising an
+     * unpriced or zero-priced captured hatch does not invalidate the totals. A non-zero
+     * captured hatch value is treated like any other priced replaced article.
      *
      * `HullValue` always stands: a captured hull figure names no slot, so no edit
      * narrows it. Note that on a game capture it counts the hull *with* its stock
@@ -658,8 +661,6 @@ export interface SlefExportOptions extends LoadoutExportOptions {
     readonly indent?: number;
 }
 
-const FSD_PREFIX = 'int_hyperdrive';
-const BOOSTER_PREFIX = 'int_guardianfsdbooster';
 const FUEL_TANK_PREFIX = 'int_fueltank';
 
 /**
@@ -668,15 +669,15 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * @remarks
  * Jump calculations resolve the frame shift drive's constants from the drive's module
  * record, applying any engineering the build carries (a Long Range blueprint's
- * `FSDOptimalMass`, for instance). For a SLEF build, mass comes from the export's
- * `UnladenMass`; for an assembled build it is the hull mass plus every fitted module's
+ * `FSDOptimalMass`, for instance). Mass comes from the export's `UnladenMass` where
+ * {@link unladenMass} takes it; otherwise it is the hull mass plus every fitted module's
  * mass (armour defaults to the zero-mass lightweight alloy).
  *
  * @example
  * Read a build a player already flies, and ask it what an outfitting screen shows.
  * Every figure below is one build's — a Krait Phantom explorer. Figures the capture
- * already stated — `unladenMass` here — are trusted verbatim; the rest are computed
- * from the fit.
+ * already stated — `unladenMass` here — are trusted verbatim while the fit they
+ * describe survives import; the rest are computed from the fit.
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -739,6 +740,7 @@ export class ShipLoadout {
     readonly #primitiveModifiers: Map<string, readonly EngineeringModifier[]>;
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
+    readonly #importOutcomes: readonly LoadoutImportOutcome[];
     /** Frozen slot views by filter; the two module mutation paths clear it. */
     readonly #slotCache = new Map<SlotKind | undefined, readonly LoadoutSlot[]>();
     /** The hull's expanded mounts, populated on first use. */
@@ -752,6 +754,7 @@ export class ShipLoadout {
         sourcePurchase: SourcePurchaseRecord | null = null,
         moduleStats = new Map<string, OutfittingModule>(),
         primitiveModifiers = new Map<string, readonly EngineeringModifier[]>(),
+        importOutcomes: readonly LoadoutImportOutcome[] = deepFreeze([]),
     ) {
         this.#ship = ship;
         this.#shipSymbol = shipSymbol;
@@ -760,6 +763,7 @@ export class ShipLoadout {
         this.#sourcePurchase = sourcePurchase;
         this.#moduleStats = moduleStats;
         this.#primitiveModifiers = primitiveModifiers;
+        this.#importOutcomes = importOutcomes;
     }
 
     /**
@@ -770,6 +774,8 @@ export class ShipLoadout {
      * @param index - Which entry to take when the export holds several builds.
      * Defaults to the first.
      * @returns The loadout for that entry.
+     * @remarks Module normalization follows {@link ShipLoadout.fromLoadout}; inspect
+     * {@link importOutcomes} for modules that were emptied or defaulted.
      * @throws {SyntaxError} If `input` is a string that is not valid JSON.
      * @throws {TypeError} If the export holds no usable loadout, `index` is out of range,
      * or the selected entry names a hull absent from the catalogue.
@@ -827,13 +833,34 @@ export class ShipLoadout {
      *
      * Modules are imported as one complete snapshot: their array order does not affect
      * per-ship count allowances, and any aggregate violation is reported by
-     * {@link validation}. Use this factory rather than replaying a complete loadout
-     * through the incremental {@link setModule} editor.
-     * A known hull's non-removable cargo hatch is restored from its default loadout when
-     * the capture omits it or supplies an unresolved item for that mount. Because that
-     * hatch has zero mass, capacity and price, restoration preserves the build's live
-     * aggregate mass, capacity and credit figures. Source-credit export retains its
-     * totals only when the captured hatch was unpriced or valued at zero.
+     * {@link validation}. An entry is kept as the event stated it when the catalogue
+     * identifies its `Item`, when its slot is a known cosmetic or hull-geometry key
+     * (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it is a
+     * `ModularCargoBayDoor*` article in the cargo-hatch mount — the catalogue carries
+     * that one built-in article once, for every hull family that names its own symbol.
+     *
+     * Everything else is normalized, and every change is recorded by
+     * {@link importOutcomes}. An unresolved module in a hardpoint, utility, optional
+     * internal or unrecognised slot is discarded. Armour, all seven core internals and
+     * the cargo hatch are fixed mounts: an unresolved module there is replaced with the
+     * hull's stock module, which keeps the source's `On`, `Priority` and `Health` and
+     * none of its engineering or captured value. A fixed mount the event names no module
+     * for is left empty, and {@link validation} reports an incomplete build where such a
+     * mount is required — the cargo hatch excepted, which is part of the hull rather than
+     * an outfitting choice and is restored from the hull's default loadout.
+     *
+     * Normalization makes the captured aggregates untrustworthy, so the event's figures
+     * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}
+     * are recomputed from the fit that remains, while {@link modulesValue} and
+     * {@link rebuy} read `null` — no catalogue records what the discarded module was
+     * bought for — and {@link sourcePurchase} still reports the captured figures. The
+     * cargo hatch is the exception, being weightless and free: restoring an absent one,
+     * or importing a hull-family hatch the catalogue resolves, leaves every figure
+     * standing. Replacing an *unresolved* hatch does not, and source-credit export then
+     * keeps its totals only when that hatch was unpriced or valued at zero.
+     *
+     * Use this factory rather than replaying a complete loadout through the incremental
+     * {@link setModule} editor.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
      * structure a build is assembled from, and the types of the fields naming things in
@@ -881,21 +908,7 @@ export class ShipLoadout {
 
     /** Assemble already-normalized state whose hull has been resolved. */
     static #fromImported(imported: ImportedLoadoutState, ship: Ship): ShipLoadout {
-        const defaultHatch = getDefaultLoadout(imported.shipSymbol)?.modules.find((module) =>
-            isCargoHatchSlot(module.slot),
-        );
-        const capturedHatchKey =
-            defaultHatch === undefined ? null : matchingKeyIn(imported.modules, defaultHatch.slot);
-        const capturedHatch =
-            capturedHatchKey === null ? undefined : imported.modules.get(capturedHatchKey);
-        if (defaultHatch && capturedHatch === undefined) {
-            const ownSlot = ownKeyIn(imported.modules, defaultHatch.slot);
-            imported.modules.set(ownSlot, {
-                Slot: ownSlot,
-                Item: defaultHatch.symbol,
-            });
-        }
-        const build = new ShipLoadout(
+        return new ShipLoadout(
             ship,
             imported.shipSymbol,
             imported.modules,
@@ -903,11 +916,8 @@ export class ShipLoadout {
             imported.sourcePurchase,
             imported.moduleStats,
             imported.primitiveModifiers,
+            imported.outcomes,
         );
-        if (capturedHatch !== undefined && !isBuiltInHullModule(capturedHatch)) {
-            build.repairFixedMount(capturedHatch.Slot);
-        }
-        return build;
     }
 
     /**
@@ -1015,9 +1025,13 @@ export class ShipLoadout {
      * known mass).
      *
      * @remarks
-     * A SLEF export's `UnladenMass` is trusted verbatim. Otherwise the mass is the
-     * hull's `hullMass` plus every fitted module's mass (post-engineering), with armour
-     * at the zero-mass lightweight default.
+     * A SLEF export's `UnladenMass` is trusted verbatim unless import normalization
+     * changed the fit it described — restoring an absent cargo hatch does not. Otherwise
+     * the mass is the hull's `hullMass` plus every fitted module's mass
+     * (post-engineering), with armour at the zero-mass lightweight default — the
+     * normalized fit's mass, then, not the capture's, and complete either way. An
+     * {@link importOutcomes} entry whose `sourceSymbol` is not `null` is the only report
+     * of that.
      */
     get unladenMass(): number | null {
         return this.unladenMassResult.value;
@@ -1045,15 +1059,16 @@ export class ShipLoadout {
 
     /**
      * Fuel-tank capacities, in tonnes, or `null` when a tank's capacity is unknown. A
-     * SLEF export's `FuelCapacity` is used when present;
-     * otherwise the main capacity is the sum of the fitted fuel tanks and the reserve
-     * comes from the hull's stats.
+     * SLEF export's `FuelCapacity` is used when present and import normalization left
+     * its fit alone, restoring an absent cargo hatch excepted; otherwise the main
+     * capacity is the sum of the fitted fuel tanks and the reserve comes from the hull's
+     * stats.
      */
     get fuelCapacity(): FuelCapacity | null {
         return this.fuelCapacityResult.value;
     }
 
-    /** Fuel capacity with diagnostics instead of unknown tanks collapsing to zero. */
+    /** Fuel capacity with diagnostics when a fitted tank has no capacity stat. */
     get fuelCapacityResult(): CalculationResult<FuelCapacity> {
         const cap = this.#top.FuelCapacity;
         if (cap?.Main !== undefined && cap.Reserve !== undefined) {
@@ -1070,15 +1085,16 @@ export class ShipLoadout {
     }
 
     /**
-     * Cargo capacity, in tonnes, or `null` when a fitted optional module cannot be
-     * classified. A SLEF export's `CargoCapacity` is used when present; otherwise it is
-     * the sum of the fitted cargo racks.
+     * Cargo capacity, in tonnes, or `null` when a fitted rack has no capacity stat. A
+     * SLEF export's `CargoCapacity` is used when present and import normalization left
+     * its fit alone, restoring an absent cargo hatch excepted; otherwise it is the sum of
+     * the fitted cargo racks.
      */
     get cargoCapacity(): number | null {
         return this.cargoCapacityResult.value;
     }
 
-    /** Cargo capacity with diagnostics instead of unknown racks collapsing to zero. */
+    /** Cargo capacity with diagnostics when a fitted rack has no capacity stat. */
     get cargoCapacityResult(): CalculationResult<number> {
         return this.#top.CargoCapacity === undefined
             ? this.#computedCargoCapacity()
@@ -1116,9 +1132,10 @@ export class ShipLoadout {
 
     /**
      * Fitted-modules cost in credits represented by the build, or `null` if
-     * unknown — including after an edit discarded an import's figure, since no catalogue
-     * records what a replaced module was bought for. {@link sourcePurchase} keeps the
-     * captured figure regardless.
+     * unknown — including after an edit or import normalization discarded an import's
+     * figure, since no catalogue records what a replaced module was bought for. Unlike
+     * mass and capacity it is not recomputed from what remains; {@link sourcePurchase}
+     * keeps the captured figure and {@link retailCredits} prices the current fit.
      */
     get modulesValue(): number | null {
         return this.#top.ModulesValue ?? null;
@@ -1126,8 +1143,8 @@ export class ShipLoadout {
 
     /**
      * Insurance rebuy cost in credits represented by the build, or `null` if
-     * unknown. Discarded by an edit for the same reason as {@link modulesValue}, and
-     * likewise preserved by {@link sourcePurchase}.
+     * unknown. Discarded by an edit or by import normalization for the same reason as
+     * {@link modulesValue}, and likewise kept by {@link sourcePurchase}.
      */
     get rebuy(): number | null {
         return this.#top.Rebuy ?? null;
@@ -1173,13 +1190,34 @@ export class ShipLoadout {
     }
 
     /**
+     * Changes made while importing this build, in source order, followed by a restored
+     * cargo hatch when the source named none.
+     *
+     * @returns A deeply frozen list. It is empty for builds created with
+     * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
+     * needed no normalization.
+     * @remarks
+     * Each entry names the exact slot and unresolved source identity. An `emptied`
+     * outcome means import removed an unknown module from a hardpoint, utility, optional
+     * internal, or unrecognised slot. A `defaulted` outcome names the stock replacement
+     * fitted to armour, a core internal, or the cargo hatch; its `sourceSymbol` is `null`
+     * only for a cargo hatch the source left out, which is the one mount import fills
+     * without being asked.
+     */
+    get importOutcomes(): readonly LoadoutImportOutcome[] {
+        return this.#importOutcomes;
+    }
+
+    /**
      * Structural validity and operational completeness of this build.
      *
      * @remarks
      * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
-     * mounts must be filled for `complete` to be true. An unknown module is incomplete;
-     * a module in a nonexistent or incompatible slot is invalid. Exclusive
-     * families and per-ship module-count allowances must also be satisfied.
+     * mounts must be filled for `complete` to be true. A module in a nonexistent or
+     * incompatible slot is invalid. Exclusive families and per-ship module-count
+     * allowances must also be satisfied.
+     * Neither question reports import normalization — the fit that remains really is
+     * legal and really is filled — so read {@link importOutcomes} beside them.
      */
     get validation(): LoadoutValidation {
         const slots = this.#layout();
@@ -1194,7 +1232,6 @@ export class ShipLoadout {
             return {
                 slot: module.Slot,
                 symbol: module.Item,
-                known: stats !== null || builtIn,
                 requiresKnownSlot: !builtIn,
                 fitError: fitProblem?.message ?? null,
                 ...(fitProblem === null ? {} : { fitConstraint: fitProblem.constraint }),
@@ -1398,16 +1435,17 @@ export class ShipLoadout {
     }
 
     /**
-     * Restore a missing, unresolved or invalid fixed mount from this hull's stock loadout.
+     * Restore a missing or invalid fixed mount from this hull's stock loadout.
      *
      * @remarks
      * This is the narrow repair path for mounts that {@link setModule} deliberately does
-     * not expose as ordinary edits, including the built-in cargo hatch. Live aggregates
-     * are updated by the same rules as every package-owned refit. The immutable
-     * {@link sourcePurchase} record is unchanged; source-credit export leaves a replaced
-     * slot unpriced, while its aggregate totals remain valid for an unpriced or
-     * zero-priced cargo hatch. Resolved valid core and armour alternatives are left
-     * unchanged.
+     * not expose as ordinary edits, including the built-in cargo hatch. The stock article
+     * keeps the mount's `On`, `Priority` and `Health` and none of the replaced module's
+     * engineering or captured value, as import normalization does. Live aggregates follow
+     * the same rules as every package-owned refit. The immutable {@link sourcePurchase}
+     * record is unchanged; source-credit export leaves a replaced slot unpriced, while its
+     * aggregate totals remain valid for an unpriced or zero-priced cargo hatch. Resolved
+     * valid core and armour alternatives are left unchanged.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
@@ -1492,6 +1530,11 @@ export class ShipLoadout {
      * build's module-count excess. Fit an allowance-increasing module before the weapons
      * it permits. To consume a complete order-independent snapshot, use
      * {@link ShipLoadout.fromLoadout}.
+     *
+     * Fitting is a fresh mount: the slot's `On`, `Priority` and `Health` are reset. Set
+     * them again if your screen keeps a priority group across a swap.
+     * {@link repairFixedMount} keeps them, standing in for an article that failed rather
+     * than for one the player chose.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively (journal
      * spelling). An occupied slot keeps the key the build already spells it with, so
@@ -1934,7 +1977,7 @@ export class ShipLoadout {
 
         const stats = this.#statsFor(module);
         if (!stats) {
-            return experimentalEffectUnsupported('unknownModule', {
+            return experimentalEffectUnsupported('unsupportedEngineering', {
                 slot: module.Slot,
                 symbol: module.Item,
             });
@@ -1988,7 +2031,7 @@ export class ShipLoadout {
         if (variant && variant.acquisition !== 'mercenary') {
             const stock = this.#engineeringBaseStats(module);
             if (!stock) {
-                return experimentalEffectUnsupported('unknownModule', {
+                return experimentalEffectUnsupported('unsupportedEngineering', {
                     slot: module.Slot,
                     symbol: module.Item,
                 });
@@ -2008,7 +2051,7 @@ export class ShipLoadout {
                 wanted === null ? withoutEffect : { ...withoutEffect, experimental: wanted };
             const resolved = getPreEngineeredStats(withoutEffect);
             if (!resolved) {
-                return experimentalEffectUnsupported('unknownModule', {
+                return experimentalEffectUnsupported('unsupportedEngineering', {
                     slot: module.Slot,
                     symbol: module.Item,
                 });
@@ -2126,7 +2169,7 @@ export class ShipLoadout {
 
         const stats = this.#statsFor(module);
         if (!stats) {
-            return engineeringNormalizationUnsupported('unknownModule', {
+            return engineeringNormalizationUnsupported('unsupportedEngineering', {
                 slot: module.Slot,
                 symbol: module.Item,
             });
@@ -2192,7 +2235,7 @@ export class ShipLoadout {
         if (variant && variant.acquisition !== 'mercenary') {
             const stock = this.#engineeringBaseStats(module);
             if (!stock) {
-                return engineeringNormalizationUnsupported('unknownModule', {
+                return engineeringNormalizationUnsupported('unsupportedEngineering', {
                     slot: module.Slot,
                     symbol: module.Item,
                 });
@@ -2212,7 +2255,7 @@ export class ShipLoadout {
                 experimental === null ? withoutEffect : { ...withoutEffect, experimental };
             const resolved = getPreEngineeredStats(withoutEffect);
             if (!resolved) {
-                return engineeringNormalizationUnsupported('unknownModule', {
+                return engineeringNormalizationUnsupported('unsupportedEngineering', {
                     slot: module.Slot,
                     symbol: module.Item,
                 });
@@ -2550,7 +2593,8 @@ export class ShipLoadout {
         try {
             drive = this.#resolveDrive();
         } catch {
-            // An unrecognised drive id has no jump constants; omit rather than fail.
+            // A supplied drive record without jump constants throws; omit rather than
+            // fail an export over it.
             return null;
         }
         if (drive === null) return null;
@@ -2565,8 +2609,8 @@ export class ShipLoadout {
      * The resolved frame-shift-drive constants for this build — post-engineering,
      * with any Guardian FSD Booster folded into `jumpBoost`.
      *
-     * @throws {TypeError} If the build has no frame shift drive, or its required jump
-     * constants are missing from the stats catalogue.
+     * @throws {TypeError} If the build has no frame shift drive, or the fitted record is
+     * missing any of its required jump constants.
      */
     get frameShiftDrive(): FrameShiftDriveParams {
         const drive = this.#resolveDrive();
@@ -2743,7 +2787,7 @@ export class ShipLoadout {
         let drive: FrameShiftDriveParams | null = null;
         let maximumFuel: number | null = null;
         if (load === 'maximum') {
-            const fitted = this.#frameShiftDriveModule();
+            const fitted = this.#frameShiftDrive()?.module;
             let driveError: Error | null = null;
             try {
                 drive = this.#resolveDrive();
@@ -2787,7 +2831,7 @@ export class ShipLoadout {
                 this.jumpRange(value);
             } catch (error) {
                 if (!(error instanceof RangeError)) throw error;
-                const fitted = this.#frameShiftDriveModule();
+                const fitted = this.#frameShiftDrive()?.module;
                 const field: CalculationIssue['field'] =
                     drive !== null && (!Number.isFinite(drive.maxFuel) || drive.maxFuel < 0)
                         ? 'frameShiftDrive'
@@ -2861,17 +2905,9 @@ export class ShipLoadout {
      * towards the deployed total.
      *
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered. An unresolved plant also reports `available: 0`; it is
-     * identified as `powerCapacity` by the mobility, shield and recovery result methods,
-     * not {@link PowerBudget.unknownDraws}. When the entire plant record is unresolved,
-     * {@link validation} also reports `unknownModule`. A fitted module whose draw the
-     * catalogue cannot supply is
-     * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
-     * which makes every total a lower bound while that list is non-empty. `consumers`
-     * includes modules with positive or unknown draw; passive and zero-draw fittings are
-     * absent.
-     * @throws {RangeError} If a known power capacity or module draw is negative or not
-     * finite.
+     * and nothing is powered. `consumers` includes modules with positive draw; passive
+     * and zero-draw fittings are absent.
+     * @throws {RangeError} If a power capacity or module draw is negative or not finite.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -2907,12 +2943,7 @@ export class ShipLoadout {
      * cannot keep lit — contributes nothing.
      *
      * @returns The {@link HeatMetrics}, or `null` when the build has no powered power
-     * plant. A build carrying a module the catalogues cannot resolve is answered rather
-     * than refused. {@link HeatMetrics.unknownDraws} names unknown power contributions;
-     * {@link HeatMetrics.unknownWeaponHeat} names unresolved hardpoints omitted from the
-     * firing scenarios. Read those entries before showing the figures, because a
-     * non-empty diagnostic makes the affected results projections over the rest of the
-     * build rather than complete answers.
+     * plant.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -3137,9 +3168,7 @@ export class ShipLoadout {
      *
      * Every fitted bank remains in `banks`, where `powered` says whether it is switched
      * on and its priority group is fed with hardpoints deployed. The totals include
-     * only those powered banks. A bank whose draw is unresolved is assumed powered,
-     * consistently with {@link powerBudget}; inspect that result's `unknownDraws` when
-     * the distinction matters. A build with no powered power plant — including one
+     * only those powered banks. A build with no powered power plant — including one
      * created by {@link empty} before a plant is fitted — reports every bank as
      * unpowered and returns zero totals.
      *
@@ -3318,10 +3347,8 @@ export class ShipLoadout {
      * @param options - WEP pips in `[0, 4]`, defaulting to `4`.
      * @returns Actual recharge, sustained draw, net drain and seconds from full to
      * empty. The deployed power budget is applied to the distributor and weapons, so a
-     * module the plant sheds contributes nothing. A module with an unresolved power
-     * draw is assumed powered, consistently with {@link powerBudget}; inspect its
-     * `unknownDraws` when that distinction matters. With no powered distributor,
-     * capacity and recharge are zero. A load that draws no more than recharge reports
+     * module the plant sheds contributes nothing. With no powered distributor, capacity
+     * and recharge are zero. A load that draws no more than recharge reports
      * `Infinity` for `timeToDrain`.
      * @throws {RangeError} If `weaponsPips` is outside `[0, 4]` or not finite.
      * @example
@@ -3359,9 +3386,7 @@ export class ShipLoadout {
      * SYS, ENG and WEP, or `null` when no distributor is fitted, it is switched off,
      * its six capacitor stats cannot be resolved, or the retracted power budget sheds
      * it. The retracted state represents the distributor itself; firing endurance in
-     * {@link weaponsCapacitorMetrics} separately applies the deployed state. A module
-     * with unresolved power draw is assumed powered, consistently with
-     * {@link powerBudget}; inspect its `unknownDraws` when that distinction matters.
+     * {@link weaponsCapacitorMetrics} separately applies the deployed state.
      * @throws {RangeError} If any pip allocation is outside `[0, 4]` or not finite.
      * @example
      * ```ts
@@ -3462,38 +3487,26 @@ export class ShipLoadout {
         return [...this.#modules.values()].map((module) => {
             const stats = this.#statsFor(module);
             const symbol = module.Item.toLowerCase();
-            const parsedSlot = parseSlotName(module.Slot);
-            const unresolvedOutfitting =
-                stats === null && !isNonOutfittingSlot(module.Slot) && !isBuiltInHullModule(module);
             const isCargoRack = stats?.cargoCapacity !== undefined || symbol.includes('cargorack');
             const isFuelTank =
                 stats?.fuelCapacity !== undefined ||
                 stats?.slot === 'fuelTank' ||
                 symbol.startsWith(FUEL_TANK_PREFIX);
-            const mayCarryCapacity =
-                unresolvedOutfitting && (parsedSlot === null || parsedSlot.kind === 'optional');
-            const mayCarryFuel =
-                mayCarryCapacity ||
-                (unresolvedOutfitting &&
-                    parsedSlot?.kind === 'core' &&
-                    parsedSlot.core === 'fuelTank');
             return {
                 slot: module.Slot,
                 symbol: module.Item,
                 mass: this.#moduleMass(module),
-                ...(isCargoRack || mayCarryCapacity
+                ...(isCargoRack
                     ? {
-                          cargoCapacity: isCargoRack
-                              ? this.#moduleCapacity(module, 'CargoCapacity', 'cargoCapacity')
-                              : null,
+                          cargoCapacity: this.#moduleCapacity(
+                              module,
+                              'CargoCapacity',
+                              'cargoCapacity',
+                          ),
                       }
                     : {}),
-                ...(isFuelTank || mayCarryFuel
-                    ? {
-                          fuelCapacity: isFuelTank
-                              ? this.#moduleCapacity(module, 'FuelCapacity', 'fuelCapacity')
-                              : null,
-                      }
+                ...(isFuelTank
+                    ? { fuelCapacity: this.#moduleCapacity(module, 'FuelCapacity', 'fuelCapacity') }
                     : {}),
             };
         });
@@ -3703,33 +3716,25 @@ export class ShipLoadout {
         return shouldCarryCapacity ? null : 0;
     }
 
-    /** Find the module whose catalogue record or symbol identifies the FSD. */
-    #frameShiftDriveModule(): LoadoutModule | undefined {
+    /** Find the fitted FSD together with the record that identified it. */
+    #frameShiftDrive(): { module: LoadoutModule; stats: OutfittingModule } | undefined {
         for (const m of this.#modules.values()) {
-            // A record that names its mount is believed; the symbol answers when none
-            // does — a drive this snapshot's catalogue has no record for, which is the
-            // case the error message below is written for.
             const stats = this.#statsFor(m);
-            const isDrive = stats?.slot
-                ? stats.slot === 'frameShiftDrive'
-                : m.Item.toLowerCase().startsWith(FSD_PREFIX);
-            if (isDrive) {
-                return m;
-            }
+            if (stats?.slot === 'frameShiftDrive') return { module: m, stats };
         }
         return undefined;
     }
 
     #resolveDrive(): FrameShiftDriveParams | null {
-        const fsdModule = this.#frameShiftDriveModule();
-        if (!fsdModule) return null;
-        const base = this.#statsFor(fsdModule);
-        if (!base || base.fuelMul === undefined || base.fuelPower === undefined) {
-            // A drive is fitted, but the stats catalogue has no jump constants for its
-            // unrecognised id. Fail with a diagnosable message
-            // rather than the "no frame shift drive" one the caller would otherwise get.
+        const fsd = this.#frameShiftDrive();
+        if (!fsd) return null;
+        const { module: fsdModule, stats: base } = fsd;
+        if (base.fuelMul === undefined || base.fuelPower === undefined) {
+            // A drive is fitted, but its supplied stats have no jump constants. Fail
+            // with a diagnosable message rather than the "no frame shift drive" one the
+            // caller would otherwise get.
             throw new TypeError(
-                `ShipLoadout: no jump constants in the stats catalogue for frame shift drive "${truncate(fsdModule.Item)}"`,
+                `ShipLoadout: the fitted record for frame shift drive "${truncate(fsdModule.Item)}" has no jump constants`,
             );
         }
 
@@ -3741,7 +3746,7 @@ export class ShipLoadout {
                 ...(maxFuel === undefined ? ['maxFuel'] : []),
             ];
             throw new TypeError(
-                `ShipLoadout: frame shift drive "${truncate(fsdModule.Item)}" has no ${missing.join(' or ')} in the stats catalogue`,
+                `ShipLoadout: the fitted record for frame shift drive "${truncate(fsdModule.Item)}" has no ${missing.join(' or ')}`,
             );
         }
 
@@ -3758,16 +3763,22 @@ export class ShipLoadout {
     #resolveJumpBoost(): number {
         for (const m of this.#modules.values()) {
             const stats = this.#statsFor(m);
+            // A booster is whatever supplies a jump bonus. `engineeringGroup` says only
+            // which recipes may touch the article, and it is a field a caller-supplied
+            // record is free to leave `null`; reading the bonus itself keeps such a
+            // record from contributing its mass while its boost goes uncounted. A `0`
+            // bonus is not evidence of one, though — the first match wins below, so
+            // believing it would let an unrelated record shadow a real booster.
             if (
                 stats?.engineeringGroup !== 'fsdBoosters' &&
-                !m.Item.toLowerCase().startsWith(BOOSTER_PREFIX)
+                (stats?.jumpBoost === undefined || stats.jumpBoost === 0)
             ) {
                 continue;
             }
             if (m.On === false) continue; // an unpowered booster gives no bonus
             if (stats?.jumpBoost === undefined) {
                 throw new TypeError(
-                    `ShipLoadout: FSD booster "${truncate(m.Item)}" has no jumpBoost in the stats catalogue`,
+                    `ShipLoadout: the fitted record for FSD booster "${truncate(m.Item)}" has no jumpBoost`,
                 );
             }
             return stats.jumpBoost;
