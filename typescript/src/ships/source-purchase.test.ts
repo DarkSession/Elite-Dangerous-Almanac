@@ -480,8 +480,8 @@ test('fixed-mount normalization preserves source totals only for a free cargo ha
     const build = ShipLoadout.fromLoadout(captured);
     const record = build.sourcePurchase;
 
-    assert.equal(build.modulesValue, 2_000);
-    assert.equal(build.rebuy, 150);
+    assert.equal(build.modulesValue, null);
+    assert.equal(build.rebuy, null);
     assert.equal(build.fittedModuleAt('CargoHatch')?.effectiveStats?.powerDraw, 0.6);
     assert.deepEqual(build.repairFixedMount('CargoHatch'), {
         status: 'unchanged',

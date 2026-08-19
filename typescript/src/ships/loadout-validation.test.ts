@@ -56,28 +56,26 @@ test('a cargo hatch is immutable without becoming required for editor-built load
             .map((slot) => ({
                 slot: slot.key,
                 symbol: `Test_${slot.key}`,
-                known: true,
                 fitError: null,
             })),
     });
     assert.deepEqual(result, { valid: true, complete: true, issues: [] });
 });
 
-test('validation distinguishes invalid structure from missing catalogue data', () => {
+test('validation reports invalid structure and incompatible modules', () => {
     const result = validateLoadout({
         shipSymbol: layout.symbol,
         slots: enumerateSlots(layout),
         modules: [
-            { slot: 'NoSuchSlot', symbol: 'Known', known: true, fitError: null },
-            { slot: 'PowerPlant', symbol: 'Unknown', known: false, fitError: null },
-            { slot: 'powerplant', symbol: 'Wrong', known: true, fitError: 'does not fit' },
+            { slot: 'NoSuchSlot', symbol: 'Known', fitError: null },
+            { slot: 'PowerPlant', symbol: 'Known', fitError: null },
+            { slot: 'powerplant', symbol: 'Wrong', fitError: 'does not fit' },
         ],
     });
     assert.equal(result.valid, false);
     assert.equal(result.complete, false);
     assert.ok(result.issues.some((issue) => issue.code === 'duplicateSlot'));
     assert.ok(result.issues.some((issue) => issue.code === 'unknownSlot'));
-    assert.ok(result.issues.some((issue) => issue.code === 'unknownModule'));
     assert.ok(result.issues.some((issue) => issue.code === 'incompatibleModule'));
 });
 
@@ -89,7 +87,6 @@ test('fitting params cannot replace canonical diagnostic identity fields', () =>
             {
                 slot: 'PowerPlant',
                 symbol: 'Actual',
-                known: true,
                 fitError: 'does not fit',
                 fitConstraint: 'oversized',
                 fitParams: { slot: 'spoof', symbol: 'spoof', constraint: 'wrongCoreType' },
@@ -111,7 +108,6 @@ test('known non-outfitting entries do not have to name a hull mount', () => {
             {
                 slot: 'PaintJob',
                 symbol: 'paintjob_test',
-                known: true,
                 requiresKnownSlot: false,
                 fitError: null,
             },
@@ -132,14 +128,12 @@ test('validation reports two modules from the same one-per-ship family', () => {
             {
                 slot: 'Slot01_Size2',
                 symbol: 'ShieldA',
-                known: true,
                 fitError: null,
                 exclusionGroup: 'shieldGenerator',
             },
             {
                 slot: 'Slot02_Size2',
                 symbol: 'ShieldB',
-                known: true,
                 fitError: null,
                 exclusionGroup: 'shieldGenerator',
             },
@@ -165,8 +159,8 @@ test('validation abbreviates message previews without changing structured values
         shipSymbol: longHull,
         slots: [],
         modules: [
-            { slot: longSlot, symbol: longSymbol, known: false, fitError: null },
-            { slot: longSlot, symbol: longSymbol, known: true, fitError: 'q'.repeat(20_000) },
+            { slot: longSlot, symbol: longSymbol, fitError: null },
+            { slot: longSlot, symbol: longSymbol, fitError: 'q'.repeat(20_000) },
         ],
     });
 

@@ -127,12 +127,12 @@
     {
       "kind": "loadout",
       "diagnostic": {
-        "code": "unknownModule",
+        "code": "missingRequiredSlot",
         "severity": "incomplete",
-        "message": "Unknown module"
+        "message": "PowerPlant is required for an operational build"
       },
       "locale": "en",
-      "expected": "Unknown module"
+      "expected": "PowerPlant is required for an operational build"
     },
     {
       "kind": "calculation",

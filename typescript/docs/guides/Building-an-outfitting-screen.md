@@ -152,25 +152,27 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // does it have every operational mount, fully classified?
+build.validation.complete; // does it have every operational mount?
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
-Branch on each issue's `code`, not on its `severity` — on this screen more than anywhere,
-because the severities do not divide along "whose problem is it".
+Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
+and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-says which codes are the user's to fix and which are the library's own gaps, and covers
-the nullable/`…Result` pairs for mass, capacity, mobility, shields and shield recovery.
+explains the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
+shields and shield recovery. On an imported build, read `build.importOutcomes` alongside
+the issues: validation says nothing about normalization, so an empty mount on your panel
+may be one the player left empty or one import emptied for them. (A *fixed* mount is
+stocked rather than emptied, and a `null` `sourceSymbol` is just the cargo hatch restored
+to a capture that named none.)
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
-carries a key that is by definition no mount on this hull, and `unknownModule` reports
-whatever key the build used, which for a module in a slot the hull does not have is the
-same unrenderable one. And an empty core or armour mount arrives as an ordinary issue
-rather than as a special case — it is what your screen exists to get filled, so render it
-as work to do, not as a fault.
+carries a key that is by definition no mount on this hull. And an empty core or armour
+mount arrives as an ordinary issue rather than as a special case — it is what your screen
+exists to get filled, so render it as work to do, not as a fault.
 
 ## Next
 

@@ -109,7 +109,7 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.toLoadoutEvent(); // retail: hull cost plus every module's list price
-build.toLoadoutEvent({ credits: 'source' }); // the capture's own figures, verbatim
+build.toLoadoutEvent({ credits: 'source' }); // the capture's figures, less what was narrowed
 ```
 
 The captured figures live on a read-only record that no edit changes:
@@ -126,15 +126,24 @@ paid && getSourceModuleValue(paid, 'FrameShiftDrive')?.value; // -> 4976355
 paid && getSourceModuleValue(paid, 'ShipCockpit'); // -> null — unpriced is not "free"
 ```
 
-Each captured figure stays pinned to the article it was paid for, so **editing narrows
-the source export rather than staling it**. Swap or remove a module and it exports
-unpriced, taking `ModulesValue` and `Rebuy` with it; engineer a module or fill an empty
-mount and both still stand. `HullValue` always stands, because it names no slot for an
-edit to narrow.
+Each captured figure stays pinned to the article it was paid for, so **losing an article
+narrows the source export rather than staling it**. Swap or remove a module and it
+exports unpriced, taking `ModulesValue` and `Rebuy` with it; engineer a module or fill an
+empty mount and both still stand. `HullValue` always stands, because it names no slot to
+narrow.
+
+Import normalization narrows it the same way, before you have edited anything: a module
+the catalogue cannot resolve is discarded or replaced with the hull's stock article, so
+its slot exports unpriced and the two totals go with it. `build.importOutcomes` says
+which — see
+[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
+The built-in cargo hatch is the exception, being unpurchasable: an unpriced or
+zero-priced captured hatch leaves the totals standing.
 
 One limit worth knowing: what a capture never priced, it also never explains — so
-removing an unpriced module cannot be detected. `data/ships/SOURCES.md` records that and
-the other boundary cases.
+losing an unpriced module, to a removal or a replacement, cannot be detected.
+{@link ships!LoadoutExportOptions.credits | LoadoutExportOptions.credits} records that
+and the other boundary cases.
 
 ## Slot-key spelling survives a round trip
 

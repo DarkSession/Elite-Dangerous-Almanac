@@ -165,26 +165,6 @@ export interface HeatInput {
      * drained multiplier in both firing scenarios.
      */
     readonly weaponsCapacity?: number;
-    /**
-     * Modules whose power draw could not be determined, named — the labels
-     * {@link PowerBudget.unknownDraws} carries. Defaults to none.
-     *
-     * @remarks
-     * Passing them does not change a single figure; it is how
-     * {@link HeatMetrics.unknownDraws} comes to report that the figures are a projection
-     * over the modules that did resolve rather than an answer for the build. That entry
-     * states what goes wrong and in which directions.
-     */
-    readonly unknownDraws?: readonly string[];
-    /**
-     * Enabled, powered hardpoints whose weapon stats could not be resolved, named.
-     * Defaults to none.
-     *
-     * @remarks
-     * Passing them does not change a figure; it carries the omitted heat sources into
-     * {@link HeatMetrics.unknownWeaponHeat}. Only the two firing scenarios are affected.
-     */
-    readonly unknownWeaponHeat?: readonly string[];
 }
 
 /** A build's heat under one set of circumstances. */
@@ -249,38 +229,6 @@ export interface HeatMetrics {
      * weapon makes five times its thermal load.
      */
     readonly firingDrained: HeatState;
-    /**
-     * Modules whose power draw could not be determined, named. Normally empty.
-     *
-     * **While it is not empty, every figure here is a projection over the modules that
-     * did resolve, and is not a bound in either direction.** Two things go wrong at
-     * once, and they pull opposite ways:
-     *
-     * - The unresolved module's own draw makes heat this calculation cannot count, so
-     *   the figures read low.
-     * - An unknown draw is left out of the priority-group totals it belongs to
-     *   ({@link PowerBudget.unknownDraws} says so), which leaves the groups below it
-     *   reading as powered when the real plant would shed them. Heat from a thruster or
-     *   a weapon the build could not actually run is then counted, so the figures read
-     *   high — far enough, on a tight build, to report an overheat that would not happen.
-     *
-     * So `overheats` is not trustworthy in either direction here, and neither is a
-     * settled level. A caller showing these figures should say what they are.
-     */
-    readonly unknownDraws: readonly string[];
-    /**
-     * Enabled, powered hardpoints omitted because their weapon heat could not be
-     * resolved, named by slot. Normally empty.
-     *
-     * @remarks
-     * While this is not empty, {@link firingSustained} and {@link firingDrained} are
-     * projections over the weapons that did resolve. Taken alone, the missing
-     * contribution is non-negative, so their thermal loads are lower bounds, but their
-     * heat levels, `overheats` flags and overheating times are not complete answers for
-     * the build. If {@link unknownDraws} is also non-empty, its priority-group uncertainty
-     * means no bound holds. The non-firing scenarios are unaffected.
-     */
-    readonly unknownWeaponHeat: readonly string[];
 }
 
 /**
@@ -575,8 +523,6 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
         fsdCharging: state(idleLoad + thrusterHeat + fsdHeat, idleLoad + thrusterHeat),
         firingSustained: state(firingBase + weaponHeat(1), firingBase),
         firingDrained: state(firingBase + weaponHeat(0), firingBase),
-        unknownDraws: [...(input.unknownDraws ?? [])],
-        unknownWeaponHeat: [...(input.unknownWeaponHeat ?? [])],
     };
 }
 

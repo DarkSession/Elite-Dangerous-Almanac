@@ -63,9 +63,11 @@ build.armourMetrics().hitPoints; // -> 307.8
 
 Figures the event already stated — `UnladenMass`, `CargoCapacity`, `FuelCapacity` — are
 trusted verbatim rather than recomputed, so what you read back matches what the player
-sees in game. `MaxJumpRange` is the exception: it is recomputed from the drive rather than
-taken from the event, so it may differ in the last decimal places from the number the
-capture carried.
+sees in game — while the fit they describe survives import, which
+[when the game hands you something unknown](#when-the-game-hands-you-something-unknown)
+covers. `MaxJumpRange` is the exception either way: it is recomputed from the drive
+rather than taken from the event, so it may differ in the last decimal places from the
+number the capture carried.
 
 ### Walking the modules
 
@@ -145,30 +147,43 @@ Pass `StarSystem` to the permit-lock lookup described in
 
 ## When the game hands you something unknown
 
-Journals can contain hulls or modules absent from the catalogues, so consumers must handle
-gaps.
+Journals can contain hulls or modules absent from the catalogues. A direct lookup that
+finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import.
+An entry is kept as the event stated it when the catalogue identifies its `Item`, when its
+slot is a known cosmetic or hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered
+decal, …), or when it is a `ModularCargoBayDoor*` article in the cargo-hatch mount — some
+hull families name their own symbol for the one built-in article the catalogue carries.
 
-A lookup that finds nothing returns `null` — check it. On a build imported from a journal,
-though, **`validation` is the signal to read, not the aggregate figures.** Because the
-event stated `UnladenMass`, `CargoCapacity` and `FuelCapacity`, those are trusted verbatim
-and come back complete even when a fitted module is one the catalogue cannot classify —
-the `…Result` diagnostics that would name it never fire here. What does fire is
-`build.validation`, which reports a fit the game would reject as an `error`, against an
-`incomplete` for a build that does not add up: an empty core or armour mount, or a hull or
-module absent from the catalogue. Only the second of those is the library's own gap, so
-branch on the issue's `code` rather than its `severity`:
+Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
+utilities, optional internals and unrecognised slots are discarded; and an unknown fixed
+mount is filled with that hull's stock armour, core internal or cargo hatch, carrying the
+source's `On`, `Priority` and `Health` across but none of its engineering or captured
+value. A fixed mount the event named no module for is left empty and makes a required
+mount incomplete — apart from the cargo hatch, which is part of the hull and is restored.
+
+When normalization changes the fitted set, the capture's aggregates are dropped: mass,
+cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
+and `rebuy` read `null`, since nothing records what the discarded module cost;
+`sourcePurchase` still reports the captured figures. Restoring an absent cargo hatch is
+the exception, the stock hatch being weightless and free.
+
+`build.validation` therefore reports the fit that remains: optional, hardpoint and
+utility modules leave empty mounts and need no diagnostic, while required armour and core
+mounts remain complete through their stock replacements. `build.importOutcomes` is the
+frozen, machine-readable account of each change: the exact slot and source module,
+whether it was `emptied` or `defaulted`, and the replacement symbol when one was fitted.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
-build.validation.issues; // -> each with a stable code and a severity
-build.cargoCapacityResult; // -> complete here: the event's own figure, not recomputed
+build.validation.issues; // -> structural problems in the normalized fit
+build.fittedModuleAt('Slot01_Size5'); // -> null if its imported symbol was unknown
+build.importOutcomes; // exact import changes for display or logging
 ```
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-sets both patterns out in full — including which codes are the user's to fix and which
-are the library's own gaps.
+sets the validation and calculation patterns out in full.
 
 A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
 `SyntaxError`, and a structurally impossible event — two slot keys differing only in

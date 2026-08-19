@@ -121,24 +121,23 @@
         "rotationMassCurveMultiplier": 1
       }
     },
-    "facadeExplicitFuel": {
+    "facadeFuelOverride": {
       "loadout": {
         "Ship": "SideWinder",
         "UnladenMass": 26,
         "Modules": [
           { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
-        ]
-      },
-      "partialCapacityLoadout": {
-        "Ship": "SideWinder",
-        "UnladenMass": 26,
-        "FuelCapacity": { "Main": 2 },
-        "Modules": [
-          { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
-          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+          { "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" },
+          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class1" },
+          { "Slot": "LifeSupport", "Item": "Int_LifeSupport_Size1_Class1" },
+          {
+            "Slot": "PowerDistributor",
+            "Item": "Int_PowerDistributor_Size1_Class1"
+          },
+          { "Slot": "Radar", "Item": "Int_Sensors_Size1_Class1" },
+          { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" },
+          { "Slot": "CargoHatch", "Item": "ModularCargoBayDoor" }
         ]
       },
       "options": { "fuel": 2 },
@@ -151,7 +150,6 @@
         "massCurveMultiplier": 1.058085527868117,
         "rotationMassCurveMultiplier": 1.058085527868117
       },
-      "omittedFuelFails": true,
       "invalidLoads": [
         { "options": { "fuel": -1 }, "expectedError": "RangeError" },
         { "options": { "cargo": -1 }, "expectedError": "RangeError" }
@@ -428,7 +426,6 @@
         {
           "Ship": "Anaconda",
           "Modules": [
-            { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size8_Class1" },
             {
               "Slot": "PowerDistributor",
               "Item": "Int_PowerDistributor_Size8_Class1",
@@ -442,15 +439,6 @@
             {
               "Slot": "PowerDistributor",
               "Item": "Int_PowerDistributor_Size8_Class1"
-            }
-          ]
-        },
-        {
-          "Ship": "Anaconda",
-          "Modules": [
-            {
-              "Slot": "PowerDistributor",
-              "Item": "Int_PowerDistributor_Future"
             }
           ]
         }

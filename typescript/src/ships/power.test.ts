@@ -60,7 +60,7 @@ test('a switched-off module draws nothing', () => {
     assert.equal(budget.deployed, 2);
 });
 
-test('rejects invalid available power and known consumer draws', () => {
+test('rejects invalid available power and consumer draws', () => {
     for (const available of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
         assert.throws(() => powerBudget(available, []), RangeError);
     }
@@ -68,13 +68,6 @@ test('rejects invalid available power and known consumer draws', () => {
         assert.throws(() => powerBudget(10, [{ draw }]), RangeError);
         assert.throws(() => powerBudget(10, [{ draw, enabled: false }]), RangeError);
     }
-});
-
-test('does not validate explicitly unknown placeholder draws', () => {
-    const unknown = { draw: -1, drawUnknown: true, label: 'unknown' };
-    const budget = powerBudget(10, [unknown]);
-    assert.deepEqual(budget.unknownDraws, [unknown]);
-    assert.equal(budget.deployed, 0);
 });
 
 test('priority groups are cumulative and the ones that overflow go dark', () => {
@@ -155,51 +148,10 @@ test('the five groups are always reported, in order', () => {
     );
 });
 
-test('a draw the catalogue cannot supply is reported, not counted as zero', () => {
-    const unknown = { draw: 0, drawUnknown: true, priority: 1, label: 'Slot05_Size3' };
-    const budget = powerBudget(10, [{ draw: 4, priority: 1, label: 'MainEngines' }, unknown]);
-    // The consumer itself comes back, so a caller can name it however it named it.
-    assert.deepEqual(budget.unknownDraws, [unknown]);
-    assert.equal(budget.unknownDraws[0], unknown);
-    // Left out of every total, which is what makes the rest a lower bound.
-    assert.equal(budget.retracted, 4);
-    assert.equal(budget.deployed, 4);
-    assert.equal(budget.headroom, 6);
-    assert.equal(budget.bands[0]?.retracted, 4);
-    assert.ok(budget.withinBudget);
-});
-
-test('an unknown draw is unknown whatever number came with it', () => {
-    // The flag wins outright: a caller that passes a placeholder draw does not get it
-    // silently added, and a switched-off module is skipped before the flag is read.
-    const budget = powerBudget(10, [
-        { draw: 99, drawUnknown: true, priority: 2, label: 'Slot06_Size2' },
-        { draw: 99, drawUnknown: true, priority: 2, enabled: false, label: 'Slot07_Size2' },
-        { draw: 5, priority: 1 },
-    ]);
-    assert.equal(budget.deployed, 5);
-    assert.deepEqual(
-        budget.unknownDraws.map((c) => c.label),
-        ['Slot06_Size2'],
-    );
-});
-
-test('an unlabelled unknown draw is still reported', () => {
-    const budget = powerBudget(10, [{ draw: 0, drawUnknown: true }, { draw: 1 }]);
-    assert.equal(budget.unknownDraws.length, 1);
-    assert.equal(budget.unknownDraws[0]?.label, undefined);
-    assert.equal(budget.deployed, 1);
-});
-
-test('a build with nothing unknown says so with an empty list', () => {
-    assert.deepEqual(powerBudget(10, [{ draw: 1 }]).unknownDraws, []);
-    assert.deepEqual(powerBudget(0, []).unknownDraws, []);
-});
-
 test('consumer results preserve source order and normalize presentation fields', () => {
     const budget = powerBudget(10, [
         { label: 'A', symbol: 'Known', draw: 2, priority: 99, deployedOnly: true },
-        { label: 'B', symbol: 'Unknown', drawUnknown: true, enabled: false },
+        { label: 'B', symbol: 'Disabled', draw: 3, enabled: false },
     ]);
     assert.deepEqual(budget.consumers, [
         {
@@ -212,23 +164,13 @@ test('consumer results preserve source order and normalize presentation fields',
         },
         {
             label: 'B',
-            symbol: 'Unknown',
-            draw: null,
+            symbol: 'Disabled',
+            draw: 3,
             enabled: false,
             priority: 1,
-            deployedOnly: null,
+            deployedOnly: false,
         },
     ]);
-});
-
-test('the shared fixture pins an unknown draw', () => {
-    const expected = fixture.functions.powerBudgetUnknownDraw;
-    const budget = powerBudget(expected.available, expected.consumers);
-    assert.equal(budget.retracted, expected.retracted);
-    assert.equal(budget.deployed, expected.deployed);
-    assert.equal(budget.headroom, expected.headroom);
-    assert.equal(budget.withinBudget, expected.withinBudget);
-    assert.deepEqual(budget.unknownDraws, expected.unknownDraws);
 });
 
 test('the shared fixture pins the priority-band model', () => {

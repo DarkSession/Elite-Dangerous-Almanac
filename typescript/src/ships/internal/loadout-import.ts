@@ -7,6 +7,8 @@ import {
     identifyPreEngineeredVariant,
 } from '../pre-engineered-stats.js';
 import { sourcePurchaseFromLoadout, type SourcePurchaseRecord } from '../source-purchase.js';
+import { getDefaultLoadout } from '../default-loadouts.js';
+import { parseSlotName } from '../slots.js';
 import type { OutfittingModule } from '../modules.js';
 import type {
     EngineeringModifier,
@@ -14,10 +16,19 @@ import type {
     LoadoutModule,
     ModuleEngineering,
 } from '../slef.js';
+import type { LoadoutImportOutcome } from '../loadout-import-outcome.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
-import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
+import {
+    cloneLoadoutModule,
+    cloneModuleStats,
+    isBuiltInHullModule,
+    isNonOutfittingSlot,
+    matchingKeyIn,
+    ownKeyIn,
+} from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
+import { deepFreeze } from '../../internal/deep-freeze.js';
 import {
     describeValue,
     requireString,
@@ -45,6 +56,7 @@ export interface ImportedLoadoutState {
     readonly primitiveModifiers: Map<string, readonly EngineeringModifier[]>;
     readonly top: ImportedTopFigures;
     readonly sourcePurchase: SourcePurchaseRecord | null;
+    readonly outcomes: readonly LoadoutImportOutcome[];
 }
 
 /**
@@ -241,6 +253,79 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     if (event.CargoCapacity !== undefined) top.CargoCapacity = event.CargoCapacity;
     if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
 
+    let invalidatesAggregates = false;
+    const outcomes: LoadoutImportOutcome[] = [];
+    const defaults = getDefaultLoadout(event.Ship)?.modules ?? [];
+    for (const [slot, module] of modules) {
+        // Some hull families name their own cargo-hatch symbol for the one article the
+        // catalogue carries under the standard hatch, so a symbol lookup alone would
+        // normalize the hatch of every Fer-de-Lance and Lynx Highliner capture.
+        if (
+            builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item') ||
+            isNonOutfittingSlot(slot) ||
+            isBuiltInHullModule(module)
+        ) {
+            continue;
+        }
+
+        const slotKind = parseSlotName(slot)?.kind;
+        const fallback =
+            slotKind === 'core' || slotKind === 'armour' || slotKind === 'cargoHatch'
+                ? defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase())
+                : undefined;
+        if (fallback) {
+            // The article is unknown; how the commander ran it is not. Dropping `On`
+            // would switch a disabled module back on and re-band it, moving the power and
+            // heat metrics silently. `repairFixedMount` carries the same three across the
+            // same substitution. `Value` and engineering describe the article, so they go.
+            modules.set(slot, {
+                Slot: slot,
+                Item: fallback.symbol,
+                ...(module.On === undefined ? {} : { On: module.On }),
+                ...(module.Priority === undefined ? {} : { Priority: module.Priority }),
+                ...(module.Health === undefined ? {} : { Health: module.Health }),
+            });
+            outcomes.push({
+                action: 'defaulted',
+                slot,
+                sourceSymbol: module.Item,
+                replacementSymbol: fallback.symbol,
+            });
+        } else {
+            modules.delete(slot);
+            outcomes.push({ action: 'emptied', slot, sourceSymbol: module.Item });
+        }
+        invalidatesAggregates = true;
+    }
+    // The hatch is part of the hull rather than an outfitting choice, and the stock one
+    // is free and weightless, so restoring it invents nothing and invalidates nothing. An
+    // absent armour or core mount stays absent: stocking it would report a build the
+    // source never described as `complete`, and would stop `ShipLoadout.empty` surviving
+    // an export/import round trip.
+    for (const fallback of defaults) {
+        if (
+            parseSlotName(fallback.slot)?.kind !== 'cargoHatch' ||
+            matchingKeyIn(modules, fallback.slot) !== null
+        ) {
+            continue;
+        }
+        const slot = ownKeyIn(modules, fallback.slot);
+        modules.set(slot, { Slot: slot, Item: fallback.symbol });
+        outcomes.push({
+            action: 'defaulted',
+            slot,
+            sourceSymbol: null,
+            replacementSymbol: fallback.symbol,
+        });
+    }
+    if (invalidatesAggregates) {
+        delete top.ModulesValue;
+        delete top.Rebuy;
+        delete top.UnladenMass;
+        delete top.CargoCapacity;
+        delete top.FuelCapacity;
+    }
+
     const moduleStats = new Map<string, OutfittingModule>();
     const primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
     // A reward has no distinct module symbol. Identify its hand-set stat signature so
@@ -343,5 +428,6 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         primitiveModifiers,
         top,
         sourcePurchase: sourcePurchaseFromLoadout(event),
+        outcomes: deepFreeze(outcomes),
     };
 }
