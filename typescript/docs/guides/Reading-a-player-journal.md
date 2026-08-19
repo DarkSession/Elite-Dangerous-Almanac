@@ -169,8 +169,8 @@ the exception, the stock hatch being weightless and free.
 
 `build.validation` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core
-mounts with known defaults remain complete through their stock replacements. `build.importOutcomes`
-is the frozen, machine-readable account of each change: the exact slot and source module,
+mounts remain complete through their stock replacements. `build.importOutcomes` is the
+frozen, machine-readable account of each change: the exact slot and source module,
 whether it was `emptied` or `defaulted`, and the replacement symbol when one was fitted.
 
 ```ts

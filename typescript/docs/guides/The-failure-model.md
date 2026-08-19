@@ -171,8 +171,8 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 These reasons describe build state. A malformed method option still throws its documented
 `TypeError` or `RangeError` before a result is returned.
 
-The reason for the pair is that the alternative is worse: an unclassifiable cargo rack
-counted as zero, or shed thrusters treated as powered, would produce a plausible wrong
+The reason for the pair is that the alternative is worse: a cargo rack whose record omits
+its capacity counted as zero, or shed thrusters treated as powered, would produce a plausible wrong
 answer that no one would question. A `null` with the reason it is unavailable cannot be
 mistaken for an answer.
 

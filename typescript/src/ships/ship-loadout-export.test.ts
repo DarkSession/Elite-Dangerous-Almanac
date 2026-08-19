@@ -823,6 +823,25 @@ test('an unknown capacity module is stripped on import', () => {
     );
 });
 
+test('an aggregate a supplied record leaves unknown is omitted rather than exported as zero', () => {
+    // A caller-supplied record can omit the stat its mount promises. Summing the rest
+    // would understate the figure, so the export leaves the key out rather than
+    // writing a total that reads as measured.
+    const rack = { ...module('Int_CargoRack_Size6_Class1') };
+    delete rack.cargoCapacity;
+    delete rack.mass;
+    const event = ShipLoadout.default('Krait_Light')
+        .setModule('Slot01_Size6', rack)
+        .toLoadoutEvent();
+    assert.equal(Object.hasOwn(event, 'CargoCapacity'), false);
+    assert.equal(Object.hasOwn(event, 'UnladenMass'), false);
+
+    const tank = { ...module('Int_FuelTank_Size5_Class3') };
+    delete tank.fuelCapacity;
+    const noFuel = ShipLoadout.default('Krait_Light').setModule('FuelTank', tank).toLoadoutEvent();
+    assert.equal(Object.hasOwn(noFuel, 'FuelCapacity'), false);
+});
+
 test('a build we cannot price stays unpriced however many times it is re-exported', () => {
     // The export omits `ModulesValue` exactly when it failed to price something. If it
     // still wrote prices on the modules it *could* cost, a re-import would read that as

@@ -3028,10 +3028,7 @@ export class ShipLoadout {
             [...this.#modules.values()],
             () => this.powerBudget(),
             () => {
-                const main =
-                    options.fuel ??
-                    this.#top.FuelCapacity?.Main ??
-                    this.#requireFuelCapacity().main;
+                const main = options.fuel ?? this.#requireFuelCapacity().main;
                 return this.#requireMass(options.cargo ?? 0) + main;
             },
             enginesPips,

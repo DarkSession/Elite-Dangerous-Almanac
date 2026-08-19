@@ -924,7 +924,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
     const imported = ShipLoadout.fromLoadout({
         ...stock,
         UnladenMass: 45,
-        CargoCapacity: 4,
+        CargoCapacity: 512,
         FuelCapacity: { Main: 2, Reserve: 0.3 },
     });
     // The fourth site: a capture whose `Main` an edit discarded but whose `Reserve`
@@ -956,7 +956,7 @@ test('a figure an import stated is handed back in the same shape as a calculated
 
     // The figure itself survives the trip, not just the wrapper's shape.
     assert.equal(imported.unladenMassResult.value, 45);
-    assert.equal(imported.cargoCapacityResult.value, 4);
+    assert.equal(imported.cargoCapacityResult.value, 512);
     assert.deepEqual(imported.fuelCapacityResult.value, { main: 2, reserve: 0.3 });
     // Main recalculated from the refitted tank; reserve still the captured figure.
     assert.deepEqual(merged.fuelCapacityResult.value, { main: 2, reserve: 9.99 });
