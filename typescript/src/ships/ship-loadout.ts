@@ -850,7 +850,9 @@ export class ShipLoadout {
      * event names no module for at all, are both filled from the hull's default loadout.
      * A stock replacement keeps the source's `On`, `Priority` and `Health` and none of
      * its engineering or captured value. Every hull carries a default for all nine, so
-     * {@link validation} never reports an imported build incomplete.
+     * {@link validation} never reports `missingRequiredSlot` on an imported build — an
+     * `unknownSlot` or `incompatibleModule` the capture itself states still makes one
+     * incomplete.
      *
      * Normalization makes the captured aggregates untrustworthy, so the event's figures
      * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}

@@ -351,11 +351,13 @@ engineered one and the mobility, shield and recovery companions report `shed`.
 
 `build.importOutcomes` is the account, and it is the entries that matter, not
 the length. A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for,
-which import stocks from the hull defaults. On the cargo hatch and the bulkhead that
-costs nothing: most third-party exports omit the hatch, so most produce exactly that one
-entry, and it leaves every figure standing but its own — like every ship's hatch it draws
-0.6 MW, in the first priority band since the capture recorded none. Every other entry,
-`null` `sourceSymbol` or not, means the figures are the normalized fit's.
+which import stocks from the hull defaults. Two of those cost the capture's figures
+nothing, their stock articles being free and weightless. A stocked bulkhead moves no
+metric at all. A stocked cargo hatch leaves every figure standing but its own — like
+every ship's hatch it draws 0.6 MW, in the first priority band since the capture recorded
+none — and most third-party exports omit it, so most produce exactly that one entry.
+Every other entry, `null` `sourceSymbol` or not, means the figures are the normalized
+fit's.
 
 ## Next
 

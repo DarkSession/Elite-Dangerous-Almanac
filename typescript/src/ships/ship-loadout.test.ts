@@ -1438,7 +1438,7 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
-    // The named bulkhead plus the six cores and the hatch import stocks it for.
+    // The named bulkhead plus the seven cores and the hatch import stocks it for.
     assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 1080);
 
     // An unresolved optional internal is stripped, so the hull and what remains still
