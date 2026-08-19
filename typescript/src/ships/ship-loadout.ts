@@ -631,9 +631,10 @@ export interface LoadoutExportOptions {
      * {@link ShipLoadout.importOutcomes} names the slots. A slot whose module has been
      * swapped is left unpriced, because the figure was paid for the article that *was*
      * fitted; and `ModulesValue` and `Rebuy` are dropped once any priced module has been
-     * swapped or removed, since they then cover an article no longer aboard. Removing a module the
-     * capture listed but never priced is the one case this cannot detect: only the
-     * capture ever knew which unpriced modules its total counted. The built-in cargo hatch
+     * swapped or removed, since they then cover an article no longer aboard. Losing a
+     * module the capture listed but never priced — to a removal or a replacement — is the
+     * one case this cannot detect: only the capture ever knew which unpriced modules its
+     * total counted. The built-in cargo hatch
      * is never purchasable, so normalising an unpriced or zero-priced captured hatch does
      * not invalidate the totals. A non-zero captured hatch value is treated like any
      * other priced replaced article.

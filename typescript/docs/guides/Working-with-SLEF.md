@@ -141,8 +141,9 @@ The built-in cargo hatch is the exception, being unpurchasable: an unpriced or
 zero-priced captured hatch leaves the totals standing.
 
 One limit worth knowing: what a capture never priced, it also never explains — so
-removing an unpriced module cannot be detected. `LoadoutExportOptions.credits` records
-that and the other boundary cases.
+removing an unpriced module cannot be detected.
+{@link ships!LoadoutExportOptions.credits | LoadoutExportOptions.credits} records that
+and the other boundary cases.
 
 ## Slot-key spelling survives a round trip
 
