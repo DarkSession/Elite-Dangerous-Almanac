@@ -14,7 +14,7 @@ what fits, fit it, and report what the build now does. All of it hangs off
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
-// A hull with only its built-in cargo hatch fitted…
+// A hull on its stock bulkhead, core internals and cargo hatch, nothing else fitted…
 const fresh = ShipLoadout.empty('Anaconda');
 
 // …or the build a commander is already flying.
@@ -170,9 +170,10 @@ Two things follow for the panel itself. **An issue's `slot` is not a promise tha
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
-carries a key that is by definition no mount on this hull. And an empty core or armour
-mount arrives as an ordinary issue rather than as a special case — it is what your screen
-exists to get filled, so render it as work to do, not as a fault.
+carries a key that is by definition no mount on this hull. And a `ShipLoadout` never has
+an empty core or armour mount to report: `empty()` and import both stock those from the
+hull defaults, so `complete` is the answer to a question `validateLoadout` asks of a
+module list you assembled yourself, not one a build on your panel fails.
 
 ## Next
 

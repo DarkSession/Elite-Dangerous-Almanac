@@ -221,16 +221,16 @@ Each issue carries a stable `code` and a `severity`:
   write a UI branch for it on a build.)
 - **`incomplete`** — the build does not add up to a finished answer.
 
-`missingRequiredSlot` is the incomplete case: a core or armour mount is empty. A hull
-straight from `ShipLoadout.empty()` reports eight of these, and "you have not fitted a
-power plant" is exactly what an outfitting screen must show as actionable. Unknown
+`missingRequiredSlot` is the incomplete case: a core or armour mount is empty. Unknown
 module symbols do not reach validation: imports discard them from removable mounts and
 stock armour, core internals and the cargo hatch from the hull defaults — a fixed mount
 the source named an unresolvable article for, one it named an article that mount cannot
 hold, and one it named nothing for are filled alike.
-Every hull in the catalogue carries a default for all nine fixed mounts, so an imported
-build never reports `missingRequiredSlot` — it reaches you from `ShipLoadout.empty()` and
-from `validateLoadout` on a module list you assembled yourself.
+Every hull in the catalogue carries a default for all nine fixed mounts, and both
+`ShipLoadout.empty()` and import fit them, so **no `ShipLoadout` ever reports
+`missingRequiredSlot`** — it reaches you only from `validateLoadout` on a module list you
+assembled yourself. A build you have edited is incomplete only in the sense your screen
+decides: no weapons, no shields, no cargo racks are all legal fits.
 
 **Neither question reports normalization.** A build whose unknown power plant was stocked
 from the hull defaults is `valid` and `complete` with no issues — the fit that remains

@@ -471,6 +471,7 @@ type FixtureShipsBuildMetrics = {
             TinyHardpoint1: string;
             TinyHardpoint2: string;
         };
+        note: string;
         power: {
             available: number;
             bands: {

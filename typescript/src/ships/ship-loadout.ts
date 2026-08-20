@@ -714,7 +714,7 @@ const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'fuelCapacity'] as const;
  * const conda = ShipLoadout.empty('Anaconda');
  * conda.slots().length; // -> 39   (every mount, occupied or not)
  * conda.slots('optional').length; // -> 14
- * conda.validation.complete; // -> false  (nothing fitted yet)
+ * conda.validation.complete; // -> true  (it flies: the stock core mounts are filled)
  *
  * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
  * if (fsd) conda.setModule('FrameShiftDrive', fsd);
@@ -936,13 +936,16 @@ export class ShipLoadout {
     }
 
     /**
-     * Start a new build for a hull with no editable modules fitted.
+     * Start a new build for a hull with only its stock core modules fitted.
      *
      * @param shipSymbol - The hull's internal symbol, e.g. `"Anaconda"`
      * (case-insensitive).
-     * @returns An otherwise empty loadout whose {@link slots} come from the hull's
-     * declared layout. The hull's immutable default cargo hatch is fitted because it
-     * is part of the ship rather than an outfitting choice.
+     * @returns A loadout whose {@link slots} come from the hull's declared layout, with
+     * the stock bulkheads, core internals and cargo hatch fitted and every hardpoint,
+     * utility mount and optional internal left empty. A hull cannot fly without core
+     * internals, so leaving them out would only mean every caller refitting the same
+     * stock modules before the build means anything; use {@link default} for a build
+     * that also carries the stock weapons and optional internals.
      * @throws {TypeError} If `shipSymbol` is not a string, or no hull with that symbol
      * has a known slot layout.
      * @example
@@ -964,14 +967,22 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        const hatch = getDefaultLoadout(ship.symbol)?.modules.find((module) =>
-            isCargoHatchSlot(module.slot),
+        // The same mounts import stocks from the same hull defaults: armour, the core
+        // internals and the hatch. A build missing one describes a ship that cannot fly,
+        // and every caller would refit the identical stock article before the build meant
+        // anything.
+        const fitted = (getDefaultLoadout(ship.symbol)?.modules ?? []).filter((module) => {
+            const parsed = parseSlotName(module.slot);
+            return parsed !== null && fixedSlotReason(parsed) !== null;
+        });
+        return new ShipLoadout(
+            ship,
+            ship.symbol,
+            new Map(
+                fitted.map((module) => [module.slot, { Slot: module.slot, Item: module.symbol }]),
+            ),
+            {},
         );
-        const modules = new Map<string, LoadoutModule>();
-        if (hatch) {
-            modules.set(hatch.slot, { Slot: hatch.slot, Item: hatch.symbol });
-        }
-        return new ShipLoadout(ship, ship.symbol, modules, {});
     }
 
     /**
@@ -1427,8 +1438,10 @@ export class ShipLoadout {
      * aggregate totals remain valid for an unpriced or zero-priced cargo hatch. Resolved
      * valid core and armour alternatives are left unchanged.
      *
-     * In practice this repairs a mount {@link ShipLoadout.empty} left open: import fills
-     * every fixed mount itself, so a build from {@link fromLoadout} answers `unchanged`.
+     * In practice there is nothing left for it to repair: {@link ShipLoadout.empty} and
+     * {@link ShipLoadout.default} stock every fixed mount from the hull defaults, import
+     * fills the same mounts from the same list, and {@link setModule} refuses an article
+     * a mount cannot hold — so a build this package produced answers `unchanged`.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
