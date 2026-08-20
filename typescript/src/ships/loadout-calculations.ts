@@ -2,11 +2,10 @@
  * Pure aggregate calculations for ship loadouts.
  *
  * @remarks
- * These functions consume already-resolved module contributions, so they neither import
- * the module catalogues nor know about {@link ShipLoadout}. Every contribution is a
- * known number — an article the catalogue cannot price is refused long before it
- * reaches a build — so each returns its figure outright. The facade uses them after
- * resolving engineering and consumers with their own catalogues can use them directly.
+ * These consume already-resolved module contributions, so they import no catalogue and
+ * know nothing of {@link ShipLoadout}. Every contribution is a known number — a record
+ * missing one is refused long before it reaches a build — so each returns its figure
+ * outright.
  *
  * @packageDocumentation
  */
@@ -85,17 +84,11 @@ export interface FuelCapacity {
 }
 
 /**
- * Sum hull and fitted-module mass.
+ * Sum hull and fitted-module mass, in tonnes.
  *
  * @param hullMass - Empty-hull mass in tonnes.
  * @param modules - Resolved fitted-module contributions.
- * @returns Mass in tonnes.
- * @example
- * ```ts
- * import { calculateUnladenMass } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
- *
- * calculateUnladenMass(25, [{ mass: 2 }]); // -> 27 tonnes
- * ```
+ * @returns Mass in tonnes: `calculateUnladenMass(25, [{ mass: 2 }])` is `27`.
  */
 export function calculateUnladenMass(
     hullMass: number,
@@ -111,12 +104,6 @@ export function calculateUnladenMass(
  *
  * @param modules - Resolved fitted-module contributions.
  * @returns Cargo capacity in tonnes. A build with no rack carries `0`.
- * @example
- * ```ts
- * import { calculateCargoCapacity } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
- *
- * calculateCargoCapacity([]); // -> 0
- * ```
  */
 export function calculateCargoCapacity(modules: readonly LoadoutCalculationModule[]): number {
     let value = 0;
@@ -129,13 +116,7 @@ export function calculateCargoCapacity(modules: readonly LoadoutCalculationModul
  *
  * @param reserveFuelCapacity - Hull reserve in tonnes.
  * @param modules - Resolved fitted-module contributions.
- * @returns Main and reserve capacity. No fitted tank is a main capacity of `0`.
- * @example
- * ```ts
- * import { calculateFuelCapacity } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
- *
- * calculateFuelCapacity(0.3, [{ mass: 2, fuelCapacity: 4 }]).main; // -> 4 tonnes
- * ```
+ * @returns Main and reserve capacity, in tonnes. No fitted tank is a main of `0`.
  */
 export function calculateFuelCapacity(
     reserveFuelCapacity: number,

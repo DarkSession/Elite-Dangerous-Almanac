@@ -64,15 +64,10 @@ export interface ImportedLoadoutState {
 /**
  * Take one reading of every caller-owned field, before any of it is checked.
  *
- * A journal event is usually `JSON.parse` output, but nothing says it has to be: a
- * property can be an accessor that answers differently on each read. Checking one read
- * and using another would let a checked value be swapped for an unchecked one — an
- * `Item` that passed as a string arriving at a catalogue lookup as a number, a `Label`
- * poisoning a build that then throws on the first read of it. So the walk below, the
- * clone, and `sourcePurchaseFromLoadout` all work from this snapshot rather than from
- * the caller's object.
- *
- * Nothing is validated here. A field of the wrong type is carried through exactly as it
+ * A journal event is usually `JSON.parse` output, but a property can be an accessor that
+ * answers differently on each read: checking one read and using another would let a
+ * checked value be swapped for an unchecked one. Everything downstream works from this
+ * snapshot. Nothing is validated here — a wrong-typed field is carried through as it
  * arrived, so the checks below can name it.
  */
 function captureLoadoutEvent(event: LoadoutEvent): LoadoutEvent {
@@ -103,9 +98,7 @@ function captureLoadoutEvent(event: LoadoutEvent): LoadoutEvent {
  * Copy an array by index, reading each element exactly once.
  *
  * `Array.isArray` proves the exotic object, not the methods on it: an own `map` shadows
- * the intrinsic, and calling it would put `modules.map is not a function` in front of a
- * caller instead of a message naming their field. Indexing reaches no caller-supplied
- * method, and `length` on a real array is a data property rather than an accessor.
+ * the intrinsic. Indexing reaches no caller-supplied method.
  */
 function captureEach<T, U>(values: readonly T[], capture: (value: T) => U): U[] {
     const captured: U[] = [];
@@ -196,10 +189,9 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     const slots = new Set<string>();
     for (const module of event.Modules) {
         // The fields every module must carry, named here rather than wherever the walk
-        // below first dereferences them: an `Item` reaching a catalogue lookup as a
-        // number would otherwise report the lookup's own parameter to a caller who only
-        // ever called `fromLoadout`. The optional blocks stay unchecked, as the rest of
-        // the event does — `fromSlef` is the entry point that reports every bad field.
+        // below first dereferences them — an `Item` reaching a catalogue lookup as a
+        // number would report that lookup's own parameter instead. Values stay unchecked;
+        // `fromSlef` is the entry point that reports every bad field.
         if (module === null || typeof module !== 'object') {
             throw new TypeError(
                 `ShipLoadout.fromLoadout: event.Modules[] must hold module objects, received ${describeValue(module)}`,
@@ -208,12 +200,9 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         requireString(module.Slot, 'ShipLoadout.fromLoadout: module.Slot');
         requireString(module.Item, 'ShipLoadout.fromLoadout: module.Item');
         if (module.Engineering !== undefined) {
-            // A relay that writes `null` for an absent block reaches the clone below,
-            // which tests only for `undefined` and dereferences whatever else it finds.
-            // The block itself is therefore checked, and its two id fields
-            // present-and-wrong-typed only: this path accepts a partial block, and a
-            // capture that states modifiers without naming the recipe is one this
-            // library already reads.
+            // A relay writing `null` for an absent block would reach the clone below,
+            // which only tests for `undefined`. A partial block is accepted: a capture
+            // may state modifiers without naming the recipe.
             if (module.Engineering === null || typeof module.Engineering !== 'object') {
                 throw new TypeError(
                     `ShipLoadout.fromLoadout: module.Engineering must be an object, received ${describeValue(module.Engineering)}`,
@@ -227,9 +216,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                 module.Engineering.ExperimentalEffect,
                 'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
             );
-            // `Modifiers` is the same hazard as the block itself: the clone guards it on
-            // `undefined` and then maps it, so anything else reaches `.map is not a
-            // function`.
+            // Same hazard as the block itself: the clone guards on `undefined`, then maps.
             if (
                 module.Engineering.Modifiers !== undefined &&
                 !Array.isArray(module.Engineering.Modifiers)
@@ -238,13 +225,10 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
                     `ShipLoadout.fromLoadout: module.Engineering.Modifiers must be an array, received ${describeValue(module.Engineering.Modifiers)}`,
                 );
             }
-            // A modifier is its `Label` and a value, and the label is not optional: it
-            // is the only thing that says which stat moved, so `getLoadoutModifier` and
-            // identification both read it unconditionally. An entry without one imports
-            // fine and then breaks the build it produced, which is worse than a refusal
-            // — so this is the same rule `parseSlef` applies, checked here rather than
-            // reported under the name of whichever reader reaches it first. The value
-            // beside it is a value, and values on this path are trusted.
+            // The `Label` is not optional: it is the only thing saying which stat moved,
+            // and every reader takes it unconditionally, so an entry without one would
+            // import fine and then break the build it produced. The value beside it is a
+            // value, and values on this path are trusted.
             for (const [index, modifier] of (module.Engineering.Modifiers ?? []).entries()) {
                 if (modifier === null || typeof modifier !== 'object') {
                     throw new TypeError(
@@ -311,9 +295,8 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
 
         if (fallback) {
             // The article is unknown; how the commander ran it is not. Dropping `On`
-            // would switch a disabled module back on and re-band it, moving the power and
-            // heat metrics silently. `repairFixedMount` carries the same three across the
-            // same substitution. `Value` and engineering describe the article, so they go.
+            // would switch a disabled module back on and re-band it, moving power and
+            // heat silently. `Value` and engineering describe the article, so they go.
             modules.set(slot, {
                 Slot: slot,
                 Item: fallback.symbol,
@@ -333,12 +316,10 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         }
         invalidatesAggregates = true;
     }
-    // A fixed mount is filled from the hull defaults whether the source named an article
-    // the catalogues cannot resolve or named none at all: both leave the same hole, and a
-    // build that cannot be flown is not the state to import a capture into. Only a
-    // stocked core internal invalidates the capture's own aggregates: every hull's stock
-    // bulkhead and hatch cost nothing and weigh nothing, so fitting one moves no figure
-    // the capture stated — `default-loadouts.test.ts` fails if that stops being true.
+    // A mount the source named nothing for leaves the same hole as one it named an
+    // unresolvable article for, so both are filled from the hull defaults. Only a stocked
+    // core internal invalidates the capture's aggregates: the stock bulkhead and hatch
+    // weigh and cost nothing, which `default-loadouts.test.ts` pins.
     for (const fallback of defaults) {
         const slotKind = parseSlotName(fallback.slot)?.kind;
         if (
@@ -367,15 +348,11 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
 
     const moduleStats = new Map<string, OutfittingModule>();
     const primitiveModifiers = new Map<string, readonly EngineeringModifier[]>();
-    // A reward has no distinct module symbol. Identify its hand-set stat signature so
-    // values absent from the capture still come from the fitted article; explicit
-    // captured modifiers remain authoritative. Some SLEF captures omit Modifiers from a
-    // fixed article entirely; its full identity can still select the catalogue row. A
-    // present array cannot: older releases exported ordinary AX rolls with the same
-    // symbol/blueprint/grade tuple. A third-party exporter can omit that array from an
-    // ordinary historical roll too; no evidence can separate it from the reward, so the
-    // catalogue identity wins. Guardian weapons retain their broader recipe fallback
-    // because an ordinary weapon recipe on one already identifies a final article.
+    // A reward has no distinct module symbol, so it is identified by its hand-set stat
+    // signature and supplies the values the capture omits; explicit captured modifiers
+    // stay authoritative. A capture that omits `Modifiers` entirely can still be selected
+    // by its full identity — a present array cannot, since older releases exported
+    // ordinary AX rolls under the same symbol/blueprint/grade tuple.
     for (const module of modules.values()) {
         const engineering = module.Engineering;
         const variant = identifyPreEngineeredVariant(module);

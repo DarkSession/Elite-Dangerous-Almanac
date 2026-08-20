@@ -281,19 +281,14 @@ export interface OutfittingModuleIdentity {
      * its kind that is large enough.
      *
      * This is the module's half of the fit rule and `BuildSlot.core` is the mount's
-     * half; `ShipLoadout.setModule` matches the two. Read it rather than inferring a
-     * mount from the symbol — `Int_Engine_*` being thrusters is a naming habit, not a
-     * guarantee, and the Python Mk II's `Int_MkIIAgileBoost_*` thrusters already break
-     * it.
+     * half; `ShipLoadout.setModule` matches the two. **The rule is read off the record,
+     * not off the symbol**: `Int_Engine_*` being thrusters is a naming habit the Python
+     * Mk II's `Int_MkIIAgileBoost_*` already breaks, and a record you assembled yourself
+     * without a `slot` will not go into a core mount at all. Resolve records from a
+     * catalogue ({@link getModuleBySymbol}) and the question does not arise.
      *
      * A `fuelTank` is the one module that fits somewhere else as well: its own core
      * mount *and* any optional slot large enough.
-     *
-     * **The rule is read off the record, not off the symbol** — the same way
-     * {@link OutfittingModule.restrictedToShips} behaves, and with the same
-     * consequence: a record you assemble yourself from a journal `Item` string, with
-     * no `slot` on it, will not go into a core mount. Resolve records from a catalogue
-     * ({@link getModuleBySymbol}) and the question does not arise.
      *
      * @example
      * ```ts
@@ -383,16 +378,12 @@ export interface OutfittingModuleIdentity {
      * | `Int_LargeCargoRack_Size7_Class1`, `Int_LargeCargoRack_Size8_class1` (Mk II Cargo Rack) | `cargo` |
      * | `Int_MultiDroneControl_MiningV2_Size5_Class5` (Mk II Mining Multi-Limpet Controller) | `limpetController` |
      *
-     * It composes with {@link OutfittingModule.restrictedToShips} rather than
-     * replacing it: the Mk II racks name both the hull that can buy them and the kind
-     * of mount they go in, and a build must satisfy both. Where a module names a hull
-     * and nothing else — the Mk II Vessel Hangars, say — it fits that hull's ordinary
-     * optionals like anything else.
-     *
-     * **The rule is read off the record, not off the symbol.** A module you assemble
-     * yourself — from a journal `Item` string, say — is refused only if you give it
-     * this field, exactly as `restrictedToShips` behaves. Resolve records from a
-     * catalogue and the question does not arise.
+     * It composes with {@link OutfittingModule.restrictedToShips} rather than replacing
+     * it: the Mk II racks name both the hull that can buy them and the kind of mount they
+     * go in, and a build must satisfy both. Where a module names a hull and nothing else
+     * — the Mk II Vessel Hangars, say — it fits that hull's ordinary optionals like
+     * anything else. As with {@link OutfittingModule.slot}, the rule is read off the
+     * record rather than the symbol.
      * @example
      * ```ts
      * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';

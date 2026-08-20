@@ -2,40 +2,20 @@
  * {@link ShipLoadout} — a mutable fitted-ship model that both **answers questions**
  * about a build and **edits** it.
  *
- * Load one from a SLEF export (or a journal `Loadout` event) to read back the ship's
- * identity, mass and fuel and ask for jump range and per-jump fuel; or start an
- * {@link ShipLoadout.default | default} or {@link ShipLoadout.empty | empty} hull,
- * enumerate its {@link ShipLoadout.slots | slots}, and
- * {@link ShipLoadout.setModule | fit} and {@link ShipLoadout.removeModule | remove}
- * modules. It composes the data-free pieces of this folder — the SLEF parser
- * (`./slef`), the jump-range maths (`./jump-range`), the slot model (`./slots`), and
- * the module and ship catalogues (each record carrying its own stats).
+ * Load one from a SLEF export or a journal `Loadout` event, or start from a
+ * {@link ShipLoadout.default | default} or {@link ShipLoadout.empty | empty} hull, then
+ * enumerate its {@link ShipLoadout.slots | slots} and fit modules. Edits change the
+ * build in place and return `this`; everything a query returns is a deeply frozen
+ * snapshot, so query again after an edit rather than re-reading an earlier value.
  *
- * Instances are **mutable**: `setModule`/`removeModule` change the build in place and
- * return `this` for chaining. Values a SLEF export already computed (its
- * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim while the fit they describe
- * survives import; otherwise they are computed from the fitted modules and the hull.
- * Editing an imported build adjusts the supplied aggregate figures by the changed
- * module's contribution, so an edited import stays coherent rather than going stale.
- * `setModule` snapshots the complete record it receives, including resolved
- * pre-engineered or caller-supplied stats, so every later metric uses the article that
- * was actually fitted rather than resolving its symbol back to a stock module.
- * Slot and fitted-module queries return deeply frozen point-in-time values; edits are
- * made only through this facade, then observed by querying again.
- *
- * **Slot keys are matched case-insensitively.** Frontier writes `FrameShiftDrive` and
- * `LargeMiningHardpoint1`, but a SLEF producer may lower-case every key as the
- * specification's own example does — Inara writes `frameshiftdrive` and
- * `largemininghardpoint1` — and both spellings name the same mount, whether you are
- * reading it or fitting into it. What a build already carries is never rewritten to
- * match, so re-exporting an import returns the producer's own spelling untouched.
+ * **Slot keys are matched case-insensitively.** Frontier writes `FrameShiftDrive`, a
+ * SLEF producer may write `frameshiftdrive`, and both name the same mount. A build's own
+ * spelling is never rewritten, so re-exporting an import returns it untouched.
  *
  * @remarks
- * This is the batteries-included ship facade: resolving arbitrary journal module
- * ids and engineering recipes requires the complete ship/module, blueprint, and
- * experimental-effect catalogues. Import `./slef`, `./jump-range`, or an individual
- * module catalogue instead when you only need one data-free operation or one
- * outfitting category.
+ * This is the batteries-included ship facade: it carries the complete ship, module,
+ * blueprint and experimental-effect catalogues. Import `./slef`, `./jump-range`, or one
+ * module catalogue instead when you need a single data-free operation.
  *
  * @example
  * ```ts
@@ -616,37 +596,22 @@ export interface LoadoutExportOptions {
     /**
      * Which credits to quote. `'retail'` — the default — prices the build from the
      * catalogue: the bare hull's `hullCost`, every fitted module's list price, and a
-     * `Rebuy` of 5% of the two.
+     * `Rebuy` of 5% of the two. A build with no {@link ShipLoadout.sourcePurchase |
+     * source purchase record} — one assembled here, or a capture that quoted no credits
+     * — exports no credit figure at all under `'source'` rather than falling back to
+     * retail.
      *
-     * `'source'` quotes the build's {@link ShipLoadout.sourcePurchase | source purchase
-     * record} instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value`
-     * figures exactly as the capture stated them, and nothing where it stated nothing.
-     * A capture that names every core internal and whose every article resolves
-     * therefore re-exports its own credits unchanged until it is edited.
-     *
-     * Each captured figure is pinned to what it was paid for, so a fit that stops
-     * matching the capture narrows the export rather than staling it — by an edit, or at
-     * import, where normalization discards or replaces a module the catalogue cannot
-     * resolve, and stocks a fixed mount the capture named nothing for.
-     * {@link ShipLoadout.importOutcomes} names the slots. A stocked core internal drops
-     * `ModulesValue` and `Rebuy` on its own, since no priced slot disagrees with an
-     * article that was never aboard when the figures were written — a stocked bulkhead or
-     * cargo hatch costs nothing, so neither moves them. A slot whose module has been
-     * swapped is left unpriced, because the figure was paid for the article that *was*
-     * fitted; and `ModulesValue` and `Rebuy` are dropped once any priced module has been
-     * swapped or removed, since they then cover an article no longer aboard. Losing a
-     * module the capture listed but never priced — to a removal or a replacement — is the
-     * one case this cannot detect: only the capture ever knew which unpriced modules its
-     * total counted. The built-in cargo hatch is never purchasable, so normalising an
-     * unpriced or zero-priced captured hatch does not invalidate the totals. A non-zero
-     * captured hatch value is treated like any other priced replaced article.
-     *
-     * `HullValue` always stands: a captured hull figure names no slot, so no edit
-     * narrows it. Note that on a game capture it counts the hull *with* its stock
-     * fittings, and removing one of those leaves it overstating what is aboard.
-     *
-     * A build with no source record — one assembled here, or a capture that quoted no
-     * credits — exports no credit figure at all rather than falling back to retail.
+     * `'source'` quotes that record instead: `HullValue`, `ModulesValue`, `Rebuy` and the
+     * per-module `Value` figures exactly as the capture stated them. Each figure is
+     * pinned to what it was paid for, so a fit that stops matching the capture narrows
+     * the export rather than staling it — a swapped slot exports unpriced, and
+     * `ModulesValue` and `Rebuy` are dropped once any priced module has been swapped or
+     * removed, or a core internal stocked at import. Free, weightless articles move
+     * nothing: a stocked bulkhead or cargo hatch, or a normalized hatch the capture
+     * priced at zero. `HullValue` always stands, naming no slot — though on a game
+     * capture it counts the hull *with* its stock fittings, so removing one leaves it
+     * overstating what is aboard. Losing a module the capture listed but never priced is
+     * the one narrowing this cannot detect: only the capture knew what its total counted.
      */
     readonly credits?: 'retail' | 'source';
 }
@@ -669,13 +634,6 @@ const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'fuelCapacity'] as const;
 
 /**
  * A fitted ship — read a SLEF export, or assemble a hull from scratch.
- *
- * @remarks
- * Jump calculations resolve the frame shift drive's constants from the drive's module
- * record, applying any engineering the build carries (a Long Range blueprint's
- * `FSDOptimalMass`, for instance). Mass comes from the export's `UnladenMass` where
- * {@link unladenMass} takes it; otherwise it is the hull mass plus every fitted module's
- * mass (armour defaults to the zero-mass lightweight alloy).
  *
  * @example
  * Read a build a player already flies, and ask it what an outfitting screen shows.
@@ -700,39 +658,6 @@ const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'fuelCapacity'] as const;
  * build.powerBudget().withinBudget; // -> true
  * build.shieldMetrics()?.strength; // -> 743.12  (MJ)
  * build.armourMetrics().hitPoints; // -> 307.8
- * ```
- *
- * @example
- * Assemble a hull instead. `empty` starts from the shipyard layout, `slots` enumerates
- * the mounts, and `setModule` fits one — chainable, because the build is mutable.
- *
- * ```ts
- * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
- * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
- * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
- *
- * const conda = ShipLoadout.empty('Anaconda');
- * conda.slots().length; // -> 39   (every mount, occupied or not)
- * conda.slots('optional').length; // -> 14
- * conda.validation.complete; // -> true  (it flies: the stock core mounts are filled)
- *
- * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
- * if (fsd) conda.setModule('FrameShiftDrive', fsd);
- * ```
- *
- * @example
- * Write a build back out. Retail credits are what the catalogue prices the fit at; pass
- * `credits: 'source'` to export the figures a capture stated it paid instead — see
- * {@link ShipLoadout.sourcePurchase}.
- *
- * ```ts
- * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
- *
- * declare const build: ShipLoadout;
- *
- * build.toLoadoutEvent(); // retail: hull cost plus every module's list price
- * build.toLoadoutEvent({ credits: 'source' }); // the capture's own figures
- * build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
  * ```
  */
 export class ShipLoadout {
@@ -808,104 +733,53 @@ export class ShipLoadout {
      * @param event - A `Loadout` event object.
      * @returns The loadout.
      * @remarks
-     * Capture/instance state (`timestamp`, `ShipID`, `HullHealth`, `Hot`) and engineering
-     * provenance (`Engineer`, `EngineerID`, `BlueprintID`) are deliberately excluded
-     * from the durable build. See {@link LoadoutEvent} and {@link ModuleEngineering}.
-     * A reward module is identified when its reported stat signature uniquely matches a
-     * catalogue variant. That reward's complete fixed stat block is then used as the fitted
-     * record, including values the capture omits; a separately applied experimental effect
-     * is included when matching and remains authoritative in the captured modifiers. A
-     * Mercenary module is instead identified by the bespoke blueprint available only to its
-     * purchase, including after a later grade upgrade. Its unpublished purchase modifiers
-     * are not inferred; the capture's current engineering remains authoritative. A fixed
-     * catalogue article can also be identified by its complete
-     * symbol/blueprint/grade/experimental identity when a SLEF capture omits the
-     * `Modifiers` key entirely. A present modifier array must pass the stat-signature
-     * match instead, so an older exported stock roll sharing that identity remains stock.
-     * A third-party export could also omit the array from an ordinary historical AX roll;
-     * that record is indistinguishable from the fixed reward, so the catalogue identity
-     * wins. Other under-specified or ambiguous evidence stays unidentified.
-     * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
-     * article; the import preserves that identity, uses the catalogue's complete hand-set
-     * stat block when the exact article is known, exposes no engineering options for it,
-     * and refuses attempts to engineer it further. Explicit journal modifiers remain
-     * authoritative over that stat block.
+     * Capture and instance state (`timestamp`, `ShipID`, `HullHealth`, `Hot`) and
+     * engineering provenance (`Engineer`, `EngineerID`, `BlueprintID`) stay out of the
+     * durable build. A pre-engineered article — a reward, a Mercenary purchase, a
+     * Guardian weapon — is identified where the capture's evidence names one uniquely,
+     * and the catalogue's stat block then supplies the values the capture omits; the
+     * capture's own modifiers stay authoritative over it.
      *
-     * The event's credit figures are kept twice over: as the live `hullValue` /
-     * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
-     * {@link sourcePurchase} record, which no edit touches.
+     * Modules are imported as one complete snapshot, so their order does not affect
+     * per-ship count allowances. An entry stands as the event stated it when the mount
+     * can hold the article the catalogue resolves, when its slot is a known cosmetic or
+     * hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it is
+     * the built-in cargo hatch. Everything else is normalized, and every change is
+     * recorded by {@link importOutcomes}: an unresolved module in a removable mount is
+     * discarded, while armour, the seven core internals and the cargo hatch are filled
+     * from the hull defaults whenever the event left no article that mount can hold — an
+     * unresolved symbol, a resolved one the mount refuses, and no entry at all are
+     * corrected alike, each keeping the source's `On`, `Priority` and `Health`. A
+     * removable mount may stand empty, so an article *it* refuses stays where the event
+     * put it and is reported by {@link validation} instead.
      *
-     * Modules are imported as one complete snapshot: their array order does not affect
-     * per-ship count allowances, and any aggregate violation is reported by
-     * {@link validation}. An entry is kept as the event stated it when the catalogue
-     * identifies its `Item` and the mount can hold it, when its slot is a known cosmetic
-     * or hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it
-     * is a `ModularCargoBayDoor*` article in the cargo-hatch mount — the catalogue
-     * carries that one built-in article once, for every hull family that names its own
-     * symbol.
-     *
-     * Everything else is normalized, and every change is recorded by
-     * {@link importOutcomes}. An unresolved module in a hardpoint, utility, optional
-     * internal or unrecognised slot is discarded. Armour, all seven core internals and
-     * the cargo hatch are fixed mounts, and each is filled from the hull's default
-     * loadout unless the event left an article there that mount can actually hold: an
-     * unresolved symbol, a resolved one the mount refuses — a cargo rack in `Armour`, an
-     * oversized power plant, anything but the built-in hatch — and no entry at all are
-     * corrected alike. Only fixed mounts are: a removable mount may stand empty, so a
-     * resolved article it refuses stays where the event put it and is reported by
-     * {@link validation} instead.
-     * A stock replacement keeps the source's `On`, `Priority` and `Health` and none of
-     * its engineering or captured value. Every hull carries a default for all nine, so
-     * {@link validation} never reports `missingRequiredSlot` on an imported build — an
-     * `unknownSlot` or `incompatibleModule` the capture itself states still makes one
-     * incomplete.
-     *
-     * Normalization makes the captured aggregates untrustworthy, so the event's figures
-     * are dropped: {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity}
-     * are recomputed from the fit that remains, while {@link modulesValue} and
-     * {@link rebuy} read `null` — no catalogue records what the discarded module was
-     * bought for — and {@link sourcePurchase} still reports the captured figures. A mount
-     * stocked from *absence* is the exception where its stock article is free and
-     * weightless, which the bulkhead and the cargo hatch both are: restoring either, or
-     * importing a hull-family hatch the catalogue resolves, leaves every figure standing.
-     * A stocked core internal does not — that article has mass and a price the capture
-     * never counted, so source-credit export drops its `ModulesValue` and `Rebuy` as
-     * well. Replacing an *unresolved* hatch invalidates the figures too, and
-     * source-credit export then keeps its totals only when that hatch was unpriced or
-     * valued at zero.
+     * Normalization makes the captured aggregates untrustworthy, so they are dropped:
+     * {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity} are recomputed
+     * from the fit that remains, {@link modulesValue} and {@link rebuy} read `null`, and
+     * {@link sourcePurchase} still reports what the capture stated. Stocking a free,
+     * weightless article moves no figure and leaves them standing — which the stock
+     * bulkhead and the cargo hatch both are.
      *
      * Use this factory rather than replaying a complete loadout through the incremental
      * {@link setModule} editor.
      *
      * @throws {TypeError} If the event is not shaped like one. What is checked is the
-     * structure a build is assembled from, and the types of the fields naming things in
-     * it: `event` must be an object with an array of module objects in `Modules`; each
-     * module needs a string `Slot` and `Item`, and no two may claim the same slot; a
-     * module's `Engineering` must be an object, and that block's `Modifiers` an array of
-     * objects each carrying a string `Label`, whenever their key is there **at all**;
-     * `event.Ship` must name a known hull; the block's `BlueprintName` and its
-     * `ExperimentalEffect` must be strings **when they carry a value**. Every remaining
-     * field — every number, every
-     * flag, a modifier's value beside its label — is trusted, so use
+     * structure a build is assembled from and the fields that name things in it: `event`
+     * must be an object with an array of module objects in `Modules`, each carrying a
+     * string `Slot` and `Item`, no two claiming the same slot; `event.Ship` must name a
+     * known hull; an `Engineering` block must be an object and its `Modifiers` an array
+     * of objects each carrying a string `Label`, whenever the key is there at all; that
+     * block's `BlueprintName` and `ExperimentalEffect` must be strings when they carry a
+     * value. A modifier's `Label` is required rather than checked-when-present because it
+     * is the only thing saying which stat moved. Every remaining field — every number,
+     * every flag, a modifier's value beside its label — is trusted, so use
      * {@link ShipLoadout.fromSlef} (or {@link parseSlef}) for input you did not produce,
      * which reports all of them.
-     *
-     * A modifier's `Label` is required rather than checked-when-present because it is
-     * the only thing saying which stat moved: {@link fittedModuleAt} and the
-     * pre-engineered identification both read it unconditionally, so an entry without
-     * one would import cleanly and then break the build it produced.
-     *
-     * `Ship`, `Engineering` and `Modifiers` are fields where `null` is not an omission:
-     * `Ship` is required, while a relay writing `null` for an optional block or list it
-     * does not have would otherwise be read as one. A partial `Engineering` block is
-     * accepted because a capture may state modifiers without naming the recipe.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
-        // Is it an object at all? Everything past that is `normalizeLoadoutEvent`'s,
-        // which takes one reading of every field before checking any of it — a caller's
-        // accessor cannot answer the check and the use differently. Only the structure
-        // and the fields that name things are checked there; every value in them is
-        // trusted, and `fromSlef` is the entry point that reports a bad one.
+        // Is it an object at all? Every other check is `normalizeLoadoutEvent`'s, which
+        // reads each field once before checking any of it — a caller's accessor cannot
+        // answer the check and the use differently.
         if (event === null || typeof event !== 'object') {
             throw new TypeError(
                 `ShipLoadout.fromLoadout: event must be a Loadout event, received ${describeValue(event)}`,
@@ -940,12 +814,10 @@ export class ShipLoadout {
      *
      * @param shipSymbol - The hull's internal symbol, e.g. `"Anaconda"`
      * (case-insensitive).
-     * @returns A loadout whose {@link slots} come from the hull's declared layout, with
-     * the stock bulkheads, core internals and cargo hatch fitted and every hardpoint,
-     * utility mount and optional internal left empty. A hull cannot fly without core
-     * internals, so leaving them out would only mean every caller refitting the same
-     * stock modules before the build means anything; use {@link default} for a build
-     * that also carries the stock weapons and optional internals.
+     * @returns A loadout on the hull's stock bulkhead, core internals and cargo hatch,
+     * with every hardpoint, utility mount and optional internal left open. Use
+     * {@link default} for a build that also carries the hull's stock weapons and
+     * optional internals.
      * @throws {TypeError} If `shipSymbol` is not a string, or no hull with that symbol
      * has a known slot layout.
      * @example
@@ -959,18 +831,15 @@ export class ShipLoadout {
         const requested = requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol');
         const ship = getShipBySymbol(requested);
         if (!ship) {
-            // Shortened so this method's two failures agree: the guard above describes an
-            // oversized argument in bounded form, and quoting one back in full here would
-            // undo that. Messages elsewhere still reproduce a caller's string in full —
+            // Truncated so this method's two failures agree; messages elsewhere still
+            // quote a caller's string in full —
             // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213.
             throw new TypeError(
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        // The same mounts import stocks from the same hull defaults: armour, the core
-        // internals and the hatch. A build missing one describes a ship that cannot fly,
-        // and every caller would refit the identical stock article before the build meant
-        // anything.
+        // The same mounts import stocks, from the same hull defaults: a build without
+        // them is a ship that cannot fly.
         const fitted = (getDefaultLoadout(ship.symbol)?.modules ?? []).filter((module) => {
             const parsed = parseSlotName(module.slot);
             return parsed !== null && fixedSlotReason(parsed) !== null;
@@ -1049,12 +918,10 @@ export class ShipLoadout {
      * Hull + modules mass with an empty tank and no cargo, in tonnes.
      *
      * @remarks
-     * A SLEF export's `UnladenMass` is trusted verbatim unless import normalization
-     * changed the fit it described — stocking an absent bulkhead or cargo hatch does not,
-     * both weighing nothing. Otherwise the mass is the hull's `hullMass` plus every
-     * fitted module's mass (post-engineering), with armour at the zero-mass lightweight
-     * default — the normalized fit's mass, then, not the capture's.
-     * {@link importOutcomes} is the only report of that, in every entry but those two.
+     * A capture's own `UnladenMass` stands while the fit it described survives import
+     * (see {@link fromLoadout}); otherwise this is the hull's `hullMass` plus every
+     * fitted module's post-engineering mass, and {@link importOutcomes} is the only
+     * report that the figure is the normalized fit's rather than the capture's.
      */
     get unladenMass(): number {
         return this.#top.UnladenMass ?? this.#computedUnladenMass();
@@ -1069,11 +936,8 @@ export class ShipLoadout {
     }
 
     /**
-     * Fuel-tank capacities, in tonnes. A SLEF export's `FuelCapacity` is used when
-     * present and import normalization left its fit alone, stocking an absent bulkhead
-     * or cargo hatch excepted — both weigh nothing and cost nothing; otherwise the main
-     * capacity is the sum of the fitted fuel tanks and the reserve comes from the hull's
-     * stats.
+     * Fuel-tank capacities, in tonnes — a capture's `FuelCapacity` on the same terms as
+     * {@link unladenMass}, otherwise the fitted tanks plus the hull's own reserve.
      */
     get fuelCapacity(): FuelCapacity {
         const cap = this.#top.FuelCapacity;
@@ -1088,10 +952,8 @@ export class ShipLoadout {
     }
 
     /**
-     * Cargo capacity, in tonnes. A SLEF export's `CargoCapacity` is used when present
-     * and import normalization left its fit alone, stocking an absent bulkhead or cargo
-     * hatch excepted — both weigh nothing and cost nothing; otherwise it is the sum of
-     * the fitted cargo racks.
+     * Cargo capacity, in tonnes — a capture's `CargoCapacity` on the same terms as
+     * {@link unladenMass}, otherwise the sum of the fitted racks.
      */
     get cargoCapacity(): number {
         return this.#top.CargoCapacity ?? this.#computedCargoCapacity();
@@ -1151,11 +1013,9 @@ export class ShipLoadout {
      * what {@link hullValue}, {@link modulesValue} and {@link rebuy} cannot do — they
      * describe the build in hand, so an edit that invalidates one drops it.
      *
-     * The two answer different questions and neither substitutes for the other. A
-     * captured price belongs to one commander's purchase history, discounts included;
-     * the library's own figures are catalogue retail. Export picks between them
-     * explicitly, and quotes retail unless asked otherwise — see
-     * {@link LoadoutExportOptions.credits}.
+     * A captured price belongs to one commander's purchase history, discounts included;
+     * the library's own figures are catalogue retail. Export quotes retail unless asked
+     * otherwise — see {@link LoadoutExportOptions.credits}.
      *
      * @example
      * ```ts
@@ -1187,13 +1047,10 @@ export class ShipLoadout {
      * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
      * needed no normalization.
      * @remarks
-     * Each entry names the exact slot, and the source identity where the source gave
-     * one. An `emptied`
-     * outcome means import removed an unknown module from a hardpoint, utility, optional
-     * internal, or unrecognised slot. A `defaulted` outcome names the stock replacement
-     * fitted to armour, a core internal, or the cargo hatch; its `sourceSymbol` is `null`
-     * when the source named no module for that mount at all, rather than one the
-     * catalogues could not resolve.
+     * Each entry names the exact slot, and the source identity where the source gave one.
+     * `emptied` means an unknown module was removed from a removable mount; `defaulted`
+     * names the stock article fitted to armour, a core internal or the cargo hatch, with
+     * a `null` `sourceSymbol` when the source named nothing there at all.
      */
     get importOutcomes(): readonly LoadoutImportOutcome[] {
         return this.#importOutcomes;
@@ -1203,12 +1060,12 @@ export class ShipLoadout {
      * Structural validity and operational completeness of this build.
      *
      * @remarks
-     * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
-     * mounts must be filled for `complete` to be true. A module in a nonexistent or
-     * incompatible slot is invalid. Exclusive families and per-ship module-count
-     * allowances must also be satisfied.
-     * Neither question reports import normalization — the fit that remains really is
-     * legal and really is filled — so read {@link importOutcomes} beside them.
+     * `complete` asks whether armour and the seven core mounts are filled; since every
+     * build fills them, only a module list you validate yourself with `validateLoadout`
+     * can answer `false`. `valid` asks whether the fit is legal: a module in a nonexistent
+     * or incompatible slot, a duplicated exclusive family, or a module count past the
+     * build's allowance makes it `false`. Neither question reports import normalization,
+     * so read {@link importOutcomes} beside them.
      */
     get validation(): LoadoutValidation {
         const slots = this.#layout();
@@ -1429,14 +1286,10 @@ export class ShipLoadout {
      * Restore a missing or invalid fixed mount from this hull's stock loadout.
      *
      * @remarks
-     * This is the narrow repair path for mounts that {@link setModule} deliberately does
-     * not expose as ordinary edits, including the built-in cargo hatch. The stock article
-     * keeps the mount's `On`, `Priority` and `Health` and none of the replaced module's
-     * engineering or captured value, as import normalization does. Live aggregates follow
-     * the same rules as every package-owned refit. The immutable {@link sourcePurchase}
-     * record is unchanged; source-credit export leaves a replaced slot unpriced, while its
-     * aggregate totals remain valid for an unpriced or zero-priced cargo hatch. Resolved
-     * valid core and armour alternatives are left unchanged.
+     * The repair path for mounts {@link setModule} does not expose as ordinary edits,
+     * including the built-in cargo hatch. The stock article keeps the mount's `On`,
+     * `Priority` and `Health` and none of the replaced module's engineering or captured
+     * value, as import normalization does.
      *
      * In practice there is nothing left for it to repair: {@link ShipLoadout.empty} and
      * {@link ShipLoadout.default} stock every fixed mount from the hull defaults, import
@@ -1522,15 +1375,13 @@ export class ShipLoadout {
      * Fit a module into a slot, replacing whatever is there.
      *
      * @remarks
-     * This is an incremental editor: every call must avoid worsening the current
-     * build's module-count excess. Fit an allowance-increasing module before the weapons
-     * it permits. To consume a complete order-independent snapshot, use
-     * {@link ShipLoadout.fromLoadout}.
+     * This is an incremental editor: every call must avoid worsening the current build's
+     * module-count excess, so fit an allowance-increasing module before the weapons it
+     * permits. Use {@link ShipLoadout.fromLoadout} to consume a complete snapshot
+     * instead, where order does not matter.
      *
      * Fitting is a fresh mount: the slot's `On`, `Priority` and `Health` are reset. Set
      * them again if your screen keeps a priority group across a swap.
-     * {@link repairFixedMount} keeps them, standing in for an article that failed rather
-     * than for one the player chose.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively (journal
      * spelling). An occupied slot keeps the key the build already spells it with, so
@@ -1543,10 +1394,9 @@ export class ShipLoadout {
      * state one as anything but a finite number.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
-     * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
-     * `getModuleBySymbol` miss), is not an outfitting module at all, names a symbol no
-     * catalogue carries, or omits one of the three stats a build sums from the fit or
-     * states it as something other than a finite number.
+     * @throws {TypeError} If `slotKey` is not a string, or `module` fails any of the
+     * conditions above — null/undefined (e.g. a `getModuleBySymbol` miss), not an
+     * outfitting module, an uncatalogued symbol, or a missing or non-finite summed stat.
      * @throws {LoadoutEditError} If the module does not fit the slot (wrong kind, too
      * large, or a restriction the module does not satisfy), conflicts with a one-per-ship
      * family already fitted elsewhere, or worsens a per-ship module-count excess.
@@ -1567,16 +1417,13 @@ export class ShipLoadout {
         const slot = this.#requireSlot(slotKey);
         if (module === null || module === undefined) {
             // Guards the common `getModuleBySymbol('typo', CAT)!` miss, whose `!` lies.
-            // Nothing else takes this branch: another falsy value is not a lookup miss,
-            // and claiming it was would send the caller looking in the wrong place.
             throw new TypeError(
                 `ShipLoadout.setModule: no module supplied for "${truncate(slotKey)}" (did the module lookup return undefined?)`,
             );
         }
         // Every fit rule reads the record's symbol, so anything else — a bare id, a
-        // journal fragment — must be named here rather than failing inside the rules.
-        // Named from the argument itself, before the snapshot below turns whatever it
-        // is into a plain object the caller would not recognise.
+        // journal fragment — is named here, from the argument itself, before the snapshot
+        // below turns it into a plain object the caller would not recognise.
         if (typeof (module as { symbol?: unknown }).symbol !== 'string') {
             throw new TypeError(
                 `ShipLoadout.setModule: module for "${truncate(slotKey)}" must be an outfitting module, received ${describeValue(module)}`,
@@ -1585,12 +1432,10 @@ export class ShipLoadout {
         // Snapshot before a single figure is checked, so a caller's accessor cannot
         // answer the checks below one way and the fit that gets stored another.
         module = cloneModuleStats(module);
-        // The record may state engineered or otherwise adjusted figures, but the article
-        // it describes has to be one the catalogue knows, and it has to keep every figure
-        // a build sums from the fit. Absent is not zero: a record without its mass or its
-        // rack's capacity would understate the ship rather than fail, and nobody would
-        // question the answer. Import drops an article the catalogue cannot identify for
-        // the same reason, so this is the last way one could reach a build.
+        // The record may state engineered figures, but the article has to be one the
+        // catalogue knows and has to keep every figure a build sums. Absent is not zero:
+        // a record without its mass would understate the ship rather than fail, and
+        // nobody would question the answer.
         const catalogued = builtInModuleBySymbol(module.symbol, FITTED_ITEM);
         if (catalogued === null) {
             throw new TypeError(
@@ -1605,8 +1450,7 @@ export class ShipLoadout {
                     `ShipLoadout.setModule: the supplied record for "${truncate(module.symbol)}" has no ${field}`,
                 );
             }
-            // A figure that is not a finite number would be summed as zero or, worse,
-            // concatenated — a build that answers with a wrong number nobody questions.
+            // A non-finite figure would be summed as zero or, worse, concatenated.
             if (typeof stated !== 'number' || !Number.isFinite(stated)) {
                 throw new TypeError(
                     `ShipLoadout.setModule: the supplied record for "${truncate(module.symbol)}" states a ${field} of ${describeValue(stated)}`,
@@ -1734,27 +1578,21 @@ export class ShipLoadout {
      * Engineer the module in a slot — apply a blueprint (with a grade and quality) and
      * an optional experimental effect, computing the resulting stat modifiers.
      *
-     * The modifiers are stored with journal-equivalent labels and numeric values on the
-     * fitted module, so the build's jump-range and mass calculations pick them up
-     * automatically. The optional journal display-direction hint `LessIsGood` is omitted.
-     * The block keeps the `BlueprintName` you passed, so it reads back the way the build
-     * declared it. Values use Frontier's float32 arithmetic, and weapon recipe internals
-     * such as `BurstInterval` are exposed as the derived `RateOfFire` and
-     * `DamagePerSecond` labels a journal writes. Module-specific aliases likewise use the
-     * journal spelling (`MaximumRange` for a module's maximum range and `Range` for a
-     * scanner range).
-     * Recipe-only values remain available through {@link FittedModule.effectiveStats} and
-     * build calculations even though a journal does not serialize their labels; this is
-     * what keeps burst and reload-cycle calculations faithful after applying a recipe.
+     * The modifiers are stored on the fitted module with journal-equivalent labels and
+     * Frontier's float32 arithmetic, so the build's own calculations pick them up. The
+     * block keeps the `BlueprintName` you passed. Weapon recipe internals such as
+     * `BurstInterval` are exposed as the derived `RateOfFire` and `DamagePerSecond`
+     * labels a journal writes, and module-specific aliases use the journal spelling too
+     * (`MaximumRange`, `Range`); recipe-only values a journal serializes no label for
+     * stay available through {@link FittedModule.effectiveStats}, which is what keeps
+     * burst and reload-cycle calculations faithful.
      *
      * **Which recipe an id names can depend on the module.** The game writes
-     * `Sensor_LongRange` and `Sensor_WideAngle` for both a sensor suite's modification and a
-     * utility scanner's, and the two roll different stats in opposite directions — Long
-     * Range costs the suite mass and the scanner power draw. So the id is resolved against
-     * the module's menu before anything is computed, and a wake scanner engineered
-     * `Sensor_LongRange` gets the scanner's numbers, which `BLUEPRINTS` keys
-     * `Scanner_LongRange`. Reading a stored block back the same way means resolving it the
-     * same way: `resolveBlueprintForModule` in `ships/blueprint-journal` is that lookup.
+     * `Sensor_LongRange` for both a sensor suite's modification and a utility scanner's,
+     * and the two roll different stats in opposite directions, so the id is resolved
+     * against the module's own menu before anything is computed. Reading a stored block
+     * back means resolving it the same way: `resolveBlueprintForModule` in
+     * `ships/blueprint-journal` is that lookup.
      *
      * @param slotKey - The slot whose module to engineer, matched case-insensitively
      * (journal spelling).
@@ -1769,16 +1607,13 @@ export class ShipLoadout {
      * unknown, or `quality` is outside `[0, 1]`.
      * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
      * object, or `options.experimental` carries a value that is not a string — a nullish
-     * one is no effect, not a wrong type; the fitted module has no stats to engineer; or the id names a
-     * fixed event-reward identity, which names no craftable recipe; or the module is not offered the blueprint — by
-     * its engineering menu, by the journal spelling of an entry on that menu, by the
-     * generic spelling of a recipe that menu lists under a family's name, or by being a
-     * Mercenary article sold at grade 1 with that bespoke recipe; the fitted article is
-     * final and accepts no further engineering;
-     * or the module is not offered the experimental effect, which its
-     * menu alone decides; or the catalogue does not carry every base stat the recipe
-     * modifies. Incomplete engineering is rejected rather than stored as a partial journal
-     * modifier block.
+     * one is no effect, not a wrong type. Also if the fitted module has no stats to
+     * engineer, is final and accepts no further engineering, is offered neither the
+     * blueprint nor the experimental effect by its own menu, or the id names a fixed
+     * event-reward identity rather than a craftable recipe — use
+     * {@link setPreEngineeredVariant} for those. Finally, if the catalogue does not carry
+     * every base stat the recipe modifies: incomplete engineering is rejected rather than
+     * stored as a partial journal modifier block.
      * @example
      * ```ts
      * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
@@ -1807,11 +1642,8 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: options must be an object with a grade, received ${describeValue(options)}`,
             );
         }
-        // Read each option exactly once, before any of it is checked. `options` is a
-        // caller's object, so a property can be an accessor that answers differently
-        // every time: validating one read and using another would let a checked value be
-        // swapped for an unchecked one between the two — into a message naming the
-        // catalogue lookup it reached, or into the build itself as a stored grade no
+        // Read each option exactly once, before any of it is checked: a caller's accessor
+        // could otherwise answer the check and the use differently, storing a grade no
         // check ever saw.
         const wantedGrade = options.grade;
         const wantedQuality = options.quality;
@@ -1834,10 +1666,8 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: no stats for module "${truncate(module.Item)}"`,
             );
         }
-        // Which recipe an id names can depend on the module it is named for: the game
-        // writes `Sensor_LongRange` on a utility scanner and on a sensor suite, and the two
-        // roll different stats. Resolve before reading the grade, so the numbers folded are
-        // the ones this module rolls rather than the other family's.
+        // Resolve before reading the grade, so the numbers folded are the ones this
+        // module rolls rather than another family's — see the remarks above.
         const recipe = resolveBlueprintForModule(module.Item, fdname);
         // Name both spellings once they differ, so an error about the recipe this module
         // rolls cannot read as an error about the id the caller passed.
@@ -2702,10 +2532,8 @@ export class ShipLoadout {
      * aboard (the lightest the ship jumps). This is the figure the game and EDSY label
      * "maximum jump range".
      *
-     * @remarks
-     * Returns `0` when no fuel is available — an assembled build with no fuel tank
-     * fitted has an empty main tank, so there is nothing to jump on.
-     * @returns The best single jump, in light-years.
+     * @returns The best single jump, in light-years, or `0` when the build has no fuel
+     * aboard to make one on.
      * @throws {TypeError} If the build has no usable frame shift drive.
      */
     maxJumpRange(): number {
@@ -2934,9 +2762,8 @@ export class ShipLoadout {
      * weapons (plus the utility fittings that are not always powered) count only
      * towards the deployed total.
      *
-     * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered. `consumers` includes modules with positive draw; passive
-     * and zero-draw fittings are absent.
+     * @returns The {@link PowerBudget}. `consumers` includes modules with positive
+     * draw; passive and zero-draw fittings are absent.
      * @throws {RangeError} If a power capacity or module draw is negative or not finite.
      * @example
      * ```ts
@@ -3286,9 +3113,7 @@ export class ShipLoadout {
      * The build's armour: hull hit points, the bulkhead and reinforcement each
      * contribute, and the effective resistances.
      *
-     * @returns The {@link ArmourMetrics}. A build with no armour module fitted is
-     * reported on the stock lightweight alloy the hull
-     * leaves the shipyard with, which is what the game does.
+     * @returns The {@link ArmourMetrics}, read off the fitted bulkhead.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -3408,9 +3233,8 @@ export class ShipLoadout {
      * independently to `4`. The allocations need not sum to six, which permits
      * independent comparisons of the three maxima.
      * @returns Capacity, rated four-pip recharge and actual pip-scaled recharge for
-     * SYS, ENG and WEP, or `null` when no distributor is fitted, it is switched off,
-     * its six capacitor stats cannot be resolved, or the retracted power budget sheds
-     * it. The retracted state represents the distributor itself; firing endurance in
+     * SYS, ENG and WEP, or `null` when the distributor is switched off, its six
+     * capacitor stats cannot be resolved, or the retracted power budget sheds it. The retracted state represents the distributor itself; firing endurance in
      * {@link weaponsCapacitorMetrics} separately applies the deployed state.
      * @throws {RangeError} If any pip allocation is outside `[0, 4]` or not finite.
      * @example
