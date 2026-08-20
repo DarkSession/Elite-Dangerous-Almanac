@@ -355,7 +355,7 @@ test('mobility returns null before requiring mass when no thrusters are fitted',
 test('explicit mobility fuel overrides the tank load and excludes reserve mass', () => {
     const fixture = operationsFixture.mobility.facadeFuelOverride;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
-    assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.3 });
+    assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.25 });
     const metrics = build.mobilityMetrics(fixture.options)!;
     for (const [field, expected] of Object.entries(fixture.expected)) {
         assert.ok(near(metrics[field as keyof typeof metrics], expected), field);
@@ -825,9 +825,10 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
         symbol: 'Int_Powerplant_Size2_Class1',
     });
 
-    // An oversized-but-resolvable core is not normalized at import — the catalogue knows
-    // the article — so this is the path that actually repairs. The stock replacement
-    // keeps how the mount was being run and none of what the article was.
+    // An oversized-but-resolvable core does not survive import either: a fixed mount
+    // takes the hull's own article whenever the capture did not leave one it can hold.
+    // The stock replacement keeps how the mount was being run and none of what the
+    // article was, so repair finds nothing left to do.
     const oversized = ShipLoadout.fromLoadout({
         ...source,
         Modules: source.Modules.map((module) =>
@@ -843,13 +844,90 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
                 : module,
         ),
     });
-    assert.equal(oversized.repairFixedMount('PowerPlant').status, 'repaired');
-    const repaired = oversized.fittedModuleAt('PowerPlant')!;
-    assert.equal(repaired.symbol, 'Int_Powerplant_Size2_Class1');
-    assert.equal(repaired.on, false);
-    assert.equal(repaired.priority, 4);
-    assert.equal(repaired.health, 0.5);
-    assert.equal(repaired.value, undefined);
+    const stocked = oversized.fittedModuleAt('PowerPlant')!;
+    assert.equal(stocked.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(stocked.on, false);
+    assert.equal(stocked.priority, 4);
+    assert.equal(stocked.health, 0.5);
+    assert.equal(stocked.value, undefined);
+    assert.deepEqual(oversized.repairFixedMount('PowerPlant'), {
+        status: 'unchanged',
+        slot: 'PowerPlant',
+        symbol: 'Int_Powerplant_Size2_Class1',
+    });
+
+    // The mount an unimported build leaves open is what repair is left for.
+    const bare = ShipLoadout.empty('SideWinder');
+    assert.deepEqual(bare.repairFixedMount('PowerPlant'), {
+        status: 'repaired',
+        slot: 'PowerPlant',
+        symbol: 'Int_Powerplant_Size2_Class1',
+    });
+});
+
+test('a fixed mount takes the hull article when the capture names one it cannot hold', () => {
+    // Every one of these resolves in the catalogue, so nothing but the mount itself can
+    // refuse it: the wrong kind of article, the right kind in the wrong size, armour off
+    // another hull, and the hatch, which takes nothing but its own built-in door.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'SideWinder',
+        Modules: [
+            { Slot: 'Armour', Item: 'Int_CargoRack_Size2_Class1' },
+            { Slot: 'MainEngines', Item: 'Int_CargoRack_Size1_Class1' },
+            { Slot: 'PowerPlant', Item: 'Int_Powerplant_Size8_Class5' },
+            { Slot: 'CargoHatch', Item: 'Int_CargoRack_Size2_Class1' },
+            { Slot: 'Slot01_Size2', Item: 'Int_Powerplant_Size2_Class1' },
+        ],
+    });
+    assert.equal(build.fittedModuleAt('Armour')!.symbol, 'SideWinder_Armour_Grade1');
+    assert.equal(build.fittedModuleAt('MainEngines')!.symbol, 'Int_Engine_Size2_Class1');
+    assert.equal(build.fittedModuleAt('PowerPlant')!.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(build.fittedModuleAt('CargoHatch')!.symbol, 'ModularCargoBayDoor');
+    assert.deepEqual(
+        build.importOutcomes.filter((outcome) => outcome.sourceSymbol !== null),
+        [
+            {
+                action: 'defaulted',
+                slot: 'Armour',
+                sourceSymbol: 'Int_CargoRack_Size2_Class1',
+                replacementSymbol: 'SideWinder_Armour_Grade1',
+            },
+            {
+                action: 'defaulted',
+                slot: 'MainEngines',
+                sourceSymbol: 'Int_CargoRack_Size1_Class1',
+                replacementSymbol: 'Int_Engine_Size2_Class1',
+            },
+            {
+                action: 'defaulted',
+                slot: 'PowerPlant',
+                sourceSymbol: 'Int_Powerplant_Size8_Class5',
+                replacementSymbol: 'Int_Powerplant_Size2_Class1',
+            },
+            {
+                action: 'defaulted',
+                slot: 'CargoHatch',
+                sourceSymbol: 'Int_CargoRack_Size2_Class1',
+                replacementSymbol: 'ModularCargoBayDoor',
+            },
+        ],
+    );
+
+    // A removable mount is not corrected: it may legally stand empty, so the article the
+    // capture put there stays for the caller to see and remove.
+    assert.equal(build.fittedModuleAt('Slot01_Size2')!.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(build.validation.valid, false);
+    assert.deepEqual(
+        build.validation.issues.map((issue) => [issue.code, issue.slot]),
+        [['incompatibleModule', 'Slot01_Size2']],
+    );
+
+    // Armour belonging to another hull is refused the same way.
+    const wrongArmour = ShipLoadout.fromLoadout({
+        Ship: 'SideWinder',
+        Modules: [{ Slot: 'Armour', Item: 'Eagle_Armour_Grade1' }],
+    });
+    assert.equal(wrongArmour.fittedModuleAt('Armour')!.symbol, 'SideWinder_Armour_Grade1');
 });
 
 test('fitting a module resets the mount, unlike repairing one', () => {
@@ -1566,12 +1644,14 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
 });
 
 test('incompatible-module diagnostics carry every dynamic fitting value', () => {
+    // Removable mounts, because a fixed one no longer keeps an article it cannot hold:
+    // import stocks it from the hull defaults, and the diagnostic never reaches a caller.
     const imported = ShipLoadout.fromLoadout({
         Ship: 'Anaconda',
         Modules: [
-            { Slot: 'FrameShiftDrive', Item: 'Int_Hyperdrive_Size8_Class5' },
+            { Slot: 'Slot02_Size6', Item: 'Int_CargoRack_Size8_Class1' },
             {
-                Slot: 'MainEngines',
+                Slot: 'Slot03_Size6',
                 Item: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
             },
         ],
@@ -1580,14 +1660,14 @@ test('incompatible-module diagnostics carry every dynamic fitting value', () => 
         (issue) => issue.code === 'incompatibleModule',
     );
     assert.deepEqual(issues[0]?.params, {
-        slot: 'FrameShiftDrive',
-        symbol: 'Int_Hyperdrive_Size8_Class5',
+        slot: 'Slot02_Size6',
+        symbol: 'Int_CargoRack_Size8_Class1',
         constraint: 'oversized',
         moduleClass: 8,
         slotSize: 6,
     });
     assert.deepEqual(issues[1]?.params, {
-        slot: 'MainEngines',
+        slot: 'Slot03_Size6',
         symbol: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
         constraint: 'restrictedHull',
         allowedShipNames: ['Caspian Explorer'],

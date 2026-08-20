@@ -838,16 +838,22 @@ export class ShipLoadout {
      * Modules are imported as one complete snapshot: their array order does not affect
      * per-ship count allowances, and any aggregate violation is reported by
      * {@link validation}. An entry is kept as the event stated it when the catalogue
-     * identifies its `Item`, when its slot is a known cosmetic or hull-geometry key
-     * (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it is a
-     * `ModularCargoBayDoor*` article in the cargo-hatch mount — the catalogue carries
-     * that one built-in article once, for every hull family that names its own symbol.
+     * identifies its `Item` and the mount can hold it, when its slot is a known cosmetic
+     * or hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it
+     * is a `ModularCargoBayDoor*` article in the cargo-hatch mount — the catalogue
+     * carries that one built-in article once, for every hull family that names its own
+     * symbol.
      *
      * Everything else is normalized, and every change is recorded by
      * {@link importOutcomes}. An unresolved module in a hardpoint, utility, optional
      * internal or unrecognised slot is discarded. Armour, all seven core internals and
-     * the cargo hatch are fixed mounts: one holding an unresolved module, and one the
-     * event names no module for at all, are both filled from the hull's default loadout.
+     * the cargo hatch are fixed mounts, and each is filled from the hull's default
+     * loadout unless the event left an article there that mount can actually hold: an
+     * unresolved symbol, a resolved one the mount refuses — a cargo rack in `Armour`, an
+     * oversized power plant, anything but the built-in hatch — and no entry at all are
+     * corrected alike. Only fixed mounts are: a removable mount may stand empty, so a
+     * resolved article it refuses stays where the event put it and is reported by
+     * {@link validation} instead.
      * A stock replacement keeps the source's `On`, `Priority` and `Health` and none of
      * its engineering or captured value. Every hull carries a default for all nine, so
      * {@link validation} never reports `missingRequiredSlot` on an imported build — an
@@ -1457,6 +1463,9 @@ export class ShipLoadout {
      * record is unchanged; source-credit export leaves a replaced slot unpriced, while its
      * aggregate totals remain valid for an unpriced or zero-priced cargo hatch. Resolved
      * valid core and armour alternatives are left unchanged.
+     *
+     * In practice this repairs a mount {@link ShipLoadout.empty} left open: import fills
+     * every fixed mount itself, so a build from {@link fromLoadout} answers `unchanged`.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.

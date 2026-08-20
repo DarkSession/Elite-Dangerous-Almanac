@@ -216,8 +216,9 @@ Each issue carries a stable `code` and a `severity`:
 straight from `ShipLoadout.empty()` reports eight of these, and "you have not fitted a
 power plant" is exactly what an outfitting screen must show as actionable. Unknown
 module symbols do not reach validation: imports discard them from removable mounts and
-stock armour, core internals and the cargo hatch from the hull defaults — a mount the
-source named an unresolvable article for and one it named nothing for are filled alike.
+stock armour, core internals and the cargo hatch from the hull defaults — a fixed mount
+the source named an unresolvable article for, one it named an article that mount cannot
+hold, and one it named nothing for are filled alike.
 Every hull in the catalogue carries a default for all nine fixed mounts, so an imported
 build never reports `missingRequiredSlot` — it reaches you from `ShipLoadout.empty()` and
 from `validateLoadout` on a module list you assembled yourself.

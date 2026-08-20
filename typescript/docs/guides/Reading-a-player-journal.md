@@ -149,15 +149,20 @@ Pass `StarSystem` to the permit-lock lookup described in
 
 Journals can contain hulls or modules absent from the catalogues. A direct lookup that
 finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import.
-An entry is kept as the event stated it when the catalogue identifies its `Item`, when its
-slot is a known cosmetic or hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered
-decal, …), or when it is a `ModularCargoBayDoor*` article in the cargo-hatch mount — some
-hull families name their own symbol for the one built-in article the catalogue carries.
+An entry is kept as the event stated it when the catalogue identifies its `Item` and the
+mount can hold it, when its slot is a known cosmetic or hull-geometry key (`PaintJob`,
+`ShipCockpit`, a numbered decal, …), or when it is a `ModularCargoBayDoor*` article in the
+cargo-hatch mount — some hull families name their own symbol for the one built-in article
+the catalogue carries.
 
 Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
 utilities, optional internals and unrecognised slots are discarded; and a fixed mount is
-filled with that hull's stock armour, core internal or cargo hatch — whether the event
-named an article the catalogues cannot resolve there or named none at all. A stock
+filled with that hull's stock armour, core internal or cargo hatch whenever the event did
+not leave a fitting article there — one the catalogues cannot resolve, one the mount
+cannot hold (a cargo rack in `Armour`, a size-8 plant in a size-2 mount, anything at all
+in the cargo hatch), or none at all. Only fixed mounts are corrected this way: an
+optional, hardpoint or utility mount may stand empty, so an article the catalogue resolves
+but the mount refuses is left where the event put it, for `validation` to report. A stock
 replacement carries the source's `On`, `Priority` and `Health` across but none of its
 engineering or captured value.
 

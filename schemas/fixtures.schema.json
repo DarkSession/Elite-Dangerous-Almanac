@@ -4225,53 +4225,9 @@
                 }
               },
               "required": ["expected", "input"]
-            },
-            "wrongArmourLoadout": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "expected": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "code": { "type": "string" },
-                    "params": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "armourShipName": { "type": "string" },
-                        "armourShipSymbol": { "type": "string" },
-                        "constraint": { "type": "string" },
-                        "shipName": { "type": "string" },
-                        "shipSymbol": { "type": "string" },
-                        "slot": { "type": "string" },
-                        "symbol": { "type": "string" }
-                      },
-                      "required": [
-                        "armourShipName",
-                        "armourShipSymbol",
-                        "constraint",
-                        "shipName",
-                        "shipSymbol",
-                        "slot",
-                        "symbol"
-                      ]
-                    }
-                  },
-                  "required": ["code", "params"]
-                },
-                "input": { "$ref": "#/definitions/shared7481e15ca29a" }
-              },
-              "required": ["expected", "input"]
             }
           },
-          "required": [
-            "calculation",
-            "loadout",
-            "restrictedLoadout",
-            "slef",
-            "wrongArmourLoadout"
-          ]
+          "required": ["calculation", "loadout", "restrictedLoadout", "slef"]
         },
         "distributor": {
           "type": "object",
@@ -4563,6 +4519,47 @@
                 "slot": { "type": "string" }
               },
               "required": ["expected", "input", "slot"]
+            },
+            "wrongHullArmour": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "constraint": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "armourShipName": { "type": "string" },
+                        "armourShipSymbol": { "type": "string" },
+                        "constraint": { "type": "string" },
+                        "shipName": { "type": "string" },
+                        "shipSymbol": { "type": "string" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": [
+                        "armourShipName",
+                        "armourShipSymbol",
+                        "constraint",
+                        "shipName",
+                        "shipSymbol",
+                        "slot",
+                        "symbol"
+                      ]
+                    }
+                  },
+                  "required": ["code", "constraint", "params"]
+                },
+                "module": { "type": "string" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "module", "ship", "slot"]
             }
           },
           "required": [
@@ -4571,7 +4568,8 @@
             "immutableSlotReplacement",
             "incompatibleModule",
             "moduleLimitExceeded",
-            "requiredSlot"
+            "requiredSlot",
+            "wrongHullArmour"
           ]
         },
         "exclusivity": {

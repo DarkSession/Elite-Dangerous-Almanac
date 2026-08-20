@@ -133,9 +133,9 @@ empty mount and both still stand. `HullValue` always stands, because it names no
 narrow.
 
 Import normalization narrows it the same way, before you have edited anything, and on
-one more ground than an edit: a module the catalogue cannot resolve is discarded or
-replaced with the hull's stock article, so its slot exports unpriced and the two totals
-go with it — and a core internal the capture named *no* module for is stocked from the
+one more ground than an edit: a module the catalogue cannot resolve — or one a fixed
+mount cannot hold — is discarded or replaced with the hull's stock article, so its slot
+exports unpriced and the two totals go with it — and a core internal the capture named *no* module for is stocked from the
 hull defaults, which drops the two totals as well. Filling an empty mount yourself leaves
 them standing because you can see the change; this one you did not make. A stocked
 bulkhead costs nothing, so like the hatch it leaves the totals alone.

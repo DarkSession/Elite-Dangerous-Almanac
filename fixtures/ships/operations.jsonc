@@ -122,13 +122,16 @@
       }
     },
     "facadeFuelOverride": {
+      // A Hauler rather than a Sidewinder: the size-2 tank this fixture needs, so that
+      // `fuel: 2` is a genuine partial load, only fits a hull whose fuel mount is size 2.
+      // A Sidewinder's is size 1, and import stocks a fixed mount the capture overfills.
       "loadout": {
-        "Ship": "SideWinder",
+        "Ship": "Hauler",
         "UnladenMass": 26,
         "Modules": [
           { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" },
+          { "Slot": "Armour", "Item": "Hauler_Armour_Grade1" },
           { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class1" },
           { "Slot": "LifeSupport", "Item": "Int_LifeSupport_Size1_Class1" },
           {
@@ -142,11 +145,11 @@
       },
       "options": { "fuel": 2 },
       "expected": {
-        "speed": 232.77881613098572,
-        "boost": 338.58736891779745,
-        "pitch": 44.43959217046091,
-        "roll": 116.38940806549286,
-        "yaw": 16.92936844588987,
+        "speed": 211.61710557362338,
+        "boost": 317.4256583604351,
+        "pitch": 38.09107900325221,
+        "roll": 105.80855278681169,
+        "yaw": 14.813197390153636,
         "massCurveMultiplier": 1.058085527868117,
         "rotationMassCurveMultiplier": 1.058085527868117
       },
@@ -475,18 +478,23 @@
         "constraint": "stringRequired"
       }
     },
+    // Both cases sit in removable mounts. A fixed mount cannot report a fitting failure
+    // from an import any more: it is filled from the hull defaults whenever the capture
+    // did not leave an article it can hold, so the diagnostic never reaches a caller.
+    // `wrongHullArmour` therefore has no import case at all — armour fits nowhere but
+    // the armour mount — and is pinned under `editorErrors` instead.
     "loadout": {
       "input": {
         "Ship": "Anaconda",
         "Modules": [
-          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size8_Class5" }
+          { "Slot": "Slot02_Size6", "Item": "Int_CargoRack_Size8_Class1" }
         ]
       },
       "expected": {
         "code": "incompatibleModule",
         "params": {
-          "slot": "FrameShiftDrive",
-          "symbol": "Int_Hyperdrive_Size8_Class5",
+          "slot": "Slot02_Size6",
+          "symbol": "Int_CargoRack_Size8_Class1",
           "constraint": "oversized",
           "moduleClass": 8,
           "slotSize": 6
@@ -498,7 +506,7 @@
         "Ship": "Anaconda",
         "Modules": [
           {
-            "Slot": "MainEngines",
+            "Slot": "Slot03_Size6",
             "Item": "Int_Engine_Size7_Class5_GravityOptimised_MkII"
           }
         ]
@@ -506,30 +514,12 @@
       "expected": {
         "code": "incompatibleModule",
         "params": {
-          "slot": "MainEngines",
+          "slot": "Slot03_Size6",
           "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
           "constraint": "restrictedHull",
           "allowedShipNames": ["Caspian Explorer"],
           "allowedShipSymbols": ["Explorer_NX"],
           "shipSymbol": "Anaconda"
-        }
-      }
-    },
-    "wrongArmourLoadout": {
-      "input": {
-        "Ship": "Anaconda",
-        "Modules": [{ "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" }]
-      },
-      "expected": {
-        "code": "incompatibleModule",
-        "params": {
-          "slot": "Armour",
-          "symbol": "SideWinder_Armour_Grade1",
-          "constraint": "wrongHullArmour",
-          "armourShipName": "Sidewinder",
-          "armourShipSymbol": "SideWinder",
-          "shipSymbol": "Anaconda",
-          "shipName": "Anaconda"
         }
       }
     },
@@ -563,6 +553,24 @@
           "constraint": "oversized",
           "moduleClass": 8,
           "slotSize": 6
+        }
+      }
+    },
+    "wrongHullArmour": {
+      "ship": "Anaconda",
+      "slot": "Armour",
+      "module": "SideWinder_Armour_Grade1",
+      "expected": {
+        "code": "incompatibleModule",
+        "constraint": "wrongHullArmour",
+        "params": {
+          "slot": "Armour",
+          "symbol": "SideWinder_Armour_Grade1",
+          "constraint": "wrongHullArmour",
+          "armourShipName": "Sidewinder",
+          "armourShipSymbol": "SideWinder",
+          "shipSymbol": "Anaconda",
+          "shipName": "Anaconda"
         }
       }
     },

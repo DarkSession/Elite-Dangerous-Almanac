@@ -8,7 +8,8 @@ import {
 } from '../pre-engineered-stats.js';
 import { sourcePurchaseFromLoadout, type SourcePurchaseRecord } from '../source-purchase.js';
 import { getDefaultLoadout } from '../default-loadouts.js';
-import { parseSlotName } from '../slots.js';
+import { getShipSlots } from '../ships.js';
+import { enumerateSlots, parseSlotName, type BuildSlot } from '../slots.js';
 import type { OutfittingModule } from '../modules.js';
 import type {
     EngineeringModifier,
@@ -18,6 +19,7 @@ import type {
 } from '../slef.js';
 import type { LoadoutImportOutcome } from '../loadout-import-outcome.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
+import { moduleFitProblem } from './loadout-fitting.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import {
     cloneLoadoutModule,
@@ -159,6 +161,28 @@ function captureEngineering(engineering: ModuleEngineering): ModuleEngineering {
     };
 }
 
+/** The hull's mounts, expanded only when a fixed mount has to be judged. */
+function hullLayout(shipSymbol: string): readonly BuildSlot[] {
+    const slots = getShipSlots(shipSymbol);
+    return slots ? enumerateSlots(slots) : [];
+}
+
+/**
+ * Whether this fixed mount refuses the article the capture put in it.
+ *
+ * An unrecognised hull answers no: without its layout there is nothing to judge against,
+ * and the capture is the only account of the ship there is.
+ */
+function fixedMountRejects(
+    shipSymbol: string,
+    layout: readonly BuildSlot[],
+    slot: string,
+    stats: OutfittingModule,
+): boolean {
+    const mount = layout.find((candidate) => candidate.key.toLowerCase() === slot.toLowerCase());
+    return mount !== undefined && moduleFitProblem(shipSymbol, mount, stats) !== null;
+}
+
 /** Normalize a journal event before the mutable facade takes ownership of it. */
 export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutState {
     const event = captureLoadoutEvent(rawEvent);
@@ -256,23 +280,35 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     let invalidatesAggregates = false;
     const outcomes: LoadoutImportOutcome[] = [];
     const defaults = getDefaultLoadout(event.Ship)?.modules ?? [];
+    let layout: readonly BuildSlot[] | undefined;
     for (const [slot, module] of modules) {
         // Some hull families name their own cargo-hatch symbol for the one article the
         // catalogue carries under the standard hatch, so a symbol lookup alone would
         // normalize the hatch of every Fer-de-Lance and Lynx Highliner capture.
-        if (
-            builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item') ||
-            isNonOutfittingSlot(slot) ||
-            isBuiltInHullModule(module)
-        ) {
-            continue;
-        }
+        if (isNonOutfittingSlot(slot) || isBuiltInHullModule(module)) continue;
 
+        const stats = builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
         const slotKind = parseSlotName(slot)?.kind;
         const fallback =
             slotKind === 'core' || slotKind === 'armour' || slotKind === 'cargoHatch'
                 ? defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase())
                 : undefined;
+        // A fixed mount is the hull's, not the capture's: resolving the symbol only says
+        // it names some module, not one this mount can hold. A capture that puts a cargo
+        // rack in `Armour`, a size-8 plant in a Sidewinder's size-2 mount, or anything at
+        // all in the hatch describes a ship that cannot exist, so the hull's own article
+        // goes there — the same substitution an unresolvable symbol already gets. Only a
+        // fixed mount is corrected this way: an optional or hardpoint mount can legally
+        // stand empty, so a bad article there is the caller's to see and remove.
+        const rejected =
+            fallback !== undefined &&
+            (stats === null ||
+                // Every legitimate hatch left this loop above; `moduleFitProblem` refuses
+                // that mount to every article, so it cannot tell the rest apart.
+                slotKind === 'cargoHatch' ||
+                fixedMountRejects(event.Ship, (layout ??= hullLayout(event.Ship)), slot, stats));
+        if (stats !== null && !rejected) continue;
+
         if (fallback) {
             // The article is unknown; how the commander ran it is not. Dropping `On`
             // would switch a disabled module back on and re-band it, moving the power and
