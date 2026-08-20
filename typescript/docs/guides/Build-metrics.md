@@ -316,7 +316,7 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 
 ## When a metric cannot be computed
 
-A required module can be absent, and a supplied record can omit a stat a metric needs.
+The shield generator may be absent, and any fitted record may omit a stat a metric needs.
 Do not assume a nullable figure is load-bearing:
 
 - `mobilityMetrics()`, `shieldMetrics()` and `shieldRecovery()` come in nullable/`…Result`
@@ -336,7 +336,7 @@ Do not assume a nullable figure is load-bearing:
   identify a malformed known module draw as `powerDraw`. The direct budget remains strict
   and throws for either invalid numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
-  answer, because the build has no frame shift drive they can resolve.
+  answer, when the fitted drive's record carries no usable jump constants.
 - `heatMetrics()` returns `null` outright when the build has no powered plant.
 
 Use each available `…Result` companion before trusting a nullable metric.
@@ -350,14 +350,11 @@ reason: discard the only shield generator and `shieldMetricsResult` reports
 `shieldGenerator` / `missing`, exactly as an empty mount would; stock a plant over an
 engineered one and the mobility, shield and recovery companions report `shed`.
 
-`build.importOutcomes` is the account, and it is the entries that matter, not
-the length. A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for,
-which import stocks from the hull defaults. Two of those cost the capture's figures
-nothing, their stock articles being free and weightless. A stocked bulkhead moves no
-metric at all. A stocked cargo hatch leaves every figure standing but its own — like
-every ship's hatch it draws 0.6 MW, in the first priority band since the capture recorded
-none — and most third-party exports omit it, so most produce exactly that one entry.
-Every other entry, `null` `sourceSymbol` or not, means the figures are the normalized
+`build.importOutcomes` is the account, and it is the entries that matter, not the length.
+A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for, which import
+stocks from the hull defaults. A stocked bulkhead moves no metric at all, and a stocked
+cargo hatch only its own 0.6 MW draw — most third-party exports omit the hatch, so most
+produce exactly that one entry. Every other entry means the figures are the normalized
 fit's.
 
 ## Next

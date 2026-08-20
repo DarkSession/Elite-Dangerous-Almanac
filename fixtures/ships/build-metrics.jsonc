@@ -544,6 +544,7 @@
     "weaponCount": 0
   },
   "anaconda": {
+    "note": "Assembled with ShipLoadout.empty('Anaconda'), which stocks every fixed mount from the hull defaults, and then the modules below. The five stock core internals this list does not replace — thrusters, drive, life support, distributor and sensors — plus the stock fuel tank and the cargo hatch draw power and carry mass here, so the power figures cover them.",
     "modules": {
       "PowerPlant": "Int_Powerplant_Size8_Class5",
       "Armour": "Anaconda_Armour_Reactive",
@@ -557,42 +558,42 @@
     },
     "power": {
       "available": 36,
-      "retracted": 7.9,
-      "deployed": 11.48,
+      "retracted": 16.14,
+      "deployed": 19.72,
       "bands": [
         {
           "priority": 1,
-          "retracted": 7.9,
-          "deployed": 11.48,
-          "deployedTotal": 11.48,
+          "retracted": 16.14,
+          "deployed": 19.72,
+          "deployedTotal": 19.72,
           "poweredDeployed": true
         },
         {
           "priority": 2,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 11.48,
+          "deployedTotal": 19.72,
           "poweredDeployed": true
         },
         {
           "priority": 3,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 11.48,
+          "deployedTotal": 19.72,
           "poweredDeployed": true
         },
         {
           "priority": 4,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 11.48,
+          "deployedTotal": 19.72,
           "poweredDeployed": true
         },
         {
           "priority": 5,
           "retracted": 0,
           "deployed": 0,
-          "deployedTotal": 11.48,
+          "deployedTotal": 19.72,
           "poweredDeployed": true
         }
       ]

@@ -2,16 +2,10 @@
  * A change made while normalizing a journal or SLEF loadout against the catalogues.
  *
  * @remarks
- * Import removes an unresolved module from a hardpoint, utility, optional internal or
- * unrecognised slot, and fills a fixed mount — armour, the seven core internals, the
- * cargo hatch — with the hull's stock module whenever the source did not leave a fitting
- * article there: one the catalogue cannot resolve, one that mount cannot hold, or none at
- * all. `ShipLoadout.fromLoadout` states the rule in full, including what survives
- * unresolved and produces no outcome.
- *
- * `sourceSymbol` is `null` for a fixed mount the source named no module for. A
- * replacement keeps the source's `On`, `Priority` and `Health`, which describe the mount
- * rather than the article, and none of its engineering or captured value.
+ * `ShipLoadout.fromLoadout` states the rule these outcomes report: a removable mount is
+ * `emptied` of an article the catalogue cannot resolve, and a fixed mount is `defaulted`
+ * to the hull's stock article whenever the source left none it can hold — with a `null`
+ * `sourceSymbol` when the source named nothing there at all.
  *
  * @example
  * ```ts

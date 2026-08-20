@@ -7,6 +7,7 @@ import { heatInputFor } from './internal/loadout-metrics.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
 import type { EngineeringModifier, LoadoutEvent, LoadoutModule } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
+import { getDefaultLoadout } from './default-loadouts.js';
 import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
@@ -265,26 +266,10 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(recovery.recoveryTime >= 16);
     assert.ok(recovery.regenTime > 0);
 
+    // A bank with no plant behind it is not a state a build can reach: every hull mounts
+    // its stock plant from the first factory. An unpowered bank is still reachable by
+    // outdrawing the plant, which the `shed` case below pins.
     const bank = mod('Int_ShieldCellBank_Size6_Class3', INTERNAL_MODULES);
-    const withoutPlant = ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', bank).cellBanks();
-    assert.deepEqual(
-        withoutPlant.banks.map(({ powered }) => powered),
-        [false],
-    );
-    assert.equal(withoutPlant.totalCells, 0);
-    assert.equal(withoutPlant.totalRestorable, 0);
-
-    const { powerDraw, ...bankWithoutPowerDraw } = bank;
-    assert.ok(powerDraw !== undefined && powerDraw > 0);
-    const unresolvedWithoutPlant = ShipLoadout.empty('Anaconda')
-        .setModule('Slot01_Size7', bankWithoutPowerDraw)
-        .cellBanks();
-    assert.deepEqual(
-        unresolvedWithoutPlant.banks.map(({ powered }) => powered),
-        [false],
-    );
-    assert.equal(unresolvedWithoutPlant.totalCells, 0);
-    assert.equal(unresolvedWithoutPlant.totalRestorable, 0);
 
     const banked = ShipLoadout.default('Anaconda')
         .setModule('Slot02_Size6', bank)
@@ -346,10 +331,16 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.equal(shed.totalRestorable, 0);
 });
 
-test('mobility returns null before requiring mass when no thrusters are fitted', () => {
-    const empty = ShipLoadout.empty('SideWinder');
-    assert.equal(empty.mobilityMetrics(), null);
-    assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), RangeError);
+test('mobility returns null before requiring mass when the thrusters are unpowered', () => {
+    // Every build mounts thrusters — no factory leaves a core mount empty — so the
+    // absent-curve path is reached by shedding them: a plant this Anaconda outdraws
+    // leaves the mount in an unpowered band.
+    const shed = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class1', CORE_MODULES))
+        .setModulePriority('MainEngines', 4);
+    assert.equal(shed.powerBudget().withinBudget, false);
+    assert.equal(shed.mobilityMetrics(), null);
+    assert.throws(() => shed.mobilityMetrics({ enginesPips: 5 }), RangeError);
 });
 
 test('explicit mobility fuel overrides the tank load and excludes reserve mass', () => {
@@ -677,10 +668,13 @@ test('loadout validation makes empty builds explicit', () => {
     assert.equal(captured.validation.complete, true);
     assert.deepEqual(captured.validation.issues, []);
 
+    // A fresh build flies: its fixed mounts carry the hull's stock articles, and only
+    // the mounts a commander outfits are open. `missingRequiredSlot` is reported by
+    // `validateLoadout` on a layout a build did not come from — see its own suite.
     const empty = ShipLoadout.empty('SideWinder');
     assert.equal(empty.validation.valid, true);
-    assert.equal(empty.validation.complete, false);
-    assert.ok(empty.validation.issues.some((issue) => issue.code === 'missingRequiredSlot'));
+    assert.equal(empty.validation.complete, true);
+    assert.deepEqual(empty.validation.issues, []);
 
     const drive = getModuleBySymbol('Int_Hyperdrive_Size2_Class5', CORE_MODULES)!;
     const disguised = ShipLoadout.fromLoadout({
@@ -870,10 +864,11 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
         symbol: 'Int_Powerplant_Size2_Class1',
     });
 
-    // The mount an unimported build leaves open is what repair is left for.
+    // Nor does a fresh build leave one open: `empty` stocks every fixed mount from the
+    // same hull defaults repair would draw on, so there is nothing left for it to fix.
     const bare = ShipLoadout.empty('SideWinder');
     assert.deepEqual(bare.repairFixedMount('PowerPlant'), {
-        status: 'repaired',
+        status: 'unchanged',
         slot: 'PowerPlant',
         symbol: 'Int_Powerplant_Size2_Class1',
     });
@@ -1291,19 +1286,6 @@ test('a booster is identified by the bonus it supplies, not by its engineering m
     );
 });
 
-test('a build with no frame shift drive throws on a jump calculation', () => {
-    const noFsd = ShipLoadout.empty('SideWinder');
-    assert.throws(() => noFsd.maxJumpRange(), /no frame shift drive/);
-    assert.throws(
-        () => noFsd.jumpRangeSummary(),
-        (error: Error) => {
-            assert.equal(error.name, 'TypeError');
-            assert.match(error.message, /FrameShiftDrive.*no frame shift drive is fitted/);
-            return true;
-        },
-    );
-});
-
 test('standard load results expose the jump summary load conditions', () => {
     const build = ShipLoadout.default('SideWinder');
     const maximum = build.standardLoadResult('maximum');
@@ -1382,15 +1364,20 @@ test('the power plant and fuel tank are found by their declared slots', () => {
     // The readers outside the fit check believe a record that names a mount, whatever
     // family its symbol suggests. It takes a hand-made record to show: a catalogue
     // record carries both signals, so it cannot tell the rules apart.
+    const stock = ShipLoadout.empty('Anaconda');
     const plant = getModuleBySymbol('Int_PowerPlant_Size6_Class5', CORE_MODULES)!;
-    assert.ok(
-        ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available > 0,
+    assert.ok(stock.powerBudget().available > 0);
+    assert.notEqual(
+        ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available,
+        stock.powerBudget().available,
     );
 
-    // The declared mount is authoritative even when the symbol suggests another family.
+    // The declared mount is authoritative even when the symbol suggests another family:
+    // this plant sits in the thruster mount, so the hull's own plant is still the only
+    // capacity the build has.
     const asThrusters: OutfittingModule = { ...plant, slot: 'thrusters' };
     const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
-    assert.equal(miswired.powerBudget().available, 0);
+    assert.equal(miswired.powerBudget().available, stock.powerBudget().available);
 
     // Capacity does not read that way and no longer has to: a fitted record states the
     // figures it contributes, so this rack is summed as cargo whatever mount it claims,
@@ -1401,11 +1388,13 @@ test('the power plant and fuel tank are found by their declared slots', () => {
         slot: 'fuelTank',
     } as OutfittingModule);
     assert.equal(misdeclared.cargoCapacity, rack.cargoCapacity);
-    assert.equal(misdeclared.fuelCapacity.main, 0);
+    assert.equal(misdeclared.fuelCapacity.main, stock.fuelCapacity.main);
 });
 
-test('the drive is found by `slot` too, wherever the module is mounted', () => {
-    // Drive lookup scans every fitted module and trusts the declared mount.
+test('the drive mount answers ahead of a hardpoint record claiming to be one', () => {
+    // Drive lookup scans every fitted module and trusts the declared mount, so a
+    // hand-made record claiming `frameShiftDrive` from a hardpoint is a candidate. The
+    // hull's own drive is fitted from the first build, and it is the one that answers.
     const laser = getModuleBySymbol('Hpt_PulseLaser_Fixed_Large', ALL_MODULES)!;
     const build = ShipLoadout.empty('Anaconda')
         .setModule('HugeHardpoint1', { ...laser, slot: 'frameShiftDrive' } as OutfittingModule)
@@ -1414,23 +1403,8 @@ test('the drive is found by `slot` too, wherever the module is mounted', () => {
             getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
         )
         .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
-    // A pulse laser carries no jump constants, so the build says so rather than
-    // quietly answering with the real drive fitted alongside it.
-    assert.throws(() => build.maxJumpRange(), /no jump constants/);
-    assert.deepEqual(
-        build.standardLoadResult('maximum').issues.map((issue) => issue.field),
-        ['frameShiftDrive'],
-    );
-
-    // Left alone, the same build jumps on its actual drive.
-    const sane = ShipLoadout.empty('Anaconda')
-        .setModule('HugeHardpoint1', laser)
-        .setModule(
-            'FrameShiftDrive',
-            getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
-        )
-        .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
-    assert.ok(sane.maxJumpRange() > 0);
+    assert.ok(build.maxJumpRange() > 0);
+    assert.deepEqual(build.standardLoadResult('maximum').issues, []);
 });
 
 test('fromSlef throws when the entry index is out of range', () => {
@@ -1500,22 +1474,36 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
 
 // ── Build editor ────────────────────────────────────────────────────────────
 
-test("empty starts a hull with only its built-in hatch and the hull's declared slots", () => {
+test('empty starts a hull on its stock fixed mounts and nothing else', () => {
     const conda = ShipLoadout.empty('Anaconda');
+    const stock = getDefaultLoadout('Anaconda')!;
     assert.equal(conda.shipSymbol, 'Anaconda');
-    assert.equal(conda.fittedModules().length, 1);
-    assert.equal(conda.fittedModuleAt('CargoHatch')?.symbol, 'ModularCargoBayDoor');
     assert.equal(conda.slots('hardpoint').length, 8);
     assert.equal(conda.slots('utility').length, 8);
     assert.equal(conda.slots('core').length, 7);
     assert.equal(conda.slots('optional').length, 14);
+
+    // Armour, the seven core internals and the hatch come from the hull's own defaults;
+    // every mount a commander outfits is left open.
+    assert.equal(conda.fittedModules().length, 9);
+    assert.equal(conda.fittedModuleAt('CargoHatch')?.symbol, 'ModularCargoBayDoor');
+    for (const fitted of conda.fittedModules()) {
+        assert.equal(
+            fitted.symbol,
+            stock.modules.find((module) => module.slot === fitted.slot)?.symbol,
+            fitted.slot,
+        );
+    }
     assert.ok(
         conda
             .slots()
-            .filter((slot) => slot.kind !== 'cargoHatch')
+            .filter((slot) => slot.kind === 'hardpoint' || slot.kind === 'utility')
+            .concat(conda.slots('optional'))
             .every((slot) => slot.module === null),
     );
-    assert.equal(conda.powerBudget().available, 0);
+    // The build flies: it draws on the hull's own plant, and validation finds no hole.
+    assert.ok(conda.powerBudget().available > 0);
+    assert.equal(conda.validation.complete, true);
 });
 
 test('empty rejects a hull with no known layout', () => {
@@ -1533,17 +1521,18 @@ test('setModule fits a module and slots() reflects occupancy', () => {
     assert.ok(fsdSlot?.module);
     assert.equal(fsdSlot?.module?.symbol, 'Int_Hyperdrive_Size2_Class5');
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class5');
-    assert.equal(build.fittedModules().length, 2);
+    // The stock drive was replaced, not added to: nine fixed mounts, still nine modules.
+    assert.equal(build.fittedModules().length, 9);
 });
 
 test('setModule chains and removeModule clears', () => {
     const build = ShipLoadout.empty('Anaconda')
         .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
         .setModule('Slot01_Size7', mod('Int_FuelTank_Size6_Class3'));
-    assert.equal(build.fittedModules().length, 3);
+    assert.equal(build.fittedModules().length, 10);
     build.removeModule('Slot01_Size7');
     assert.equal(build.fittedModuleAt('Slot01_Size7'), null);
-    assert.equal(build.fittedModules().length, 2);
+    assert.equal(build.fittedModules().length, 9);
     // removing an empty slot is a no-op
     assert.doesNotThrow(() => build.removeModule('Slot02_Size6'));
 });
@@ -2365,9 +2354,9 @@ test('stock cargo racks cannot acquire a fixed reward identity as engineering', 
 
 test('applyBlueprint validates the slot, blueprint and experimental', () => {
     const build = ShipLoadout.empty('Anaconda');
-    // empty slot
+    // empty slot — a fresh build's open mounts are the ones a commander outfits
     assert.throws(
-        () => build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }),
+        () => build.applyBlueprint('Slot01_Size7', 'FSD_LongRange', { grade: 5 }),
         RangeError,
     );
     build.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'));
@@ -3275,12 +3264,13 @@ test('resolved pre-engineered stats survive fitting and drive build calculations
     const fitted = build.fittedModuleAt('FrameShiftDrive')!;
     assert.equal(fitted.stats?.mass, 26);
     assert.equal(fitted.effectiveStats?.optMass, 1785);
-    assert.equal(build.unladenMass, 426); // 400 t hull + the fitted 26 t V1 drive
+    // 1020 t stock Anaconda, less its 40 t stock drive, plus the fitted 26 t V1.
+    assert.equal(build.unladenMass, 1006);
     assert.equal(build.frameShiftDrive.optMass, 1785);
 
     // Fitting snapshots the supplied record; later caller mutation cannot change a build.
     (resolved as { mass?: number }).mass = 999;
-    assert.equal(build.unladenMass, 426);
+    assert.equal(build.unladenMass, 1006);
 });
 
 test('fitting a caller-supplied record leaves the caller its own arrays', () => {
@@ -3330,14 +3320,18 @@ test('slot views are immutable point-in-time values', () => {
     const conda = ShipLoadout.empty('Anaconda');
     const [drive] = conda.slots('core').filter((s) => s.core === 'frameShiftDrive');
     assert.ok(drive);
-    assert.equal(drive.module, null);
+    assert.equal(drive.module?.symbol, 'Int_Hyperdrive_Size6_Class1');
 
     const drives = conda.modulesForSlot(drive.key);
     assert.ok(drives.length > 0 && drives.every((m) => m.class <= 6));
 
     conda.setModule(drive.key, mod('Int_Hyperdrive_Size6_Class5'));
     const fitted = conda.fittedModuleAt(drive.key)!;
-    assert.equal(drive.module, null, 'the earlier snapshot does not change');
+    assert.equal(
+        drive.module?.symbol,
+        'Int_Hyperdrive_Size6_Class1',
+        'the earlier snapshot does not change',
+    );
     assert.equal(
         conda.slots('core').find((slot) => slot.key === drive.key)?.module?.symbol,
         'Int_Hyperdrive_Size6_Class5',
@@ -3351,7 +3345,7 @@ test('slot views are immutable point-in-time values', () => {
         'Int_Hyperdrive_Size6_Class5',
         'the earlier module snapshot stays readable',
     );
-    assert.equal(conda.fittedModules().length, 2);
+    assert.equal(conda.fittedModules().length, 9);
     assert.throws(() => Object.assign(drive, { name: 'changed' }), TypeError);
     assert.throws(() => Object.assign(fitted.raw, { Item: 'changed' }), TypeError);
 });
@@ -3401,7 +3395,12 @@ test('fittedModuleAt returns null for empty slots and fittedModules lists snapsh
     build.setModule('Slot01_Size7', mod('Int_FuelTank_Size6_Class3'));
     const hatch = build.fittedModuleAt('CargoHatch')!;
     const snapshot = build.fittedModuleAt('Slot01_Size7')!;
-    assert.deepEqual(build.fittedModules(), [hatch, snapshot]);
+    const listed = build.fittedModules();
+    assert.equal(listed.length, 10); // the nine stock fixed mounts and the fitted tank
+    assert.deepEqual(
+        listed.filter((module) => module.slot === 'CargoHatch' || module.slot === 'Slot01_Size7'),
+        [hatch, snapshot],
+    );
     build.removeModule(snapshot.slot);
     assert.equal(build.fittedModuleAt('Slot01_Size7'), null);
     assert.equal(snapshot.symbol, 'Int_FuelTank_Size6_Class3');
@@ -4278,8 +4277,7 @@ test('distributorMetrics reports every fitted capacitor at its selected pips', (
 });
 
 test('distributorMetrics returns null without a powered distributor', () => {
-    assert.equal(ShipLoadout.empty('Anaconda').distributorMetrics(), null);
-
+    // Every build mounts a distributor, so only switching it off answers `null`.
     const off = ShipLoadout.default('Anaconda').setModuleEnabled('PowerDistributor', false);
     assert.equal(off.distributorMetrics(), null);
 });
@@ -4389,31 +4387,36 @@ test('a fitted module reports its stats before and after engineering', () => {
 });
 
 test('a fitted zero-mass module contributes zero to unladen mass', () => {
+    const stockMass = ShipLoadout.empty('Anaconda').unladenMass!;
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES),
     );
-    assert.equal(build.unladenMass, 400);
+    assert.equal(build.unladenMass, stockMass);
     // Its sized siblings all carry one, so the same build with any of them answers.
     build.setModule(
         'Slot01_Size7',
         mod('Int_DroneControl_ResourceSiphon_Size1_Class1', INTERNAL_MODULES),
     );
-    assert.ok(build.unladenMass! > 400);
+    assert.ok(build.unladenMass! > stockMass);
 });
 
 test('always-powered utility modules draw with the hardpoints stowed', () => {
+    const bare = ShipLoadout.empty('Anaconda').setModule(
+        'PowerPlant',
+        mod('Int_Powerplant_Size8_Class5'),
+    );
     const build = ShipLoadout.empty('Anaconda')
         .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
         .setModule('TinyHardpoint1', mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES))
         .setModule('TinyHardpoint2', mod('Hpt_CrimeScanner_Size0_Class5', UTILITY_MODULES));
     const budget = build.powerBudget();
-    const hatch = build.fittedModuleAt('CargoHatch')!.effectiveStats!.powerDraw!;
+    const stock = bare.powerBudget().retracted;
     const booster = mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES);
     const scanner = mod('Hpt_CrimeScanner_Size0_Class5', UTILITY_MODULES);
     // The shield booster is always powered; the kill warrant scanner is not.
-    assert.ok(near(budget.retracted, hatch + booster.powerDraw!));
-    assert.ok(near(budget.deployed, hatch + booster.powerDraw! + scanner.powerDraw!));
+    assert.ok(near(budget.retracted, stock + booster.powerDraw!));
+    assert.ok(near(budget.deployed, stock + booster.powerDraw! + scanner.powerDraw!));
 });
 
 test('power budgets expose known and disabled fitted consumers', () => {
@@ -4843,10 +4846,10 @@ test('setExperimentalEffect recomputes ordinary and Mercenary engineering in pla
 
 test('setExperimentalEffect returns structured refusals without changing the module', () => {
     const empty = ShipLoadout.empty('Anaconda');
-    assert.deepEqual(empty.setExperimentalEffect('FrameShiftDrive', null), {
+    assert.deepEqual(empty.setExperimentalEffect('Slot01_Size7', null), {
         kind: 'unsupported',
         code: 'emptySlot',
-        params: { slot: 'FrameShiftDrive' },
+        params: { slot: 'Slot01_Size7' },
     });
 
     const unengineered = ShipLoadout.default('Anaconda');
@@ -5082,10 +5085,10 @@ test('completeEngineeringGrade preserves an imported fixed reward', () => {
 
 test('completeEngineeringGrade returns lossless refusals and leaves the module unchanged', () => {
     const empty = ShipLoadout.empty('Anaconda');
-    assert.deepEqual(empty.completeEngineeringGrade('FrameShiftDrive'), {
+    assert.deepEqual(empty.completeEngineeringGrade('Slot01_Size7'), {
         kind: 'unsupported',
         code: 'emptySlot',
-        params: { slot: 'FrameShiftDrive' },
+        params: { slot: 'Slot01_Size7' },
     });
     assert.deepEqual(ShipLoadout.default('Anaconda').completeEngineeringGrade('FrameShiftDrive'), {
         kind: 'unsupported',
@@ -6141,7 +6144,7 @@ test('the Lynx uses its pinned maximum dissipation in build heat metrics', () =>
 });
 
 test('a build with no powered power plant has no heat profile', () => {
-    assert.equal(ShipLoadout.empty('Anaconda').heatMetrics(), null, 'no plant fitted');
+    // Every build mounts a plant; switching it off is what leaves the profile unknown.
     const event = corvetteBeamsJournal as LoadoutEvent;
     const plantOff = ShipLoadout.fromLoadout({
         ...event,

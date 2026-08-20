@@ -853,12 +853,12 @@ test('every export states all three aggregates, because no fit can leave one unk
         );
     }
     const bare = ShipLoadout.empty('Krait_Light').toLoadoutEvent();
-    assert.equal(bare.UnladenMass, 270); // the bare hull, with nothing fitted
-    assert.equal(bare.CargoCapacity, 0);
-    assert.equal(bare.FuelCapacity!.Main, 0);
+    assert.equal(bare.UnladenMass, 540); // the 270 t hull on its stock fixed mounts
+    assert.equal(bare.CargoCapacity, 0); // nothing carries cargo yet
+    assert.equal(bare.FuelCapacity!.Main, 32); // the stock tank
 
-    // The jump figure keeps the older promise: a build with no drive has no range.
-    assert.equal(Object.hasOwn(bare, 'MaxJumpRange'), false);
+    // A fresh build flies, so it states a range like any other.
+    assert.ok(bare.MaxJumpRange! > 0);
 });
 
 test('a build we cannot price stays unpriced however many times it is re-exported', () => {
@@ -1352,7 +1352,7 @@ test('a build assembled here exports the slot keys a game journal would use', ()
         .setModule('Slot13_Size2', module('Int_DetailedSurfaceScanner_Tiny'))
         .setModule('Slot14_Size1', module('Int_DockingComputer_Advanced'));
     const slots = build.toLoadoutEvent().Modules.map((m) => m.Slot);
-    assert.deepEqual(slots, ['CargoHatch', 'Slot13_Size2', 'Slot14_Size1']);
+    assert.deepEqual(slots.slice(-3), ['CargoHatch', 'Slot13_Size2', 'Slot14_Size1']);
     assert.throws(
         () => build.setModule('Slot11_Size2', module('Int_DetailedSurfaceScanner_Tiny')),
         /has no slot "Slot11_Size2"/,
