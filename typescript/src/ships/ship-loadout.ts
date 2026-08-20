@@ -16,8 +16,7 @@
  * `UnladenMass`, `FuelCapacity`, …) are trusted verbatim while the fit they describe
  * survives import; otherwise they are computed from the fitted modules and the hull.
  * Editing an imported build adjusts the supplied aggregate figures by the changed
- * module's contribution; when that contribution is unknown, the affected figure is
- * discarded and recomputed rather than allowed to go stale.
+ * module's contribution, so an edited import stays coherent rather than going stale.
  * `setModule` snapshots the complete record it receives, including resolved
  * pre-engineered or caller-supplied stats, so every later metric uses the article that
  * was actually fitted rather than resolving its symbol back to a stock module.
@@ -1527,12 +1526,14 @@ export class ShipLoadout {
      * {@link getModuleBySymbol}). The complete record is snapshotted, so a result from
      * `getPreEngineeredStats` or a record you adjusted yourself keeps its stats — but it
      * must name an article the built-in catalogue carries, and it may not drop that
-     * article's `mass`, `cargoCapacity` or `fuelCapacity`, which every build sums.
+     * article's `mass`, `cargoCapacity` or `fuelCapacity`, which every build sums, nor
+     * state one as anything but a finite number.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
      * `getModuleBySymbol` miss), is not an outfitting module at all, names a symbol no
-     * catalogue carries, or omits one of the three stats a build sums from the fit.
+     * catalogue carries, or omits one of the three stats a build sums from the fit or
+     * states it as something other than a finite number.
      * @throws {LoadoutEditError} If the module does not fit the slot (wrong kind, too
      * large, or a restriction the module does not satisfy), conflicts with a one-per-ship
      * family already fitted elsewhere, or worsens a per-ship module-count excess.
@@ -1561,11 +1562,16 @@ export class ShipLoadout {
         }
         // Every fit rule reads the record's symbol, so anything else — a bare id, a
         // journal fragment — must be named here rather than failing inside the rules.
+        // Named from the argument itself, before the snapshot below turns whatever it
+        // is into a plain object the caller would not recognise.
         if (typeof (module as { symbol?: unknown }).symbol !== 'string') {
             throw new TypeError(
                 `ShipLoadout.setModule: module for "${truncate(slotKey)}" must be an outfitting module, received ${describeValue(module)}`,
             );
         }
+        // Snapshot before a single figure is checked, so a caller's accessor cannot
+        // answer the checks below one way and the fit that gets stored another.
+        module = cloneModuleStats(module);
         // The record may state engineered or otherwise adjusted figures, but the article
         // it describes has to be one the catalogue knows, and it has to keep every figure
         // a build sums from the fit. Absent is not zero: a record without its mass or its
@@ -1578,13 +1584,21 @@ export class ShipLoadout {
                 `ShipLoadout.setModule: no module is catalogued as "${truncate(module.symbol)}"`,
             );
         }
-        const dropped = AGGREGATE_STATS.find(
-            (field) => catalogued[field] !== undefined && module[field] === undefined,
-        );
-        if (dropped !== undefined) {
-            throw new TypeError(
-                `ShipLoadout.setModule: the supplied record for "${truncate(module.symbol)}" has no ${dropped}`,
-            );
+        for (const field of AGGREGATE_STATS) {
+            const stated: unknown = module[field];
+            if (stated === undefined) {
+                if (catalogued[field] === undefined) continue;
+                throw new TypeError(
+                    `ShipLoadout.setModule: the supplied record for "${truncate(module.symbol)}" has no ${field}`,
+                );
+            }
+            // A figure that is not a finite number would be summed as zero or, worse,
+            // concatenated — a build that answers with a wrong number nobody questions.
+            if (typeof stated !== 'number' || !Number.isFinite(stated)) {
+                throw new TypeError(
+                    `ShipLoadout.setModule: the supplied record for "${truncate(module.symbol)}" states a ${field} of ${describeValue(stated)}`,
+                );
+            }
         }
         const problem = moduleFitProblem(this.#shipSymbol, slot, module);
         if (problem) {
@@ -1644,7 +1658,7 @@ export class ShipLoadout {
         // Replacing keeps the key the build already uses; a fresh fit takes the hull
         // layout's canonical spelling rather than whatever casing the caller typed.
         const key = this.#fittedKey(slotKey) ?? slot.key;
-        this.#replaceModule(key, { Slot: key, Item: module.symbol }, cloneModuleStats(module));
+        this.#replaceModule(key, { Slot: key, Item: module.symbol }, module);
         return this;
     }
 
@@ -2761,9 +2775,10 @@ export class ShipLoadout {
      *
      * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
      * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
-     * @returns Fuel and cargo in tonnes, or structured diagnostics for unavailable
-     * capacities. `'maximum'` also reports every mass or frame-shift-drive fact needed
-     * to use that load in a jump calculation. A complete maximum result can therefore
+     * @returns Fuel and cargo in tonnes. `'unladen'` and `'laden'` always answer, since
+     * the capacities they read are never unknown; `'maximum'` is the only load that can
+     * come back incomplete, because it also reports every mass or frame-shift-drive fact
+     * needed to use that load in a jump calculation. A complete maximum result can therefore
      * be passed safely to {@link jumpRange}; it validates the whole fitted drive,
      * including an active jump booster, even though only the drive's maximum fuel
      * determines the returned load.

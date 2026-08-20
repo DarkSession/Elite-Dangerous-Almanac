@@ -497,6 +497,20 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
         );
     }
 
+    // A figure stated as anything but a finite number is that same defect wearing a
+    // value — `null` off a JSON round-trip, a string off a form — and would be summed
+    // as 0 or concatenated onto the total rather than counted.
+    for (const stated of [null, '64', Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(
+            () =>
+                ShipLoadout.default('Anaconda').setModule('Slot01_Size7', {
+                    ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES),
+                    cargoCapacity: stated as unknown as number,
+                }),
+            /ShipLoadout\.setModule: the supplied record for "Int_CargoRack_Size6_Class1" states a cargoCapacity of /,
+        );
+    }
+
     const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
         assert.equal(invalid.mobilityMetrics(), null);
         assert.equal(invalid.shieldMetrics(), null);
@@ -1003,6 +1017,18 @@ test("a fit takes a record's own figures, but only for a catalogued article", ()
             }),
         new TypeError('ShipLoadout.setModule: no module is catalogued as "CustomHold"'),
     );
+
+    // The record is read once, before any of it is checked, so an accessor cannot
+    // answer the checks one way and the fit that gets stored another.
+    let reads = 0;
+    const shifty = { ...rack };
+    Object.defineProperty(shifty, 'cargoCapacity', {
+        enumerable: true,
+        get: () => (++reads === 1 ? 4 : undefined),
+    });
+    const once = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', shifty);
+    assert.equal(once.cargoCapacity, 4);
+    assert.equal(reads, 1);
 });
 
 test('a figure an import stated is handed back as stated, whole or half', () => {
@@ -2108,6 +2134,12 @@ test('setModule names a module argument that is not an outfitting module', () =>
     assert.throws(
         () => conda.setModule('FrameShiftDrive', {} as unknown as OutfittingModule),
         /received object \{\}$/,
+    );
+    // The lookup itself, rather than its result — named as the function it is, not as
+    // the plain object the snapshot below the check would have flattened it into.
+    assert.throws(
+        () => conda.setModule('FrameShiftDrive', getModuleBySymbol as unknown as OutfittingModule),
+        /received function$/,
     );
 });
 

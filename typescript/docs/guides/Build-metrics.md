@@ -336,7 +336,7 @@ Do not assume a nullable figure is load-bearing:
   identify a malformed known module draw as `powerDraw`. The direct budget remains strict
   and throws for either invalid numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
-  answer, because the mass they need is unknown.
+  answer, because the build has no frame shift drive they can resolve.
 - `heatMetrics()` returns `null` outright when the build has no powered plant.
 
 Use each available `…Result` companion before trusting a nullable metric.
