@@ -137,8 +137,8 @@ more ground than an edit: a module the catalogue cannot resolve, one a fixed mou
 hold, and a core internal the capture named *no* module for are all discarded or stocked
 from the hull defaults, which leaves that slot unpriced and drops the two totals. Filling
 an empty mount yourself leaves them standing because you can see the change; this one you
-did not make. Free articles are the exception: a stocked bulkhead, and an unpriced or
-zero-priced captured cargo hatch, leave the totals alone. `build.importOutcomes` says
+did not make. Free articles are the exception: a bulkhead stocked from absence, and a
+cargo hatch the capture left unpriced or priced at zero, leave the totals alone. `build.importOutcomes` says
 which — see
 [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 

@@ -152,7 +152,7 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // every operational mount filled (always true for a build)
+build.validation.complete; // legal *and* every operational mount filled
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
@@ -168,9 +168,9 @@ Two things follow for the panel itself. **An issue's `slot` is not a promise tha
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
-carries a key that is by definition no mount on this hull. And `complete` is not a state
-your panel has to render: every build fills its core and armour mounts, so only a module
-list you validate yourself with `validateLoadout` can come back incomplete.
+carries a key that is by definition no mount on this hull. And on a build `complete`
+tracks `valid`: every build fills its core and armour mounts, so the `missingRequiredSlot`
+half of the question only reaches you from `validateLoadout` on a list of your own.
 
 ## Next
 

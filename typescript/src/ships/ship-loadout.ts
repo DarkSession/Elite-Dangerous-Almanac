@@ -178,8 +178,8 @@ import {
 } from './loadout-validation.js';
 
 /**
- * How a slot key is named when it is not a string. `#requireSlot` and `#fittedKey` guard
- * for all ten methods that take one, so the message names none of them.
+ * How a slot key is named when it is not a string. Every method that takes one guards
+ * through `#requireSlot` or `#fittedKey`, so the message names none of them.
  */
 const SLOT_KEY = 'ShipLoadout: slotKey';
 
@@ -592,22 +592,18 @@ export interface LoadoutExportOptions {
     /**
      * Which credits to quote. `'retail'` — the default — prices the build from the
      * catalogue: the bare hull's `hullCost`, every fitted module's list price, and a
-     * `Rebuy` of 5% of the two. A build with no {@link ShipLoadout.sourcePurchase |
-     * source purchase record} — one assembled here, or a capture that quoted no credits
-     * — exports no credit figure at all under `'source'` rather than falling back to
-     * retail.
+     * `Rebuy` of 5% of the two.
      *
-     * `'source'` quotes that record instead: `HullValue`, `ModulesValue`, `Rebuy` and the
-     * per-module `Value` figures exactly as the capture stated them. Each figure is
-     * pinned to what it was paid for, so a fit that stops matching the capture narrows
-     * the export rather than staling it — a swapped slot exports unpriced, and
-     * `ModulesValue` and `Rebuy` are dropped once any priced module has been swapped or
-     * removed, or a core internal stocked at import. Free, weightless articles move
-     * nothing: a stocked bulkhead or cargo hatch, or a normalized hatch the capture
-     * priced at zero. `HullValue` always stands, naming no slot — though on a game
-     * capture it counts the hull *with* its stock fittings, so removing one leaves it
-     * overstating what is aboard. Losing a module the capture listed but never priced is
-     * the one narrowing this cannot detect: only the capture knew what its total counted.
+     * `'source'` quotes the {@link ShipLoadout.sourcePurchase | source purchase record}
+     * instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value` figures
+     * exactly as the capture stated them, and nothing at all for a build that has no such
+     * record. Each figure stays pinned to what it was paid for, so a fit that stops
+     * matching the capture **narrows** the export rather than staling it: a swapped slot
+     * exports unpriced, and `ModulesValue` and `Rebuy` go once any priced module has been
+     * swapped or removed, or a core internal stocked at import. `HullValue` names no slot
+     * and always stands. The guide *Working with SLEF* covers the boundary cases,
+     * including the one narrowing this cannot detect — a module the capture listed but
+     * never priced.
      */
     readonly credits?: 'retail' | 'source';
 }
@@ -752,9 +748,9 @@ export class ShipLoadout {
      * Normalization makes the captured aggregates untrustworthy, so they are dropped:
      * {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity} are recomputed
      * from the fit that remains, {@link modulesValue} and {@link rebuy} read `null`, and
-     * {@link sourcePurchase} still reports what the capture stated. Stocking a free,
-     * weightless article moves no figure and leaves them standing — which the stock
-     * bulkhead and the cargo hatch both are.
+     * {@link sourcePurchase} still reports what the capture stated. A mount stocked from
+     * *absence* is the exception where its stock article is free and weightless — the
+     * bulkhead and the cargo hatch both are — and every figure stands.
      *
      * Use this factory rather than replaying a complete loadout through the incremental
      * {@link setModule} editor.
@@ -1056,12 +1052,12 @@ export class ShipLoadout {
      * Structural validity and operational completeness of this build.
      *
      * @remarks
-     * `complete` asks whether armour and the seven core mounts are filled; since every
-     * build fills them, only a module list you validate yourself with `validateLoadout`
-     * can answer `false`. `valid` asks whether the fit is legal: a module in a nonexistent
-     * or incompatible slot, a duplicated exclusive family, or a module count past the
-     * build's allowance makes it `false`. Neither question reports import normalization,
-     * so read {@link importOutcomes} beside them.
+     * `valid` asks whether the fit is legal: a module in a nonexistent or incompatible
+     * slot, a duplicated exclusive family, or a module count past the build's allowance
+     * makes it `false`. `complete` asks that *and* whether armour and the seven core
+     * mounts are filled — every build fills those, so on a build the two answers agree.
+     * Neither question reports import normalization, so read {@link importOutcomes}
+     * beside them.
      */
     get validation(): LoadoutValidation {
         const slots = this.#layout();
@@ -1282,9 +1278,9 @@ export class ShipLoadout {
      * Refit a fixed mount from this hull's stock loadout.
      *
      * @remarks
-     * The path for mounts {@link setModule} does not expose as ordinary edits, including
-     * the built-in cargo hatch. The stock article keeps the mount's `On`, `Priority` and
-     * `Health` and none of the replaced module's engineering or captured value, as import
+     * This is the repair path for the mounts {@link setModule} does not expose as ordinary
+     * edits — in practice the built-in cargo hatch. The stock article keeps the mount's
+     * `On`, `Priority` and `Health` and none of the replaced module's engineering or captured value, as import
      * normalization does. Every entry point already fills these mounts, so a build this
      * package produced answers `unchanged`.
      *
@@ -1599,8 +1595,8 @@ export class ShipLoadout {
      * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
      * object, or `options.experimental` carries a value that is not a string — a nullish
      * one is no effect, not a wrong type. Also if the fitted module has no stats to
-     * engineer, is final and accepts no further engineering, is offered neither the
-     * blueprint nor the experimental effect by its own menu, or the id names a fixed
+     * engineer, is final and accepts no further engineering, is not offered the blueprint
+     * by its own menu, is not offered the experimental effect by it, or the id names a fixed
      * event-reward identity rather than a craftable recipe — use
      * {@link setPreEngineeredVariant} for those. Finally, if the catalogue does not carry
      * every base stat the recipe modifies: incomplete engineering is rejected rather than

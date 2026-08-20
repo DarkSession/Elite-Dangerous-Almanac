@@ -107,7 +107,7 @@ which convert or resolve what you pass rather than looking it up. The rule is wh
 function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
 number and is still strict.
 
-**A build's slot key is loud too**, across all ten methods that take one, and it is the
+**A build's slot key is loud too**, across every method that takes one, and it is the
 exception worth knowing because several of them do look like searches —
 `fittedModuleAt('NoSuchMount')` answers `null` the way a catalogue miss does. The
 difference is that the key names a mount on *this* build rather than a record to find:

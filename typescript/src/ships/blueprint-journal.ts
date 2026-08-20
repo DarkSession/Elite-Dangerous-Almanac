@@ -1,9 +1,6 @@
 /**
- * **Reading a journal `BlueprintName` against the module it was written for.**
- *
- * Almost every blueprint id means one recipe wherever it appears, and `getBlueprint(id)`
- * is the answer for those. Three ids are not like that — see
- * {@link resolveBlueprintForModule}, which is what this module exists for.
+ * Reading a journal `BlueprintName` against the module it was written for — see
+ * {@link resolveBlueprintForModule}.
  *
  * @packageDocumentation
  */
