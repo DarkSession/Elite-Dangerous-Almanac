@@ -5,8 +5,31 @@ import fixture from '../../../fixtures/ships/default-loadouts.jsonc' with { type
 import { DEFAULT_LOADOUTS, getDefaultLoadout } from './default-loadouts.js';
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
-import { enumerateSlots } from './slots.js';
+import { getModuleBySymbol } from './modules.js';
+import { enumerateSlots, parseSlotName } from './slots.js';
+import { isBuiltInHullModule } from './internal/loadout-state.js';
 import { moduleFitError } from './internal/loadout-fitting.js';
+
+test('every hull carries a free, weightless stock bulkhead and cargo hatch', () => {
+    // What lets import stock those two mounts from absence without invalidating a
+    // capture's own mass and credit figures — see `normalizeLoadoutEvent`. A core
+    // internal is priced and massed, so stocking one does invalidate them.
+    for (const loadout of DEFAULT_LOADOUTS) {
+        for (const module of loadout.modules) {
+            const kind = parseSlotName(module.slot)?.kind;
+            if (kind !== 'armour' && kind !== 'cargoHatch') continue;
+            // The Fer-de-Lance and Lynx Highliner name their own hatch symbol for the one
+            // article the catalogue carries under the standard hatch.
+            const stats = getModuleBySymbol(module.symbol, ALL_MODULES);
+            if (stats === null) {
+                assert.ok(isBuiltInHullModule({ Slot: module.slot, Item: module.symbol }));
+                continue;
+            }
+            assert.equal(stats.cost, 0, `${loadout.symbol} ${module.slot} cost`);
+            assert.equal(stats.mass, 0, `${loadout.symbol} ${module.slot} mass`);
+        }
+    }
+});
 
 test('every ship has one default loadout and every fitted symbol resolves', () => {
     assert.equal(DEFAULT_LOADOUTS.length, fixture.shipCount);

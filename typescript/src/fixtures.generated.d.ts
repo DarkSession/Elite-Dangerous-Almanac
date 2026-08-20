@@ -3059,25 +3059,6 @@ type FixtureShipsOperations = {
         }[];
     };
     diagnostics: {
-        calculation: {
-            expected: {
-                field: string;
-                params: {
-                    field: string;
-                    reason: string;
-                    slot: string;
-                    symbol: string;
-                };
-                reason: string;
-                slot: string;
-                symbol: string;
-            };
-            input: {
-                mass: number;
-                slot: string;
-                symbol: string;
-            };
-        };
         loadout: {
             expected: {
                 code: string;
@@ -3125,27 +3106,6 @@ type FixtureShipsOperations = {
             };
             input: {
                 Modules: {
-                    Slot: string;
-                }[];
-                Ship: string;
-            };
-        };
-        wrongArmourLoadout: {
-            expected: {
-                code: string;
-                params: {
-                    armourShipName: string;
-                    armourShipSymbol: string;
-                    constraint: string;
-                    shipName: string;
-                    shipSymbol: string;
-                    slot: string;
-                    symbol: string;
-                };
-            };
-            input: {
-                Modules: {
-                    Item: string;
                     Slot: string;
                 }[];
                 Ship: string;
@@ -3215,6 +3175,7 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             };
+            note: string;
             nullLoadouts: {
                 Modules: {
                     Item: string;
@@ -3223,6 +3184,7 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             }[];
+            nullLoadoutsNote: string;
             options: {
                 enginesPips: number;
                 systemsPips: number;
@@ -3325,6 +3287,24 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             };
+            slot: string;
+        };
+        wrongHullArmour: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    armourShipName: string;
+                    armourShipSymbol: string;
+                    constraint: string;
+                    shipName: string;
+                    shipSymbol: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
             slot: string;
         };
     };

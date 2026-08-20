@@ -1,12 +1,11 @@
 /**
  * The one constructor for a complete `CalculationResult`.
  *
- * Its own module because two layers build one: the pure calculations in
- * `../loadout-calculations`, and the `ShipLoadout` facade in `../ship-loadout` — which
- * builds one both when an import stated a figure outright and there was nothing to
- * calculate, and when it merges a half-stated figure with the rest calculated. A copy
- * on each side would let the two shapes drift apart, most easily by no longer sharing
- * the frozen empty-issues tuple.
+ * Its own module because two layers build one: the per-metric diagnostics in
+ * `./loadout-metrics`, and the `ShipLoadout` facade in `../ship-loadout`, whose
+ * `standardLoadResult` resolves a load condition the fitted drive may not support. A
+ * copy on each side would let the two shapes drift apart, most easily by no longer
+ * sharing the frozen empty-issues tuple.
  *
  * @internal
  */

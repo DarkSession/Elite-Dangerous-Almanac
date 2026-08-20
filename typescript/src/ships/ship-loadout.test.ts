@@ -355,7 +355,7 @@ test('mobility returns null before requiring mass when no thrusters are fitted',
 test('explicit mobility fuel overrides the tank load and excludes reserve mass', () => {
     const fixture = operationsFixture.mobility.facadeFuelOverride;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
-    assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.3 });
+    assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.25 });
     const metrics = build.mobilityMetrics(fixture.options)!;
     for (const [field, expected] of Object.entries(fixture.expected)) {
         assert.ok(near(metrics[field as keyof typeof metrics], expected), field);
@@ -483,19 +483,33 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
         'MainEngines: thruster stats unavailable for Int_Engine_Size7_Class5',
     );
 
-    // The aggregates read the same way: a supplied record that omits its mass or the
-    // capacity its symbol promises makes the sum unknown rather than counting it as 0.
-    const noMass = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
-    delete noMass.mass;
-    const unweighed = ShipLoadout.default('Anaconda').setModule('Slot01_Size7', noMass);
-    assert.equal(unweighed.unladenMass, null);
-    assert.equal(unweighed.unladenMassResult.complete, false);
+    // The aggregates do not read that way, because there is no supplied record they
+    // could read it from: a fit that drops one of the three figures a build sums is
+    // refused outright rather than counted as 0 or reported as unknown.
+    for (const field of ['mass', 'cargoCapacity'] as const) {
+        const dropped = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
+        delete dropped[field];
+        assert.throws(
+            () => ShipLoadout.default('Anaconda').setModule('Slot01_Size7', dropped),
+            new TypeError(
+                `ShipLoadout.setModule: the supplied record for "Int_CargoRack_Size6_Class1" has no ${field}`,
+            ),
+        );
+    }
 
-    const noCapacity = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
-    delete noCapacity.cargoCapacity;
-    const uncounted = ShipLoadout.default('Anaconda').setModule('Slot01_Size7', noCapacity);
-    assert.equal(uncounted.cargoCapacity, null);
-    assert.equal(uncounted.cargoCapacityResult.issues[0]?.field, 'cargoCapacity');
+    // A figure stated as anything but a finite number is that same defect wearing a
+    // value — `null` off a JSON round-trip, a string off a form — and would be summed
+    // as 0 or concatenated onto the total rather than counted.
+    for (const stated of [null, '64', Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(
+            () =>
+                ShipLoadout.default('Anaconda').setModule('Slot01_Size7', {
+                    ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES),
+                    cargoCapacity: stated as unknown as number,
+                }),
+            /ShipLoadout\.setModule: the supplied record for "Int_CargoRack_Size6_Class1" states a cargoCapacity of /,
+        );
+    }
 
     const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
         assert.equal(invalid.mobilityMetrics(), null);
@@ -825,9 +839,10 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
         symbol: 'Int_Powerplant_Size2_Class1',
     });
 
-    // An oversized-but-resolvable core is not normalized at import — the catalogue knows
-    // the article — so this is the path that actually repairs. The stock replacement
-    // keeps how the mount was being run and none of what the article was.
+    // An oversized-but-resolvable core does not survive import either: a fixed mount
+    // takes the hull's own article whenever the capture did not leave one it can hold.
+    // The stock replacement keeps how the mount was being run and none of what the
+    // article was, so repair finds nothing left to do.
     const oversized = ShipLoadout.fromLoadout({
         ...source,
         Modules: source.Modules.map((module) =>
@@ -843,13 +858,90 @@ test('fixed-mount repair distinguishes an unknown slot from an editable one', ()
                 : module,
         ),
     });
-    assert.equal(oversized.repairFixedMount('PowerPlant').status, 'repaired');
-    const repaired = oversized.fittedModuleAt('PowerPlant')!;
-    assert.equal(repaired.symbol, 'Int_Powerplant_Size2_Class1');
-    assert.equal(repaired.on, false);
-    assert.equal(repaired.priority, 4);
-    assert.equal(repaired.health, 0.5);
-    assert.equal(repaired.value, undefined);
+    const stocked = oversized.fittedModuleAt('PowerPlant')!;
+    assert.equal(stocked.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(stocked.on, false);
+    assert.equal(stocked.priority, 4);
+    assert.equal(stocked.health, 0.5);
+    assert.equal(stocked.value, undefined);
+    assert.deepEqual(oversized.repairFixedMount('PowerPlant'), {
+        status: 'unchanged',
+        slot: 'PowerPlant',
+        symbol: 'Int_Powerplant_Size2_Class1',
+    });
+
+    // The mount an unimported build leaves open is what repair is left for.
+    const bare = ShipLoadout.empty('SideWinder');
+    assert.deepEqual(bare.repairFixedMount('PowerPlant'), {
+        status: 'repaired',
+        slot: 'PowerPlant',
+        symbol: 'Int_Powerplant_Size2_Class1',
+    });
+});
+
+test('a fixed mount takes the hull article when the capture names one it cannot hold', () => {
+    // Every one of these resolves in the catalogue, so nothing but the mount itself can
+    // refuse it: the wrong kind of article, the right kind in the wrong size, armour off
+    // another hull, and the hatch, which takes nothing but its own built-in door.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'SideWinder',
+        Modules: [
+            { Slot: 'Armour', Item: 'Int_CargoRack_Size2_Class1' },
+            { Slot: 'MainEngines', Item: 'Int_CargoRack_Size1_Class1' },
+            { Slot: 'PowerPlant', Item: 'Int_Powerplant_Size8_Class5' },
+            { Slot: 'CargoHatch', Item: 'Int_CargoRack_Size2_Class1' },
+            { Slot: 'Slot01_Size2', Item: 'Int_Powerplant_Size2_Class1' },
+        ],
+    });
+    assert.equal(build.fittedModuleAt('Armour')!.symbol, 'SideWinder_Armour_Grade1');
+    assert.equal(build.fittedModuleAt('MainEngines')!.symbol, 'Int_Engine_Size2_Class1');
+    assert.equal(build.fittedModuleAt('PowerPlant')!.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(build.fittedModuleAt('CargoHatch')!.symbol, 'ModularCargoBayDoor');
+    assert.deepEqual(
+        build.importOutcomes.filter((outcome) => outcome.sourceSymbol !== null),
+        [
+            {
+                action: 'defaulted',
+                slot: 'Armour',
+                sourceSymbol: 'Int_CargoRack_Size2_Class1',
+                replacementSymbol: 'SideWinder_Armour_Grade1',
+            },
+            {
+                action: 'defaulted',
+                slot: 'MainEngines',
+                sourceSymbol: 'Int_CargoRack_Size1_Class1',
+                replacementSymbol: 'Int_Engine_Size2_Class1',
+            },
+            {
+                action: 'defaulted',
+                slot: 'PowerPlant',
+                sourceSymbol: 'Int_Powerplant_Size8_Class5',
+                replacementSymbol: 'Int_Powerplant_Size2_Class1',
+            },
+            {
+                action: 'defaulted',
+                slot: 'CargoHatch',
+                sourceSymbol: 'Int_CargoRack_Size2_Class1',
+                replacementSymbol: 'ModularCargoBayDoor',
+            },
+        ],
+    );
+
+    // A removable mount is not corrected: it may legally stand empty, so the article the
+    // capture put there stays for the caller to see and remove.
+    assert.equal(build.fittedModuleAt('Slot01_Size2')!.symbol, 'Int_Powerplant_Size2_Class1');
+    assert.equal(build.validation.valid, false);
+    assert.deepEqual(
+        build.validation.issues.map((issue) => [issue.code, issue.slot]),
+        [['incompatibleModule', 'Slot01_Size2']],
+    );
+
+    // Armour belonging to another hull is refused the same way.
+    const wrongArmour = ShipLoadout.fromLoadout({
+        Ship: 'SideWinder',
+        Modules: [{ Slot: 'Armour', Item: 'Eagle_Armour_Grade1' }],
+    });
+    assert.equal(wrongArmour.fittedModuleAt('Armour')!.symbol, 'SideWinder_Armour_Grade1');
 });
 
 test('fitting a module resets the mount, unlike repairing one', () => {
@@ -904,34 +996,44 @@ test('default build factory names invalid arguments and unknown hulls', () => {
     });
 });
 
-test('caller-supplied capacity fields classify custom modules', () => {
+test("a fit takes a record's own figures, but only for a catalogued article", () => {
     const rack = getModuleBySymbol('Int_CargoRack_Size2_Class1', INTERNAL_MODULES)!;
-    const build = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', {
+    // Whatever the catalogue says the article holds, the supplied record is what is
+    // summed — that is how an engineered or newly rebalanced capacity gets counted.
+    const roomier = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', {
         ...rack,
-        symbol: 'CustomHold',
-        engineeringGroup: null,
         cargoCapacity: 42,
     });
-    assert.deepEqual(build.cargoCapacityResult, { value: 42, complete: true, issues: [] });
+    assert.equal(roomier.cargoCapacity, 42);
 
-    const customTank: OutfittingModule = {
-        name: 'Custom tank',
-        symbol: 'CustomTank',
-        category: 'internal',
-        engineeringGroup: null,
-        class: 2,
-        rating: 'E',
-        fuelCapacity: 7,
-    };
-    const withTank = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', customTank);
-    assert.equal(withTank.fuelCapacityResult.value?.main, 7);
+    // The article itself has to be one the catalogue carries, though. A hold nothing
+    // knows about has no mass, no price and no fit rules, so it is refused outright
+    // rather than fitted and left out of every figure it should be in.
+    assert.throws(
+        () =>
+            ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', {
+                ...rack,
+                symbol: 'CustomHold',
+            }),
+        new TypeError('ShipLoadout.setModule: no module is catalogued as "CustomHold"'),
+    );
+
+    // The record is read once, before any of it is checked, so an accessor cannot
+    // answer the checks one way and the fit that gets stored another.
+    let reads = 0;
+    const shifty = { ...rack };
+    Object.defineProperty(shifty, 'cargoCapacity', {
+        enumerable: true,
+        get: () => (++reads === 1 ? 4 : undefined),
+    });
+    const once = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', shifty);
+    assert.equal(once.cargoCapacity, 4);
+    assert.equal(reads, 1);
 });
 
-test('a figure an import stated is handed back in the same shape as a calculated one', () => {
-    // The three accessors short-circuit when the capture already carries the figure.
-    // They build the result through the same constructor the calculations use, so a
-    // consumer cannot tell a stated answer from a summed one by its shape — and cannot
-    // mutate either.
+test('a figure an import stated is handed back as stated, whole or half', () => {
+    // The three accessors short-circuit when the capture already carries the figure,
+    // and hand back the frozen value rather than a copy a consumer could mutate.
     const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const imported = ShipLoadout.fromLoadout({
         ...stock,
@@ -939,90 +1041,21 @@ test('a figure an import stated is handed back in the same shape as a calculated
         CargoCapacity: 512,
         FuelCapacity: { Main: 2, Reserve: 0.3 },
     });
-    // The fourth site: a capture whose `Main` an edit discarded but whose `Reserve`
-    // survived, so the main capacity is recalculated and merged with the stated
-    // reserve. It is the one complete result built when there *was* something left to
-    // calculate, and it takes two edits to reach — fitting a tank of unknown capacity
-    // drops `Main`, and fitting a known one back makes the recalculation complete while
-    // `Reserve` stays as captured (9.99, which no Sidewinder hull would give).
-    const tank = getModuleBySymbol('Int_FuelTank_Size1_Class3', CORE_MODULES)!;
-    // The same tank with no known capacity — a model the catalogue has not caught up
-    // with, which is what makes the edit discard the captured `Main`.
-    const mysteryTank: OutfittingModule = {
-        name: 'Mystery tank',
-        symbol: 'Int_MysteryTank',
-        category: tank.category,
-        engineeringGroup: tank.engineeringGroup,
-        // `slot` is what marks it as a fuel tank; its engineering group is null too.
-        ...(tank.slot === undefined ? {} : { slot: tank.slot }),
-        class: tank.class,
-        rating: tank.rating,
-    };
-    const merged = ShipLoadout.fromLoadout({
-        ...stock,
-        FuelCapacity: { Main: 8, Reserve: 9.99 },
-    })
-        .setModule('FuelTank', mysteryTank)
-        .setModule('FuelTank', tank);
-    const calculated = ShipLoadout.empty('SideWinder').cargoCapacityResult;
+    assert.equal(imported.unladenMass, 45);
+    assert.equal(imported.cargoCapacity, 512);
+    assert.deepEqual(imported.fuelCapacity, { main: 2, reserve: 0.3 });
+    assert.equal(Object.isFrozen(imported.fuelCapacity), true);
 
-    // The figure itself survives the trip, not just the wrapper's shape.
-    assert.equal(imported.unladenMassResult.value, 45);
-    assert.equal(imported.cargoCapacityResult.value, 512);
-    assert.deepEqual(imported.fuelCapacityResult.value, { main: 2, reserve: 0.3 });
-    // Main recalculated from the refitted tank; reserve still the captured figure.
-    assert.deepEqual(merged.fuelCapacityResult.value, { main: 2, reserve: 9.99 });
-
-    // The mirror image, and the reason the merge reads the capture for *both* fields:
-    // `fromLoadout` takes a journal line as parsed, so a producer that wrote only
-    // `Main` — or any JavaScript caller, who has no types at all — reaches the same
-    // branch with the halves swapped. A tankless Sidewinder computes `main: 0`, so a
-    // merge that ignored the stated `Main` would silently zero the build's fuel and
-    // with it its jump range.
-    const mainOnly = ShipLoadout.fromLoadout({
-        ...stock,
-        FuelCapacity: { Main: 9 },
-    } as unknown as LoadoutEvent);
-    assert.deepEqual(mainOnly.fuelCapacityResult.value, { main: 9, reserve: 0.3 });
-
-    for (const result of [
-        imported.unladenMassResult,
-        imported.cargoCapacityResult,
-        imported.fuelCapacityResult,
-        merged.fuelCapacityResult,
-    ]) {
-        assert.equal(result.complete, true);
-        assert.equal(Object.isFrozen(result), true);
-        assert.deepEqual(result.issues, []);
-        // The one shared empty tuple, not a per-call copy that could arrive unfrozen.
-        assert.equal(result.issues, calculated.issues);
-    }
-    // Both fuel sites hand back a frozen value object, not only the wrapper around it.
-    assert.equal(Object.isFrozen(imported.fuelCapacityResult.value), true);
-    assert.equal(Object.isFrozen(merged.fuelCapacityResult.value), true);
-});
-
-test('a stated fuel capacity outlives a tank the catalogue cannot sum', () => {
-    // A cosmetic slot keeps whatever symbol the capture spelled and gets no catalogue
-    // record, so one spelled as a fuel tank is the only fitted article import leaves
-    // unresolved — and the only way the tanks stop summing while the capture's own
-    // figures still stand. Stated in full, they are the answer; a stated `Main` alone
-    // still fuels the mobility load, which needs no reserve to weigh the ship.
-    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
-    const withMysteryTank = (FuelCapacity: { Main: number; Reserve?: number }): ShipLoadout =>
-        ShipLoadout.fromLoadout({
-            ...stock,
-            FuelCapacity,
-            Modules: [...stock.Modules, { Slot: 'Decal1', Item: 'Int_FuelTank_Size9_Class9' }],
-        } as unknown as LoadoutEvent);
-
-    const stated = withMysteryTank({ Main: 32, Reserve: 0.3 });
-    assert.deepEqual(stated.fuelCapacityResult.value, { main: 32, reserve: 0.3 });
-
-    const mainOnly = withMysteryTank({ Main: 32 });
-    assert.equal(mainOnly.fuelCapacityResult.complete, false);
-    assert.deepEqual(mainOnly.mobilityMetrics(), mainOnly.mobilityMetrics({ fuel: 32 }));
-    assert.notDeepEqual(mainOnly.mobilityMetrics(), mainOnly.mobilityMetrics({ fuel: 0 }));
+    // Fuel has a fourth site the other two do not: half a stated capacity, merged with
+    // the half that had to be calculated. `fromLoadout` takes a journal line as parsed,
+    // so a producer that wrote only one of the pair — or any JavaScript caller, who has
+    // no types at all — reaches it. A Sidewinder's own tank is 2 t and its reserve 0.3,
+    // so a merge that ignored the stated half would quietly answer with that instead.
+    const half = (FuelCapacity: { Main?: number; Reserve?: number }): ShipLoadout =>
+        ShipLoadout.fromLoadout({ ...stock, FuelCapacity } as unknown as LoadoutEvent);
+    assert.deepEqual(half({ Main: 9 }).fuelCapacity, { main: 9, reserve: 0.3 });
+    assert.deepEqual(half({ Reserve: 9.99 }).fuelCapacity, { main: 2, reserve: 9.99 });
+    assert.equal(Object.isFrozen(half({ Main: 9 }).fuelCapacity), true);
 });
 
 test('fromLoadout rejects duplicate slot keys before its map can overwrite one', () => {
@@ -1359,24 +1392,16 @@ test('the power plant and fuel tank are found by their declared slots', () => {
     const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
     assert.equal(miswired.powerBudget().available, 0);
 
-    // Fuel capacity reads the same way: a cargo rack that declares the fuel-tank mount
-    // is taken at its word and counted as a tank. Because it carries no fuel-capacity
-    // stat, the result becomes unknown rather than pretending the tank holds zero.
+    // Capacity does not read that way and no longer has to: a fitted record states the
+    // figures it contributes, so this rack is summed as cargo whatever mount it claims,
+    // and no symbol has to be read to guess which of the two it meant.
     const rack = getModuleBySymbol('Int_CargoRack_Size5_Class1', ALL_MODULES)!;
-    const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
-    const imported = ShipLoadout.fromLoadout({
-        ...source,
-        UnladenMass: 400,
-        FuelCapacity: { Main: 999, Reserve: 1.07 },
-        Modules: [
-            ...source.Modules.filter((module) => module.Slot !== 'Slot05_Size5'),
-            { Slot: 'Slot05_Size5', Item: rack.symbol, On: true },
-        ],
-    } as LoadoutEvent);
-    assert.equal(imported.fuelCapacity!.main, 999);
-    imported.setModule('Slot05_Size5', { ...rack, slot: 'fuelTank' } as OutfittingModule);
-    assert.equal(imported.fuelCapacity, null);
-    assert.equal(imported.fuelCapacityResult.issues[0]?.field, 'fuelCapacity');
+    const misdeclared = ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', {
+        ...rack,
+        slot: 'fuelTank',
+    } as OutfittingModule);
+    assert.equal(misdeclared.cargoCapacity, rack.cargoCapacity);
+    assert.equal(misdeclared.fuelCapacity.main, 0);
 });
 
 test('the drive is found by `slot` too, wherever the module is mounted', () => {
@@ -1438,7 +1463,8 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
-    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 460);
+    // The named bulkhead plus the seven cores and the hatch import stocks it for.
+    assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 1080);
 
     // An unresolved optional internal is stripped, so the hull and what remains still
     // add up rather than the whole figure going unknown.
@@ -1447,17 +1473,19 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
     };
     const unresolvedBuild = ShipLoadout.fromLoadout(unresolved);
-    assert.equal(unresolvedBuild.unladenMass, 400);
+    assert.equal(unresolvedBuild.unladenMass, 1020);
+    assert.equal(unresolvedBuild.fittedModuleAt('Armour')?.symbol, 'Anaconda_Armour_Grade1');
 
     // An unresolved fixed mount is stocked instead, and the stock article's mass counts.
     const unresolvedCore = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
         Modules: [{ Slot: 'PowerPlant', Item: 'int_future_module_without_stats' }],
     });
-    assert.equal(unresolvedCore.unladenMass, 560);
-    // Mounts the capture never named stay empty rather than being invented.
-    assert.equal(unresolvedCore.fittedModuleAt('MainEngines'), null);
-    assert.equal(unresolvedCore.validation.complete, false);
+    assert.equal(unresolvedCore.unladenMass, 1020);
+    // A mount the capture never named is stocked on the same terms as an unresolved one,
+    // and every hull carries a default for all nine, so an import is never short one.
+    assert.equal(unresolvedCore.fittedModuleAt('MainEngines')?.symbol, 'Int_Engine_Size7_Class1');
+    assert.equal(unresolvedCore.validation.complete, true);
 
     const stripped = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',
@@ -1563,12 +1591,14 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
 });
 
 test('incompatible-module diagnostics carry every dynamic fitting value', () => {
+    // Removable mounts, because a fixed one no longer keeps an article it cannot hold:
+    // import stocks it from the hull defaults, and the diagnostic never reaches a caller.
     const imported = ShipLoadout.fromLoadout({
         Ship: 'Anaconda',
         Modules: [
-            { Slot: 'FrameShiftDrive', Item: 'Int_Hyperdrive_Size8_Class5' },
+            { Slot: 'Slot02_Size6', Item: 'Int_CargoRack_Size8_Class1' },
             {
-                Slot: 'MainEngines',
+                Slot: 'Slot03_Size6',
                 Item: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
             },
         ],
@@ -1577,14 +1607,14 @@ test('incompatible-module diagnostics carry every dynamic fitting value', () => 
         (issue) => issue.code === 'incompatibleModule',
     );
     assert.deepEqual(issues[0]?.params, {
-        slot: 'FrameShiftDrive',
-        symbol: 'Int_Hyperdrive_Size8_Class5',
+        slot: 'Slot02_Size6',
+        symbol: 'Int_CargoRack_Size8_Class1',
         constraint: 'oversized',
         moduleClass: 8,
         slotSize: 6,
     });
     assert.deepEqual(issues[1]?.params, {
-        slot: 'MainEngines',
+        slot: 'Slot03_Size6',
         symbol: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
         constraint: 'restrictedHull',
         allowedShipNames: ['Caspian Explorer'],
@@ -1630,6 +1660,7 @@ test('a core mount takes the module whose record names it, not one that looks th
         name: drive.name,
         class: drive.class,
         rating: drive.rating,
+        mass: drive.mass!,
     };
     assert.throws(
         () => conda.setModule('FrameShiftDrive', handRolled),
@@ -1652,6 +1683,7 @@ test('the armour mount reads `slot`, not the category the record claims', () => 
         ship: 'Anaconda',
         class: armour.class,
         rating: armour.rating,
+        mass: armour.mass!,
     };
     assert.throws(() => conda.setModule('Armour', unnamed), /not a ship armour module/);
 
@@ -1680,6 +1712,8 @@ test('an optional mount takes a fuel tank because its record says so, not its sy
         name: tank.name,
         class: tank.class,
         rating: tank.rating,
+        mass: tank.mass!,
+        fuelCapacity: tank.fuelCapacity!,
     };
     assert.throws(
         () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', unnamed),
@@ -1709,6 +1743,7 @@ test('an optional mount turns away a core module because its record names a moun
         name: plant.name,
         class: plant.class,
         rating: plant.rating,
+        mass: plant.mass!,
     };
     assert.doesNotThrow(() => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', unnamed));
 });
@@ -2100,6 +2135,12 @@ test('setModule names a module argument that is not an outfitting module', () =>
         () => conda.setModule('FrameShiftDrive', {} as unknown as OutfittingModule),
         /received object \{\}$/,
     );
+    // The lookup itself, rather than its result — named as the function it is, not as
+    // the plain object the snapshot below the check would have flattened it into.
+    assert.throws(
+        () => conda.setModule('FrameShiftDrive', getModuleBySymbol as unknown as OutfittingModule),
+        /received function$/,
+    );
 });
 
 test('empty names a non-string hull argument instead of failing inside the lookup', () => {
@@ -2168,15 +2209,18 @@ test('modulesForSlot lists only fitting modules', () => {
 });
 
 test('fit checks use restrictions carried by caller-supplied module records', () => {
+    // The laser is catalogued and fits a Sidewinder; the supplied record's restriction
+    // is what turns it away, so the rule is reading the record and not the catalogue.
     const restricted: OutfittingModule = {
-        symbol: 'CustomRestrictedLaser',
-        category: 'hardpoint',
-        engineeringGroup: null,
-        name: 'Custom Restricted Laser',
-        class: 1,
-        rating: 'A',
+        ...mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES),
         restrictedToShips: ['Explorer_NX'],
     };
+    assert.doesNotThrow(() =>
+        ShipLoadout.empty('SideWinder').setModule(
+            'SmallHardpoint1',
+            mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES),
+        ),
+    );
     assert.throws(
         () => ShipLoadout.empty('SideWinder').setModule('SmallHardpoint1', restricted),
         /restricted to Caspian Explorer \(Explorer_NX\)/,

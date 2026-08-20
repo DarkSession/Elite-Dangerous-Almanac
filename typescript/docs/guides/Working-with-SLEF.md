@@ -132,10 +132,14 @@ exports unpriced, taking `ModulesValue` and `Rebuy` with it; engineer a module o
 empty mount and both still stand. `HullValue` always stands, because it names no slot to
 narrow.
 
-Import normalization narrows it the same way, before you have edited anything: a module
-the catalogue cannot resolve is discarded or replaced with the hull's stock article, so
-its slot exports unpriced and the two totals go with it. `build.importOutcomes` says
-which — see
+Import normalization narrows it the same way, before you have edited anything, and on
+one more ground than an edit: a module the catalogue cannot resolve — or one a fixed
+mount cannot hold — is discarded or replaced with the hull's stock article, so its slot
+exports unpriced and the two totals go with it — and a core internal the capture named *no* module for is stocked from the
+hull defaults, which drops the two totals as well. Filling an empty mount yourself leaves
+them standing because you can see the change; this one you did not make. A stocked
+bulkhead costs nothing, so like the hatch it leaves the totals alone.
+`build.importOutcomes` says which — see
 [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 The built-in cargo hatch is the exception, being unpurchasable: an unpriced or
 zero-priced captured hatch leaves the totals standing.

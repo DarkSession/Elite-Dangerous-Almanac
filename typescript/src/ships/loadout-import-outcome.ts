@@ -3,14 +3,15 @@
  *
  * @remarks
  * Import removes an unresolved module from a hardpoint, utility, optional internal or
- * unrecognised slot, and replaces one in a fixed mount — armour, the seven core
- * internals, the cargo hatch — with the hull's stock module. `ShipLoadout.fromLoadout`
- * states the rule in full, including what survives unresolved and produces no outcome.
+ * unrecognised slot, and fills a fixed mount — armour, the seven core internals, the
+ * cargo hatch — with the hull's stock module whenever the source did not leave a fitting
+ * article there: one the catalogue cannot resolve, one that mount cannot hold, or none at
+ * all. `ShipLoadout.fromLoadout` states the rule in full, including what survives
+ * unresolved and produces no outcome.
  *
- * `sourceSymbol` is `null` only for a cargo hatch restored to a source that named none,
- * the one mount import fills unasked. A replacement keeps the source's `On`, `Priority`
- * and `Health`, which describe the mount rather than the article, and none of its
- * engineering or captured value.
+ * `sourceSymbol` is `null` for a fixed mount the source named no module for. A
+ * replacement keeps the source's `On`, `Priority` and `Health`, which describe the mount
+ * rather than the article, and none of its engineering or captured value.
  *
  * @example
  * ```ts
@@ -39,7 +40,7 @@ export type LoadoutImportOutcome =
           readonly action: 'defaulted';
           /** Exact slot spelling used by the normalized build. */
           readonly slot: string;
-          /** Unresolved source identity, or `null` when the mount was absent. */
+          /** Source identity the mount refused, or `null` when the mount was absent. */
           readonly sourceSymbol: string | null;
           /** Stock module identity installed in the mount. */
           readonly replacementSymbol: string;

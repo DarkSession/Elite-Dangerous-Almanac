@@ -615,7 +615,7 @@
       }
     },
     "partsDoNotAddUp": {
-      "note": "A journal omits Value on a module that was nonetheless paid for. Earlier Loadout events in the Viper Mk IV log declare ModulesValue 4940956 while their per-module figures sum to 3942898 -- the FSD interdictor was bought minutes before and is not yet priced. Both figures are reported, so the disagreement stays visible instead of being averaged away.",
+      "note": "A journal omits Value on a module that was nonetheless paid for. Earlier Loadout events in the Viper Mk IV log declare ModulesValue 4940956 while their per-module figures sum to 3942898 -- the FSD interdictor was bought minutes before and is not yet priced. Both figures are reported, so the disagreement stays visible instead of being averaged away. The eight remaining fixed mounts are spelled out at their stock articles, unpriced, so the case isolates the unpriced module it is about: a fixed mount a capture leaves unnamed is stocked at import, which voids the captured totals on its own.",
       "event": {
         "Ship": "viper_mkiv",
         "ModulesValue": 4940956,
@@ -628,14 +628,22 @@
           {
             "Slot": "Slot01_Size4",
             "Item": "int_fsdinterdictor_size4_class3"
-          }
+          },
+          { "Slot": "Armour", "Item": "viper_mkiv_armour_grade1" },
+          { "Slot": "MainEngines", "Item": "int_engine_size4_class1" },
+          { "Slot": "FrameShiftDrive", "Item": "int_hyperdrive_size4_class1" },
+          { "Slot": "LifeSupport", "Item": "int_lifesupport_size2_class1" },
+          { "Slot": "PowerDistributor", "Item": "int_powerdistributor_size3_class1" },
+          { "Slot": "Radar", "Item": "int_sensors_size3_class1" },
+          { "Slot": "FuelTank", "Item": "int_fueltank_size4_class3" },
+          { "Slot": "CargoHatch", "Item": "modularcargobaydoor" }
         ]
       },
       "record": {
         "hullValue": null,
         "modulesValue": 4940956,
         "rebuy": null,
-        "moduleCount": 2,
+        "moduleCount": 10,
         "pricedModulesValue": 3942898,
         "moduleValues": [
           {

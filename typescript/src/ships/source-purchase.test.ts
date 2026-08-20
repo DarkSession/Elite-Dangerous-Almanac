@@ -464,7 +464,7 @@ test('an edited build re-exports a record whose parts still add up', () => {
     );
 });
 
-test('fixed-mount normalization preserves source totals only for a free cargo hatch', () => {
+test('fixed-mount normalization preserves source totals for a free cargo hatch', () => {
     const source = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const captured: LoadoutEvent = {
         ...source,
