@@ -136,7 +136,7 @@ const festive = ShipLoadout.empty('Krait_MkII').setPreEngineeredVariant(
     red,
 );
 
-festive.toLoadoutEvent().Modules[0]?.Engineering;
+festive.toLoadoutEvent().Modules.find((m) => m.Slot === 'MediumHardpoint1')?.Engineering;
 // BlueprintName + Level: 5 + Quality: 1 + Modifiers
 ```
 

@@ -107,7 +107,7 @@ which convert or resolve what you pass rather than looking it up. The rule is wh
 function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
 number and is still strict.
 
-**A build's slot key is loud too**, across all ten methods that take one, and it is the
+**A build's slot key is loud too**, across every method that takes one, and it is the
 exception worth knowing because several of them do look like searches —
 `fittedModuleAt('NoSuchMount')` answers `null` the way a catalogue miss does. The
 difference is that the key names a mount on *this* build rather than a record to find:
@@ -172,7 +172,7 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 
 | Reason | Means |
 | --- | --- |
-| `missing` | A required module is not fitted |
+| `missing` | The shield generator is not fitted |
 | `unresolved` | The fitted record lacks a numeric fact this metric needs, such as part of a thruster's mass curve |
 | `disabled` | The required fitted module is switched off |
 | `shed` | The retracted priority budget does not power the required module |
@@ -180,10 +180,6 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 
 These reasons describe build state. A malformed method option still throws its documented
 `TypeError` or `RangeError` before a result is returned.
-
-The reason for the pair is that the alternative is worse: shed thrusters treated as
-powered would produce a plausible wrong answer that no one would question. A `null` with
-the reason it is unavailable cannot be mistaken for an answer.
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and
@@ -199,7 +195,8 @@ reports `null` rather than `0` — a cockpit no journal prices was not free.
 
 ## `valid` against `complete`
 
-Two different questions about a build, deliberately kept apart:
+Two questions, kept apart in the type — though on a build they agree, since every build
+fills its core and armour mounts:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -207,7 +204,7 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // every operational mount present?
+build.validation.complete; // legal *and* every operational mount filled
 build.validation.issues; // what specifically
 ```
 
@@ -219,18 +216,9 @@ Each issue carries a stable `code` and a `severity`:
   reaches you from `validateLoadout` on a module list you assembled yourself — a
   `ShipLoadout` throws `TypeError` on a duplicate rather than reporting one, so do not
   write a UI branch for it on a build.)
-- **`incomplete`** — the build does not add up to a finished answer.
-
-`missingRequiredSlot` is the incomplete case: a core or armour mount is empty. A hull
-straight from `ShipLoadout.empty()` reports eight of these, and "you have not fitted a
-power plant" is exactly what an outfitting screen must show as actionable. Unknown
-module symbols do not reach validation: imports discard them from removable mounts and
-stock armour, core internals and the cargo hatch from the hull defaults — a fixed mount
-the source named an unresolvable article for, one it named an article that mount cannot
-hold, and one it named nothing for are filled alike.
-Every hull in the catalogue carries a default for all nine fixed mounts, so an imported
-build never reports `missingRequiredSlot` — it reaches you from `ShipLoadout.empty()` and
-from `validateLoadout` on a module list you assembled yourself.
+- **`incomplete`** — `missingRequiredSlot`: a core or armour mount left empty. **No
+  `ShipLoadout` reports it**, since every build fills those mounts; like `duplicateSlot`
+  it reaches you only from `validateLoadout` on a list you assembled yourself.
 
 **Neither question reports normalization.** A build whose unknown power plant was stocked
 from the hull defaults is `valid` and `complete` with no issues — the fit that remains

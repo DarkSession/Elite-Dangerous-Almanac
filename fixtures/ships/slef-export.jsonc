@@ -533,7 +533,7 @@
     }
   },
   "assembled": {
-    "note": "ShipLoadout.empty('Sidewinder') with its built-in cargo hatch, a 2A drive and a 1C tank fitted. Catalogue-cased symbols are lower-cased on the way out, and power state is omitted unless asked for.",
+    "note": "ShipLoadout.empty('Sidewinder') — which stocks the hull's own bulkhead, core internals and cargo hatch — with a 2A drive and a 1C tank fitted over two of them. Catalogue-cased symbols are lower-cased on the way out, and power state is omitted unless asked for.",
     "ship": "Sidewinder",
     "fit": {
       "FrameShiftDrive": "Int_Hyperdrive_Size2_Class5",
@@ -555,22 +555,32 @@
     "recomputed": {
       "Ship": "sidewinder",
       "HullValue": 4588,
-      "ModulesValue": 161224,
-      "UnladenMass": 27.5,
+      "ModulesValue": 166730,
+      "UnladenMass": 36.4,
       "CargoCapacity": 0,
-      "MaxJumpRange": 27.444467,
+      "MaxJumpRange": 20.896055,
       "FuelCapacity": {
         "Main": 2,
         "Reserve": 0.3
       },
-      "Rebuy": 8290
+      "Rebuy": 8565
     },
     "valueNote": "Each module carries the price it was counted at, so the export's parts add up to its own ModulesValue. Without that a re-import cannot tell a free hull fitting from one we priced, and the total drifts on every export/import hop.",
     "modules": [
       {
-        "Slot": "CargoHatch",
-        "Item": "modularcargobaydoor",
+        "Slot": "Armour",
+        "Item": "sidewinder_armour_grade1",
         "Value": 0
+      },
+      {
+        "Slot": "PowerPlant",
+        "Item": "int_powerplant_size2_class1",
+        "Value": 1977
+      },
+      {
+        "Slot": "MainEngines",
+        "Item": "int_engine_size2_class1",
+        "Value": 1978
       },
       {
         "Slot": "FrameShiftDrive",
@@ -578,18 +588,52 @@
         "Value": 160224
       },
       {
+        "Slot": "LifeSupport",
+        "Item": "int_lifesupport_size1_class1",
+        "Value": 517
+      },
+      {
+        "Slot": "PowerDistributor",
+        "Item": "int_powerdistributor_size1_class1",
+        "Value": 517
+      },
+      {
+        "Slot": "Radar",
+        "Item": "int_sensors_size1_class1",
+        "Value": 517
+      },
+      {
         "Slot": "FuelTank",
         "Item": "int_fueltank_size1_class3",
         "Value": 1000
+      },
+      {
+        "Slot": "CargoHatch",
+        "Item": "modularcargobaydoor",
+        "Value": 0
       }
     ],
     "modulesWithExplicitPower": [
       {
-        "Slot": "CargoHatch",
-        "Item": "modularcargobaydoor",
+        "Slot": "Armour",
+        "Item": "sidewinder_armour_grade1",
         "On": true,
         "Priority": 0,
         "Value": 0
+      },
+      {
+        "Slot": "PowerPlant",
+        "Item": "int_powerplant_size2_class1",
+        "On": true,
+        "Priority": 0,
+        "Value": 1977
+      },
+      {
+        "Slot": "MainEngines",
+        "Item": "int_engine_size2_class1",
+        "On": true,
+        "Priority": 0,
+        "Value": 1978
       },
       {
         "Slot": "FrameShiftDrive",
@@ -599,11 +643,39 @@
         "Value": 160224
       },
       {
+        "Slot": "LifeSupport",
+        "Item": "int_lifesupport_size1_class1",
+        "On": true,
+        "Priority": 0,
+        "Value": 517
+      },
+      {
+        "Slot": "PowerDistributor",
+        "Item": "int_powerdistributor_size1_class1",
+        "On": true,
+        "Priority": 0,
+        "Value": 517
+      },
+      {
+        "Slot": "Radar",
+        "Item": "int_sensors_size1_class1",
+        "On": true,
+        "Priority": 0,
+        "Value": 517
+      },
+      {
         "Slot": "FuelTank",
         "Item": "int_fueltank_size1_class3",
         "On": true,
         "Priority": 0,
         "Value": 1000
+      },
+      {
+        "Slot": "CargoHatch",
+        "Item": "modularcargobaydoor",
+        "On": true,
+        "Priority": 0,
+        "Value": 0
       }
     ]
   }

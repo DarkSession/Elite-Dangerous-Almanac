@@ -14,7 +14,7 @@ what fits, fit it, and report what the build now does. All of it hangs off
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
-// A hull with only its built-in cargo hatch fitted…
+// A hull on its stock bulkhead, core internals and cargo hatch, nothing else fitted…
 const fresh = ShipLoadout.empty('Anaconda');
 
 // …or the build a commander is already flying.
@@ -143,8 +143,7 @@ running total — its own draw plus every higher-priority group's — fits in `a
 
 ## Tell the user what is wrong
 
-Two different questions, deliberately kept apart, and both worth their own place on the
-screen:
+Two different questions, deliberately kept apart:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -152,27 +151,25 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // does it have every operational mount?
+build.validation.complete; // legal *and* every operational mount filled
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
 Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
 and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-explains the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
-shields and shield recovery. On an imported build, read `build.importOutcomes` alongside
-the issues: validation says nothing about normalization, so an empty mount on your panel
-may be one the player left empty or one import emptied for them. (A *fixed* mount is
-stocked rather than emptied, and a `null` `sourceSymbol` is a mount the capture named
-nothing for at all.)
+explains the codes and covers the nullable/`…Result` pairs for mobility, shields and
+shield recovery. On an imported build, read `build.importOutcomes` alongside the issues:
+validation says nothing about normalization, so an empty mount on your panel may be one
+the player left empty or one import emptied for them.
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
-carries a key that is by definition no mount on this hull. And an empty core or armour
-mount arrives as an ordinary issue rather than as a special case — it is what your screen
-exists to get filled, so render it as work to do, not as a fault.
+carries a key that is by definition no mount on this hull. And on a build `complete`
+tracks `valid`: every build fills its core and armour mounts, so the `missingRequiredSlot`
+half of the question only reaches you from `validateLoadout` on a list of your own.
 
 ## Next
 
