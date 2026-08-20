@@ -3059,25 +3059,6 @@ type FixtureShipsOperations = {
         }[];
     };
     diagnostics: {
-        calculation: {
-            expected: {
-                field: string;
-                params: {
-                    field: string;
-                    reason: string;
-                    slot: string;
-                    symbol: string;
-                };
-                reason: string;
-                slot: string;
-                symbol: string;
-            };
-            input: {
-                mass: number;
-                slot: string;
-                symbol: string;
-            };
-        };
         loadout: {
             expected: {
                 code: string;

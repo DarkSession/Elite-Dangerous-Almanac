@@ -4,7 +4,6 @@ import { test } from 'node:test';
 import fixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
 import { mobilityMetrics } from './mobility.js';
 import { distributorMetrics } from './distributor.js';
-import { calculateCargoCapacity } from './loadout-calculations.js';
 import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
 import { validateLoadout } from './loadout-validation.js';
 import { calculateModuleLimits, type ModuleLimitEntry } from './module-limits.js';
@@ -225,21 +224,6 @@ test('shared diagnostic cases expose stable localization keys', () => {
     );
     assert.ok(restrictedIssue);
     assert.deepEqual(restrictedIssue.params, restricted.expected.params);
-
-    const calculationIssue = calculateCargoCapacity([
-        { ...fixture.diagnostics.calculation.input, cargoCapacity: null },
-    ]).issues[0];
-    assert.ok(calculationIssue);
-    assert.deepEqual(
-        {
-            field: calculationIssue.field,
-            reason: calculationIssue.reason,
-            slot: calculationIssue.slot,
-            symbol: calculationIssue.symbol,
-            params: calculationIssue.params,
-        },
-        fixture.diagnostics.calculation.expected,
-    );
 });
 
 test('shared editor failures expose stable codes and localization params', () => {

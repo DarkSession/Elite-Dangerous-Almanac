@@ -131,29 +131,39 @@ tryToSystemAddress('not an address'); // -> null, never throws
 
 ## Nullable value, or diagnostic result?
 
-The following catalogue-dependent build figures expose diagnostic pairs. The nullable
-property or method is the convenience; its `…Result` companion is what you show a user
-when the convenience is `null`.
+The three aggregate figures always have an answer:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 declare const build: ShipLoadout;
 
-build.cargoCapacity; // number | null
-build.cargoCapacityResult; // the value, plus every rack it could not classify
+build.unladenMass; // number
+build.cargoCapacity; // number
+build.fuelCapacity; // { main, reserve }
+```
 
-build.unladenMass;
-build.unladenMassResult;
-build.fuelCapacity;
-build.fuelCapacityResult;
+Nothing a build can hold is unweighable: import discards an article no catalogue
+identifies, and `setModule` refuses one — as it refuses a record that drops the article's
+`mass`, `cargoCapacity` or `fuelCapacity`, the three figures every build sums from its
+fit. A hull with no rack has a cargo capacity of `0`, and it means `0`.
 
-build.mobilityMetrics();
-build.mobilityMetricsResult();
+The metrics that depend on *build state* are a different question, and those keep their
+diagnostic pairs. The nullable method is the convenience; its `…Result` companion is what
+you show a user when the convenience is `null`:
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
+build.mobilityMetrics(); // MobilityMetrics | null
+build.mobilityMetricsResult(); // the value, or why it is unavailable
 build.shieldMetrics();
 build.shieldMetricsResult();
 build.shieldRecovery();
 build.shieldRecoveryResult();
+build.standardLoadResult('maximum');
 ```
 
 Each result is a `CalculationResult`: `complete: true` carries a non-null `value` and no
@@ -163,7 +173,7 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 | Reason | Means |
 | --- | --- |
 | `missing` | A required module is not fitted |
-| `unresolved` | The catalogue or supplied record lacks a required module or numeric fact |
+| `unresolved` | The fitted record lacks a numeric fact this metric needs, such as part of a thruster's mass curve |
 | `disabled` | The required fitted module is switched off |
 | `shed` | The retracted priority budget does not power the required module |
 | `invalid` | A known build dependency is non-physical, such as a non-positive or non-finite power-plant capacity or a negative module draw |
@@ -171,10 +181,9 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 These reasons describe build state. A malformed method option still throws its documented
 `TypeError` or `RangeError` before a result is returned.
 
-The reason for the pair is that the alternative is worse: a cargo rack whose record omits
-its capacity counted as zero, or shed thrusters treated as powered, would produce a
-plausible wrong answer that no one would question. A `null` with the reason it is
-unavailable cannot be mistaken for an answer.
+The reason for the pair is that the alternative is worse: shed thrusters treated as
+powered would produce a plausible wrong answer that no one would question. A `null` with
+the reason it is unavailable cannot be mistaken for an answer.
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and

@@ -834,29 +834,31 @@ test('an unknown capacity module is stripped on import', () => {
     );
 });
 
-test('an aggregate a supplied record leaves unknown is omitted rather than exported as zero', () => {
-    // A caller-supplied record can omit the stat its mount promises. Summing the rest
-    // would understate the figure, so the export leaves the key out rather than
-    // writing a total that reads as measured.
-    const rack = { ...module('Int_CargoRack_Size6_Class1') };
-    delete rack.cargoCapacity;
-    delete rack.mass;
-    const event = ShipLoadout.default('Krait_Light')
-        .setModule('Slot01_Size6', rack)
-        .toLoadoutEvent();
-    assert.equal(Object.hasOwn(event, 'CargoCapacity'), false);
-    assert.equal(Object.hasOwn(event, 'UnladenMass'), false);
+test('every export states all three aggregates, because no fit can leave one unknown', () => {
+    // These three keys used to be omitted when a supplied record dropped the stat its
+    // mount promises, rather than writing a short total that reads as measured. There
+    // is no such fit any more: the record is refused when it arrives.
+    for (const [symbol, field] of [
+        ['Int_CargoRack_Size6_Class1', 'cargoCapacity'],
+        ['Int_CargoRack_Size6_Class1', 'mass'],
+        ['Int_FuelTank_Size5_Class3', 'fuelCapacity'],
+    ] as const) {
+        const record = { ...module(symbol) };
+        delete record[field];
+        assert.throws(
+            () => ShipLoadout.default('Krait_Light').setModule('Slot01_Size6', record),
+            new TypeError(
+                `ShipLoadout.setModule: the supplied record for "${symbol}" has no ${field}`,
+            ),
+        );
+    }
+    const bare = ShipLoadout.empty('Krait_Light').toLoadoutEvent();
+    assert.equal(bare.UnladenMass, 270); // the bare hull, with nothing fitted
+    assert.equal(bare.CargoCapacity, 0);
+    assert.equal(bare.FuelCapacity!.Main, 0);
 
-    const tank = { ...module('Int_FuelTank_Size5_Class3') };
-    delete tank.fuelCapacity;
-    const noFuel = ShipLoadout.default('Krait_Light').setModule('FuelTank', tank).toLoadoutEvent();
-    assert.equal(Object.hasOwn(noFuel, 'FuelCapacity'), false);
-
-    // The jump figure is the same promise: a build with no drive has no range to state.
-    assert.equal(
-        Object.hasOwn(ShipLoadout.empty('Krait_Light').toLoadoutEvent(), 'MaxJumpRange'),
-        false,
-    );
+    // The jump figure keeps the older promise: a build with no drive has no range.
+    assert.equal(Object.hasOwn(bare, 'MaxJumpRange'), false);
 });
 
 test('a build we cannot price stays unpriced however many times it is re-exported', () => {

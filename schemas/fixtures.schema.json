@@ -4094,45 +4094,6 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "calculation": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "expected": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "field": { "type": "string" },
-                    "params": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "field": { "type": "string" },
-                        "reason": { "type": "string" },
-                        "slot": { "type": "string" },
-                        "symbol": { "type": "string" }
-                      },
-                      "required": ["field", "reason", "slot", "symbol"]
-                    },
-                    "reason": { "type": "string" },
-                    "slot": { "type": "string" },
-                    "symbol": { "type": "string" }
-                  },
-                  "required": ["field", "params", "reason", "slot", "symbol"]
-                },
-                "input": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "mass": { "type": "integer" },
-                    "slot": { "type": "string" },
-                    "symbol": { "type": "string" }
-                  },
-                  "required": ["mass", "slot", "symbol"]
-                }
-              },
-              "required": ["expected", "input"]
-            },
             "loadout": {
               "type": "object",
               "additionalProperties": false,
@@ -4227,7 +4188,7 @@
               "required": ["expected", "input"]
             }
           },
-          "required": ["calculation", "loadout", "restrictedLoadout", "slef"]
+          "required": ["loadout", "restrictedLoadout", "slef"]
         },
         "distributor": {
           "type": "object",

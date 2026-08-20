@@ -31,9 +31,9 @@ export interface LoadoutExportInput {
     readonly layout: readonly BuildSlot[];
     readonly sourcePurchase: SourcePurchaseRecord | null;
     readonly retailHullValue: number;
-    readonly unladenMass: number | null;
-    readonly cargoCapacity: number | null;
-    readonly fuelCapacity: { readonly main: number; readonly reserve: number } | null;
+    readonly unladenMass: number;
+    readonly cargoCapacity: number;
+    readonly fuelCapacity: { readonly main: number; readonly reserve: number };
     readonly maxJumpRange: number | null;
     readonly statsFor: (module: LoadoutModule) => OutfittingModule | null;
     /**
@@ -78,17 +78,10 @@ export function exportLoadoutEvent(
         ...(input.shipIdent === undefined ? {} : { ShipIdent: input.shipIdent }),
         ...(hullValue === null ? {} : { HullValue: hullValue }),
         ...(modulesValue === null ? {} : { ModulesValue: modulesValue }),
-        ...(input.unladenMass === null ? {} : { UnladenMass: input.unladenMass }),
-        ...(input.cargoCapacity === null ? {} : { CargoCapacity: input.cargoCapacity }),
+        UnladenMass: input.unladenMass,
+        CargoCapacity: input.cargoCapacity,
         ...(input.maxJumpRange === null ? {} : { MaxJumpRange: input.maxJumpRange }),
-        ...(input.fuelCapacity === null
-            ? {}
-            : {
-                  FuelCapacity: {
-                      Main: input.fuelCapacity.main,
-                      Reserve: input.fuelCapacity.reserve,
-                  },
-              }),
+        FuelCapacity: { Main: input.fuelCapacity.main, Reserve: input.fuelCapacity.reserve },
         ...(rebuy === null ? {} : { Rebuy: rebuy }),
         Modules: exportModules(input, options, fromSource),
     };

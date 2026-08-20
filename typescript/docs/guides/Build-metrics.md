@@ -316,14 +316,15 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 
 ## When a metric cannot be computed
 
-A required module can be absent, and a known or caller-supplied record can omit a stat a
-metric needs. Do not assume a nullable figure is load-bearing:
+A required module can be absent, and a supplied record can omit a stat a metric needs.
+Do not assume a nullable figure is load-bearing:
 
-- `unladenMass`, `fuelCapacity`, `cargoCapacity`, `mobilityMetrics()`, `shieldMetrics()`
-  and `shieldRecovery()` come in nullable/`…Result` pairs: the convenience value is
-  `null` and the result names what was missing, switched off or shed. Each issue's typed
-  `reason` is `missing`, `unresolved`, `disabled`, `shed` or `invalid`; use it instead of
-  parsing the diagnostic message.
+- `mobilityMetrics()`, `shieldMetrics()` and `shieldRecovery()` come in nullable/`…Result`
+  pairs: the convenience value is `null` and the result names what was missing, switched
+  off or shed. Each issue's typed `reason` is `missing`, `unresolved`, `disabled`, `shed`
+  or `invalid`; use it instead of parsing the diagnostic message.
+- `unladenMass`, `fuelCapacity` and `cargoCapacity` are not nullable and have no result
+  companion: no article a build can hold is unweighable, so they always answer.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
 - `armourMetrics()` always has the known hull's base figures.
