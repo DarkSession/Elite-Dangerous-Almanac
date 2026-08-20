@@ -316,7 +316,7 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 
 ## When a metric cannot be computed
 
-A required module can be absent, and a supplied record can omit a stat a metric needs.
+The shield generator may be absent, and any fitted record may omit a stat a metric needs.
 Do not assume a nullable figure is load-bearing:
 
 - `mobilityMetrics()`, `shieldMetrics()` and `shieldRecovery()` come in nullable/`…Result`

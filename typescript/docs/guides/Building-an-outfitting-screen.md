@@ -152,28 +152,25 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // does it have every operational mount?
+build.validation.complete; // every operational mount filled (always true for a build)
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
 Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
 and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-explains the codes and covers the nullable/`…Result` pairs for mass, capacity, mobility,
-shields and shield recovery. On an imported build, read `build.importOutcomes` alongside
-the issues: validation says nothing about normalization, so an empty mount on your panel
-may be one the player left empty or one import emptied for them. (A *fixed* mount is
-stocked rather than emptied, and a `null` `sourceSymbol` is a mount the capture named
-nothing for at all.)
+explains the codes and covers the nullable/`…Result` pairs for mobility, shields and
+shield recovery. On an imported build, read `build.importOutcomes` alongside the issues:
+validation says nothing about normalization, so an empty mount on your panel may be one
+the player left empty or one import emptied for them.
 
 Two things follow for the panel itself. **An issue's `slot` is not a promise that the
 mount exists**, so drive the placement off your own layout rather than off the code: look
 the key up among the slots you are rendering, mark it there if it resolves, and fall
 through to an off-panel list if it does not. That list is not an edge case — `unknownSlot`
-carries a key that is by definition no mount on this hull. And a `ShipLoadout` never has
-an empty core or armour mount to report: `empty()` and import both stock those from the
-hull defaults, so `complete` is the answer to a question `validateLoadout` asks of a
-module list you assembled yourself, not one a build on your panel fails.
+carries a key that is by definition no mount on this hull. And `complete` is not a state
+your panel has to render: every build fills its core and armour mounts, so only a module
+list you validate yourself with `validateLoadout` can come back incomplete.
 
 ## Next
 

@@ -1,18 +1,9 @@
 /**
- * **Reading a journal `BlueprintName` against the module it was written for** — the one
- * question that needs the journal-collision catalogue and the engineering menus at the
- * same time.
+ * **Reading a journal `BlueprintName` against the module it was written for.**
  *
- * Almost every blueprint id means one recipe wherever it appears, and for those
- * `getBlueprint(id)` is the answer. Three ids are not like that, and this is where that is
- * dealt with. One of the three is `Weapon_Overcharged` on a multi-cannon, so any consumer
- * reading journals from combat ships meets this — it is not the corner case the two scanner
- * ids alone would make it.
- *
- * It lives in its own module because the join depends on both menus and the three
- * colliding journal spellings. Keeping those spellings in a tiny purpose-specific
- * catalogue means this resolver does not load every blueprint grade, modifier and
- * material. `package.test.mjs` guards that package boundary.
+ * Almost every blueprint id means one recipe wherever it appears, and `getBlueprint(id)`
+ * is the answer for those. Three ids are not like that — see
+ * {@link resolveBlueprintForModule}, which is what this module exists for.
  *
  * @packageDocumentation
  */

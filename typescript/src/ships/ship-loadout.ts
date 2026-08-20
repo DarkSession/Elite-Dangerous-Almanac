@@ -178,12 +178,8 @@ import {
 } from './loadout-validation.js';
 
 /**
- * How a slot key is named when it is not a string.
- *
- * Every method that takes one reaches the build through `#requireSlot` or `#fittedKey`,
- * so the two of them guard for all ten rather than each method repeating the check. That
- * costs the method's own name in the message, which is why this reads like the
- * neighbouring throws (`ShipLoadout: slot "…" is empty`) rather than like `empty`'s.
+ * How a slot key is named when it is not a string. `#requireSlot` and `#fittedKey` guard
+ * for all ten methods that take one, so the message names none of them.
  */
 const SLOT_KEY = 'ShipLoadout: slotKey';
 
@@ -1283,18 +1279,14 @@ export class ShipLoadout {
     }
 
     /**
-     * Restore a missing or invalid fixed mount from this hull's stock loadout.
+     * Refit a fixed mount from this hull's stock loadout.
      *
      * @remarks
-     * The repair path for mounts {@link setModule} does not expose as ordinary edits,
-     * including the built-in cargo hatch. The stock article keeps the mount's `On`,
-     * `Priority` and `Health` and none of the replaced module's engineering or captured
-     * value, as import normalization does.
-     *
-     * In practice there is nothing left for it to repair: {@link ShipLoadout.empty} and
-     * {@link ShipLoadout.default} stock every fixed mount from the hull defaults, import
-     * fills the same mounts from the same list, and {@link setModule} refuses an article
-     * a mount cannot hold — so a build this package produced answers `unchanged`.
+     * The path for mounts {@link setModule} does not expose as ordinary edits, including
+     * the built-in cargo hatch. The stock article keeps the mount's `On`, `Priority` and
+     * `Health` and none of the replaced module's engineering or captured value, as import
+     * normalization does. Every entry point already fills these mounts, so a build this
+     * package produced answers `unchanged`.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
@@ -1305,8 +1297,7 @@ export class ShipLoadout {
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
      * declare const imported: ShipLoadout;
-     * const result = imported.repairFixedMount('CargoHatch');
-     * if (result.status === 'repaired') console.log(result.symbol.toLowerCase());
+     * imported.repairFixedMount('CargoHatch').status; // -> 'unchanged'
      * ```
      */
     repairFixedMount(slotKey: string): FixedMountRepairResult {
@@ -2480,8 +2471,8 @@ export class ShipLoadout {
      * The resolved frame-shift-drive constants for this build — post-engineering,
      * with any Guardian FSD Booster folded into `jumpBoost`.
      *
-     * @throws {TypeError} If the build has no frame shift drive, or the fitted record is
-     * missing any of its required jump constants.
+     * @throws {TypeError} If the fitted drive's record is missing any of its required
+     * jump constants.
      */
     get frameShiftDrive(): FrameShiftDriveParams {
         const drive = this.#resolveDrive();
@@ -2532,8 +2523,8 @@ export class ShipLoadout {
      * aboard (the lightest the ship jumps). This is the figure the game and EDSY label
      * "maximum jump range".
      *
-     * @returns The best single jump, in light-years, or `0` when the build has no fuel
-     * aboard to make one on.
+     * @returns The best single jump, in light-years, or `0` for a capture that states a
+     * main tank of `0`.
      * @throws {TypeError} If the build has no usable frame shift drive.
      */
     maxJumpRange(): number {
@@ -2616,13 +2607,9 @@ export class ShipLoadout {
      *
      * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
      * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
-     * @returns Fuel and cargo in tonnes. `'unladen'` and `'laden'` always answer, since
-     * the capacities they read are never unknown; `'maximum'` is the only load that can
-     * come back incomplete, because it also reports every mass or frame-shift-drive fact
-     * needed to use that load in a jump calculation. A complete maximum result can therefore
-     * be passed safely to {@link jumpRange}; it validates the whole fitted drive,
-     * including an active jump booster, even though only the drive's maximum fuel
-     * determines the returned load.
+     * @returns Fuel and cargo in tonnes. Only `'maximum'` can come back incomplete: it
+     * validates the whole fitted drive, jump booster included, so a complete one can be
+     * passed straight to {@link jumpRange}.
      * @throws {RangeError} If `load` is not a recognised standard load.
      * @example
      * ```ts
@@ -2966,7 +2953,7 @@ export class ShipLoadout {
      * @returns Recovery rates and seconds, or `null` when no shield generator is powered
      * with hardpoints retracted. Use
      * {@link shieldRecoveryResult} to distinguish the unavailable conditions.
-     * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
+     * Insufficient zero-pip recharge produces `Infinity`.
      * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
      * @example
      * ```ts
@@ -3019,10 +3006,9 @@ export class ShipLoadout {
      * Every fitted shield cell bank and the usable rearmed reinforcement pool.
      *
      * Every fitted bank remains in `banks`, where `powered` says whether it is switched
-     * on and its priority group is fed with hardpoints deployed. The totals include
-     * only those powered banks. A build with no powered power plant — including one
-     * created by {@link empty} before a plant is fitted — reports every bank as
-     * unpowered and returns zero totals.
+     * on and its priority group is fed with hardpoints deployed. The totals include only
+     * those powered banks, so a build whose plant is switched off or outdrawn reports
+     * every bank unpowered and zero totals.
      *
      * @returns A frozen {@link CellBankSummary}; no banks is an empty list and zero totals.
      * @example
@@ -3234,7 +3220,8 @@ export class ShipLoadout {
      * independent comparisons of the three maxima.
      * @returns Capacity, rated four-pip recharge and actual pip-scaled recharge for
      * SYS, ENG and WEP, or `null` when the distributor is switched off, its six
-     * capacitor stats cannot be resolved, or the retracted power budget sheds it. The retracted state represents the distributor itself; firing endurance in
+     * capacitor stats cannot be resolved, or the retracted power budget sheds it. That
+     * retracted state represents the distributor itself; firing endurance in
      * {@link weaponsCapacitorMetrics} separately applies the deployed state.
      * @throws {RangeError} If any pip allocation is outside `[0, 4]` or not finite.
      * @example

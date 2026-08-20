@@ -172,7 +172,7 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 
 | Reason | Means |
 | --- | --- |
-| `missing` | A required module is not fitted |
+| `missing` | The shield generator is not fitted |
 | `unresolved` | The fitted record lacks a numeric fact this metric needs, such as part of a thruster's mass curve |
 | `disabled` | The required fitted module is switched off |
 | `shed` | The retracted priority budget does not power the required module |
@@ -180,10 +180,6 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 
 These reasons describe build state. A malformed method option still throws its documented
 `TypeError` or `RangeError` before a result is returned.
-
-The reason for the pair is that the alternative is worse: shed thrusters treated as
-powered would produce a plausible wrong answer that no one would question. A `null` with
-the reason it is unavailable cannot be mistaken for an answer.
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and
@@ -219,15 +215,9 @@ Each issue carries a stable `code` and a `severity`:
   reaches you from `validateLoadout` on a module list you assembled yourself — a
   `ShipLoadout` throws `TypeError` on a duplicate rather than reporting one, so do not
   write a UI branch for it on a build.)
-- **`incomplete`** — the build does not add up to a finished answer.
-
-`missingRequiredSlot` is the incomplete case: a core or armour mount is empty. Every hull
-carries a default for all nine fixed mounts, and both `ShipLoadout.empty()` and import fit
-them, so **no `ShipLoadout` ever reports it** — it reaches you only from `validateLoadout`
-on a module list you assembled yourself. Unknown module symbols do not reach validation
-either: import discards them from removable mounts and stocks the fixed ones from the hull
-defaults, whether the source named an unresolvable article, one the mount cannot hold, or
-nothing at all.
+- **`incomplete`** — `missingRequiredSlot`: a core or armour mount left empty. **No
+  `ShipLoadout` reports it**, since every build fills those mounts; like `duplicateSlot`
+  it reaches you only from `validateLoadout` on a list you assembled yourself.
 
 **Neither question reports normalization.** A build whose unknown power plant was stocked
 from the hull defaults is `valid` and `complete` with no issues — the fit that remains

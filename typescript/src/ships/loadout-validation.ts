@@ -14,11 +14,11 @@ import { isRequiredSlot } from './internal/loadout-slot-rules.js';
  * Stable machine-readable reason a loadout is invalid or incomplete.
  *
  * @remarks
- * `duplicateSlot` only ever comes from calling {@link validateLoadout} directly on a
- * module list you assembled yourself. A `ShipLoadout` cannot report it, because it
- * refuses to hold two modules in one slot in the first place: `fromLoadout` throws a
- * `TypeError` on a duplicate, and every edit is keyed by slot. Switch on it when you
- * validate your own list; skip it when the input came from a build.
+ * `duplicateSlot` and `missingRequiredSlot` only ever come from calling
+ * {@link validateLoadout} directly on a module list you assembled yourself. A
+ * `ShipLoadout` reports neither: it is keyed by slot and `fromLoadout` throws a
+ * `TypeError` on a duplicate, and every build fills its fixed mounts from the hull
+ * defaults. Switch on them when you validate your own list; skip them for a build.
  */
 export type LoadoutIssueCode =
     | 'duplicateSlot'
