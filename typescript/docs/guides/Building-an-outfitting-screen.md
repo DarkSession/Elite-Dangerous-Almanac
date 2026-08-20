@@ -143,8 +143,7 @@ running total — its own draw plus every higher-priority group's — fits in `a
 
 ## Tell the user what is wrong
 
-Two different questions, deliberately kept apart, and both worth their own place on the
-screen:
+Two different questions, deliberately kept apart:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

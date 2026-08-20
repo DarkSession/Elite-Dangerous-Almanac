@@ -178,8 +178,8 @@ import {
 } from './loadout-validation.js';
 
 /**
- * How a slot key is named when it is not a string. Every method that takes one guards
- * through `#requireSlot` or `#fittedKey`, so the message names none of them.
+ * How a slot key is named when it is not a string. Every method that takes one guards with
+ * this label, so the message names none of them.
  */
 const SLOT_KEY = 'ShipLoadout: slotKey';
 
@@ -1280,8 +1280,8 @@ export class ShipLoadout {
      * @remarks
      * This is the repair path for the mounts {@link setModule} does not expose as ordinary
      * edits — in practice the built-in cargo hatch. The stock article keeps the mount's
-     * `On`, `Priority` and `Health` and none of the replaced module's engineering or captured value, as import
-     * normalization does. Every entry point already fills these mounts, so a build this
+     * `On`, `Priority` and `Health` and none of the replaced module's engineering or
+     * captured value, as import normalization does. Every entry point already fills these mounts, so a build this
      * package produced answers `unchanged`.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
@@ -1596,8 +1596,8 @@ export class ShipLoadout {
      * object, or `options.experimental` carries a value that is not a string — a nullish
      * one is no effect, not a wrong type. Also if the fitted module has no stats to
      * engineer, is final and accepts no further engineering, is not offered the blueprint
-     * by its own menu, is not offered the experimental effect by it, or the id names a fixed
-     * event-reward identity rather than a craftable recipe — use
+     * by its own menu, is not offered the experimental effect by it, or the id names a
+     * fixed event-reward identity rather than a craftable recipe — use
      * {@link setPreEngineeredVariant} for those. Finally, if the catalogue does not carry
      * every base stat the recipe modifies: incomplete engineering is rejected rather than
      * stored as a partial journal modifier block.

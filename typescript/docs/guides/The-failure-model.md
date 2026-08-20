@@ -195,7 +195,8 @@ reports `null` rather than `0` — a cockpit no journal prices was not free.
 
 ## `valid` against `complete`
 
-Two different questions about a build, deliberately kept apart:
+Two questions, kept apart in the type — though on a build they agree, since every build
+fills its core and armour mounts:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -203,7 +204,7 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 declare const build: ShipLoadout;
 
 build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // every operational mount present?
+build.validation.complete; // legal *and* every operational mount filled
 build.validation.issues; // what specifically
 ```
 
