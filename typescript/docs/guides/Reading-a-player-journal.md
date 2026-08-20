@@ -149,29 +149,36 @@ Pass `StarSystem` to the permit-lock lookup described in
 
 Journals can contain hulls or modules absent from the catalogues. A direct lookup that
 finds nothing returns `null` — check it. `ShipLoadout` applies a narrower rule at import.
-An entry is kept as the event stated it when the catalogue identifies its `Item`, when its
-slot is a known cosmetic or hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered
-decal, …), or when it is a `ModularCargoBayDoor*` article in the cargo-hatch mount — some
-hull families name their own symbol for the one built-in article the catalogue carries.
+An entry is kept as the event stated it when the catalogue identifies its `Item` and the
+mount can hold it, when its slot is a known cosmetic or hull-geometry key (`PaintJob`,
+`ShipCockpit`, a numbered decal, …), or when it is a `ModularCargoBayDoor*` article in the
+cargo-hatch mount — some hull families name their own symbol for the one built-in article
+the catalogue carries.
 
 Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
-utilities, optional internals and unrecognised slots are discarded; and an unknown fixed
-mount is filled with that hull's stock armour, core internal or cargo hatch, carrying the
-source's `On`, `Priority` and `Health` across but none of its engineering or captured
-value. A fixed mount the event named no module for is left empty and makes a required
-mount incomplete — apart from the cargo hatch, which is part of the hull and is restored.
+utilities, optional internals and unrecognised slots are discarded; and a fixed mount is
+filled with that hull's stock armour, core internal or cargo hatch whenever the event did
+not leave a fitting article there — one the catalogues cannot resolve, one the mount
+cannot hold (a cargo rack in `Armour`, a size-8 plant in a size-2 mount, anything at all
+in the cargo hatch), or none at all. Only fixed mounts are corrected this way: an
+optional, hardpoint or utility mount may stand empty, so an article the catalogue resolves
+but the mount refuses is left where the event put it, for `validation` to report. A stock
+replacement carries the source's `On`, `Priority` and `Health` across but none of its
+engineering or captured value.
 
 When normalization changes the fitted set, the capture's aggregates are dropped: mass,
 cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
 and `rebuy` read `null`, since nothing records what the discarded module cost;
-`sourcePurchase` still reports the captured figures. Restoring an absent cargo hatch is
-the exception, the stock hatch being weightless and free.
+`sourcePurchase` still reports the captured figures. Stocking an absent bulkhead or cargo
+hatch is the exception — both stock articles are weightless and free — while an absent
+core internal stocked from the defaults invalidates them like any other change.
 
 `build.validation` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core
 mounts remain complete through their stock replacements. `build.importOutcomes` is the
-frozen, machine-readable account of each change: the exact slot and source module,
-whether it was `emptied` or `defaulted`, and the replacement symbol when one was fitted.
+frozen, machine-readable account of each change: the exact slot, the source module
+where the capture named one, whether it was `emptied` or `defaulted`, and the replacement
+symbol when one was fitted.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

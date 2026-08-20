@@ -31,11 +31,20 @@ export interface LoadoutExportInput {
     readonly layout: readonly BuildSlot[];
     readonly sourcePurchase: SourcePurchaseRecord | null;
     readonly retailHullValue: number;
-    readonly unladenMass: number | null;
-    readonly cargoCapacity: number | null;
-    readonly fuelCapacity: { readonly main: number; readonly reserve: number } | null;
+    readonly unladenMass: number;
+    readonly cargoCapacity: number;
+    readonly fuelCapacity: { readonly main: number; readonly reserve: number };
     readonly maxJumpRange: number | null;
     readonly statsFor: (module: LoadoutModule) => OutfittingModule | null;
+    /**
+     * Whether *import* put a priced article aboard that the capture never listed — a
+     * core internal it named no module for, stocked from the hull defaults. No comparison
+     * against the priced slots can see an addition, only a swap or a removal, and
+     * filling an empty mount by an edit deliberately leaves the totals standing: the
+     * caller made that change and can see it. This one nobody asked for. A stocked
+     * bulkhead or cargo hatch is free, so it does not set this.
+     */
+    readonly sourceTotalsVoided?: boolean;
 }
 
 /** Insurance rebuy is a flat 5% of hull-plus-modules retail value, truncated. */
@@ -48,7 +57,10 @@ export function exportLoadoutEvent(
 ): LoadoutEvent {
     const fromSource = options.credits === 'source';
     const source = fromSource ? input.sourcePurchase : null;
-    const totals = source !== null && sourceTotalsHold(input.modules, source) ? source : null;
+    const totals =
+        source !== null && !input.sourceTotalsVoided && sourceTotalsHold(input.modules, source)
+            ? source
+            : null;
     const hullValue = fromSource ? (source?.hullValue ?? null) : input.retailHullValue;
     const modulesValue = fromSource
         ? (totals?.modulesValue ?? null)
@@ -66,17 +78,10 @@ export function exportLoadoutEvent(
         ...(input.shipIdent === undefined ? {} : { ShipIdent: input.shipIdent }),
         ...(hullValue === null ? {} : { HullValue: hullValue }),
         ...(modulesValue === null ? {} : { ModulesValue: modulesValue }),
-        ...(input.unladenMass === null ? {} : { UnladenMass: input.unladenMass }),
-        ...(input.cargoCapacity === null ? {} : { CargoCapacity: input.cargoCapacity }),
+        UnladenMass: input.unladenMass,
+        CargoCapacity: input.cargoCapacity,
         ...(input.maxJumpRange === null ? {} : { MaxJumpRange: input.maxJumpRange }),
-        ...(input.fuelCapacity === null
-            ? {}
-            : {
-                  FuelCapacity: {
-                      Main: input.fuelCapacity.main,
-                      Reserve: input.fuelCapacity.reserve,
-                  },
-              }),
+        FuelCapacity: { Main: input.fuelCapacity.main, Reserve: input.fuelCapacity.reserve },
         ...(rebuy === null ? {} : { Rebuy: rebuy }),
         Modules: exportModules(input, options, fromSource),
     };

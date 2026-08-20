@@ -4,7 +4,6 @@ import { test } from 'node:test';
 import fixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
 import { mobilityMetrics } from './mobility.js';
 import { distributorMetrics } from './distributor.js';
-import { calculateCargoCapacity } from './loadout-calculations.js';
 import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
 import { validateLoadout } from './loadout-validation.js';
 import { calculateModuleLimits, type ModuleLimitEntry } from './module-limits.js';
@@ -219,31 +218,12 @@ test('shared diagnostic cases expose stable localization keys', () => {
     assert.ok(loadoutIssue);
     assert.deepEqual(loadoutIssue.params, fixture.diagnostics.loadout.expected.params);
 
-    for (const fitting of [
-        fixture.diagnostics.restrictedLoadout,
-        fixture.diagnostics.wrongArmourLoadout,
-    ]) {
-        const issue = ShipLoadout.fromLoadout(fitting.input).validation.issues.find(
-            (candidate) => candidate.code === fitting.expected.code,
-        );
-        assert.ok(issue);
-        assert.deepEqual(issue.params, fitting.expected.params);
-    }
-
-    const calculationIssue = calculateCargoCapacity([
-        { ...fixture.diagnostics.calculation.input, cargoCapacity: null },
-    ]).issues[0];
-    assert.ok(calculationIssue);
-    assert.deepEqual(
-        {
-            field: calculationIssue.field,
-            reason: calculationIssue.reason,
-            slot: calculationIssue.slot,
-            symbol: calculationIssue.symbol,
-            params: calculationIssue.params,
-        },
-        fixture.diagnostics.calculation.expected,
+    const restricted = fixture.diagnostics.restrictedLoadout;
+    const restrictedIssue = ShipLoadout.fromLoadout(restricted.input).validation.issues.find(
+        (candidate) => candidate.code === restricted.expected.code,
     );
+    assert.ok(restrictedIssue);
+    assert.deepEqual(restrictedIssue.params, restricted.expected.params);
 });
 
 test('shared editor failures expose stable codes and localization params', () => {
@@ -274,6 +254,19 @@ test('shared editor failures expose stable codes and localization params', () =>
             ),
         ),
         incompatible.expected,
+    );
+
+    const wrongArmour = fixture.editorErrors.wrongHullArmour;
+    assert.deepEqual(
+        project(
+            capture(() =>
+                ShipLoadout.empty(wrongArmour.ship).setModule(
+                    wrongArmour.slot,
+                    getModuleBySymbol(wrongArmour.module)!,
+                ),
+            ),
+        ),
+        wrongArmour.expected,
     );
 
     const exclusive = fixture.editorErrors.duplicateExclusiveModule;

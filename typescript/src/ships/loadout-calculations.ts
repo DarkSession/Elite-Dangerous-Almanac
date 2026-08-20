@@ -2,16 +2,14 @@
  * Pure aggregate calculations for ship loadouts.
  *
  * @remarks
- * These functions deliberately distinguish a genuine zero from an incomplete answer.
- * They consume already-resolved module contributions, so they neither import the module
- * catalogues nor know about {@link ShipLoadout}. The facade uses them after resolving
- * engineering and consumers with their own catalogues can use them directly.
+ * These functions consume already-resolved module contributions, so they neither import
+ * the module catalogues nor know about {@link ShipLoadout}. Every contribution is a
+ * known number — an article the catalogue cannot price is refused long before it
+ * reaches a build — so each returns its figure outright. The facade uses them after
+ * resolving engineering and consumers with their own catalogues can use them directly.
  *
  * @packageDocumentation
  */
-
-import { completeResult, incompleteResult } from './internal/calculation-result.js';
-import { truncate } from '../internal/argument-guards.js';
 
 /**
  * Stable reason a loadout calculation could not produce a value.
@@ -27,7 +25,6 @@ export interface CalculationIssue {
     /** Calculation input that is missing or unavailable. */
     readonly field:
         | 'mass'
-        | 'cargoCapacity'
         | 'fuelCapacity'
         | 'frameShiftDrive'
         | 'powerCapacity'
@@ -71,16 +68,12 @@ export type CalculationResult<T> =
 
 /** One fitted module reduced to the contributions aggregate calculations need. */
 export interface LoadoutCalculationModule {
-    /** Slot key in the build's own spelling. */
-    readonly slot: string;
-    /** Module symbol. */
-    readonly symbol: string;
-    /** Post-engineering mass in tonnes, or `null` when this fitted module's mass is unknown. */
-    readonly mass: number | null;
-    /** Cargo tonnes; `undefined` for a non-rack and `null` for an unclassified rack. */
-    readonly cargoCapacity?: number | null;
-    /** Fuel tonnes; `undefined` for a non-tank and `null` for an unclassified tank. */
-    readonly fuelCapacity?: number | null;
+    /** Post-engineering mass in tonnes. */
+    readonly mass: number;
+    /** Cargo tonnes; `undefined` for anything but a cargo rack. */
+    readonly cargoCapacity?: number;
+    /** Fuel tonnes; `undefined` for anything but a fuel tank. */
+    readonly fuelCapacity?: number;
 }
 
 /** A ship's fuel-tank capacities, in tonnes. */
@@ -91,80 +84,44 @@ export interface FuelCapacity {
     readonly reserve: number;
 }
 
-function moduleIssue(
-    module: LoadoutCalculationModule,
-    field: 'mass' | 'cargoCapacity' | 'fuelCapacity',
-): CalculationIssue {
-    return {
-        field,
-        reason: 'unresolved',
-        slot: module.slot,
-        symbol: module.symbol,
-        params: { field, reason: 'unresolved', slot: module.slot, symbol: module.symbol },
-        message: `${truncate(module.slot)}: ${truncate(module.symbol)} has no known ${field}`,
-    };
-}
-
-function result<T>(
-    value: (T & {}) | null,
-    issues: readonly CalculationIssue[],
-): CalculationResult<T> {
-    if (value !== null && issues.length === 0) return completeResult(value);
-    if (issues.length === 0) {
-        throw new TypeError('CalculationResult: an incomplete result needs at least one issue');
-    }
-    return incompleteResult(issues as readonly [CalculationIssue, ...CalculationIssue[]]);
-}
-
 /**
  * Sum hull and fitted-module mass.
  *
  * @param hullMass - Empty-hull mass in tonnes.
  * @param modules - Resolved fitted-module contributions.
- * @returns Mass in tonnes, or a result listing every missing dependency.
+ * @returns Mass in tonnes.
  * @example
  * ```ts
  * import { calculateUnladenMass } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
  *
- * const result = calculateUnladenMass(25, [{ slot: 'Radar', symbol: 'sensors', mass: 2 }]);
- * if (result.complete) result.value; // -> 27 tonnes; narrowed to number
+ * calculateUnladenMass(25, [{ mass: 2 }]); // -> 27 tonnes
  * ```
  */
 export function calculateUnladenMass(
     hullMass: number,
     modules: readonly LoadoutCalculationModule[],
-): CalculationResult<number> {
-    const issues: CalculationIssue[] = [];
+): number {
     let value = hullMass;
-    for (const module of modules) {
-        if (module.mass === null) issues.push(moduleIssue(module, 'mass'));
-        else value += module.mass;
-    }
-    return result(issues.length === 0 ? value : null, Object.freeze(issues));
+    for (const module of modules) value += module.mass;
+    return value;
 }
 
 /**
  * Sum fitted cargo racks.
  *
  * @param modules - Resolved fitted-module contributions.
- * @returns Cargo capacity in tonnes. A build with no rack is the complete value `0`.
+ * @returns Cargo capacity in tonnes. A build with no rack carries `0`.
  * @example
  * ```ts
  * import { calculateCargoCapacity } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
  *
- * calculateCargoCapacity([]).value; // -> 0, a complete result
+ * calculateCargoCapacity([]); // -> 0
  * ```
  */
-export function calculateCargoCapacity(
-    modules: readonly LoadoutCalculationModule[],
-): CalculationResult<number> {
-    const issues: CalculationIssue[] = [];
+export function calculateCargoCapacity(modules: readonly LoadoutCalculationModule[]): number {
     let value = 0;
-    for (const module of modules) {
-        if (module.cargoCapacity === null) issues.push(moduleIssue(module, 'cargoCapacity'));
-        else if (module.cargoCapacity !== undefined) value += module.cargoCapacity;
-    }
-    return result(issues.length === 0 ? value : null, Object.freeze(issues));
+    for (const module of modules) value += module.cargoCapacity ?? 0;
+    return value;
 }
 
 /**
@@ -172,29 +129,19 @@ export function calculateCargoCapacity(
  *
  * @param reserveFuelCapacity - Hull reserve in tonnes.
  * @param modules - Resolved fitted-module contributions.
- * @returns Main and reserve capacity. No fitted tank is the complete main value `0`.
+ * @returns Main and reserve capacity. No fitted tank is a main capacity of `0`.
  * @example
  * ```ts
  * import { calculateFuelCapacity } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
  *
- * const result = calculateFuelCapacity(0.3, [
- *   { slot: 'FuelTank', symbol: 'tank', mass: 2, fuelCapacity: 4 },
- * ]);
- * if (result.complete) result.value.main; // -> 4 tonnes
+ * calculateFuelCapacity(0.3, [{ mass: 2, fuelCapacity: 4 }]).main; // -> 4 tonnes
  * ```
  */
 export function calculateFuelCapacity(
     reserveFuelCapacity: number,
     modules: readonly LoadoutCalculationModule[],
-): CalculationResult<FuelCapacity> {
-    const issues: CalculationIssue[] = [];
+): FuelCapacity {
     let main = 0;
-    for (const module of modules) {
-        if (module.fuelCapacity === null) issues.push(moduleIssue(module, 'fuelCapacity'));
-        else if (module.fuelCapacity !== undefined) main += module.fuelCapacity;
-    }
-    return result(
-        issues.length === 0 ? Object.freeze({ main, reserve: reserveFuelCapacity }) : null,
-        Object.freeze(issues),
-    );
+    for (const module of modules) main += module.fuelCapacity ?? 0;
+    return Object.freeze({ main, reserve: reserveFuelCapacity });
 }

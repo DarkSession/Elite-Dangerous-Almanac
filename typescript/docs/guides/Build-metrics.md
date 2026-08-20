@@ -316,14 +316,15 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 
 ## When a metric cannot be computed
 
-A required module can be absent, and a known or caller-supplied record can omit a stat a
-metric needs. Do not assume a nullable figure is load-bearing:
+A required module can be absent, and a supplied record can omit a stat a metric needs.
+Do not assume a nullable figure is load-bearing:
 
-- `unladenMass`, `fuelCapacity`, `cargoCapacity`, `mobilityMetrics()`, `shieldMetrics()`
-  and `shieldRecovery()` come in nullable/`…Result` pairs: the convenience value is
-  `null` and the result names what was missing, switched off or shed. Each issue's typed
-  `reason` is `missing`, `unresolved`, `disabled`, `shed` or `invalid`; use it instead of
-  parsing the diagnostic message.
+- `mobilityMetrics()`, `shieldMetrics()` and `shieldRecovery()` come in nullable/`…Result`
+  pairs: the convenience value is `null` and the result names what was missing, switched
+  off or shed. Each issue's typed `reason` is `missing`, `unresolved`, `disabled`, `shed`
+  or `invalid`; use it instead of parsing the diagnostic message.
+- `unladenMass`, `fuelCapacity` and `cargoCapacity` are not nullable and have no result
+  companion: no article a build can hold is unweighable, so they always answer.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
 - `armourMetrics()` always has the known hull's base figures.
@@ -335,7 +336,7 @@ metric needs. Do not assume a nullable figure is load-bearing:
   identify a malformed known module draw as `powerDraw`. The direct budget remains strict
   and throws for either invalid numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
-  answer, because the mass they need is unknown.
+  answer, because the build has no frame shift drive they can resolve.
 - `heatMetrics()` returns `null` outright when the build has no powered plant.
 
 Use each available `…Result` companion before trusting a nullable metric.
@@ -350,11 +351,14 @@ reason: discard the only shield generator and `shieldMetricsResult` reports
 engineered one and the mobility, shield and recovery companions report `shed`.
 
 `build.importOutcomes` is the account, and it is the entries that matter, not
-the length. One whose `sourceSymbol` is `null` is the cargo hatch restored to a capture
-that named none: most third-party exports omit it, so most produce exactly that one entry,
-and it leaves every figure standing but its own — like every ship's hatch it draws 0.6 MW,
-in the first priority band since the capture recorded none. Any other entry means the
-figures are the normalized fit's.
+the length. A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for,
+which import stocks from the hull defaults. Two of those cost the capture's figures
+nothing, their stock articles being free and weightless. A stocked bulkhead moves no
+metric at all. A stocked cargo hatch leaves every figure standing but its own — like
+every ship's hatch it draws 0.6 MW, in the first priority band since the capture recorded
+none — and most third-party exports omit it, so most produce exactly that one entry.
+Every other entry, `null` `sourceSymbol` or not, means the figures are the normalized
+fit's.
 
 ## Next
 

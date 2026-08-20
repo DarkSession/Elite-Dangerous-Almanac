@@ -127,11 +127,13 @@ When only one calculation is required, use the data-free leaf modules under
 `ships/jump-range`, `ships/power`, `ships/shields`, `ships/armour`, `ships/weapons`,
 `ships/weapons-capacitor`, `ships/ammunition`, `ships/heat` or `ships/resistances`.
 
-`build.validation` reports validity and operational completeness. Potentially incomplete
-aggregates are nullable and have a diagnostic counterpart (`cargoCapacityResult`,
-`fuelCapacityResult`, `unladenMassResult`). `parseSlef` is strict; `inspectSlef` is the
-tolerant importer for mixed files and returns indexed diagnostics instead of silently
-dropping entries.
+`build.validation` reports validity and operational completeness. `cargoCapacity`,
+`fuelCapacity` and `unladenMass` always have an answer, because no article the
+catalogue cannot weigh reaches a build; the metrics that depend on build state
+(`mobilityMetrics`, `shieldMetrics`, `shieldRecovery`) are nullable and have a
+diagnostic counterpart naming what is missing, switched off or unpowered. `parseSlef`
+is strict; `inspectSlef` is the tolerant importer for mixed files and returns indexed
+diagnostics instead of silently dropping entries.
 
 ```ts
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';

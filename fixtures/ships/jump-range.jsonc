@@ -31,11 +31,14 @@
   "totalJumps": 19,
   "fuelPerJump50Ly": 1.9474,
   "explicitFuel": {
+    // A Hauler, for the size-2 fuel mount that makes `fuel: 2` a partial load. A
+    // Sidewinder's fuel mount is size 1, and import stocks a fixed mount the capture
+    // overfills, which would leave nothing partial to pin.
     "loadout": {
-      "Ship": "SideWinder",
+      "Ship": "Hauler",
       "UnladenMass": 26,
       "Modules": [
-        { "Slot": "Armour", "Item": "SideWinder_Armour_Grade1" },
+        { "Slot": "Armour", "Item": "Hauler_Armour_Grade1" },
         { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
         { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class1" },
         { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class2" },
