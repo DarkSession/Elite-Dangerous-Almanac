@@ -1281,8 +1281,8 @@ export class ShipLoadout {
      * This is the repair path for the mounts {@link setModule} does not expose as ordinary
      * edits — in practice the built-in cargo hatch. The stock article keeps the mount's
      * `On`, `Priority` and `Health` and none of the replaced module's engineering or
-     * captured value, as import normalization does. Every entry point already fills these mounts, so a build this
-     * package produced answers `unchanged`.
+     * captured value, as import normalization does. Every entry point already fills these
+     * mounts, so a build this package produced answers `unchanged`.
      *
      * @param slotKey - Fixed slot key, matched case-insensitively.
      * @returns A frozen {@link FixedMountRepairResult}. Refusals leave the build unchanged.
