@@ -4185,6 +4185,77 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "buildCost": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "credits": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "hull": { "type": "integer" },
+                    "modules": { "type": "integer" },
+                    "rebuy": { "type": "integer" },
+                    "total": { "type": "integer" }
+                  },
+                  "required": ["hull", "modules", "rebuy", "total"]
+                },
+                "ship": { "type": "string" }
+              },
+              "required": ["expected", "ship"]
+            },
+            "mercenary": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "climbed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "grade": { "type": "integer" },
+                    "materials": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "count": { "type": "integer" },
+                          "name": { "type": "string" },
+                          "symbol": { "type": "string" }
+                        },
+                        "required": ["count", "name", "symbol"]
+                      }
+                    },
+                    "mercCoins": { "type": "integer" }
+                  },
+                  "required": ["grade", "materials", "mercCoins"]
+                },
+                "expected": { "type": "integer" },
+                "modules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "blueprint": { "type": "string" },
+                      "cost": { "type": "integer" },
+                      "slot": { "type": "string" },
+                      "symbol": { "type": "string" }
+                    },
+                    "required": ["blueprint", "cost", "slot", "symbol"]
+                  }
+                },
+                "ship": { "type": "string" }
+              },
+              "required": ["climbed", "expected", "modules", "ship"]
+            }
+          },
+          "required": ["credits", "mercenary"]
+        },
         "cellBanks": {
           "type": "object",
           "additionalProperties": false,
@@ -4717,29 +4788,6 @@
           },
           "required": ["unknownHull"]
         },
-        "mercCoinCost": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "expected": { "type": "integer" },
-            "modules": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "blueprint": { "type": "string" },
-                  "cost": { "type": "integer" },
-                  "slot": { "type": "string" },
-                  "symbol": { "type": "string" }
-                },
-                "required": ["blueprint", "cost", "slot", "symbol"]
-              }
-            },
-            "ship": { "type": "string" }
-          },
-          "required": ["expected", "modules", "ship"]
-        },
         "mobility": {
           "type": "object",
           "additionalProperties": false,
@@ -5073,24 +5121,6 @@
             "removal"
           ]
         },
-        "retailCredits": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "expected": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "hull": { "type": "integer" },
-                "modules": { "type": "integer" },
-                "rebuy": { "type": "integer" }
-              },
-              "required": ["hull", "modules", "rebuy"]
-            },
-            "ship": { "type": "string" }
-          },
-          "required": ["expected", "ship"]
-        },
         "shieldRecovery": {
           "type": "object",
           "additionalProperties": false,
@@ -5298,16 +5328,15 @@
         }
       },
       "required": [
+        "buildCost",
         "cellBanks",
         "diagnostics",
         "distributor",
         "editorErrors",
         "exclusivity",
         "importRejections",
-        "mercCoinCost",
         "mobility",
         "moduleLimits",
-        "retailCredits",
         "shieldRecovery",
         "slotRemoval",
         "weapons",

@@ -3,10 +3,10 @@
  *
  * Cross-language parity cases for loaded mobility, shield recovery, distributor
  * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship and
- * counted-module validation, direct retail and Merc Coin pricing, alpha-strike thermal
- * load, import rejections, structured diagnostics and editor failures. Inputs pin the
- * public data-free and ShipLoadout facade contracts; catalogue-backed expectations pin
- * the shared ship and module snapshots.
+ * counted-module validation, direct credit, Merc Coin and material pricing,
+ * alpha-strike thermal load, import rejections, structured diagnostics and editor
+ * failures. Inputs pin the public data-free and ShipLoadout facade contracts;
+ * catalogue-backed expectations pin the shared ship and module snapshots.
  */
 {
   "mobility": {
@@ -304,27 +304,50 @@
       }
     }
   },
-  "retailCredits": {
-    "ship": "Anaconda",
-    "expected": { "hull": 142456440, "modules": 4522132, "rebuy": 7348928 }
-  },
-  "mercCoinCost": {
-    "ship": "Python",
-    "modules": [
-      {
-        "slot": "MediumHardpoint1",
-        "symbol": "Hpt_Railgun_Fixed_Medium",
-        "blueprint": "RailGun_LongShot",
-        "cost": 950
-      },
-      {
-        "slot": "MediumHardpoint2",
-        "symbol": "Hpt_MultiCannon_Fixed_Medium",
-        "blueprint": "MultiCannon_Rapid",
-        "cost": 850
+  "buildCost": {
+    "credits": {
+      "ship": "Anaconda",
+      "expected": {
+        "total": 146978572,
+        "hull": 142456440,
+        "modules": 4522132,
+        "rebuy": 7348928
       }
-    ],
-    "expected": 1800
+    },
+    "mercenary": {
+      "ship": "Python",
+      "modules": [
+        {
+          "slot": "MediumHardpoint1",
+          "symbol": "Hpt_Railgun_Fixed_Medium",
+          "blueprint": "RailGun_LongShot",
+          "cost": 950
+        },
+        {
+          "slot": "MediumHardpoint2",
+          "symbol": "Hpt_MultiCannon_Fixed_Medium",
+          "blueprint": "MultiCannon_Rapid",
+          "cost": 850
+        }
+      ],
+      "expected": 1800,
+      "climbed": {
+        "grade": 5,
+        "mercCoins": 2215,
+        "materials": [
+          { "symbol": "MechanicalScrap", "name": "Mechanical Scrap", "count": 2 },
+          { "symbol": "Sulphur", "name": "Sulphur", "count": 5 },
+          { "symbol": "ConsumerFirmware", "name": "Modified Consumer Firmware", "count": 9 },
+          { "symbol": "Niobium", "name": "Niobium", "count": 7 },
+          { "symbol": "ConductivePolymers", "name": "Conductive Polymers", "count": 4 },
+          { "symbol": "Tin", "name": "Tin", "count": 4 },
+          { "symbol": "MechanicalComponents", "name": "Mechanical Components", "count": 5 },
+          { "symbol": "ThermicAlloys", "name": "Thermic Alloys", "count": 5 },
+          { "symbol": "MilitarySupercapacitors", "name": "Military Supercapacitors", "count": 5 },
+          { "symbol": "BiotechConductors", "name": "Biotech Conductors", "count": 5 }
+        ]
+      }
+    }
   },
   "weapons": {
     "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],

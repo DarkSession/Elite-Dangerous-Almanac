@@ -1,7 +1,7 @@
 /**
  * The **experimental-effect cost catalogue** — one-application material shopping lists
- * kept separate from effect mechanics so calculating or editing a build does not bundle
- * them.
+ * kept separate from effect mechanics, so a consumer that only prices an effect bundles
+ * neither the mechanics nor the whole build facade.
  *
  * The matching stat modifiers and qualitative descriptions live in
  * `ships/experimental-effects`.
