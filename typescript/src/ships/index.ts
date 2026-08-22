@@ -56,9 +56,9 @@
  *   Material shopping data stays on the
  *   {@link ships/blueprint-costs!BLUEPRINT_COSTS | blueprint-costs} and
  *   {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | experimental-effect-costs}
- *   subpaths, so build calculations do not pull it in; the Merc Coin some recipes charge
- *   alongside their materials is priced by
- *   {@link ships/blueprint-costs!getBlueprintMercCoinCost | getBlueprintMercCoinCost}.
+ *   subpaths, so build calculations do not pull it in. A blueprint cost carries both
+ *   halves of what a climb takes: the materials and the Merc Coin 25 of the recipes
+ *   charge beside them.
  *
  * The registries use two distinct Frontier identity spaces. `symbol` identifies an
  * item — a hull, module, material, micro-resource or commodity — and is what item and

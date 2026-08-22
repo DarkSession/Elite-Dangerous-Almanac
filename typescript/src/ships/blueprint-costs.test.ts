@@ -10,12 +10,13 @@ import {
     getBlueprintCost,
     getBlueprintCosts,
     getBlueprintGradeCost,
-    getBlueprintMercCoinCost,
 } from './blueprint-costs.js';
 import { BLUEPRINTS } from './blueprints.js';
 
-const countFor = (materials: readonly { symbol: string; count: number }[] | null, symbol: string) =>
-    materials?.find((material) => material.symbol === symbol)?.count;
+const countFor = (
+    cost: { materials: readonly { symbol: string; count: number }[] } | null,
+    symbol: string,
+) => cost?.materials.find((material) => material.symbol === symbol)?.count;
 
 test('every craft-cost entry matches its mechanics grades', () => {
     const craftable = Object.keys(BLUEPRINTS).filter(
@@ -43,11 +44,17 @@ test('getBlueprintCosts normalises ids and returns frozen catalogue records', ()
 });
 
 test('getBlueprintGradeCost returns one roll and misses unavailable supported grades cleanly', () => {
-    assert.deepEqual(getBlueprintGradeCost(' FSD_LONGrange ', 5), [
-        { symbol: 'Arsenic', name: 'Arsenic', count: 1 },
-        { symbol: 'ChemicalManipulators', name: 'Chemical Manipulators', count: 1 },
-        { symbol: 'DataminedWake', name: 'Datamined Wake Exceptions', count: 1 },
-    ]);
+    assert.deepEqual(getBlueprintGradeCost(' FSD_LONGrange ', 5), {
+        materials: [
+            { symbol: 'Arsenic', name: 'Arsenic', count: 1 },
+            { symbol: 'ChemicalManipulators', name: 'Chemical Manipulators', count: 1 },
+            { symbol: 'DataminedWake', name: 'Datamined Wake Exceptions', count: 1 },
+        ],
+        // An ordinary engineer recipe bills no currency; 0 is the amount, not a gap.
+        mercCoins: 0,
+    });
+    // A charging recipe reports the per-roll amount beside the same per-roll materials.
+    assert.equal(getBlueprintGradeCost('RailGun_LongShot', 5)?.mercCoins, 50);
     assert.equal(getBlueprintGradeCost('ModuleReinforcement_HeavyDuty', 1), null);
     assert.equal(getBlueprintGradeCost('nope', 1), null);
 });
@@ -114,29 +121,31 @@ test('getBlueprintCost sums every grade weighted by its roll count', () => {
 });
 
 test('getBlueprintCost charges only grades above currentGrade and skips absent grades', () => {
-    assert.deepEqual(
-        getBlueprintCost('FSD_LongRange', 5, 4),
-        getBlueprintGradeCost('FSD_LongRange', 5)!.map((material) => ({
+    assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 4), {
+        materials: getBlueprintGradeCost('FSD_LongRange', 5)!.materials.map((material) => ({
             symbol: material.symbol,
             name: material.name,
             count: material.count * 5,
         })),
-    );
+        mercCoins: 0,
+    });
     const from3 = getBlueprintCost('FSD_LongRange', 5, 3);
     assert.equal(countFor(from3, 'DisruptedWakeEchoes'), undefined);
     assert.equal(countFor(from3, 'DataminedWake'), 5);
     assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 0), getBlueprintCost('FSD_LongRange', 5));
-    assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 5), []);
+    assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 5), { materials: [], mercCoins: 0 });
 
     // This bought pre-engineered recipe starts at grade 2; the absent grade 1 is skipped.
-    assert.deepEqual(
-        getBlueprintCost('ModuleReinforcement_HeavyDuty', 2),
-        getBlueprintGradeCost('ModuleReinforcement_HeavyDuty', 2)!.map((material) => ({
-            symbol: material.symbol,
-            name: material.name,
-            count: material.count * 2,
-        })),
-    );
+    assert.deepEqual(getBlueprintCost('ModuleReinforcement_HeavyDuty', 2), {
+        materials: getBlueprintGradeCost('ModuleReinforcement_HeavyDuty', 2)!.materials.map(
+            (material) => ({
+                symbol: material.symbol,
+                name: material.name,
+                count: material.count * 2,
+            }),
+        ),
+        mercCoins: 5 * 2,
+    });
 });
 
 test('getBlueprintCost normalises ids and returns a fresh summed list', () => {
@@ -144,20 +153,36 @@ test('getBlueprintCost normalises ids and returns a fresh summed list', () => {
     const second = getBlueprintCost('FSD_LONGRANGE', 5);
     assert.deepEqual(first, second);
     assert.notEqual(first, second);
-    assert.notEqual(first?.[0], second?.[0]);
+    assert.notEqual(first?.materials[0], second?.materials[0]);
 });
 
 test('getBlueprintCost combines each material once and misses unknown requests', () => {
     for (const fdname of Object.keys(BLUEPRINT_COSTS)) {
         const cost = getBlueprintCost(fdname, 5);
         if (!cost) continue;
-        const symbols = cost.map((material) => material.symbol.toLowerCase());
+        const symbols = cost.materials.map((material) => material.symbol.toLowerCase());
         assert.equal(new Set(symbols).size, symbols.length, `${fdname} lists a material twice`);
     }
 
     assert.equal(getBlueprintCost('nope', 5), null);
     assert.equal(getBlueprintCost('ModuleReinforcement_HeavyDuty', 1), null);
     assert.equal(getBlueprintCost('CargoRack_IncreasedCapacity', 5), null);
+});
+
+test('a wrong-typed id names the function the consumer called', () => {
+    // Each public function passes its own name as the lookup label, so the shared private
+    // helpers cannot mis-report which function the consumer called.
+    for (const [name, call] of [
+        ['getBlueprintCosts', () => getBlueprintCosts(5 as unknown as string)],
+        ['getBlueprintGradeCost', () => getBlueprintGradeCost(5 as unknown as string, 5)],
+        ['getBlueprintCost', () => getBlueprintCost(5 as unknown as string, 5)],
+    ] as const) {
+        assert.throws(call, (error: unknown) => {
+            assert.ok(error instanceof TypeError);
+            assert.match(error.message, new RegExp(`^${name}: fdname `));
+            return true;
+        });
+    }
 });
 
 test('getBlueprintCost rejects target and current grades outside their supported ranges', () => {
@@ -185,12 +210,12 @@ test('the Merc-Coin catalogue is the fixture, keyed and graded like the material
     }
 });
 
-test('getBlueprintMercCoinCost weights every charged grade by its roll count', () => {
+test('getBlueprintCost weights every charged grade by its roll count', () => {
     // Totals are fixture literals, not recomputed here: a test that re-derived them with
     // rollsForGrade could not fail if the weighting rule itself were wrong.
     for (const climb of engineeringFixture.mercCoinCosts.climbs) {
         assert.equal(
-            getBlueprintMercCoinCost(climb.blueprint, climb.grade, climb.currentGrade),
+            getBlueprintCost(climb.blueprint, climb.grade, climb.currentGrade)?.mercCoins,
             climb.mercCoin,
             `${climb.blueprint} ${climb.currentGrade}->${climb.grade}`,
         );
@@ -204,28 +229,16 @@ test('getBlueprintMercCoinCost weights every charged grade by its roll count', (
     assert.deepEqual([...pinned].sort(), Object.keys(BLUEPRINT_MERC_COIN_COSTS).sort());
 });
 
-test('getBlueprintMercCoinCost normalises ids, misses cleanly and charges nothing above the target', () => {
-    const railGun = getBlueprintMercCoinCost('RailGun_LongShot', 5, 1);
-    assert.equal(getBlueprintMercCoinCost('  railgun_longshot ', 5, 1), railGun);
-    assert.equal(getBlueprintMercCoinCost('RailGun_LongShot', 5, 5), 0);
-    assert.equal(getBlueprintMercCoinCost('RailGun_LongShot', 3, 4), 0);
-    // Absent from the catalogue: this recipe charges no currency at all.
-    assert.equal(getBlueprintMercCoinCost('FSD_LongRange', 5), null);
-    assert.equal(getBlueprintMercCoinCost('nope', 5), null);
-    // Present, but the recipe does not define the grade asked for.
-    assert.equal(getBlueprintMercCoinCost('RailGun_LongShot', 1), null);
-});
-
-test('getBlueprintMercCoinCost rejects target and current grades outside their supported ranges', () => {
-    for (const grade of [0, 6, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
-        assert.throws(() => getBlueprintMercCoinCost('RailGun_LongShot', grade), RangeError);
-        assert.throws(() => getBlueprintMercCoinCost('nope', grade), RangeError);
-    }
-    for (const currentGrade of [-1, 6, 2.5, Number.NaN, Number.POSITIVE_INFINITY]) {
-        assert.throws(
-            () => getBlueprintMercCoinCost('RailGun_LongShot', 5, currentGrade),
-            RangeError,
-        );
-        assert.throws(() => getBlueprintMercCoinCost('nope', 5, currentGrade), RangeError);
-    }
+test('getBlueprintCost reports 0 Merc Coin rather than hiding a recipe that charges none', () => {
+    const railGun = getBlueprintCost('RailGun_LongShot', 5, 1);
+    assert.equal(getBlueprintCost('  railgun_longshot ', 5, 1)?.mercCoins, railGun?.mercCoins);
+    assert.equal(getBlueprintCost('RailGun_LongShot', 5, 5)?.mercCoins, 0);
+    assert.equal(getBlueprintCost('RailGun_LongShot', 3, 4)?.mercCoins, 0);
+    // Absent from the currency catalogue: 0, alongside a real material bill.
+    const ordinary = getBlueprintCost('FSD_LongRange', 5);
+    assert.equal(ordinary?.mercCoins, 0);
+    assert.ok(ordinary!.materials.length > 0);
+    // Only "not catalogued" answers null, and it answers null for both halves at once.
+    assert.equal(getBlueprintCost('nope', 5), null);
+    assert.equal(getBlueprintCost('RailGun_LongShot', 1), null);
 });

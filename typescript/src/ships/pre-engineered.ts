@@ -20,8 +20,8 @@
  * recipe or material cost.
  * The 22 Mercenary entries are bought at grade 1 and their bespoke recipes start at
  * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
- * grade)` and `getBlueprintMercCoinCost(blueprint, target, grade)` from
- * `ships/blueprint-costs`, the material and currency halves of the same climb.
+ * grade)` from `ships/blueprint-costs`, which answers with the materials and the Merc
+ * Coin the climb costs.
  * Community-goal and tech-broker entries instead identify fixed reward articles; their
  * blueprint ids do not grant a recipe to the stock module.
  *
@@ -133,8 +133,8 @@ export interface PreEngineeredVariant {
      *
      * @remarks
      * The purchase alone. Engineering the article above the `grade` it is sold at costs
-     * further Merc Coin per roll; price that with
-     * {@link ships/blueprint-costs!getBlueprintMercCoinCost | getBlueprintMercCoinCost}.
+     * further Merc Coin per roll, reported as `mercCoins` by
+     * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost}.
      */
     readonly mercCoinCost?: number;
     /**

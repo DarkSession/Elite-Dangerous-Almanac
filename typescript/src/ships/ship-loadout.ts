@@ -3074,8 +3074,8 @@ export class ShipLoadout {
      *
      * Purchases only. Engineering an article above the grade it was sold at costs further
      * Merc Coin per roll, which
-     * {@link ships/blueprint-costs!getBlueprintMercCoinCost | getBlueprintMercCoinCost}
-     * prices from the blueprint and the two grades.
+     * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} reports as
+     * `mercCoins` beside the materials for the same climb.
      * @example
      * ```ts
      * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';

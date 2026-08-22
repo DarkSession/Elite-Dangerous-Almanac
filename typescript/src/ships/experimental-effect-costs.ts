@@ -41,9 +41,8 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
  *
  * @remarks
  * Materials are the whole cost: an experimental effect charges no Merc Coin, unlike the
- * blueprints
- * {@link ships/blueprint-costs!getBlueprintMercCoinCost | getBlueprintMercCoinCost}
- * prices.
+ * 25 blueprints whose {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost}
+ * reports a non-zero `mercCoins`.
  *
  * @param fdname - The effect id, e.g. `"special_fsd_heavy"`, matched
  * case-insensitively after trimming surrounding whitespace.
