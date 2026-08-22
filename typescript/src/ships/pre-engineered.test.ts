@@ -153,6 +153,13 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
             blueprintAvailableFor(variant.symbol, variant.blueprint),
             `${variant.symbol}: ${variant.blueprint} is not upgradeable`,
         );
+        // The docs send a consumer from a `mercenary` row straight to getBlueprintCost
+        // for the Merc Coin as well. A recipe with no currency entry would answer 0, so
+        // the cross-catalogue join is asserted rather than assumed.
+        assert.ok(
+            (getBlueprintCost(variant.blueprint, 5, variant.grade)?.mercCoins ?? 0) > 0,
+            `${variant.symbol}: ${variant.blueprint} prices no Merc Coin above grade ${variant.grade}`,
+        );
         assert.deepEqual(
             availableBlueprintsFor(variant.symbol).find(
                 (candidate) => candidate.fdname === variant.blueprint,
@@ -385,9 +392,9 @@ test('the remaining upgrade is priced from the grade already applied', () => {
     const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium').find(
         (candidate) => candidate.blueprint === 'RailGun_LongShot',
     )!;
-    const total = (mats: readonly { count: number }[] | null) => {
-        assert.ok(mats, 'the blueprint must price');
-        return mats.reduce((sum, m) => sum + m.count, 0);
+    const total = (cost: { materials: readonly { count: number }[] } | null) => {
+        assert.ok(cost, 'the blueprint must price');
+        return cost.materials.reduce((sum, m) => sum + m.count, 0);
     };
     const fromPurchase = getBlueprintCost(variant.blueprint, 5, variant.grade);
     assert.ok(total(fromPurchase) > 0, 'grades 2-5 still cost materials');

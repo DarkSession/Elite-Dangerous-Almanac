@@ -218,7 +218,7 @@ import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-
 import { rollsForGrade } from '@elite-dangerous-almanac/core/ships/engineering';
 
 getBlueprint('FSD_LongRange'); // the mechanics: every grade's features
-getBlueprintCost('FSD_LongRange', 5); // materials for the whole climb, grades 1–5
+getBlueprintCost('FSD_LongRange', 5); // the whole climb, grades 1–5
 getBlueprintCost('FSD_LongRange', 5, 4); // grade 5 alone, from a grade-4 module
 rollsForGrade(5); // rolls to fill the grade's progress bar
 ```
@@ -226,8 +226,29 @@ rollsForGrade(5); // rolls to fill the grade's progress bar
 A grade costs its recipe once per roll and grade `g` takes `g` rolls, so the climb is
 weighted rather than a plain sum — which is what `getBlueprintCost` folds in for you.
 
-An experimental effect is a separate single application, on its own subpath again, and
-`sumMaterials` folds the two bills into one:
+A cost is **both halves of the bill**: the `materials` consumed and the `mercCoins`
+charged beside them. Twenty-five recipes bill Merc Coin per roll, under the same
+weighting; every other recipe reports `0`, which is a real amount rather than a missing
+one. `null` is reserved for "not catalogued", so it never has to be untangled from
+"charges nothing".
+
+Most of the twenty-five are the bespoke Mercenary recipes, which start at grade 2 because
+the article was bought at grade 1 — but four are ordinary menu recipes on stock modules,
+so do not read a Merc Coin charge as meaning a Mercenary article:
+
+```ts
+import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
+
+// A Mercenary article: bought at grade 1, so price the climb from there.
+getBlueprintCost('RailGun_LongShot', 5, 1)?.mercCoins; // -> 415
+// An ordinary menu recipe on a stock fuel scoop: the whole climb, grades 1-5.
+getBlueprintCost('FuelScoop_Efficiency', 5)?.mercCoins; // -> 350
+// A recipe that charges no currency at all.
+getBlueprintCost('FSD_LongRange', 5)?.mercCoins; // -> 0
+```
+
+An experimental effect is a separate single application, on its own subpath again. It
+costs materials alone, so only that half needs folding — `sumMaterials` does it:
 
 ```ts
 import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -235,11 +256,13 @@ import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/e
 import { sumMaterials } from '@elite-dangerous-almanac/core/ships/engineering';
 
 const grand = sumMaterials(
-    getBlueprintCost('Weapon_LongRange', 5) ?? [],
+    getBlueprintCost('Weapon_LongRange', 5)?.materials ?? [],
     getExperimentalEffectCost('special_focused') ?? [],
 );
 grand.length;
 ```
+
+The blueprint's `mercCoins` therefore stands as the whole currency bill for an upgrade.
 
 Pricing the remaining upgrade on a module bought pre-engineered is the same call with the
 grade it arrived at as the third argument. On a **reward** variant it is not: those carry

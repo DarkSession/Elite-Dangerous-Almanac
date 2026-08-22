@@ -1,0 +1,50 @@
+/*
+ * Engineering **blueprint Merc-Coin costs** — the Merc Coin one roll charges at each
+ * grade, keyed by the blueprint's Frontier `fdname`.
+ *
+ * Sources: the Inara blueprint registry, whose crafting-cost table lists a Merc Coin
+ * amount beside the materials on every recipe that charges one.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
+ *
+ * Only the recipes that charge a currency appear; every other blueprint is absent rather
+ * than zero. They come in two shapes: 21 bespoke grade-2-5 recipes that only a Mercenary
+ * article, bought already at grade 1, can be taken through, and four ordinary
+ * engineering-menu recipes spanning grades 1-5 that bill the currency as well
+ * (`FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`).
+ *
+ * Amounts are per roll, exactly as `blueprint-costs.jsonc` stores materials, so pricing a
+ * climb weights each grade by its roll count. Every id and grade here is one
+ * `blueprint-costs.jsonc` also carries.
+ *
+ * Merc Coin is a separate currency with no credit equivalent — which is why it is its
+ * own file rather than an entry in a material list.
+ */
+{
+  "FuelScoop_Efficiency": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+  "BeamLaser_ThermalPlasmaConversion": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+  "BurstLaser_ThermalPlasmaConversion": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+  "PulseLaser_ThermalPlasmaConversion": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+  "DetailedSurfaceScanner_LongRange": { "2": 5, "3": 5, "4": 10, "5": 20 },
+  "CargoRackS5C1_Extended": { "2": 5, "3": 10, "4": 15, "5": 30 },
+  "CargoRackS6C1_Extended": { "2": 5, "3": 10, "4": 15, "5": 30 },
+  "ModuleReinforcement_HeavyDuty": { "2": 5, "3": 5, "4": 10, "5": 25 },
+  "PowerDistributor_Balanced": { "2": 5, "3": 10, "4": 15, "5": 25 },
+  "PowerDistributorS3C2_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+  "PowerDistributorS3C5_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+  "PowerDistributorS4C2_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+  "PowerDistributorS4C5_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+  "PowerDistributorS6C5_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+  "AbrasionBlaster_FarReaching": { "2": 5, "3": 5, "4": 10, "5": 20 },
+  "FragmentCannonSmall_DoubleScreaming": { "2": 10, "3": 15, "4": 25, "5": 50 },
+  "FragmentCannonLarge_DoubleScreaming": { "2": 10, "3": 15, "4": 25, "5": 50 },
+  "RailGun_LongShot": { "2": 10, "3": 15, "4": 25, "5": 50 },
+  "MiningLaser_LongRange": { "2": 5, "3": 5, "4": 10, "5": 25 },
+  "MultiCannon_Rapid": { "2": 10, "3": 15, "4": 20, "5": 45 },
+  "SeekerMissileRack_Drag": { "2": 10, "3": 10, "4": 20, "5": 40 },
+  "SeekerMissileRack_LightWeightThermal": { "2": 10, "3": 10, "4": 20, "5": 40 },
+  "SeekerMissileRackMedium_Lockdown": { "2": 10, "3": 15, "4": 25, "5": 45 },
+  "SeekerMissileRackLarge_Lockdown": { "2": 10, "3": 15, "4": 25, "5": 45 },
+  "EnzymeMissileRack_HighYield": { "2": 10, "3": 15, "4": 20, "5": 45 }
+}

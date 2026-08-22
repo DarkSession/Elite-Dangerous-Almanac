@@ -479,10 +479,11 @@ function resolveFalloffFromRange(
 /**
  * The number of engineering rolls to complete a single blueprint grade: grade `N` takes
  * `N` rolls (grade 1 → 1 roll, grade 2 → 2 rolls, … grade 5 → 5 rolls). Each roll at a
- * grade consumes that grade's materials, so the total to engineer a module *up to* a
- * grade is the running sum of `rollsForGrade(g) ·` (grade `g`'s materials) for every
+ * grade consumes that grade's cost, so the total to engineer a module *up to* a
+ * grade is the running sum of `rollsForGrade(g) ·` (grade `g`'s cost) for every
  * grade `g` up to the target — what
- * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} computes.
+ * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} computes, for the
+ * materials and the Merc Coin alike.
  *
  * @param grade - The blueprint grade, `1`–`5`.
  * @returns The rolls to complete that grade (equal to the grade number).
@@ -508,7 +509,7 @@ export function rollsForGrade(grade: number): number {
  * import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
  *
  * sumMaterials(
- *   getBlueprintCost('FSD_LongRange', 5)!,
+ *   getBlueprintCost('FSD_LongRange', 5)!.materials,
  *   getExperimentalEffectCost('special_fsd_heavy')!,
  * );
  * ```

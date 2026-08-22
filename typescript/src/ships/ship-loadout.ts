@@ -3071,6 +3071,11 @@ export class ShipLoadout {
      * purchases implied by applying their Mercenary-only blueprint through
      * {@link applyBlueprint}. The blueprint identifies the purchase at grade 1 and after
      * later upgrades; the current grade does not change the original shop price.
+     *
+     * Purchases only. Engineering an article above the grade it was sold at costs further
+     * Merc Coin per roll, which
+     * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} reports as
+     * `mercCoins` beside the materials for the same climb.
      * @example
      * ```ts
      * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';

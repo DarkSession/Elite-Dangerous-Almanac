@@ -90,9 +90,10 @@ a verbatim copy produced at build time — edit this file, never the copy.
   for its code — its module definitions and resource tables supply localized outfitting
   names. The names are factual Elite Dangerous game data; no EDDI code is incorporated.
 - **[Inara](https://inara.cz/)** — the blueprint and outfitting registries behind the
-  Operations pre-engineered blueprints and shop rows, the ship pages used to corroborate
-  hull layouts, and the component pages that grade the Thargoid caustic / Titan materials
-  absent from FDevIDs and classify Power Megaship Data as an Odyssey data resource.
+  Operations pre-engineered blueprints, shop rows and the per-roll Merc-Coin crafting
+  costs, the ship pages used to corroborate hull layouts, and the component pages that
+  grade the Thargoid caustic / Titan materials absent from FDevIDs and classify Power
+  Megaship Data as an Odyssey data resource.
 - **[EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)** by
   **Ben Peddell** ([klightspeed](https://github.com/klightspeed)), **MIT** — the 42
   galactic codex regions, their ids and their lookup geometry. Original region-boundary

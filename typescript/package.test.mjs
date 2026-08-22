@@ -264,17 +264,19 @@ test('fine-grained package subpaths resolve', () => {
     );
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
     assert.equal(
-        getBlueprintGradeCost('FSD_LongRange', 5)?.find(
+        getBlueprintGradeCost('FSD_LongRange', 5)?.materials.find(
             (material) => material.symbol === 'DataminedWake',
         )?.count,
         1,
     );
     assert.equal(
-        getBlueprintCost('FSD_LongRange', 5)?.find(
+        getBlueprintCost('FSD_LongRange', 5)?.materials.find(
             (material) => material.symbol === 'DataminedWake',
         )?.count,
         5,
     );
+    assert.equal(getBlueprintCost('RailGun_LongShot', 5, 1)?.mercCoins, 415);
+    assert.equal(getBlueprintCost('FSD_LongRange', 5)?.mercCoins, 0);
     assert.equal(
         getExperimentalEffectCost('special_fsd_heavy')?.find(
             (material) => material.symbol === 'HyperspaceTrajectories',
@@ -430,6 +432,7 @@ test('heavy catalogues stay on explicit subpaths', async () => {
     }
     for (const costSymbol of [
         'BLUEPRINT_COSTS',
+        'BLUEPRINT_MERC_COIN_COSTS',
         'getBlueprintCosts',
         'getBlueprintGradeCost',
         'getBlueprintCost',

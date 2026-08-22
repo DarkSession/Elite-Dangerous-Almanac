@@ -20,9 +20,10 @@
  * recipe or material cost.
  * The 22 Mercenary entries are bought at grade 1 and their bespoke recipes start at
  * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
- * grade)` from `ships/blueprint-costs`. Community-goal and tech-broker entries instead
- * identify fixed reward articles; their blueprint ids do not grant a recipe to the stock
- * module.
+ * grade)` from `ships/blueprint-costs`, which answers with the materials and the Merc
+ * Coin the climb costs.
+ * Community-goal and tech-broker entries instead identify fixed reward articles; their
+ * blueprint ids do not grant a recipe to the stock module.
  *
  * Note that one base module can appear more than once: the medium Seeker Missile Rack is
  * sold or awarded in six different pre-engineered flavours, so
@@ -129,6 +130,11 @@ export interface PreEngineeredVariant {
      * The shop price in Merc Coin. Present only on `mercenary` rows — the other routes
      * are not bought with a currency. Merc Coin has no credit equivalent, which is why
      * this is separate from the credit `cost` a module carries.
+     *
+     * @remarks
+     * The purchase alone. Engineering the article above the `grade` it is sold at costs
+     * further Merc Coin per roll, reported as `mercCoins` by
+     * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost}.
      */
     readonly mercCoinCost?: number;
     /**
