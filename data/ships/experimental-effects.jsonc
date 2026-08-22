@@ -15,8 +15,9 @@
  * qualitative effect carries an empty `modifiers` list and a human-readable
  * `description` instead.
  *
- * One-application material requirements live in `experimental-effect-costs.jsonc` so
- * calculating or editing a build does not bundle shopping data.
+ * One-application material requirements live in `experimental-effect-costs.jsonc`, so
+ * applying an effect does not bundle what it costs; a consumer that prices a whole build
+ * loads both.
  */
 {
   "special_concordant_sequence": {

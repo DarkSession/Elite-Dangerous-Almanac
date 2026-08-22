@@ -10,7 +10,7 @@
  * Each effect id maps directly to a non-empty material list. Every material is
  * { symbol, name, count }; join `symbol` to the materials domain for its own grade and
  * category. Effect ids exactly match `experimental-effects.jsonc`, which carries the
- * mechanics without pulling this shopping data into build calculations. The material
+ * mechanics without pulling this shopping data in with them. The material
  * list is the whole cost: no experimental effect charges Merc Coin, unlike the 25
  * blueprints in blueprint-merc-coin-costs.jsonc.
  */

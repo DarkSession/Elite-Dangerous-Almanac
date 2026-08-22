@@ -94,13 +94,19 @@ test('shared catalogue-backed operation cases reproduce', () => {
         assert.equal(ShipLoadout.fromLoadout(loadout).distributorMetrics(), null);
     }
 
-    const retail = ShipLoadout.default(fixture.retailCredits.ship).retailCredits();
+    const credits = ShipLoadout.default(fixture.buildCost.credits.ship).buildCost().credits;
     assert.deepEqual(
-        { hull: retail.hull, modules: retail.modules, rebuy: retail.rebuy },
-        fixture.retailCredits.expected,
+        {
+            total: credits.total,
+            hull: credits.hull,
+            modules: credits.modules,
+            rebuy: credits.rebuy,
+        },
+        fixture.buildCost.credits.expected,
     );
-    const mercCoinBuild = ShipLoadout.default(fixture.mercCoinCost.ship);
-    for (const module of fixture.mercCoinCost.modules) {
+    const mercenary = fixture.buildCost.mercenary;
+    const mercCoinBuild = ShipLoadout.default(mercenary.ship);
+    for (const module of mercenary.modules) {
         const variant = getPreEngineeredVariants(module.symbol).find(
             (candidate) => candidate.blueprint === module.blueprint,
         );
@@ -108,7 +114,18 @@ test('shared catalogue-backed operation cases reproduce', () => {
         assert.equal(variant.mercCoinCost, module.cost);
         mercCoinBuild.setPreEngineeredVariant(module.slot, variant);
     }
-    assert.equal(mercCoinBuild.mercCoinCost(), fixture.mercCoinCost.expected);
+    assert.equal(mercCoinBuild.buildCost().mercCoins, mercenary.expected);
+    const climbed = mercenary.modules[0]!;
+    mercCoinBuild
+        .setModule(climbed.slot, getModuleBySymbol(climbed.symbol, ALL_MODULES)!)
+        .applyBlueprint(climbed.slot, climbed.blueprint, { grade: mercenary.climbed.grade });
+    assert.deepEqual(
+        {
+            mercCoins: mercCoinBuild.buildCost().mercCoins,
+            materials: mercCoinBuild.buildCost().materials,
+        },
+        { mercCoins: mercenary.climbed.mercCoins, materials: mercenary.climbed.materials },
+    );
     const validation = validateLoadout({
         shipSymbol: 'FutureShip',
         slots: [],

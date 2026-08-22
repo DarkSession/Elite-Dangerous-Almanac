@@ -53,12 +53,13 @@
  *   labels, while {@link ShipLoadout.setPreEngineeredVariant} fits a fixed article that
  *   arrives engineered. {@link ENGINEERING_OPTION_GROUPS} answers what a module *can*
  *   take, and {@link PRE_ENGINEERED_MODULES} covers the articles you cannot craft.
- *   Material shopping data stays on the
+ *   Material shopping data lives on the
  *   {@link ships/blueprint-costs!BLUEPRINT_COSTS | blueprint-costs} and
  *   {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | experimental-effect-costs}
- *   subpaths, so build calculations do not pull it in. A blueprint cost carries both
- *   halves of what a climb takes: the materials and the Merc Coin 25 of the recipes
- *   charge beside them.
+ *   subpaths, so a consumer can price one recipe without the mechanics — and the facade
+ *   carries them, since {@link ShipLoadout.buildCost} prices a whole build. A blueprint
+ *   cost carries both halves of what a climb takes: the materials and the Merc Coin 25 of
+ *   the recipes charge beside them.
  *
  * The registries use two distinct Frontier identity spaces. `symbol` identifies an
  * item — a hull, module, material, micro-resource or commodity — and is what item and
@@ -236,7 +237,8 @@ export {
     type StandardLoadInputs,
     type DistributorOptions,
     type WeaponsOptions,
-    type RetailCredits,
+    type BuildCost,
+    type BuildCredits,
     type FittedWeaponMetrics,
     type BuildWeaponMetrics,
     type AvailableBlueprint,

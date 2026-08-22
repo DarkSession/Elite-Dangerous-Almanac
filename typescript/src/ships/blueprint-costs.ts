@@ -1,6 +1,7 @@
 /**
  * The **blueprint cost catalogue** — material shopping lists kept separate from
- * blueprint mechanics so calculating or editing a build does not bundle them.
+ * blueprint mechanics, so a consumer that only prices a recipe bundles neither the
+ * mechanics nor the whole build facade.
  *
  * Each blueprint id maps its available grades to what one roll at that grade costs.
  * Use {@link getBlueprintGradeCost} for that per-roll recipe or {@link getBlueprintCost}
