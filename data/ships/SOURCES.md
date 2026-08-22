@@ -1732,6 +1732,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
     and several rows are annotated as having been obtainable both ways — the six SCO "V1"
     drives most obviously. `acquisition` records the tag; it is not a claim that no other
     route ever existed.
+- **`name` is the base module's name, except on the Merc-shop rows.** A community-goal or
+  tech-broker article is listed under the module it fits as, so those rows carry the
+  catalogue name verbatim. The 22 `mercenary` rows do not: the shop sells the
+  "Far-Reaching Abrasion Blaster" and the "Support Focused Power Distributor" under those
+  names, 14 distinct ones over the 22 rows. Supplied by the repository owner from the
+  in-game shop listing, acquired 2026-08-22 UTC; the registries carry the transformation,
+  not the label. Their localized values are recorded in `data/i18n/SOURCES.md`.
 - **`engineeringLocked: true` marks 12 final weapon rows:** the seven pre-engineered
   Guardian weapons and the five fixed Enzyme/AX articles. Their evidence is recorded once
   under Engineering options.

@@ -170,10 +170,10 @@ getEngineeringGroupName('frameShiftDrives', 'de'); // -> null
 ```
 
 The functions return an explicit source value verbatim, so a source-backed spelling may
-happen to equal English; the library itself never supplies an English fallback.
-Unqualified `zh` selects the source's Simplified Chinese (`zh-CN`) names. Explicitly
-different Chinese scripts or regions such as `zh-TW` do not fall back to Simplified
-Chinese and return `null` unless a matching source is added.
+happen to equal English; the library itself never supplies an English fallback. The
+catalogues carry English, French, German, Russian and Spanish, each stored under a bare
+language tag: a regional or script subtag is dropped (`de-DE` → `de`), and any other
+language returns `null`.
 
 The same contract covers ship manufacturers, pre-engineered variant names, engineering
 group names, experimental-effect descriptions, loadout-slot and restriction labels, and
