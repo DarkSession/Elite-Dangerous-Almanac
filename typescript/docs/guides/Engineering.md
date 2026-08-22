@@ -265,6 +265,11 @@ grand.length;
 
 The blueprint's `mercCoins` therefore stands as the whole currency bill for an upgrade.
 
+Pricing the remaining upgrade on a module bought pre-engineered is `getBlueprintCost`
+again, with the grade it arrived at as the third argument. On a **reward** variant it is
+not: those carry hand-set overrides no blueprint grants, so the ordinary material recipe
+prices ordinary engineering rather than the reward.
+
 ## Pricing a whole build
 
 `ShipLoadout.buildCost` does the same folding for every module a build carries, and prices
@@ -286,11 +291,6 @@ cost.mercCoins; // -> 0
 It charges only what a player still has to pay. A Mercenary article arrives at the grade
 it was sold at, so its climb is priced from there and an effect it came with is free; a
 reward article was never rolled from the recipe it names, so it costs no materials at all.
-
-Pricing the remaining upgrade on a module bought pre-engineered is the same call with the
-grade it arrived at as the third argument. On a **reward** variant it is not: those carry
-hand-set overrides no blueprint grants, so the ordinary material recipe prices ordinary
-engineering rather than the reward.
 
 ## Next
 

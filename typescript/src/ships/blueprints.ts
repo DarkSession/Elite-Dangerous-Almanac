@@ -7,7 +7,9 @@
  * it. Each grade is a {@link BlueprintGrade} — its `features` (feed to
  * {@link computeModifiers} from `./engineering`) and optional converted
  * `damageDistribution`. Read it with {@link getBlueprintGrade}. Material shopping lists
- * live separately in `ships/blueprint-costs`, so build calculations do not bundle them.
+ * live separately in `ships/blueprint-costs`, so applying a recipe does not bundle what it
+ * costs — though `ShipLoadout` carries both, since it prices a build as well as
+ * engineering one.
  *
  * Keys are Frontier `fdname`s — normally the exact strings a journal `Loadout` event
  * carries in `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display

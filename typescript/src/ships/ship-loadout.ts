@@ -484,9 +484,10 @@ export interface BuildCredits {
     /**
      * Priced hull and modules together, in credits.
      *
-     * A Mercenary article is quoted at its base module's catalogue list price here as
-     * well as in {@link BuildCost.mercCoins}, because no catalogue records the credits a
-     * shop would ask for the bare module the article is built on.
+     * A Mercenary article is bought with Merc Coin and has no credit price at all, but it
+     * is counted here at the catalogue list price of the stock module it is built on, and
+     * again in {@link BuildCost.mercCoins} at what it actually cost. Subtract the stock
+     * module's price to quote credits a shop would really ask.
      */
     readonly total: number;
     /** Bare hull list price in credits. */

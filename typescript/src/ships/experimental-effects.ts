@@ -8,7 +8,8 @@
  * {@link computeModifiers} alongside a blueprint grade), optional fixed damage-type
  * conversion, and optional qualitative description. Read it with
  * {@link getExperimentalEffect}. Material shopping lists live separately in
- * `ships/experimental-effect-costs`, so build calculations do not bundle them.
+ * `ships/experimental-effect-costs`, so applying an effect does not bundle what it costs —
+ * though `ShipLoadout` carries both, since it prices a build as well as engineering one.
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.ExperimentalEffect` (e.g. `"special_fsd_heavy"`), not the in-game
