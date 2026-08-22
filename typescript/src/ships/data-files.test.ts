@@ -40,6 +40,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'default-loadouts.jsonc': 'defaultLoadoutCatalogue',
     'blueprints.jsonc': 'blueprintCatalogue',
     'blueprint-costs.jsonc': 'blueprintCostCatalogue',
+    'blueprint-merc-coin-costs.jsonc': 'blueprintMercCoinCostCatalogue',
     'blueprint-journal-names.jsonc': 'blueprintJournalNameCatalogue',
     'experimental-effects.jsonc': 'experimentalCatalogue',
     'experimental-effect-costs.jsonc': 'experimentalEffectCostCatalogue',

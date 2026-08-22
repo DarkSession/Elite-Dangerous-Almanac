@@ -3,8 +3,9 @@
  *
  * Ground truth for the engineering mechanics, costs and journal collisions under data/ships/:
  * the per-grade modifier legs and material recipes a blueprint applies, each experimental
- * effect's modifiers and one-application cost, the journal spellings that collide, and the
- * Frontier-float32 engineered results those fold to. Fixed module variants, including the
+ * effect's modifiers and one-application cost, the per-roll Merc Coin the 25 charging
+ * recipes bill and the weighted climb totals that follow from it, the journal spellings
+ * that collide, and the Frontier-float32 engineered results those fold to. Fixed module variants, including the
  * grade-5 festive launchers, are pinned in fixtures/ships/pre-engineered.jsonc.
  */
 {
@@ -542,6 +543,69 @@
       "4": { "thermal": 0.876, "absolute": 0.124 },
       "5": { "thermal": 0.845, "absolute": 0.155 }
     }
+  },
+  "mercCoinCosts": {
+    "description": "Merc Coin is charged per roll alongside the materials of the 25 recipes that bill it; every other blueprint charges none, so it is absent rather than zero. `perRoll` is the whole catalogue, in two shapes: 21 bespoke grade-2-5 recipes that only a Mercenary article, bought already at grade 1, can be taken through, and four ordinary engineering-menu recipes spanning grades 1-5 that bill it as well (`FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`). `climbs` are totals with each grade weighted by its roll count, the way the material half is weighted: every recipe's whole climb, then partial climbs that an off-by-one in the weighting would change. A grade-2-5 recipe totals the same from `currentGrade` 0 as from 1, because a grade it does not define is skipped rather than refused.",
+    "perRoll": {
+      "FuelScoop_Efficiency": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+      "BeamLaser_ThermalPlasmaConversion": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+      "BurstLaser_ThermalPlasmaConversion": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+      "PulseLaser_ThermalPlasmaConversion": { "1": 10, "2": 15, "3": 20, "4": 25, "5": 30 },
+      "DetailedSurfaceScanner_LongRange": { "2": 5, "3": 5, "4": 10, "5": 20 },
+      "CargoRackS5C1_Extended": { "2": 5, "3": 10, "4": 15, "5": 30 },
+      "CargoRackS6C1_Extended": { "2": 5, "3": 10, "4": 15, "5": 30 },
+      "ModuleReinforcement_HeavyDuty": { "2": 5, "3": 5, "4": 10, "5": 25 },
+      "PowerDistributor_Balanced": { "2": 5, "3": 10, "4": 15, "5": 25 },
+      "PowerDistributorS3C2_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+      "PowerDistributorS3C5_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+      "PowerDistributorS4C2_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+      "PowerDistributorS4C5_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+      "PowerDistributorS6C5_SupportFocused": { "2": 5, "3": 5, "4": 10, "5": 15 },
+      "AbrasionBlaster_FarReaching": { "2": 5, "3": 5, "4": 10, "5": 20 },
+      "FragmentCannonSmall_DoubleScreaming": { "2": 10, "3": 15, "4": 25, "5": 50 },
+      "FragmentCannonLarge_DoubleScreaming": { "2": 10, "3": 15, "4": 25, "5": 50 },
+      "RailGun_LongShot": { "2": 10, "3": 15, "4": 25, "5": 50 },
+      "MiningLaser_LongRange": { "2": 5, "3": 5, "4": 10, "5": 25 },
+      "MultiCannon_Rapid": { "2": 10, "3": 15, "4": 20, "5": 45 },
+      "SeekerMissileRack_Drag": { "2": 10, "3": 10, "4": 20, "5": 40 },
+      "SeekerMissileRack_LightWeightThermal": { "2": 10, "3": 10, "4": 20, "5": 40 },
+      "SeekerMissileRackMedium_Lockdown": { "2": 10, "3": 15, "4": 25, "5": 45 },
+      "SeekerMissileRackLarge_Lockdown": { "2": 10, "3": 15, "4": 25, "5": 45 },
+      "EnzymeMissileRack_HighYield": { "2": 10, "3": 15, "4": 20, "5": 45 }
+    },
+    "climbs": [
+      { "blueprint": "FuelScoop_Efficiency", "grade": 5, "currentGrade": 0, "mercCoin": 350 },
+      { "blueprint": "BeamLaser_ThermalPlasmaConversion", "grade": 5, "currentGrade": 0, "mercCoin": 350 },
+      { "blueprint": "BurstLaser_ThermalPlasmaConversion", "grade": 5, "currentGrade": 0, "mercCoin": 350 },
+      { "blueprint": "PulseLaser_ThermalPlasmaConversion", "grade": 5, "currentGrade": 0, "mercCoin": 350 },
+      { "blueprint": "DetailedSurfaceScanner_LongRange", "grade": 5, "currentGrade": 0, "mercCoin": 165 },
+      { "blueprint": "CargoRackS5C1_Extended", "grade": 5, "currentGrade": 0, "mercCoin": 250 },
+      { "blueprint": "CargoRackS6C1_Extended", "grade": 5, "currentGrade": 0, "mercCoin": 250 },
+      { "blueprint": "ModuleReinforcement_HeavyDuty", "grade": 5, "currentGrade": 0, "mercCoin": 190 },
+      { "blueprint": "PowerDistributor_Balanced", "grade": 5, "currentGrade": 0, "mercCoin": 225 },
+      { "blueprint": "PowerDistributorS3C2_SupportFocused", "grade": 5, "currentGrade": 0, "mercCoin": 140 },
+      { "blueprint": "PowerDistributorS3C5_SupportFocused", "grade": 5, "currentGrade": 0, "mercCoin": 140 },
+      { "blueprint": "PowerDistributorS4C2_SupportFocused", "grade": 5, "currentGrade": 0, "mercCoin": 140 },
+      { "blueprint": "PowerDistributorS4C5_SupportFocused", "grade": 5, "currentGrade": 0, "mercCoin": 140 },
+      { "blueprint": "PowerDistributorS6C5_SupportFocused", "grade": 5, "currentGrade": 0, "mercCoin": 140 },
+      { "blueprint": "AbrasionBlaster_FarReaching", "grade": 5, "currentGrade": 0, "mercCoin": 165 },
+      { "blueprint": "FragmentCannonSmall_DoubleScreaming", "grade": 5, "currentGrade": 0, "mercCoin": 415 },
+      { "blueprint": "FragmentCannonLarge_DoubleScreaming", "grade": 5, "currentGrade": 0, "mercCoin": 415 },
+      { "blueprint": "RailGun_LongShot", "grade": 5, "currentGrade": 0, "mercCoin": 415 },
+      { "blueprint": "MiningLaser_LongRange", "grade": 5, "currentGrade": 0, "mercCoin": 190 },
+      { "blueprint": "MultiCannon_Rapid", "grade": 5, "currentGrade": 0, "mercCoin": 370 },
+      { "blueprint": "SeekerMissileRack_Drag", "grade": 5, "currentGrade": 0, "mercCoin": 330 },
+      { "blueprint": "SeekerMissileRack_LightWeightThermal", "grade": 5, "currentGrade": 0, "mercCoin": 330 },
+      { "blueprint": "SeekerMissileRackMedium_Lockdown", "grade": 5, "currentGrade": 0, "mercCoin": 390 },
+      { "blueprint": "SeekerMissileRackLarge_Lockdown", "grade": 5, "currentGrade": 0, "mercCoin": 390 },
+      { "blueprint": "EnzymeMissileRack_HighYield", "grade": 5, "currentGrade": 0, "mercCoin": 370 },
+      { "blueprint": "CargoRackS5C1_Extended", "grade": 5, "currentGrade": 1, "mercCoin": 250 },
+      { "blueprint": "ModuleReinforcement_HeavyDuty", "grade": 5, "currentGrade": 1, "mercCoin": 190 },
+      { "blueprint": "FragmentCannonSmall_DoubleScreaming", "grade": 3, "currentGrade": 1, "mercCoin": 65 },
+      { "blueprint": "PowerDistributorS3C2_SupportFocused", "grade": 5, "currentGrade": 4, "mercCoin": 75 },
+      { "blueprint": "RailGun_LongShot", "grade": 5, "currentGrade": 1, "mercCoin": 415 },
+      { "blueprint": "SeekerMissileRackLarge_Lockdown", "grade": 4, "currentGrade": 2, "mercCoin": 145 }
+    ]
   },
   "blueprintCount": 107,
   "experimentalCount": 86

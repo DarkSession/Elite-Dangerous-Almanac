@@ -1319,6 +1319,171 @@ type FixtureShipsEngineering = {
             prefixed: never[];
         };
     };
+    mercCoinCosts: {
+        climbs: {
+            blueprint: string;
+            currentGrade: number;
+            grade: number;
+            mercCoin: number;
+        }[];
+        description: string;
+        perRoll: {
+            AbrasionBlaster_FarReaching: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            BeamLaser_ThermalPlasmaConversion: {
+                '1': number;
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            BurstLaser_ThermalPlasmaConversion: {
+                '1': number;
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            CargoRackS5C1_Extended: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            CargoRackS6C1_Extended: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            DetailedSurfaceScanner_LongRange: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            EnzymeMissileRack_HighYield: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            FragmentCannonLarge_DoubleScreaming: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            FragmentCannonSmall_DoubleScreaming: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            FuelScoop_Efficiency: {
+                '1': number;
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            MiningLaser_LongRange: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            ModuleReinforcement_HeavyDuty: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            MultiCannon_Rapid: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PowerDistributorS3C2_SupportFocused: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PowerDistributorS3C5_SupportFocused: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PowerDistributorS4C2_SupportFocused: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PowerDistributorS4C5_SupportFocused: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PowerDistributorS6C5_SupportFocused: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PowerDistributor_Balanced: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            PulseLaser_ThermalPlasmaConversion: {
+                '1': number;
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            RailGun_LongShot: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            SeekerMissileRackLarge_Lockdown: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            SeekerMissileRackMedium_Lockdown: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            SeekerMissileRack_Drag: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            SeekerMissileRack_LightWeightThermal: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+        };
+    };
     overchargedIdCollision: {
         cases: {
             base: {
