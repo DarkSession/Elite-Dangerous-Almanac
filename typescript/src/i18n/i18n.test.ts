@@ -52,13 +52,19 @@ test('English regional tags return the owning catalogues canonical names', () =>
     assert.equal(getMicroResourceName(' GRAPHENE ', 'en-US'), 'Graphene');
 });
 
-test('an exact regional translation takes precedence and may fall back to its language', () => {
-    assert.equal(
-        getModuleName('Int_Hyperdrive_Size6_Class5', 'pt-br'),
-        'Motor de Distorção de Fase',
-    );
-    assert.equal(getBlueprintName('FSD_LongRange', 'pt-PT'), 'Alcance do MDD Aumentado');
-    assert.equal(getModuleName('Int_Hyperdrive_Size6_Class5', 'zh_cn'), '超空间折叠引擎');
+test('a regional or script tag resolves to its stored language', () => {
+    // Every stored locale is a bare language tag, so the subtag is dropped, not matched.
+    assert.equal(getModuleName('Int_Hyperdrive_Size6_Class5', 'de_AT'), 'Frameshiftantrieb');
+    assert.equal(getBlueprintName('FSD_LongRange', 'fr-CA'), 'Portée FSD améliorée');
+    assert.equal(getMaterialName('Mercury', 'es-419'), 'Mercurio');
+});
+
+test('a language the catalogues no longer carry is a miss', () => {
+    // Portuguese, Brazilian Portuguese, Italian, Hungarian, Georgian and Simplified
+    // Chinese are published by the sources and deliberately not stored.
+    for (const locale of ['pt', 'pt-BR', 'it', 'hu', 'ka', 'zh', 'zh-CN', 'zh-Hans']) {
+        assert.equal(getModuleName('Int_Hyperdrive_Size6_Class5', locale), null, locale);
+    }
 });
 
 test('unknown and empty locales are sparse misses', () => {

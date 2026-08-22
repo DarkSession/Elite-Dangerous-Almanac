@@ -242,7 +242,7 @@
   "records": [
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
-      "name": "Rail Gun",
+      "name": "Enduring Feedback Rail Gun",
       "blueprint": "RailGun_LongShot",
       "grade": 1,
       "acquisition": "mercenary",
@@ -340,7 +340,7 @@
     },
     {
       "symbol": "Int_PowerDistributor_Size5_Class5",
-      "name": "Power Distributor",
+      "name": "Balanced Power Distributor",
       "blueprint": "PowerDistributor_Balanced",
       "grade": 1,
       "acquisition": "mercenary",

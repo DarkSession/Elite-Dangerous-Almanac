@@ -16,249 +16,192 @@
     "de": "Kohlenstoff",
     "es": "Carbono",
     "fr": "Carbone",
-    "pt": "Carbono",
-    "ru": "Углерод",
-    "ka": "ნახშირბადი"
+    "ru": "Углерод"
   },
   "Vanadium": {
     "en": "Vanadium",
     "es": "Vanadio",
     "fr": "Vanadium",
-    "pt": "Vanádio",
-    "ru": "Ванадий",
-    "ka": "Vanadium"
+    "ru": "Ванадий"
   },
   "Niobium": {
     "en": "Niobium",
     "es": "Niobio",
     "fr": "Niobium",
-    "pt": "Nióbio",
-    "ru": "Ниобий",
-    "ka": "Niobium"
+    "ru": "Ниобий"
   },
   "Yttrium": {
     "en": "Yttrium",
     "es": "Ytrio",
     "fr": "Yttrium",
-    "pt": "Ítrio",
-    "ru": "Иттрий",
-    "ka": "Yttrium"
+    "ru": "Иттрий"
   },
   "Iron": {
     "en": "Iron",
     "de": "Eisen",
     "es": "Hierro",
     "fr": "Fer",
-    "pt": "Ferro",
-    "ru": "Железо",
-    "ka": "რკინა"
+    "ru": "Железо"
   },
   "Zinc": {
     "en": "Zinc",
     "de": "Zink",
     "es": "Zinc",
     "fr": "Zinc",
-    "pt": "Zinco",
-    "ru": "Цинк",
-    "ka": "თუთია"
+    "ru": "Цинк"
   },
   "Tin": {
     "en": "Tin",
     "de": "Zinn",
     "es": "Estaño",
     "fr": "Étain",
-    "pt": "Estanho",
-    "ru": "Олово",
-    "ka": "კალა"
+    "ru": "Олово"
   },
   "Selenium": {
     "en": "Selenium",
     "de": "Selen",
     "es": "Selenio",
     "fr": "Sélénium",
-    "pt": "Selênio",
-    "ru": "Селен",
-    "ka": "სელენი"
+    "ru": "Селен"
   },
   "Lead": {
     "en": "Lead",
     "de": "Blei",
     "es": "Plomo",
     "fr": "Plomb",
-    "pt": "Chumbo",
-    "ru": "Свинец",
-    "ka": "ტყვია"
+    "ru": "Свинец"
   },
   "Zirconium": {
     "en": "Zirconium",
     "es": "Circonio",
     "fr": "Zirconium",
-    "pt": "Zircônio",
-    "ru": "Цирконий",
-    "ka": "Zirconium"
+    "ru": "Цирконий"
   },
   "Boron": {
     "en": "Boron",
     "de": "Bor",
     "es": "Boro",
     "fr": "Bore",
-    "pt": "Boro",
-    "ru": "Бор",
-    "ka": "ბორი"
+    "ru": "Бор"
   },
   "Antimony": {
     "en": "Antimony",
     "de": "Antimon",
     "es": "Antimonio",
     "fr": "Antimoine",
-    "pt": "Antimônio",
-    "ru": "Сурьма",
-    "ka": "Antimony"
+    "ru": "Сурьма"
   },
   "Nickel": {
     "en": "Nickel",
     "es": "Níquel",
     "fr": "Nickel",
-    "pt": "Níquel",
-    "ru": "Никель",
-    "ka": "Nickel"
+    "ru": "Никель"
   },
   "Germanium": {
     "en": "Germanium",
     "es": "Germanio",
     "fr": "Germanium",
-    "pt": "Germânio",
-    "ru": "Германий",
-    "ka": "Germanium"
+    "ru": "Германий"
   },
   "Tungsten": {
     "en": "Tungsten",
     "de": "Wolfram",
     "es": "Tungsteno",
     "fr": "Tungstène",
-    "pt": "Tungstênio",
-    "ru": "Вольфрам",
-    "ka": "ვოლფრამი"
+    "ru": "Вольфрам"
   },
   "Tellurium": {
     "en": "Tellurium",
     "de": "Tellur",
     "es": "Teluro",
     "fr": "Tellure",
-    "pt": "Telúrio",
-    "ru": "Теллур",
-    "ka": "Tellurium"
+    "ru": "Теллур"
   },
   "Phosphorus": {
     "en": "Phosphorus",
     "de": "Phosphor",
     "es": "Fósforo",
     "fr": "Phosphore",
-    "pt": "Fósforo",
-    "ru": "Фосфор",
-    "ka": "ფოსფორი"
+    "ru": "Фосфор"
   },
   "Chromium": {
     "en": "Chromium",
     "de": "Chrom",
     "es": "Cromo",
     "fr": "Chrome",
-    "pt": "Cromo",
-    "ru": "Хром",
-    "ka": "ქრომი"
+    "ru": "Хром"
   },
   "Molybdenum": {
     "en": "Molybdenum",
     "de": "Molibdän",
     "es": "Molibdeno",
     "fr": "Molybdène",
-    "pt": "Molibdênio",
-    "ru": "Молибден",
-    "ka": "Molybdenum"
+    "ru": "Молибден"
   },
   "Technetium": {
     "en": "Technetium",
     "es": "Tecnecio",
     "fr": "Technétium",
-    "pt": "Tecnécio",
-    "ru": "Технеций",
-    "ka": "Technetium"
+    "ru": "Технеций"
   },
   "Rhenium": {
     "en": "Rhenium",
     "es": "Renio",
     "fr": "Rhénium",
-    "pt": "Rênio",
-    "ru": "Рений",
-    "ka": "Rhenium"
+    "ru": "Рений"
   },
   "Arsenic": {
     "en": "Arsenic",
     "de": "Arsen",
     "es": "Arsénico",
     "fr": "Arsenic",
-    "pt": "Arsênico",
-    "ru": "Мышьяк",
-    "ka": "დარიშხანი"
+    "ru": "Мышьяк"
   },
   "Mercury": {
     "en": "Mercury",
     "de": "Quecksilber",
     "es": "Mercurio",
     "fr": "Mercure",
-    "pt": "Mercúrio",
-    "ru": "Ртуть",
-    "ka": "Mercury"
+    "ru": "Ртуть"
   },
   "Polonium": {
     "en": "Polonium",
     "es": "Polonio",
     "fr": "Polonium",
-    "pt": "Polônio",
-    "ru": "Полоний",
-    "ka": "Polonium"
+    "ru": "Полоний"
   },
   "Sulphur": {
     "en": "Sulphur",
     "de": "Schwefel",
     "es": "Azufre",
     "fr": "Soufre",
-    "pt": "Enxofre",
-    "ru": "Сера",
-    "ka": "გოგირდი"
+    "ru": "Сера"
   },
   "Manganese": {
     "en": "Manganese",
     "de": "Mangan",
     "es": "Manganeso",
     "fr": "Manganèse",
-    "pt": "Manganês",
-    "ru": "Марганец",
-    "ka": "მანგანუმი"
+    "ru": "Марганец"
   },
   "Cadmium": {
     "en": "Cadmium",
     "de": "Kadmium",
     "es": "Cadmio",
     "fr": "Cadmium",
-    "pt": "Cádmio",
-    "ru": "Кадмий",
-    "ka": "კადმიუმი"
+    "ru": "Кадмий"
   },
   "Ruthenium": {
     "en": "Ruthenium",
     "es": "Rutenio",
     "fr": "Ruthénium",
-    "pt": "Rutênio",
-    "ru": "Рутений",
-    "ka": "Ruthenium"
+    "ru": "Рутений"
   },
   "SalvagedAlloys": {
     "en": "Salvaged Alloys",
     "de": "Geborgene Legierungen",
     "es": "Aleaciones recuperadas",
     "fr": "Alliages récupérés",
-    "pt": "Ligas recuperadas",
     "ru": "Захваченные сплавы"
   },
   "GalvanisingAlloys": {
@@ -266,7 +209,6 @@
     "de": "Galvanisierende Legierungen",
     "es": "Aleaciones galvanizadas",
     "fr": "Alliages galvaniques",
-    "pt": "Ligas galvanizadas",
     "ru": "Сплавы для гальванизации"
   },
   "PhaseAlloys": {
@@ -274,7 +216,6 @@
     "de": "Phasenlegierungen",
     "es": "Aleaciones de fase",
     "fr": "Alliages de phase",
-    "pt": "Ligas de fase",
     "ru": "Фазовые сплавы"
   },
   "ProtoLightAlloys": {
@@ -282,7 +223,6 @@
     "de": "Leichte Legierungen (Proto)",
     "es": "Protoaleaciones ligeras",
     "fr": "Proto-alliages légers",
-    "pt": "Proto ligas leves",
     "ru": "Опытные легкие сплавы"
   },
   "ProtoRadiolicAlloys": {
@@ -290,7 +230,6 @@
     "de": "Radiologische Legierungen (Proto)",
     "es": "Aleaciones protorradiadas",
     "fr": "Proto-alliages radiologiques",
-    "pt": "Proto ligas radiólicas",
     "ru": "Сплавы для изготовления зондов"
   },
   "GridResistors": {
@@ -298,7 +237,6 @@
     "de": "Gitterwiderstände",
     "es": "Red resistiva",
     "fr": "Résistance à grille",
-    "pt": "Resistores de grade",
     "ru": "Наборные резисторы"
   },
   "HybridCapacitors": {
@@ -306,7 +244,6 @@
     "de": "Hybridkondensatoren",
     "es": "Capacitadores híbridos",
     "fr": "Condensateurs hybrides",
-    "pt": "Capacitores híbridos",
     "ru": "Гибридные конденсаторы"
   },
   "ElectrochemicalArrays": {
@@ -314,7 +251,6 @@
     "de": "Elektrochemische Detektoren",
     "es": "Matriz electroquímica",
     "fr": "Réseaux électrochimiques",
-    "pt": "Matrizes eletroquímicas",
     "ru": "Электрохимические массивы"
   },
   "PolymerCapacitors": {
@@ -322,7 +258,6 @@
     "de": "Polymerkondensatoren",
     "es": "Capacitadores de polímeros",
     "fr": "Condensateurs en polymères",
-    "pt": "Capacitores de polímeros",
     "ru": "Полимерные конденсаторы"
   },
   "MilitarySupercapacitors": {
@@ -330,7 +265,6 @@
     "de": "Militärische Superkondensatoren",
     "es": "Supercapacitadores militares",
     "fr": "Supercondensateurs militaires",
-    "pt": "Supercapacitores militares",
     "ru": "Военные суперконденсаторы"
   },
   "ChemicalStorageUnits": {
@@ -338,7 +272,6 @@
     "de": "Lagerungseinheiten für Chemiestoffe",
     "es": "Unidades de almacenamiento químico",
     "fr": "Unités de stockage chimique",
-    "pt": "Unidades de armazenamento químico",
     "ru": "Контейнеры для химикатов"
   },
   "ChemicalProcessors": {
@@ -346,7 +279,6 @@
     "de": "Chemische Prozessoren",
     "es": "Procesadores químicos",
     "fr": "Processeurs chimiques",
-    "pt": "Processadores químicos",
     "ru": "Оборудование для химобработки"
   },
   "ChemicalDistillery": {
@@ -354,7 +286,6 @@
     "de": "Chemiedestillerie",
     "es": "Destilería química",
     "fr": "Distillerie chimique",
-    "pt": "Destilaria química",
     "ru": "Оборудование для перегонки химикатов"
   },
   "ChemicalManipulators": {
@@ -362,7 +293,6 @@
     "de": "Chemische Manipulatoren",
     "es": "Manipuladores químicos",
     "fr": "Manipulateurs chimiques",
-    "pt": "Manipuladores químicos",
     "ru": "Манипуляторы для работы с химикатами"
   },
   "PharmaceuticalIsolators": {
@@ -370,7 +300,6 @@
     "de": "Pharmazeutische Isolatoren",
     "es": "Aislantes farmacéuticos",
     "fr": "Isolants pharmaceutiques",
-    "pt": "Isolantes farmacêuticos",
     "ru": "Фармацевтические изоляционные материалы"
   },
   "CompactComposites": {
@@ -378,7 +307,6 @@
     "de": "Kompaktkomposite",
     "es": "Compuestos compactos",
     "fr": "Composites compacts",
-    "pt": "Compostos compactos",
     "ru": "Спрессованные композиты"
   },
   "FilamentComposites": {
@@ -386,7 +314,6 @@
     "de": "Filament-Komposite",
     "es": "Compuestos de filamentos",
     "fr": "Composites filamentaires",
-    "pt": "Compostos filamentares",
     "ru": "Волокнистые композиты"
   },
   "HighDensityComposites": {
@@ -394,7 +321,6 @@
     "de": "Komposite hoher Dichte",
     "es": "Compuestos de alta densidad",
     "fr": "Composites à haute densité",
-    "pt": "Compostos de alta densidade",
     "ru": "Высокоплотностные композиты"
   },
   "FedProprietaryComposites": {
@@ -402,7 +328,6 @@
     "de": "Kompositwerkstoffe",
     "es": "Compuestos con patente",
     "fr": "Composites brevetés",
-    "pt": "Compostos proprietários",
     "ru": "Патентованные композиты"
   },
   "FedCoreComposites": {
@@ -410,7 +335,6 @@
     "de": "Core Dynamics Kompositwerkstoffe",
     "es": "Compuestos de Core Dynamics",
     "fr": "Composites Core Dynamics",
-    "pt": "Compostos da Core Dynamics",
     "ru": "Композиты Core Dynamics"
   },
   "BasicConductors": {
@@ -418,7 +342,6 @@
     "de": "Einfache Leiter",
     "es": "Conductores básicos",
     "fr": "Conducteurs simples",
-    "pt": "Condutores básicos",
     "ru": "Простые проводники"
   },
   "ConductiveComponents": {
@@ -426,7 +349,6 @@
     "de": "Leitfähige Komponenten",
     "es": "Componentes conductivos",
     "fr": "Composants conducteurs",
-    "pt": "Componentes condutores",
     "ru": "Проводящие компоненты"
   },
   "ConductiveCeramics": {
@@ -434,7 +356,6 @@
     "de": "Elektrokeramiken",
     "es": "Cerámicas conductivas",
     "fr": "Conducteurs en céramique",
-    "pt": "Cerâmicas condutoras",
     "ru": "Проводящая керамика"
   },
   "ConductivePolymers": {
@@ -442,7 +363,6 @@
     "de": "Leitfähige Polymere",
     "es": "Polímeros conductivos",
     "fr": "Conducteurs en polymères",
-    "pt": "Polímeros condutores",
     "ru": "Проводящие полимеры"
   },
   "BiotechConductors": {
@@ -450,7 +370,6 @@
     "de": "Biotech-Leiter",
     "es": "Conductores biotecnológicos",
     "fr": "Conducteurs biotechniques",
-    "pt": "Condutores biotecnológicos",
     "ru": "Биотехнические проводники"
   },
   "CrystalShards": {
@@ -458,7 +377,6 @@
     "de": "Kristallscherben",
     "es": "Piedras de cristal",
     "fr": "Éclats de cristal",
-    "pt": "Fragmentos de cristais",
     "ru": "Осколки кристаллов"
   },
   "UncutFocusCrystals": {
@@ -466,7 +384,6 @@
     "de": "Fehlerhafte Fokuskristalle",
     "es": "Cristales de convergencia imperfectos",
     "fr": "Cristaux de focalisation imparfaits",
-    "pt": "Cristais de focalização falhos",
     "ru": "Поврежденные фокусировочные кристаллы"
   },
   "FocusCrystals": {
@@ -474,7 +391,6 @@
     "de": "Laserkristalle",
     "es": "Cristales de enfoque",
     "fr": "Cristaux de focalisation",
-    "pt": "Cristais de focalização",
     "ru": "Фокусировочные кристаллы"
   },
   "RefinedFocusCrystals": {
@@ -482,7 +398,6 @@
     "de": "Raffinierte Laserkristalle",
     "es": "Cristales de enfoque refinados",
     "fr": "Cristaux de focalisation raffinés",
-    "pt": "Cristais de focalização refinado",
     "ru": "Обработанные фокусировочные кристаллы"
   },
   "ExquisiteFocusCrystals": {
@@ -490,7 +405,6 @@
     "de": "Erlesene Laserkristalle",
     "es": "Cristales de enfoque exquisitos",
     "fr": "Cristaux de focalisation sans défaut",
-    "pt": "Cristais de focalização fino",
     "ru": "Отборные фокусировочные кристаллы"
   },
   "Guardian_PowerCell": {
@@ -498,7 +412,6 @@
     "de": "Guardian-Energiezelle",
     "es": "Célula de energía de guardián",
     "fr": "Cellule d’énergie - Guardians",
-    "pt": "Bateria Guardian",
     "ru": "Энергоячейка Стражей"
   },
   "Guardian_Sentinel_WreckageComponents": {
@@ -506,7 +419,6 @@
     "de": "Guardian-Wache-Wrackteilkomponenten",
     "es": "Restos de accidentes de centinela guardián",
     "fr": "Débris de sentinelle - Guardians",
-    "pt": "Componentes de destroços Sentinela Guardian",
     "ru": "Обломки кораблекрушения Стражей"
   },
   "Guardian_PowerConduit": {
@@ -514,7 +426,6 @@
     "de": "Guardian-Energieleiter",
     "es": "Conducto de energía de guardián",
     "fr": "Conduit d’énergie - Guardians",
-    "pt": "Condutores de potência Guardian",
     "ru": "Энергопроводники Стражей"
   },
   "Guardian_Sentinel_WeaponParts": {
@@ -522,7 +433,6 @@
     "de": "Guardian-Wache-Waffenteile",
     "es": "Piezas de armamento de centinela guardián",
     "fr": "Pièce d’armement de sentinelle - Guardians",
-    "pt": "Peças de armas Sentinela Guardian",
     "ru": "Детали вооружения часовых Стражей"
   },
   "Guardian_TechComponent": {
@@ -530,7 +440,6 @@
     "de": "Guardian-Technologiekomponenten",
     "es": "Componente tecnológico de guardián",
     "fr": "Composant technologique - Guardians",
-    "pt": "Componente de tecnologia Guardian",
     "ru": "Компоненты технологий Стражей"
   },
   "HeatConductionWiring": {
@@ -538,7 +447,6 @@
     "de": "Wärmeleitungsverdrahtung",
     "es": "Cableado de conducción calorífica",
     "fr": "Câblage de conduction thermique",
-    "pt": "Fiação de condução térmica",
     "ru": "Теплопроводящие провода"
   },
   "HeatDispersionPlate": {
@@ -546,7 +454,6 @@
     "de": "Wärmeverteilungsplatte",
     "es": "Placa de dispersión de calor",
     "fr": "Plaque de dissipation thermique",
-    "pt": "Placa de dispersão térmica",
     "ru": "Теплорассеивающая пластина"
   },
   "HeatExchangers": {
@@ -554,7 +461,6 @@
     "de": "Wärmeaustauscher",
     "es": "Intercambiadores de calor",
     "fr": "Échangeurs de chaleur",
-    "pt": "Trocadores térmicos",
     "ru": "Теплообменные агрегаты"
   },
   "HeatVanes": {
@@ -562,7 +468,6 @@
     "de": "Wärmeleitbleche",
     "es": "Palas térmicas",
     "fr": "Vannes thermiques",
-    "pt": "Ventoinha térmica",
     "ru": "Тепловые заслонки"
   },
   "ProtoHeatRadiators": {
@@ -570,7 +475,6 @@
     "de": "Proto-Wärmestrahler",
     "es": "Protorradiadores térmicos",
     "fr": "Proto-radiateurs",
-    "pt": "Proto radiadores térmicos",
     "ru": "Прототипы теплоизлучателей"
   },
   "MechanicalScrap": {
@@ -578,7 +482,6 @@
     "de": "Mechanischer Schrott",
     "es": "Chatarra mecánica",
     "fr": "Ferraille mécanique",
-    "pt": "Sucata mecânica",
     "ru": "Механические отходы"
   },
   "MechanicalEquipment": {
@@ -586,7 +489,6 @@
     "de": "Mechanisches Equipment",
     "es": "Equipamiento mecánico",
     "fr": "Équipement mécanique",
-    "pt": "Equipamento mecânico",
     "ru": "Механическое оборудование"
   },
   "MechanicalComponents": {
@@ -594,7 +496,6 @@
     "de": "Mechanische Komponenten",
     "es": "Componentes mecánicos",
     "fr": "Composants mécaniques",
-    "pt": "Componentes mecânicos",
     "ru": "Механические компоненты"
   },
   "ConfigurableComponents": {
@@ -602,7 +503,6 @@
     "de": "Konfigurierbare Komponenten",
     "es": "Componentes configurables",
     "fr": "Composants paramétrables",
-    "pt": "Componentes configuráveis",
     "ru": "Настраиваемые компоненты"
   },
   "ImprovisedComponents": {
@@ -610,7 +510,6 @@
     "de": "Behelfskomponenten",
     "es": "Componentes improvisados",
     "fr": "Composants improvisés",
-    "pt": "Componentes improvisados",
     "ru": "Кустарные компоненты"
   },
   "WornShieldEmitters": {
@@ -618,7 +517,6 @@
     "de": "Gebrauchte Schildemitter",
     "es": "Emisor de escudos desgastado",
     "fr": "Émetteurs de bouclier usés",
-    "pt": "Emissores de escudo usado",
     "ru": "Изношенные щитоизлучатели"
   },
   "ShieldEmitters": {
@@ -626,7 +524,6 @@
     "de": "Schildemitter",
     "es": "Emisor de escudos",
     "fr": "Émetteurs de bouclier",
-    "pt": "Emissores de escudo",
     "ru": "Щитоизлучатели"
   },
   "ShieldingSensors": {
@@ -634,7 +531,6 @@
     "de": "Schildsensoren",
     "es": "Sensores de escudo",
     "fr": "Capteurs de bouclier",
-    "pt": "Sensores para proteção",
     "ru": "Сенсоры системы экранирования"
   },
   "CompoundShielding": {
@@ -642,7 +538,6 @@
     "de": "Verbundschilde",
     "es": "Escudos compuestos",
     "fr": "Protection composite",
-    "pt": "Proteção composta",
     "ru": "Многоступенчатая защита"
   },
   "ImperialShielding": {
@@ -650,14 +545,12 @@
     "de": "Imperiale Schilde",
     "es": "Escudos imperiales",
     "fr": "Protection impériale",
-    "pt": "Proteção imperial",
     "ru": "Имперская защита"
   },
   "tg_abrasion03": {
     "en": "Hardened Surface Fragments",
     "es": "Fragmentos de superficie endurecida",
     "fr": "Fragments superficiels durcis",
-    "pt": "Fragmentos de superfície endurecida",
     "ru": "Окаменелые фрагменты поверхности"
   },
   "tg_causticshard": {
@@ -676,7 +569,6 @@
     "de": "Thargoiden-Krustenschale",
     "es": "Caparazón Thargoide",
     "fr": "Carapace thargoid",
-    "pt": "Carapaça Thargoid",
     "ru": "Таргоидский панцирь"
   },
   "TG_BioMechanicalConduits": {
@@ -684,7 +576,6 @@
     "de": "Biomechanische Leiter",
     "es": "Conductos biomecánicos",
     "fr": "Conduits biomécaniques",
-    "pt": "Condutor Biomecânico",
     "ru": "Биомеханические энергопроводники"
   },
   "tg_causticgeneratorparts": {
@@ -696,7 +587,6 @@
     "en": "Phasing Membrane Residue",
     "de": "Phasenmembranreste",
     "es": "Residuo de Membrana Fásica",
-    "pt": "Resíduo de membrana faseada",
     "ru": "Остаток фазирующей мембраны"
   },
   "UnknownEnergyCell": {
@@ -704,7 +594,6 @@
     "de": "Thargoiden-Energiezelle",
     "es": "Célula de energía Thargoide",
     "fr": "Cellule d’énergie thargoid",
-    "pt": "Célula de Energia Thargoid",
     "ru": "Таргоидская энергоячейка"
   },
   "TG_WreckageComponents": {
@@ -712,7 +601,6 @@
     "de": "Wrackteilkomponenten",
     "es": "Restos de accidentes",
     "fr": "Débris d’épave",
-    "pt": "Restos de componentes",
     "ru": "Обломки кораблекрушений"
   },
   "tg_causticcrystal": {
@@ -725,7 +613,6 @@
     "de": "Technologiekomponenten der Thargoiden",
     "es": "Componentes tecnológicos Thargoides",
     "fr": "Composants technologiques thargoids",
-    "pt": "Componentes Tecnológicos Thargoid",
     "ru": "Компоненты таргоидской техники"
   },
   "TG_WeaponParts": {
@@ -733,14 +620,12 @@
     "de": "Waffenteile",
     "es": "Piezas de armamento",
     "fr": "Pièces d’armement",
-    "pt": "Peças de Arma",
     "ru": "Детали вооружения"
   },
   "tg_abrasion01": {
     "en": "Heat Exposure Specimen",
     "es": "Especimen de Exposición Térmica",
     "fr": "Spécimen exposé à la chaleur",
-    "pt": "Espécime de exposição ao calor",
     "ru": "Образец теплового воздействия"
   },
   "TG_PropulsionElement": {
@@ -748,7 +633,6 @@
     "de": "Schubantriebelemente",
     "es": "Elementos de propulsión",
     "fr": "Éléments de propulsion",
-    "pt": "Elementos de Propulsão",
     "ru": "Реактивные элементы"
   },
   "UnknownEnergySource": {
@@ -756,7 +640,6 @@
     "de": "Sensorenfragment",
     "es": "Fragmento de sensor",
     "fr": "Fragment de capteur",
-    "pt": "Fragmento de sensor",
     "ru": "Обломок сенсора"
   },
   "UnknownOrganicCircuitry": {
@@ -764,7 +647,6 @@
     "de": "Organischer Schaltkreis der Thargoiden",
     "es": "Circuitería orgánica Thargoide",
     "fr": "Circuits organiques thargoids",
-    "pt": "Circuito Orgânico Thargoid",
     "ru": "Таргоидская органическая схема"
   },
   "TemperedAlloys": {
@@ -772,7 +654,6 @@
     "de": "Vergütete Legierungen",
     "es": "Aleaciones templadas",
     "fr": "Alliages trempés",
-    "pt": "Ligas temperadas",
     "ru": "Закаленные сплавы"
   },
   "HeatResistantCeramics": {
@@ -780,7 +661,6 @@
     "de": "Hitzefeste Keramik",
     "es": "Cerámicas resistentes al calor",
     "fr": "Céramiques résistantes à la chaleur",
-    "pt": "Cerâmicas termoresistentes",
     "ru": "Жаропрочная керамика"
   },
   "PrecipitatedAlloys": {
@@ -788,7 +668,6 @@
     "de": "Gehärtete Legierungen",
     "es": "Aleaciones de precipitación",
     "fr": "Alliages précipités",
-    "pt": "Ligas precipitadas",
     "ru": "Осажденные сплавы"
   },
   "ThermicAlloys": {
@@ -796,7 +675,6 @@
     "de": "Thermische Legierungen",
     "es": "Aleaciones térmicas",
     "fr": "Alliages thermiques",
-    "pt": "Ligas térmicas",
     "ru": "Термические сплавы"
   },
   "MilitaryGradeAlloys": {
@@ -804,7 +682,6 @@
     "de": "Militärqualitätslegierungen",
     "es": "Aleaciones de grado militar",
     "fr": "Alliages militaires",
-    "pt": "Ligas nível militar",
     "ru": "Сплавы военного класса"
   },
   "BulkScanData": {
@@ -812,7 +689,6 @@
     "de": "Anormale Massen-Scan-Daten",
     "es": "Datos de escáner en bruto anómalos",
     "fr": "Fichier volumineux de données d’analyse anormal",
-    "pt": "Dados brutos de escâner anômalos",
     "ru": "Аномальный массив данных сканирования"
   },
   "ScanArchives": {
@@ -820,7 +696,6 @@
     "de": "Unidentifizierte Scan-Archive",
     "es": "Archivos de escáner no identificados",
     "fr": "Données d’analyse archivées non identifiées",
-    "pt": "Arquivos de escaneamento não identificados",
     "ru": "Неопознанные архивы сканирования"
   },
   "ScanDatabanks": {
@@ -828,7 +703,6 @@
     "de": "Scan-Datenbanken unter Verschluss",
     "es": "Datos de escáner clasificados",
     "fr": "Banques de données d’analyse classifiées",
-    "pt": "Banco de dados de escaneamento confidenciais",
     "ru": "Засекреченные базы данных сканирования"
   },
   "EncodedScanData": {
@@ -836,7 +710,6 @@
     "de": "Divergente Scandaten",
     "es": "Datos de escáner divergentes",
     "fr": "Données d’analyse divergentes",
-    "pt": "Dados escaneados divergentes",
     "ru": "Неформатные данные сканирования"
   },
   "ClassifiedScanData": {
@@ -844,7 +717,6 @@
     "de": "Geheimes Scan-Fragment",
     "es": "Fragmento de escáner clasificado",
     "fr": "Données d’analyse classifiées parcellaires",
-    "pt": "Fragmentos de escaneamentos confidenciais",
     "ru": "Засекреченные фрагменты данных сканирования"
   },
   "ScrambledEmissionData": {
@@ -852,7 +724,6 @@
     "de": "Außergewöhnliche verschlüsselte Emissionsdaten",
     "es": "Datos de transmisiones codificadas excepcionales",
     "fr": "Données d’émissions brouillées exceptionnelles",
-    "pt": "Exceção nos dados de emissão embaralhados",
     "ru": "Исключительные зашифрованные данные об излучении"
   },
   "ArchivedEmissionData": {
@@ -860,7 +731,6 @@
     "de": "Irreguläre Emissionsdaten",
     "es": "Datos de emisión irregulares",
     "fr": "Données d’émissions aberrantes",
-    "pt": "Dados de emissão irregulares",
     "ru": "Нестандартные данные об излучении"
   },
   "EmissionData": {
@@ -868,7 +738,6 @@
     "de": "Unerwartete Emissionsdaten",
     "es": "Datos de emisión inesperados",
     "fr": "Données d’émissions inattendues",
-    "pt": "Dados de emissão inesperados",
     "ru": "Неожиданные данные об излучении"
   },
   "DecodedEmissionData": {
@@ -876,7 +745,6 @@
     "de": "Entschlüsselte Emissionsdaten",
     "es": "Datos de emisión descodificados",
     "fr": "Données d’émissions décodées",
-    "pt": "Dados de emissão decodificados",
     "ru": "Расшифрованные данные об излучении"
   },
   "CompactEmissionsData": {
@@ -884,7 +752,6 @@
     "de": "Anormale kompakte Emissionsdaten",
     "es": "Compresión de datos de transmisiones anormal",
     "fr": "Données d’émissions compactes anormales",
-    "pt": "Dados de emissão compactos anormais",
     "ru": "Аномальные компактные данные об излучении"
   },
   "LegacyFirmware": {
@@ -892,7 +759,6 @@
     "de": "Spezial-Legacy-Firmware",
     "es": "Firmware heredado especializado",
     "fr": "Micrologiciel spécialisé périmé",
-    "pt": "Firmware especializado antigo",
     "ru": "Специальные микропрограммы предыдущего поколения"
   },
   "ConsumerFirmware": {
@@ -900,7 +766,6 @@
     "de": "Modifizierte Consumer-Firmware",
     "es": "Firmware de consumo modificado",
     "fr": "Micrologiciel consommateur modifié",
-    "pt": "Firmware de consumo modificado",
     "ru": "Измененные пользовательские микропрограммы"
   },
   "IndustrialFirmware": {
@@ -908,7 +773,6 @@
     "de": "Gecrackte Industrie-Firmware",
     "es": "Firmware industrial pirateado",
     "fr": "Micrologiciel industriel piraté",
-    "pt": "Firmware industrial quebrado",
     "ru": "Взломанные промышленные микропрограммы"
   },
   "SecurityFirmware": {
@@ -916,7 +780,6 @@
     "de": "Sicherheits-Firmware-Patch",
     "es": "Parche de firmware de seguridad",
     "fr": "Mise à jour de micrologiciel de sécurité",
-    "pt": "Atualização de firmware de segurança",
     "ru": "Обновление для защитной микропрограммы"
   },
   "EmbeddedFirmware": {
@@ -924,7 +787,6 @@
     "de": "Modifizierte integrierte Firmware",
     "es": "Firmware integrado modificado",
     "fr": "Micrologiciel intégré modifié",
-    "pt": "Firmware embutido modificado",
     "ru": "Измененные встроенные микропрограммы"
   },
   "EncryptedFiles": {
@@ -932,7 +794,6 @@
     "de": "Ungewöhnliche verschlüsselte Files",
     "es": "Ficheros encriptados inusuales",
     "fr": "Fichiers cryptés inhabituels",
-    "pt": "Arquivos criptografados incomuns",
     "ru": "Особые зашифрованные файлы"
   },
   "EncryptionCodes": {
@@ -940,7 +801,6 @@
     "de": "Getaggte Verschlüsselungscodes",
     "es": "Códigos de encriptación marcados",
     "fr": "Clés de cryptage balisées",
-    "pt": "Códigos de encriptação rotulados",
     "ru": "Меченые шифровальные коды"
   },
   "SymmetricKeys": {
@@ -948,7 +808,6 @@
     "de": "Offene symmetrische Schlüssel",
     "es": "Claves simétricas abiertas",
     "fr": "Clés symétriques ouvertes",
-    "pt": "Chaves simétricas abertas",
     "ru": "Открытые симметричные ключи"
   },
   "EncryptionArchives": {
@@ -956,7 +815,6 @@
     "de": "Atypische Verschlüsselungsarchive",
     "es": "Archivos encriptados atípicos",
     "fr": "Archives cryptées atypiques",
-    "pt": "Arquivos de encriptação atípicos",
     "ru": "Нетипичные архивы шифрования"
   },
   "AdaptiveEncryptors": {
@@ -964,7 +822,6 @@
     "de": "Adaptive Verschlüsselungserfassung",
     "es": "Captura de encriptadores adaptativos",
     "fr": "Capture de cryptage évolutif",
-    "pt": "Encriptadores adaptativos capturados",
     "ru": "Захват адаптивного шифровальщика"
   },
   "Guardian_ModuleBlueprint": {
@@ -972,7 +829,6 @@
     "de": "Guardian-Modulbauplansegment",
     "es": "Segmento de plano de módulo de guardián",
     "fr": "Fragment de plan de module - Guardians",
-    "pt": "Segmento de diagrama de módulo Guardian",
     "ru": "Фрагмент чертежа модуля Стражей"
   },
   "Guardian_WeaponBlueprint": {
@@ -980,7 +836,6 @@
     "de": "Guardian-Waffenbauplansegment",
     "es": "Segmento de plano de armamento de guardián",
     "fr": "Fragment de plan d’arme - Guardians",
-    "pt": "Segmento de diagrama de arma Guardian",
     "ru": "Фрагмент чертежа оружия Стражей"
   },
   "AncientBiologicalData": {
@@ -988,7 +843,6 @@
     "de": "Alpha-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón alfa",
     "fr": "Données d’obélisque de type alpha",
-    "pt": "Dados de Obelisco de Padrão Alfa",
     "ru": "Данные с обелиска «Альфа»"
   },
   "AncientCulturalData": {
@@ -996,7 +850,6 @@
     "de": "Beta-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón beta",
     "fr": "Données d’obélisque de type bêta",
-    "pt": "Dados de Obelisco de Padrão Beta",
     "ru": "Данные с обелиска «Бета»"
   },
   "AncientLanguageData": {
@@ -1004,7 +857,6 @@
     "de": "Delta-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón delta",
     "fr": "Données d’obélisque de type delta",
-    "pt": "Dados de Obelisco de Padrão Delta",
     "ru": "Данные с обелиска «Дельта»"
   },
   "AncientTechnologicalData": {
@@ -1012,7 +864,6 @@
     "de": "Epsilon-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón epsilon",
     "fr": "Données d’obélisque de type epsilon",
-    "pt": "Dados de Obelisco de Padrão Epsilon",
     "ru": "Данные с обелиска «Эпсилон»"
   },
   "AncientHistoricalData": {
@@ -1020,7 +871,6 @@
     "de": "Gamma-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón gamma",
     "fr": "Données d’obélisque de type gamma",
-    "pt": "Dados de Obelisco de Padrão Gama",
     "ru": "Данные с обелиска «Гамма»"
   },
   "Guardian_VesselBlueprint": {
@@ -1028,7 +878,6 @@
     "de": "Guardian-Schiffsbauplansegment",
     "es": "Segmento de plano de nave de guardián",
     "fr": "Fragment de plan de vaisseau - Guardians",
-    "pt": "Segmento de diagrama de nave Guardian",
     "ru": "Фрагмент чертежа судна Стражей"
   },
   "ShieldCycleRecordings": {
@@ -1036,7 +885,6 @@
     "de": "Gestörte Schildzyklus-Aufzeichnungen",
     "es": "Registros de ciclo de escudo distorsionados",
     "fr": "Enregistrements de cycles de bouclier déformés",
-    "pt": "Registros distorcidos de ciclos de escudo",
     "ru": "Поврежденные цикличные записи щита"
   },
   "ShieldSoakAnalysis": {
@@ -1044,7 +892,6 @@
     "de": "Inkonsistente Schildleistungsanalysen",
     "es": "Análisis de absorción de escudos inconsistente",
     "fr": "Analyse d’absorption de bouclier incohérente",
-    "pt": "Análise inconsistente de escudo atingidos",
     "ru": "Неполный анализ поглощения щита"
   },
   "ShieldDensityReports": {
@@ -1052,7 +899,6 @@
     "de": "Untypische Schildscans",
     "es": "Escáner de escudos atípico",
     "fr": "Analyses de bouclier atypiques",
-    "pt": "Escaneamentos de escudo atípicos",
     "ru": "Нетипичные данные сканирования щитов"
   },
   "ShieldPatternAnalysis": {
@@ -1060,7 +906,6 @@
     "de": "Abweichende Schildeinsatz-Analysen",
     "es": "Análisis de patrones de escudo aberrantes",
     "fr": "Analyse de modèle de bouclier aberrante",
-    "pt": "Análise de padrão de escudos aberrante",
     "ru": "Анализ аномального поведения щита"
   },
   "ShieldFrequencyData": {
@@ -1068,7 +913,6 @@
     "de": "Verdächtige Schildfrequenz-Daten",
     "es": "Datos de frecuencias de escudo peculiares",
     "fr": "Données de fréquences de bouclier singulières",
-    "pt": "Dados da frequência de escudos peculiares",
     "ru": "Специфические данные о частоте щитов"
   },
   "TG_StructuralData": {
@@ -1076,7 +920,6 @@
     "de": "Thargoiden-Strukturdaten",
     "es": "Datos estructurales Thargoides",
     "fr": "Données de structure thargoid",
-    "pt": "Dados de Estrutura Thargoid",
     "ru": "Данные о структуре таргоидского объекта"
   },
   "tg_shutdowndata": {
@@ -1089,7 +932,6 @@
     "de": "Schiffsflugdaten",
     "es": "Datos de vuelos de nave",
     "fr": "Données de vol de vaisseau",
-    "pt": "Dados de Voo da Nave",
     "ru": "Полетные данные корабля"
   },
   "tg_interdictiondata": {
@@ -1102,7 +944,6 @@
     "de": "Materialzusammensetzungsdaten der Thargoiden",
     "es": "Datos de composición material Thargoide",
     "fr": "Données de composition de matériau thargoid",
-    "pt": "Dados de Composição de Material Thargoid",
     "ru": "Данные о составе таргоидских материалов"
   },
   "UnknownShipSignature": {
@@ -1110,7 +951,6 @@
     "de": "Thargoiden-Schiffssignatur",
     "es": "Firma térmica de nave Thargoide",
     "fr": "Signature de vaisseau thargoid",
-    "pt": "Assinatura de Nave Thargoid",
     "ru": "Сигнатура таргоидского корабля"
   },
   "TG_ShipSystemsData": {
@@ -1118,7 +958,6 @@
     "de": "Schiffssysteme-Daten",
     "es": "Datos de sistemas de nave",
     "fr": "Données de systèmes de vaisseau",
-    "pt": "Dados do Sistema da Nave",
     "ru": "Данные бортовых систем корабля"
   },
   "TG_ResidueData": {
@@ -1126,7 +965,6 @@
     "de": "Thargoiden-Rückstandsdaten",
     "es": "Datos residuales Thargoides",
     "fr": "Données de résidu thargoid",
-    "pt": "Dados de Resíduos Thargoid",
     "ru": "Данные об осадке таргоидского происхождения"
   },
   "UnknownWakeData": {
@@ -1134,7 +972,6 @@
     "de": "Thargoiden-Sogwolkendaten",
     "es": "Datos de estela Thargoide",
     "fr": "Données de sillage thargoid",
-    "pt": "Dados de Rastro Thargoid",
     "ru": "Данные следа таргоидского корабля"
   },
   "DisruptedWakeEchoes": {
@@ -1142,7 +979,6 @@
     "de": "Atypische FSA-Stör-Aufzeichnungen",
     "es": "Ecos de estelas interrumpidas atípicos",
     "fr": "Échos de sillages perturbés atypiques",
-    "pt": "Interferência atípica no eco de rastros",
     "ru": "Атипичное эхо поврежденного следа"
   },
   "FSDTelemetry": {
@@ -1150,7 +986,6 @@
     "de": "Anormale FSA-Telemetrie",
     "es": "Telemetría de MDD anómala",
     "fr": "Télémétrie FSD anormale",
-    "pt": "Telemetria anômala de MDD",
     "ru": "Аномальная телеметрия FSD"
   },
   "WakeSolutions": {
@@ -1158,7 +993,6 @@
     "de": "Seltsame FSA-Zielorte",
     "es": "Extrañas soluciones de estelas",
     "fr": "Solutions de sillage anormales",
-    "pt": "Soluções de rastro estranhas",
     "ru": "Странные расчеты следа"
   },
   "HyperspaceTrajectories": {
@@ -1166,7 +1000,6 @@
     "de": "Exzentrische Hyperraum-Routen",
     "es": "Trayectorias de hiperespacio excéntricas",
     "fr": "Trajectoires d’hyperespace excentriques",
-    "pt": "Trajetórias excêntricas de hiperespaço",
     "ru": "Аномальные траектории в гиперпространстве"
   },
   "DataminedWake": {
@@ -1174,7 +1007,6 @@
     "de": "FSA-Daten-Cache-Ausnahmen",
     "es": "Excepciones en análisis de estelas",
     "fr": "Explorations de données de sillages anormales",
-    "pt": "Exceções de dados processados de rastros",
     "ru": "Исключения из глубинного анализа данных следа"
   }
 }

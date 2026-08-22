@@ -14,14 +14,14 @@ const NAMES = /* @__PURE__ */ createLocalizedNameIndex(namesData as LocalizedNam
  *
  * @param groupId - The stable group id used by `EngineeringOptionGroup.groupId`.
  * @param locale - A BCP 47 locale. English covers every group; the current source also
- * supplies partial Portuguese and Russian coverage.
+ * supplies partial Russian coverage.
  * @returns The localized group name, or `null` for an unknown group or unavailable locale.
  * @throws {TypeError} If a present `groupId` or `locale` is not a string.
  * @example
  * ```ts
  * import { getEngineeringGroupName } from '@elite-dangerous-almanac/core/i18n/engineering-groups';
  *
- * getEngineeringGroupName('frameShiftDrives', 'pt-BR'); // -> 'Motores de Distorção de Fase'
+ * getEngineeringGroupName('frameShiftDrives', 'ru'); // -> 'Рамочно-сместительные двигатели'
  * getEngineeringGroupName('frameShiftDrives', 'de'); // -> null
  * ```
  */

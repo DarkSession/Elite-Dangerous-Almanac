@@ -6,6 +6,14 @@ They are deliberately sparse: absence means that no accepted source carried a va
 the lookup API returns `null` for that locale rather than treating English as a
 translation.
 
+**Five locales are stored: `en`, `de`, `es`, `fr` and `ru`.** Several accepted sources
+publish more — Portuguese, Brazilian Portuguese, Italian, Hungarian, Georgian and
+Simplified Chinese among them — and those values are deliberately not carried: the
+project supports those five languages and no others. That is a decision about this
+catalogue, not a gap in any source, so re-deriving a catalogue from its source must drop
+the other columns again rather than restore them. Every locale is stored under a bare
+language tag; a regional or script tag resolves to its language.
+
 ## `module-names.jsonc`
 
 - **Acquired:** 2026-08-14 UTC.
@@ -19,13 +27,11 @@ translation.
   Almanac's canonical English name. This prevents broad EDDI families such as
   `CargoRack`, `MissileRack` and `PlanetaryApproachSuite` from erasing the distinct Mk II,
   seeker and advanced names the Almanac carries. EDSY's module `fdname` and effective
-  `namekey` fill a missing `de`, `es`, `fr`, `pt` or `ru` value only when EDSY's English
+  `namekey` fill a missing `de`, `es`, `fr` or `ru` value only when EDSY's English
   module name also exactly equals the canonical name. Values shared by modules with one
   canonical name are retained only when they agree, then stored once under that name.
 - **Coverage:** English covers all 1,199 symbols. The explicit translations cover 1,120
-  in German, 1,090 in Spanish, 1,088 in French, 767 in Hungarian, 1,028 in Italian,
-  822 in Portuguese, 1,029 in Brazilian Portuguese, 1,153 in Russian and 1,028 in
-  Simplified Chinese.
+  in German, 1,090 in Spanish, 1,088 in French and 1,153 in Russian.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`
@@ -39,7 +45,7 @@ translation.
   each language file. Names remain keyed per blueprint because a single English phrase
   can have different grammatical translations for different module families.
 - **Coverage:** English covers all 107 blueprints; EDSY covers 55 in German and 59 each
-  in Spanish, French, Portuguese and Russian. The remaining recipes include Operations
+  in Spanish, French and Russian. The remaining recipes include Operations
   and other newer records EDSY does not identify or translate.
 - **Manual corrections:** EDSY's French `FSD_FastBoot` value ends in one accidental
   ASCII space; the stored display name removes it so a successful lookup is already
@@ -55,7 +61,7 @@ translation.
   EDSY's `expeffect.fdname`; that record's id selects an explicit `expeffect-<id>` entry
   from each language file.
 - **Coverage:** English covers all 86 effects; EDSY covers 84 in German and 85 each in
-  Spanish, French, Portuguese and Russian.
+  Spanish, French and Russian.
 - **Manual corrections:** none.
 
 ## `material-names.jsonc`
@@ -73,11 +79,7 @@ translation.
   parenthetical Guardian and Thargoid category labels where the owning catalogue does;
   localized columns remain verbatim source values.
 - **Coverage:** English, Spanish and Russian cover all 146 materials. The explicit
-  translations cover 128 in German, 140 in French, 140 in Portuguese and 28 in
-  Georgian. Fourteen of the source's Georgian values are byte-for-byte equal to the
-  canonical English spelling and are retained verbatim; they are explicit source values,
-  not lookup-generated fallbacks. The pinned source carries no Simplified Chinese
-  material names.
+  translations cover 128 in German and 140 in French.
 - **Manual corrections:** none.
 
 ## `micro-resource-names.jsonc`
@@ -94,18 +96,11 @@ translation.
   localized columns are copied. Twenty-eight of the 30 in-game-backed records also have
   rows in Odyssey Materials Helper, while `PowerVirus` and
   `SmallCapacityPowerRegulator` do not. All 30 take the explicit in-game `name` values for
-  German, Spanish, French, Brazilian Portuguese and Russian. The Brazilian Portuguese
-  values are stored under `pt`, matching the existing catalogue values described below.
-  In both cases the owning catalogue remains authoritative for canonical English names.
+  German, Spanish, French and Russian. In both cases the owning catalogue remains
+  authoritative for canonical English names.
 - **Coverage:** English, Spanish and Russian cover all 226 micro resources. The explicit
-  translations cover 218 in German and Portuguese, 225 in French, 6 in Simplified Chinese
-  and 10 in Georgian. Five of the source's Georgian values are byte-for-byte equal to the
-  canonical English spelling and are retained verbatim; they are explicit source values,
-  not lookup-generated fallbacks.
-- **Manual corrections:** the 30 in-game values labelled Brazilian Portuguese are stored
-  under `pt`, matching the 188 existing Portuguese entries because both sets contain the
-  same Brazilian Portuguese game text. `pt-BR` lookups resolve these values through the
-  regional-to-language fallback.
+  translations cover 218 in German and 225 in French.
+- **Manual corrections:** none.
 
 ## `ship-names.jsonc`
 
@@ -121,9 +116,8 @@ translation.
   Helper's `ships.name.*` key after removing punctuation and folding case. EDSY's
   `eddb.js` `ship.fdname` supplies the second join, with explicit `ship-<id>` language
   entries filling locales absent from the CSV. The resulting source-backed coverage is
-  48 ships in Spanish, 44 in French, 38 in Portuguese, 48 in Russian, 48 in
-  Simplified Chinese and 47 in Georgian;
-  no accepted source carries a German ship-name table.
+  48 ships in Spanish, 44 in French and 48 in Russian; no accepted source carries a
+  German ship-name table.
 - **Standing conclusion:** every source-backed non-English value is byte-for-byte equal
   to the canonical English ship name. The explicit values remain in the catalogue so a
   lookup distinguishes a source-backed same spelling from an unavailable translation.
@@ -144,21 +138,19 @@ translation.
 
 - **Acquired:** 2026-08-18 UTC.
 - **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`; `lang-en.json`,
-  `lang-pt.json` and `lang-ru.json` have Git blob ids
-  `9b199db635f7b968b75c8e9a14bdce68e37e4120`,
-  `493fa09c4d4a11f0282e1e4076a67fed8d7f317e` and
+  database version `424009901`, last-modified marker `20260810`; `lang-en.json` and
+  `lang-ru.json` have Git blob ids `9b199db635f7b968b75c8e9a14bdce68e37e4120` and
   `36496372d056754c34da03ca6836e27987c96b6a` respectively.
 - **Derivation:** each of the 48 group ids and its canonical English name is projected
   from `data/ships/engineering-options.jsonc`. That catalogue derives its group menus
   from EDSY, with the supplemental sources and corrections recorded in
   `data/ships/SOURCES.md`. Where a canonical English name matches an EDSY `mtype-*`
   value in `lang-en.json` byte-for-byte and uniquely, explicit values with the same key
-  are copied from `lang-pt.json` and `lang-ru.json`.
-- **Coverage:** canonical English covers every engineering option group. Portuguese and
-  Russian each cover 44 of 48. The Guardian power-plant, power-distributor and
-  hull-reinforcement groups have no distinct EDSY label, and EDSY carries no Portuguese
-  or Russian value for `frameShiftDrivesSCO`.
+  are copied from `lang-ru.json`.
+- **Coverage:** canonical English covers every engineering option group; Russian covers
+  44 of 48. The Guardian power-plant, power-distributor and hull-reinforcement groups
+  have no distinct EDSY label, and EDSY carries no Russian value for
+  `frameShiftDrivesSCO`.
 - **Manual corrections:** none.
 
 ## `experimental-effect-descriptions.jsonc`
@@ -175,22 +167,28 @@ translation.
 
 ## `pre-engineered-variant-names.jsonc`
 
-- **Acquired:** 2026-08-18 UTC.
+- **Acquired:** 2026-08-18 UTC; the Merc-shop names 2026-08-22 UTC.
 - **Derivation:** all 76 compound identities and English names come from
   `data/ships/pre-engineered.jsonc`. An identity combines the base module symbol,
   blueprint, optional experimental effect and acquisition route. When a variant name
   exactly matches its base module's canonical name, it reuses that record from
-  `module-names.jsonc`; the 28 distinct display records are stored once. Fixed reward
+  `module-names.jsonc`; the 41 distinct display records are stored once. Fixed reward
   names such as the three `Decorative_*` festive launchers remain canonical English.
+- **The 22 Merc-shop rows carry the shop's own names**, in 14 distinct records — the shop
+  sells a "Far-Reaching Abrasion Blaster", not an Abrasion Blaster — so they do not reuse
+  their base module's record. English and the German, Spanish, French and Russian values
+  are supplied by the repository owner from the in-game shop listing; no registry
+  publishes them.
 - **Coverage:** English covers every variant. Ordinary names inherit the explicit
-  localized values available for their base module; fixed reward names have no accepted
-  translation source.
+  localized values available for their base module; the Merc-shop names carry all five
+  stored locales; fixed reward names have no accepted translation source.
 - **Manual corrections:** none.
 
 ## Known gaps
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
-locale. The accepted sources carry only canonical English for some engineering-group labels,
-slot and restriction labels, fixed reward names, and structured loadout, calculation, SLEF
-and edit messages. Missing source-backed translations remain tracked by
+stored locale. A language absent from all ten catalogues is the locale decision recorded
+above rather than a gap. The accepted sources carry only canonical English for some
+engineering-group labels, slot and restriction labels, fixed reward names, and structured
+loadout, calculation, SLEF and edit messages. Missing source-backed translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).

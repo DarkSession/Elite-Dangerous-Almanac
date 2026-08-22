@@ -22,7 +22,6 @@
     "de": "Leichte Panzerung",
     "es": "Blindaje ligero",
     "fr": "Blindage léger",
-    "pt": "Blindagem Leve",
     "ru": "Броня из легких сплавов"
   },
   "Armour_Explosive": {
@@ -30,7 +29,6 @@
     "de": "Detonationsresistente Panzerung",
     "es": "Blindaje resistente a explosiones",
     "fr": "Blindage anti-explosions",
-    "pt": "Blindagem de resistência a Explosões",
     "ru": "Взрывостойкая обшивка"
   },
   "Armour_HeavyDuty": {
@@ -38,7 +36,6 @@
     "de": "Schwere Panzerung",
     "es": "Blindaje de alta resistencia",
     "fr": "Blindage lourd",
-    "pt": "Blindagem Pesada",
     "ru": "Толстая броня"
   },
   "Armour_Kinetic": {
@@ -46,7 +43,6 @@
     "de": "Kinetikresistente Panzerung",
     "es": "Blindaje de resistencia cinética",
     "fr": "Blindage anti-cinétique",
-    "pt": "Blindagem de Resistência Cinética",
     "ru": "Противокинетическая броня"
   },
   "Armour_Thermic": {
@@ -54,7 +50,6 @@
     "de": "Thermalresistente Panzerung",
     "es": "Blindaje de resistencia térmica",
     "fr": "Blindage antithermique",
-    "pt": "Blindagem de Resistência Térmica",
     "ru": "Термостойкая броня"
   },
   "BeamLaser_ThermalPlasmaConversion": {
@@ -89,7 +84,6 @@
     "de": "Aggressives Antriebstuning",
     "es": "Modificación de motor sucio",
     "fr": "Optimisation de réacteur détériorante",
-    "pt": "Ajuste de Motor Sujo",
     "ru": "«Грязная» донастройка двигателя"
   },
   "Engine_Reinforced": {
@@ -97,7 +91,6 @@
     "de": "Antriebsstärkung",
     "es": "Fortalecimiento de motor",
     "fr": "Renforcement du réacteur",
-    "pt": "Reforçamento do Motor",
     "ru": "Усиление двигателя"
   },
   "Engine_Tuned": {
@@ -105,7 +98,6 @@
     "de": "Ausgewogenes Antriebstuning",
     "es": "Modificación de motor limpio",
     "fr": "Optimisation de réacteur propre",
-    "pt": "Ajuste de Motor Limpo",
     "ru": "«Чистая» донастройка двигателя"
   },
   "EnzymeMissileRack_HighYield": {
@@ -122,7 +114,6 @@
     "de": "Schnellere FSA-Ladesequenz",
     "es": "Secuencia de inicio de MDD rápida",
     "fr": "Démarrage accéléré du réacteur FSD",
-    "pt": "Sequência de Inicialização do MDD Mais Rápida",
     "ru": "Последовательность быстрого запуска FSD"
   },
   "FSD_LongRange": {
@@ -130,7 +121,6 @@
     "de": "Erhöhte FSA-Reichweite",
     "es": "Aumento de alcance de MDD",
     "fr": "Portée FSD améliorée",
-    "pt": "Alcance do MDD Aumentado",
     "ru": "Увеличенная дальность FSD"
   },
   "FSD_Shielded": {
@@ -138,14 +128,12 @@
     "de": "Abgeschirmter FSA",
     "es": "MDD blindado",
     "fr": "FSD protégé",
-    "pt": "MDD Protegido",
     "ru": "Защищенный FSD"
   },
   "FSDinterdictor_Expanded": {
     "en": "Expanded capture arc",
     "es": "Arco de captura de interdictor de MDD extendido",
     "fr": "Intercepteur FSD à angle de capture augmenté",
-    "pt": "Arco de Captura do Interditor de MDD Expandido",
     "ru": "FSD-перехватчик с расширенной дугой захвата"
   },
   "FSDinterdictor_LongRange": {
@@ -153,7 +141,6 @@
     "de": "Ferndistanz-FSA-Unterbrecher",
     "es": "Interdictor de MDD de largo alcance",
     "fr": "Intercepteur FSD longue portée",
-    "pt": "Interditor de MDD de Longo Alcance",
     "ru": "FSD-перехватчик большой дальности"
   },
   "FuelScoop_Efficiency": {
@@ -188,7 +175,6 @@
     "de": "Leichtgewicht-Rumpfhüllenverstärkung",
     "es": "Refuerzo estructural aligerado",
     "fr": "Renforcement de coque ultraléger",
-    "pt": "Reforço de Casco Leve",
     "ru": "Легкое усиление корпуса"
   },
   "HullReinforcement_Explosive": {
@@ -196,7 +182,6 @@
     "de": "Detonationsresistente Rumpfhüllenverstärkung",
     "es": "Refuerzo estructural de resistencia explosiva",
     "fr": "Renforcement de coque anti-explosions",
-    "pt": "Reforço de Casco Resistente à Explosão",
     "ru": "Взрывостойкое усиление корпуса"
   },
   "HullReinforcement_HeavyDuty": {
@@ -204,7 +189,6 @@
     "de": "Schwere Rumpfhüllenverstärkung",
     "es": "Refuerzo estructural de alta resistencia",
     "fr": "Renforcement de coque lourd",
-    "pt": "Reforço de Casco Pesado",
     "ru": "Надежное усиление корпуса"
   },
   "HullReinforcement_Kinetic": {
@@ -212,7 +196,6 @@
     "de": "Kinetikresistente Rumpfhüllenverstärkung",
     "es": "Refuerzo estructural de resistencia cinética",
     "fr": "Renforcement de coque anti-cinétique",
-    "pt": "Reforço de Casco Resistência Cinética",
     "ru": "Противокинетическое усиление корпуса"
   },
   "HullReinforcement_Thermic": {
@@ -220,7 +203,6 @@
     "de": "Thermalresistente Rumpfhüllenverstärkung",
     "es": "Refuerzo estructural de resistencia térmica",
     "fr": "Renforcement de coque antithermique",
-    "pt": "Reforço de Casco Resistência Térmica",
     "ru": "Термостойкое усиление корпуса"
   },
   "LifeSupport_LightWeight": {
@@ -243,7 +225,6 @@
     "de": "Düppel-Munitionskapazität",
     "es": "Capacidad de munición de señuelos",
     "fr": "Capacité du chargeur du lanceur de paillettes",
-    "pt": "Capacidade de Munição de Chaff",
     "ru": "Вместимость припасов дипольного отражателя"
   },
   "Misc_HeatSinkCapacity": {
@@ -251,14 +232,12 @@
     "de": "Kühlkörper-Munitionskapazität",
     "es": "Capacidad de munición de eyector de calor",
     "fr": "Capacité du chargeur de l'éjecteur de dissipateur thermique",
-    "pt": "Capacidade de Munição de Dissipador Térmico",
     "ru": "Вместимость припасов теплоотвода"
   },
   "Misc_LightWeight": {
     "en": "Lightweight",
     "es": "Ligero misceláneo",
     "fr": "Divers - allégement",
-    "pt": "Qualquer Leve",
     "ru": "Облегченное прочее"
   },
   "Misc_PointDefenseCapacity": {
@@ -266,21 +245,18 @@
     "de": "Punktverteidigung-Munitionskapazität",
     "es": "Capacidad de munición de defensa de punto",
     "fr": "Capacité du chargeur de la défense ponctuelle",
-    "pt": "Capacidade de Munição de Defesa de Ponto",
     "ru": "Вместимость припасов точечной обороны"
   },
   "Misc_Reinforced": {
     "en": "Reinforced",
     "es": "Reforzado misceláneo",
     "fr": "Divers - renforcement",
-    "pt": "Qualquer Reforçado",
     "ru": "Усиленное прочее"
   },
   "Misc_Shielded": {
     "en": "Shielded",
     "es": "Blindado misceláneo",
     "fr": "Divers - protection",
-    "pt": "Qualquer Protegido",
     "ru": "Защищенное прочее"
   },
   "ModuleReinforcement_HeavyDuty": {
@@ -297,7 +273,6 @@
     "de": "Hochleistungsfähiger Energieverteiler",
     "es": "Distribuidor de energía de alta capacidad de carga",
     "fr": "Répartiteur de puissance à capacité accrue",
-    "pt": "Distribuidor de Energia de Alta Capacidade",
     "ru": "Высокоемкий распределитель питания"
   },
   "PowerDistributor_HighFrequency": {
@@ -305,7 +280,6 @@
     "de": "Ladungsoptimierter Energieverteiler",
     "es": "Distribuidor de energía de carga mejorada",
     "fr": "Répartiteur de puissance rapide",
-    "pt": "Distribuidor de Energia de Recarga Melhorada",
     "ru": "Быстрозаряжающийся распределитель питания"
   },
   "PowerDistributor_PriorityEngines": {
@@ -313,7 +287,6 @@
     "de": "Antriebsfokussierter Energieverteiler",
     "es": "Distribuidor de energía orientado a motor",
     "fr": "Répartiteur de puissance optimisé Moteur",
-    "pt": "Distribuidor de Energia com Foco nos Motores",
     "ru": "Распределитель питания на двигатель"
   },
   "PowerDistributor_PrioritySystems": {
@@ -321,7 +294,6 @@
     "de": "Systemfokussierter Energieverteiler",
     "es": "Distribuidor de energía orientado a sistemas",
     "fr": "Répartiteur de puissance optimisé Systèmes",
-    "pt": "Distribuidor de Energia com Foco nos Sistemas",
     "ru": "Распределитель питания на систему"
   },
   "PowerDistributor_PriorityWeapons": {
@@ -329,7 +301,6 @@
     "de": "Waffenfokussierter Energieverteiler",
     "es": "Distribuidor de energía orientado a armas",
     "fr": "Répartiteur de puissance optimisé Armes",
-    "pt": "Distribuidor de Energia com Foco nas Armas",
     "ru": "Распределитель питания на орудия"
   },
   "PowerDistributor_Shielded": {
@@ -337,7 +308,6 @@
     "de": "Abgeschirmter Energieverteiler",
     "es": "Distribuidor de energía blindado",
     "fr": "Répartiteur de puissance protégé",
-    "pt": "Distribuidor de Energia Protegido",
     "ru": "Защищенный распределитель питания"
   },
   "PowerDistributorS3C2_SupportFocused": {
@@ -360,7 +330,6 @@
     "de": "Kraftwerkpanzerung",
     "es": "Núcleo de energía blindado",
     "fr": "Générateur blindé",
-    "pt": "Gerador de Energia Blindado",
     "ru": "Бронированная силовая установка"
   },
   "PowerPlant_Boosted": {
@@ -368,7 +337,6 @@
     "de": "Überladungskraftwerk",
     "es": "Núcleo de energía sobrecargado",
     "fr": "Générateur surchargé",
-    "pt": "Gerador de Energia Sobrecarregado",
     "ru": "Усиленная силовая установка"
   },
   "PowerPlant_Stealth": {
@@ -376,7 +344,6 @@
     "de": "Emissionsoptimiertes Kraftwerk",
     "es": "Núcleo de energía de bajas emisiones",
     "fr": "Générateur à faibles émissions",
-    "pt": "Gerador de Energia de Baixa Emissão",
     "ru": "Силовая установка с малым излучением"
   },
   "ProspectingLimpet_LightWeight": {
@@ -420,7 +387,6 @@
     "de": "Erweiterter Sonden-Scanradius",
     "es": "Radio de escaneo de sonda ampliado",
     "fr": "Rayon d'analyse de sonde augmenté",
-    "pt": "Expansão do raio de escaneamento da sonda",
     "ru": "Увеличение радиуса сканирования зондов"
   },
   "Sensor_FastScan": {
@@ -428,7 +394,6 @@
     "de": "Schnellscanner",
     "es": "Escáner rápido",
     "fr": "Détecteur analyse rapide",
-    "pt": "Scanner Rápido",
     "ru": "Быстрый сканер"
   },
   "Sensor_LightWeight": {
@@ -436,7 +401,6 @@
     "de": "Leichter Scanner",
     "es": "Escáner ligero",
     "fr": "Détecteur allégé",
-    "pt": "Scanner Leve",
     "ru": "Облегченный сканер"
   },
   "Sensor_LongRange": {
@@ -444,7 +408,6 @@
     "de": "Ferndistanzscanner",
     "es": "Escáner de largo alcance",
     "fr": "Détecteur à longue portée",
-    "pt": "Scanner de longa distância",
     "ru": "Сканер дальнего действия"
   },
   "Sensor_WideAngle": {
@@ -452,7 +415,6 @@
     "de": "Weitwinkelscanner",
     "es": "Escáner de estelas de ángulo amplio",
     "fr": "Détecteur grand-angle",
-    "pt": "Scanner de Ângulo Amplo",
     "ru": "Широкоугольный сканер"
   },
   "ShieldBooster_Explosive": {
@@ -460,7 +422,6 @@
     "de": "Detonationsresistenter Schild-Booster",
     "es": "Potenciador de escudos de resistencia explosiva",
     "fr": "Survolteur de bouclier anti-explosions",
-    "pt": "Potenciador de Escudo Resistência à Explosão",
     "ru": "Взрывостойкий усилитель щита"
   },
   "ShieldBooster_HeavyDuty": {
@@ -468,7 +429,6 @@
     "de": "Schwerer Schild-Booster",
     "es": "Potenciador de escudos de alta resistencia",
     "fr": "Survolteur de bouclier lourd",
-    "pt": "Potenciador de escudo Pesado",
     "ru": "Надежный усилитель щита"
   },
   "ShieldBooster_Kinetic": {
@@ -476,7 +436,6 @@
     "de": "Kinetikresistenter Schild-Booster",
     "es": "Potenciador de escudos de resistencia cinética",
     "fr": "Survolteur de bouclier anti-cinétique",
-    "pt": "Potenciador de Escudo de Resistência Cinética",
     "ru": "Противокинетический усилитель щита"
   },
   "ShieldBooster_Resistive": {
@@ -484,7 +443,6 @@
     "de": "Widerstandsverstärkter Schild-Booster",
     "es": "Potenciador de escudos de resistencia aumentada",
     "fr": "Survolteur de bouclier à résistance améliorée",
-    "pt": "Potenciador de Escudo com Resistência Aumentada",
     "ru": "Усилитель щита с универсальной защитой"
   },
   "ShieldBooster_Thermic": {
@@ -492,7 +450,6 @@
     "de": "Thermalresistenter Schild-Booster",
     "es": "Potenciador de escudos de resistencia térmica",
     "fr": "Survolteur de bouclier antithermique",
-    "pt": "Potenciador de Escudo de Resistência Térmica",
     "ru": "Термостойкий усилитель щита"
   },
   "ShieldCellBank_Rapid": {
@@ -500,7 +457,6 @@
     "de": "Schnell aufladende Schildzellenbank",
     "es": "Acumulador de células de escudo de recarga rápida",
     "fr": "Réserve de cellules d'énergie à chargement rapide",
-    "pt": "Carga Rápida do Banco de Célula de Escudo",
     "ru": "Щитонакопитель быстрой зарядки"
   },
   "ShieldCellBank_Specialised": {
@@ -508,7 +464,6 @@
     "de": "Spezielle Schildzellenbank",
     "es": "Acumulador de células de escudo especializado",
     "fr": "Réserve de cellules d'énergie spécialisées",
-    "pt": "Banco de Célula de Escudo Especializado",
     "ru": "Адаптивный щитонакопитель"
   },
   "ShieldGenerator_Kinetic": {
@@ -516,7 +471,6 @@
     "de": "Kinetikresistente Schilde",
     "es": "Escudos de resistencia cinética",
     "fr": "Bouclier anti-cinétique",
-    "pt": "Escudos com Resistência Cinética",
     "ru": "Противокинетические щиты"
   },
   "ShieldGenerator_Optimised": {
@@ -524,7 +478,6 @@
     "de": "Verbesserte Niedrigenergieschilde",
     "es": "Escudos mejorados de baja energía",
     "fr": "Bouclier amélioré à consommation réduite",
-    "pt": "Escudos de Baixo Consumo, Aprimorados",
     "ru": "Усиленные энергосберегающие щиты"
   },
   "ShieldGenerator_Reinforced": {
@@ -532,7 +485,6 @@
     "de": "Verstärkte Schilde",
     "es": "Escudos reforzados",
     "fr": "Bouclier renforcé",
-    "pt": "Escudos Reforçados",
     "ru": "Усиленные щиты"
   },
   "ShieldGenerator_Thermic": {
@@ -540,7 +492,6 @@
     "de": "Thermalresistente Schilde",
     "es": "Escudos de resistencia térmica",
     "fr": "Bouclier antithermique",
-    "pt": "Escudos de Resistência Térmica",
     "ru": "Термостойкие щиты"
   },
   "Weapon_DoubleShot": {
@@ -548,7 +499,6 @@
     "de": "Doppelschuss",
     "es": "Doble disparo",
     "fr": "Tir double",
-    "pt": "Tiro Duplo",
     "ru": "Двойной выстрел"
   },
   "Weapon_Efficient": {
@@ -556,7 +506,6 @@
     "de": "Waffeneffizienz",
     "es": "Arma eficiente",
     "fr": "Arme efficace",
-    "pt": "Arma Eficiente",
     "ru": "Эффективное орудие"
   },
   "Weapon_Focused": {
@@ -564,7 +513,6 @@
     "de": "Waffenfokus",
     "es": "Arma concentrada",
     "fr": "Arme concentrée",
-    "pt": "Arma com Foco",
     "ru": "Точное орудие"
   },
   "Weapon_HighCapacity": {
@@ -572,7 +520,6 @@
     "de": "Hochleistungsmagazin",
     "es": "Cargador de alta capacidad",
     "fr": "Chargeur grande capacité",
-    "pt": "Cartucho de Alta Capacidade",
     "ru": "Вместительный магазин"
   },
   "Weapon_LightWeight": {
@@ -580,7 +527,6 @@
     "de": "Leichtgewichtgeschütz",
     "es": "Anclaje ligero",
     "fr": "Support ultraléger",
-    "pt": "Encaixe Leve",
     "ru": "Легкое крепление"
   },
   "Weapon_LongRange": {
@@ -588,7 +534,6 @@
     "de": "Ferndistanzwaffe",
     "es": "Arma de largo alcance",
     "fr": "Arme à longue portée",
-    "pt": "Arma de longa distância",
     "ru": "Дальнобойное орудие"
   },
   "Weapon_Overcharged": {
@@ -596,7 +541,6 @@
     "de": "Überladungswaffe",
     "es": "Arma sobrecargada",
     "fr": "Arme surchargée",
-    "pt": "Arma Sobrecarregada",
     "ru": "Усиленное орудие"
   },
   "Weapon_RapidFire": {
@@ -604,7 +548,6 @@
     "de": "Schnellfeuermodifikation",
     "es": "Modificación de tiro rápido",
     "fr": "Modification de cadence rapide",
-    "pt": "Modificação de Disparo Rápido",
     "ru": "Улучшение скорострельности"
   },
   "Weapon_ShortRange": {
@@ -612,7 +555,6 @@
     "de": "Kurzdistanzblaster",
     "es": "Destructor de corto alcance",
     "fr": "Tir à courte portée",
-    "pt": "Disparo de Curto Alcance",
     "ru": "Бластер малого радиуса действия"
   },
   "Weapon_Sturdy": {
@@ -620,7 +562,6 @@
     "de": "Robustes Gestell",
     "es": "Anclaje robusto",
     "fr": "Support robuste",
-    "pt": "Encaixe Robusto",
     "ru": "Прочное крепление"
   }
 }

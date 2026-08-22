@@ -21,12 +21,6 @@
       "kind": "module",
       "identifier": "Int_Hyperdrive_Size6_Class5",
       "locale": "zh",
-      "expected": "超空间折叠引擎"
-    },
-    {
-      "kind": "module",
-      "identifier": "Int_Hyperdrive_Size6_Class5",
-      "locale": "zh-TW",
       "expected": null
     },
     {
@@ -81,7 +75,7 @@
       "kind": "material",
       "identifier": "Mercury",
       "locale": "ka",
-      "expected": "Mercury"
+      "expected": null
     },
     {
       "kind": "microResource",
@@ -92,8 +86,8 @@
     {
       "kind": "microResource",
       "identifier": "amm_grenade_emp",
-      "locale": "ka-GE",
-      "expected": "ფარი განმანადგურებელი"
+      "locale": "ru",
+      "expected": "Разрушитель щитов"
     },
     {
       "kind": "microResource",
@@ -105,13 +99,7 @@
       "kind": "microResource",
       "identifier": "operationscounterattackdata",
       "locale": "pt-BR",
-      "expected": "Relatório de inteligência de instalação"
-    },
-    {
-      "kind": "microResource",
-      "identifier": "operationscounterattackdata",
-      "locale": "pt",
-      "expected": "Relatório de inteligência de instalação"
+      "expected": null
     },
     {
       "kind": "microResource",
@@ -122,14 +110,8 @@
     {
       "kind": "microResource",
       "identifier": "powermegashipdata",
-      "locale": "pt-BR",
-      "expected": "Dados da meganave da potência"
-    },
-    {
-      "kind": "microResource",
-      "identifier": "powermegashipdata",
-      "locale": "pt",
-      "expected": "Dados da meganave da potência"
+      "locale": "es",
+      "expected": "Datos de meganave de potencia"
     },
     {
       "kind": "microResource",
@@ -228,12 +210,6 @@
       "expected": "Imperial Clipper"
     },
     {
-      "kind": "ship",
-      "identifier": "SideWinder",
-      "locale": "ka-GE",
-      "expected": "Sidewinder"
-    },
-    {
       "kind": "shipManufacturer",
       "identifier": "SideWinder",
       "locale": "fr",
@@ -248,8 +224,8 @@
     {
       "kind": "engineeringGroup",
       "identifier": "frameShiftDrives",
-      "locale": "pt-BR",
-      "expected": "Motores de Distorção de Fase"
+      "locale": "ru-RU",
+      "expected": "Рамочно-сместительные двигатели"
     },
     {
       "kind": "engineeringGroup",
@@ -260,7 +236,7 @@
     {
       "kind": "engineeringGroup",
       "identifier": "guardianPowerPlants",
-      "locale": "pt",
+      "locale": "ru",
       "expected": null
     },
     {

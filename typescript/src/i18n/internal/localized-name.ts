@@ -31,34 +31,23 @@ const CANONICAL_LOCALE: Readonly<Record<string, CatalogueLocale>> = Object.freez
     de: 'de',
     es: 'es',
     fr: 'fr',
-    hu: 'hu',
-    it: 'it',
-    ka: 'ka',
-    pt: 'pt',
-    'pt-br': 'pt-BR',
     ru: 'ru',
-    'zh-cn': 'zh-CN',
 });
 
-/** Read a locale tag without admitting properties inherited from `Object.prototype`. */
-function canonicalLocale(locale: string): CatalogueLocale | undefined {
-    return Object.hasOwn(CANONICAL_LOCALE, locale) ? CANONICAL_LOCALE[locale] : undefined;
-}
-
 /**
- * Return the exact supported tag followed by its language fallback, when available.
+ * Resolve a BCP 47 tag onto the stored locale it selects, or `undefined` for a locale no
+ * catalogue carries. Every stored locale is a bare language tag, so a region or script
+ * subtag is dropped rather than matched: `de-DE` selects `de`.
  * @internal
  */
-function localeCandidates(locale: string, label: string): readonly CatalogueLocale[] {
-    const normalized = requireString(locale, label).trim().replaceAll('_', '-').toLowerCase();
-    if (normalized === 'zh' || normalized === 'zh-hans' || normalized.startsWith('zh-hans-')) {
-        return ['zh-CN'];
-    }
-    if (normalized.startsWith('zh-') && normalized !== 'zh-cn') return [];
-    const exact = canonicalLocale(normalized);
-    const language = canonicalLocale(normalized.split('-', 1)[0]!);
-    if (exact === undefined) return language === undefined ? [] : [language];
-    return language === undefined || language === exact ? [exact] : [exact, language];
+function catalogueLocale(locale: string, label: string): CatalogueLocale | undefined {
+    const language = requireString(locale, label)
+        .trim()
+        .replaceAll('_', '-')
+        .toLowerCase()
+        .split('-', 1)[0]!;
+    // Object.hasOwn keeps `toString` and other prototype keys from resolving.
+    return Object.hasOwn(CANONICAL_LOCALE, language) ? CANONICAL_LOCALE[language] : undefined;
 }
 
 /** Build a normalized index for a directly keyed localized-name map. @internal */
@@ -85,19 +74,16 @@ export function createDeduplicatedLocalizedNameIndex(
     return Object.freeze(index);
 }
 
-/** Select a localized value from one name record with BCP 47 language fallback. */
+/** Select a localized value from one name record for a BCP 47 locale. */
 function selectLocalizedName(
     names: LocalizedName | null,
     locale: string,
     functionName: string,
 ): string | null {
-    const candidates = localeCandidates(locale, `${functionName}: locale`);
-    if (names === null) return null;
-    for (const candidate of candidates) {
-        const name = names[candidate];
-        if (name !== undefined) return name;
-    }
-    return null;
+    // Resolved before the null check so an invalid locale is rejected on a missing record.
+    const candidate = catalogueLocale(locale, `${functionName}: locale`);
+    if (names === null || candidate === undefined) return null;
+    return names[candidate] ?? null;
 }
 
 /** Select a localized value without building an identifier index. @internal */
