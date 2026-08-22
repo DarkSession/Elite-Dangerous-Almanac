@@ -2415,6 +2415,136 @@
           },
           "required": ["cases", "description", "operationsKeys"]
         },
+        "mercCoinCosts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "climbs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "blueprint": { "type": "string" },
+                  "currentGrade": { "type": "integer" },
+                  "grade": { "type": "integer" },
+                  "mercCoin": { "type": "integer" }
+                },
+                "required": ["blueprint", "currentGrade", "grade", "mercCoin"]
+              }
+            },
+            "description": { "type": "string" },
+            "perRoll": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "AbrasionBlaster_FarReaching": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "BeamLaser_ThermalPlasmaConversion": {
+                  "$ref": "#/definitions/sharede13731d6e20c"
+                },
+                "BurstLaser_ThermalPlasmaConversion": {
+                  "$ref": "#/definitions/sharede13731d6e20c"
+                },
+                "CargoRackS5C1_Extended": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "CargoRackS6C1_Extended": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "DetailedSurfaceScanner_LongRange": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "EnzymeMissileRack_HighYield": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "FragmentCannonLarge_DoubleScreaming": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "FragmentCannonSmall_DoubleScreaming": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "FuelScoop_Efficiency": {
+                  "$ref": "#/definitions/sharede13731d6e20c"
+                },
+                "MiningLaser_LongRange": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "ModuleReinforcement_HeavyDuty": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "MultiCannon_Rapid": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PowerDistributorS3C2_SupportFocused": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PowerDistributorS3C5_SupportFocused": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PowerDistributorS4C2_SupportFocused": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PowerDistributorS4C5_SupportFocused": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PowerDistributorS6C5_SupportFocused": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PowerDistributor_Balanced": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "PulseLaser_ThermalPlasmaConversion": {
+                  "$ref": "#/definitions/sharede13731d6e20c"
+                },
+                "RailGun_LongShot": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "SeekerMissileRackLarge_Lockdown": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "SeekerMissileRackMedium_Lockdown": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "SeekerMissileRack_Drag": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
+                "SeekerMissileRack_LightWeightThermal": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                }
+              },
+              "required": [
+                "AbrasionBlaster_FarReaching",
+                "BeamLaser_ThermalPlasmaConversion",
+                "BurstLaser_ThermalPlasmaConversion",
+                "CargoRackS5C1_Extended",
+                "CargoRackS6C1_Extended",
+                "DetailedSurfaceScanner_LongRange",
+                "EnzymeMissileRack_HighYield",
+                "FragmentCannonLarge_DoubleScreaming",
+                "FragmentCannonSmall_DoubleScreaming",
+                "FuelScoop_Efficiency",
+                "MiningLaser_LongRange",
+                "ModuleReinforcement_HeavyDuty",
+                "MultiCannon_Rapid",
+                "PowerDistributorS3C2_SupportFocused",
+                "PowerDistributorS3C5_SupportFocused",
+                "PowerDistributorS4C2_SupportFocused",
+                "PowerDistributorS4C5_SupportFocused",
+                "PowerDistributorS6C5_SupportFocused",
+                "PowerDistributor_Balanced",
+                "PulseLaser_ThermalPlasmaConversion",
+                "RailGun_LongShot",
+                "SeekerMissileRackLarge_Lockdown",
+                "SeekerMissileRackMedium_Lockdown",
+                "SeekerMissileRack_Drag",
+                "SeekerMissileRack_LightWeightThermal"
+              ]
+            }
+          },
+          "required": ["climbs", "description", "perRoll"]
+        },
         "overchargedIdCollision": {
           "type": "object",
           "additionalProperties": false,
@@ -2624,6 +2754,7 @@
         "guardianZoneResistanceCapability",
         "journalNames",
         "journalSpellings",
+        "mercCoinCosts",
         "overchargedIdCollision",
         "preEngineeredClimb",
         "reachability",
@@ -7512,6 +7643,17 @@
         "rebuy"
       ]
     },
+    "shared1e44f939dc59": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "2": { "type": "integer" },
+        "3": { "type": "integer" },
+        "4": { "type": "integer" },
+        "5": { "type": "integer" }
+      },
+      "required": ["2", "3", "4", "5"]
+    },
     "shared1fba980adb8b": {
       "type": "object",
       "additionalProperties": false,
@@ -8036,6 +8178,18 @@
         "setModule": { "$ref": "#/definitions/sharedf570f3651544" }
       },
       "required": ["setModule"]
+    },
+    "sharede13731d6e20c": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "1": { "type": "integer" },
+        "2": { "type": "integer" },
+        "3": { "type": "integer" },
+        "4": { "type": "integer" },
+        "5": { "type": "integer" }
+      },
+      "required": ["1", "2", "3", "4", "5"]
     },
     "sharede39a40d9a9fa": {
       "type": "array",

@@ -1095,14 +1095,17 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
 - **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers),
   `blueprint-costs.jsonc` (the matching per-grade material requirements),
+  `blueprint-merc-coin-costs.jsonc` (the per-roll Merc-Coin amounts the 25 recipes that
+  charge a currency bill alongside those materials),
   `blueprint-journal-names.jsonc` (the three recipe ids whose journal spelling collides
   with another recipe), `experimental-effects.jsonc` (special-effect stat modifiers and
   qualitative descriptions), and `experimental-effect-costs.jsonc` (the matching
   one-application material costs).
   Stored modifier labels use journal `Modifier` **Labels**. Each blueprint is `{ name, grades }`
-  (each grade `{ features, damageDistribution? }`). The cost file uses the same ids and
-  grades for the craftable subset; fixed reward identities without an ordinary cost are
-  absent. Each experimental effect is
+  (each grade `{ features, damageDistribution? }`). The material cost file uses the same
+  ids and grades for the craftable subset; fixed reward identities without an ordinary
+  cost are absent. The Merc-Coin file is a subset of that subset, with the same ids and
+  the same grades again — a recipe charging no currency is absent rather than zero. Each experimental effect is
   `{ name, modifiers, damageDistribution?, description? }`, with its cost file keyed by
   the same effect ids.
 - **Display names:** each blueprint and experimental effect carries its `name`.
@@ -1216,8 +1219,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
   grade 5. Inara does not publish journal spellings for the damage members, and the
   repository contains no raw `Loadout` capture of this blueprint.
   Their per-roll `materials` are from the same registry (resolved to Frontier material
-  `symbol`s against the `materials` domain); the per-roll **Merc-Coin** amount is also
-  charged but is a currency, not a material, so it is not stored. Some totals are
+  `symbol`s against the `materials` domain). Where that same crafting-cost table lists a
+  per-roll **Merc-Coin** amount beside them — on the 25 recipes named under "Merc-Coin
+  crafting cost" below, which is every recipe in this bullet except the Anti-Guardian one
+  — the amount is a currency rather than a material, so it is stored separately, in
+  `blueprint-merc-coin-costs.jsonc`. Some totals are
   non-monotonic (pre-engineered UI values, not primitive weights — notably the
   Enduring-feedback rail-gun damage and the Balanced-distributor G4 mass) and are
   **preserved as published, not silently "corrected"**. The Merc-Coin **weapon-reward**
@@ -1225,6 +1231,66 @@ up straight through with no disambiguation at all. Both paths are evidence that
   pre-engineering; the general/core/optional recipes (fuel scoop, laser plasma-conversion)
   span grades 1–5, and the Anti-Guardian recipe is grade 1 only.
 
+- **Merc-Coin crafting cost — `blueprint-merc-coin-costs.jsonc`.** A recipe that charges a
+  currency lists it in the same Inara crafting-cost box as its materials, on a `Merc Coin`
+  line carrying an amount and no material link. That amount is stored in its own file, per
+  blueprint and per grade, because it is a currency and not a material: folding it into an
+  `EngineeringMaterial` list would put something with no `symbol` in the materials domain.
+  Amounts are **per roll**, exactly as the material recipes are, so pricing a climb weights
+  each grade by its roll count.
+  - **25 recipes charge one, and no other blueprint does.** The blueprint index at
+    `inara.cz/elite/blueprints/` renders a charging recipe's name in the coin colour, and
+    the marked set is exactly the 21 bespoke grade-2–5 recipes a bought Mercenary article
+    climbs plus the four Operations recipes an ordinary menu lists at grades 1–5
+    (`FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`) — 18 marked
+    rows of the 197 the index lists, because one published recipe can answer to more than
+    one stored id. An ordinary engineer recipe is therefore **absent rather than zero**,
+    and `GuardianModule_Sturdy` is absent for the same reason. That index is the only
+    evidence for the negative half of the claim, so its checksum is recorded alongside the
+    recipe pages'. Acquired 2026-08-22 UTC from the live Inara pages, which expose no
+    immutable revision.
+  - **Every row is joined to its `fdname` by its own material recipe, not by name.** Inara
+    publishes one page per recipe, keyed by its display name; each page's per-grade material
+    list was compared against `blueprint-costs.jsonc` before its Merc-Coin figures were
+    taken, and all 25 agree on every grade, every material and every count. That is what
+    binds "Rail Gun — Enduring feedback" to `RailGun_LongShot` rather than a guess at the
+    display name.
+  - **One published recipe, several stored ids, one set of amounts.** Inara publishes a
+    single page for Cargo Rack — Extended, Power Distributor — Support focused, Fragment
+    Cannon — Double screaming and Seeker Missile Rack — Lockdown, while this repository
+    keys each as two or five per-SKU ids (see "Seven of these keys are almost certainly not
+    journal ids" above). Those ids already carry **identical material recipes** at every
+    grade, from that same one page; their Merc-Coin amounts are identical for the same
+    reason, and are not a claim that the sizes were separately observed to cost the same.
+  - **Page checksums**, SHA-256 of the captured HTML, acquired 2026-08-22 UTC. The
+    recipe pages, by their id under `inara.cz/elite/blueprint/`:
+
+    - `201` — `59b6638b3f0ef918d1f9fa137860b2ddfe630393fceaeee805ec807d711fca68`
+    - `202` — `35fdf6900471edeba6c57ac9853f105a1b0adef5cda475652eee01f6e99ac032`
+    - `203` — `e4c23ec27a1a4a91e8ce6eafbb6eb10f976dd0ddc64988302bb70552aea25744`
+    - `204` — `6f4b319e701efe9a0a9d0dfa9ab472a423ae027b2d317ff942efcf049a677b75`
+    - `205` — `2b882a86325e67c9ab49cabab9c7d306ecb960542296a5a31112ec2545d72e7e`
+    - `206` — `b84f3e62e2968f66f0d31c547c2e7c697557ee40902b08f9d222b73825ba4d33`
+    - `208` — `a8918103a4dfb39ce2d5d9b7fb3fbcc474e8828bdf81897fbbdb06bd8382a26e`
+    - `209` — `6353a31a2113a26f2302f91afc75866a808596f5b894e3391d89b3707d59fe59`
+    - `214` — `a99cb1c6059cc49be8532b005662c8c2ec6fc9669f09cb5d495b637c0e72c608`
+    - `215` — `5b6bf8191631c88088861d4baaa90f723ffeda93343a7512667c981b1cb44261`
+    - `216` — `aacac372c72c00703189b5bc2351a6e1a8dded184af37d773998800e1d0785df`
+    - `217` — `95ad64c60c91a34b3413d2fa8e1439b8dd9375f0829b8675253f792322ae79ca`
+    - `218` — `ada91989efdc8d5605e010a7e5c0bf77035f93c819522037e91165c720819383`
+    - `219` — `6d37260c2e5f3e41c9d0ea8bf863f61b205dd858efedb299f3785aacfd62843c`
+    - `220` — `a2e55a918e279fa976e5a86f87a52a2f1eb940a61d3be17be004df1d22de65ee`
+    - `221` — `7a2f65761b8bf1fbb438bba829320bcec20062b776701fdd61b48bd56da7e1a8`
+    - `223` — `c6447fbc2c8c2d0e64bae29693ea0b4703b16e612137a9bbd77a0adb50a4be7f`
+    - `224` — `3d774ea658fd7431f9a6d5b5bbddba3ca9505a8e56421da651e6a91f1f44ba55`
+
+    and the `inara.cz/elite/blueprints/` index that establishes which recipes charge a
+    currency at all — `5775b3086ed886115ce9eb30db1fc24d55cf78cefd40f53c9aedbbed944b7495`.
+
+    The captures themselves are not checked in.
+  - **A pre-engineered article's shop price is a different number** and stays on the variant
+    as `mercCoinCost`: that buys the article at grade 1, while these amounts buy the climb
+    above it.
 - **Anti-Guardian Zone Resistance is keyed once, as the game spells it.**
   `blueprints.jsonc` stores the one player-facing blueprint under
   **`GuardianModule_Sturdy`** — the id a journal writes, and the only one any engineering
@@ -1285,8 +1351,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
   magnitudes carry them (e.g. Force Shell shot speed −16.6667%, FSD Interrupt damage −30%
   / burst interval +50%). A fixed damage-type conversion is carried separately as
   `damageDistribution`, because it is a nested split rather than a scalar modifier.
-  Their one-application `materials` are from the same in-game / Inara registry (a
-  Merc-Coin amount is also charged but is not stored). Every one is a weapon effect, and
+  Their one-application `materials` are the whole cost. **No experimental effect charges
+  Merc Coin**, so nothing is missing beside them: repository-owner in-game confirmation,
+  2026-08-22 UTC, no immutable upstream revision. The currency is charged by 25
+  **blueprints** and by no effect, so an effect's empty currency cost is a fact about the
+  game rather than an omission here — those blueprint amounts are carried, under
+  "Merc-Coin crafting cost" above. Every one is a weapon effect, and
   the weapon groups' menus list them.
 - **Three effects state a fixed converted damage type.** High Yield Shell, Inertial
   Impact and Overload Munitions produce 50/50 kinetic/explosive, kinetic/thermal and

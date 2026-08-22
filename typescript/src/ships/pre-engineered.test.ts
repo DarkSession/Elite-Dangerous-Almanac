@@ -6,7 +6,7 @@ import {
     getPreEngineeredVariants,
     isPreEngineered,
 } from './pre-engineered.js';
-import { getBlueprintCost } from './blueprint-costs.js';
+import { getBlueprintCost, getBlueprintMercCoinCost } from './blueprint-costs.js';
 import { BLUEPRINTS, getBlueprint } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
@@ -396,6 +396,23 @@ test('the remaining upgrade is priced from the grade already applied', () => {
     assert.deepEqual(fromPurchase, getBlueprintCost(variant.blueprint, 5, 0));
     // Pricing from a later grade does drop the grades already paid for.
     assert.ok(total(getBlueprintCost(variant.blueprint, 5, 4)) < total(fromPurchase));
+});
+
+test('every Mercenary article can be priced in Merc Coin as well as materials', () => {
+    // The catalogue docs send a consumer straight from a `mercenary` row to
+    // getBlueprintMercCoinCost. A row whose recipe has no currency row would answer that
+    // call with null, so the join is asserted rather than assumed.
+    const mercenary = PRE_ENGINEERED_MODULES.filter(
+        (variant) => variant.acquisition === 'mercenary',
+    );
+    assert.equal(mercenary.length, 22);
+    for (const variant of mercenary) {
+        const climb = getBlueprintMercCoinCost(variant.blueprint, 5, variant.grade);
+        assert.ok(
+            climb !== null && climb > 0,
+            `${variant.blueprint} prices no Merc Coin above grade ${variant.grade}`,
+        );
+    }
 });
 
 test('a Merc Coin price is carried by exactly the rows that are bought with one', () => {

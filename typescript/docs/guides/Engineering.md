@@ -226,6 +226,26 @@ rollsForGrade(5); // rolls to fill the grade's progress bar
 A grade costs its recipe once per roll and grade `g` takes `g` rolls, so the climb is
 weighted rather than a plain sum — which is what `getBlueprintCost` folds in for you.
 
+Twenty-five recipes bill **Merc Coin** per roll as well, and `getBlueprintMercCoinCost`
+prices that half of the same climb under the same weighting. It is a currency rather than
+a material, so it stays a separate total; `null` means the recipe charges none at that
+grade.
+
+Most of them are the bespoke Mercenary recipes, which start at grade 2 because the article
+was bought at grade 1 — but four are ordinary menu recipes on stock modules, so do not
+assume a Merc Coin charge means a Mercenary article:
+
+```ts
+import { getBlueprintMercCoinCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
+
+// A Mercenary article: bought at grade 1, so price the climb from there.
+getBlueprintMercCoinCost('RailGun_LongShot', 5, 1); // -> 415
+// An ordinary menu recipe on a stock fuel scoop: the whole climb, grades 1-5.
+getBlueprintMercCoinCost('FuelScoop_Efficiency', 5); // -> 350
+// A recipe that charges no currency at all.
+getBlueprintMercCoinCost('FSD_LongRange', 5); // -> null
+```
+
 An experimental effect is a separate single application, on its own subpath again, and
 `sumMaterials` folds the two bills into one:
 
@@ -240,6 +260,9 @@ const grand = sumMaterials(
 );
 grand.length;
 ```
+
+An effect charges no Merc Coin, so `getBlueprintMercCoinCost` alone is the whole currency
+bill for an upgrade.
 
 Pricing the remaining upgrade on a module bought pre-engineered is the same call with the
 grade it arrived at as the third argument. On a **reward** variant it is not: those carry

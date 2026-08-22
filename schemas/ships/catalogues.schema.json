@@ -678,6 +678,23 @@
         "$ref": "#/definitions/blueprintCostGrades"
       }
     },
+    "blueprintMercCoinCostGrades": {
+      "description": "Merc Coin charged for one roll, keyed by grade.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[1-5]$": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "blueprintMercCoinCostCatalogue": {
+      "description": "Per-roll Merc Coin costs for the blueprints that charge a currency alongside their materials.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/definitions/blueprintMercCoinCostGrades"
+      }
+    },
     "blueprintJournalNameCatalogue": {
       "description": "Recipe ids keyed to the colliding `BlueprintName` a journal writes for them.",
       "type": "object",

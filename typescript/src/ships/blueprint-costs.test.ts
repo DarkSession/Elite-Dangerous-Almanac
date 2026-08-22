@@ -6,9 +6,11 @@ import { getMaterialBySymbol } from '../materials/materials.js';
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 import {
     BLUEPRINT_COSTS,
+    BLUEPRINT_MERC_COIN_COSTS,
     getBlueprintCost,
     getBlueprintCosts,
     getBlueprintGradeCost,
+    getBlueprintMercCoinCost,
 } from './blueprint-costs.js';
 import { BLUEPRINTS } from './blueprints.js';
 
@@ -166,5 +168,64 @@ test('getBlueprintCost rejects target and current grades outside their supported
     for (const currentGrade of [-1, 6, 2.5, Number.NaN, Number.POSITIVE_INFINITY]) {
         assert.throws(() => getBlueprintCost('FSD_LongRange', 5, currentGrade), RangeError);
         assert.throws(() => getBlueprintCost('nope', 5, currentGrade), RangeError);
+    }
+});
+
+test('the Merc-Coin catalogue is the fixture, keyed and graded like the material one', () => {
+    assert.deepEqual(BLUEPRINT_MERC_COIN_COSTS, engineeringFixture.mercCoinCosts.perRoll);
+    for (const [fdname, grades] of Object.entries(BLUEPRINT_MERC_COIN_COSTS)) {
+        // A currency cost only ever accompanies a material recipe, grade for grade.
+        assert.deepEqual(Object.keys(grades), Object.keys(BLUEPRINT_COSTS[fdname] ?? {}), fdname);
+        for (const [grade, amount] of Object.entries(grades)) {
+            assert.ok(
+                Number.isInteger(amount) && amount > 0,
+                `${fdname} grade ${grade} charges ${amount}`,
+            );
+        }
+    }
+});
+
+test('getBlueprintMercCoinCost weights every charged grade by its roll count', () => {
+    // Totals are fixture literals, not recomputed here: a test that re-derived them with
+    // rollsForGrade could not fail if the weighting rule itself were wrong.
+    for (const climb of engineeringFixture.mercCoinCosts.climbs) {
+        assert.equal(
+            getBlueprintMercCoinCost(climb.blueprint, climb.grade, climb.currentGrade),
+            climb.mercCoin,
+            `${climb.blueprint} ${climb.currentGrade}->${climb.grade}`,
+        );
+    }
+    // Every catalogued recipe reaches grade 5, so none of them is left unpinned above.
+    const pinned = new Set(
+        engineeringFixture.mercCoinCosts.climbs
+            .filter((climb) => climb.grade === 5 && climb.currentGrade === 0)
+            .map((climb) => climb.blueprint),
+    );
+    assert.deepEqual([...pinned].sort(), Object.keys(BLUEPRINT_MERC_COIN_COSTS).sort());
+});
+
+test('getBlueprintMercCoinCost normalises ids, misses cleanly and charges nothing above the target', () => {
+    const railGun = getBlueprintMercCoinCost('RailGun_LongShot', 5, 1);
+    assert.equal(getBlueprintMercCoinCost('  railgun_longshot ', 5, 1), railGun);
+    assert.equal(getBlueprintMercCoinCost('RailGun_LongShot', 5, 5), 0);
+    assert.equal(getBlueprintMercCoinCost('RailGun_LongShot', 3, 4), 0);
+    // Absent from the catalogue: this recipe charges no currency at all.
+    assert.equal(getBlueprintMercCoinCost('FSD_LongRange', 5), null);
+    assert.equal(getBlueprintMercCoinCost('nope', 5), null);
+    // Present, but the recipe does not define the grade asked for.
+    assert.equal(getBlueprintMercCoinCost('RailGun_LongShot', 1), null);
+});
+
+test('getBlueprintMercCoinCost rejects target and current grades outside their supported ranges', () => {
+    for (const grade of [0, 6, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => getBlueprintMercCoinCost('RailGun_LongShot', grade), RangeError);
+        assert.throws(() => getBlueprintMercCoinCost('nope', grade), RangeError);
+    }
+    for (const currentGrade of [-1, 6, 2.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(
+            () => getBlueprintMercCoinCost('RailGun_LongShot', 5, currentGrade),
+            RangeError,
+        );
+        assert.throws(() => getBlueprintMercCoinCost('nope', 5, currentGrade), RangeError);
     }
 });

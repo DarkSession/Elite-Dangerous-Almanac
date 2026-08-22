@@ -39,6 +39,12 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
 /**
  * Look up an experimental effect's one-application material cost.
  *
+ * @remarks
+ * Materials are the whole cost: an experimental effect charges no Merc Coin, unlike the
+ * blueprints
+ * {@link ships/blueprint-costs!getBlueprintMercCoinCost | getBlueprintMercCoinCost}
+ * prices.
+ *
  * @param fdname - The effect id, e.g. `"special_fsd_heavy"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @returns The frozen material list, or `null` if the effect is unknown.
