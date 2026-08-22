@@ -10036,7 +10036,7 @@
     }
   },
   "BeamLaser_ThermalPlasmaConversion": {
-    "name": "Beam Laser — Plasma conversion",
+    "name": "Plasma conversion",
     "grades": {
       "1": {
         "features": [
@@ -10141,7 +10141,7 @@
     }
   },
   "BurstLaser_ThermalPlasmaConversion": {
-    "name": "Burst Laser — Plasma conversion",
+    "name": "Plasma conversion",
     "grades": {
       "1": {
         "features": [
@@ -10246,7 +10246,7 @@
     }
   },
   "PulseLaser_ThermalPlasmaConversion": {
-    "name": "Pulse Laser — Plasma conversion",
+    "name": "Plasma conversion",
     "grades": {
       "1": {
         "features": [

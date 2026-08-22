@@ -58,10 +58,10 @@
     "ru": "Термостойкая броня"
   },
   "BeamLaser_ThermalPlasmaConversion": {
-    "en": "Beam Laser — Plasma conversion"
+    "en": "Plasma conversion"
   },
   "BurstLaser_ThermalPlasmaConversion": {
-    "en": "Burst Laser — Plasma conversion"
+    "en": "Plasma conversion"
   },
   "CargoRack_IncreasedCapacity": {
     "en": "Expanded Cargo Rack"
@@ -389,7 +389,7 @@
     "en": "Shielded"
   },
   "PulseLaser_ThermalPlasmaConversion": {
-    "en": "Pulse Laser — Plasma conversion"
+    "en": "Plasma conversion"
   },
   "RailGun_LongShot": {
     "en": "Rail Gun — Enduring feedback"
