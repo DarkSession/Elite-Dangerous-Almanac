@@ -464,9 +464,9 @@
       },
       "special_plasma_rounds": {
         "blueprints": {
-          "BeamLaser_ThermalPlasmaConversion": "Beam Laser — Plasma conversion",
-          "BurstLaser_ThermalPlasmaConversion": "Burst Laser — Plasma conversion",
-          "PulseLaser_ThermalPlasmaConversion": "Pulse Laser — Plasma conversion"
+          "BeamLaser_ThermalPlasmaConversion": "Plasma conversion",
+          "BurstLaser_ThermalPlasmaConversion": "Plasma conversion",
+          "PulseLaser_ThermalPlasmaConversion": "Plasma conversion"
         }
       }
     }
