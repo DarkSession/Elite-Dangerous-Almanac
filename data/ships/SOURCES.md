@@ -1238,21 +1238,20 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `EngineeringMaterial` list would put something with no `symbol` in the materials domain.
   Amounts are **per roll**, exactly as the material recipes are, so pricing a climb weights
   each grade by its roll count.
-  - **25 recipes charge one, and no other blueprint does.** The blueprint index at
-    `inara.cz/elite/blueprints/` renders a charging recipe's name in the coin colour, and
-    the marked set is exactly the 21 bespoke grade-2–5 recipes a bought Mercenary article
-    climbs plus the four Operations recipes an ordinary menu lists at grades 1–5
-    (`FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`) — 18 marked
-    rows of the 197 the index lists, because one published recipe can answer to more than
-    one stored id. An ordinary engineer recipe is therefore **absent rather than zero**,
-    and `GuardianModule_Sturdy` is absent for the same reason. That index is the only
-    evidence for the negative half of the claim, so its checksum is recorded alongside the
-    recipe pages'. Acquired 2026-08-22 UTC from the live Inara pages, which expose no
-    immutable revision.
+  - **25 recipes charge one, and no other blueprint does.** Inara's blueprint index marks
+    a charging recipe by rendering its name in the coin colour, and the marked set is
+    exactly the 21 bespoke grade-2–5 recipes a bought Mercenary article climbs plus the
+    four Operations recipes an ordinary menu lists at grades 1–5 (`FuelScoop_Efficiency`
+    and the three `*Laser_ThermalPlasmaConversion`) — 18 marked rows of the 197 the index
+    lists, because one published recipe can answer to more than one stored id. An ordinary
+    engineer recipe is therefore **absent rather than zero**, and `GuardianModule_Sturdy`
+    is absent for the same reason. That index is the whole evidence for the negative half
+    of the claim: it is a completeness reading of one listing, not 197 pages checked one
+    by one. Acquired 2026-08-22 UTC; the pages are live and expose no immutable revision.
   - **Every row is joined to its `fdname` by its own material recipe, not by name.** Inara
-    publishes one page per recipe, keyed by its display name; each page's per-grade material
-    list was compared against `blueprint-costs.jsonc` before its Merc-Coin figures were
-    taken, and all 25 agree on every grade, every material and every count. That is what
+    publishes one page per recipe, keyed by its display name; each of the 18 pages' per-grade
+    material lists was compared against `blueprint-costs.jsonc` before its Merc-Coin figures
+    were taken, and all 25 rows agree on every grade, every material and every count. That is what
     binds "Rail Gun — Enduring feedback" to `RailGun_LongShot` rather than a guess at the
     display name.
   - **One published recipe, several stored ids, one set of amounts.** Inara publishes a
@@ -1262,32 +1261,6 @@ up straight through with no disambiguation at all. Both paths are evidence that
     journal ids" above). Those ids already carry **identical material recipes** at every
     grade, from that same one page; their Merc-Coin amounts are identical for the same
     reason, and are not a claim that the sizes were separately observed to cost the same.
-  - **Page checksums**, SHA-256 of the captured HTML, acquired 2026-08-22 UTC. The
-    recipe pages, by their id under `inara.cz/elite/blueprint/`:
-
-    - `201` — `59b6638b3f0ef918d1f9fa137860b2ddfe630393fceaeee805ec807d711fca68`
-    - `202` — `35fdf6900471edeba6c57ac9853f105a1b0adef5cda475652eee01f6e99ac032`
-    - `203` — `e4c23ec27a1a4a91e8ce6eafbb6eb10f976dd0ddc64988302bb70552aea25744`
-    - `204` — `6f4b319e701efe9a0a9d0dfa9ab472a423ae027b2d317ff942efcf049a677b75`
-    - `205` — `2b882a86325e67c9ab49cabab9c7d306ecb960542296a5a31112ec2545d72e7e`
-    - `206` — `b84f3e62e2968f66f0d31c547c2e7c697557ee40902b08f9d222b73825ba4d33`
-    - `208` — `a8918103a4dfb39ce2d5d9b7fb3fbcc474e8828bdf81897fbbdb06bd8382a26e`
-    - `209` — `6353a31a2113a26f2302f91afc75866a808596f5b894e3391d89b3707d59fe59`
-    - `214` — `a99cb1c6059cc49be8532b005662c8c2ec6fc9669f09cb5d495b637c0e72c608`
-    - `215` — `5b6bf8191631c88088861d4baaa90f723ffeda93343a7512667c981b1cb44261`
-    - `216` — `aacac372c72c00703189b5bc2351a6e1a8dded184af37d773998800e1d0785df`
-    - `217` — `95ad64c60c91a34b3413d2fa8e1439b8dd9375f0829b8675253f792322ae79ca`
-    - `218` — `ada91989efdc8d5605e010a7e5c0bf77035f93c819522037e91165c720819383`
-    - `219` — `6d37260c2e5f3e41c9d0ea8bf863f61b205dd858efedb299f3785aacfd62843c`
-    - `220` — `a2e55a918e279fa976e5a86f87a52a2f1eb940a61d3be17be004df1d22de65ee`
-    - `221` — `7a2f65761b8bf1fbb438bba829320bcec20062b776701fdd61b48bd56da7e1a8`
-    - `223` — `c6447fbc2c8c2d0e64bae29693ea0b4703b16e612137a9bbd77a0adb50a4be7f`
-    - `224` — `3d774ea658fd7431f9a6d5b5bbddba3ca9505a8e56421da651e6a91f1f44ba55`
-
-    and the `inara.cz/elite/blueprints/` index that establishes which recipes charge a
-    currency at all — `5775b3086ed886115ce9eb30db1fc24d55cf78cefd40f53c9aedbbed944b7495`.
-
-    The captures themselves are not checked in.
   - **A pre-engineered article's shop price is a different number** and stays on the variant
     as `mercCoinCost`: that buys the article at grade 1, while these amounts buy the climb
     above it.
