@@ -44,6 +44,9 @@ import type { HeatState } from './heat.js';
 import { powerBudget as calculatePowerBudget } from './power.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
+import { getBlueprintCost } from './blueprint-costs.js';
+import { getExperimentalEffectCost } from './experimental-effect-costs.js';
+import { sumMaterials } from './engineering.js';
 import { getPreEngineeredJournalModifiers, getPreEngineeredStats } from './pre-engineered-stats.js';
 
 const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
@@ -608,31 +611,61 @@ test('shield results distinguish an absent generator from a shed one', () => {
     );
 });
 
-test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {
-    const stock = ShipLoadout.default('Anaconda');
-    const credits = stock.retailCredits();
+test('buildCost prices assembled builds directly and qualifies missing module prices', () => {
+    const expected = operationsFixture.buildCost.credits;
+    const stock = ShipLoadout.default(expected.ship);
+    const credits = stock.buildCost().credits;
     const event = stock.toLoadoutEvent();
-    assert.equal(credits.hull, 142456440);
-    assert.ok(credits.modules > 0);
-    assert.equal(credits.rebuy, Math.trunc((credits.hull + credits.modules) * 0.05));
     assert.deepEqual(
-        { hull: credits.hull, modules: credits.modules, rebuy: credits.rebuy },
+        { total: credits.total, hull: credits.hull, modules: credits.modules },
+        expected.expected,
+    );
+    assert.equal(credits.total, credits.hull + credits.modules);
+    assert.deepEqual(
+        { hull: credits.hull, modules: credits.modules, rebuy: Math.trunc(credits.total * 0.05) },
         { hull: event.HullValue, modules: event.ModulesValue, rebuy: event.Rebuy },
     );
     assert.ok(Object.isFrozen(credits));
     assert.ok(Object.isFrozen(credits.unpriced));
+    assert.deepEqual(stock.buildCost().materials, []);
 
     const unknown = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod('Int_CorrosionProofCargoRack_Size5_Class1', INTERNAL_MODULES),
     );
-    assert.ok(unknown.retailCredits().unpriced.length > 0);
+    assert.ok(unknown.buildCost().credits.unpriced.length > 0);
 });
 
-test('mercCoinCost totals the fitted purchases and follows live edits', () => {
-    const expected = operationsFixture.mercCoinCost;
+test('buildCost totals the engineering a build still has to pay for', () => {
+    const build = ShipLoadout.default('Anaconda');
+    assert.deepEqual(build.buildCost().materials, []);
+
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+    const blueprintOnly = build.buildCost().materials;
+    assert.equal(blueprintOnly.find((material) => material.symbol === 'Arsenic')?.count, 5);
+    assert.deepEqual(blueprintOnly, getBlueprintCost('FSD_LongRange', 5)!.materials);
+    assert.ok(Object.isFrozen(blueprintOnly));
+
+    build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
+    assert.deepEqual(
+        build.buildCost().materials,
+        sumMaterials(blueprintOnly, getExperimentalEffectCost('special_fsd_heavy')!),
+    );
+
+    // A festive reward identifies a recipe it was never rolled from, so it costs nothing.
+    const festive = ShipLoadout.default('Python');
+    const reward = getPreEngineeredVariants('Hpt_FlakMortar_Turret_Medium').find(
+        (candidate) => candidate.acquisition === 'eventReward',
+    )!;
+    festive.setPreEngineeredVariant('MediumHardpoint1', reward);
+    assert.deepEqual(festive.buildCost().materials, []);
+    assert.equal(festive.buildCost().mercCoins, 0);
+});
+
+test('buildCost totals Merc Coin purchases and the climbs above them', () => {
+    const expected = operationsFixture.buildCost.mercenary;
     const build = ShipLoadout.default(expected.ship);
-    assert.equal(build.mercCoinCost(), 0);
+    assert.equal(build.buildCost().mercCoins, 0);
 
     for (const module of expected.modules) {
         const variant = getPreEngineeredVariants(module.symbol).find(
@@ -640,14 +673,18 @@ test('mercCoinCost totals the fitted purchases and follows live edits', () => {
         )!;
         build.setPreEngineeredVariant(module.slot, variant);
     }
-    assert.equal(build.mercCoinCost(), expected.expected);
+    // Bought at grade 1: the purchase price alone, with nothing rolled on top of it.
+    assert.equal(build.buildCost().mercCoins, expected.expected);
+    assert.deepEqual(build.buildCost().materials, []);
 
     const removed = expected.modules[0]!;
     build.setModule(removed.slot, getModuleBySymbol(removed.symbol, ALL_MODULES)!);
-    assert.equal(build.mercCoinCost(), expected.expected - removed.cost);
+    assert.equal(build.buildCost().mercCoins, expected.expected - removed.cost);
 
-    build.applyBlueprint(removed.slot, removed.blueprint, { grade: 5 });
-    assert.equal(build.mercCoinCost(), expected.expected);
+    build.applyBlueprint(removed.slot, removed.blueprint, { grade: expected.climbed.grade });
+    const climbed = build.buildCost();
+    assert.equal(climbed.mercCoins, expected.climbed.mercCoins);
+    assert.deepEqual(climbed.materials, expected.climbed.materials);
 });
 
 test('fromSlef reads the ship identity and top-level figures', () => {

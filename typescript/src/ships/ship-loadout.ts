@@ -60,7 +60,9 @@ import {
 import { getShipBySymbol, type Ship } from './ships.js';
 import { getDefaultLoadout } from './default-loadouts.js';
 import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
-import { computeModifiers } from './engineering.js';
+import { computeModifiers, sumMaterials, type EngineeringMaterial } from './engineering.js';
+import { getBlueprintCost } from './blueprint-costs.js';
+import { getExperimentalEffectCost } from './experimental-effect-costs.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { getExperimentalsForModule } from './engineering-options.js';
@@ -476,19 +478,42 @@ export interface DistributorOptions {
 }
 
 /**
- * Retail catalogue credits for an assembled build.
- *
- * @see {@link ShipLoadout.mercCoinCost} for Mercenary purchase prices.
+ * Retail catalogue credits for an assembled build, as {@link ShipLoadout.buildCost} prices it.
  */
-export interface RetailCredits {
+export interface BuildCredits {
+    /** Priced hull and modules together, in credits. */
+    readonly total: number;
     /** Bare hull list price in credits. */
     readonly hull: number;
     /** Sum of every priced fitted module, in credits. A lower bound when `unpriced` is non-empty. */
     readonly modules: number;
-    /** Five percent of the priced hull and modules, truncated to credits. */
-    readonly rebuy: number;
     /** Fitted modules that could not be priced from the catalogue. */
     readonly unpriced: readonly { readonly slot: string; readonly symbol: string }[];
+}
+
+/**
+ * What an assembled build costs to own, in all three currencies the game charges for it.
+ *
+ * Every figure prices the **current fit** from the catalogues rather than reporting what a
+ * capture said was paid; for the latter read {@link ShipLoadout.sourcePurchase}.
+ */
+export interface BuildCost {
+    /** Shop credits for the hull and its fitted modules. */
+    readonly credits: BuildCredits;
+    /**
+     * Merc Coin billed by the build: every Mercenary article's shop price plus the currency
+     * its bespoke blueprint charges per roll for engineering it above the grade it was sold at.
+     */
+    readonly mercCoins: number;
+    /**
+     * Every engineering material the build's blueprints and experimental effects consume,
+     * one entry per distinct material, counts summed across modules.
+     *
+     * Pre-engineered articles arrive engineered, so only what a player still has to roll on
+     * top of one is charged. A fixed reward carries no craft recipe at all and contributes
+     * nothing.
+     */
+    readonly materials: readonly EngineeringMaterial[];
 }
 
 /** One fitted weapon and what it does, as {@link ShipLoadout.weaponMetrics} reports it. */
@@ -978,7 +1003,7 @@ export class ShipLoadout {
      * unknown — including after an edit or import normalization discarded an import's
      * figure, since no catalogue records what a replaced module was bought for. Unlike
      * mass and capacity it is not recomputed from what remains; {@link sourcePurchase}
-     * keeps the captured figure and {@link retailCredits} prices the current fit.
+     * keeps the captured figure and {@link buildCost} prices the current fit.
      */
     get modulesValue(): number | null {
         return this.#top.ModulesValue ?? null;
@@ -3026,22 +3051,51 @@ export class ShipLoadout {
     }
 
     /**
-     * Price this build from current catalogue list prices without creating a journal event.
+     * Price the whole build from the catalogues: shop credits, Merc Coin and the
+     * engineering materials its modifications consume.
      *
-     * @returns Hull, module and five-percent rebuy credits. `modules` and `rebuy` remain
-     * lower bounds when {@link RetailCredits.unpriced} is non-empty; built-in hull fittings are free.
+     * Nothing is charged twice. A Mercenary article arrives at the grade it was sold at,
+     * so only the climb above that grade bills materials and further Merc Coin, and an
+     * experimental effect the article came with is free while one added on top is not. A
+     * fixed reward article — festive, Guardian, community-goal — identifies a recipe it
+     * was never rolled from, so it contributes no materials at all.
+     *
+     * @returns A frozen {@link BuildCost}. `credits.modules` and `credits.total` are lower
+     * bounds while {@link BuildCredits.unpriced} is non-empty; built-in hull fittings are
+     * free rather than unpriced. Insurance rebuy is five percent of `credits.total`.
+     * @remarks
+     * This is the one place `ShipLoadout` reads the material and Merc Coin cost
+     * catalogues, which is why the facade carries them; import
+     * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} and
+     * {@link ships/experimental-effect-costs!getExperimentalEffectCost | getExperimentalEffectCost}
+     * directly to price one recipe without a build.
      * @example
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
-     * ShipLoadout.default('Anaconda').retailCredits().hull; // -> 142456440
+     * const build = ShipLoadout.default('Anaconda');
+     * build.buildCost().credits.hull; // -> 142456440
+     * build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+     * build.buildCost().materials.find((material) => material.symbol === 'Arsenic')?.count; // -> 5
      * ```
-     * @see {@link mercCoinCost} for Mercenary purchase prices.
+     * @example
+     * ```ts
+     * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium')
+     *     .find((candidate) => candidate.acquisition === 'mercenary')!;
+     * const build = ShipLoadout.default('Python')
+     *     .setPreEngineeredVariant('MediumHardpoint1', variant);
+     * build.buildCost().mercCoins; // -> 950
+     * ```
      */
-    retailCredits(): RetailCredits {
+    buildCost(): BuildCost {
         const hull = this.#ship.hullCost;
         let modules = 0;
+        let mercCoins = 0;
         const unpriced: { slot: string; symbol: string }[] = [];
+        const materials: (readonly EngineeringMaterial[])[] = [];
         for (const module of this.#modules.values()) {
             const stats = this.#statsFor(module);
             if (stats?.cost !== undefined) {
@@ -3052,48 +3106,35 @@ export class ShipLoadout {
             ) {
                 unpriced.push({ slot: module.Slot, symbol: module.Item });
             }
+            const variant = identifyPreEngineeredVariant(module);
+            mercCoins += variant?.mercCoinCost ?? 0;
+            const engineering = module.Engineering;
+            if (!engineering) continue;
+            const grade = engineering.Level;
+            const bought = variant?.grade ?? 0;
+            // A capture states its own grade, so a value outside the catalogued range is
+            // priced as no climb rather than thrown at the consumer reading a total.
+            if (Number.isInteger(grade) && grade > bought && grade <= 5) {
+                const climb = getBlueprintCost(engineering.BlueprintName, grade, bought);
+                if (climb) {
+                    materials.push(climb.materials);
+                    mercCoins += climb.mercCoins;
+                }
+            }
+            const experimental = engineering.ExperimentalEffect;
+            if (
+                experimental !== undefined &&
+                experimental.toLowerCase() !== variant?.experimental?.toLowerCase()
+            ) {
+                const cost = getExperimentalEffectCost(experimental);
+                if (cost) materials.push(cost);
+            }
         }
         return deepFreeze({
-            hull,
-            modules,
-            rebuy: Math.trunc((hull + modules) * 0.05),
-            unpriced,
+            credits: { total: hull + modules, hull, modules, unpriced },
+            mercCoins,
+            materials: sumMaterials(...materials),
         });
-    }
-
-    /**
-     * Total the Merc Coin prices of the Mercenary articles fitted to this build.
-     *
-     * @returns The total in Merc Coin, or `0` when no fitted article is a Mercenary
-     * purchase. Credit prices and rebuy remain available from {@link retailCredits}.
-     * @remarks
-     * The total counts both articles fitted through {@link setPreEngineeredVariant} and
-     * purchases implied by applying their Mercenary-only blueprint through
-     * {@link applyBlueprint}. The blueprint identifies the purchase at grade 1 and after
-     * later upgrades; the current grade does not change the original shop price.
-     *
-     * Purchases only. Engineering an article above the grade it was sold at costs further
-     * Merc Coin per roll, which
-     * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} reports as
-     * `mercCoins` beside the materials for the same climb.
-     * @example
-     * ```ts
-     * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
-     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     *
-     * const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium')
-     *     .find((candidate) => candidate.acquisition === 'mercenary')!;
-     * const build = ShipLoadout.default('Python')
-     *     .setPreEngineeredVariant('MediumHardpoint1', variant);
-     * build.mercCoinCost(); // -> 950
-     * ```
-     */
-    mercCoinCost(): number {
-        let total = 0;
-        for (const slotKey of this.#modules.keys()) {
-            total += this.fittedModuleAt(slotKey)?.preEngineeredVariant?.mercCoinCost ?? 0;
-        }
-        return total;
     }
 
     /**

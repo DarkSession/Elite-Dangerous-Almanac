@@ -675,7 +675,7 @@ test('engineering menus and journal resolution do not bundle blueprint mechanics
     }
 });
 
-test('engineering mechanics and shopping costs stay in separate package graphs', async () => {
+test('engineering mechanics and shopping costs stay in separate leaf graphs', async () => {
     const [loadout, blueprints, blueprintCosts, effects, effectCosts] = await Promise.all([
         readReachableJs(new URL('./dist/ships/ship-loadout.js', import.meta.url)),
         readReachableJs(new URL('./dist/ships/blueprints.js', import.meta.url)),
@@ -684,14 +684,17 @@ test('engineering mechanics and shopping costs stay in separate package graphs',
         readReachableJs(new URL('./dist/ships/experimental-effect-costs.js', import.meta.url)),
     ]);
 
-    // The unified load/edit/calculate facade needs mechanics, not material shopping lists.
+    // `ShipLoadout.buildCost` prices a build in materials and Merc Coin as well as
+    // credits, so the facade carries the shopping lists too — about 100 KiB of its graph.
+    // The separation the rest of this test pins is between the leaf modules: a consumer
+    // who wants mechanics or costs alone still imports one without the other.
     assert.ok(
         loadout.length < 1.2 * 1024 * 1024,
-        `expected a cost-free loadout graph, got ${loadout.length} bytes`,
+        `expected a loadout graph under the facade ceiling, got ${loadout.length} bytes`,
     );
     assert.match(loadout, /FSDOptimalMass/);
-    assert.doesNotMatch(loadout, /DataminedWake/);
-    assert.doesNotMatch(loadout, /HyperspaceTrajectories/);
+    assert.match(loadout, /DataminedWake/);
+    assert.match(loadout, /HyperspaceTrajectories/);
 
     assert.ok(
         blueprints.length < 384 * 1024,

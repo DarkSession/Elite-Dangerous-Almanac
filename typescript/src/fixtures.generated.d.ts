@@ -3207,6 +3207,35 @@ declare module '*/fixtures/ships/module-stats.jsonc' {
 }
 
 type FixtureShipsOperations = {
+    buildCost: {
+        credits: {
+            expected: {
+                hull: number;
+                modules: number;
+                total: number;
+            };
+            ship: string;
+        };
+        mercenary: {
+            climbed: {
+                grade: number;
+                materials: {
+                    count: number;
+                    name: string;
+                    symbol: string;
+                }[];
+                mercCoins: number;
+            };
+            expected: number;
+            modules: {
+                blueprint: string;
+                cost: number;
+                slot: string;
+                symbol: string;
+            }[];
+            ship: string;
+        };
+    };
     cellBanks: {
         expected: {
             powered: boolean[];
@@ -3490,16 +3519,6 @@ type FixtureShipsOperations = {
             };
         };
     };
-    mercCoinCost: {
-        expected: number;
-        modules: {
-            blueprint: string;
-            cost: number;
-            slot: string;
-            symbol: string;
-        }[];
-        ship: string;
-    };
     mobility: {
         expected: {
             boost: number;
@@ -3709,14 +3728,6 @@ type FixtureShipsOperations = {
             stabiliser: string;
             weaponSlots: string[];
         };
-    };
-    retailCredits: {
-        expected: {
-            hull: number;
-            modules: number;
-            rebuy: number;
-        };
-        ship: string;
     };
     shieldRecovery: {
         expected: {
