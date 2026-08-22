@@ -17,10 +17,9 @@ const MODULE_NAMES = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
  * @param symbol - Frontier's module symbol, such as `"Int_Hyperdrive_Size6_Class5"`.
  * Matching ignores case and surrounding whitespace.
  * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"pt-BR"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional tag falls back to its language after an exact-locale miss.
- * Unqualified `zh` selects Simplified Chinese (`zh-CN`); other Chinese scripts and
- * regions, including `zh-TW`, do not fall back across scripts.
+ * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
+ * hyphens. A regional or script subtag is dropped: every stored locale is a bare
+ * language tag.
  * @returns The localized outfitting name; the canonical `OutfittingModule.name` for any
  * English tag; or `null` when the
  * symbol is unknown, the locale is unsupported, or the pinned sources carry no value

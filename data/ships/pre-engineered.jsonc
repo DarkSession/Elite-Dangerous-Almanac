@@ -83,7 +83,7 @@
 [
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
-    "name": "Abrasion Blaster",
+    "name": "Far-Reaching Abrasion Blaster",
     "blueprint": "AbrasionBlaster_FarReaching",
     "grade": 1,
     "acquisition": "mercenary",
@@ -91,7 +91,7 @@
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
-    "name": "Enzyme Missile Rack",
+    "name": "High-Yield Enzyme Missile Rack",
     "blueprint": "EnzymeMissileRack_HighYield",
     "grade": 1,
     "acquisition": "mercenary",
@@ -99,7 +99,7 @@
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
-    "name": "Fragment Cannon",
+    "name": "Double Screaming Fragment Cannon",
     "blueprint": "FragmentCannonSmall_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
@@ -107,7 +107,7 @@
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
-    "name": "Fragment Cannon",
+    "name": "Double Screaming Fragment Cannon",
     "blueprint": "FragmentCannonLarge_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
@@ -115,7 +115,7 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
-    "name": "Mining Laser",
+    "name": "Long Range Mining Laser",
     "blueprint": "MiningLaser_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
@@ -123,7 +123,7 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
-    "name": "Multi-Cannon",
+    "name": "Rapid Phase Multi-Cannon",
     "blueprint": "MultiCannon_Rapid",
     "grade": 1,
     "acquisition": "mercenary",
@@ -131,7 +131,7 @@
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
-    "name": "Rail Gun",
+    "name": "Enduring Feedback Rail Gun",
     "blueprint": "RailGun_LongShot",
     "grade": 1,
     "acquisition": "mercenary",
@@ -139,7 +139,7 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-    "name": "Seeker Missile Rack",
+    "name": "Drag Seeker Missile Rack",
     "blueprint": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
@@ -147,7 +147,7 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
-    "name": "Seeker Missile Rack",
+    "name": "Drag Seeker Missile Rack",
     "blueprint": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
@@ -155,7 +155,7 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-    "name": "Seeker Missile Rack",
+    "name": "Lightweight Thermal Seeker Missile Rack",
     "blueprint": "SeekerMissileRack_LightWeightThermal",
     "grade": 1,
     "acquisition": "mercenary",
@@ -163,7 +163,7 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-    "name": "Seeker Missile Rack",
+    "name": "Lockdown Seeker Missile Rack",
     "blueprint": "SeekerMissileRackMedium_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
@@ -171,7 +171,7 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
-    "name": "Seeker Missile Rack",
+    "name": "Lockdown Seeker Missile Rack",
     "blueprint": "SeekerMissileRackLarge_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
@@ -179,7 +179,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
-    "name": "Cargo Rack",
+    "name": "Extended Cargo Rack",
     "blueprint": "CargoRackS5C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
@@ -187,7 +187,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
-    "name": "Cargo Rack",
+    "name": "Extended Cargo Rack",
     "blueprint": "CargoRackS6C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
@@ -195,7 +195,7 @@
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
-    "name": "Detailed Surface Scanner",
+    "name": "Long Range Detailed Surface Scanner",
     "blueprint": "DetailedSurfaceScanner_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
@@ -203,7 +203,7 @@
   },
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
-    "name": "Module Reinforcement Package",
+    "name": "Heavy Duty Module Reinforcement Package",
     "blueprint": "ModuleReinforcement_HeavyDuty",
     "grade": 1,
     "acquisition": "mercenary",
@@ -211,7 +211,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
-    "name": "Power Distributor",
+    "name": "Support Focused Power Distributor",
     "blueprint": "PowerDistributorS3C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
@@ -219,7 +219,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
-    "name": "Power Distributor",
+    "name": "Support Focused Power Distributor",
     "blueprint": "PowerDistributorS3C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
@@ -227,7 +227,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
-    "name": "Power Distributor",
+    "name": "Support Focused Power Distributor",
     "blueprint": "PowerDistributorS4C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
@@ -235,7 +235,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
-    "name": "Power Distributor",
+    "name": "Support Focused Power Distributor",
     "blueprint": "PowerDistributorS4C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
@@ -243,7 +243,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
-    "name": "Power Distributor",
+    "name": "Balanced Power Distributor",
     "blueprint": "PowerDistributor_Balanced",
     "grade": 1,
     "acquisition": "mercenary",
@@ -251,7 +251,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
-    "name": "Power Distributor",
+    "name": "Support Focused Power Distributor",
     "blueprint": "PowerDistributorS6C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",

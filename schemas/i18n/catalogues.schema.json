@@ -18,13 +18,7 @@
         "de": { "$ref": "#/definitions/nonEmptyString" },
         "es": { "$ref": "#/definitions/nonEmptyString" },
         "fr": { "$ref": "#/definitions/nonEmptyString" },
-        "hu": { "$ref": "#/definitions/nonEmptyString" },
-        "it": { "$ref": "#/definitions/nonEmptyString" },
-        "ka": { "$ref": "#/definitions/nonEmptyString" },
-        "pt": { "$ref": "#/definitions/nonEmptyString" },
-        "pt-BR": { "$ref": "#/definitions/nonEmptyString" },
-        "ru": { "$ref": "#/definitions/nonEmptyString" },
-        "zh-CN": { "$ref": "#/definitions/nonEmptyString" }
+        "ru": { "$ref": "#/definitions/nonEmptyString" }
       }
     },
     "localizedNameMap": {

@@ -220,17 +220,26 @@ test('the pinned final pre-engineered weapons are locked', () => {
     }
 });
 
-test('each non-festive variant carries the same display name as the module it fits as', () => {
+test('a reward variant carries the same display name as the module it fits as', () => {
     // `name` is denormalised so a shop list can render without pulling in ALL_MODULES.
     // That is a drift risk, so it is pinned: the two catalogues must always agree.
+    // The Merc-shop rows are excluded: the shop sells them under their own names.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition === 'eventReward') continue;
+        if (variant.acquisition === 'eventReward' || variant.acquisition === 'mercenary') continue;
         const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
         assert.equal(
             variant.name,
             module.name,
             `${variant.symbol}: pre-engineered name "${variant.name}" != catalogue "${module.name}"`,
         );
+    }
+});
+
+test("each Merc-shop variant is sold under its own name, not the base module's", () => {
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        if (variant.acquisition !== 'mercenary') continue;
+        const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
+        assert.notEqual(variant.name, module.name, variant.blueprint);
     }
 });
 
