@@ -96,7 +96,12 @@ test('shared catalogue-backed operation cases reproduce', () => {
 
     const credits = ShipLoadout.default(fixture.buildCost.credits.ship).buildCost().credits;
     assert.deepEqual(
-        { total: credits.total, hull: credits.hull, modules: credits.modules },
+        {
+            total: credits.total,
+            hull: credits.hull,
+            modules: credits.modules,
+            rebuy: credits.rebuy,
+        },
         fixture.buildCost.credits.expected,
     );
     const mercenary = fixture.buildCost.mercenary;

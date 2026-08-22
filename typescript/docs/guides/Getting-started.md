@@ -98,12 +98,14 @@ before any transport compression. The published package strips whitespace but do
 compress syntax or rename identifiers, so its own files on disk are larger. The heaviest
 imports are:
 
-- `ships/ship-loadout` is about 632 KiB, the batteries-included facade. Resolving
+- `ships/ship-loadout` is about 834.8 KiB, the batteries-included facade. Resolving
   arbitrary journal module ids and engineering recipes needs the complete ship, module,
-  blueprint-mechanics and experimental-effect-mechanics catalogues. Material shopping
-  lists stay on the explicit `ships/blueprint-costs` and `ships/experimental-effect-costs`
-  subpaths. Import a data-free calculation module instead when you need one answer rather
-  than a whole ship.
+  blueprint-mechanics and experimental-effect-mechanics catalogues, and
+  `ShipLoadout.buildCost` prices a build in materials and Merc Coin as well as credits, so
+  the two shopping-list catalogues (105.2 KiB of the total) come with it. Import
+  `ships/blueprint-costs` or `ships/experimental-effect-costs` on their own to price one
+  recipe, or a data-free calculation module, when you need one answer rather than a whole
+  ship.
 - `astro/nebulae-all` is 431.7 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice. Almost all

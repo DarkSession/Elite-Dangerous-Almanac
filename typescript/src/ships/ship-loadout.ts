@@ -481,12 +481,24 @@ export interface DistributorOptions {
  * Retail catalogue credits for an assembled build, as {@link ShipLoadout.buildCost} prices it.
  */
 export interface BuildCredits {
-    /** Priced hull and modules together, in credits. */
+    /**
+     * Priced hull and modules together, in credits.
+     *
+     * A Mercenary article is quoted at its base module's catalogue list price here as
+     * well as in {@link BuildCost.mercCoins}, because no catalogue records the credits a
+     * shop would ask for the bare module the article is built on.
+     */
     readonly total: number;
     /** Bare hull list price in credits. */
     readonly hull: number;
     /** Sum of every priced fitted module, in credits. A lower bound when `unpriced` is non-empty. */
     readonly modules: number;
+    /**
+     * Five percent of `total`, truncated to credits: what insurance bills to rebuild the
+     * fit at catalogue prices. For what a capture said its own rebuy was, read
+     * {@link ShipLoadout.rebuy}.
+     */
+    readonly rebuy: number;
     /** Fitted modules that could not be priced from the catalogue. */
     readonly unpriced: readonly { readonly slot: string; readonly symbol: string }[];
 }
@@ -506,12 +518,15 @@ export interface BuildCost {
      */
     readonly mercCoins: number;
     /**
-     * Every engineering material the build's blueprints and experimental effects consume,
-     * one entry per distinct material, counts summed across modules.
+     * What the build's blueprints and experimental effects consume, one entry per distinct
+     * material, counts summed across modules.
      *
      * Pre-engineered articles arrive engineered, so only what a player still has to roll on
      * top of one is charged. A fixed reward carries no craft recipe at all and contributes
-     * nothing.
+     * nothing, and so does a modification whose recipe the catalogues do not price — a
+     * capture may name a blueprint or effect no registry lists, and an unpriceable
+     * modification is silently absent rather than reported the way
+     * {@link BuildCredits.unpriced} reports an unpriceable module.
      */
     readonly materials: readonly EngineeringMaterial[];
 }
@@ -1012,7 +1027,8 @@ export class ShipLoadout {
     /**
      * Insurance rebuy cost in credits represented by the build, or `null` if
      * unknown. Discarded by an edit or by import normalization for the same reason as
-     * {@link modulesValue}, and likewise kept by {@link sourcePurchase}.
+     * {@link modulesValue}, and likewise kept by {@link sourcePurchase};
+     * {@link buildCost} rebuys the current fit at catalogue prices instead.
      */
     get rebuy(): number | null {
         return this.#top.Rebuy ?? null;
@@ -3054,15 +3070,15 @@ export class ShipLoadout {
      * Price the whole build from the catalogues: shop credits, Merc Coin and the
      * engineering materials its modifications consume.
      *
-     * Nothing is charged twice. A Mercenary article arrives at the grade it was sold at,
+     * No modification is charged twice. A Mercenary article arrives at the grade it was sold at,
      * so only the climb above that grade bills materials and further Merc Coin, and an
      * experimental effect the article came with is free while one added on top is not. A
      * fixed reward article — festive, Guardian, community-goal — identifies a recipe it
      * was never rolled from, so it contributes no materials at all.
      *
-     * @returns A frozen {@link BuildCost}. `credits.modules` and `credits.total` are lower
-     * bounds while {@link BuildCredits.unpriced} is non-empty; built-in hull fittings are
-     * free rather than unpriced. Insurance rebuy is five percent of `credits.total`.
+     * @returns A frozen {@link BuildCost}. `credits.modules`, `credits.total` and
+     * `credits.rebuy` are lower bounds while {@link BuildCredits.unpriced} is non-empty;
+     * built-in hull fittings are free rather than unpriced.
      * @remarks
      * This is the one place `ShipLoadout` reads the material and Merc Coin cost
      * catalogues, which is why the facade carries them; import
@@ -3131,7 +3147,13 @@ export class ShipLoadout {
             }
         }
         return deepFreeze({
-            credits: { total: hull + modules, hull, modules, unpriced },
+            credits: {
+                total: hull + modules,
+                hull,
+                modules,
+                rebuy: Math.trunc((hull + modules) * 0.05),
+                unpriced,
+            },
             mercCoins,
             materials: sumMaterials(...materials),
         });

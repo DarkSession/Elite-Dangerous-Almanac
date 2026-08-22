@@ -3,10 +3,10 @@
  *
  * Cross-language parity cases for loaded mobility, shield recovery, distributor
  * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship and
- * counted-module validation, direct credit, Merc Coin and material pricing, alpha-strike
- * thermal load, import rejections, structured diagnostics and editor failures. Inputs pin the
- * public data-free and ShipLoadout facade contracts; catalogue-backed expectations pin
- * the shared ship and module snapshots.
+ * counted-module validation, direct credit, Merc Coin and material pricing,
+ * alpha-strike thermal load, import rejections, structured diagnostics and editor
+ * failures. Inputs pin the public data-free and ShipLoadout facade contracts;
+ * catalogue-backed expectations pin the shared ship and module snapshots.
  */
 {
   "mobility": {
@@ -307,7 +307,12 @@
   "buildCost": {
     "credits": {
       "ship": "Anaconda",
-      "expected": { "total": 146978572, "hull": 142456440, "modules": 4522132 }
+      "expected": {
+        "total": 146978572,
+        "hull": 142456440,
+        "modules": 4522132,
+        "rebuy": 7348928
+      }
     },
     "mercenary": {
       "ship": "Python",

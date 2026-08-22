@@ -3212,6 +3212,7 @@ type FixtureShipsOperations = {
             expected: {
                 hull: number;
                 modules: number;
+                rebuy: number;
                 total: number;
             };
             ship: string;

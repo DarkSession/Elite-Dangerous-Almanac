@@ -4199,9 +4199,10 @@
                   "properties": {
                     "hull": { "type": "integer" },
                     "modules": { "type": "integer" },
+                    "rebuy": { "type": "integer" },
                     "total": { "type": "integer" }
                   },
-                  "required": ["hull", "modules", "total"]
+                  "required": ["hull", "modules", "rebuy", "total"]
                 },
                 "ship": { "type": "string" }
               },

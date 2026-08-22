@@ -617,12 +617,18 @@ test('buildCost prices assembled builds directly and qualifies missing module pr
     const credits = stock.buildCost().credits;
     const event = stock.toLoadoutEvent();
     assert.deepEqual(
-        { total: credits.total, hull: credits.hull, modules: credits.modules },
+        {
+            total: credits.total,
+            hull: credits.hull,
+            modules: credits.modules,
+            rebuy: credits.rebuy,
+        },
         expected.expected,
     );
     assert.equal(credits.total, credits.hull + credits.modules);
+    assert.equal(credits.rebuy, Math.trunc(credits.total * 0.05));
     assert.deepEqual(
-        { hull: credits.hull, modules: credits.modules, rebuy: Math.trunc(credits.total * 0.05) },
+        { hull: credits.hull, modules: credits.modules, rebuy: credits.rebuy },
         { hull: event.HullValue, modules: event.ModulesValue, rebuy: event.Rebuy },
     );
     assert.ok(Object.isFrozen(credits));
@@ -660,6 +666,35 @@ test('buildCost totals the engineering a build still has to pay for', () => {
     festive.setPreEngineeredVariant('MediumHardpoint1', reward);
     assert.deepEqual(festive.buildCost().materials, []);
     assert.equal(festive.buildCost().mercCoins, 0);
+});
+
+test('buildCost prices only the engineering the catalogues carry', () => {
+    // A capture states its own blueprint and grade. An id no registry lists, and a grade
+    // outside the catalogued 1-5, are both priced as nothing rather than thrown at a
+    // consumer reading a total.
+    const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
+    const engineered = (engineering: Record<string, unknown>) =>
+        ShipLoadout.fromLoadout({
+            ...stock,
+            Modules: stock.Modules.map((module) =>
+                module.Slot === 'FrameShiftDrive'
+                    ? { ...module, Engineering: engineering }
+                    : module,
+            ),
+        } as LoadoutEvent).buildCost();
+
+    const unknownRecipe = engineered({
+        BlueprintName: 'Totally_Made_Up',
+        Level: 5,
+        Quality: 1,
+        ExperimentalEffect: 'special_totally_made_up',
+    });
+    assert.deepEqual(unknownRecipe.materials, []);
+    assert.equal(unknownRecipe.mercCoins, 0);
+    assert.equal(unknownRecipe.credits.unpriced.length, 0);
+
+    const impossibleGrade = engineered({ BlueprintName: 'FSD_LongRange', Level: 9, Quality: 1 });
+    assert.deepEqual(impossibleGrade.materials, []);
 });
 
 test('buildCost totals Merc Coin purchases and the climbs above them', () => {
