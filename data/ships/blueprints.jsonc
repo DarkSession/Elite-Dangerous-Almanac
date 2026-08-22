@@ -19,7 +19,8 @@
  * conversion recipes.
  *
  * Material requirements live in `blueprint-costs.jsonc`. Keeping shopping data out of
- * this mechanics payload means calculating or editing a build does not bundle it.
+ * this mechanics payload means applying a recipe does not bundle what it costs; a
+ * consumer that prices a whole build loads both.
  *
  * A key is the Frontier `fdname` a Loadout event's `Engineering.BlueprintName` carries
  * for 79 of the 107. Three recipe ids whose journal spelling collides with another recipe
