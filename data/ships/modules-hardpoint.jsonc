@@ -1769,7 +1769,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Small",
     "kind": "missiles",
-    "family": "Seeker Missile Racks",
+    "family": "Missile Racks",
     "name": "Seeker Missile Rack",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1797,7 +1797,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "kind": "missiles",
-    "family": "Seeker Missile Racks",
+    "family": "Missile Racks",
     "name": "Seeker Missile Rack",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1825,7 +1825,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "kind": "missiles",
-    "family": "Seeker Missile Racks",
+    "family": "Missile Racks",
     "name": "Seeker Missile Rack",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -2329,7 +2329,7 @@
   {
     "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
     "kind": "missiles",
-    "family": "Seeker Missile Racks",
+    "family": "Missile Racks",
     "name": "Pack-Hound Missile Rack",
     "mount": "Fixed",
     "guidance": "Swarm",
@@ -3030,7 +3030,7 @@
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
-    "family": "Enzyme Missile Racks",
+    "family": "Missile Racks",
     "name": "Enzyme Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
