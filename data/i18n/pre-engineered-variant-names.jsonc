@@ -190,6 +190,7 @@
       "de": "Abrasionsblaster",
       "es": "Destructor de abrasión",
       "fr": "Surfaceur abrasif",
+      "pt": "Detonador de Abrasão",
       "ru": "Шлифовальный бластер"
     },
     "Enzyme Missile Rack": {
@@ -197,6 +198,7 @@
       "de": "Enzymraketenwerfer",
       "es": "Lanzamisiles de Enzimas",
       "fr": "Batterie de missile enzymatique",
+      "pt": "Estante de Míssel Enzimático",
       "ru": "Пусковая энзимных ракет"
     },
     "Fragment Cannon": {
@@ -204,6 +206,7 @@
       "de": "Splitterkanone",
       "es": "Cañón de fragmentación",
       "fr": "Canon à fragmentation",
+      "pt": "Canhão de Fragmentação",
       "ru": "Залповое орудие"
     },
     "Mining Laser": {
@@ -211,6 +214,7 @@
       "de": "Abbaulaser",
       "es": "Láser de minería",
       "fr": "Laser Minier",
+      "pt": "Laser de Mineração",
       "ru": "Проходочный лазер"
     },
     "Multi-Cannon": {
@@ -218,6 +222,7 @@
       "de": "Mehrfachgeschütz",
       "es": "Multicañón",
       "fr": "Multi-canon",
+      "pt": "Canhão de Repetição",
       "ru": "Многоствольное орудие"
     },
     "Rail Gun": {
@@ -225,6 +230,7 @@
       "de": "Schienenkanone",
       "es": "Cañón de riel",
       "fr": "Canon électrique",
+      "pt": "Canhão Elétrico",
       "ru": "Электромагнитная пушка"
     },
     "Seeker Missile Rack": {
@@ -232,6 +238,7 @@
       "de": "Suchraketenrampe",
       "es": "Lanzamisiles guiados",
       "fr": "Missiles TC",
+      "pt": "Estante de Míssil Guiado",
       "ru": "Блок ракет с самонаведением"
     },
     "Cargo Rack": {
@@ -239,6 +246,7 @@
       "de": "Frachtgestell",
       "es": "Bodega de carga",
       "fr": "Compartiment de soute",
+      "pt": "Estante de Carga",
       "ru": "Грузовой стеллаж"
     },
     "Detailed Surface Scanner": {
@@ -246,6 +254,7 @@
       "de": "Detail-Oberflächenscanner",
       "es": "Escáner de superficie detallado",
       "fr": "Détecteur de surface détaillé",
+      "pt": "Scanner de Superfície",
       "ru": "Сканер поверхностей"
     },
     "Power Distributor": {
@@ -253,6 +262,7 @@
       "de": "Energieverteiler",
       "es": "Distribuidor de energía",
       "fr": "Répartiteur de puissance",
+      "pt": "Distribuidor de Energia",
       "ru": "Распределитель питания"
     },
     "Guardian Shard Cannon": {
@@ -260,6 +270,7 @@
       "de": "Fragmentkanone",
       "es": "Cañón de esquirlas",
       "fr": "Canon à éclats",
+      "pt": "Canhão de fragmentos",
       "ru": "Осколочное орудие"
     },
     "Imperial Hammer Rail Gun": {
@@ -267,6 +278,7 @@
       "de": "Hammer",
       "es": "Martillo",
       "fr": "Marteleur",
+      "pt": "Martelo",
       "ru": "«Молот»"
     },
     "Electronic Countermeasure": {
@@ -274,6 +286,7 @@
       "de": "Elektronische Gegenmaßnahme",
       "es": "Contramedidas electrónicas",
       "fr": "Contre-mesures électroniques",
+      "pt": "Contramedida Eletrônica",
       "ru": "Электр. противодействие"
     },
     "Kill Warrant Scanner": {
@@ -281,6 +294,7 @@
       "de": "Tötungsbefehl-Scanner",
       "es": "Escáner de recompensas",
       "fr": "Détecteur d'avis de recherche",
+      "pt": "Scanner de Registro Criminal",
       "ru": "Сканер преступников"
     },
     "Point Defence": {
@@ -288,6 +302,7 @@
       "de": "Punktverteidigung",
       "es": "Defensa de punto",
       "fr": "Défense ponctuelle",
+      "pt": "Defesa de Ponto",
       "ru": "Точечная оборона"
     },
     "Power Plant": {
@@ -295,6 +310,7 @@
       "de": "Kraftwerk",
       "es": "Núcleo de energía",
       "fr": "Générateur",
+      "pt": "Gerador de Energia",
       "ru": "Силовая установка"
     },
     "Frame Shift Drive": {
@@ -302,6 +318,7 @@
       "de": "Frameshiftantrieb",
       "es": "Motor de salto",
       "fr": "Réacteur FSD",
+      "pt": "Motor de Distorção de Fase",
       "ru": "Рамочно Сместительный двигатель"
     },
     "Shield Generator": {
@@ -309,6 +326,7 @@
       "de": "Schildgenerator",
       "es": "Generador de escudos",
       "fr": "Générateur de bouclier",
+      "pt": "Gerador de Escudo",
       "ru": "Щитогенератор"
     },
     "AX Missile Rack": {
@@ -316,11 +334,13 @@
       "de": "AX-Raketenrampe",
       "es": "Lanzamisiles AX",
       "fr": "Batterie de missiles AX",
+      "pt": "Estante de Mísseis AX",
       "ru": "Блок ракет АИ"
     },
     "Enhanced AX Multi-Cannon": {
       "en": "Enhanced AX Multi-Cannon",
       "de": "Fortschrittliches AX Mehrfachgeschütz",
+      "pt": "Canhão de Repetição AX Melhorado",
       "ru": "Улучш. многоствольное орудие АИ"
     },
     "Guardian Gauss Cannon": {
@@ -328,6 +348,7 @@
       "de": "Guardian-Gausskanone",
       "es": "Cañón Gauss Guardián",
       "fr": "Canon de Gauss - Guardians",
+      "pt": "Canhão Gauss Guardian",
       "ru": "Пушка Гаусса"
     },
     "Guardian Plasma Charger": {
@@ -335,6 +356,7 @@
       "de": "Guardian-Plasmalader",
       "es": "Cargador de Plasma Guardián",
       "fr": "Chargeur à Plasma - Guardians",
+      "pt": "Carregador de Plasma Guardian",
       "ru": "Плазменная пушка"
     },
     "Heat Sink Launcher": {
@@ -342,10 +364,12 @@
       "de": "Kühlkörperabwurf",
       "es": "Eyector térmico",
       "fr": "Éjecteur de dissipateur thermique",
+      "pt": "Lançador de Dissipador Térmico",
       "ru": "Теплоотводная катапульта"
     },
     "Frame Shift Drive (SCO)": {
       "en": "Frame Shift Drive (SCO)",
+      "pt": "Motor de Distorção de Fase (SSV)",
       "ru": "Двигатель FSD (ПГР)"
     },
     "Festive Green Remote Release Flak Launcher": {

@@ -2920,7 +2920,7 @@ type FixtureShipsModules = {
     families: {
         category: string;
         count: number;
-        family: string;
+        familyId: string;
         symbols: string[];
     }[];
     familyCounts: {
@@ -2942,7 +2942,7 @@ type FixtureShipsModules = {
         class: number;
         engineeringGroup?: string | null;
         entitlement?: string;
-        family: null | string;
+        familyId: string;
         guidance?: string;
         mount?: string;
         name: string;

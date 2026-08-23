@@ -193,6 +193,7 @@ export {
     type ShieldRegenerationStats,
     type WeaponDamageStats,
 } from './module-capabilities.js';
+export { OUTFITTING_FAMILIES, type OutfittingFamilyId } from './module-families.js';
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
     parseSlef,

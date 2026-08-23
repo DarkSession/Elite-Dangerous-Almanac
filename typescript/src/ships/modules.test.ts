@@ -24,6 +24,7 @@ import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getEngineeringGroup } from './engineering-options.js';
+import { OUTFITTING_FAMILIES } from './module-families.js';
 import { combinedRateOfFire } from './weapons.js';
 import { SHIPS, getShipSlots } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.jsonc' with { type: 'json' };
@@ -73,7 +74,7 @@ const IDENTITY_KEYS = new Set([
     'symbol',
     'category',
     'engineeringGroup',
-    'family',
+    'familyId',
     // Which mount the module fills is identity, not performance: armour names one and
     // still carries no stats at all.
     'slot',
@@ -134,13 +135,13 @@ test('engineeringGroup exposes the stable family carried by the shared data', ()
     assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1005);
 });
 
-test('family groups every optional internal, hardpoint, and utility module', () => {
-    const grouped = ALL_MODULES.filter((module) => module.family !== null);
+test('familyId groups every module, core modules included', () => {
     assert.deepEqual(
         Object.fromEntries(
             Object.entries(CATALOGUES).map(([category, catalogue]) => [
                 category,
-                catalogue.filter((module) => module.family !== null).length,
+                catalogue.filter((module) => Object.hasOwn(OUTFITTING_FAMILIES, module.familyId))
+                    .length,
             ]),
         ),
         { ...modulesFixture.familyCounts },
@@ -149,27 +150,47 @@ test('family groups every optional internal, hardpoint, and utility module', () 
         Object.fromEntries(
             Object.entries(CATALOGUES).map(([category, catalogue]) => [
                 category,
-                new Set(catalogue.flatMap((module) => module.family ?? [])).size,
+                new Set(catalogue.map((module) => module.familyId)).size,
             ]),
         ),
         { ...modulesFixture.familyGroupCounts },
     );
 
-    assert.ok(CORE_MODULES.every((module) => module.family === null));
-    assert.ok(INTERNAL_MODULES.every((module) => module.family !== null));
-    assert.ok(HARDPOINT_MODULES.every((module) => module.family !== null));
-    assert.ok(UTILITY_MODULES.every((module) => module.family !== null));
+    // Every declared family is used, so a rename cannot leave an orphan behind.
+    assert.deepEqual(
+        [...new Set(ALL_MODULES.map((module) => module.familyId))].sort(),
+        Object.keys(OUTFITTING_FAMILIES).sort(),
+    );
 
     for (const expected of modulesFixture.families) {
-        const members = grouped.filter((module) => module.family === expected.family);
-        assert.equal(members.length, expected.count, expected.family);
+        const members = ALL_MODULES.filter((module) => module.familyId === expected.familyId);
+        assert.equal(members.length, expected.count, expected.familyId);
         assert.ok(
             members.every((module) => module.category === expected.category),
-            `${expected.family} crosses outfitting categories`,
+            `${expected.familyId} crosses outfitting categories`,
         );
         for (const symbol of expected.symbols) {
-            assert.equal(getModuleBySymbol(symbol, ALL_MODULES)?.family, expected.family, symbol);
+            assert.equal(
+                getModuleBySymbol(symbol, ALL_MODULES)?.familyId,
+                expected.familyId,
+                symbol,
+            );
         }
+    }
+});
+
+test('every family id is the camelCase form of its canonical English name', () => {
+    for (const [familyId, name] of Object.entries(OUTFITTING_FAMILIES)) {
+        const derived = name
+            .split(/[^A-Za-z0-9]+/)
+            .filter(Boolean)
+            .map((word, index) =>
+                index === 0
+                    ? word.toLowerCase()
+                    : word[0]!.toUpperCase() + word.slice(1).toLowerCase(),
+            )
+            .join('');
+        assert.equal(familyId, derived, name);
     }
 });
 
@@ -178,7 +199,7 @@ test('identity, sparse stats, and required capabilities are independent contract
         symbol: 'CustomDrive',
         category: 'core',
         engineeringGroup: 'frameShiftDrives',
-        family: null,
+        familyId: 'fsd',
         name: 'Custom drive',
         class: 5,
         rating: 'A',

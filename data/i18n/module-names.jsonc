@@ -1218,6 +1218,7 @@
       "de": "Abrasionsblaster",
       "es": "Destructor de abrasión",
       "fr": "Surfaceur abrasif",
+      "pt": "Detonador de Abrasão",
       "ru": "Шлифовальный бластер"
     },
     "Advanced Docking Computer": {
@@ -1225,6 +1226,7 @@
       "de": "Fortschrittlicher Landecomputer",
       "es": "Computadora de aterrizaje avanzada",
       "fr": "Ordinateur d'appontage avancé",
+      "pt": "Computador de docagem avançado",
       "ru": "Улучшенный стыковочный компьютер"
     },
     "Advanced Missile Rack": {
@@ -1232,12 +1234,14 @@
       "de": "Fortschrittliches Raketengestell",
       "es": "Misiles Avanzados",
       "fr": "Batterie de Missile Avancée",
+      "pt": "Estante de Mísseis Avançada",
       "ru": "Продвинутая стойка для ракет"
     },
     "Advanced Multi-Cannon": {
       "en": "Advanced Multi-Cannon",
       "de": "Fortschrittliches Mehrfachgeschütz",
       "es": "Multicañón Avanzado",
+      "pt": "Canhão de Repetição Avançado",
       "ru": "Продвинутое многоствольное орудие"
     },
     "Advanced Planetary Approach Suite": {
@@ -1248,6 +1252,7 @@
       "de": "Optimierter Plasmabeschleuniger",
       "es": "Acelerador de Plasma Avanzado",
       "fr": "Accélérateur à Plasma Avancé",
+      "pt": "Acelerador de Plasma Avançado",
       "ru": "Улучшенный ускоритель"
     },
     "Auto Field-Maintenance Unit": {
@@ -1255,6 +1260,7 @@
       "de": "AFW-Einheit",
       "es": "Automantenimiento",
       "fr": "Unité mta",
+      "pt": "Unidade AMC",
       "ru": "АПР-блок"
     },
     "AX Missile Rack": {
@@ -1262,6 +1268,7 @@
       "de": "AX-Raketenrampe",
       "es": "Lanzamisiles AX",
       "fr": "Batterie de missiles AX",
+      "pt": "Estante de Mísseis AX",
       "ru": "Блок ракет АИ"
     },
     "AX Multi-Cannon": {
@@ -1269,6 +1276,7 @@
       "de": "AX-Mehrfachgeschütz",
       "es": "Multicañón AX",
       "fr": "Multi-canon AX",
+      "pt": "Canhão de Repetição AX",
       "ru": "Многоствольное орудие АИ"
     },
     "Beam Laser": {
@@ -1276,6 +1284,7 @@
       "de": "Strahlenlaser",
       "es": "Láser de rayo",
       "fr": "Rayon Laser",
+      "pt": "Laser Contínuo",
       "ru": "Пучковый Лазер"
     },
     "Bi-Weave Shield Generator": {
@@ -1283,6 +1292,7 @@
       "de": "Bi-Wellen-Schildgenerator",
       "es": "Generador de escudo entrelazados",
       "fr": "Générateur de bouclier entrelacé",
+      "pt": "Gerador de Escudo Entrelaçado",
       "ru": "Двухпоточный Щитогенератор"
     },
     "Burst Laser": {
@@ -1290,6 +1300,7 @@
       "de": "Salvenlaser",
       "es": "Láser de ráfagas",
       "fr": "Laser à rafale",
+      "pt": "Laser de Rajada",
       "ru": "Пульсирующие лазеры"
     },
     "Business Class Passenger Cabin": {
@@ -1297,6 +1308,7 @@
       "de": "Business-Klasse-Passagierkabine",
       "es": "Cabina de pasajero clase preferente",
       "fr": "Cabine passager de classe affaire",
+      "pt": "Cabine de Passageiro Classe Executiva",
       "ru": "Каюта пассажира бизнес-класса"
     },
     "Cannon": {
@@ -1304,6 +1316,7 @@
       "de": "Kanone",
       "es": "Cañón",
       "fr": "Canon",
+      "pt": "Canhão",
       "ru": "Орудие"
     },
     "Cargo Hatch": {
@@ -1311,6 +1324,7 @@
       "de": "Frachtluke",
       "es": "Escotilla de carga",
       "fr": "Écoutille de soute",
+      "pt": "Escotilha de Carga",
       "ru": "Грузовой люк"
     },
     "Cargo Rack": {
@@ -1318,6 +1332,7 @@
       "de": "Frachtgestell",
       "es": "Bodega de carga",
       "fr": "Compartiment de soute",
+      "pt": "Estante de Carga",
       "ru": "Грузовой стеллаж"
     },
     "Cargo Scanner": {
@@ -1326,6 +1341,7 @@
     "Caustic Sink Launcher": {
       "en": "Caustic Sink Launcher",
       "de": "Säurekörperabwurf",
+      "pt": "Lançador de Dissipador Cáustico",
       "ru": "Антикоррозийная катапульта"
     },
     "Chaff Launcher": {
@@ -1333,6 +1349,7 @@
       "de": "Düppel-Werfer",
       "es": "Lanzador de señuelos",
       "fr": "Lanceur de paillettes",
+      "pt": "Lançador de Chaff",
       "ru": "Разбрасыватель дипольных отражателей"
     },
     "Collector Limpet Controller": {
@@ -1340,17 +1357,20 @@
       "de": "Steuerung Sammeldrohnen",
       "es": "Lanzador drón colector",
       "fr": "Contrôleur de drone collecteur",
+      "pt": "Controlador de Drone Coletor",
       "ru": "Контроллер дрона сборщика"
     },
     "Concord Cannon": {
       "en": "Concord Cannon",
-      "de": "Concord-Kanone"
+      "de": "Concord-Kanone",
+      "pt": "Concord Cannon"
     },
     "Corrosion Resistant Cargo Rack": {
       "en": "Corrosion Resistant Cargo Rack",
       "de": "Korrosionsbeständiges Frachtgestell",
       "es": "Bodega resistente a la corrosión",
       "fr": "Compartiment de soute résistant à la corrosion",
+      "pt": "Estante de Carga Anti-Corrosiva",
       "ru": "Коррозийно-устойчивый грузовой стеллаж"
     },
     "Cytoscrambler Burst Laser": {
@@ -1358,6 +1378,7 @@
       "de": "Zytostreuer",
       "es": "Citodistor",
       "fr": "Cytobrouilleur",
+      "pt": "Cito-espalhador",
       "ru": "«Дезинтегратор»"
     },
     "Decontamination Limpet Controller": {
@@ -1365,6 +1386,7 @@
       "de": "Steuerung Entseuchungsdrohnen",
       "es": "Lanzador drón descontaminante",
       "fr": "Contrôleur de drone de décontamination",
+      "pt": "Controlador de Drone Descontaminador",
       "ru": "Очищение"
     },
     "Detailed Surface Scanner": {
@@ -1372,6 +1394,7 @@
       "de": "Detail-Oberflächenscanner",
       "es": "Escáner de superficie detallado",
       "fr": "Détecteur de surface détaillé",
+      "pt": "Scanner de Superfície",
       "ru": "Сканер поверхностей"
     },
     "Economy Class Passenger Cabin": {
@@ -1379,6 +1402,7 @@
       "de": "Economy-Klasse-Passagierkabine",
       "es": "Cabina de pasajero clase económica",
       "fr": "Cabine passager de classe économique",
+      "pt": "Cabine de Passageiro Classe Econômica",
       "ru": "Каюта пассажира эконом-класса"
     },
     "Electronic Countermeasure": {
@@ -1386,6 +1410,7 @@
       "de": "Elektronische Gegenmaßnahme",
       "es": "Contramedidas electrónicas",
       "fr": "Contre-mesures électroniques",
+      "pt": "Contramedida Eletrônica",
       "ru": "Электр. противодействие"
     },
     "Enforcer Cannon": {
@@ -1393,16 +1418,19 @@
       "de": "Vollstreckerkanone",
       "es": "Cañón Ejecutor",
       "fr": "Canon Renforcé",
+      "pt": "Canhão Executor",
       "ru": "Пушка боевика"
     },
     "Enhanced AX Missile Rack": {
       "en": "Enhanced AX Missile Rack",
       "de": "Fortschrittlicher AX Raketenwerfer",
+      "pt": "Estante de Mísseis AX Melhorado",
       "ru": "Продв. Блок ракет АИ"
     },
     "Enhanced AX Multi-Cannon": {
       "en": "Enhanced AX Multi-Cannon",
       "de": "Fortschrittliches AX Mehrfachgeschütz",
+      "pt": "Canhão de Repetição AX Melhorado",
       "ru": "Улучш. многоствольное орудие АИ"
     },
     "Enhanced Performance Thrusters": {
@@ -1410,11 +1438,13 @@
       "de": "Leistungsoptimierte Triebwerke",
       "es": "Propulsores de rendimiento mejorado",
       "fr": "Propulseurs à performance améliorée",
+      "pt": "Propulsores",
       "ru": "Усиленные маневровые двигатели"
     },
     "Enhanced Xeno Scanner": {
       "en": "Enhanced Xeno Scanner",
       "de": "Verbesserter Xeno-Scanner",
+      "pt": "Xeno Scanner Melhorado",
       "ru": "Улучшенный ксеносканер"
     },
     "Enzyme Missile Rack": {
@@ -1422,11 +1452,13 @@
       "de": "Enzymraketenwerfer",
       "es": "Lanzamisiles de Enzimas",
       "fr": "Batterie de missile enzymatique",
+      "pt": "Estante de Míssel Enzimático",
       "ru": "Пусковая энзимных ракет"
     },
     "Experimental Weapon Stabiliser": {
       "en": "Experimental Weapon Stabiliser",
       "de": "Experimenteller Waffenstabilisator",
+      "pt": "Estabilizador de Arma Experimental",
       "ru": "Стабилизатор экспериментального оружия"
     },
     "First Class Passenger Cabin": {
@@ -1434,6 +1466,7 @@
       "de": "Erste-Klasse-Passagierkabine",
       "es": "Cabina de pasajero primera clase",
       "fr": "Cabine passager de première classe",
+      "pt": "Cabine de Passageiro de Primeira Classe",
       "ru": "Каюта пассажира первого класса"
     },
     "Fragment Cannon": {
@@ -1441,6 +1474,7 @@
       "de": "Splitterkanone",
       "es": "Cañón de fragmentación",
       "fr": "Canon à fragmentation",
+      "pt": "Canhão de Fragmentação",
       "ru": "Залповое орудие"
     },
     "Frame Shift Drive": {
@@ -1448,10 +1482,12 @@
       "de": "Frameshiftantrieb",
       "es": "Motor de salto",
       "fr": "Réacteur FSD",
+      "pt": "Motor de Distorção de Fase",
       "ru": "Рамочно Сместительный двигатель"
     },
     "Frame Shift Drive (SCO)": {
       "en": "Frame Shift Drive (SCO)",
+      "pt": "Motor de Distorção de Fase (SSV)",
       "ru": "Двигатель FSD (ПГР)"
     },
     "Frame Shift Drive Interdictor": {
@@ -1459,6 +1495,7 @@
       "de": "Frameshiftantrieb-Unterbrecher",
       "es": "Interdictor de motor de salto",
       "fr": "Intercepteur de réacteur FSD",
+      "pt": "Interditor MDD",
       "ru": "Fsd-перехватчик"
     },
     "Frame Shift Wake Scanner": {
@@ -1466,6 +1503,7 @@
       "de": "FS-Sogwolkenscanner",
       "es": "Escáner de estelas de salto",
       "fr": "Détecteur de sillage FSD",
+      "pt": "Scanner de Rastro de Distorção",
       "ru": "Сканер следа FSD"
     },
     "Fuel Scoop": {
@@ -1473,6 +1511,7 @@
       "de": "Treibstoffsammler",
       "es": "Colector de combustible",
       "fr": "Récupérateur de carburant",
+      "pt": "Coletor de Combustível",
       "ru": "Топливозаборник"
     },
     "Fuel Tank": {
@@ -1480,6 +1519,7 @@
       "de": "Treibstofftank",
       "es": "Tanque de combustible",
       "fr": "Réservoir",
+      "pt": "Tanque de Combustível",
       "ru": "Топливный бак"
     },
     "Fuel Transfer Limpet Controller": {
@@ -1487,6 +1527,7 @@
       "de": "Steuerung Treibstofftransferdrohnen",
       "es": "Lanzador drón de combustible",
       "fr": "Contrôleur de drone de ravitaillement",
+      "pt": "Controlador de Drone de Combustível",
       "ru": "Контроллер дрона заправщика"
     },
     "Guardian FSD Booster": {
@@ -1494,6 +1535,7 @@
       "de": "Guardian-FSA-Verstärker",
       "es": "Amplificador Guardián de motor de distorsión",
       "fr": "Survolteur FSD - Guardians",
+      "pt": "Potenciador do Motor de Distorção de Fase Guardian",
       "ru": "Ускоритель FSD Guardians"
     },
     "Guardian Gauss Cannon": {
@@ -1501,6 +1543,7 @@
       "de": "Guardian-Gausskanone",
       "es": "Cañón Gauss Guardián",
       "fr": "Canon de Gauss - Guardians",
+      "pt": "Canhão Gauss Guardian",
       "ru": "Пушка Гаусса"
     },
     "Guardian Hull Reinforcement": {
@@ -1508,6 +1551,7 @@
       "de": "Guardian-Rumpfhüllenverstärkung",
       "es": "Refuerzo estructural guardián",
       "fr": "Renforcement de coque - Guardians",
+      "pt": "Reforço de Casco Guardian",
       "ru": "Усилитель корпуса Guardians"
     },
     "Guardian Hybrid Power Distributor": {
@@ -1515,6 +1559,7 @@
       "de": "Guardian-Energieverteiler",
       "es": "Distribuidor de energía guardián",
       "fr": "Répartiteur de puissance - Guardians",
+      "pt": "Distribuidor de energia Guardian",
       "ru": "Распределитель питания Стражей"
     },
     "Guardian Hybrid Power Plant": {
@@ -1522,6 +1567,7 @@
       "de": "Guardian-Kraftwerk",
       "es": "Núcleo de energía guardián",
       "fr": "Générateur - Guardians",
+      "pt": "Gerador de energia Guardian",
       "ru": "Силовая установка Стражей"
     },
     "Guardian Module Reinforcement": {
@@ -1529,11 +1575,13 @@
       "de": "Guardian-Modulhüllenverstärkung",
       "es": "Refuerzo estructural guardián",
       "fr": "Renforcement de modules - Guardians",
+      "pt": "Reforço de Módulo Guardian",
       "ru": "Усилитель для модуля Guardians"
     },
     "Guardian Nanite Torpedo Pylon": {
       "en": "Guardian Nanite Torpedo Pylon",
       "de": "Guardian Nanit-Torpedopylon",
+      "pt": "Pilone de Torpedo de Nanite Guardian",
       "ru": "Торпедная нанитная установка Стражей"
     },
     "Guardian Plasma Charger": {
@@ -1541,6 +1589,7 @@
       "de": "Guardian-Plasmalader",
       "es": "Cargador de Plasma Guardián",
       "fr": "Chargeur à Plasma - Guardians",
+      "pt": "Carregador de Plasma Guardian",
       "ru": "Плазменная пушка"
     },
     "Guardian Shard Cannon": {
@@ -1548,6 +1597,7 @@
       "de": "Fragmentkanone",
       "es": "Cañón de esquirlas",
       "fr": "Canon à éclats",
+      "pt": "Canhão de fragmentos",
       "ru": "Осколочное орудие"
     },
     "Guardian Shield Reinforcement": {
@@ -1555,6 +1605,7 @@
       "de": "Guardian-Schildverstärkung",
       "es": "Refuerzo de escudo guardián",
       "fr": "Renforcement de bouclier - Guardians",
+      "pt": "Reforço de Escudo Guardian",
       "ru": "Усилитель щита Guardians"
     },
     "Hatch Breaker Limpet Controller": {
@@ -1562,6 +1613,7 @@
       "de": "Steuerung Ladelukenöffnerdrohnen",
       "es": "Lanzador de dron extractor",
       "fr": "Contrôleur de drone perce-soute",
+      "pt": "Controlador de Drone Quebra-Escotilha",
       "ru": "Контроллер дрона взлома трюма"
     },
     "Heat Sink Launcher": {
@@ -1569,6 +1621,7 @@
       "de": "Kühlkörperabwurf",
       "es": "Eyector térmico",
       "fr": "Éjecteur de dissipateur thermique",
+      "pt": "Lançador de Dissipador Térmico",
       "ru": "Теплоотводная катапульта"
     },
     "Hull Reinforcement Package": {
@@ -1576,6 +1629,7 @@
       "de": "Rumpfhüllenverstärkung (Paket)",
       "es": "Paquete de refuerzo estructural",
       "fr": "Renfort de coque",
+      "pt": "Pacote de Reforço de Casco",
       "ru": "Набор для усиления корпуса"
     },
     "Imperial Hammer Rail Gun": {
@@ -1583,6 +1637,7 @@
       "de": "Hammer",
       "es": "Martillo",
       "fr": "Marteleur",
+      "pt": "Martelo",
       "ru": "«Молот»"
     },
     "Kill Warrant Scanner": {
@@ -1590,6 +1645,7 @@
       "de": "Tötungsbefehl-Scanner",
       "es": "Escáner de recompensas",
       "fr": "Détecteur d'avis de recherche",
+      "pt": "Scanner de Registro Criminal",
       "ru": "Сканер преступников"
     },
     "Life Support": {
@@ -1597,6 +1653,7 @@
       "de": "Lebenserhaltung",
       "es": "Soporte vital",
       "fr": "Système de survie",
+      "pt": "Suporte de Vida",
       "ru": "Система жизнеобеспечения"
     },
     "Lightweight Alloy": {
@@ -1604,6 +1661,7 @@
       "de": "Leichte Legierung",
       "es": "Aleaciones ligeras",
       "fr": "Alliage Léger",
+      "pt": "Liga Leve",
       "ru": "Броня из легких сплавов"
     },
     "Luxury Class Passenger Cabin": {
@@ -1611,6 +1669,7 @@
       "de": "Luxus-Klasse-Passagierkabine",
       "es": "Cabina de pasajero clase lujo",
       "fr": "Cabine passager de luxe",
+      "pt": "Cabine de Passageiro Classe Luxo",
       "ru": "Каюта пассажира класса люкс"
     },
     "Meta Alloy Hull Reinforcement": {
@@ -1618,6 +1677,7 @@
       "de": "Meta-Legierungs Hüllenverstärkung",
       "es": "Refuerzo Estructural de Meta-Aleaciones",
       "fr": "Renforcement de coque en Méta-Alliage",
+      "pt": "Reforço de Casco de Meta Liga",
       "ru": "Метасплавное усиление корпуса"
     },
     "Military Grade Composite": {
@@ -1625,6 +1685,7 @@
       "de": "Militär-Komposit",
       "es": "Compuesto de grado militar",
       "fr": "Coque Composite Militaire",
+      "pt": "Composto Nível Militar",
       "ru": "Военная броня"
     },
     "Mine Launcher": {
@@ -1632,6 +1693,7 @@
       "de": "Minenwerfer",
       "es": "Lanzaminas",
       "fr": "Lance-mines",
+      "pt": "Lança de Minas",
       "ru": "Минирующее устройство"
     },
     "Mining Lance": {
@@ -1639,6 +1701,7 @@
       "de": "Lanzenstrahlabbaulaser",
       "es": "Lanza perforadora",
       "fr": "Lance de minage",
+      "pt": "Lança Mineradora",
       "ru": "«Копье шахтера»"
     },
     "Mining Laser": {
@@ -1646,22 +1709,26 @@
       "de": "Abbaulaser",
       "es": "Láser de minería",
       "fr": "Laser Minier",
+      "pt": "Laser de Mineração",
       "ru": "Проходочный лазер"
     },
     "Mining Multi Limpet Controller": {
       "en": "Mining Multi Limpet Controller",
       "de": "Abbau-Multi-Drohnensteuerung",
+      "pt": "Multi Controlador de Drone de Mineração",
       "ru": "Контролер дронов добычи"
     },
     "Mining Volley Repeater": {
       "en": "Mining Volley Repeater",
-      "de": "Schürfsalven-Repetierer"
+      "de": "Schürfsalven-Repetierer",
+      "pt": "Repetidor de Rajadas de Mineração"
     },
     "Mirrored Surface Composite": {
       "en": "Mirrored Surface Composite",
       "de": "Gespiegelte-Oberfläche-Komposit",
       "es": "Compuesto de espejo reforzado",
       "fr": "Composite à Surface Miroir",
+      "pt": "Composto de Superfície Reflexiva",
       "ru": "Зеркальная броня"
     },
     "Missile Rack": {
@@ -1669,6 +1736,7 @@
       "de": "Raketenrampe",
       "es": "Lanzamisiles",
       "fr": "Batterie de Missile",
+      "pt": "Estante de Mísseis",
       "ru": "Ракетный лоток"
     },
     "Mk I Vessel Hangar": {
@@ -1721,6 +1789,7 @@
       "de": "Modulverstärkung (Paket)",
       "es": "Paquete de refuerzo de módulo",
       "fr": "Pack de renforcement de Modules",
+      "pt": "Pacote de Reforço de Módulo",
       "ru": "Набор для усиления модуля"
     },
     "Multi-Cannon": {
@@ -1728,11 +1797,13 @@
       "de": "Mehrfachgeschütz",
       "es": "Multicañón",
       "fr": "Multi-canon",
+      "pt": "Canhão de Repetição",
       "ru": "Многоствольное орудие"
     },
     "Operations Multi Limpet Controller": {
       "en": "Operations Multi Limpet Controller",
       "de": "Operationen-Drohnensteuerung",
+      "pt": "Multi Controlador de Drone de Operações",
       "ru": "Контролер дронов операций"
     },
     "Pacifier Frag-Cannon": {
@@ -1740,6 +1811,7 @@
       "de": "Friedensstifter",
       "es": "Pacificador",
       "fr": "Pacificateur",
+      "pt": "Pacificador",
       "ru": "«Миротворец»"
     },
     "Pack-Hound Missile Rack": {
@@ -1747,6 +1819,7 @@
       "de": "Schwarmgeschoss",
       "es": "Jauría",
       "fr": "Essaim",
+      "pt": "Enxame",
       "ru": "«Гончие»"
     },
     "Planetary Approach Suite": {
@@ -1754,6 +1827,7 @@
       "de": "Planetenanflug-Suite",
       "es": "Equipo de aproximación planetaria",
       "fr": "Installation d'approche planétaire",
+      "pt": "Instrumento de Aproximação Planetária",
       "ru": "Комплект для сближения с планетой"
     },
     "Planetary Vehicle Hangar": {
@@ -1761,6 +1835,7 @@
       "de": "Planetenfahrzeug-Hangar",
       "es": "Hangar VRS",
       "fr": "Hangar des véhicules planétaires",
+      "pt": "Hangar de Veículo Planetário",
       "ru": "Гараж для планетарного транспорта"
     },
     "Plasma Accelerator": {
@@ -1768,6 +1843,7 @@
       "de": "Plasmabeschleuniger",
       "es": "Acelerador de Plasma",
       "fr": "Accélérateur à plasma",
+      "pt": "Acelerador de Plasma",
       "ru": "Ускоритель плазмы"
     },
     "Point Defence": {
@@ -1775,6 +1851,7 @@
       "de": "Punktverteidigung",
       "es": "Defensa de punto",
       "fr": "Défense ponctuelle",
+      "pt": "Defesa de Ponto",
       "ru": "Точечная оборона"
     },
     "Power Distributor": {
@@ -1782,6 +1859,7 @@
       "de": "Energieverteiler",
       "es": "Distribuidor de energía",
       "fr": "Répartiteur de puissance",
+      "pt": "Distribuidor de Energia",
       "ru": "Распределитель питания"
     },
     "Power Plant": {
@@ -1789,6 +1867,7 @@
       "de": "Kraftwerk",
       "es": "Núcleo de energía",
       "fr": "Générateur",
+      "pt": "Gerador de Energia",
       "ru": "Силовая установка"
     },
     "Prismatic Shield Generator": {
@@ -1796,6 +1875,7 @@
       "de": "Prismaschildgenerator",
       "es": "Generador de escudos prismático",
       "fr": "Générateur de Bouclier Prismatique",
+      "pt": "Escudo Prismatico",
       "ru": "Призматический щитогенератор"
     },
     "Prospector Limpet Controller": {
@@ -1803,6 +1883,7 @@
       "de": "Steuerung Erzsuche-Drohne",
       "es": "Lanzador drón prospector",
       "fr": "Contrôleur de drone de prospection",
+      "pt": "Controlador de Drone Prospector",
       "ru": "Контроллер дрона-изыскателя"
     },
     "Pulse Disruptor Laser": {
@@ -1810,6 +1891,7 @@
       "de": "Impulsunterbrecher",
       "es": "Pulsos disrup",
       "fr": "Laser foudroyant",
+      "pt": "Pulso disruptor",
       "ru": "Лазер «Диверсант»"
     },
     "Pulse Laser": {
@@ -1817,6 +1899,7 @@
       "de": "Impulslaser",
       "es": "Láser de pulsos",
       "fr": "Laser à impulsion",
+      "pt": "Laser de Pulso",
       "ru": "Ипмульсный лазер"
     },
     "Pulse Wave Analyser": {
@@ -1824,11 +1907,13 @@
       "de": "Impulswellen-Analysator",
       "es": "Analizador de onda de pulso",
       "fr": "Analyseur à onde pulsée",
+      "pt": "Analisador de Onda de Pulso",
       "ru": "Сканер импульсных волн"
     },
     "Pulse Wave Xeno Scanner": {
       "en": "Pulse Wave Xeno Scanner",
       "de": "Impulswellen-Xeno-Scanner",
+      "pt": "Scanner Xeno de Pulso de Onda",
       "ru": "Ксеносканер импульсных волн"
     },
     "Rail Gun": {
@@ -1836,6 +1921,7 @@
       "de": "Schienenkanone",
       "es": "Cañón de riel",
       "fr": "Canon électrique",
+      "pt": "Canhão Elétrico",
       "ru": "Электромагнитная пушка"
     },
     "Reactive Surface Composite": {
@@ -1843,6 +1929,7 @@
       "de": "Reaktive-Oberfläche-Komposit",
       "es": "Compuesto de superficie reactiva",
       "fr": "Composite à Surface Réactive",
+      "pt": "Composto de Superficie Reativa",
       "ru": "Реактивная броня"
     },
     "Recon Limpet Controller": {
@@ -1850,6 +1937,7 @@
       "de": "Steuerung Aufklärungsdrohnen",
       "es": "Lanzador dron de reconocimiento",
       "fr": "Contrôleur de drone de reconnaissance",
+      "pt": "Controlador de Drone de Reconhecimento",
       "ru": "Разведка"
     },
     "Refinery": {
@@ -1857,6 +1945,7 @@
       "de": "Raffinerie",
       "es": "Refinería",
       "fr": "Rafinerie",
+      "pt": "Refinaria",
       "ru": "Устройство переработки"
     },
     "Reinforced Alloy": {
@@ -1864,6 +1953,7 @@
       "de": "Verstärkte Legierung",
       "es": "Aleaciones reforzadas",
       "fr": "Alliage Renforcé",
+      "pt": "Liga Reforçada",
       "ru": "Усиленная броня"
     },
     "Remote Release Flak Launcher": {
@@ -1871,6 +1961,7 @@
       "de": "Flakwerfer mit Fernzündung",
       "es": "Lanzamisiles antiaéreo remoto",
       "fr": "Lanceur antiaérien déclenché à distance",
+      "pt": "Lançador de Flak Remoto",
       "ru": "Зенитный снаряд с дистанционным подрывом"
     },
     "Remote Release Flechette Launcher": {
@@ -1878,6 +1969,7 @@
       "de": "Flechette mit Fernzündung",
       "es": "Flechette remoto",
       "fr": "Fléchette à distance",
+      "pt": "Dardo remoto",
       "ru": "Стреловидный снаряд с дистанционным подрывом"
     },
     "Repair Limpet Controller": {
@@ -1885,11 +1977,13 @@
       "de": "Steuerung Reparaturdrohnen",
       "es": "Lanzador drón de reparaciones",
       "fr": "Contrôleur de drone de réparation",
+      "pt": "Controlador de Drone de Reparo",
       "ru": "Контроллер дрона ремонта"
     },
     "Rescue Multi Limpet Controller": {
       "en": "Rescue Multi Limpet Controller",
       "de": "Rettungs-Drohnensteuerung",
+      "pt": "Multi Controlador de Drone de Resgate",
       "ru": "Контролер дронов спасения"
     },
     "Research Limpet Controller": {
@@ -1897,6 +1991,7 @@
       "de": "Steuerung Forschungsdrohnen",
       "es": "Lanzador drón de investigación",
       "fr": "Contrôleur de drone de recherche",
+      "pt": "Controlador de Drone de Pesquisa",
       "ru": "Контроллер дрона геологоразведки"
     },
     "Retributor Beam Laser": {
@@ -1904,6 +1999,7 @@
       "de": "Retributor",
       "es": "Láser de rayo Vengador",
       "fr": "Rayon calorifique",
+      "pt": "Laser Contínuo Retaliador",
       "ru": "Пучковый Лазер Каратель"
     },
     "Rocket Propelled FSD Disruptor": {
@@ -1911,6 +2007,7 @@
       "de": "Raketengetriebener FSA-Unterbrecher",
       "es": "Misil de contención",
       "fr": "Missiles TC",
+      "pt": "Disruptor de MDD Propelido por Foguete",
       "ru": "Ракетный дезинтегратор FSD"
     },
     "Seeker Missile Rack": {
@@ -1918,6 +2015,7 @@
       "de": "Suchraketenrampe",
       "es": "Lanzamisiles guiados",
       "fr": "Missiles TC",
+      "pt": "Estante de Míssil Guiado",
       "ru": "Блок ракет с самонаведением"
     },
     "Seismic Charge Launcher": {
@@ -1925,6 +2023,7 @@
       "de": "Seismischer Ladungswerfer",
       "es": "Lanzador de carga sísmica",
       "fr": "Lanceur à charge sismique",
+      "pt": "Lançador de Carga Sísmica",
       "ru": "Пусковая сейсмозарядов"
     },
     "Sensors": {
@@ -1932,6 +2031,7 @@
       "de": "Sensoren",
       "es": "Sensores",
       "fr": "Capteurs",
+      "pt": "Sensores",
       "ru": "Сенсоры"
     },
     "Shield Booster": {
@@ -1939,6 +2039,7 @@
       "de": "Schild-Booster",
       "es": "Potenciador de escudos",
       "fr": "Survolteur de bouclier",
+      "pt": "Potenciador de Escudo",
       "ru": "Усилитель щита"
     },
     "Shield Cell Bank": {
@@ -1946,6 +2047,7 @@
       "de": "Schildzellenbank",
       "es": "Célula de refuerzo de escudo",
       "fr": "Réserve de cellules d'énergie",
+      "pt": "Banco de Célula de Escudo",
       "ru": "Щитонакопитель"
     },
     "Shield Generator": {
@@ -1953,6 +2055,7 @@
       "de": "Schildgenerator",
       "es": "Generador de escudos",
       "fr": "Générateur de bouclier",
+      "pt": "Gerador de Escudo",
       "ru": "Щитогенератор"
     },
     "Shock Cannon": {
@@ -1960,6 +2063,7 @@
       "de": "Schockkanone",
       "es": "Cañón de Impacto",
       "fr": "Canon de choc",
+      "pt": "Canhão de Impacto",
       "ru": "Шоковое орудие"
     },
     "Shock Mine Launcher": {
@@ -1967,6 +2071,7 @@
       "de": "Schockminenwerfer",
       "es": "Lanzaminas de impacto",
       "fr": "Lance-mines électriques",
+      "pt": "Lança Mina de Impacto",
       "ru": "Пусковая шоковых мин"
     },
     "Shutdown Field Neutraliser": {
@@ -1974,6 +2079,7 @@
       "de": "Abschalt-Feldneutralisator",
       "es": "Neutralizador de Campo de Desactivación",
       "fr": "Neutralisateur de champ incapacitant",
+      "pt": "Neutralizador de Campo de Desativação",
       "ru": "Отключение нейтрализатора поля"
     },
     "Standard Docking Computer": {
@@ -1981,6 +2087,7 @@
       "de": "Standard-Landecomputer",
       "es": "Computadora de aterrizaje asistido",
       "fr": "Ordinateur d'appontage",
+      "pt": "Computador de Docagem",
       "ru": "Стыковочный компьютер"
     },
     "Sub-Surface Displacement Missile": {
@@ -1994,11 +2101,13 @@
       "de": "Supercruise-Assistent",
       "es": "Asistencia de supercrucero",
       "fr": "Super-navigation assistée",
+      "pt": "Assistência de supervelocidade",
       "ru": "Помощь в гиперкрейсерском режиме"
     },
     "Thargoid Pulse Neutraliser": {
       "en": "Thargoid Pulse Neutraliser",
       "de": "Thargoiden-Impuls-Neutralisator",
+      "pt": "Neutralizador de Pulso Thargoid",
       "ru": "Нейтрализатор таргоидских импульсов"
     },
     "Thrusters": {
@@ -2006,6 +2115,7 @@
       "de": "Schubdüsen",
       "es": "Impulsores",
       "fr": "Propulseurs",
+      "pt": "Propulsores",
       "ru": "Двигатели"
     },
     "Torpedo Pylon": {
@@ -2013,16 +2123,19 @@
       "de": "Torpedopylon",
       "es": "Lanzatorpedos",
       "fr": "Tube lance-torpille",
+      "pt": "Pilone de Torpedo",
       "ru": "Торпедная стойка"
     },
     "Universal Multi Limpet Controller": {
       "en": "Universal Multi Limpet Controller",
       "de": "Universelle Multi-Drohnensteuerung",
+      "pt": "Multi Controlador de Drone Universal",
       "ru": "Универсальный контролер дронов"
     },
     "Xeno Multi Limpet Controller": {
       "en": "Xeno Multi Limpet Controller",
       "de": "Xeno-Multi-Drohnensteuerung",
+      "pt": "Multi Controlador de Drone Xeno",
       "ru": "Контролер дронов ксено"
     },
     "Xeno Scanner": {
@@ -2030,6 +2143,7 @@
       "de": "Xeno-Scanner",
       "es": "Xeno escáner",
       "fr": "Scanner de Xenomorphes AX",
+      "pt": "Scanner Xeno",
       "ru": "Сканер инопланетян"
     }
   }

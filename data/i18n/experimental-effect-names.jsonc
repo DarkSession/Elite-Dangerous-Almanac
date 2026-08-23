@@ -16,6 +16,7 @@
     "de": "Tiefenüberzug",
     "es": "Enchapado profundo",
     "fr": "Blindage épais",
+    "pt": "Revestimento espesso",
     "ru": "Утолщенная броня"
   },
   "special_armour_explosive": {
@@ -23,6 +24,7 @@
     "de": "Schichtüberzug",
     "es": "Enchapado a capas",
     "fr": "Blindage à couches",
+    "pt": "Revestimento em camadas",
     "ru": "Многослойная броня"
   },
   "special_armour_kinetic": {
@@ -30,6 +32,7 @@
     "de": "Winkelüberzug",
     "es": "Enchapado en ángulo",
     "fr": "Blindage anguleux",
+    "pt": "Revestimento inclinado",
     "ru": "Угловая броня"
   },
   "special_armour_thermic": {
@@ -37,6 +40,7 @@
     "de": "Reflektorüberzug",
     "es": "Enchapado reflectante",
     "fr": "Blindage réfléchissant",
+    "pt": "Revestimento refletor",
     "ru": "Отражающая броня"
   },
   "special_auto_loader": {
@@ -44,6 +48,7 @@
     "de": "Auto-Laden",
     "es": "Autocargador",
     "fr": "Rechargement automatique",
+    "pt": "Carregador Automático",
     "ru": "Автоматическая система заряжения"
   },
   "special_blinding_shell": {
@@ -51,6 +56,7 @@
     "de": "Blendgranate",
     "es": "Proyectil deslumbrante",
     "fr": "Obus aveuglant",
+    "pt": "Projétil Cegante",
     "ru": "Ослепляющие снаряды"
   },
   "special_choke_canister": {
@@ -58,6 +64,7 @@
     "de": "Ionen-Disruption",
     "es": "Disruptor de iones",
     "fr": "Perturbation ionique",
+    "pt": "Perturbação de Íon",
     "ru": "Ионный дестабилизатор"
   },
   "special_concordant_sequence": {
@@ -65,6 +72,7 @@
     "de": "Konkordante Sequenz",
     "es": "Secuencia concordante",
     "fr": "Séquence concordante",
+    "pt": "Sequência Concordante",
     "ru": "Последовательность координации"
   },
   "special_corrosive_shell": {
@@ -72,6 +80,7 @@
     "de": "Korrosionsgranate",
     "es": "Proyectil corrosivo",
     "fr": "Obus corrosif",
+    "pt": "Projétil Corrosivo",
     "ru": "Разъедающие снаряды"
   },
   "special_deep_cut_payload": {
@@ -79,6 +88,7 @@
     "de": "Durchdringungsladung",
     "es": "Carga explosiva penetradora",
     "fr": "Charge explosive perforante",
+    "pt": "Carga Penetrante",
     "ru": "Бронебойные снаряды"
   },
   "special_dispersal_field": {
@@ -86,6 +96,7 @@
     "de": "Streuungsfeld",
     "es": "Campo de dispersión",
     "fr": "Champ de dispersion",
+    "pt": "Campo de Dispersão",
     "ru": "Рассеивающее поле"
   },
   "special_distortion_field": {
@@ -93,6 +104,7 @@
     "de": "Inertialeinschlag",
     "es": "Impacto inercial",
     "fr": "Impact inertiel",
+    "pt": "Impacto Inercial",
     "ru": "Инерционный удар"
   },
   "special_drag_munitions": {
@@ -100,6 +112,7 @@
     "de": "Ableitungsmunition",
     "es": "Munición lastre",
     "fr": "Munitions à inertie",
+    "pt": "Munições de arrasto",
     "ru": "Замедляющие боеприпасы"
   },
   "special_emissive_munitions": {
@@ -107,6 +120,7 @@
     "de": "Emissionsmunition",
     "es": "Munición de emisiones",
     "fr": "Munitions à émissions",
+    "pt": "Munições Emissivas",
     "ru": "Эмиссионные боеприпасы"
   },
   "special_engine_cooled": {
@@ -114,6 +128,7 @@
     "de": "Thermischer Verteiler",
     "es": "Difusión térmica",
     "fr": "Répartition thermique",
+    "pt": "Propagação térmica",
     "ru": "Рассеивание тепла"
   },
   "special_engine_haulage": {
@@ -121,6 +136,7 @@
     "de": "Antriebsdistributoren",
     "es": "Distribuidores de motor",
     "fr": "Répartiteurs de réacteur",
+    "pt": "Distribuidores do motor",
     "ru": "Распределители тяги"
   },
   "special_engine_lightweight": {
@@ -128,6 +144,7 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_engine_overloaded": {
@@ -135,6 +152,7 @@
     "de": "Drag-Antriebe",
     "es": "Motores de arrastre",
     "fr": "Débridage des réacteurs",
+    "pt": "Motores de arrasto",
     "ru": "Ускорители"
   },
   "special_engine_toughened": {
@@ -142,6 +160,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_feedback_cascade_cooled": {
@@ -149,6 +168,7 @@
     "de": "Rückkopplungskaskade",
     "es": "Retroalimentación en cascada",
     "fr": "Réverbération énergétique",
+    "pt": "Cascata de Realimentação",
     "ru": "Ответный залп"
   },
   "special_force_shell": {
@@ -156,6 +176,7 @@
     "de": "Impulsgranate",
     "es": "Proyectil de fuerza",
     "fr": "Munition surpuissante",
+    "pt": "Projétil de Força",
     "ru": "Усиленные снаряды"
   },
   "special_fsd_cooled": {
@@ -163,6 +184,7 @@
     "de": "Thermischer Verteiler",
     "es": "Difusión térmica",
     "fr": "Répartition thermique",
+    "pt": "Propagação térmica",
     "ru": "Рассеивание тепла"
   },
   "special_fsd_fuelcapacity": {
@@ -170,6 +192,7 @@
     "de": "Tieflader",
     "es": "Carga intensa",
     "fr": "Charge profonde",
+    "pt": "Carga intensa",
     "ru": "Заряд повышенной мощности"
   },
   "special_fsd_heavy": {
@@ -177,6 +200,7 @@
     "de": "Massemanager",
     "es": "Gestión de masa",
     "fr": "Gestionnaire de masse",
+    "pt": "Gestor de massa",
     "ru": "Распределитель гравитации"
   },
   "special_fsd_interrupt": {
@@ -184,6 +208,7 @@
     "de": "FSA-Unterbrechung",
     "es": "Interrupción MDD",
     "fr": "Interruption FSD",
+    "pt": "Interruptor de MDD",
     "ru": "Помеха для FSD"
   },
   "special_fsd_lightweight": {
@@ -191,6 +216,7 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_fsd_toughened": {
@@ -198,6 +224,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_high_yield_shell": {
@@ -205,6 +232,7 @@
     "de": "Hocheffizienzgranate",
     "es": "Proyectil de alto rendimiento",
     "fr": "Obus à fragmentation",
+    "pt": "Projétil de Alto Rendimento",
     "ru": "Снаряды большой мощности"
   },
   "special_hullreinforcement_chunky": {
@@ -212,6 +240,7 @@
     "de": "Tiefenüberzug",
     "es": "Enchapado profundo",
     "fr": "Blindage épais",
+    "pt": "Revestimento espesso",
     "ru": "Утолщенная броня"
   },
   "special_hullreinforcement_explosive": {
@@ -219,6 +248,7 @@
     "de": "Schichtüberzug",
     "es": "Enchapado a capas",
     "fr": "Blindage à couches",
+    "pt": "Revestimento em camadas",
     "ru": "Многослойная броня"
   },
   "special_hullreinforcement_kinetic": {
@@ -226,6 +256,7 @@
     "de": "Winkelüberzug",
     "es": "Enchapado en ángulo",
     "fr": "Blindage anguleux",
+    "pt": "Revestimento inclinado",
     "ru": "Угловая броня"
   },
   "special_hullreinforcement_thermic": {
@@ -233,6 +264,7 @@
     "de": "Reflektorüberzug",
     "es": "Enchapado reflectante",
     "fr": "Blindage réfléchissant",
+    "pt": "Revestimento refletor",
     "ru": "Отражающая броня"
   },
   "special_incendiary_rounds": {
@@ -240,6 +272,7 @@
     "de": "Hitzesalven",
     "es": "Munición incendiaria",
     "fr": "Munitions incendiaires",
+    "pt": "Munição Incendiária",
     "ru": "Зажигательные боеприпасы"
   },
   "special_lock_breaker": {
@@ -247,6 +280,7 @@
     "de": "Zielvisierbrecher",
     "es": "Interruptor de selección",
     "fr": "Interrupteur de verrouillage de cible",
+    "pt": "Quebra de Trava de Alvo",
     "ru": "Генератор помех для системы захвата цели"
   },
   "special_mass_lock": {
@@ -254,6 +288,7 @@
     "de": "Massesperremunition",
     "es": "Munición de bloqueo de masa",
     "fr": "Munitions à champ gravitationnel",
+    "pt": "Munição de Bloqueio de Massa",
     "ru": "Боеприпасы с гравитационным захватом"
   },
   "special_overload_munitions": {
@@ -261,6 +296,7 @@
     "de": "Überladungsmunition",
     "es": "Munición sobrecargada",
     "fr": "Munitions à surcharge",
+    "pt": "Munições de Sobrecarga",
     "ru": "Вызывающие перегрузку боеприпасы"
   },
   "special_penetrator_munitions": {
@@ -268,6 +304,7 @@
     "de": "Penetrationsmunition",
     "es": "Munición penetradora",
     "fr": "Munitions perforantes",
+    "pt": "Munições Penetrantes",
     "ru": "Бронебойные боеголовки"
   },
   "special_phasing_sequence": {
@@ -275,6 +312,7 @@
     "de": "Phasensequenz",
     "es": "Secuencia de fase",
     "fr": "Séquence de phase",
+    "pt": "Sequência Faseada",
     "ru": "Последовательность фазирования"
   },
   "special_plasma_slug": {
@@ -282,6 +320,7 @@
     "de": "Plasmaprojektil",
     "es": "Proyectil de plasma",
     "fr": "Munitions à plasma",
+    "pt": "Projétil de Plasma",
     "ru": "Плазменный рельсовый снаряд"
   },
   "special_plasma_slug_cooled": {
@@ -289,6 +328,7 @@
     "de": "Plasmaprojektil",
     "es": "Proyectil de plasma",
     "fr": "Munitions à plasma",
+    "pt": "Projétil de Plasma",
     "ru": "Плазменный рельсовый снаряд"
   },
   "special_powerdistributor_capacity": {
@@ -296,6 +336,7 @@
     "de": "Cluster-Kondensatoren",
     "es": "Agrupación de capacitadores",
     "fr": "Batterie de condensateurs",
+    "pt": "Banco de capacitores",
     "ru": "Кассетные конденсаторы"
   },
   "special_powerdistributor_efficient": {
@@ -303,6 +344,7 @@
     "de": "Flusssteuerung",
     "es": "Control de flujo",
     "fr": "Contrôle du flux",
+    "pt": "Controle de fluxo",
     "ru": "Контроль интенсивности"
   },
   "special_powerdistributor_fast": {
@@ -310,6 +352,7 @@
     "de": "Superleiter",
     "es": "Superconductores",
     "fr": "Super conduits",
+    "pt": "Supercondutores",
     "ru": "Сверхпроводники"
   },
   "special_powerdistributor_lightweight": {
@@ -317,6 +360,7 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_powerdistributor_toughened": {
@@ -324,6 +368,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_powerplant_cooled": {
@@ -331,6 +376,7 @@
     "de": "Thermischer Verteiler",
     "es": "Difusión térmica",
     "fr": "Répartition thermique",
+    "pt": "Propagação térmica",
     "ru": "Рассеивание тепла"
   },
   "special_powerplant_highcharge": {
@@ -338,6 +384,7 @@
     "de": "Monsterhaft",
     "es": "A lo bestia",
     "fr": "Modèle XXL",
+    "pt": "Parrudo",
     "ru": "Монстрация"
   },
   "special_powerplant_lightweight": {
@@ -345,6 +392,7 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_powerplant_toughened": {
@@ -352,6 +400,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_radiant_canister": {
@@ -359,6 +408,7 @@
     "de": "Strahlenbehältnis",
     "es": "Cartucho radiactivo",
     "fr": "Cartouche irradiante",
+    "pt": "Mina Radiante",
     "ru": "Светящаяся кассета"
   },
   "special_regeneration_sequence": {
@@ -366,6 +416,7 @@
     "de": "Regenerierungssequenz",
     "es": "Secuencia de regeneración",
     "fr": "Séquence de régénération",
+    "pt": "Sequência de Regeneração",
     "ru": "Последовательность восстановления"
   },
   "special_reverberating_cascade": {
@@ -373,6 +424,7 @@
     "de": "Rückstrahlkaskade",
     "es": "Reverberación en cascada",
     "fr": "Réverbération en série",
+    "pt": "Cascata Reverberante",
     "ru": "Отраженный залп"
   },
   "special_scramble_spectrum": {
@@ -380,6 +432,7 @@
     "de": "Störspektrum",
     "es": "Espectro de interferencias",
     "fr": "Spectre de brouillage",
+    "pt": "Espectro Randômico",
     "ru": "Отключающая сетка"
   },
   "special_screening_shell": {
@@ -387,6 +440,7 @@
     "de": "Sperrgranate",
     "es": "Proyectil de pantalla",
     "fr": "Obus de criblage",
+    "pt": "Projétil de Triagem",
     "ru": "Заслоняющие снаряды"
   },
   "special_shield_efficient": {
@@ -394,6 +448,7 @@
     "de": "Leichtbedarf",
     "es": "Consumo reducido",
     "fr": "Consommation réduite",
+    "pt": "Baixo consumo",
     "ru": "Пониженное потребление"
   },
   "special_shield_health": {
@@ -401,6 +456,7 @@
     "de": "Hochkondensatoren",
     "es": "Límite elevado",
     "fr": "Puissance renforcée",
+    "pt": "Alta capacitância",
     "ru": "Высокая емкость"
   },
   "special_shield_kinetic": {
@@ -408,6 +464,7 @@
     "de": "Kraft-Block",
     "es": "Bloqueo de fuerza",
     "fr": "Blocage de force",
+    "pt": "Bloqueio cinético",
     "ru": "Усиленная блокировка"
   },
   "special_shield_lightweight": {
@@ -415,6 +472,7 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_shield_regenerative": {
@@ -422,6 +480,7 @@
     "de": "Schnelllader",
     "es": "Carga rápida",
     "fr": "Chargement rapide",
+    "pt": "Carga rápida",
     "ru": "Быстрый заряд"
   },
   "special_shield_resistive": {
@@ -429,6 +488,7 @@
     "de": "Multigewebe",
     "es": "Multitejido",
     "fr": "Filaments multiples",
+    "pt": "Rede múltipla",
     "ru": "Мультипрошивка"
   },
   "special_shield_thermic": {
@@ -436,6 +496,7 @@
     "de": "Thermo-Block",
     "es": "Bloqueo térmico",
     "fr": "Blocage thermique",
+    "pt": "Bloqueio térmico",
     "ru": "Блокировка тепла"
   },
   "special_shield_toughened": {
@@ -443,6 +504,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_shieldbooster_chunky": {
@@ -450,6 +512,7 @@
     "de": "Superkondensatoren",
     "es": "Supercapacitadores",
     "fr": "Super condensateurs",
+    "pt": "Supercapacitores",
     "ru": "Суперконденсаторы"
   },
   "special_shieldbooster_efficient": {
@@ -457,6 +520,7 @@
     "de": "Flusssteuerung",
     "es": "Control de flujo",
     "fr": "Contrôle du flux",
+    "pt": "Controle de fluxo",
     "ru": "Контроль интенсивности"
   },
   "special_shieldbooster_explosive": {
@@ -464,6 +528,7 @@
     "de": "Blast-Block",
     "es": "Bloqueo de explosivos",
     "fr": "Blocage d'explosion",
+    "pt": "Bloqueio explosivo",
     "ru": "Блокировка взрыва"
   },
   "special_shieldbooster_kinetic": {
@@ -471,6 +536,7 @@
     "de": "Kraft-Block",
     "es": "Bloqueo de fuerza",
     "fr": "Blocage de force",
+    "pt": "Bloqueio cinético",
     "ru": "Усиленная блокировка"
   },
   "special_shieldbooster_thermic": {
@@ -478,6 +544,7 @@
     "de": "Thermo-Block",
     "es": "Bloqueo térmico",
     "fr": "Blocage thermique",
+    "pt": "Bloqueio térmico",
     "ru": "Блокировка тепла"
   },
   "special_shieldbooster_toughened": {
@@ -485,6 +552,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_shieldcell_efficient": {
@@ -492,6 +560,7 @@
     "de": "Flusssteuerung",
     "es": "Control de flujo",
     "fr": "Contrôle du flux",
+    "pt": "Controle de fluxo",
     "ru": "Контроль интенсивности"
   },
   "special_shieldcell_gradual": {
@@ -499,6 +568,7 @@
     "de": "Recyclingzelle",
     "es": "Célula de reciclaje",
     "fr": "Recyclage des cellules",
+    "pt": "Célula de reciclagem",
     "ru": "Рециркуляционная ячейка"
   },
   "special_shieldcell_lightweight": {
@@ -506,6 +576,7 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_shieldcell_oversized": {
@@ -513,6 +584,7 @@
     "de": "Bosszellen",
     "es": "Células excelentes",
     "fr": "Cellules XXL",
+    "pt": "Células resistentes",
     "ru": "Босс-ячейки"
   },
   "special_shieldcell_toughened": {
@@ -520,6 +592,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   },
   "special_shiftlock_canister": {
@@ -527,6 +600,7 @@
     "de": "Frameshift-Blocker",
     "es": "Cartucho bloqueador",
     "fr": "Cartouche de verrouillage FSD",
+    "pt": "Mina de Trava de Distorção",
     "ru": "Рамоблокирующая кассета"
   },
   "special_smart_rounds": {
@@ -534,6 +608,7 @@
     "de": "Intelligente Munition",
     "es": "Munición inteligente",
     "fr": "Munitions intelligentes",
+    "pt": "Projéteis Inteligentes",
     "ru": "Умные боеприпасы"
   },
   "special_super_penetrator": {
@@ -544,6 +619,7 @@
     "de": "Super-Durchdringer",
     "es": "Súper penetrador",
     "fr": "Munitions ultra perforantes",
+    "pt": "Super Penetrador",
     "ru": "Модуль сверхпробития"
   },
   "special_thermal_cascade": {
@@ -551,6 +627,7 @@
     "de": "Thermalkaskade",
     "es": "Cascada térmica",
     "fr": "Réverbération thermique",
+    "pt": "Cascata Térmica",
     "ru": "Термический залп"
   },
   "special_thermal_conduit": {
@@ -558,6 +635,7 @@
     "de": "Thermischer Verstärker",
     "es": "Conductor térmico",
     "fr": "Décupleur thermique",
+    "pt": "Condutor Térmico",
     "ru": "Проводник тепла"
   },
   "special_thermal_vent": {
@@ -565,6 +643,7 @@
     "de": "Thermische Entlastung",
     "es": "Ventilación térmica",
     "fr": "Ventilation thermique",
+    "pt": "Exaustor Térmico",
     "ru": "Теплоотдача"
   },
   "special_thermalshock": {
@@ -572,6 +651,7 @@
     "de": "Thermischer Schock",
     "es": "Choque térmico",
     "fr": "Choc thermique",
+    "pt": "Choque Térmico",
     "ru": "Тепловой удар"
   },
   "special_weapon_damage": {
@@ -579,6 +659,7 @@
     "de": "Übergröße",
     "es": "Mayor tamaño",
     "fr": "Arme XXL",
+    "pt": "Reforçado",
     "ru": "Сверхразмер"
   },
   "special_weapon_efficient": {
@@ -586,6 +667,7 @@
     "de": "Flusssteuerung",
     "es": "Control de flujo",
     "fr": "Contrôle du flux",
+    "pt": "Controle de fluxo",
     "ru": "Контроль интенсивности"
   },
   "special_weapon_lightweight": {
@@ -593,12 +675,14 @@
     "de": "Reduktion",
     "es": "Reducido",
     "fr": "Désossage",
+    "pt": "Modelo leve",
     "ru": "Урезанный вариант"
   },
   "special_weapon_rateoffire": {
     "en": "Multi-servos",
     "es": "Multiservos",
     "fr": "Servomécanismes multiples",
+    "pt": "Servos múltiplos",
     "ru": "Сервосистема"
   },
   "special_weapon_toughened": {
@@ -606,6 +690,7 @@
     "de": "Doppelt versteift",
     "es": "Doble puntal",
     "fr": "Armature renforcée",
+    "pt": "Braçadeira dupla",
     "ru": "Двойная прочность"
   }
 }

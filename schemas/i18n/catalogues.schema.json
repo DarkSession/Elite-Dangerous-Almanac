@@ -18,6 +18,7 @@
         "de": { "$ref": "#/definitions/nonEmptyString" },
         "es": { "$ref": "#/definitions/nonEmptyString" },
         "fr": { "$ref": "#/definitions/nonEmptyString" },
+        "pt": { "$ref": "#/definitions/nonEmptyString" },
         "ru": { "$ref": "#/definitions/nonEmptyString" }
       }
     },

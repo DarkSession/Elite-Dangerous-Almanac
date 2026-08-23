@@ -6,13 +6,20 @@ They are deliberately sparse: absence means that no accepted source carried a va
 the lookup API returns `null` for that locale rather than treating English as a
 translation.
 
-**Five locales are stored: `en`, `de`, `es`, `fr` and `ru`.** Several accepted sources
-publish more — Portuguese, Brazilian Portuguese, Italian, Hungarian, Georgian and
-Simplified Chinese among them — and those values are deliberately not carried: the
-project supports those five languages and no others. That is a decision about this
-catalogue, not a gap in any source, so re-deriving a catalogue from its source must drop
-the other columns again rather than restore them. Every locale is stored under a bare
-language tag; a regional or script tag resolves to its language.
+**Six locales are stored: `en`, `de`, `es`, `fr`, `pt` and `ru`.** Several accepted
+sources publish more — Italian, Hungarian, Georgian and Simplified Chinese among them —
+and those values are deliberately not carried: the project supports those six languages
+and no others. That is a decision about this catalogue, not a gap in any source, so
+re-deriving a catalogue from its source must drop the other columns again rather than
+restore them. Every locale is stored under a bare language tag; a regional or script tag
+resolves to its language.
+
+**`pt` is Brazilian Portuguese.** Every accepted source publishes exactly one Portuguese
+column and it is the Brazilian one: Odyssey Materials Helper's CSVs and EDSY's
+`lang-pt.json` carry Brazilian spellings, EDDI's only populated Portuguese resource file
+is `Modules.pt-BR.resx` (its `pt-PT` sibling is an empty stub), and Frontier's own
+in-game localisation ships pt-BR and no European Portuguese. Storing it under the bare
+tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## `module-names.jsonc`
 
@@ -31,25 +38,43 @@ language tag; a regional or script tag resolves to its language.
   module name also exactly equals the canonical name. Values shared by modules with one
   canonical name are retained only when they agree, then stored once under that name.
 - **Coverage:** English covers all 1,199 symbols. The explicit translations cover 1,120
-  in German, 1,090 in Spanish, 1,088 in French and 1,153 in Russian.
+  in German, 1,090 in Spanish, 1,088 in French, 1,155 in Brazilian Portuguese and 1,153
+  in Russian. Portuguese comes from the same two joins, reading EDDI's
+  `Modules.pt-BR.resx` and EDSY's `lang-pt.json`.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`
 
-- **Acquired:** 2026-08-14 UTC.
+- **Acquired:** EDSY 2026-08-14 UTC; the in-game modification names 2026-08-23 UTC.
 - **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
   database version `424009901`, last-modified marker `20260810`.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
 - **Derivation:** each of the 107 current keys and its English name comes from
-  `data/ships/blueprints.jsonc`. The Frontier `fdname` joins directly to EDSY's
-  `blueprint.fdname`; that record's id selects an explicit `blueprint-<id>` entry from
-  each language file. Names remain keyed per blueprint because a single English phrase
-  can have different grammatical translations for different module families.
-- **Coverage:** English covers all 107 blueprints; EDSY covers 55 in German and 59 each
-  in Spanish, French and Russian. The remaining recipes include Operations
-  and other newer records EDSY does not identify or translate.
-- **Manual corrections:** EDSY's French `FSD_FastBoot` value ends in one accidental
-  ASCII space; the stored display name removes it so a successful lookup is already
-  trimmed like every other catalogue name.
+  `data/ships/blueprints.jsonc`. Names remain keyed per blueprint because a single
+  English phrase can have different grammatical translations for different module
+  families. The Frontier `fdname` joins case-insensitively to the in-game modification
+  name table, which supplies every locale for the 90 recipes it names. The remaining 17
+  are ids this repository keys separately because their numbers differ, where the game
+  offers only the generic recipe's menu entry and so publishes only its name: each takes
+  the locales of the generic id it shadows — `AFM_Shielded`, `Refineries_Shielded` and
+  the four limpet-controller Shielded recipes from `Misc_Shielded`, the four
+  `LightWeight` and four `Reinforced` limpet recipes from `Misc_LightWeight` and
+  `Misc_Reinforced`, `MC_Overcharged` from `Weapon_Overcharged`, and `Scanner_LongRange`
+  and `Scanner_WideAngle` from `Sensor_LongRange` and `Sensor_WideAngle`. The last three
+  of those pairs are the same shadowing `blueprint-journal-names.jsonc` already records,
+  where the game writes the generic id for a recipe this repository keys specifically.
+  Only the English differs between a shadowing id and its generic: the Almanac's own
+  canonical name is kept, as it is for every other blueprint. Where EDSY and the in-game
+  table disagree the in-game value is kept, as everywhere else in this repository: it
+  differs for ten values across four locales, all of them wording, none of them meaning.
+- **Coverage:** complete. All 107 blueprints carry all six locales.
+- **Manual corrections:** two values in the in-game table carry a stray leading or
+  trailing ASCII space, marked in the acquired table and removed here so a successful
+  lookup is already trimmed like every other catalogue name: French `FSD_FastBoot` (which
+  EDSY carries with the same trailing space) and German `Railgun_LongShot`. The
+  Portuguese `GuardianModule_Sturdy` and `GuardianWeapon_Sturdy` values carry a literal
+  `<br>` line break for the in-game layout, which is stored as a single space.
 
 ## `experimental-effect-names.jsonc`
 
@@ -61,7 +86,7 @@ language tag; a regional or script tag resolves to its language.
   EDSY's `expeffect.fdname`; that record's id selects an explicit `expeffect-<id>` entry
   from each language file.
 - **Coverage:** English covers all 86 effects; EDSY covers 84 in German and 85 each in
-  Spanish, French and Russian.
+  Spanish, French, Brazilian Portuguese and Russian.
 - **Manual corrections:** none.
 
 ## `material-names.jsonc`
@@ -79,7 +104,7 @@ language tag; a regional or script tag resolves to its language.
   parenthetical Guardian and Thargoid category labels where the owning catalogue does;
   localized columns remain verbatim source values.
 - **Coverage:** English, Spanish and Russian cover all 146 materials. The explicit
-  translations cover 128 in German and 140 in French.
+  translations cover 128 in German, and 140 each in French and Brazilian Portuguese.
 - **Manual corrections:** none.
 
 ## `micro-resource-names.jsonc`
@@ -99,7 +124,10 @@ language tag; a regional or script tag resolves to its language.
   German, Spanish, French and Russian. In both cases the owning catalogue remains
   authoritative for canonical English names.
 - **Coverage:** English, Spanish and Russian cover all 226 micro resources. The explicit
-  translations cover 218 in German and 225 in French.
+  translations cover 218 in German, 225 in French and 188 in Brazilian Portuguese. The
+  30 in-game-backed records take Portuguese from Odyssey Materials Helper where it has a
+  row, because the in-game capture supplied no Portuguese; `PowerVirus` and
+  `SmallCapacityPowerRegulator`, which the source does not carry at all, have none.
 - **Manual corrections:** none.
 
 ## `ship-names.jsonc`
@@ -115,8 +143,11 @@ language tag; a regional or script tag resolves to its language.
   from `data/ships/ships.jsonc`. The symbol is joined to Odyssey Materials
   Helper's `ships.name.*` key after removing punctuation and folding case. EDSY's
   `eddb.js` `ship.fdname` supplies the second join, with explicit `ship-<id>` language
-  entries filling locales absent from the CSV. The resulting source-backed coverage is
-  48 ships in Spanish, 44 in French and 48 in Russian; no accepted source carries a
+  entries filling locales absent from the CSV. The CSV keys a row by the ship's display
+  name rather than its symbol, which differ for the four hulls whose name carries a mark
+  the symbol omits (`Viper` is `ships.name.viper_mk_iii`), so the name is tried first and
+  the symbol second. The resulting source-backed coverage is 48 ships in Spanish, 44 in
+  French, 38 in Brazilian Portuguese and 48 in Russian; no accepted source carries a
   German ship-name table.
 - **Standing conclusion:** every source-backed non-English value is byte-for-byte equal
   to the canonical English ship name. The explicit values remain in the catalogue so a
@@ -147,10 +178,33 @@ language tag; a regional or script tag resolves to its language.
   `data/ships/SOURCES.md`. Where a canonical English name matches an EDSY `mtype-*`
   value in `lang-en.json` byte-for-byte and uniquely, explicit values with the same key
   are copied from `lang-ru.json`.
-- **Coverage:** canonical English covers every engineering option group; Russian covers
-  44 of 48. The Guardian power-plant, power-distributor and hull-reinforcement groups
-  have no distinct EDSY label, and EDSY carries no Russian value for
-  `frameShiftDrivesSCO`.
+- **Coverage:** canonical English covers every engineering option group; Brazilian
+  Portuguese and Russian each cover 44 of 48. The Guardian power-plant, power-distributor
+  and hull-reinforcement groups have no distinct EDSY label, and EDSY carries no value in
+  either language for `frameShiftDrivesSCO`.
+- **Manual corrections:** none.
+
+## `module-family-names.jsonc`
+
+- **Acquired:** 2026-08-23 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
+- **Derivation:** each of the 77 family ids and its canonical English name is projected
+  from `data/ships/module-families.jsonc`, whose own derivation is recorded in
+  `data/ships/SOURCES.md`. 58 of them are named by an in-game outfitting category, and
+  those categories' explicit German, Spanish, French, Brazilian Portuguese and Russian
+  labels are copied verbatim. The join is on family identity rather than on English
+  string equality, because the English column of the in-game table *is* the canonical
+  English name the ships catalogue took from it.
+- **Coverage:** English covers all 77 families; the five other locales cover the same 58.
+  The 19 without a source-backed label are the families the in-game outfitting screen
+  does not name separately: `axMissileRacks`, `axMultiCannons`, `cargoHatches`,
+  `causticSinkLaunchers`, `guardianGaussCannons`, `guardianHybridPowerDistributors`,
+  `guardianHybridPowerPlants`, `guardianNaniteTorpedoPylons`, `guardianPlasmaChargers`,
+  `guardianShardCannons`, `guardianShieldReinforcementPackages`,
+  `miningMultiLimpetControllers`, `remoteReleaseFlakLaunchers`,
+  `remoteReleaseFlechetteLaunchers`, `shockCannons`, `shutdownFieldNeutralisers`,
+  `subSurfaceDisplacementMissiles`, `subSurfaceExtractionMissiles` and `xenoScanners`.
 - **Manual corrections:** none.
 
 ## `experimental-effect-descriptions.jsonc`
@@ -180,16 +234,19 @@ language tag; a regional or script tag resolves to its language.
   are supplied by the repository owner from the in-game shop listing; no registry
   publishes them.
 - **Coverage:** English covers every variant. Ordinary names inherit the explicit
-  localized values available for their base module; the Merc-shop names carry all five
-  stored locales; fixed reward names have no accepted translation source.
+  localized values available for their base module, which now includes Brazilian
+  Portuguese on 51 of the 76 variants; the Merc-shop names carry the five locales the
+  repository owner supplied and no Portuguese; fixed reward names have no accepted
+  translation source.
 - **Manual corrections:** none.
 
 ## Known gaps
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
-stored locale. A language absent from all ten catalogues is the locale decision recorded
-above rather than a gap. The accepted sources carry only canonical English for
-outfitting-family labels and some engineering-group labels, slot and restriction labels,
-fixed reward names, and structured loadout, calculation, SLEF and edit messages. Missing
-source-backed translations remain tracked by
+stored locale. A language absent from all eleven catalogues is the locale decision
+recorded above rather than a gap. The accepted sources carry only canonical English for
+ship manufacturers, experimental-effect descriptions, 19 of the 77 outfitting-family
+labels, some engineering-group labels, slot and restriction labels, fixed reward names,
+and structured loadout, calculation, SLEF and edit messages. Missing source-backed
+translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).

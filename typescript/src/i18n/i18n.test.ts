@@ -6,6 +6,7 @@ import { getBlueprintName } from './blueprints.js';
 import { getExperimentalEffectName } from './experimental-effects.js';
 import { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
 import { getEngineeringGroupName } from './engineering-groups.js';
+import { getOutfittingFamilyName } from './module-families.js';
 import { getMaterialName } from './materials.js';
 import { getMicroResourceName } from './micro-resources.js';
 import { getModuleName } from './modules.js';
@@ -20,6 +21,7 @@ type LookupKind =
     | 'ship'
     | 'shipManufacturer'
     | 'engineeringGroup'
+    | 'outfittingFamily'
     | 'experimentalEffectDescription';
 type NameLookup = (identifier: string, locale: string) => string | null;
 
@@ -32,6 +34,7 @@ const LOOKUP_BY_KIND: Readonly<Record<LookupKind, NameLookup>> = {
     ship: getShipName,
     shipManufacturer: getShipManufacturer,
     engineeringGroup: getEngineeringGroupName,
+    outfittingFamily: getOutfittingFamilyName,
     experimentalEffectDescription: getExperimentalEffectDescription,
 };
 
@@ -60,9 +63,9 @@ test('a regional or script tag resolves to its stored language', () => {
 });
 
 test('a language the catalogues no longer carry is a miss', () => {
-    // Portuguese, Brazilian Portuguese, Italian, Hungarian, Georgian and Simplified
-    // Chinese are published by the sources and deliberately not stored.
-    for (const locale of ['pt', 'pt-BR', 'it', 'hu', 'ka', 'zh', 'zh-CN', 'zh-Hans']) {
+    // Italian, Hungarian, Georgian and Simplified Chinese are published by the sources
+    // and deliberately not stored.
+    for (const locale of ['it', 'hu', 'ka', 'zh', 'zh-CN', 'zh-Hans']) {
         assert.equal(getModuleName('Int_Hyperdrive_Size6_Class5', locale), null, locale);
     }
 });

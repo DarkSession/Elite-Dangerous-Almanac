@@ -1,10 +1,47 @@
 /*
  * Pins locale normalization, sparse misses and representative module, blueprint,
- * experimental-effect, material, micro-resource, ship, manufacturer, engineering-group
- * and experimental-description lookups for every language implementation.
+ * experimental-effect, material, micro-resource, ship, manufacturer, engineering-group,
+ * outfitting-family and experimental-description lookups for every language
+ * implementation.
  */
 {
   "lookups": [
+    {
+      "kind": "outfittingFamily",
+      "identifier": "shieldGenerators",
+      "locale": "de-DE",
+      "expected": "Schildgeneratoren"
+    },
+    {
+      "kind": "outfittingFamily",
+      "identifier": " ARMOUR ",
+      "locale": "pt-BR",
+      "expected": "Blindagem"
+    },
+    {
+      "kind": "outfittingFamily",
+      "identifier": "xenoScanners",
+      "locale": "fr",
+      "expected": null
+    },
+    {
+      "kind": "outfittingFamily",
+      "identifier": "xenoScanners",
+      "locale": "en",
+      "expected": "Xeno Scanners"
+    },
+    {
+      "kind": "module",
+      "identifier": "Int_Hyperdrive_Size6_Class5",
+      "locale": "pt",
+      "expected": "Motor de Distorção de Fase"
+    },
+    {
+      "kind": "material",
+      "identifier": "GridResistors",
+      "locale": "pt-BR",
+      "expected": "Resistores de grade"
+    },
     {
       "kind": "module",
       "identifier": "Int_Hyperdrive_Size6_Class5",
@@ -39,7 +76,13 @@
       "kind": "blueprint",
       "identifier": "AbrasionBlaster_FarReaching",
       "locale": "fr",
-      "expected": null
+      "expected": "Surfaceur abrasif longue portée"
+    },
+    {
+      "kind": "blueprint",
+      "identifier": "MC_Overcharged",
+      "locale": "fr",
+      "expected": "Arme surchargée"
     },
     {
       "kind": "experimentalEffect",

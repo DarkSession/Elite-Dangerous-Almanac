@@ -11,11 +11,12 @@
  * English name. Lookups return that source value verbatim; they never generate an
  * English fallback for a missing locale.
  *
- * The catalogues carry English, French, German, Russian and Spanish and no other
- * language. Several accepted sources publish more — Portuguese, Brazilian Portuguese,
- * Italian, Hungarian, Georgian and Simplified Chinese among them — and those values are
- * deliberately not stored, so every one of those tags is an unsupported locale that
- * returns `null`.
+ * The catalogues carry English, French, German, Portuguese, Russian and Spanish and no
+ * other language. Several accepted sources publish more — Italian, Hungarian, Georgian
+ * and Simplified Chinese among them — and those values are deliberately not stored, so
+ * every one of those tags is an unsupported locale that returns `null`.
+ * The stored Portuguese is the Brazilian Portuguese every accepted source publishes
+ * under a bare `pt` tag; `pt-PT` therefore resolves to it like any other regional tag.
  *
  * @example
  * ```ts
@@ -25,7 +26,7 @@
  * locale; // -> 'de'
  * ```
  */
-export type GameLocale = 'en' | 'de' | 'es' | 'fr' | 'ru';
+export type GameLocale = 'en' | 'de' | 'es' | 'fr' | 'pt' | 'ru';
 
 /** Locale keys stored in the shared localized-name catalogues. @internal */
 export type CatalogueLocale = GameLocale;

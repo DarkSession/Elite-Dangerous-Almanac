@@ -33,7 +33,7 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  * import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
  *
  * UTILITY_MODULES.length; // -> 35
- * UTILITY_MODULES.filter((m) => m.family === 'Shield Boosters').length; // -> 5
+ * UTILITY_MODULES.filter((m) => m.familyId === 'shieldBoosters').length; // -> 5
  * ```
  */
 export const UTILITY_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

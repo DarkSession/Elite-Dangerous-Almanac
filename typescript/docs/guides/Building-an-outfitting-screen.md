@@ -64,15 +64,46 @@ const drives = build.modulesForSlot('FrameShiftDrive');
 drives.map((m) => m.symbol); // every drive that fits, largest class included
 
 const optional = build.modulesForSlot('Slot01_Size7');
-const cargoRacks = optional.filter((module) => module.family === 'Cargo Racks');
+const cargoRacks = optional.filter((module) => module.familyId === 'cargoRacks');
 ```
 
 The method searches all 1199 modules because some mounts accept modules from more than
 one outfitting category: a fuel tank is a core module that also fits optional mounts.
 `ShipLoadout` already carries the complete catalogue for whole-build operations.
-Every optional internal, hardpoint and utility fitting has a stable descriptive
-`family` for this presentation step. Core modules carry `null`: their fixed `slot`
-already supplies the Power Plant / Thrusters / Frame Shift Drive grouping.
+
+## Group the offer into collapsible families
+
+Every module carries a `familyId`, core modules included, so the whole result of
+`modulesForSlot` groups without a taxonomy of your own. Related variants share one
+family: Bi-Weave and Prismatic generators are all `shieldGenerators`, and a
+pre-engineered or Powerplay weapon stays with its base weapon.
+
+`OUTFITTING_FAMILIES` gives the canonical English heading for a family, and
+`getOutfittingFamilyName` gives a localized one — `null` where the sources carry no
+label for that locale, so your application chooses the fallback rather than being handed
+English dressed up as a translation.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import {
+    OUTFITTING_FAMILIES,
+    type OutfittingFamilyId,
+} from '@elite-dangerous-almanac/core/ships/module-families';
+import { getOutfittingFamilyName } from '@elite-dangerous-almanac/core/i18n/module-families';
+
+const build = ShipLoadout.empty('Anaconda');
+
+const byFamily = new Map<OutfittingFamilyId, string[]>();
+for (const module of build.modulesForSlot('Slot01_Size7')) {
+    byFamily.set(module.familyId, [...(byFamily.get(module.familyId) ?? []), module.symbol]);
+}
+
+const heading = (familyId: OutfittingFamilyId, locale: string) =>
+    getOutfittingFamilyName(familyId, locale) ?? OUTFITTING_FAMILIES[familyId];
+
+heading('shieldGenerators', 'de'); // -> 'Schildgeneratoren'
+heading('xenoScanners', 'de'); // -> 'Xeno Scanners', the English fallback this app chose
+```
 
 ## Fit, remove, engineer
 

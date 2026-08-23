@@ -1,23 +1,39 @@
 /** Internal construction helpers for the public outfitting-module catalogues. */
 
 import type { ModuleCategory, OutfittingModule } from '../modules.js';
+import type { OutfittingFamilyId } from '../module-families.js';
+import type { CoreSlotType } from '../slots.js';
 import { deepFreeze } from '../../internal/deep-freeze.js';
 
 /**
  * The on-disk module shape. Data files call the engineering group `kind`, omit the
- * category, and omit `family` only for core modules; public records expose the clearer
- * `engineeringGroup` name and normalize an absent family to `null`.
+ * category, and omit a core module's family; public records expose the clearer
+ * `engineeringGroup` name and carry a family on every record.
  *
  * @remarks
  * A record's outfitting category is which `data/ships/modules-*.jsonc` file it was
  * read from, so the payload states it nowhere and {@link buildModuleCatalogue} adds
- * it back. {@link buildModuleCatalogue} also renames `kind` at this internal boundary,
- * keeping the shared JSONC compact without leaking its ambiguous source name into the
- * consumer API.
+ * it back. A core record's family is likewise already determined by the mount its
+ * `slot` names, so the core payload states that nowhere either rather than repeating
+ * one of eight ids 521 times. {@link buildModuleCatalogue} also renames `kind` at this
+ * internal boundary, keeping the shared JSONC compact without leaking its ambiguous
+ * source name into the consumer API.
  */
-export type ModuleRecord = Omit<OutfittingModule, 'category' | 'engineeringGroup' | 'family'> & {
+export type ModuleRecord = Omit<OutfittingModule, 'category' | 'engineeringGroup' | 'familyId'> & {
     readonly kind?: OutfittingModule['engineeringGroup'];
-    readonly family?: string;
+    readonly familyId?: OutfittingFamilyId;
+};
+
+/** The family each core mount's modules are listed under. */
+const CORE_SLOT_FAMILY: Readonly<Record<CoreSlotType | 'armour', OutfittingFamilyId>> = {
+    armour: 'armour',
+    powerPlant: 'powerPlants',
+    thrusters: 'engines',
+    frameShiftDrive: 'fsd',
+    lifeSupport: 'lifeSupport',
+    powerDistributor: 'powerDistributors',
+    sensors: 'sensors',
+    fuelTank: 'fuelTanks',
 };
 
 /**
@@ -41,7 +57,9 @@ export function buildModuleCatalogue(
     return deepFreeze(
         records.map(({ kind, ...record }) => ({
             ...record,
-            family: record.family ?? null,
+            // A `slot` on a non-core record belongs to a Guardian Hybrid, which has its
+            // own family and states it; only the core file leaves the family to its mount.
+            familyId: record.familyId ?? CORE_SLOT_FAMILY[record.slot!],
             engineeringGroup: kind ?? null,
             category,
         })),

@@ -8,9 +8,9 @@
  * sources carry no translation, leaving the application in control of fallback policy.
  * A source-backed localized spelling can be identical to English; the lookup returns
  * explicit source values verbatim but never manufactures an English fallback.
- * The catalogues carry English, French, German, Russian and Spanish only, each stored
- * under a bare language tag: a regional or script subtag is dropped (`de-DE` → `de`),
- * and any other language is an unsupported locale.
+ * The catalogues carry English, French, German, Portuguese, Russian and Spanish only,
+ * each stored under a bare language tag: a regional or script subtag is dropped
+ * (`de-DE` → `de`), and any other language is an unsupported locale.
  *
  * Each dataset lives in a separate runtime module. Import from this barrel for
  * convenience or from the corresponding `i18n/*` subpath for an explicit bundle
@@ -38,6 +38,7 @@
  */
 
 export { getModuleName } from './modules.js';
+export { getOutfittingFamilyName } from './module-families.js';
 export { getBlueprintName } from './blueprints.js';
 export { getExperimentalEffectName } from './experimental-effects.js';
 export { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';

@@ -245,6 +245,12 @@
       "minItems": 1,
       "items": { "$ref": "#/definitions/defaultLoadout" }
     },
+    "moduleFamilyCatalogue": {
+      "description": "module-families.jsonc — every outfitting family id mapped to its canonical English display name. The keys are the `familyId` every module record carries.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+    },
     "module": {
       "description": "One outfitting module. The record carries no `category`: which of the four it is, is which modules-*.jsonc file it was read from, so a loader adds the category from the file rather than every record repeating it. The four `*ModuleCatalogue` definitions below say what each file additionally requires.",
       "type": "object",
@@ -305,8 +311,8 @@
             "guardianShard"
           ]
         },
-        "family": {
-          "description": "Stable descriptive English family used to group optional-internal, hardpoint, and utility-mount outfitting lists. Closely related variants share one label. Required in those three catalogue files and absent from modules-core.jsonc, whose public records normalize it to null.",
+        "familyId": {
+          "description": "Stable id of the outfitting family this module is listed under. Closely related variants share one id. Required in modules-{internal,hardpoint,utility}.jsonc and absent from modules-core.jsonc, where the family follows from the mount in `slot` and a loader adds it rather than 521 records repeating it. The id's canonical English display name is in module-families.jsonc.",
           "$ref": "#/definitions/nonEmptyString"
         },
         "slot": {
@@ -495,7 +501,7 @@
           { "$ref": "#/definitions/module" },
           {
             "required": ["slot"],
-            "not": { "required": ["family"] }
+            "not": { "required": ["familyId"] }
           },
           {
             "description": "And `slot` names the mount that module actually fills. Requiring the field only would let an FSD claim `sensors`; pairing each symbol family with its mount is what makes this file the contract rather than the code that reads it.",
@@ -563,7 +569,7 @@
         "allOf": [
           { "$ref": "#/definitions/module" },
           {
-            "required": ["family"],
+            "required": ["familyId"],
             "if": { "required": ["slot"] },
             "then": {
               "description": "A `slot` here belongs to a Guardian Hybrid, and names the mount that hybrid actually fills — matching the symbol alone would let one claim any of the eight.",
@@ -594,7 +600,7 @@
         "allOf": [
           { "$ref": "#/definitions/module" },
           {
-            "required": ["family"],
+            "required": ["familyId"],
             "not": { "required": ["slot"] }
           }
         ]
@@ -608,7 +614,7 @@
         "allOf": [
           { "$ref": "#/definitions/module" },
           {
-            "required": ["family"],
+            "required": ["familyId"],
             "not": { "required": ["slot"] }
           }
         ]

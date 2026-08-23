@@ -385,20 +385,42 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   The group source, derivation, split
   Guardian families and coverage are documented under Engineering options below; this
   field is a projection of that map, not a separate classification source.
-- **`family` groups the three variable-slot outfitting lists.** Every internal,
-  hardpoint and utility record carries one stable descriptive English label: 484
-  internal modules in 35 families, 159 hardpoints in 29, and 35 utility fittings in
-  12. The 521 core records carry none because their existing `slot` is already the
-  grouping the core-internals screen uses; public loaders normalize that deliberate
-  absence to `null`. Labels are derived from the canonical `name` identities above and
-  the module kind represented by each record, then pluralized for display. Variants
-  remain with the base family rather than fragmenting a list: Bi-Weave and Prismatic
-  generators are `Shield Generators`; corrosion-resistant and Mk II racks are
-  `Cargo Racks`; Powerplay weapons stay with their base weapon; Mk I/Mk II cabins and
-  vessel hangars share `Passenger Cabins` and `Vessel Hangars`. Guardian/AX and
-  specialist mining weapons retain their distinct kind where their function differs.
-  A re-derivation must carry these labels in the normalized identity arrays; no
-  upstream column publishes this display classification.
+- **`familyId` groups every outfitting list.** Every record in all four catalogues
+  carries the id of the family its outfitting list shows it under: 521 core modules in
+  8 families, 484 internal modules in 32, 159 hardpoints in 25, and 35 utility fittings
+  in 12. No family crosses an outfitting category. The ids and their canonical English
+  names are `module-families.jsonc`, below; localized labels are
+  `data/i18n/module-family-names.jsonc`. Variants remain with the base family rather
+  than fragmenting a list: Bi-Weave and Prismatic generators are `shieldGenerators`;
+  corrosion-resistant and Mk II racks are `cargoRacks`; Powerplay and pre-engineered
+  weapons stay with their base weapon; Mk I/Mk II cabins and vessel hangars share
+  `passengerCabins` and `vesselHangars`. Guardian and AX weapons retain their distinct
+  family where their function differs. A core record's family follows from its `slot`,
+  which is on every one of them, so the two never disagree.
+
+### `module-families.jsonc` — the family ids and their English names
+
+- **Source:** Frontier's in-game outfitting category labels, acquired 2026-08-23 UTC
+  and supplied by the repository owner. The game publishes no immutable identifier for
+  its localisation tables, so the acquired table is the evidence; it is the same table
+  that supplies `data/i18n/module-family-names.jsonc`.
+- **Derivation:** 58 of the 77 families are named by an in-game outfitting category and
+  take that category's English label verbatim — which is why `Cargo Scanners` is
+  `Manifest Scanners`, `Torpedo Pylons` is `Torpedoes` and `Mine Launchers` is `Mines`.
+  The remaining 19 keep the Almanac's own descriptive name, because the outfitting
+  screen does not name them separately. Each id is the camelCase form of its English
+  name with punctuation removed, which `modules.test.ts` asserts, so an id and its
+  label cannot drift apart.
+- **Merged families.** Where the game lists several Almanac families under one category,
+  they are one family here: the operations, rescue, universal and xeno multi-limpet
+  controllers are `multiLimpetControllers`; mining volley repeaters and seismic charge
+  launchers are `miningTools`; the Mk II Plasma Shock Accelerator is a
+  `plasmaAccelerators`; the Supercruise Assist is a `flightAssists`. Mining multi-limpet
+  controllers are deliberately **not** merged, and keep their own family.
+- **The in-game English is not always the better name**, and is kept anyway so the
+  library's label is the one a player sees on the outfitting screen: `engines` for
+  thrusters, `fsd` for Frame Shift Drives, `afms` for Auto Field-Maintenance Units,
+  `ecms` for Electronic Countermeasures, and the singular `pulseWaveAnalyser`.
 - **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
   weapon stats; EDSY `eddb.js` for mass, integrity, power draw, boot time and the
   engineering base stats coriolis does not carry; and in-game verification for the

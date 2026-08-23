@@ -220,6 +220,10 @@
             "types": "./dist/i18n/modules.d.ts",
             "import": "./dist/i18n/modules.js"
         },
+        "./i18n/module-families": {
+            "types": "./dist/i18n/module-families.d.ts",
+            "import": "./dist/i18n/module-families.js"
+        },
         "./i18n/pre-engineered": {
             "types": "./dist/i18n/pre-engineered.d.ts",
             "import": "./dist/i18n/pre-engineered.js"
@@ -356,6 +360,10 @@
         "./ships/module-capabilities": {
             "types": "./dist/ships/module-capabilities.d.ts",
             "import": "./dist/ships/module-capabilities.js"
+        },
+        "./ships/module-families": {
+            "types": "./dist/ships/module-families.d.ts",
+            "import": "./dist/ships/module-families.js"
         },
         "./ships/module-limits": {
             "types": "./dist/ships/module-limits.d.ts",

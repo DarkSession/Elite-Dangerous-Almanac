@@ -137,6 +137,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   [update notes](https://forums.frontier.co.uk/threads/648012/), and the
   [Rhea Disaster Community Goal](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)
   with its [announcement](https://x.com/EliteDangerous/status/1812792503776489745).
+  Frontier's own **in-game localisation** supplies the outfitting category labels behind
+  the module families and their German, Spanish, French, Brazilian Portuguese and Russian
+  display text, and the engineering modification names in the six stored locales.
   Values read directly from the running game are Frontier's too — see the notice below.
 - **A [community description](https://www.reddit.com/r/EliteDangerous/comments/1uk2zhp/plasma_laser_theorycrafting_following_new/)
   by u/Techno3020** — linked only as corroboration that the Operations Plasma conversion's

@@ -10,6 +10,7 @@ import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with {
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
 import effectDescriptionsData from '../../../data/i18n/experimental-effect-descriptions.jsonc' with { type: 'json' };
 import engineeringGroupNamesData from '../../../data/i18n/engineering-group-names.jsonc' with { type: 'json' };
+import moduleFamilyNamesData from '../../../data/i18n/module-family-names.jsonc' with { type: 'json' };
 import materialNamesData from '../../../data/i18n/material-names.jsonc' with { type: 'json' };
 import microResourceNamesData from '../../../data/i18n/micro-resource-names.jsonc' with { type: 'json' };
 import moduleNamesData from '../../../data/i18n/module-names.jsonc' with { type: 'json' };
@@ -26,6 +27,7 @@ import microResourcesItemData from '../../../data/materials/micro-resources-item
 import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: 'json' };
 import effectsData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
 import engineeringOptionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
+import moduleFamiliesData from '../../../data/ships/module-families.jsonc' with { type: 'json' };
 import coreModulesData from '../../../data/ships/modules-core.jsonc' with { type: 'json' };
 import hardpointModulesData from '../../../data/ships/modules-hardpoint.jsonc' with { type: 'json' };
 import internalModulesData from '../../../data/ships/modules-internal.jsonc' with { type: 'json' };
@@ -42,6 +44,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'engineering-group-names.jsonc': 'localizedNameMap',
     'material-names.jsonc': 'localizedNameMap',
     'micro-resource-names.jsonc': 'localizedNameMap',
+    'module-family-names.jsonc': 'localizedNameMap',
     'module-names.jsonc': 'localizedNameCatalogue',
     'pre-engineered-variant-names.jsonc': 'localizedNameCatalogue',
     'ship-manufacturer-names.jsonc': 'localizedNameMap',
@@ -152,6 +155,10 @@ test('new display text stays aligned with its owning ships catalogues', () => {
     assertDirectEnglishNames(
         engineeringGroupNamesData as LocalizedNameMap,
         Object.fromEntries(Object.entries(groups).map(([groupId, group]) => [groupId, group.name])),
+    );
+    assertDirectEnglishNames(
+        moduleFamilyNamesData as LocalizedNameMap,
+        moduleFamiliesData as Readonly<Record<string, string>>,
     );
     assertDirectEnglishNames(
         effectDescriptionsData as LocalizedNameMap,

@@ -6,11 +6,10 @@
  * `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each
  * fixed mount in `slot`, and how many name none, across all four catalogues — a record's
  * `category` is the file it was read from, its `slot` is the one mount it fills, its
- * `engineeringGroup` is the engineering-menu family or null, and `family` is the
- * display grouping on every optional internal, hardpoint and utility module (null on core
- * modules). `familyCounts` pins complete coverage, `familyGroupCounts` pins the number of
- * groups, and `families` pins representative shared groupings across ordinary and special
- * variants. `records` pins
+ * `engineeringGroup` is the engineering-menu family or null, and `familyId` is the
+ * display grouping every module carries, core modules included. `familyCounts` pins
+ * complete coverage, `familyGroupCounts` pins the number of groups, and `families` pins
+ * representative shared groupings across ordinary and special variants. `records` pins
  * individual modules across every category, including DLC- and grant-gated modules; `shipArmour`
  * pins that getBulkheadsForShip returns a hull's five bulkhead variants. `class` is the module
  * size (0-8) and `rating` the grade letter (A-I).
@@ -24,22 +23,22 @@
     "all": 1199
   },
   "familyCounts": {
-    "core": 0,
+    "core": 521,
     "internal": 484,
     "hardpoint": 159,
     "utility": 35,
-    "all": 678
+    "all": 1199
   },
   "familyGroupCounts": {
-    "core": 0,
-    "internal": 35,
-    "hardpoint": 27,
+    "core": 8,
+    "internal": 32,
+    "hardpoint": 25,
     "utility": 12,
-    "all": 74
+    "all": 77
   },
   "families": [
     {
-      "family": "Cargo Racks",
+      "familyId": "cargoRacks",
       "category": "internal",
       "count": 16,
       "symbols": [
@@ -49,7 +48,7 @@
       ]
     },
     {
-      "family": "Shield Generators",
+      "familyId": "shieldGenerators",
       "category": "internal",
       "count": 57,
       "symbols": [
@@ -59,13 +58,13 @@
       ]
     },
     {
-      "family": "Beam Lasers",
+      "familyId": "beamLasers",
       "category": "hardpoint",
       "count": 12,
       "symbols": ["Hpt_BeamLaser_Fixed_Small", "Hpt_BeamLaser_Fixed_Small_Heat"]
     },
     {
-      "family": "Xeno Scanners",
+      "familyId": "xenoScanners",
       "category": "utility",
       "count": 3,
       "symbols": [
@@ -91,7 +90,7 @@
       "symbol": "Anaconda_Armour_Grade1",
       "category": "core",
       "engineeringGroup": "bulkheads",
-      "family": null,
+      "familyId": "armour",
       "slot": "armour",
       "name": "Lightweight Alloy",
       "class": 1,
@@ -102,7 +101,7 @@
       "symbol": "Hpt_PulseLaser_Fixed_Small",
       "category": "hardpoint",
       "engineeringGroup": "pulseLasers",
-      "family": "Pulse Lasers",
+      "familyId": "pulseLasers",
       "name": "Pulse Laser",
       "class": 1,
       "rating": "F",
@@ -111,7 +110,7 @@
     {
       "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
       "category": "hardpoint",
-      "family": "Missile Racks",
+      "familyId": "missiles",
       "name": "Missile Rack",
       "class": 2,
       "rating": "B",
@@ -122,7 +121,7 @@
       "symbol": "Hpt_ChaffLauncher_Tiny",
       "category": "utility",
       "engineeringGroup": "chaffLaunchers",
-      "family": "Chaff Launchers",
+      "familyId": "chaffLaunchers",
       "name": "Chaff Launcher",
       "class": 0,
       "rating": "I"
@@ -131,7 +130,7 @@
       "symbol": "Int_HullReinforcement_Size1_Class1",
       "category": "internal",
       "engineeringGroup": "hullReinforcements",
-      "family": "Hull Reinforcement Packages",
+      "familyId": "hullReinforcements",
       "name": "Hull Reinforcement Package",
       "class": 1,
       "rating": "E"
@@ -140,7 +139,7 @@
       "symbol": "Int_GuardianFSDBooster_Size1",
       "category": "internal",
       "engineeringGroup": "fsdBoosters",
-      "family": "Guardian FSD Boosters",
+      "familyId": "fsdBoosters",
       "name": "Guardian FSD Booster",
       "class": 1,
       "rating": "H",
@@ -149,7 +148,7 @@
     {
       "symbol": "Int_ShieldGenerator_Size1_Class4",
       "category": "internal",
-      "family": "Shield Generators",
+      "familyId": "shieldGenerators",
       "name": "Shield Generator",
       "class": 1,
       "rating": "B"
@@ -158,7 +157,7 @@
       "symbol": "Int_FighterBay_Size5_Class1_Free",
       "category": "internal",
       "engineeringGroup": null,
-      "family": "Vessel Hangars",
+      "familyId": "vesselHangars",
       "name": "Mk I Vessel Hangar",
       "class": 5,
       "rating": "D",
@@ -167,7 +166,7 @@
     {
       "symbol": "Int_FighterBay_Size6_Class1_Free",
       "category": "internal",
-      "family": "Vessel Hangars",
+      "familyId": "vesselHangars",
       "name": "Mk I Vessel Hangar",
       "class": 6,
       "rating": "D",
@@ -176,7 +175,7 @@
     {
       "symbol": "Int_FighterBay_Size7_Class1_Free",
       "category": "internal",
-      "family": "Vessel Hangars",
+      "familyId": "vesselHangars",
       "name": "Mk I Vessel Hangar",
       "class": 7,
       "rating": "D",
@@ -185,7 +184,7 @@
     {
       "symbol": "Int_FighterBayMk2_Size5_Class1_Free",
       "category": "internal",
-      "family": "Vessel Hangars",
+      "familyId": "vesselHangars",
       "name": "Mk II Vessel Hangar",
       "class": 5,
       "rating": "D",
@@ -199,7 +198,7 @@
     {
       "symbol": "Int_FighterBayMk2_Size6_Class1_Free",
       "category": "internal",
-      "family": "Vessel Hangars",
+      "familyId": "vesselHangars",
       "name": "Mk II Vessel Hangar",
       "class": 6,
       "rating": "D",
@@ -213,7 +212,7 @@
     {
       "symbol": "Int_FighterBayMk2_Size7_Class1_Free",
       "category": "internal",
-      "family": "Vessel Hangars",
+      "familyId": "vesselHangars",
       "name": "Mk II Vessel Hangar",
       "class": 7,
       "rating": "D",
@@ -227,7 +226,7 @@
     {
       "symbol": "Int_LargeCargoRack_Size8_class1",
       "category": "internal",
-      "family": "Cargo Racks",
+      "familyId": "cargoRacks",
       "name": "Mk II Cargo Rack",
       "class": 8,
       "rating": "D",
@@ -239,7 +238,7 @@
     {
       "symbol": "Int_MultiDroneControl_MiningV2_Size5_Class5",
       "category": "internal",
-      "family": "Mining Multi-Limpet Controllers",
+      "familyId": "miningMultiLimpetControllers",
       "name": "Mk II Mining Multi-Limpet Controller",
       "class": 5,
       "rating": "A",
@@ -251,7 +250,7 @@
     {
       "symbol": "Int_PlanetApproachSuite",
       "category": "internal",
-      "family": "Planetary Approach Suites",
+      "familyId": "planetaryApproachSuites",
       "name": "Planetary Approach Suite",
       "class": 1,
       "rating": "I",
@@ -260,7 +259,7 @@
     {
       "symbol": "Int_Hyperdrive_Size5_Class5",
       "category": "core",
-      "family": null,
+      "familyId": "fsd",
       "slot": "frameShiftDrive",
       "name": "Frame Shift Drive",
       "class": 5,
@@ -269,7 +268,7 @@
     {
       "symbol": "Int_FuelTank_Size3_Class3",
       "category": "core",
-      "family": null,
+      "familyId": "fuelTanks",
       "slot": "fuelTank",
       "name": "Fuel Tank",
       "class": 3,
@@ -278,7 +277,7 @@
     {
       "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
       "category": "core",
-      "family": null,
+      "familyId": "engines",
       "slot": "thrusters",
       "name": "Mk II Agile Boost Thrusters",
       "class": 5,
@@ -290,7 +289,7 @@
     {
       "symbol": "Int_GuardianPowerplant_Size5",
       "category": "internal",
-      "family": "Guardian Hybrid Power Plants",
+      "familyId": "guardianHybridPowerPlants",
       "slot": "powerPlant",
       "name": "Guardian Hybrid Power Plant",
       "class": 5,
@@ -300,7 +299,7 @@
     {
       "symbol": "Int_GuardianPowerDistributor_Size5",
       "category": "internal",
-      "family": "Guardian Hybrid Power Distributors",
+      "familyId": "guardianHybridPowerDistributors",
       "slot": "powerDistributor",
       "name": "Guardian Hybrid Power Distributor",
       "class": 5,

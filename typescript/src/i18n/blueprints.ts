@@ -34,7 +34,8 @@ const BLUEPRINT_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * import { getBlueprintName } from '@elite-dangerous-almanac/core/i18n/blueprints';
  *
  * getBlueprintName('FSD_LongRange', 'de-DE'); // -> 'Erhöhte FSA-Reichweite'
- * getBlueprintName('AbrasionBlaster_FarReaching', 'fr'); // -> null
+ * getBlueprintName('AbrasionBlaster_FarReaching', 'fr'); // -> 'Surfaceur abrasif longue portée'
+ * getBlueprintName('MC_Overcharged', 'fr'); // -> 'Arme surchargée'
  * ```
  */
 export function getBlueprintName(fdname: string, locale: string): string | null {

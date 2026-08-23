@@ -10,6 +10,7 @@
 {
   "powerPlants": {
     "en": "Power Plants",
+    "pt": "Geradores de Energia",
     "ru": "Силовые установки"
   },
   "guardianPowerPlants": {
@@ -17,14 +18,17 @@
   },
   "thrusters": {
     "en": "Thrusters",
+    "pt": "Propulsores",
     "ru": "Маневровые двигатели"
   },
   "frameShiftDrives": {
     "en": "Frame Shift Drives",
+    "pt": "Motores de Distorção de Fase",
     "ru": "Рамочно-сместительные двигатели"
   },
   "powerDistributors": {
     "en": "Power Distributors",
+    "pt": "Distribuidores de Energia",
     "ru": "Распределители питания"
   },
   "guardianPowerDistributors": {
@@ -35,14 +39,17 @@
   },
   "shieldGenerators": {
     "en": "Shield Generators",
+    "pt": "Geradores de Escudo",
     "ru": "Щитогенератор"
   },
   "shieldCellBanks": {
     "en": "Shield Cell Banks",
+    "pt": "Bancos de Célula de Escudo",
     "ru": "Щитонакопитель"
   },
   "hullReinforcements": {
     "en": "Hull Reinforcements",
+    "pt": "Reforços de Casco",
     "ru": "Наборы для усиления корпуса"
   },
   "guardianHullReinforcements": {
@@ -50,150 +57,187 @@
   },
   "pulseLasers": {
     "en": "Pulse Lasers",
+    "pt": "Lasers de Pulso",
     "ru": "Импульсные лазеры"
   },
   "burstLasers": {
     "en": "Burst Lasers",
+    "pt": "Lasers de Rajada",
     "ru": "Пульсирующие лазеры"
   },
   "beamLasers": {
     "en": "Beam Lasers",
+    "pt": "Lasers Contínuos",
     "ru": "Пучковые лазеры"
   },
   "cannons": {
     "en": "Cannons",
+    "pt": "Canhões",
     "ru": "Пушки"
   },
   "fragmentCannons": {
     "en": "Fragment Cannons",
+    "pt": "Canhões de Fragmentos",
     "ru": "Залповые орудия"
   },
   "multiCannons": {
     "en": "Multi-Cannons",
+    "pt": "Canhões de Repetição",
     "ru": "Многоствольные орудия"
   },
   "plasmaAccelerators": {
     "en": "Plasma Accelerators",
+    "pt": "Aceleradores de Plasma",
     "ru": "Ускорители плазмы"
   },
   "railGuns": {
     "en": "Rail Guns",
+    "pt": "Canhões Elétricos",
     "ru": "Рельсотроны"
   },
   "missiles": {
     "en": "Missiles",
+    "pt": "Mísseis",
     "ru": "Ракеты"
   },
   "mines": {
     "en": "Mines",
+    "pt": "Minas",
     "ru": "Мины"
   },
   "torpedoes": {
     "en": "Torpedoes",
+    "pt": "Torpedos",
     "ru": "Торпеды"
   },
   "shieldBoosters": {
     "en": "Shield Boosters",
+    "pt": "Potenciadores de Escudo",
     "ru": "Усилители щита"
   },
   "bulkheads": {
     "en": "Bulkheads",
+    "pt": "Blindagem",
     "ru": "Переборки"
   },
   "lifeSupports": {
     "en": "Life Supports",
+    "pt": "Suportes de Vida",
     "ru": "Системы жизнеобеспечения"
   },
   "sensors": {
     "en": "Sensors",
+    "pt": "Sensores",
     "ru": "Сенсоры"
   },
   "autoFieldMaintenanceUnits": {
     "en": "Auto Field-Maintenance Units",
+    "pt": "Unidades de Automanutenção em Campo",
     "ru": "Блоки АПР"
   },
   "collectionLimpets": {
     "en": "Collection Limpets",
+    "pt": "Drones Coletores",
     "ru": "Контроллеры дронов-сборщиков"
   },
   "fsdBoosters": {
     "en": "FSD Boosters",
+    "pt": "Potenciadores de MDD",
     "ru": "Ускорители FSD Стражей"
   },
   "fsdInterdictors": {
     "en": "FSD Interdictors",
+    "pt": "Interditores de MDD",
     "ru": "Перехватчики FSD"
   },
   "fuelScoops": {
     "en": "Fuel Scoops",
+    "pt": "Coletores de Combustível",
     "ru": "Топливозаборники"
   },
   "fuelTransferLimpets": {
     "en": "Fuel Transfer Limpets",
+    "pt": "Drones de Combustível",
     "ru": "Контроллеры дронов-заправщиков"
   },
   "hatchBreakerLimpets": {
     "en": "Hatch Breaker Limpets",
+    "pt": "Drones Quebra-Escotilha",
     "ru": "Контроллеры дронов-взломщиков трюмов"
   },
   "moduleReinforcements": {
     "en": "Module Reinforcements",
+    "pt": "Reforços de Módulo",
     "ru": "Наборы для усиления модулей"
   },
   "prospectingLimpets": {
     "en": "Prospecting Limpets",
+    "pt": "Drones Prospectores",
     "ru": "Контроллеры дронов-геологоразведчиков"
   },
   "refineries": {
     "en": "Refineries",
+    "pt": "Refinarias",
     "ru": "Очистители"
   },
   "shieldReinforcements": {
     "en": "Shield Reinforcements",
+    "pt": "Reforços de Escudo",
     "ru": "Усилители щита"
   },
   "surfaceScanners": {
     "en": "Surface Scanners",
+    "pt": "Scanners de Superfície",
     "ru": "Подробные сканеры поверхности"
   },
   "chaffLaunchers": {
     "en": "Chaff Launchers",
+    "pt": "Lançadores de Chaff",
     "ru": "Разбрасыватели дипольных отражателей"
   },
   "ecms": {
     "en": "ECMs",
+    "pt": "CMEs",
     "ru": "ЭПД"
   },
   "heatSinkLaunchers": {
     "en": "Heat Sink Launchers",
+    "pt": "Lançadores de Dissapador Térmico",
     "ru": "Теплоотводные катапульты"
   },
   "killWarrantScanners": {
     "en": "Kill Warrant Scanners",
+    "pt": "Scanners de Registro Criminal",
     "ru": "Сканеры преступников"
   },
   "manifestScanners": {
     "en": "Manifest Scanners",
+    "pt": "Scanners de Manifesto",
     "ru": "Сканеры содержимого"
   },
   "pointDefence": {
     "en": "Point Defence",
+    "pt": "Defesa de Ponto",
     "ru": "Точечная оборона"
   },
   "wakeScanners": {
     "en": "Wake Scanners",
+    "pt": "Scanners de Rastro",
     "ru": "Сканеры следа FSD"
   },
   "guardianGauss": {
     "en": "Exp - Guardian Gauss",
+    "pt": "Exp - Gauss Guardian",
     "ru": "Экс - Пушки Гаусса Стражей"
   },
   "guardianPlasma": {
     "en": "Exp - Guardian Plasma",
+    "pt": "Exp - Plasma Guardian",
     "ru": "Экс - Плазменные пушки Стражей"
   },
   "guardianShard": {
     "en": "Exp - Guardian Shard",
+    "pt": "Exp - Fragmentos Guardian",
     "ru": "Экс - Осколочные орудия Стражей"
   }
 }

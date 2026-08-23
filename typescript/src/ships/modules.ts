@@ -40,7 +40,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — 318.3 KiB minified (32.4 KiB gzipped) — since
+ * here pulls all four catalogues — 336.5 KiB minified (33.3 KiB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:
@@ -64,6 +64,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { filterByKey, findByKey } from '../internal/registry-index.js';
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import type { EngineeringGroupId } from './engineering-options.js';
+import type { OutfittingFamilyId } from './module-families.js';
 import type { ModuleSlot, SlotRestriction } from './slots.js';
 
 /**
@@ -230,7 +231,7 @@ export interface ProjectileRangeBoundaries {
  * Identity, classification, fit constraints, and price for one outfitting module.
  *
  * @remarks
- * The core identity fields (`symbol`, `name`, `category`, `family`, `class`, and `rating`)
+ * The core identity fields (`symbol`, `name`, `category`, `familyId`, `class`, and `rating`)
  * are always present. Optional fields describe fit restrictions, purchase entitlement,
  * and price. Performance data belongs to {@link OutfittingModuleStats}; the complete
  * flat catalogue record is {@link OutfittingModule}.
@@ -243,7 +244,7 @@ export interface ProjectileRangeBoundaries {
  *   symbol: 'CustomBeamLaser',
  *   category: 'hardpoint',
  *   engineeringGroup: 'beamLasers',
- *   family: 'Beam Lasers',
+ *   familyId: 'beamLasers',
  *   name: 'Custom Beam Laser',
  *   class: 2,
  *   rating: 'D',
@@ -271,21 +272,21 @@ export interface OutfittingModuleIdentity {
      */
     readonly engineeringGroup: EngineeringGroupId | null;
     /**
-     * Stable descriptive English family used to group an outfitting list, such as
-     * `"Cargo Racks"`, `"Shield Generators"`, or `"Beam Lasers"`.
+     * Stable outfitting family used to group an outfitting list, such as
+     * `'cargoRacks'`, `'shieldGenerators'` or `'beamLasers'`. See
+     * {@link OutfittingFamilyId}.
      *
      * @remarks
-     * Every optional-internal, hardpoint, and utility-mount record carries a family.
-     * Closely related variants share it: Bi-Weave and Prismatic generators are Shield
-     * Generators, Mk II and corrosion-resistant racks are Cargo Racks, and Powerplay
-     * weapon variants stay with their base weapon family. Core modules are outside this
-     * display grouping and carry `null`.
+     * Every record carries one, core modules included, so every choice
+     * {@link ShipLoadout.modulesForSlot} returns has a family. Closely related variants
+     * share it: Bi-Weave and Prismatic generators are `'shieldGenerators'`, Mk II and
+     * corrosion-resistant racks are `'cargoRacks'`, and a Powerplay or pre-engineered
+     * variant stays with its base weapon's family.
      *
-     * This canonical label is not localized and is not suitable as a localization key;
-     * source-backed locale coverage is tracked in
-     * [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
+     * {@link OUTFITTING_FAMILIES} gives the canonical English display name;
+     * `getOutfittingFamilyName` in `i18n/module-families` gives a localized one.
      */
-    readonly family: string | null;
+    readonly familyId: OutfittingFamilyId;
     /**
      * The one fixed mount this module fills, when it fills one: `'armour'` or one of
      * the seven {@link CoreSlotType} core functions.
