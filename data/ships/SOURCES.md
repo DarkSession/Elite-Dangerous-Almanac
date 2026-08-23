@@ -385,6 +385,20 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   The group source, derivation, split
   Guardian families and coverage are documented under Engineering options below; this
   field is a projection of that map, not a separate classification source.
+- **`family` groups the three variable-slot outfitting lists.** Every internal,
+  hardpoint and utility record carries one stable descriptive English label: 484
+  internal modules in 35 families, 159 hardpoints in 29, and 35 utility fittings in
+  12. The 521 core records carry none because their existing `slot` is already the
+  grouping the core-internals screen uses; public loaders normalize that deliberate
+  absence to `null`. Labels are derived from the canonical `name` identities above and
+  the module kind represented by each record, then pluralized for display. Variants
+  remain with the base family rather than fragmenting a list: Bi-Weave and Prismatic
+  generators are `Shield Generators`; corrosion-resistant and Mk II racks are
+  `Cargo Racks`; Powerplay weapons stay with their base weapon; Mk I/Mk II cabins and
+  vessel hangars share `Passenger Cabins` and `Vessel Hangars`. Guardian/AX and
+  specialist mining weapons retain their distinct kind where their function differs.
+  A re-derivation must carry these labels in the normalized identity arrays; no
+  upstream column publishes this display classification.
 - **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
   weapon stats; EDSY `eddb.js` for mass, integrity, power draw, boot time and the
   engineering base stats coriolis does not carry; and in-game verification for the

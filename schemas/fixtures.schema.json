@@ -3659,6 +3659,22 @@
       "additionalProperties": false,
       "properties": {
         "counts": { "$ref": "#/definitions/sharedfe8959703dc9" },
+        "families": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "category": { "type": "string" },
+              "count": { "type": "integer" },
+              "family": { "type": "string" },
+              "symbols": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["category", "count", "family", "symbols"]
+          }
+        },
+        "familyCounts": { "$ref": "#/definitions/sharedfe8959703dc9" },
+        "familyGroupCounts": { "$ref": "#/definitions/sharedfe8959703dc9" },
         "records": {
           "type": "array",
           "items": {
@@ -3671,6 +3687,7 @@
                 "anyOf": [{ "type": "string" }, { "type": "null" }]
               },
               "entitlement": { "type": "string" },
+              "family": { "anyOf": [{ "type": "null" }, { "type": "string" }] },
               "guidance": { "type": "string" },
               "mount": { "type": "string" },
               "name": { "type": "string" },
@@ -3684,7 +3701,14 @@
               "slot": { "type": "string" },
               "symbol": { "type": "string" }
             },
-            "required": ["category", "class", "name", "rating", "symbol"]
+            "required": [
+              "category",
+              "class",
+              "family",
+              "name",
+              "rating",
+              "symbol"
+            ]
           }
         },
         "shipArmour": {
@@ -3724,7 +3748,15 @@
           ]
         }
       },
-      "required": ["counts", "records", "shipArmour", "slotCounts"]
+      "required": [
+        "counts",
+        "families",
+        "familyCounts",
+        "familyGroupCounts",
+        "records",
+        "shipArmour",
+        "slotCounts"
+      ]
     },
     "shipsModuleStats": {
       "type": "object",

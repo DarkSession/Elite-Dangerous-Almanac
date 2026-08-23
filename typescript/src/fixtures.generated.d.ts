@@ -2917,11 +2917,32 @@ type FixtureShipsModules = {
         internal: number;
         utility: number;
     };
+    families: {
+        category: string;
+        count: number;
+        family: string;
+        symbols: string[];
+    }[];
+    familyCounts: {
+        all: number;
+        core: number;
+        hardpoint: number;
+        internal: number;
+        utility: number;
+    };
+    familyGroupCounts: {
+        all: number;
+        core: number;
+        hardpoint: number;
+        internal: number;
+        utility: number;
+    };
     records: {
         category: string;
         class: number;
         engineeringGroup?: string | null;
         entitlement?: string;
+        family: null | string;
         guidance?: string;
         mount?: string;
         name: string;

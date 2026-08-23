@@ -73,6 +73,7 @@ const IDENTITY_KEYS = new Set([
     'symbol',
     'category',
     'engineeringGroup',
+    'family',
     // Which mount the module fills is identity, not performance: armour names one and
     // still carries no stats at all.
     'slot',
@@ -133,11 +134,51 @@ test('engineeringGroup exposes the stable family carried by the shared data', ()
     assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1005);
 });
 
+test('family groups every optional internal, hardpoint, and utility module', () => {
+    const grouped = ALL_MODULES.filter((module) => module.family !== null);
+    assert.deepEqual(
+        Object.fromEntries(
+            Object.entries(CATALOGUES).map(([category, catalogue]) => [
+                category,
+                catalogue.filter((module) => module.family !== null).length,
+            ]),
+        ),
+        { ...modulesFixture.familyCounts },
+    );
+    assert.deepEqual(
+        Object.fromEntries(
+            Object.entries(CATALOGUES).map(([category, catalogue]) => [
+                category,
+                new Set(catalogue.flatMap((module) => module.family ?? [])).size,
+            ]),
+        ),
+        { ...modulesFixture.familyGroupCounts },
+    );
+
+    assert.ok(CORE_MODULES.every((module) => module.family === null));
+    assert.ok(INTERNAL_MODULES.every((module) => module.family !== null));
+    assert.ok(HARDPOINT_MODULES.every((module) => module.family !== null));
+    assert.ok(UTILITY_MODULES.every((module) => module.family !== null));
+
+    for (const expected of modulesFixture.families) {
+        const members = grouped.filter((module) => module.family === expected.family);
+        assert.equal(members.length, expected.count, expected.family);
+        assert.ok(
+            members.every((module) => module.category === expected.category),
+            `${expected.family} crosses outfitting categories`,
+        );
+        for (const symbol of expected.symbols) {
+            assert.equal(getModuleBySymbol(symbol, ALL_MODULES)?.family, expected.family, symbol);
+        }
+    }
+});
+
 test('identity, sparse stats, and required capabilities are independent contracts', () => {
     const identity: OutfittingModuleIdentity = {
         symbol: 'CustomDrive',
         category: 'core',
         engineeringGroup: 'frameShiftDrives',
+        family: null,
         name: 'Custom drive',
         class: 5,
         rating: 'A',

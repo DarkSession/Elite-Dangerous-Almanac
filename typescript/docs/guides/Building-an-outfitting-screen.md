@@ -62,11 +62,17 @@ const build = ShipLoadout.empty('Anaconda');
 
 const drives = build.modulesForSlot('FrameShiftDrive');
 drives.map((m) => m.symbol); // every drive that fits, largest class included
+
+const optional = build.modulesForSlot('Slot01_Size7');
+const cargoRacks = optional.filter((module) => module.family === 'Cargo Racks');
 ```
 
 The method searches all 1199 modules because some mounts accept modules from more than
 one outfitting category: a fuel tank is a core module that also fits optional mounts.
 `ShipLoadout` already carries the complete catalogue for whole-build operations.
+Every optional internal, hardpoint and utility fitting has a stable descriptive
+`family` for this presentation step. Core modules carry `null`: their fixed `slot`
+already supplies the Power Plant / Thrusters / Frame Shift Drive grouping.
 
 ## Fit, remove, engineer
 

@@ -33,6 +33,7 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  * import { INTERNAL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-internal';
  *
  * INTERNAL_MODULES.length; // -> 484
+ * INTERNAL_MODULES.filter((m) => m.family === 'Cargo Racks').length; // -> 16
  * ```
  */
 export const INTERNAL_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

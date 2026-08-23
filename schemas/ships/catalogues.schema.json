@@ -305,6 +305,10 @@
             "guardianShard"
           ]
         },
+        "family": {
+          "description": "Stable descriptive English family used to group optional-internal, hardpoint, and utility-mount outfitting lists. Closely related variants share one label. Required in those three catalogue files and absent from modules-core.jsonc, whose public records normalize it to null.",
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "slot": {
           "description": "The fixed mount this module fills: `armour` or one of the seven core functions. Required on every record in modules-core.jsonc; in modules-internal.jsonc it appears only on the Guardian Hybrid power plants and distributors, which Frontier files as internal modules yet which fill a core mount. Never present on a hardpoint or utility module.",
           "enum": [
@@ -489,7 +493,10 @@
       "items": {
         "allOf": [
           { "$ref": "#/definitions/module" },
-          { "required": ["slot"] },
+          {
+            "required": ["slot"],
+            "not": { "required": ["family"] }
+          },
           {
             "description": "And `slot` names the mount that module actually fills. Requiring the field only would let an FSD claim `sensors`; pairing each symbol family with its mount is what makes this file the contract rather than the code that reads it.",
             "oneOf": [
@@ -556,6 +563,7 @@
         "allOf": [
           { "$ref": "#/definitions/module" },
           {
+            "required": ["family"],
             "if": { "required": ["slot"] },
             "then": {
               "description": "A `slot` here belongs to a Guardian Hybrid, and names the mount that hybrid actually fills — matching the symbol alone would let one claim any of the eight.",
@@ -585,7 +593,10 @@
       "items": {
         "allOf": [
           { "$ref": "#/definitions/module" },
-          { "not": { "required": ["slot"] } }
+          {
+            "required": ["family"],
+            "not": { "required": ["slot"] }
+          }
         ]
       }
     },
@@ -596,7 +607,10 @@
       "items": {
         "allOf": [
           { "$ref": "#/definitions/module" },
-          { "not": { "required": ["slot"] } }
+          {
+            "required": ["family"],
+            "not": { "required": ["slot"] }
+          }
         ]
       }
     },

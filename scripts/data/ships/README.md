@@ -32,13 +32,16 @@ stat record whose symbol no identity carries, is an error rather than a silent d
   They are keyed by hull `symbol` and journal slot key and are not an input to this
   identity/stat/slot join;
 - module identities (`--<category>-identities`):
-  `{ symbol, slot?, name, class, rating, mount?, guidance?, ship?, entitlement? }`,
-  the FDevIDs `outfitting.csv` fields. **No `category`** — the CSV column of that name
-  is what chooses the `--<category>-identities` argument a record is passed under, and
-  the output file is what states it, so carrying it on every record would inline the
-  same string 1199 times into consumers' bundles. `slot` names the one fixed mount a
-  module fills; it is on every core record and on the Guardian Hybrid power plants and
-  distributors, and nowhere else. See `data/ships/SOURCES.md` §Modules (outfitting);
+  `{ symbol, family?, slot?, name, class, rating, mount?, guidance?, ship?, entitlement? }`,
+  the normalized identity fields. `family` is required on internal, hardpoint and
+  utility records and omitted on core records; it is the canonical grouping derived in
+  `data/ships/SOURCES.md`, not an FDevIDs column. **No `category`** — the CSV column of
+  that name is what chooses the `--<category>-identities` argument a record is passed
+  under, and the output file is what states it, so carrying it on every record would
+  inline the same string 1199 times into consumers' bundles. `slot` names the one fixed
+  mount a module fills; it is on every core record and on the Guardian Hybrid power
+  plants and distributors, and nowhere else. See `data/ships/SOURCES.md` §Modules
+  (outfitting);
 - module stats (`--<category>-stats`): `{ symbol, mass?, integrity?, powerDraw?, … }`
   — sparse, each record carrying only the stats its module group uses.
 - engineering options (`--engineering-options`): the checked-in

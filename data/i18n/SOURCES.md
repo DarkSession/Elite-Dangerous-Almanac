@@ -188,7 +188,8 @@ language tag; a regional or script tag resolves to its language.
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
 stored locale. A language absent from all ten catalogues is the locale decision recorded
-above rather than a gap. The accepted sources carry only canonical English for some
-engineering-group labels, slot and restriction labels, fixed reward names, and structured
-loadout, calculation, SLEF and edit messages. Missing source-backed translations remain tracked by
+above rather than a gap. The accepted sources carry only canonical English for
+outfitting-family labels and some engineering-group labels, slot and restriction labels,
+fixed reward names, and structured loadout, calculation, SLEF and edit messages. Missing
+source-backed translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).

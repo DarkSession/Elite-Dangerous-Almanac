@@ -230,10 +230,10 @@ export interface ProjectileRangeBoundaries {
  * Identity, classification, fit constraints, and price for one outfitting module.
  *
  * @remarks
- * The core identity fields (`symbol`, `name`, `category`, `class`, and `rating`) are
- * always present. Optional fields describe fit restrictions, purchase entitlement, and
- * price. Performance data belongs to {@link OutfittingModuleStats}; the complete flat
- * catalogue record is {@link OutfittingModule}.
+ * The core identity fields (`symbol`, `name`, `category`, `family`, `class`, and `rating`)
+ * are always present. Optional fields describe fit restrictions, purchase entitlement,
+ * and price. Performance data belongs to {@link OutfittingModuleStats}; the complete
+ * flat catalogue record is {@link OutfittingModule}.
  *
  * @example
  * ```ts
@@ -243,6 +243,7 @@ export interface ProjectileRangeBoundaries {
  *   symbol: 'CustomBeamLaser',
  *   category: 'hardpoint',
  *   engineeringGroup: 'beamLasers',
+ *   family: 'Beam Lasers',
  *   name: 'Custom Beam Laser',
  *   class: 2,
  *   rating: 'D',
@@ -269,6 +270,22 @@ export interface OutfittingModuleIdentity {
      * engineering menu. See {@link EngineeringGroupId}.
      */
     readonly engineeringGroup: EngineeringGroupId | null;
+    /**
+     * Stable descriptive English family used to group an outfitting list, such as
+     * `"Cargo Racks"`, `"Shield Generators"`, or `"Beam Lasers"`.
+     *
+     * @remarks
+     * Every optional-internal, hardpoint, and utility-mount record carries a family.
+     * Closely related variants share it: Bi-Weave and Prismatic generators are Shield
+     * Generators, Mk II and corrosion-resistant racks are Cargo Racks, and Powerplay
+     * weapon variants stay with their base weapon family. Core modules are outside this
+     * display grouping and carry `null`.
+     *
+     * This canonical label is not localized and is not suitable as a localization key;
+     * source-backed locale coverage is tracked in
+     * [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
+     */
+    readonly family: string | null;
     /**
      * The one fixed mount this module fills, when it fills one: `'armour'` or one of
      * the seven {@link CoreSlotType} core functions.
