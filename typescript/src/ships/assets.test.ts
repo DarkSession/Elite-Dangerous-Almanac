@@ -6,11 +6,15 @@ import { SHIPS } from './ships.js';
 import { enumerateSlots } from './slots.js';
 
 const SHIP_ASSETS_DIR = new URL('../../../assets/ships/', import.meta.url);
-const SHIP_ASSET_FILENAMES = [
-    'illustration.svg',
-    'schematic-bottom.svg',
-    'schematic-top.svg',
-] as const;
+const SHIP_ASSET_VIEW_BOXES = {
+    'gunsight.svg': '0 0 600 600',
+    'illustration.svg': '0 0 1200 800',
+    'schematic-bottom.svg': '0 0 1200 800',
+    'schematic-top.svg': '0 0 1200 800',
+} as const;
+const SHIP_ASSET_FILENAMES = Object.keys(SHIP_ASSET_VIEW_BOXES) as Array<
+    keyof typeof SHIP_ASSET_VIEW_BOXES
+>;
 const SCHEMATIC_SIDES = ['top', 'bottom'] as const;
 const FEATURE_CATEGORIES = new Set([
     'canopy',
@@ -166,7 +170,7 @@ test('the README publishes the exact schematic feature categories', async () => 
     assert.deepEqual(documented.sort(), [...FEATURE_CATEGORIES].sort());
 });
 
-test('ship illustrations and schematics follow the catalogue symbols one for one', async () => {
+test('ship visual assets follow the catalogue symbols one for one', async () => {
     const entries = await readdir(SHIP_ASSETS_DIR, { withFileTypes: true });
     const assetSymbols = entries
         .filter((entry) => entry.isDirectory())
@@ -190,7 +194,7 @@ test('ship illustrations and schematics follow the catalogue symbols one for one
                 await asset.read(prefix, 0, prefix.length, 0);
                 assert.match(
                     prefix.toString(),
-                    /<svg[^>]+viewBox="0 0 1200 800"/,
+                    new RegExp(`<svg[^>]+viewBox="${SHIP_ASSET_VIEW_BOXES[filename]}"`),
                     `${symbol}/${filename} has an unexpected SVG canvas`,
                 );
 
@@ -205,6 +209,29 @@ test('ship illustrations and schematics follow the catalogue symbols one for one
                 await asset.close();
             }
         }
+    }
+});
+
+test('ship gunsights expose every hardpoint journal slot exactly once', async () => {
+    for (const ship of SHIPS) {
+        const expectedSlots = enumerateSlots(ship)
+            .filter((slot) => slot.kind === 'hardpoint')
+            .map((slot) => slot.key)
+            .sort();
+        const asset = `${ship.symbol}/gunsight.svg`;
+        const source = await readFile(new URL(asset, SHIP_ASSETS_DIR), 'utf8');
+        const observedSlots = svgElements(
+            `<?xml version="1.0" encoding="UTF-8"?>\n${source}`,
+            asset,
+        )
+            .filter((element) => element.attributes.has('data-journal-slot'))
+            .map((element) => {
+                assert.equal(element.name, 'g', `${asset} annotates a non-group hardpoint`);
+                return element.attributes.get('data-journal-slot') as string;
+            })
+            .sort();
+
+        assert.deepEqual(observedSlots, expectedSlots, `${ship.symbol} gunsight slots`);
     }
 });
 

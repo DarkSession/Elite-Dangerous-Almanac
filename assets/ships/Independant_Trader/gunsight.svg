@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" data-identity="independant_trader" data-target-range-metres="1000" data-half-span-tangent="0.08">
+<g id="gunsight" fill="none" stroke="#22333b" stroke-width="2">
+<circle cx="300" cy="300" r="12"/>
+<circle cx="300" cy="300" r="2" fill="#22333b" stroke="none"/>
+</g>
+<g id="weapon-dots" fill="#e63946" stroke="#ffffff" stroke-width="1.5">
+<g id="hardpoint-01" data-name="SmallHardpoint1" data-journal-slot="SmallHardpoint1" data-socket="!Hardpoint0" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-7.000014192" data-offset-y-metres="-8.594200134">
+<circle cx="273.749947" cy="332.228251" r="5"/>
+</g>
+<g id="hardpoint-02" data-name="SmallHardpoint2" data-journal-slot="SmallHardpoint2" data-socket="!Hardpoint1" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="6.999985808" data-offset-y-metres="-8.594200134">
+<circle cx="326.249947" cy="332.228251" r="5"/>
+</g>
+<g id="hardpoint-03" data-name="MediumHardpoint1" data-journal-slot="MediumHardpoint1" data-socket="!Hardpoint5" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-6.458804017" data-offset-y-metres="-0.3966100216">
+<circle cx="275.779485" cy="301.487288" r="5"/>
+</g>
+<g id="hardpoint-04" data-name="MediumHardpoint2" data-journal-slot="MediumHardpoint2" data-socket="!Hardpoint6" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="6.461915606" data-offset-y-metres="-0.3966100216">
+<circle cx="324.232184" cy="301.487288" r="5"/>
+</g>
+</g>
+</svg>

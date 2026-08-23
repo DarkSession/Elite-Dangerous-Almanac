@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" data-identity="lakonminer" data-target-range-metres="1000" data-half-span-tangent="0.08">
+<g id="gunsight" fill="none" stroke="#22333b" stroke-width="2">
+<circle cx="300" cy="300" r="12"/>
+<circle cx="300" cy="300" r="2" fill="#22333b" stroke="none"/>
+</g>
+<g id="weapon-dots" fill="#e63946" stroke="#ffffff" stroke-width="1.5">
+<g id="hardpoint-01" data-name="MediumMiningHardpoint1" data-journal-slot="MediumMiningHardpoint1" data-socket="!Hardpoint0" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-5.902171031" data-offset-y-metres="-8.99394989">
+<circle cx="277.866859" cy="333.727312" r="5"/>
+</g>
+<g id="hardpoint-02" data-name="MediumMiningHardpoint2" data-journal-slot="MediumMiningHardpoint2" data-socket="!Hardpoint1" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-1.403731003" data-offset-y-metres="-8.99394989">
+<circle cx="294.736009" cy="333.727312" r="5"/>
+</g>
+<g id="hardpoint-03" data-name="MediumHardpoint3" data-journal-slot="MediumHardpoint3" data-socket="!Hardpoint2" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-0.1419609934" data-offset-y-metres="-1.479200363">
+<circle cx="299.467646" cy="305.547001" r="5"/>
+</g>
+<g id="hardpoint-04" data-name="SmallMiningHardpoint1" data-journal-slot="SmallMiningHardpoint1" data-socket="!Hardpoint3" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-3.641960993" data-offset-y-metres="-10.81202006">
+<circle cx="286.342646" cy="340.545075" r="5"/>
+</g>
+<g id="hardpoint-05" data-name="SmallHardpoint2" data-journal-slot="SmallHardpoint2" data-socket="!Hardpoint4" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-0.1419609934" data-offset-y-metres="-2.074000359">
+<circle cx="299.467646" cy="307.777501" r="5"/>
+</g>
+<g id="hardpoint-06" data-name="SmallHardpoint3" data-journal-slot="SmallHardpoint3" data-socket="!Hardpoint5" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="3.358039007" data-offset-y-metres="-18.2151401">
+<circle cx="312.592646" cy="368.306775" r="5"/>
+</g>
+<g id="hardpoint-07" data-name="SmallHardpoint4" data-journal-slot="SmallHardpoint4" data-socket="!Hardpoint6" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-3.641960993" data-offset-y-metres="-18.21498013">
+<circle cx="286.342646" cy="368.306175" r="5"/>
+</g>
+<g id="hardpoint-08" data-name="LargeMiningHardpoint1" data-journal-slot="LargeMiningHardpoint1" data-socket="!Hardpoint7" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="3.401489124" data-offset-y-metres="-7.246729851">
+<circle cx="312.755584" cy="327.175237" r="5"/>
+</g>
+</g>
+</svg>

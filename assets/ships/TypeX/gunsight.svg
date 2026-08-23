@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" data-identity="typex" data-target-range-metres="1000" data-half-span-tangent="0.08">
+<g id="gunsight" fill="none" stroke="#22333b" stroke-width="2">
+<circle cx="300" cy="300" r="12"/>
+<circle cx="300" cy="300" r="2" fill="#22333b" stroke="none"/>
+</g>
+<g id="weapon-dots" fill="#e63946" stroke="#ffffff" stroke-width="1.5">
+<g id="hardpoint-01" data-name="LargeHardpoint1" data-journal-slot="LargeHardpoint1" data-socket="!Hardpoint0" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="0.0162672093" data-offset-y-metres="13.65270972">
+<circle cx="300.061002" cy="248.802339" r="5"/>
+</g>
+<g id="hardpoint-02" data-name="SmallHardpoint1" data-journal-slot="SmallHardpoint1" data-socket="!Hardpoint1" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="0.0039364994" data-offset-y-metres="6.866549969">
+<circle cx="300.014762" cy="274.250438" r="5"/>
+</g>
+<g id="hardpoint-03" data-name="LargeHardpoint2" data-journal-slot="LargeHardpoint2" data-socket="!Hardpoint2" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="0.0074073989" data-offset-y-metres="8.286440134">
+<circle cx="300.027778" cy="268.925849" r="5"/>
+</g>
+<g id="hardpoint-04" data-name="MediumHardpoint1" data-journal-slot="MediumHardpoint1" data-socket="!Hardpoint3" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="0.0078854002" data-offset-y-metres="-2.006920099">
+<circle cx="300.029570" cy="307.525950" r="5"/>
+</g>
+<g id="hardpoint-05" data-name="SmallHardpoint2" data-journal-slot="SmallHardpoint2" data-socket="!Hardpoint4" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-4.126539007" data-offset-y-metres="10.0820601">
+<circle cx="284.525479" cy="262.192275" r="5"/>
+</g>
+<g id="hardpoint-06" data-name="SmallHardpoint3" data-journal-slot="SmallHardpoint3" data-socket="!Hardpoint5" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="4.160290942" data-offset-y-metres="10.08749986">
+<circle cx="315.601091" cy="262.171876" r="5"/>
+</g>
+</g>
+</svg>

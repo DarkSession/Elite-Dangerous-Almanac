@@ -55,9 +55,10 @@ The package has six feature areas:
 
 ## Ship assets
 
-Every catalogued hull includes three `1200 × 800` SVG files in the installed package:
+Every catalogued hull includes four SVG files in the installed package:
 
 ```text
+assets/ships/<symbol>/gunsight.svg
 assets/ships/<symbol>/illustration.svg
 assets/ships/<symbol>/schematic-top.svg
 assets/ships/<symbol>/schematic-bottom.svg
@@ -66,6 +67,11 @@ assets/ships/<symbol>/schematic-bottom.svg
 `<symbol>` is the exact ship symbol returned by the ships catalogue. These are static
 package files rather than JavaScript subpath exports, so applications can copy them from
 the installed package into their own public or bundled asset directory.
+
+`gunsight.svg` is a `600 × 600` frontal plot of the fixed-weapon aim points at a nominal
+1,000-metre target range. Each weapon group under `#weapon-dots` carries the same
+`data-journal-slot` key used by the hull's hardpoint layout. The illustration and both
+schematics use a `1200 × 800` canvas.
 
 The two schematics expose a stable annotation contract for hull-anatomy interfaces:
 

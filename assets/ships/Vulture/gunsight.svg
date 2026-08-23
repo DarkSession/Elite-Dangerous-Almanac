@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" data-identity="vulture" data-target-range-metres="1000" data-half-span-tangent="0.08">
+<g id="gunsight" fill="none" stroke="#22333b" stroke-width="2">
+<circle cx="300" cy="300" r="12"/>
+<circle cx="300" cy="300" r="2" fill="#22333b" stroke="none"/>
+</g>
+<g id="weapon-dots" fill="#e63946" stroke="#ffffff" stroke-width="1.5">
+<g id="hardpoint-01" data-name="LargeHardpoint1" data-journal-slot="LargeHardpoint1" data-socket="!Hardpoint_Large_Left" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="-6.074480449" data-offset-y-metres="2.435628057">
+<circle cx="277.220698" cy="290.866395" r="5"/>
+</g>
+<g id="hardpoint-02" data-name="LargeHardpoint2" data-journal-slot="LargeHardpoint2" data-socket="!Hardpoint_Large_Right" data-direction-ratio-x="0" data-direction-ratio-y="0" data-offset-x-metres="6.073999489" data-offset-y-metres="2.43562603">
+<circle cx="322.777498" cy="290.866402" r="5"/>
+</g>
+</g>
+</svg>

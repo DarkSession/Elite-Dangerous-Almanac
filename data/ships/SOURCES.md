@@ -130,8 +130,6 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
 ### Gunsights
 
 - **File:** `gunsights.jsonc` (48 player-flyable hulls, 234 weapon hardpoints).
-- **Source:** in-game gunsight observations from the in-game verification snapshot
-  pinned above.
 - **Derivation:** each observation is joined to `ships.jsonc` by case-insensitive hull
   symbol. Its hardpoints are joined by exact journal slot key to the hardpoints returned
   by `enumerateSlots`, then written in the existing `Ship.hardpoints` order. One observed

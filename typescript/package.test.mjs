@@ -1288,7 +1288,7 @@ test('the npm package contains byte-identical ship assets', async () => {
     const canonicalFiles = await relativeFiles(canonicalRoot);
     const packagedFiles = await relativeFiles(packagedRoot);
 
-    assert.equal(canonicalFiles.length, 48 * 3);
+    assert.equal(canonicalFiles.length, 48 * 4);
     assert.deepEqual(packagedFiles, canonicalFiles);
     for (const relative of canonicalFiles) {
         const [canonical, packaged] = await Promise.all([
