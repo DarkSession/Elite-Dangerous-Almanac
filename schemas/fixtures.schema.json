@@ -4252,9 +4252,29 @@
                 "ship": { "type": "string" }
               },
               "required": ["climbed", "expected", "modules", "ship"]
+            },
+            "ordinaryEngineering": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprint": { "type": "string" },
+                "grade": { "type": "integer" },
+                "mercCoins": { "type": "integer" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprint",
+                "grade",
+                "mercCoins",
+                "ship",
+                "slot",
+                "symbol"
+              ]
             }
           },
-          "required": ["credits", "mercenary"]
+          "required": ["credits", "mercenary", "ordinaryEngineering"]
         },
         "cellBanks": {
           "type": "object",

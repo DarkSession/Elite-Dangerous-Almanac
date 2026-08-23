@@ -666,6 +666,14 @@ test('buildCost totals the engineering a build still has to pay for', () => {
     festive.setPreEngineeredVariant('MediumHardpoint1', reward);
     assert.deepEqual(festive.buildCost().materials, []);
     assert.equal(festive.buildCost().mercCoins, 0);
+
+    const ordinary = operationsFixture.buildCost.ordinaryEngineering;
+    const fuelScoop = ShipLoadout.empty(ordinary.ship).setModule(
+        ordinary.slot,
+        getModuleBySymbol(ordinary.symbol, ALL_MODULES)!,
+    );
+    fuelScoop.applyBlueprint(ordinary.slot, ordinary.blueprint, { grade: ordinary.grade });
+    assert.equal(fuelScoop.buildCost().mercCoins, ordinary.mercCoins);
 });
 
 test('buildCost prices only the engineering the catalogues carry', () => {

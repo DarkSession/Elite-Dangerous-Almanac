@@ -514,8 +514,9 @@ export interface BuildCost {
     /** Shop credits for the hull and its fitted modules. */
     readonly credits: BuildCredits;
     /**
-     * Merc Coin billed by the build: every Mercenary article's shop price plus the currency
-     * its bespoke blueprint charges per roll for engineering it above the grade it was sold at.
+     * Merc Coin billed by the build: every Mercenary article's shop price plus every
+     * blueprint's currency cost, including ordinary engineering-menu recipes that charge it.
+     * A Mercenary article's blueprint is charged only above the grade it was sold at.
      */
     readonly mercCoins: number;
     /**

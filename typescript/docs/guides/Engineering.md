@@ -272,8 +272,9 @@ prices ordinary engineering rather than the reward.
 
 ## Pricing a whole build
 
-`ShipLoadout.buildCost` does the same folding for every module a build carries, and prices
-the hull and modules in credits beside it:
+`ShipLoadout.buildCost` does the same folding for every module a build carries, including
+the Merc Coin charged by ordinary engineering-menu recipes, and prices the hull and
+modules in credits beside it:
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

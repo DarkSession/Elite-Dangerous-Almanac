@@ -314,6 +314,14 @@
         "rebuy": 7348928
       }
     },
+    "ordinaryEngineering": {
+      "ship": "Anaconda",
+      "slot": "Slot02_Size6",
+      "symbol": "Int_FuelScoop_Size6_Class5",
+      "blueprint": "FuelScoop_Efficiency",
+      "grade": 5,
+      "mercCoins": 350
+    },
     "mercenary": {
       "ship": "Python",
       "modules": [

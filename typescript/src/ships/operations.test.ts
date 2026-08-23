@@ -104,6 +104,13 @@ test('shared catalogue-backed operation cases reproduce', () => {
         },
         fixture.buildCost.credits.expected,
     );
+    const ordinary = fixture.buildCost.ordinaryEngineering;
+    const ordinaryBuild = ShipLoadout.empty(ordinary.ship).setModule(
+        ordinary.slot,
+        getModuleBySymbol(ordinary.symbol, ALL_MODULES)!,
+    );
+    ordinaryBuild.applyBlueprint(ordinary.slot, ordinary.blueprint, { grade: ordinary.grade });
+    assert.equal(ordinaryBuild.buildCost().mercCoins, ordinary.mercCoins);
     const mercenary = fixture.buildCost.mercenary;
     const mercCoinBuild = ShipLoadout.default(mercenary.ship);
     for (const module of mercenary.modules) {

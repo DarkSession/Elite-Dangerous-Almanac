@@ -3236,6 +3236,14 @@ type FixtureShipsOperations = {
             }[];
             ship: string;
         };
+        ordinaryEngineering: {
+            blueprint: string;
+            grade: number;
+            mercCoins: number;
+            ship: string;
+            slot: string;
+            symbol: string;
+        };
     };
     cellBanks: {
         expected: {
