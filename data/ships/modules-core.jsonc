@@ -7127,6 +7127,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.45,
     "fsdHeatRate": 27,
+    "supercruiseOvercharge": true,
     "cost": 2041581
   },
   {
@@ -7145,6 +7146,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.75,
     "fsdHeatRate": 43,
+    "supercruiseOvercharge": true,
     "cost": 20515645
   },
   {
@@ -7163,6 +7165,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.6,
     "fsdHeatRate": 37,
+    "supercruiseOvercharge": true,
     "cost": 6471812
   },
   {
@@ -7181,6 +7184,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.3,
     "fsdHeatRate": 18,
+    "supercruiseOvercharge": true,
     "cost": 644032
   },
   {
@@ -7199,6 +7203,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.15,
     "fsdHeatRate": 14,
+    "supercruiseOvercharge": true,
     "cost": 203165
   },
   {
@@ -7217,6 +7222,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2,
     "fsdHeatRate": 10,
+    "supercruiseOvercharge": true,
     "cost": 64090
   },
   {
@@ -7320,6 +7326,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2,
     "fsdHeatRate": 10,
+    "supercruiseOvercharge": true,
     "cost": 21363
   },
   {
@@ -7338,6 +7345,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2,
     "fsdHeatRate": 10,
+    "supercruiseOvercharge": true,
     "cost": 64090
   },
   {
@@ -7356,6 +7364,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2,
     "fsdHeatRate": 10,
+    "supercruiseOvercharge": true,
     "cost": 64090
   },
   {
@@ -7374,6 +7383,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2,
     "fsdHeatRate": 10,
+    "supercruiseOvercharge": true,
     "cost": 192269
   },
   {
@@ -7392,6 +7402,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2.15,
     "fsdHeatRate": 14,
+    "supercruiseOvercharge": true,
     "cost": 67722
   },
   {
@@ -7410,6 +7421,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.15,
     "fsdHeatRate": 14,
+    "supercruiseOvercharge": true,
     "cost": 203165
   },
   {
@@ -7428,6 +7440,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.15,
     "fsdHeatRate": 14,
+    "supercruiseOvercharge": true,
     "cost": 203165
   },
   {
@@ -7446,6 +7459,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2.15,
     "fsdHeatRate": 14,
+    "supercruiseOvercharge": true,
     "cost": 609494
   },
   {
@@ -7464,6 +7478,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2.3,
     "fsdHeatRate": 18,
+    "supercruiseOvercharge": true,
     "cost": 214677
   },
   {
@@ -7482,6 +7497,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.3,
     "fsdHeatRate": 18,
+    "supercruiseOvercharge": true,
     "cost": 644032
   },
   {
@@ -7500,6 +7516,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.3,
     "fsdHeatRate": 18,
+    "supercruiseOvercharge": true,
     "cost": 644032
   },
   {
@@ -7518,6 +7535,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2.3,
     "fsdHeatRate": 18,
+    "supercruiseOvercharge": true,
     "cost": 1932096
   },
   {
@@ -7536,6 +7554,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2.45,
     "fsdHeatRate": 27,
+    "supercruiseOvercharge": true,
     "cost": 623816
   },
   {
@@ -7554,6 +7573,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.45,
     "fsdHeatRate": 27,
+    "supercruiseOvercharge": true,
     "cost": 2041581
   },
   {
@@ -7572,6 +7592,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.45,
     "fsdHeatRate": 27,
+    "supercruiseOvercharge": true,
     "cost": 2041581
   },
   {
@@ -7590,6 +7611,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2.45,
     "fsdHeatRate": 27,
+    "supercruiseOvercharge": true,
     "cost": 6124743
   },
   {
@@ -7608,6 +7630,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2.6,
     "fsdHeatRate": 37,
+    "supercruiseOvercharge": true,
     "cost": 2157271
   },
   {
@@ -7626,6 +7649,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.6,
     "fsdHeatRate": 37,
+    "supercruiseOvercharge": true,
     "cost": 6471812
   },
   {
@@ -7644,6 +7668,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.6,
     "fsdHeatRate": 37,
+    "supercruiseOvercharge": true,
     "cost": 6471812
   },
   {
@@ -7662,6 +7687,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2.6,
     "fsdHeatRate": 37,
+    "supercruiseOvercharge": true,
     "cost": 19415437
   },
   {
@@ -7680,6 +7706,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2.75,
     "fsdHeatRate": 43,
+    "supercruiseOvercharge": true,
     "cost": 6838548
   },
   {
@@ -7698,6 +7725,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.75,
     "fsdHeatRate": 43,
+    "supercruiseOvercharge": true,
     "cost": 20515645
   },
   {
@@ -7716,6 +7744,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.75,
     "fsdHeatRate": 43,
+    "supercruiseOvercharge": true,
     "cost": 20515645
   },
   {
@@ -7734,6 +7763,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2.75,
     "fsdHeatRate": 43,
+    "supercruiseOvercharge": true,
     "cost": 61546935
   },
   {
@@ -8262,6 +8292,7 @@
     "fuelMul": 0.008,
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
+    "supercruiseOvercharge": true,
     "cost": 6838550
   },
   {
@@ -8280,6 +8311,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
+    "supercruiseOvercharge": true,
     "cost": 20515650
   },
   {
@@ -8298,6 +8330,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
+    "supercruiseOvercharge": true,
     "cost": 20515650
   },
   {
@@ -8316,6 +8349,7 @@
     "fuelMul": 0.012,
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
+    "supercruiseOvercharge": true,
     "cost": 20515650
   },
   {
@@ -8334,6 +8368,7 @@
     "fuelMul": 0.013,
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
+    "supercruiseOvercharge": true,
     "cost": 61546940
   },
   {
@@ -8369,6 +8404,7 @@
     "fuelMul": 0.011,
     "fuelPower": 2.5025,
     "fsdHeatRate": 50,
+    "supercruiseOvercharge": true,
     "cost": 82042060
   },
   {

@@ -279,6 +279,76 @@ only in the state of the weapons capacitor, and the gap is large: a shot the cap
 cannot pay for makes **five times** its thermal load. A build that never overheats in a
 duel can cook itself in a wing fight with the same guns.
 
+## Mass, and how the thrusters read it
+
+Mass is the input half of the flight model, so the library publishes it rather than
+leaving a screen to reassemble it. `buildMass()` is the mass counterpart of
+`buildCost()`, and splits the same three ways:
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const build = ShipLoadout.default('Anaconda');
+
+const mass = build.buildMass();
+mass.hull; // -> 400      the bare hull, in tonnes
+mass.modules; // -> 664      every fitted module, post-engineering
+mass.unladen; // -> 1064     what `build.unladenMass` reports
+mass.total; // -> 1096     with the load below aboard
+mass.fuel; // -> 32       a full main tank by default
+mass.cargo; // -> 0        an empty hold by default
+
+build.buildMass({ fuel: 8, cargo: 32 }).total; // -> 1104
+```
+
+`fuel` and `cargo` default exactly as they do for `jumpRange()` and `mobilityMetrics()`,
+so the three agree by construction. Each of the standard loads carries its own resulting
+mass too:
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const build = ShipLoadout.default('Anaconda');
+build.standardLoadResult('laden').value?.mass; // -> 1210
+```
+
+**The reserve tank is in none of these.** The game's statistics panel counts it in the
+current mass it displays, and neither the jump equation nor the flight model does — ten
+observed builds reproduce their angular rates only with the reserve excluded. Add
+`fuelCapacity.reserve` where you are reproducing the panel, and nowhere else.
+
+`hull` and `modules` are always computed from the hull record and the current fit, while
+`unladen` is the build's own unladen mass — which for an unedited import is the figure
+the **capture** stated, and is the one every calculation here uses.
+
+What the thrusters do with that mass is a three-point curve, and `thrusters` publishes
+it the way `frameShiftDrive` publishes the jump constants:
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import { thrusterMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/mobility';
+
+const build = ShipLoadout.default('Anaconda');
+
+const curve = build.thrusters!;
+curve.optMass; // -> 1440   rated performance at or below this
+curve.maxMass; // -> 2160   past this the ship does not move at all
+
+const mobility = build.mobilityMetrics()!;
+mobility.loadedMass; // -> 1096   what the curve was evaluated at
+thrusterMassCurveMultiplier(mobility.loadedMass, curve) === mobility.massCurveMultiplier; // -> true
+```
+
+`loadedMass` against `optMass` and `maxMass` is the whole of "where does this build sit
+on its thrusters" — the reading an outfitting screen shows beside the speed. A mass past
+`maxMass` reports zero performance rather than a fabricated curve value, which is the
+same convention the shield generator's own mass curve follows.
+
+The getter is the fitted article's curve, so a switched-off or shed thruster still has
+one; it is `mobilityMetricsResult()` that decides whether the build can use it. It
+answers `null` — rather than throwing, as `frameShiftDrive` does — when no complete
+curve is fitted, because a build without usable thrusters is still a build.
+
 ## Jump range and fuel
 
 `jumpRangeSummary()` returns the loads a screen actually shows, so you do not have to
@@ -323,8 +393,10 @@ Do not assume a nullable figure is load-bearing:
   pairs: the convenience value is `null` and the result names what was missing, switched
   off or shed. Each issue's typed `reason` is `missing`, `unresolved`, `disabled`, `shed`
   or `invalid`; use it instead of parsing the diagnostic message.
-- `unladenMass`, `fuelCapacity` and `cargoCapacity` are not nullable and have no result
-  companion: no article a build can hold is unweighable, so they always answer.
+- `unladenMass`, `fuelCapacity`, `cargoCapacity` and `buildMass()` are not nullable and
+  have no result companion: no article a build can hold is unweighable, so they always
+  answer. `thrusters` is nullable but has no result companion either — it reports the
+  fitted article's curve, and `mobilityMetricsResult()` is what explains an unusable one.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
 - `armourMetrics()` always has the known hull's base figures.

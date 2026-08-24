@@ -40,7 +40,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — 336.5 KiB minified (33.3 KiB gzipped) — since
+ * here pulls all four catalogues — 337.4 KiB minified (33.3 KiB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:
@@ -537,6 +537,32 @@ export interface OutfittingModuleStats {
      * drive of the same size.
      */
     readonly fsdHeatRate?: number;
+    /**
+     * Frame shift drive: `true` on a Supercruise Overcharge drive, the line the
+     * outfitting screen labels SCO.
+     *
+     * @remarks
+     * A sparse capability flag on the 36 Overcharge drives and absent everywhere else,
+     * including on the 36 ordinary drives of the same sizes and ratings. Read it rather
+     * than matching `Int_Hyperdrive_Overcharge` on the symbol: the capability is the
+     * record's to state, and a pre-engineered or fitted article carries the flag
+     * through while its symbol is not always the one you looked up.
+     *
+     * The two lines share every jump constant this library models, so the flag changes
+     * no calculation here; it is what an outfitting list filters and labels on. The
+     * overcharged supercruise behaviour itself — the boosted acceleration and the extra
+     * fuel it burns — is in-flight behaviour the game publishes no figures for, and the
+     * library models none of it.
+     *
+     * @example
+     * ```ts
+     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+     *
+     * getModuleBySymbol('Int_Hyperdrive_Overcharge_Size5_Class5')?.supercruiseOvercharge; // -> true
+     * getModuleBySymbol('Int_Hyperdrive_Size5_Class5')?.supercruiseOvercharge; // -> undefined
+     * ```
+     */
+    readonly supercruiseOvercharge?: boolean;
     /** Guardian FSD Booster: flat jump-range bonus, in light-years. */
     readonly jumpBoost?: number;
 

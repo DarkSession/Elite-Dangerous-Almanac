@@ -3213,6 +3213,11 @@ type FixtureShipsModuleStats = {
         };
         note: string;
     };
+    supercruiseOvercharge: {
+        count: number;
+        note: string;
+        symbols: string[];
+    };
     unpriced: string[];
     unpricedNote: string;
     withoutIntegrity: {

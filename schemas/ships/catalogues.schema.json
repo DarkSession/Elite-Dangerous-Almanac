@@ -420,6 +420,10 @@
         "fuelMul": { "type": "number", "exclusiveMinimum": 0 },
         "fuelPower": { "type": "number", "exclusiveMinimum": 0 },
         "fsdHeatRate": { "type": "number", "minimum": 0 },
+        "supercruiseOvercharge": {
+          "description": "True on a Supercruise Overcharge drive, the capability the outfitting screen calls SCO; absent on a drive without it and on every other module.",
+          "const": true
+        },
         "jumpBoost": { "type": "number", "minimum": 0 },
         "powerCapacity": { "type": "number", "minimum": 0 },
         "heatEfficiency": { "type": "number", "minimum": 0 },
@@ -490,7 +494,20 @@
         "jitter": { "type": "number", "minimum": 0 },
 
         "cost": { "type": "integer", "minimum": 0 }
-      }
+      },
+      "allOf": [
+        {
+          "description": "Every Supercruise Overcharge drive states the capability, and nothing else carries the field at all — which is why this sits on the shared record rather than on the one file the drives happen to live in. The symbol is what the game sells the two drive lines under, so pinning the pair here is what keeps `supercruiseOvercharge` a datum the library reads rather than a pattern it matches.",
+          "if": {
+            "required": ["symbol"],
+            "properties": {
+              "symbol": { "pattern": "^Int_Hyperdrive_Overcharge_" }
+            }
+          },
+          "then": { "required": ["supercruiseOvercharge"] },
+          "else": { "not": { "required": ["supercruiseOvercharge"] } }
+        }
+      ]
     },
     "coreModuleCatalogue": {
       "description": "modules-core.jsonc — every record fills one of the eight core mounts and says which in `slot`.",

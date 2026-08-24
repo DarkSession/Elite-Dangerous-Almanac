@@ -70,6 +70,18 @@ export interface MobilityInput {
 
 /** Speed and rotation rates for one loaded ship. */
 export interface MobilityMetrics {
+    /**
+     * The loaded mass these figures were calculated at, in tonnes — the
+     * {@link MobilityInput.mass} that went in.
+     *
+     * @remarks
+     * Reported so a build-level caller, which never states the mass itself, can read
+     * what the curve was evaluated at. Against the fitted curve's `optMass` and
+     * `maxMass` it is the build's position on that curve: at or below `optMass` the
+     * thrusters are at or above their rated performance, and past `maxMass` they do not
+     * move the ship at all — {@link massCurveMultiplier} is `0` there.
+     */
+    readonly loadedMass: number;
     /** Top speed at this mass and ENG allocation, in metres per second. */
     readonly speed: number;
     /** Boost speed at this mass, in metres per second. */
@@ -256,6 +268,7 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
     const handlingAtPips = (maximum: number, minimum: number): number =>
         minimum + (maximum - minimum) * pipMultiplier;
     return {
+        loadedMass: input.mass,
         speed: speedAtPips * massCurveMultiplier,
         boost: input.boost * massCurveMultiplier,
         pitch: handlingAtPips(input.pitch, input.minPitch) * rotationMassCurveMultiplier,

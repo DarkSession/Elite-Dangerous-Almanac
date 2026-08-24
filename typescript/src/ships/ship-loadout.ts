@@ -99,6 +99,7 @@ import {
     cellBankInputsFor,
     distributorInputFor,
     effectiveModule,
+    fittedThrusterParamsFor,
     heatInputFor,
     mobilityInputResultFor,
     powerAvailable,
@@ -121,7 +122,7 @@ import {
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { weaponsCapacitorMetrics, type WeaponsCapacitorMetrics } from './weapons-capacitor.js';
 import { distributorMetrics, type DistributorMetrics } from './distributor.js';
-import { mobilityMetrics, type MobilityMetrics } from './mobility.js';
+import { mobilityMetrics, type MobilityMetrics, type ThrusterParams } from './mobility.js';
 import {
     cellBankSummary,
     shieldRecovery,
@@ -456,12 +457,29 @@ export interface MobilityOptions extends JumpOptions {
 /** A standard fuel-and-cargo condition shared by jump and mobility views. */
 export type StandardLoad = 'maximum' | 'unladen' | 'laden';
 
-/** Fuel and cargo carried for a {@link StandardLoad}, both in tonnes. */
+/** What a {@link StandardLoad} carries, and what the ship weighs carrying it. */
 export interface StandardLoadInputs {
     /** Main-tank fuel carried, in tonnes. */
     readonly fuel: number;
     /** Cargo carried, in tonnes. */
     readonly cargo: number;
+    /**
+     * What the ship weighs at this load, in tonnes: {@link ShipLoadout.unladenMass}
+     * plus `fuel` plus `cargo`.
+     *
+     * @remarks
+     * This is the mass the jump and mobility calculations run on, so it is the figure
+     * to show beside them rather than one reassembled by the caller. The reserve tank
+     * is **not** in it: the game's statistics panel counts the reserve in the current
+     * mass it displays, and neither calculation here does — see
+     * {@link ShipLoadout.mobilityMetrics}. Add {@link FuelCapacity.reserve} to match the
+     * panel.
+     *
+     * The extra `fuel` and `cargo` are the load a screen labels; the mass is what they
+     * add up to, and passing the whole value back into {@link ShipLoadout.jumpRange} or
+     * {@link ShipLoadout.mobilityMetrics} is unaffected by its presence.
+     */
+    readonly mass: number;
 }
 
 /** Optional WEP allocation for {@link ShipLoadout.weaponsCapacitorMetrics}. */
@@ -534,6 +552,48 @@ export interface BuildCost {
      * {@link BuildCredits.unpriced} reports an unpriceable module.
      */
     readonly materials: readonly EngineeringMaterial[];
+}
+
+/**
+ * What an assembled build weighs, broken down the way {@link ShipLoadout.buildMass}
+ * weighs it. Every figure is in tonnes.
+ *
+ * @remarks
+ * The mass counterpart of {@link BuildCredits}, and the same split: what the bare hull
+ * contributes, what the fit adds, and the total. `fuel` and `cargo` are the chosen load
+ * on top of that, so `total` is the mass the jump and mobility calculations run on.
+ */
+export interface BuildMass {
+    /** Bare hull mass — the {@link ships!Ship.hullMass | hullMass} of the hull being flown. */
+    readonly hull: number;
+    /**
+     * Every fitted module's post-engineering mass, summed.
+     *
+     * @remarks
+     * Lightweight blueprints are already folded in, and the cargo hatch weighs nothing.
+     * A fitted record with no mass at all contributes `0` rather than making the total
+     * unavailable — mass is the one figure no article can be missing (see
+     * {@link ShipLoadout.unladenMass}), which is why there is no `unpriced` counterpart
+     * to {@link BuildCredits.unpriced} here.
+     */
+    readonly modules: number;
+    /**
+     * The ship with an empty tank and no cargo — {@link ShipLoadout.unladenMass}.
+     *
+     * @remarks
+     * `hull` and `modules` are always computed from the hull record and the current
+     * fit, while this is the build's own unladen mass, which for an unedited import is
+     * the figure the **capture** stated. The two agree on anything assembled here; where
+     * a capture disagrees with the catalogues, this is the one the jump and mobility
+     * calculations use and the decomposition is what the catalogues say it is made of.
+     */
+    readonly unladen: number;
+    /** Main-tank fuel counted, in tonnes. Defaults to a full main tank. */
+    readonly fuel: number;
+    /** Cargo counted, in tonnes. Defaults to an empty hold. */
+    readonly cargo: number;
+    /** `unladen + fuel + cargo`: what the ship weighs at the chosen load. */
+    readonly total: number;
 }
 
 /** One fitted weapon and what it does, as {@link ShipLoadout.weaponMetrics} reports it. */
@@ -2530,6 +2590,41 @@ export class ShipLoadout {
         return drive;
     }
 
+    /**
+     * The fitted thrusters' post-engineering mass curve, or `null` when the build has
+     * none — the thruster counterpart of {@link frameShiftDrive}.
+     *
+     * @remarks
+     * A {@link ships!ThrusterParams | ThrusterParams} carries the three masses the
+     * curve is defined over and the multiplier at each, plus the separate `speedCurve`
+     * and `rotationCurve` an enhanced-performance thruster refines them with. Pass it
+     * straight to
+     * {@link ships!thrusterMassCurveMultiplier | thrusterMassCurveMultiplier} for the
+     * multiplier at a mass of your own, or read `optMass` and `maxMass` against
+     * {@link ships!MobilityMetrics.loadedMass | loadedMass} for where this build sits
+     * on the curve.
+     *
+     * This is the fitted article's curve, so a switched-off or shed thruster still has
+     * one; {@link mobilityMetricsResult} is what judges whether the build can use it.
+     * It answers `null` rather than throwing — unlike `frameShiftDrive`, which the jump
+     * equation cannot do without — when no thrusters are fitted or the fitted record
+     * carries no complete curve.
+     *
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const build = ShipLoadout.default('Anaconda');
+     * build.thrusters?.optMass; // -> 1440, tonnes
+     * build.thrusters?.maxMass; // -> 2160, past which the ship does not move at all
+     * ```
+     */
+    get thrusters(): ThrusterParams | null {
+        return fittedThrusterParamsFor([...this.#modules.values()], (module) =>
+            this.#statsFor(module),
+        );
+    }
+
     /** The fuel one jump can burn: the whole main tank, or the drive limit if lower. */
     #maxJumpFuel(fsd: FrameShiftDriveParams): number {
         return Math.min(this.fuelCapacity.main, fsd.maxFuel);
@@ -2657,9 +2752,10 @@ export class ShipLoadout {
      *
      * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
      * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
-     * @returns Fuel and cargo in tonnes. Only `'maximum'` can come back incomplete: it
-     * validates the whole fitted drive, jump booster included, so a complete one can be
-     * passed straight to {@link jumpRange}.
+     * @returns The fuel and cargo carried, and the {@link StandardLoadInputs.mass} the
+     * ship weighs carrying them, all in tonnes. Only `'maximum'` can come back
+     * incomplete: it validates the whole fitted drive, jump booster included, so a
+     * complete one can be passed straight to {@link jumpRange}.
      * @throws {RangeError} If `load` is not a recognised standard load.
      * @example
      * ```ts
@@ -2668,6 +2764,13 @@ export class ShipLoadout {
      * declare const build: ShipLoadout;
      * const load = build.standardLoadResult('maximum');
      * if (load.complete) build.mobilityMetrics({ ...load.value, enginesPips: 2 });
+     * ```
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const build = ShipLoadout.default('Anaconda');
+     * build.standardLoadResult('laden').value?.mass; // -> 1210, tonnes with a full tank and hold
      * ```
      */
     standardLoadResult(load: StandardLoad): CalculationResult<StandardLoadInputs> {
@@ -2719,9 +2822,11 @@ export class ShipLoadout {
         if (issues.length > 0) {
             return incompleteResult(issues as [CalculationIssue, ...CalculationIssue[]]);
         }
+        const carriedFuel = load === 'maximum' ? Math.min(fuel.main, maximumFuel!) : fuel.main;
         const value = Object.freeze({
-            fuel: load === 'maximum' ? Math.min(fuel.main, maximumFuel!) : fuel.main,
+            fuel: carriedFuel,
             cargo,
+            mass: this.unladenMass + carriedFuel + cargo,
         });
         if (load === 'maximum') {
             try {
@@ -3169,6 +3274,53 @@ export class ShipLoadout {
             },
             mercCoins,
             materials: sumMaterials(...materials),
+        });
+    }
+
+    /**
+     * Weigh the whole build: the hull, the fitted modules, and the load on top of them.
+     *
+     * @remarks
+     * The mass companion to {@link buildCost}, answering the same question in tonnes
+     * that that one answers in credits. Every module's mass is post-engineering, so a
+     * Lightweight roll is already in `modules`.
+     *
+     * The reserve tank is **not** counted. The main tank is the fuel the drive and the
+     * flight model see, and it is what {@link jumpRange} and {@link mobilityMetrics}
+     * weigh; the game's statistics panel additionally counts the reserve in the current
+     * mass it displays, so add {@link fuelCapacity}`.reserve` to reproduce that reading.
+     *
+     * @param options - {@link JumpOptions}. `fuel` defaults to a full main tank and
+     * `cargo` to `0`, matching {@link jumpRange} and {@link mobilityMetrics}. Pass
+     * {@link standardLoadResult} to weigh one of the standard loads.
+     * @returns A frozen {@link BuildMass}, every figure in tonnes.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const build = ShipLoadout.default('Anaconda');
+     * const mass = build.buildMass();
+     * mass.hull; // -> 400
+     * mass.modules; // -> 664
+     * mass.total; // -> 1096, a full main tank and an empty hold
+     * build.buildMass({ cargo: build.cargoCapacity }).total; // -> 1210
+     * ```
+     */
+    buildMass(options: JumpOptions = {}): BuildMass {
+        requireLoadOptions('ShipLoadout.buildMass', options);
+        const hull = this.#ship.hullMass;
+        const modules = calculateUnladenMass(0, this.#calculationModules());
+        const unladen = this.unladenMass;
+        const fuel = options.fuel ?? this.fuelCapacity.main;
+        const cargo = options.cargo ?? 0;
+        return Object.freeze({
+            hull,
+            modules,
+            unladen,
+            fuel,
+            cargo,
+            total: unladen + fuel + cargo,
         });
     }
 

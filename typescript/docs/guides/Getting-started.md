@@ -98,7 +98,7 @@ before any transport compression. The published package strips whitespace but do
 compress syntax or rename identifiers, so its own files on disk are larger. The heaviest
 imports are:
 
-- `ships/ship-loadout` is about 834.8 KiB, the batteries-included facade. Resolving
+- `ships/ship-loadout` is about 854.5 KiB, the batteries-included facade. Resolving
   arbitrary journal module ids and engineering recipes needs the complete ship, module,
   blueprint-mechanics and experimental-effect-mechanics catalogues, and
   `ShipLoadout.buildCost` prices a build in materials and Merc Coin as well as credits, so
@@ -115,7 +115,7 @@ imports are:
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
   about 9 KiB. The geometry-backed lookup therefore stays off the astro barrel.
 
-`ships/modules` is 336.5 KiB and `ships/modules-all` 335.1 KiB — heavier than the codex
+`ships/modules` is 337.4 KiB and `ships/modules-all` 336.0 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
 materials 16.9 KiB, micro resources 13.0 KiB, commodities 29.5 KiB.

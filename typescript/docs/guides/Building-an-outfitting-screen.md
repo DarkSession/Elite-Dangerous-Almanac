@@ -105,6 +105,18 @@ heading('shieldGenerators', 'de'); // -> 'Schildgeneratoren'
 heading('xenoScanners', 'de'); // -> 'Xeno Scanners', the English fallback this app chose
 ```
 
+A family is the heading, not the whole label: one family can hold two product lines the
+game sells side by side. The `fsd` family holds both drive lines, and which one a record
+belongs to is a field on it rather than something to recover from its symbol:
+
+```ts
+import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+
+const drives = CORE_MODULES.filter((module) => module.slot === 'frameShiftDrive');
+drives.length; // -> 72
+drives.filter((module) => module.supercruiseOvercharge).length; // -> 36, the SCO line
+```
+
 ## Fit, remove, engineer
 
 Mutations return `this`, so they chain. The build is mutable — this is the one place in
@@ -174,6 +186,31 @@ jumps.totalUnladen.range; // every jump on one tank, empty
 jumps.totalUnladen.jumps; // number of jumps on that tank
 jumps.totalLaden.range; // every jump on one tank, full
 ```
+
+Mass and mobility come as figures rather than as ingredients, so the panel's mass line
+and its speed line are both one call:
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
+const mass = build.buildMass();
+mass.hull; // the bare hull, in tonnes
+mass.modules; // every fitted module, post-engineering
+mass.total; // with a full main tank and an empty hold
+
+const mobility = build.mobilityMetrics();
+mobility?.speed; // m/s, at four ENG pips
+mobility?.loadedMass; // the mass that speed was calculated at
+build.thrusters?.optMass; // rated performance at or below this mass
+build.thrusters?.maxMass; // past this the ship does not move at all
+```
+
+The game's statistics panel counts the reserve tank in the current mass it displays;
+nothing here does, so add `fuelCapacity.reserve` if you are reproducing that reading.
+[Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)
+covers the mass curve those three thruster figures describe.
 
 `powerBudget().bands` is what drives a priority-group table: a group is powered when its
 running total — its own draw plus every higher-priority group's — fits in `available`.

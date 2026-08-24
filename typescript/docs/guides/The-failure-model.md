@@ -141,12 +141,14 @@ declare const build: ShipLoadout;
 build.unladenMass; // number
 build.cargoCapacity; // number
 build.fuelCapacity; // { main, reserve }
+build.buildMass(); // { hull, modules, unladen, fuel, cargo, total }
 ```
 
 Nothing a build can hold is unweighable: import discards an article no catalogue
 identifies, and `setModule` refuses one — as it refuses a record that drops the article's
 `mass`, `cargoCapacity` or `fuelCapacity`, the three figures every build sums from its
-fit. A hull with no rack has a cargo capacity of `0`, and it means `0`.
+fit. A hull with no rack has a cargo capacity of `0`, and it means `0`. `buildMass` is
+those figures decomposed, so it always answers too.
 
 The metrics that depend on *build state* are a different question, and those keep their
 diagnostic pairs. The nullable method is the convenience; its `…Result` companion is what
@@ -159,6 +161,7 @@ declare const build: ShipLoadout;
 
 build.mobilityMetrics(); // MobilityMetrics | null
 build.mobilityMetricsResult(); // the value, or why it is unavailable
+build.thrusters; // ThrusterParams | null — the fitted curve, whatever the power state
 build.shieldMetrics();
 build.shieldMetricsResult();
 build.shieldRecovery();

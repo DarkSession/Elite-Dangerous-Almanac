@@ -515,7 +515,15 @@ test('identity fields survive resolution — a variant is the same article', () 
         assert.equal(fitted.rating, stock.rating);
         assert.equal(fitted.category, stock.category);
         assert.equal(fitted.cost, stock.cost);
+        // A capability the article is sold with is identity too: a pre-engineered
+        // Supercruise Overcharge drive is still an Overcharge drive.
+        assert.equal(fitted.supercruiseOvercharge, stock.supercruiseOvercharge);
     }
+    assert.ok(
+        PRE_ENGINEERED_MODULES.some(
+            (variant) => getPreEngineeredStats(variant)?.supercruiseOvercharge === true,
+        ),
+    );
 });
 
 test('a variant with no stat block resolves to the base record itself', () => {

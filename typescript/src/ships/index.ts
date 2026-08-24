@@ -240,6 +240,7 @@ export {
     type WeaponsOptions,
     type BuildCost,
     type BuildCredits,
+    type BuildMass,
     type FittedWeaponMetrics,
     type BuildWeaponMetrics,
     type AvailableBlueprint,

@@ -605,6 +605,93 @@ export function shieldInputResultFor(
     return completeResult(input);
 }
 
+/**
+ * One fitted thruster's post-engineering mass curves, or `null` when its record does
+ * not carry a complete curve.
+ *
+ * @remarks
+ * A speed or rotation curve is published only where the article has one of its own —
+ * enhanced-performance thrusters do — and it refines the multipliers over the same
+ * three masses, which is the whole of the difference.
+ */
+function thrusterCurveFor(
+    module: LoadoutModule,
+    stats: OutfittingModule | null,
+): ThrusterParams | null {
+    const effective = effectiveModule(module, stats);
+    const minMass = effective?.minMass;
+    const optMass = effective?.optMass;
+    const maxMass = effective?.maxMass;
+    const minMultiplier = effective?.minMultiplier;
+    const optMultiplier = effective?.optMultiplier;
+    const maxMultiplier = effective?.maxMultiplier;
+    if (
+        minMass === undefined ||
+        optMass === undefined ||
+        maxMass === undefined ||
+        minMultiplier === undefined ||
+        optMultiplier === undefined ||
+        maxMultiplier === undefined
+    ) {
+        return null;
+    }
+    return {
+        minMass,
+        optMass,
+        maxMass,
+        minMultiplier,
+        optMultiplier,
+        maxMultiplier,
+        ...(effective?.optSpeedMultiplier === undefined
+            ? {}
+            : {
+                  speedCurve: {
+                      minMass,
+                      optMass,
+                      maxMass,
+                      minMultiplier: effective.minSpeedMultiplier ?? minMultiplier,
+                      optMultiplier: effective.optSpeedMultiplier,
+                      maxMultiplier: effective.maxSpeedMultiplier ?? maxMultiplier,
+                  },
+              }),
+        ...(effective?.optRotationMultiplier === undefined
+            ? {}
+            : {
+                  rotationCurve: {
+                      minMass,
+                      optMass,
+                      maxMass,
+                      minMultiplier: effective.minRotationMultiplier ?? minMultiplier,
+                      optMultiplier: effective.optRotationMultiplier,
+                      maxMultiplier: effective.maxRotationMultiplier ?? maxMultiplier,
+                  },
+              }),
+    };
+}
+
+/**
+ * The fitted thrusters' post-engineering curve, ignoring the power state.
+ *
+ * @remarks
+ * The curve is a property of the article, so a switched-off or shed thruster still has
+ * one; whether the build can *use* it is what `mobilityInputResultFor` decides.
+ *
+ * @param modules - The build's fitted modules.
+ * @param statsFor - Resolves a fitted module's catalogue record.
+ * @returns The first fitted thruster's curve, or `null` when none is fitted or the
+ * fitted record carries no complete curve.
+ */
+export function fittedThrusterParamsFor(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): ThrusterParams | null {
+    for (const module of modules) {
+        const stats = statsFor(module);
+        if (isThruster(module, stats)) return thrusterCurveFor(module, stats);
+    }
+    return null;
+}
+
 /** Gather a loaded hull and powered thruster curve, with an unavailable-state diagnostic. */
 export function mobilityInputResultFor(
     ship: Ship,
@@ -627,55 +714,8 @@ export function mobilityInputResultFor(
             statsFor,
         );
         if (!powered.complete) return powered;
-        const effective = effectiveModule(module, stats);
-        const minMass = effective?.minMass;
-        const optMass = effective?.optMass;
-        const maxMass = effective?.maxMass;
-        const minMultiplier = effective?.minMultiplier;
-        const optMultiplier = effective?.optMultiplier;
-        const maxMultiplier = effective?.maxMultiplier;
-        if (
-            minMass === undefined ||
-            optMass === undefined ||
-            maxMass === undefined ||
-            minMultiplier === undefined ||
-            optMultiplier === undefined ||
-            maxMultiplier === undefined
-        ) {
-            return incompleteResult([metricIssue('thrusters', 'unresolved', module)]);
-        }
-        thrusters = {
-            minMass,
-            optMass,
-            maxMass,
-            minMultiplier,
-            optMultiplier,
-            maxMultiplier,
-            ...(effective?.optSpeedMultiplier === undefined
-                ? {}
-                : {
-                      speedCurve: {
-                          minMass,
-                          optMass,
-                          maxMass,
-                          minMultiplier: effective.minSpeedMultiplier ?? minMultiplier,
-                          optMultiplier: effective.optSpeedMultiplier,
-                          maxMultiplier: effective.maxSpeedMultiplier ?? maxMultiplier,
-                      },
-                  }),
-            ...(effective?.optRotationMultiplier === undefined
-                ? {}
-                : {
-                      rotationCurve: {
-                          minMass,
-                          optMass,
-                          maxMass,
-                          minMultiplier: effective.minRotationMultiplier ?? minMultiplier,
-                          optMultiplier: effective.optRotationMultiplier,
-                          maxMultiplier: effective.maxRotationMultiplier ?? maxMultiplier,
-                      },
-                  }),
-        };
+        thrusters = thrusterCurveFor(module, stats);
+        if (!thrusters) return incompleteResult([metricIssue('thrusters', 'unresolved', module)]);
         break;
     }
     if (!thrusters) return incompleteResult([metricIssue('thrusters', 'missing')]);

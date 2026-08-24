@@ -34,6 +34,7 @@ test('mobility scales speed, boost and handling by loaded mass and ENG pips', ()
         thrusters,
     });
     assert.deepEqual(four, {
+        loadedMass: 48,
         speed: 220,
         boost: 320,
         pitch: 42,
@@ -60,6 +61,9 @@ test('mobility scales speed, boost and handling by loaded mass and ENG pips', ()
     assert.equal(two.speed, 160);
     assert.equal(two.boost, 320);
     assert.equal(two.pitch, 38);
+    // The mass is reported back so the curve position can be read off the result: ENG
+    // pips move the speed, never the mass the curve was evaluated at.
+    assert.equal(two.loadedMass, 48);
 });
 
 test('enhanced thrusters use distinct speed and rotation curves', () => {

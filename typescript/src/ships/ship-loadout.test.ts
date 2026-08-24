@@ -730,6 +730,138 @@ test('buildCost totals Merc Coin purchases and the climbs above them', () => {
     assert.deepEqual(climbed.materials, expected.climbed.materials);
 });
 
+test('buildMass weighs a build the way buildCost prices one', () => {
+    const build = ShipLoadout.default('Anaconda');
+    const tank = build.fuelCapacity.main;
+    const mass = build.buildMass();
+    assert.deepEqual(mass, {
+        hull: getShipBySymbol('Anaconda')!.hullMass,
+        modules: build.unladenMass - getShipBySymbol('Anaconda')!.hullMass,
+        unladen: build.unladenMass,
+        fuel: tank,
+        cargo: 0,
+        total: build.unladenMass + tank,
+    });
+    assert.equal(mass.hull + mass.modules, mass.unladen);
+    assert.ok(Object.isFrozen(mass));
+
+    // The load is the caller's, and defaults match the jump and mobility calls: a full
+    // main tank, an empty hold, and the reserve tank in neither.
+    const laden = build.buildMass({ fuel: 8, cargo: build.cargoCapacity });
+    assert.deepEqual(
+        { fuel: laden.fuel, cargo: laden.cargo, total: laden.total },
+        {
+            fuel: 8,
+            cargo: build.cargoCapacity,
+            total: build.unladenMass + 8 + build.cargoCapacity,
+        },
+    );
+    assert.deepEqual(
+        { hull: laden.hull, modules: laden.modules, unladen: laden.unladen },
+        { hull: mass.hull, modules: mass.modules, unladen: mass.unladen },
+    );
+    assert.equal(build.buildMass({ fuel: 0 }).total, build.unladenMass);
+    assert.equal(build.buildMass().total, build.standardLoadResult('unladen').value!.mass);
+    assert.throws(() => build.buildMass({ fuel: -1 }), RangeError);
+    assert.throws(() => build.buildMass({ cargo: Number.POSITIVE_INFINITY }), RangeError);
+
+    // Every module figure is post-engineering, so a roll that moves a module's mass
+    // moves the modules total and the unladen mass with it.
+    const heavier = ShipLoadout.default('Anaconda');
+    heavier.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+    const rolled = heavier.buildMass();
+    assert.equal(rolled.hull, mass.hull);
+    assert.ok(rolled.modules > mass.modules);
+    assert.equal(rolled.hull + rolled.modules, heavier.unladenMass);
+
+    // A hull with only its stock fixed-mount articles still weighs them, and with no
+    // fuel aboard its total is exactly the decomposition.
+    const bare = ShipLoadout.empty('Anaconda').buildMass({ fuel: 0 });
+    assert.equal(bare.hull, mass.hull);
+    assert.equal(bare.total, bare.hull + bare.modules);
+    assert.ok(bare.modules < mass.modules);
+});
+
+test("buildMass reports the capture's own unladen mass, decomposed from the catalogues", () => {
+    // An import's `UnladenMass` stands while its fit survives, and it is the figure the
+    // jump and mobility calculations use — so it is what `unladen` and `total` report,
+    // while `hull` and `modules` say what the catalogues make that mass out of.
+    const build = ShipLoadout.fromLoadout(deepBlackJournal as LoadoutEvent);
+    const mass = build.buildMass();
+    assert.equal(mass.unladen, build.unladenMass);
+    assert.equal(mass.total, build.unladenMass + build.fuelCapacity.main);
+    assert.equal(mass.hull, getShipBySymbol(build.shipSymbol)!.hullMass);
+    assert.ok(near(mass.hull + mass.modules, mass.unladen, 0.5));
+});
+
+test('the thrusters getter publishes the fitted curve without a mobility calculation', () => {
+    const build = ShipLoadout.default('Anaconda');
+    const curve = build.thrusters!;
+    const fitted = build.fittedModuleAt('MainEngines')!.effectiveStats!;
+    assert.deepEqual(curve, {
+        minMass: fitted.minMass,
+        optMass: fitted.optMass,
+        maxMass: fitted.maxMass,
+        minMultiplier: fitted.minMultiplier,
+        optMultiplier: fitted.optMultiplier,
+        maxMultiplier: fitted.maxMultiplier,
+    });
+
+    // The curve and the metrics agree: the multiplier the build reports is the one the
+    // exported curve function gives for the loaded mass the build reports.
+    const mobility = build.mobilityMetrics()!;
+    assert.equal(mobility.loadedMass, build.buildMass().total);
+    assert.equal(
+        thrusterMassCurveMultiplier(mobility.loadedMass, curve),
+        mobility.massCurveMultiplier,
+    );
+
+    // Post-engineering, like every other figure the facade reports.
+    const engineered = ShipLoadout.default('Anaconda');
+    engineered.applyBlueprint('MainEngines', 'Engine_Dirty', { grade: 5 });
+    assert.notEqual(engineered.thrusters!.optMultiplier, curve.optMultiplier);
+
+    // Enhanced-performance thrusters carry their two refining curves.
+    const enhanced = ShipLoadout.default('SideWinder').setModule(
+        'MainEngines',
+        mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES),
+    );
+    assert.equal(
+        enhanced.thrusters!.speedCurve!.optMultiplier,
+        enhanced.fittedModuleAt('MainEngines')!.effectiveStats!.optSpeedMultiplier,
+    );
+    assert.equal(
+        enhanced.thrusters!.rotationCurve!.maxMultiplier,
+        enhanced.fittedModuleAt('MainEngines')!.effectiveStats!.maxRotationMultiplier,
+    );
+
+    // It is the article's curve, not the build's power state: a switched-off thruster
+    // still has one, though the mobility it feeds is unavailable.
+    const stock = ShipLoadout.default('Anaconda').toLoadoutEvent();
+    const off = ShipLoadout.fromLoadout({
+        ...stock,
+        Modules: stock.Modules.map((module) =>
+            module.Slot === 'MainEngines' ? { ...module, On: false } : module,
+        ),
+    });
+    assert.deepEqual(off.thrusters, curve);
+    assert.equal(off.mobilityMetrics(), null);
+    assert.equal(off.mobilityMetricsResult().issues[0]?.reason, 'disabled');
+
+    // A record that cannot supply a whole curve answers null rather than throwing — the
+    // jump equation cannot do without a drive, a flight model can do without thrusters.
+    // (An import with no thrusters at all does not reach this: `fromLoadout` fills the
+    // empty core mount with the hull's stock article.)
+    const noCurve: Record<string, unknown> = { ...mod('Int_Engine_Size6_Class5', CORE_MODULES) };
+    delete noCurve.maxMass;
+    const unresolved = ShipLoadout.empty('Anaconda').setModule(
+        'MainEngines',
+        noCurve as unknown as OutfittingModule,
+    );
+    assert.equal(unresolved.thrusters, null);
+    assert.equal(unresolved.mobilityMetricsResult().issues[0]?.reason, 'unresolved');
+});
+
 test('fromSlef reads the ship identity and top-level figures', () => {
     const build = ShipLoadout.fromSlef(slefString);
     assert.equal(build.shipSymbol, 'explorer_nx');
@@ -1372,21 +1504,30 @@ test('standard load results expose the jump summary load conditions', () => {
     const unladen = build.standardLoadResult('unladen');
     const laden = build.standardLoadResult('laden');
 
+    // Each load also reports what the ship weighs carrying it, so a caller never has to
+    // reassemble `unladenMass + fuel + cargo` — the reserve tank is excluded, exactly as
+    // the jump and mobility calculations exclude it.
+    const mass = build.unladenMass;
     assert.deepEqual(maximum, {
-        value: { fuel: 0.6, cargo: 0 },
+        value: { fuel: 0.6, cargo: 0, mass: mass + 0.6 },
         complete: true,
         issues: [],
     });
     assert.deepEqual(unladen, {
-        value: { fuel: 2, cargo: 0 },
+        value: { fuel: 2, cargo: 0, mass: mass + 2 },
         complete: true,
         issues: [],
     });
     assert.deepEqual(laden, {
-        value: { fuel: 2, cargo: 4 },
+        value: { fuel: 2, cargo: 4, mass: mass + 6 },
         complete: true,
         issues: [],
     });
+    assert.equal(laden.value!.mass, build.buildMass({ fuel: 2, cargo: 4 }).total);
+    assert.equal(
+        build.mobilityMetrics({ ...laden.value!, enginesPips: 2 })!.loadedMass,
+        laden.value!.mass,
+    );
     assert.equal(build.jumpRange(maximum.value!), build.jumpRangeSummary().max);
     assert.equal(build.jumpRange(unladen.value!), build.jumpRangeSummary().unladen);
     assert.equal(build.jumpRange(laden.value!), build.jumpRangeSummary().laden);
@@ -1406,7 +1547,11 @@ test('standard maximum load reports invalid jump inputs', () => {
         ...source,
         FuelCapacity: { Main: 0, Reserve: 0 },
     });
-    assert.deepEqual(noFuel.standardLoadResult('maximum').value, { fuel: 0, cargo: 0 });
+    assert.deepEqual(noFuel.standardLoadResult('maximum').value, {
+        fuel: 0,
+        cargo: 0,
+        mass: noFuel.unladenMass,
+    });
 
     const invalidDrive = ShipLoadout.fromLoadout({
         ...source,
@@ -3597,10 +3742,7 @@ test('the beam Corvette reproduces the externally observed in-game build totals'
 
     const fuel = build.fuelCapacity;
     assert.ok(fuel);
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -3657,10 +3799,7 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -3717,10 +3856,7 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -3780,12 +3916,8 @@ test('The Deep Black reproduces every observed calculated total', () => {
         Math.abs(generator.shieldBrokenRegenRate - expected.shields.regeneration.broken) <= 0.05,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(displayed(thrusters.maxMass!, 1), expected.mass.maximum);
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
+    assert.equal(displayed(build.thrusters!.maxMass, 1), expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -3840,12 +3972,11 @@ test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', 
         expected.shields.regeneration.broken,
     );
 
-    const currentMass = build.unladenMass! + fuel.main + fuel.reserve;
+    const currentMass = build.buildMass().total + fuel.reserve;
     // Frontier's float32 total lies 0.000024 t over the half-tenth boundary but its
     // statistics panel displays the lower tenth.
     assert.ok(Math.abs(currentMass - expected.mass.current) <= 0.0501, `${currentMass}`);
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
     assert.deepEqual(
@@ -3901,12 +4032,8 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
+    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
     assert.deepEqual(
@@ -3961,12 +4088,8 @@ test('Fat Arse reproduces every observed calculated total', () => {
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
+    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -4022,12 +4145,8 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
+    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -4083,12 +4202,8 @@ test('Spire Ops reproduces the observed totals', () => {
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
+    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -4138,12 +4253,8 @@ test('Slapaconda reproduces every observed calculated total', () => {
     assert.equal(expected.shields.strength, 0);
     assert.equal(build.shieldMetrics(), null);
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
-    const thrusters = build.fittedModuleAt('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
+    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(

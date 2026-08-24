@@ -397,6 +397,24 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   `passengerCabins` and `vesselHangars`. Guardian and AX weapons retain their distinct
   family where their function differs. A core record's family follows from its `slot`,
   which is on every one of them, so the two never disagree.
+- **`supercruiseOvercharge` — the SCO drive line.** The 36
+  `Int_Hyperdrive_Overcharge_*` records carry `true`; the 36 plain drives of the same
+  sizes and ratings, and every other record in all four catalogues, omit it.
+  - **Source:** FDevIDs `outfitting.csv`, which sells the two drive lines under distinct
+    symbol families and names the Overcharge one `Frame Shift Drive (SCO)`. No registry
+    publishes a field for the capability: coriolis-data and EDSY both leave it implicit
+    in the symbol and the display name.
+  - **Derivation:** the symbol family is the classification, exactly as it is for `slot`
+    above, and it is applied once here so that consumers read a datum instead of
+    matching `Int_Hyperdrive_Overcharge` themselves — which a pre-engineered or fitted
+    article's symbol does not always let them do. Stored as a sparse flag rather than a
+    `true`/`false` pair on all 72 drives, following `alwaysPowered` and
+    `guardianZoneResistance`.
+  - **Nothing else is derived from it.** The two lines share every jump constant this
+    catalogue carries (`optMass`, `maxFuel`, `fuelMul`, `fuelPower`, and the
+    size-determined `fsdHeatRate` above), so no calculation reads the flag; the
+    overcharged supercruise behaviour the drives are named for has no published figures
+    and none are stored.
 
 ### `module-families.jsonc` — the family ids and their English names
 

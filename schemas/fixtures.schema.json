@@ -4182,18 +4182,10 @@
           },
           "required": ["counts", "note"]
         },
+        "supercruiseOvercharge": { "$ref": "#/definitions/sharedcf717f008f4a" },
         "unpriced": { "type": "array", "items": { "type": "string" } },
         "unpricedNote": { "type": "string" },
-        "withoutIntegrity": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "count": { "type": "integer" },
-            "note": { "type": "string" },
-            "symbols": { "type": "array", "items": { "type": "string" } }
-          },
-          "required": ["count", "note", "symbols"]
-        }
+        "withoutIntegrity": { "$ref": "#/definitions/sharedcf717f008f4a" }
       },
       "required": [
         "capturedBaseStats",
@@ -4208,6 +4200,7 @@
         "prices",
         "spot",
         "statCounts",
+        "supercruiseOvercharge",
         "unpriced",
         "unpricedNote",
         "withoutIntegrity"
@@ -8202,6 +8195,16 @@
         "z": { "type": "number" }
       },
       "required": ["x", "y", "z"]
+    },
+    "sharedcf717f008f4a": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "count": { "type": "integer" },
+        "note": { "type": "string" },
+        "symbols": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["count", "note", "symbols"]
     },
     "sharedd1a4c2fe75fe": {
       "type": "object",

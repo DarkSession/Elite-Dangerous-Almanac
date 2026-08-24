@@ -459,6 +459,25 @@ test('the stats a blueprint needs are carried by every module of the family', ()
     }
 });
 
+test('the SCO drives state the capability, and only they carry the flag', () => {
+    // The capability is a datum on the record, not a pattern to match on the symbol:
+    // a consumer filtering an outfitting list reads the flag, and the fixture pins
+    // both who carries it and that nothing else does.
+    const expected = statsFixture.supercruiseOvercharge;
+    const carried = ALL_MODULES.filter((module) => module.supercruiseOvercharge !== undefined);
+    assert.equal(carried.length, expected.count);
+    assert.deepEqual(carried.map((module) => module.symbol).sort(), [...expected.symbols].sort());
+    for (const module of carried) {
+        assert.equal(module.supercruiseOvercharge, true, module.symbol);
+        assert.equal(module.slot, 'frameShiftDrive', module.symbol);
+    }
+    // A drive without the capability omits the field rather than stating false, so the
+    // plain line of the same size and rating is undefined either way you read it.
+    const plain = getModuleBySymbol('Int_Hyperdrive_Size5_Class5', CORE_MODULES);
+    assert.equal(plain?.supercruiseOvercharge, undefined);
+    assert.equal(Object.hasOwn(plain!, 'supercruiseOvercharge'), false);
+});
+
 // ── Prices ───────────────────────────────────────────────────────────────────
 
 for (const [name, expected] of Object.entries(statsFixture.priceCounts)) {
