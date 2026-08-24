@@ -10,3 +10,5 @@ typescript/PROVENANCE/
 typescript/assets/
 
 .dump
+
+.pnpm-store/

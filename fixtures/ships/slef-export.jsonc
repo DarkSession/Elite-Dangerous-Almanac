@@ -214,9 +214,9 @@
     "exportInventsEmptyArray": false
   },
   "journalFieldExclusions": {
-    "note": "Fields a real journal capture may carry but the durable build deliberately does not. timestamp identifies the capture; ShipID identifies that journal's ship instance; HullHealth and Hot are transient ship state. Engineer and EngineerID record who applied engineering, and BlueprintID is redundant with BlueprintName. A journal -> ShipLoadout -> SLEF round trip drops these fields while retaining the engineering recipe, grade, quality, experimental effect and modifiers.",
+    "note": "Fields a real journal capture may carry but the durable build deliberately does not. event names the journal line; timestamp identifies the capture; ShipID identifies that journal's ship instance; HullHealth and Hot are transient ship state. Engineer and EngineerID record who applied engineering, and BlueprintID is redundant with BlueprintName. A journal -> ShipLoadout -> SLEF round trip drops these fields while retaining the engineering recipe, grade, quality, experimental effect and modifiers.",
     "topLevelBuild": "fixtures/ships/journal-viper-mkiv.jsonc",
-    "topLevel": ["timestamp", "ShipID", "HullHealth", "Hot"],
+    "topLevel": ["event", "timestamp", "ShipID", "HullHealth", "Hot"],
     "engineeringBuild": "fixtures/ships/journal-krait-phantom.jsonc",
     "engineering": ["Engineer", "EngineerID", "BlueprintID"]
   },
@@ -224,7 +224,6 @@
     "build": "fixtures/ships/slef-the-deep-black.jsonc",
     "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount.",
     "topLevelKeys": [
-      "event",
       "Ship",
       "ShipName",
       "ShipIdent",
@@ -315,7 +314,6 @@
       "slot": "Slot06_Size5",
       "item": "Int_FuelTank_Size5_Class3",
       "topLevelKeys": [
-        "event",
         "Ship",
         "ShipName",
         "ShipIdent",
@@ -345,7 +343,6 @@
     "build": "fixtures/ships/journal-krait-phantom.jsonc",
     "note": "A real journal `Loadout` event — Frontier's own figures, so `recomputed` is ground truth rather than a third-party calculator's reading. Unlike an EDSY export it also carries the cockpit, ship kit, nameplates, bobbles, paint and voice pack: 15 of its 40 `Modules` entries are not outfitting at all, and must contribute neither mass nor credits.",
     "topLevelKeys": [
-      "event",
       "Ship",
       "ShipName",
       "ShipIdent",
@@ -413,7 +410,6 @@
     "build": "fixtures/ships/journal-viper-mkiv.jsonc",
     "note": "A second real journal `Loadout` event, and the only ground-truth build here that carries no engineering at all: every module performs as the catalogue sells it, so Frontier's own `UnladenMass` and `MaxJumpRange` check the base stats directly instead of the engineered path the Krait Phantom exercises. Its credits are a purchase record like every other source's, but a uniform one — all 20 priced modules sit at 0.85 of list — which turns `discount` into a reading of the price table rather than a curiosity.",
     "topLevelKeys": [
-      "event",
       "Ship",
       "ShipName",
       "ShipIdent",
@@ -470,7 +466,6 @@
     "build": "fixtures/ships/journal-python-mkii-antixeno.jsonc",
     "note": "A third real journal `Loadout` event, and the second carrying no engineering at all — so, like the Viper Mk IV, Frontier's own `UnladenMass` and `MaxJumpRange` check the base stats directly. What it adds is coverage neither other capture has: the Python Mk II hull, and six anti-xeno and Guardian hardpoints whose clip and ammo figures the game reports back as `AmmoInClip` / `AmmoInHopper`. Four of its weapons are in groups this catalogue gives no engineering menu (the Enhanced AX pair, the Guardian Nanite Torpedo Pylon and the Remote Release Flak Launcher), so it also exercises a build made largely of modules `getBlueprintsForModule` answers `[]` for.",
     "topLevelKeys": [
-      "event",
       "Ship",
       "ShipName",
       "ShipIdent",
@@ -540,7 +535,6 @@
       "FuelTank": "Int_FuelTank_Size1_Class3"
     },
     "topLevelKeys": [
-      "event",
       "Ship",
       "HullValue",
       "ModulesValue",

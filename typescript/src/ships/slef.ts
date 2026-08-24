@@ -158,13 +158,14 @@ export interface LoadoutModule {
  * Only `Ship` and `Modules` are strictly required by SLEF; every other field is
  * optional. Masses are in tonnes, ranges in light-years, values in credits.
  *
- * `timestamp`, `ShipID`, `HullHealth` and `Hot` are deliberately outside the durable
- * loadout shape. They describe the capture or the ship instance/state rather than its
- * fit, so {@link ShipLoadout.fromLoadout} drops them and subsequent loadout/SLEF exports
- * never write them. A tolerant parse still accepts an input object carrying those keys.
+ * `event`, `timestamp`, `ShipID`, `HullHealth` and `Hot` are deliberately outside the
+ * durable loadout shape. They name the journal line, or describe the capture or the ship
+ * instance/state, rather than its fit, so {@link ShipLoadout.fromLoadout} drops them and
+ * subsequent loadout/SLEF exports never write them. A tolerant parse still accepts an
+ * input object carrying those keys.
  */
 export interface LoadoutEvent {
-    /** Always `"Loadout"`. */
+    /** `"Loadout"` when a journal line supplied it. Accepted on input, never written. */
     readonly event?: string;
     /** The hull's internal id, e.g. `"explorer_nx"` (lower-cased). */
     readonly Ship: string;

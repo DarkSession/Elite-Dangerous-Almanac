@@ -72,7 +72,6 @@ export function exportLoadoutEvent(
           : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION);
 
     return {
-        event: 'Loadout',
         Ship: input.shipSymbol.toLowerCase(),
         ...(input.shipName === undefined ? {} : { ShipName: input.shipName }),
         ...(input.shipIdent === undefined ? {} : { ShipIdent: input.shipIdent }),
