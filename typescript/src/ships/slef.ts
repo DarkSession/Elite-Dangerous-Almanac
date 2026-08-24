@@ -97,9 +97,10 @@ export interface BlueprintModuleEngineering {
      * so an export from another app may name the blueprint and its roll without spelling
      * out the resulting stats. Treat a missing array as "not stated", not as "nothing was
      * changed". A craftable recipe can be reconstructed with
-     * {@link ShipLoadout.applyBlueprint}; resolve a fixed identity through the
-     * pre-engineered catalogue and fit it with
-     * {@link ShipLoadout.setPreEngineeredVariant}.
+     * {@link ShipLoadout.applyBlueprint}, or rolled where it stands with
+     * {@link ShipLoadout.completeEngineeringGrade}, which spells out a stated identity
+     * at quality `1`; resolve a fixed identity through the pre-engineered catalogue and
+     * fit it with {@link ShipLoadout.setPreEngineeredVariant}.
      */
     readonly Modifiers?: readonly EngineeringModifier[];
 }

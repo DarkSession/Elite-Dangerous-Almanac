@@ -409,7 +409,10 @@ export interface EngineeringNormalizationUnchanged {
 export interface EngineeringNormalized {
     /** Discriminator for a successful normalization. */
     readonly kind: 'normalized';
-    /** Quality reported by the fitted module before normalization, in `[0, 1)`. */
+    /**
+     * Quality reported by the fitted module before normalization, in `[0, 1]`. It reads
+     * `1` where a completed roll stated no modifiers and this call spelled them out.
+     */
     readonly previousQuality: number;
     /** Completed engineering quality. Always `1`. */
     readonly quality: 1;
@@ -2040,6 +2043,11 @@ export class ShipLoadout {
      * reward rebuilds its hand-authored modifiers and optional effect without losing its
      * purchase identity. A refusal never changes the loadout.
      *
+     * A block that names a blueprint and grade but states no `Modifiers` at all is rolled
+     * here too, even at quality `1` — SLEF permits that identity-only shape and Inara
+     * writes it, so a capture of a completed roll would otherwise stay stock. A stated
+     * modifier array, empty or partial, is left alone at quality `1`.
+     *
      * @param slotKey - The engineered slot, matched case-insensitively.
      * @returns A frozen result identifying a normalized, unchanged or unsupported state.
      * @throws {TypeError} If `slotKey` is not a string.
@@ -2081,7 +2089,10 @@ export class ShipLoadout {
                 symbol: module.Item,
             });
         }
-        if (engineering.Quality === 1) {
+        // A completed roll that states its modifiers is already whole. One that states
+        // none — SLEF permits an identity-only block, and Inara writes one — has nothing
+        // to keep, so it is rolled from the recipe rather than left stock.
+        if (engineering.Quality === 1 && engineering.Modifiers !== undefined) {
             return deepFreeze({ kind: 'unchanged' });
         }
         const previousQuality = engineering.Quality;

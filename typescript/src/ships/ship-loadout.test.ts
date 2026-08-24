@@ -5103,6 +5103,40 @@ test('completeEngineeringGrade recomputes imported ordinary and Mercenary rolls 
     assert.equal(importedConverted.fittedModuleAt('MediumHardpoint1')!.engineering!.Quality, 1);
 });
 
+test('completeEngineeringGrade rolls a completed roll that states no modifiers', () => {
+    // The defect this pins: Inara states engineering identity only, and writes `Quality: 1`
+    // for a finished roll. Completing the grade saw a quality that needed no rerolling and
+    // called the module unchanged, so an armoured G5 plant kept its stock draw for good.
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+    const stock = mod('Int_Powerplant_Size6_Class5');
+    assert.equal(build.fittedModuleAt('PowerPlant')!.engineering!.Modifiers, undefined);
+    assert.equal(build.fittedModuleAt('PowerPlant')!.effectiveStats!.integrity, stock.integrity);
+
+    const result = build.completeEngineeringGrade('PowerPlant');
+    assert.deepEqual(result, { kind: 'normalized', previousQuality: 1, quality: 1 });
+
+    const expected = ShipLoadout.empty('LakonMiner')
+        .setModule('PowerPlant', stock)
+        .applyBlueprint('PowerPlant', 'PowerPlant_Armoured', {
+            grade: 5,
+            quality: 1,
+            experimental: 'special_powerplant_cooled',
+        });
+    assert.deepEqual(
+        build.fittedModuleAt('PowerPlant')!.effectiveStats,
+        expected.fittedModuleAt('PowerPlant')!.effectiveStats,
+    );
+    assert.ok(build.fittedModuleAt('PowerPlant')!.engineering!.Modifiers!.length > 0);
+
+    // A stated array is the module's own record, so a completed roll keeps it untouched.
+    const stated = ShipLoadout.fromLoadout(
+        ShipLoadout.default('SideWinder')
+            .applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5, quality: 1 })
+            .toLoadoutEvent(),
+    );
+    assert.deepEqual(stated.completeEngineeringGrade('FrameShiftDrive'), { kind: 'unchanged' });
+});
+
 test('completeEngineeringGrade preserves an imported fixed reward', () => {
     const variant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
         (candidate) => candidate.acquisition === 'techBroker',
