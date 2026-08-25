@@ -260,7 +260,13 @@ Two rules that look like they conflict and do not:
 ## Data you can rely on not changing
 
 Exported catalogues are deeply frozen, so nothing a consumer does can mutate the shared
-singleton a later lookup sees. Units are stated on the exported types: resistances are
+singleton a later lookup sees. Calculation results are frozen under the same rule —
+nested records and lists included — so a figure a metric handed back cannot be edited in
+place and mistaken later for one the library computed. The exception is deliberate:
+`getPreEngineeredStats` composes a caller-owned record rather than exposing a shared
+one.
+
+Units are stated on the exported types: resistances are
 fractions, masses tonnes, power megawatts, distances light-years, shield strength
 megajoules — unless a symbol's own name says otherwise.
 

@@ -91,7 +91,8 @@ export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | 
  * procedural sector and its origin synthesised from the sector grid. Returns
  * `null` only when the name is neither catalogued nor a valid procedural sector.
  *
- * @param name - A region (sector) name in any casing.
+ * @param name - A region (sector) name in any casing, with optional surrounding
+ * whitespace.
  * @returns The region origin, or `null` if the name cannot be resolved.
  * @throws {TypeError} If `name` is present and not a string. A nullish
  * `name` is a miss, answered the way an unrecognised one is.

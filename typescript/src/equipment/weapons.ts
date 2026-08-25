@@ -87,7 +87,8 @@ const BY_NAME = /* @__PURE__ */ createKeyIndex(PERSONAL_WEAPONS, 'name');
 /**
  * Look up a handheld weapon by its Frontier journal symbol, case-insensitively.
  *
- * @param symbol - Journal item id such as `"wpn_m_assaultrifle_kinetic_fauto"`.
+ * @param symbol - Journal item id such as `"wpn_m_assaultrifle_kinetic_fauto"`,
+ * matched case-insensitively after trimming surrounding whitespace.
  * @returns The frozen weapon record, or `null` when unknown.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish symbol is a
  * miss, answered like an unrecognised one.

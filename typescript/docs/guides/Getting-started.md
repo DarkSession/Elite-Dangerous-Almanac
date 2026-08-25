@@ -74,7 +74,8 @@ symbols you are most likely to reach for first:
 | `getModuleBySymbol`, `OutfittingModule` | `core/ships/modules` |
 | `CORE_MODULES` / `INTERNAL_MODULES` / `HARDPOINT_MODULES` / `UTILITY_MODULES` / `ALL_MODULES` | `core/ships/modules-core` / `-internal` / `-hardpoint` / `-utility` / `-all` |
 | `frameShiftDriveMassFactor`, `singleJumpRange`, `fuelPerJump`, `totalRange` | `core/ships/jump-range` |
-| `powerBudget` / `shieldMetrics` / `shieldCapacitorMetrics` / `armourMetrics` / `weaponMetrics` / `distributorMetrics` / `weaponsCapacitorMetrics` / `mobilityCapacitorMetrics` | `core/ships/power` / `shields` / `shield-capacitor` / `armour` / `weapons` / `distributor` / `weapons-capacitor` / `mobility-capacitor` |
+| `powerBudget` / `shieldMetrics` / `shieldCapacitorMetrics` / `armourMetrics` / `weaponMetrics` / `distributorMetrics` / `weaponsCapacitorMetrics` | `core/ships/power` / `shields` / `shield-capacitor` / `armour` / `weapons` / `distributor` / `weapons-capacitor` |
+| `mobilityMetrics` / `mobilityCapacitorMetrics` / `shieldRecovery` / `heatMetrics` | `core/ships/mobility` / `mobility-capacitor` / `shield-recovery` / `heat` |
 | `computeModifiers`, `BLUEPRINTS`, `EXPERIMENTAL_EFFECTS` | `core/ships/engineering` / `blueprints` / `experimental-effects` |
 | `getBlueprintCost`, `getExperimentalEffectCost` | `core/ships/blueprint-costs` / `experimental-effect-costs` |
 | `getSuitBySymbol`, `getSuitByFamily`, `SUITS` | `core/equipment/suits` |
@@ -111,7 +112,7 @@ imports are:
 - `astro/nebulae-all` is 431.7 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice. Almost all
-  of that weight is `astro/nebulae-planetary` (399.3 KiB); the sibling catalogues are
+  of that weight is `astro/nebulae-planetary` (399.4 KiB); the sibling catalogues are
   small, `astro/nebulae-real` being 16.4 KiB, so pick the one that answers your question.
 - `astro/codex-region-lookup` is about 208 KiB. Its 42-region cell geometry answers
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
@@ -120,7 +121,7 @@ imports are:
 `ships/modules` is 337.4 KiB and `ships/modules-all` 336.0 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
-materials 16.9 KiB, micro resources 13.0 KiB, commodities 29.5 KiB.
+materials 17.2 KiB, micro resources 13.4 KiB, commodities 29.6 KiB.
 
 ## Published source maps
 
@@ -136,11 +137,23 @@ identifies the frame that threw; run Node with `--enable-source-maps` to resolve
 indexes instead of retaining their data.
 
 Mappings into inlined JSONC data literals are omitted because a literal cannot produce a
-consumer stack frame. The remaining TypeScript mappings cost about 143 KiB installed;
+consumer stack frame. The remaining TypeScript mappings cost about 234 KiB installed;
 they contain original source paths but omit `sourcesContent`, so the package does not
-carry a second copy of its source. This keeps useful library stack traces while the
-complete package remains about 2.5 MB unpacked and about 567 KiB as a compressed npm
-archive.
+carry a second copy of its source.
+
+## What the package weighs on disk
+
+`npm pack --dry-run` reports about 69.8 MB unpacked and about 18.3 MB as a compressed
+npm archive. Read that number before you judge it: the ship art in `assets/` is about
+66.5 MB of it — 192 SVG files, four per hull, shipped as static package files rather
+than as subpath exports. Everything a bundler can reach is the roughly 3.0 MB of
+`dist/`, which is the JavaScript, the type declarations and the source maps above,
+and no import of this package pulls an SVG into an application bundle.
+
+So the install is large and the import graph is not, which is a poor trade for
+applications that never render a hull. Moving the art into a package of its own is
+tracked as
+[issue #354](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/354).
 
 ## First calls
 

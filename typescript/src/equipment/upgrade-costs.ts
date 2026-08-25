@@ -81,7 +81,8 @@ export const PERSONAL_UPGRADE_COSTS: PersonalUpgradeCosts = deepFreeze(
 /**
  * Get the one-step cost of upgrading a suit to a target grade.
  *
- * @param family - Grade-independent suit family, e.g. `"utilitysuit"`.
+ * @param family - Grade-independent suit family, e.g. `"utilitysuit"`, matched
+ * case-insensitively after trimming surrounding whitespace.
  * @param targetGrade - Grade being reached, integer `2`–`5`.
  * @returns The frozen ingredient list, or `null` for an unknown/non-upgradeable suit.
  * @throws {TypeError} If `family` is present and not a string. A nullish family is a
@@ -105,7 +106,8 @@ export function getSuitUpgradeStepCost(
 /**
  * Total the suit upgrade steps above `currentGrade` through `targetGrade`.
  *
- * @param family - Grade-independent suit family.
+ * @param family - Grade-independent suit family, matched case-insensitively after
+ * trimming surrounding whitespace.
  * @param targetGrade - Desired grade, integer `1`–`5`.
  * @param currentGrade - Current grade, integer `1`–`5`; defaults to `1`.
  * @returns A summed shopping list, `[]` when no climb remains, or `null` for an
@@ -134,7 +136,8 @@ export function getSuitUpgradeCost(
 /**
  * Get the one-step cost of upgrading a handheld weapon to a target grade.
  *
- * @param symbol - Frontier handheld-weapon journal symbol.
+ * @param symbol - Frontier handheld-weapon journal symbol, matched
+ * case-insensitively after trimming surrounding whitespace.
  * @param targetGrade - Grade being reached, integer `2`–`5`.
  * @returns The frozen ingredient list, or `null` for an unknown weapon.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish symbol is a
@@ -161,7 +164,8 @@ export function getPersonalWeaponUpgradeStepCost(
 /**
  * Total the weapon upgrade steps above `currentGrade` through `targetGrade`.
  *
- * @param symbol - Frontier handheld-weapon journal symbol.
+ * @param symbol - Frontier handheld-weapon journal symbol, matched
+ * case-insensitively after trimming surrounding whitespace.
  * @param targetGrade - Desired grade, integer `1`–`5`.
  * @param currentGrade - Current grade, integer `1`–`5`; defaults to `1`.
  * @returns A summed shopping list, `[]` when no climb remains, or `null` for an unknown

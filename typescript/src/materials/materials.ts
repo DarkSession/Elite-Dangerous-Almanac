@@ -28,7 +28,7 @@
  * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all three
- * catalogues, since that is what it falls back to — 16.9 KiB minified for all 146.
+ * catalogues, since that is what it falls back to — 17.2 KiB minified for all 146.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
  * **Only `ALL_MATERIALS` itself is indexed.** A by-key lookup answers from an O(1)
@@ -197,7 +197,8 @@ const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elem
  * Here, `symbol` is Frontier's internal item id for the material.
  *
  * @param symbol - The internal symbol, e.g. `"GridResistors"`, or the lower-cased
- * form the player journal reports (`"gridresistors"`).
+ * form the player journal reports (`"gridresistors"`). Leading/trailing whitespace
+ * and case are ignored.
  * @param materials - Optional subset to search instead of all 146 materials —
  * `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`, `ENCODED_MATERIALS`, or any array you
  * have filtered yourself. Omit it unless you specifically want to exclude the rest:
@@ -227,6 +228,7 @@ export function getMaterialBySymbol(
  * Look up a material by its display name (case-insensitive).
  *
  * @param name - The display name as the catalogue spells it, e.g. `"Grid Resistors"`.
+ * Leading/trailing whitespace and case are ignored.
  * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns The matching {@link Material}, or `null` if no material has that name.
  * @throws {TypeError} If `name` is present and not a string. A nullish
@@ -250,7 +252,8 @@ export function getMaterialByName(
 /**
  * Look up a raw material by its chemical element symbol (case-insensitive).
  *
- * @param elementSymbol - The element symbol, e.g. `"Fe"` or `"fe"`.
+ * @param elementSymbol - The element symbol, e.g. `"Fe"` or `"fe"`. Leading/trailing
+ * whitespace and case are ignored.
  * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns The matching {@link Material}, or `null`. Only raw materials carry an
  * element symbol, so a manufactured or encoded subset never matches.

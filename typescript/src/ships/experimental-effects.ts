@@ -46,7 +46,8 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
 /**
  * Look up an experimental effect by its Frontier `fdname`, case-insensitively.
  *
- * @param fdname - The effect id, e.g. `"special_fsd_heavy"`.
+ * @param fdname - The effect id, e.g. `"special_fsd_heavy"`. Leading/trailing
+ * whitespace and case are ignored.
  * @returns The effect record — its display `name`, modifier contributions, optional
  * `damageDistribution`, and optional qualitative description — or `null` if unknown.
  * @throws {TypeError} If `fdname` is present and not a string. A nullish

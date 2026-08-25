@@ -443,11 +443,13 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 The shield generator may be absent, and any fitted record may omit a stat a metric needs.
 Do not assume a nullable figure is load-bearing:
 
-- `mobilityMetrics()`, `mobilityCapacitorMetrics()`, `shieldMetrics()`,
-  `shieldCapacitorMetrics()` and `shieldRecovery()` come in nullable/`…Result`
-  pairs: the convenience value is `null` and the result names what was missing, switched
-  off or shed. Each issue's typed `reason` is `missing`, `unresolved`, `disabled`, `shed`
-  or `invalid`; use it instead of parsing the diagnostic message.
+- Eight metrics come in nullable/`…Result` pairs, with no exceptions to remember:
+  `mobilityMetrics()`, `mobilityCapacitorMetrics()`, `shieldMetrics()`,
+  `shieldCapacitorMetrics()`, `shieldRecovery()`, `heatMetrics()`,
+  `distributorMetrics()` and `standardLoad()`. The convenience value is `null` and the
+  result names what was missing, switched off or shed. Each issue's typed `reason` is
+  `missing`, `unresolved`, `disabled`, `shed` or `invalid`; use it instead of parsing the
+  diagnostic message.
 - `unladenMass`, `fuelCapacity`, `cargoCapacity` and `buildMass()` are not nullable and
   have no result companion: no article a build can hold is unweighable, so they always
   answer. `thrusters` is nullable but has no result companion either — it reports the
@@ -464,7 +466,8 @@ Do not assume a nullable figure is load-bearing:
   and throws for either invalid numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, when the fitted drive's record carries no usable jump constants.
-- `heatMetrics()` returns `null` outright when the build has no powered plant.
+- `heatMetrics()` returns `null` when the build has no powered plant whose heat
+  efficiency it can read; `heatMetricsResult()` names which of those it was.
 
 Use each available `…Result` companion before trusting a nullable metric.
 

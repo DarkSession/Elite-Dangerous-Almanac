@@ -16,7 +16,7 @@
  * | --- | --- | --- | --- | --- |
  * | `./nebulae-real` | `REAL_NEBULAE` | 180 | 16.4 KiB | 5.3 KiB |
  * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | 166 | 16.4 KiB | 5.7 KiB |
- * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | 399.3 KiB | 116.0 KiB |
+ * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | 399.4 KiB | 116.0 KiB |
  * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | 431.7 KiB | 126.5 KiB |
  *
  * Importing a query function from here costs nothing but the function: pass in
@@ -85,7 +85,7 @@ export interface Nebula {
      *
      * @remarks
      * Resolve it to a name with `getCodexRegion` from `./codex-region` — that
-     * costs ~9 KB of region metadata rather than the ~267 KB lookup grid
+     * costs ~9 KiB of region metadata rather than the ~208 KiB lookup grid
      * `findCodexRegionAt` needs.
      */
     readonly regionId: number;

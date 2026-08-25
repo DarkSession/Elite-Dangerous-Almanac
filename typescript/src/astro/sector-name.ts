@@ -941,7 +941,8 @@ export function sectorGridPositionFromName(name: string): SectorGridPosition | n
  * Re-derive a sector name's canonical casing by round-tripping it through the
  * grid, e.g. `blae eock` → `Blae Eock`. Returns `null` for non-procedural names.
  *
- * @param name - A procedural sector name in any casing. A nullish one answers `null`,
+ * @param name - A procedural sector name in any casing, with optional surrounding
+ * whitespace. A nullish one answers `null`,
  * matching {@link sectorGridPositionFromName}.
  * @throws {TypeError} If `name` is present and not a string.
  */

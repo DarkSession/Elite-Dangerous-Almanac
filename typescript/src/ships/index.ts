@@ -47,8 +47,11 @@
  *   data-free module: {@link powerBudget}, {@link shieldMetrics} and
  *   {@link armourMetrics} (with {@link stackShieldResistance} /
  *   {@link stackArmourResistance} behind their resistances), {@link weaponMetrics},
- *   {@link distributorMetrics}, {@link weaponsCapacitorMetrics},
- *   {@link ammunitionCapacity} and {@link heatMetrics}.
+ *   {@link mobilityMetrics}, {@link shieldRecovery}, {@link distributorMetrics},
+ *   {@link ammunitionCapacity} and {@link heatMetrics}. A pip allocation is always a
+ *   separate call over the bare figure, one entry point per capacitor:
+ *   {@link shieldCapacitorMetrics} for SYS, {@link mobilityCapacitorMetrics} for ENG
+ *   and {@link weaponsCapacitorMetrics} for WEP.
  * - **Engineering** — {@link computeModifiers} applies the primitive legs of a
  *   {@link BLUEPRINTS} recipe and an {@link EXPERIMENTAL_EFFECTS} entry;
  *   {@link ShipLoadout.applyBlueprint} presents that result under Frontier's journal
@@ -125,7 +128,8 @@
  * @example
  * **The data-free layer.** Each calculation is its own module over plain constants, so
  * it costs nothing but the function — no catalogue, no build. `./power`, `./shields`,
- * `./armour`, `./weapons`, `./ammunition` and `./resistances` are the same shape.
+ * `./shield-capacitor`, `./armour`, `./weapons`, `./weapons-capacitor`, `./mobility`,
+ * `./mobility-capacitor`, `./ammunition` and `./resistances` are the same shape.
  *
  * ```ts
  * import { singleJumpRange } from '@elite-dangerous-almanac/core/ships/jump-range';

@@ -25,7 +25,7 @@
  * | `./commodities-all` | `ALL_COMMODITIES` | 399 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls both catalogues,
- * since that is what it falls back to — 29.5 KiB minified for all 399. Every record
+ * since that is what it falls back to — 29.6 KiB minified for all 399. Every record
  * carries a {@link Commodity.rare} flag, so a subset is one `.filter()` away.
  *
  * **Only `ALL_COMMODITIES` itself is indexed.** A by-key lookup answers from an O(1)

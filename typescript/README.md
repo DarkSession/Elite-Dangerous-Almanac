@@ -140,10 +140,11 @@ data-free leaf modules under `ships/jump-range`, `ships/power`, `ships/shields`,
 
 `build.validation()` reports validity and operational completeness. `cargoCapacity`,
 `fuelCapacity` and `unladenMass` always have an answer, because no article the
-catalogue cannot weigh reaches a build; the metrics that depend on build state
-(`mobilityMetrics`, `shieldMetrics`, `shieldCapacitorMetrics`, `shieldRecovery`) are
-nullable and have a diagnostic counterpart naming what is missing, switched off or
-unpowered. `parseSlef`
+catalogue cannot weigh reaches a build; the eight metrics that depend on build state
+(`mobilityMetrics`, `mobilityCapacitorMetrics`, `shieldMetrics`,
+`shieldCapacitorMetrics`, `shieldRecovery`, `heatMetrics`, `distributorMetrics` and
+`standardLoad`) are nullable and each has a `…Result` counterpart naming what is
+missing, switched off, shed or unpowered. `parseSlef`
 is strict; `inspectSlef` is the tolerant importer for mixed files and returns indexed
 diagnostics instead of silently dropping entries.
 
@@ -183,19 +184,22 @@ getEngineeringGroupName('frameShiftDrives', 'de'); // -> null
 
 The functions return an explicit source value verbatim, so a source-backed spelling may
 happen to equal English; the library itself never supplies an English fallback. The
-catalogues carry English, French, German, Russian and Spanish, each stored under a bare
-language tag: a regional or script subtag is dropped (`de-DE` → `de`), and any other
-language returns `null`.
+catalogues carry English, French, German, Portuguese, Russian and Spanish, each stored
+under a bare language tag: a regional or script subtag is dropped (`de-DE` → `de`), and
+any other language returns `null`.
 
 The same contract covers ship manufacturers, pre-engineered variant names, engineering
 group names, experimental-effect descriptions, loadout-slot and restriction labels, and
 structured loadout, calculation, SLEF and edit messages. A family whose accepted source
 currently supplies only English returns `null` for every non-English locale.
 
-Registry lookups ignore case and surrounding whitespace. Material, commodity and
-module lookups search their complete registry by default and accept an optional
-catalogue to narrow the results. Nebula queries require an explicit catalogue so the
-large combined dataset is never an implicit dependency.
+Registry lookups ignore case and surrounding whitespace. The material, commodity and
+module lookups that resolve one record by symbol or name search their complete registry
+by default and accept an optional catalogue to narrow it; the filters that return a
+subset (`materialsInCategory`, `commoditiesInCategory` and their siblings) take no
+catalogue, since filtering their result costs nothing and passing one narrows nothing a
+consumer could not narrow themselves. Nebula queries require an explicit catalogue so
+the large combined dataset is never an implicit dependency.
 
 `symbol` is Frontier's item id for a hull, module, suit, handheld weapon, material,
 micro-resource or commodity. Ship engineering uses a separate identity space: `fdname` identifies a
@@ -220,7 +224,9 @@ micro-resource symbols from the `materials` feature area.
 
 ## Important behavior
 
-- Exported catalogues are deeply frozen.
+- Exported catalogues are deeply frozen, and so is every calculation result — nested
+  records and lists included — so nothing a consumer does can mutate a shared singleton
+  or a figure it handed back.
 - Slot keys come from the game and are not reliably derivable from position. Enumerate
   them with `ShipLoadout.slots()` or `enumerateSlots`.
 - Resistances are fractions, not percentages.

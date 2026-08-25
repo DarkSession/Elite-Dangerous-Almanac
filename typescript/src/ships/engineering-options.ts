@@ -191,6 +191,7 @@ const moduleExclusions = new Map(
  * Accelerator, which upstream denies every blueprint.
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
+ * Leading/trailing whitespace and case are ignored.
  * @returns The group id, or `null` when the module is not in the catalogue.
  *
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
@@ -236,7 +237,7 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * Guardian weapons as well as modules — every group here lists that id, and `BLUEPRINTS`
  * keys the recipe under it alone.
  *
- * @param symbol - A module symbol.
+ * @param symbol - A module symbol. Leading/trailing whitespace and case are ignored.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
  *
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
@@ -273,7 +274,7 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * and every Guardian group, weapons and modules alike. An ungrouped module answers empty
  * too; {@link getEngineeringGroup} tells the two apart.
  *
- * @param symbol - A module symbol.
+ * @param symbol - A module symbol. Leading/trailing whitespace and case are ignored.
  * @returns Experimental-effect ids. Join to `EXPERIMENTAL_EFFECTS`.
  *
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
@@ -323,6 +324,7 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * than a miss: it has no experimental slot, on any of the nine groups that offer it.
  *
  * @param fdname - A blueprint recipe `fdname`, e.g. `"Weapon_Efficient"`.
+ * Leading/trailing whitespace and case are ignored.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names
  * the blueprint, or when its groups take no experimental.
  *

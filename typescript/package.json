@@ -470,17 +470,20 @@
     "scripts": {
         "audit": "pnpm audit --audit-level=low",
         "build": "node scripts/copy-notices.mjs && node scripts/copy-assets.mjs && tsup && node scripts/prune-sourcemap-sources.mjs && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
-        "check": "pnpm run check:fixtures && pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run check:examples && pnpm test",
+        "check": "pnpm run check:fixtures && pnpm run check:i18n-coverage && pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run check:examples && pnpm run check:sizes && pnpm test",
         "check:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs --check",
+        "check:i18n-coverage": "node scripts/i18n-coverage.mjs --check",
         "format": "prettier --write . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml ../.github/ISSUE_TEMPLATE/*.yml",
         "format:check": "prettier --check . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml ../.github/ISSUE_TEMPLATE/*.yml",
         "generate:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs",
+        "generate:i18n-coverage": "node scripts/i18n-coverage.mjs",
         "lint": "eslint .",
         "prepublishOnly": "pnpm run check && pnpm run build && pnpm run test:package",
         "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/equipment/**/*.ts\" --test-coverage-include=\"src/i18n/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
         "docs": "typedoc && node scripts/build-wiki-sidebar.mjs && node scripts/postprocess-wiki.mjs",
         "check:examples": "node --test scripts/example-claims.test.mjs scripts/example-runtime.test.mjs && node scripts/check-examples.mjs",
+        "check:sizes": "pnpm run build && node scripts/check-sizes.mjs",
         "test:package": "node --test package.test.mjs"
     },
     "devDependencies": {

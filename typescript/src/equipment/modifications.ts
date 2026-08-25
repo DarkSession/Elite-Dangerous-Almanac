@@ -54,7 +54,8 @@ export const PERSONAL_MODIFICATIONS: Readonly<Record<string, PersonalModificatio
  * Look up a personal-equipment modification by recipe symbol, case-insensitively.
  *
  * @param symbol - Recipe symbol such as `"suit_nightvision"` or
- * `"weapon_range_kinetic"`.
+ * `"weapon_range_kinetic"`, matched case-insensitively after trimming surrounding
+ * whitespace.
  * @returns The frozen modification record, or `null` when unknown.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish symbol is a
  * miss, answered like an unrecognised one.

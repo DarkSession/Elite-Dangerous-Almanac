@@ -206,7 +206,7 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
 /**
  * Whether a module has at least one known pre-engineered form.
  *
- * @param symbol - A module symbol.
+ * @param symbol - A module symbol. Leading/trailing whitespace and case are ignored.
  * @returns `true` when {@link getPreEngineeredVariants} would return anything.
  *
  * @throws {TypeError} If `symbol` is present and not a string. A nullish

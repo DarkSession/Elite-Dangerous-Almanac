@@ -136,7 +136,8 @@ export function permitLockForSystemName(name: string): PermitLock | null {
  * the yes/no. Use that function instead when you want to tell the commander *which*
  * permit they are missing.
  *
- * @param name - A system name in any casing, e.g. `"vega"`.
+ * @param name - A system name in any casing, with optional surrounding whitespace,
+ * e.g. `"vega"`.
  * @returns `true` if the name matches a permit-locked system or region.
  * @throws {TypeError} If `name` is present and not a string. A nullish
  * `name` is a miss, answered the way an unrecognised one is.

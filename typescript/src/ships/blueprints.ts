@@ -69,7 +69,8 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
 /**
  * Look up a blueprint by its Frontier `fdname`, case-insensitively.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
+ * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`. Leading/trailing
+ * whitespace and case are ignored.
  * @returns The blueprint (its `name` and `grades`), or `null` if this catalogue stores no
  * blueprint under that id.
  * @remarks
@@ -89,7 +90,8 @@ export function getBlueprint(fdname: string): Blueprint | null {
 /**
  * Look up one complete grade of a blueprint, case-insensitively.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
+ * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`. Leading/trailing
+ * whitespace and case are ignored.
  * @param grade - The grade, `1`–`5`.
  * @returns The grade record — its modifier `features` and optional converted
  * `damageDistribution` — or `null` if the catalogue holds no such blueprint or grade.

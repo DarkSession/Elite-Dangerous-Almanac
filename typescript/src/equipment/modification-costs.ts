@@ -35,7 +35,8 @@ export const PERSONAL_MODIFICATION_COSTS: Readonly<
  * Look up a personal modification's one-application material cost.
  *
  * @param symbol - Recipe symbol, such as `"suit_nightvision"` or
- * `"weapon_range_kinetic"`, matched case-insensitively.
+ * `"weapon_range_kinetic"`, matched case-insensitively after trimming surrounding
+ * whitespace.
  * @returns The frozen ingredient list, or `null` when unknown.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish symbol is a
  * miss, answered like an unrecognised one.

@@ -147,8 +147,8 @@ export interface Ship {
 }
 
 /**
- * Every player-flyable ship hull, in Frontier's shipyard order (roughly the order
- * the registry order, beginning with Sidewinder).
+ * Every player-flyable ship hull, in Frontier's shipyard order — roughly the order the
+ * hulls were introduced, beginning with the Sidewinder.
  *
  * @example
  * ```ts
@@ -213,10 +213,11 @@ export function getShipByName(name: string): Ship | null {
  * A hull's slot layout as a self-contained {@link ShipSlots}, ready to feed
  * {@link enumerateSlots}.
  *
- * @param symbol - The internal identifier, e.g. `"Anaconda"` (case-insensitive).
- * @returns The hull's slot layout, or `null` if no hull with that symbol is carried
- * or its catalogue record has no slot data. This is a projection of the slot-bearing
- * fields already on {@link Ship}.
+ * @param symbol - The internal identifier, e.g. `"Anaconda"`. Leading/trailing
+ * whitespace and case are ignored.
+ * @returns The hull's slot layout, or `null` if no hull with that symbol is carried.
+ * This is a projection of the slot-bearing fields already on {@link Ship}, all four of
+ * which every carried hull has, so a symbol that resolves always has a layout.
  * @remarks
  * This is the **read-only** layout, for your own outfitting UI (feed it to
  * `enumerateSlots`). To assemble and edit an actual build — fit modules, engineer

@@ -12,7 +12,8 @@ const DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(descriptionsData a
 /**
  * Look up an experimental effect's display description.
  *
- * @param fdname - Frontier's experimental-effect id.
+ * @param fdname - Frontier's experimental-effect id. Matching ignores case and
+ * surrounding whitespace.
  * @param locale - A BCP 47 locale. The current source supplies canonical English only.
  * @returns The localized description, or `null` when the effect is unknown, has no
  * source description, or the requested locale is unavailable.

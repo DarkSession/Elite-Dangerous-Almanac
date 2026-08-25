@@ -660,7 +660,7 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  *
  * @param module - The fitted module.
  * @param label - The stat's journal name, e.g. `"FSDOptimalMass"`. Matched
- * case-insensitively.
+ * case-insensitively after trimming surrounding whitespace.
  * @returns The modifier's numeric `Value`, or `null` if the module is not
  * engineered, states no modifiers at all, carries no such modifier, or the modifier is
  * non-numeric.

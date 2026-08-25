@@ -13,6 +13,7 @@ const NAMES = /* @__PURE__ */ createLocalizedNameIndex(namesData as LocalizedNam
  * Look up an engineering option group's display name.
  *
  * @param groupId - The stable group id used by `EngineeringOptionGroup.groupId`.
+ * Matching ignores case and surrounding whitespace.
  * @param locale - A BCP 47 locale. English covers every group; the current source also
  * supplies partial Russian coverage.
  * @returns The localized group name, or `null` for an unknown group or unavailable locale.

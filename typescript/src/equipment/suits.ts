@@ -73,7 +73,8 @@ const BY_SYMBOL = /* @__PURE__ */ Object.freeze(
 /**
  * Look up a suit model by its grade-independent family, case-insensitively.
  *
- * @param family - Family such as `"utilitysuit"`.
+ * @param family - Family such as `"utilitysuit"`, matched case-insensitively after
+ * trimming surrounding whitespace.
  * @returns The frozen suit record, or `null` when unknown.
  * @throws {TypeError} If `family` is present and not a string. A nullish family is a
  * miss, answered like an unrecognised one.
@@ -90,7 +91,8 @@ export function getSuitByFamily(family: string): Suit | null {
 /**
  * Look up a suit by its display name, case-insensitively.
  *
- * @param name - Display name such as `"Maverick Suit"`.
+ * @param name - Display name such as `"Maverick Suit"`, matched case-insensitively
+ * after trimming surrounding whitespace.
  * @returns The frozen suit record, or `null` when unknown.
  * @throws {TypeError} If `name` is present and not a string. A nullish name is a miss,
  * answered like an unrecognised one.
@@ -107,7 +109,8 @@ export function getSuitByName(name: string): Suit | null {
 /**
  * Resolve the grade-specific Frontier item symbol reported by journal suit events.
  *
- * @param symbol - Item symbol such as `"utilitysuit_class3"`.
+ * @param symbol - Item symbol such as `"utilitysuit_class3"`, matched
+ * case-insensitively after trimming surrounding whitespace.
  * @returns The owning suit and its numeric grade, or `null` when unknown.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish symbol is a
  * miss, answered like an unrecognised one.
