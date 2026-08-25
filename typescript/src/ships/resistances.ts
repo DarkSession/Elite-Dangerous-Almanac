@@ -18,8 +18,8 @@
  *   multiplier (capped at `0.7`), the range `[0, max]` is squeezed into `[0.35, max]`.
  *   If the squeeze would *raise* the multiplier above `0.7`, the plain product stands.
  *
- * This module is data-free — pass fractions in, get fractions out. {@link ShipLoadout}
- * (`./ship-loadout`), `./shields` and `./armour` gather the numbers for you.
+ * This module is data-free — pass fractions in, get fractions out. {@link BuildMetrics}
+ * (`./build-metrics`), `./shields` and `./armour` gather the numbers for you.
  *
  * @remarks
  * Reference implementation: EDCD/Coriolis,

@@ -272,17 +272,18 @@ prices ordinary engineering rather than the reward.
 
 ## Pricing a whole build
 
-`ShipLoadout.buildCost` does the same folding for every module a build carries, including
+`BuildMetrics.buildCost` does the same folding for every module a build carries, including
 the Merc Coin charged by ordinary engineering-menu recipes, and prices the hull and
 modules in credits beside it:
 
 ```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 const build = ShipLoadout.default('Anaconda');
 build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
 
-const cost = build.buildCost();
+const cost = BuildMetrics.of(build).buildCost();
 cost.credits.total; // -> 146978572
 cost.credits.rebuy; // -> 7348928
 cost.materials.find((material) => material.symbol === 'Arsenic')?.count; // -> 5

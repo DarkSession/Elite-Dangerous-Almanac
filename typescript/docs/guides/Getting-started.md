@@ -68,6 +68,7 @@ symbols you are most likely to reach for first:
 | `REAL_NEBULAE` / `PLANETARY_NEBULAE` / `PROCGEN_NEBULAE` / `ALL_NEBULAE` | `core/astro/nebulae-real` / `-planetary` / `-procgen` / `-all` |
 | `permitLockForSystemName` | `core/astro/permit-locks` |
 | `ShipLoadout` | `core/ships/ship-loadout` |
+| `BuildMetrics` | `core/ships/build-metrics` |
 | `parseSlef`, `inspectSlef`, `toSlef`, `LoadoutEvent` | `core/ships/slef` |
 | `getShipBySymbol`, `getShipSlots`, `SHIPS` | `core/ships/ships` |
 | `getModuleBySymbol`, `OutfittingModule` | `core/ships/modules` |
@@ -98,11 +99,12 @@ before any transport compression. The published package strips whitespace but do
 compress syntax or rename identifiers, so its own files on disk are larger. The heaviest
 imports are:
 
-- `ships/ship-loadout` is about 854.5 KiB, the batteries-included facade. Resolving
+- `ships/ship-loadout` is the batteries-included editing facade, and `ships/build-metrics`
+  the calculating half over it — importing one does not pull in the other. Resolving
   arbitrary journal module ids and engineering recipes needs the complete ship, module,
   blueprint-mechanics and experimental-effect-mechanics catalogues, and
-  `ShipLoadout.buildCost` prices a build in materials and Merc Coin as well as credits, so
-  the two shopping-list catalogues (105.2 KiB of the total) come with it. Import
+  `BuildMetrics.buildCost` prices a build in materials and Merc Coin as well as credits, so
+  the two shopping-list catalogues come with the metrics half. Import
   `ships/blueprint-costs` or `ships/experimental-effect-costs` on their own to price one
   recipe, or a data-free calculation module, when you need one answer rather than a whole
   ship.

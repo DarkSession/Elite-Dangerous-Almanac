@@ -134,14 +134,16 @@ tryToSystemAddress('not an address'); // -> null, never throws
 The three aggregate figures always have an answer:
 
 ```ts
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
 build.unladenMass; // number
 build.cargoCapacity; // number
 build.fuelCapacity; // { main, reserve }
-build.buildMass(); // { hull, modules, unladen, fuel, cargo, total }
+metrics.buildMass(); // { hull, modules, unladen, fuel, cargo, total }
 ```
 
 Nothing a build can hold is unweighable: import discards an article no catalogue
@@ -154,19 +156,28 @@ The metrics that depend on *build state* are a different question, and those kee
 diagnostic pairs. The nullable method is the convenience; its `…Result` companion is what
 you show a user when the convenience is `null`:
 
+**Every one of them is a pair, with no exceptions to remember.** Six build metrics can be
+unavailable, and each is offered twice under the same rule:
+
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-build.mobilityMetrics(); // MobilityMetrics | null
-build.mobilityMetricsResult(); // the value, or why it is unavailable
-build.thrusters; // ThrusterParams | null — the fitted curve, whatever the power state
-build.shieldMetrics();
-build.shieldMetricsResult();
-build.shieldRecovery();
-build.shieldRecoveryResult();
-build.standardLoadResult('maximum');
+metrics.mobilityMetrics(); // MobilityMetrics | null
+metrics.mobilityMetricsResult(); // the value, or why it is unavailable
+metrics.shieldMetrics();
+metrics.shieldMetricsResult();
+metrics.shieldRecovery();
+metrics.shieldRecoveryResult();
+metrics.heatMetrics();
+metrics.heatMetricsResult();
+metrics.distributorMetrics();
+metrics.distributorMetricsResult();
+metrics.standardLoad('maximum');
+metrics.standardLoadResult('maximum');
+
+metrics.thrusters(); // ThrusterParams | null — the fitted curve, whatever the power state
 ```
 
 Each result is a `CalculationResult`: `complete: true` carries a non-null `value` and no
@@ -175,8 +186,8 @@ issues; `complete: false` carries `value: null` and one or more issues. The issu
 
 | Reason | Means |
 | --- | --- |
-| `missing` | The shield generator is not fitted |
-| `unresolved` | The fitted record lacks a numeric fact this metric needs, such as part of a thruster's mass curve |
+| `missing` | The module the metric needs — generator, thrusters, plant, distributor — is not fitted |
+| `unresolved` | The fitted record lacks a numeric fact this metric needs, such as part of a thruster's mass curve, or a shield generator's `distributorDraw` |
 | `disabled` | The required fitted module is switched off |
 | `shed` | The retracted priority budget does not power the required module |
 | `invalid` | A known build dependency is non-physical, such as a non-positive or non-finite power-plant capacity or a negative module draw |
@@ -192,9 +203,12 @@ normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing re
 what the discarded article cost. Stocking an absent bulkhead or cargo hatch changes none
 of them — both stock articles are free and weightless.
 
-**Absent is not zero, anywhere in the library.** A catalogue field the source did not
-carry is omitted rather than defaulted, and a capture that priced no module for a slot
-reports `null` rather than `0` — a cockpit no journal prices was not free.
+**Absent is not zero, anywhere in the library** — and it is never a plausible-looking
+constant either. A catalogue field the source did not carry is omitted rather than
+defaulted, and a capture that priced no module for a slot reports `null` rather than `0`
+— a cockpit no journal prices was not free. A metric that needs a number the fitted
+record does not state comes back incomplete with `unresolved`, so a figure derived from a
+guess can never reach you looking like a measurement.
 
 ## `valid` against `complete`
 
@@ -206,9 +220,9 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 
 declare const build: ShipLoadout;
 
-build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // legal *and* every operational mount filled
-build.validation.issues; // what specifically
+build.validation().valid; // is the fit structurally legal?
+build.validation().complete; // legal *and* every operational mount filled
+build.validation().issues; // what specifically
 ```
 
 Each issue carries a stable `code` and a `severity`:

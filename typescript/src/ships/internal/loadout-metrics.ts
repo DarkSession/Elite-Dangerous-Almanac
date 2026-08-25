@@ -373,19 +373,40 @@ export function powerAvailable(
     return 0;
 }
 
-type PoweredMetricField = 'thrusters' | 'shieldGenerator';
+type PoweredMetricField = 'thrusters' | 'shieldGenerator' | 'powerDistributor';
+
+/** The mount a diagnostic names when no fitted module supplies one. */
+const DEFAULT_SLOT: Partial<Record<CalculationIssue['field'], string>> = {
+    powerCapacity: 'PowerPlant',
+    heatEfficiency: 'PowerPlant',
+    thrusters: 'MainEngines',
+    powerDistributor: 'PowerDistributor',
+};
+
+/** How an `unresolved` diagnostic names the numeric fact the metric could not read. */
+const UNRESOLVED_FACT: Partial<Record<CalculationIssue['field'], string>> = {
+    thrusters: 'thruster stats',
+    shieldGenerator: 'shield-generator stats',
+    powerCapacity: 'power capacity',
+    heatEfficiency: 'heat efficiency',
+    powerDistributor: 'power-distributor stats',
+};
+
+/** How a `missing` diagnostic reports that nothing the metric needs is fitted at all. */
+const NOTHING_FITTED: Partial<Record<CalculationIssue['field'], string>> = {
+    powerCapacity: 'PowerPlant: no power plant is fitted',
+    heatEfficiency: 'PowerPlant: no power plant is fitted',
+    thrusters: 'MainEngines: no thrusters are fitted',
+    powerDistributor: 'PowerDistributor: no power distributor is fitted',
+};
+
 /** Build one stable diagnostic for a missing or unavailable metric dependency. */
 function metricIssue(
     field: CalculationIssue['field'],
     reason: CalculationIssueReason,
     module?: LoadoutModule,
 ): CalculationIssue {
-    const defaultSlot =
-        field === 'powerCapacity'
-            ? 'PowerPlant'
-            : field === 'thrusters'
-              ? 'MainEngines'
-              : undefined;
+    const defaultSlot = DEFAULT_SLOT[field];
     const slot = module?.Slot ?? defaultSlot;
     const symbol = module?.Item;
     const params = {
@@ -396,21 +417,9 @@ function metricIssue(
     };
     let message: string;
     if (reason === 'missing') {
-        message =
-            field === 'powerCapacity'
-                ? 'PowerPlant: no power plant is fitted'
-                : field === 'thrusters'
-                  ? 'MainEngines: no thrusters are fitted'
-                  : 'no shield generator is fitted';
+        message = NOTHING_FITTED[field] ?? 'no shield generator is fitted';
     } else if (reason === 'unresolved') {
-        const unavailable =
-            field === 'thrusters'
-                ? 'thruster stats'
-                : field === 'shieldGenerator'
-                  ? 'shield-generator stats'
-                  : field === 'powerCapacity'
-                    ? 'power capacity'
-                    : field;
+        const unavailable = UNRESOLVED_FACT[field] ?? field;
         message = `${truncate(slot ?? field)}: ${unavailable} unavailable for ${truncate(symbol ?? field)}`;
     } else if (reason === 'disabled') {
         message = `${truncate(slot ?? field)}: ${truncate(symbol ?? field)} is switched off`;
@@ -759,13 +768,20 @@ export function shieldRecoveryInputResultFor(
     }
     const generatorStats = statsFor(generatorModule);
     const distributorStats = distributor ? statsFor(distributor) : null;
+    // Absent is not zero, and it is not a guessed constant either. Every catalogued
+    // generator states this draw, so only a caller-supplied record can omit it — and a
+    // recovery time computed from an invented draw is indistinguishable from a real one.
+    const distributorDraw = effectiveStat(generatorModule, 'distributorDraw', generatorStats);
+    if (distributorDraw === undefined) {
+        return incompleteResult([metricIssue('shieldGenerator', 'unresolved', generatorModule)]);
+    }
     const strength = shieldMetrics(shieldInputFor(ship, modules, budget, 0, statsFor)).strength;
     return completeResult({
         strength,
         regenRate: effectiveStat(generatorModule, 'shieldRegenRate', generatorStats) ?? 0,
         brokenRegenRate:
             effectiveStat(generatorModule, 'shieldBrokenRegenRate', generatorStats) ?? 0,
-        distributorDraw: effectiveStat(generatorModule, 'distributorDraw', generatorStats) ?? 0.6,
+        distributorDraw,
         systemsCapacity: distributor
             ? (effectiveStat(distributor, 'systemsCapacity', distributorStats) ?? 0)
             : 0,
@@ -802,8 +818,18 @@ export function weaponsCapacitorInputFor(
     return { weaponsCapacity, weaponsRecharge, sustainedEnergyPerSecond, weaponsPips };
 }
 
-/** Gather all three capacitors from the powered distributor with hardpoints retracted. */
-export function distributorInputFor(
+/**
+ * Gather all three capacitors from the powered distributor with hardpoints retracted,
+ * with an unavailable-state diagnostic.
+ *
+ * @remarks
+ * A switched-off distributor is reported rather than skipped: "not fitted", "switched
+ * off", "unpowered" and "the record does not state its capacitors" are four different
+ * things for a consumer to show, and a bare `null` said only that one of them happened.
+ * A build carrying a disabled distributor *and* an enabled one still reads the enabled
+ * one, so the fitted set decides before the diagnostic does.
+ */
+export function distributorInputResultFor(
     modules: readonly LoadoutModule[],
     pips: {
         readonly systemsPips: number;
@@ -812,12 +838,18 @@ export function distributorInputFor(
     },
     budget: PowerBudget,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
-): DistributorInput | null {
+): CalculationResult<DistributorInput> {
+    let disabled: LoadoutModule | null = null;
     for (const module of modules) {
-        if (!isEnabled(module)) continue;
         const stats = statsFor(module);
         if (!isPowerDistributor(module, stats)) continue;
-        if (!poweredStates(module, stats, budget).retracted) return null;
+        if (!isEnabled(module)) {
+            disabled ??= module;
+            continue;
+        }
+        if (!poweredStates(module, stats, budget).retracted) {
+            return incompleteResult([metricIssue('powerDistributor', 'shed', module)]);
+        }
         const systemsCapacity = effectiveStat(module, 'systemsCapacity', stats);
         const systemsRecharge = effectiveStat(module, 'systemsRecharge', stats);
         const enginesCapacity = effectiveStat(module, 'enginesCapacity', stats);
@@ -832,9 +864,9 @@ export function distributorInputFor(
             weaponsCapacity === undefined ||
             weaponsRecharge === undefined
         ) {
-            return null;
+            return incompleteResult([metricIssue('powerDistributor', 'unresolved', module)]);
         }
-        return {
+        return completeResult({
             systemsCapacity,
             systemsRecharge,
             enginesCapacity,
@@ -842,9 +874,13 @@ export function distributorInputFor(
             weaponsCapacity,
             weaponsRecharge,
             ...pips,
-        };
+        });
     }
-    return null;
+    return incompleteResult([
+        disabled === null
+            ? metricIssue('powerDistributor', 'missing')
+            : metricIssue('powerDistributor', 'disabled', disabled),
+    ]);
 }
 
 /**
@@ -857,12 +893,13 @@ export function distributorInputFor(
  * once they are out — so the thrusters are gathered twice, and weapons are gathered
  * against the deployed state they fire in.
  */
-export function heatInputFor(
+export function heatInputResultFor(
     ship: Ship,
     modules: readonly LoadoutModule[],
     budget: PowerBudget,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
-): HeatInput | null {
+): CalculationResult<HeatInput> {
+    let plant: LoadoutModule | null = null;
     let heatEfficiency: number | undefined;
     let thrusterHeatRate = 0;
     let deployedThrusterHeatRate = 0;
@@ -874,7 +911,10 @@ export function heatInputFor(
         const stats = statsFor(module);
         if (isPowerPlant(module, stats)) {
             // A plant that is switched off feeds nothing, so there is no build to model.
-            if (!isEnabled(module)) return null;
+            if (!isEnabled(module)) {
+                return incompleteResult([metricIssue('powerCapacity', 'disabled', module)]);
+            }
+            plant = module;
             heatEfficiency = effectiveStat(module, 'heatEfficiency', stats);
             continue;
         }
@@ -902,9 +942,15 @@ export function heatInputFor(
             distributorDraw: weapon.distributorDraw ?? 0,
         });
     }
-    if (heatEfficiency === undefined) return null;
+    if (heatEfficiency === undefined) {
+        return incompleteResult([
+            plant === null
+                ? metricIssue('powerCapacity', 'missing')
+                : metricIssue('heatEfficiency', 'unresolved', plant),
+        ]);
+    }
 
-    return {
+    return completeResult({
         heatCapacity: ship.heatCapacity,
         heatDissipation: ship.heatDissipation,
         heatEfficiency,
@@ -915,7 +961,7 @@ export function heatInputFor(
         fsdHeatRate,
         weaponsCapacity,
         weapons,
-    };
+    });
 }
 
 /** What the plant actually feeds — the priority groups it keeps lit, and nothing below. */

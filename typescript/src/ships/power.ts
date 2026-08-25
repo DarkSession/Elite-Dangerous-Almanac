@@ -10,8 +10,8 @@
  * whose running total would go over, along with everything below it.
  *
  * This module is data-free: hand {@link powerBudget} the plant's capacity and a
- * {@link PowerConsumer} per fitted module. {@link ShipLoadout.powerBudget} (in
- * `./ship-loadout`) builds that list from a build for you, post-engineering.
+ * {@link PowerConsumer} per fitted module. {@link BuildMetrics.powerBudget} (in
+ * `./build-metrics`) builds that list from a build for you, post-engineering.
  *
  * @remarks
  * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Ship.js`
@@ -131,7 +131,7 @@ export interface PowerBudget {
     readonly bands: readonly PowerBand[];
     /**
      * Every supplied consumer in source order, including switched-off entries. Enabled
-     * entries reconcile with the band and aggregate totals. {@link ShipLoadout.powerBudget}
+     * entries reconcile with the band and aggregate totals. {@link BuildMetrics.powerBudget}
      * supplies only modules with a positive draw; passive and zero-draw fittings are absent.
      */
     readonly consumers: readonly PowerConsumerResult[];
@@ -151,7 +151,7 @@ function bandIndex(priority: number | undefined): number {
  * fitted — every group then reads as unpowered). Must be finite and non-negative.
  * @param consumers - Power consumers to include. Modules with `enabled: false` are
  * skipped from totals; the rest fall into their {@link PowerConsumer.priority | priority}
- * group. {@link ShipLoadout.powerBudget} omits passive and zero-draw fittings.
+ * group. {@link BuildMetrics.powerBudget} omits passive and zero-draw fittings.
  * @returns The {@link PowerBudget}.
  * @throws {RangeError} If `available` or any consumer's `draw` is not a finite
  * non-negative number.

@@ -111,29 +111,33 @@ Address inputs accept `bigint`, safe integer `number` values and decimal strings
 Addresses are returned as `bigint`.
 
 ```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 declare const slefJsonString: string;
 
 const build = ShipLoadout.fromSlef(slefJsonString);
-build.maxJumpRange();
-build.powerBudget();
-build.shieldMetrics();
-build.armourMetrics();
-build.weaponMetrics();
-build.weaponsCapacitorMetrics({ weaponsPips: 2 });
+const metrics = BuildMetrics.of(build);
+metrics.maxJumpRange();
+metrics.powerBudget();
+metrics.shieldMetrics();
+metrics.armourMetrics();
+metrics.weaponMetrics();
+metrics.weaponsCapacitorMetrics({ weaponsPips: 2 });
 
 build.toSlefString({
     header: { appName: 'MyApp', appVersion: '1.0.0' },
 });
 ```
 
-`ShipLoadout` imports every ship and module catalogue so it can resolve any build.
-When only one calculation is required, use the data-free leaf modules under
-`ships/jump-range`, `ships/power`, `ships/shields`, `ships/armour`, `ships/weapons`,
-`ships/weapons-capacitor`, `ships/ammunition`, `ships/heat` or `ships/resistances`.
+`ShipLoadout` holds and edits a build; `BuildMetrics` calculates over one, so an
+outfitting editor need not import the calculations. Both import every ship and module
+catalogue so they can resolve any build. When only one calculation is required, use the
+data-free leaf modules under `ships/jump-range`, `ships/power`, `ships/shields`,
+`ships/armour`, `ships/weapons`, `ships/weapons-capacitor`, `ships/ammunition`,
+`ships/heat` or `ships/resistances`.
 
-`build.validation` reports validity and operational completeness. `cargoCapacity`,
+`build.validation()` reports validity and operational completeness. `cargoCapacity`,
 `fuelCapacity` and `unladenMass` always have an answer, because no article the
 catalogue cannot weigh reaches a build; the metrics that depend on build state
 (`mobilityMetrics`, `shieldMetrics`, `shieldRecovery`) are nullable and have a

@@ -18,7 +18,7 @@
  * above collapse to the raw stats.
  *
  * This module is data-free — hand it a weapon's stats (a catalogue record satisfies
- * {@link WeaponStats} as-is). {@link ShipLoadout.weaponMetrics} (in `./ship-loadout`)
+ * {@link WeaponStats} as-is). {@link BuildMetrics.weaponMetrics} (in `./build-metrics`)
  * reads a build's hardpoints, applies their engineering, and totals them for you.
  *
  * @remarks
@@ -172,7 +172,7 @@ export interface WeaponMetrics {
      * {@link damagePerSecond} split by damage type.
      *
      * @remarks
-     * Uses the split supplied in {@link WeaponStats}. {@link ShipLoadout.weaponMetrics}
+     * Uses the split supplied in {@link WeaponStats}. {@link BuildMetrics.weaponMetrics}
      * resolves damage-converting experimental effects, Plasma Conversion blueprints and
      * a journal's own damage-type modifiers before calling this calculation, so fitted
      * conversions report their resulting split.
@@ -517,12 +517,12 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
  * @returns The additive {@link WeaponTotals}. An empty list returns zeroes.
  * @example
  * ```ts
- * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
  * import { sumWeaponMetrics } from '@elite-dangerous-almanac/core/ships/weapons';
  *
- * declare const build: ShipLoadout;
+ * declare const metrics: BuildMetrics;
  *
- * sumWeaponMetrics(build.weaponMetrics().weapons.map((w) => w.metrics)).damagePerSecond;
+ * sumWeaponMetrics(metrics.weaponMetrics().weapons.map((w) => w.metrics)).damagePerSecond;
  * ```
  */
 export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotals {

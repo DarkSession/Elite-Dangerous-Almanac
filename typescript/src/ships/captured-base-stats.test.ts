@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
+import { BuildMetrics } from './build-metrics.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { effectiveModule, weaponStatsFor } from './internal/loadout-metrics.js';
@@ -358,8 +359,8 @@ test('every capture rebuilds to the mass and jump range it states', () => {
             `${file}: computed mass ${built.unladenMass}, stated ${unladenMass}`,
         );
         assert.ok(
-            Math.abs(built.maxJumpRange()! - maxJumpRange) < rebuildTolerance,
-            `${file}: computed jump ${built.maxJumpRange()}, stated ${maxJumpRange}`,
+            Math.abs(BuildMetrics.of(built).maxJumpRange()! - maxJumpRange) < rebuildTolerance,
+            `${file}: computed jump ${BuildMetrics.of(built).maxJumpRange()}, stated ${maxJumpRange}`,
         );
     }
 });
@@ -421,7 +422,9 @@ test('captured damage-type conversions reach effective stats and weapon metrics'
         assert.equal(fitted.engineering?.ExperimentalEffect, experimental);
         assert.deepEqual(fitted.effectiveStats?.damageDistribution, effective);
 
-        const weapon = build.weaponMetrics().weapons.find((entry) => entry.slot === slot);
+        const weapon = BuildMetrics.of(build)
+            .weaponMetrics()
+            .weapons.find((entry) => entry.slot === slot);
         assert.ok(weapon, `${file}: no weapon metrics for ${slot}`);
         const total = weapon.metrics.damagePerSecond;
         assert.ok(withinFloatNoise(weapon.metrics.damageByType.kinetic, total * effective.kinetic));

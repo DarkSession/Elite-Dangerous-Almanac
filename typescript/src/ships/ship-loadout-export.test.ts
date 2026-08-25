@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
+import { BuildMetrics } from './build-metrics.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { parseSlef, type LoadoutEvent, type LoadoutModule } from './slef.js';
 import { enumerateSlots, parseSlotName } from './slots.js';
@@ -194,10 +195,10 @@ const krait = kraitJournal as unknown as LoadoutEvent;
 
 test('journal cosmetics are valid non-outfitting entries', () => {
     const build = ShipLoadout.fromLoadout(krait);
-    assert.equal(build.validation.valid, true);
-    assert.equal(build.validation.complete, true);
+    assert.equal(build.validation().valid, true);
+    assert.equal(build.validation().complete, true);
     assert.equal(
-        build.validation.issues.some((issue) => issue.code === 'unknownSlot'),
+        build.validation().issues.some((issue) => issue.code === 'unknownSlot'),
         false,
     );
 });
@@ -373,7 +374,7 @@ test('shared import normalization strips unknown modules and defaults named moun
     // Every hull carries a default for all nine fixed mounts, and import fills them
     // whether the source named an unresolvable article or named nothing, so a capture
     // this thin still imports as a flyable build.
-    assert.equal(build.validation.complete, expected.complete);
+    assert.equal(build.validation().complete, expected.complete);
 });
 
 test('the fixture’s mount and non-outfitting patterns agree with the classification', () => {
@@ -450,16 +451,16 @@ test('the jump figures for a real journal build match the fixture', () => {
     const pinned = jumpFixture.builds.kraitPhantom;
     assert.deepEqual(
         {
-            optMass: round6(build.frameShiftDrive.optMass),
-            maxFuel: build.frameShiftDrive.maxFuel,
-            fuelMul: build.frameShiftDrive.fuelMul,
-            fuelPower: build.frameShiftDrive.fuelPower,
-            jumpBoost: build.frameShiftDrive.jumpBoost,
+            optMass: round6(BuildMetrics.of(build).frameShiftDrive().optMass),
+            maxFuel: BuildMetrics.of(build).frameShiftDrive().maxFuel,
+            fuelMul: BuildMetrics.of(build).frameShiftDrive().fuelMul,
+            fuelPower: BuildMetrics.of(build).frameShiftDrive().fuelPower,
+            jumpBoost: BuildMetrics.of(build).frameShiftDrive().jumpBoost,
         },
         pinned.frameShiftDrive,
     );
 
-    const summary = build.jumpRangeSummary();
+    const summary = BuildMetrics.of(build).jumpRangeSummary();
     assert.equal(round6(summary.max), pinned.maxJumpRange);
     assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
     assert.equal(round6(summary.laden), pinned.ladenJumpRange);
@@ -516,16 +517,16 @@ test('the jump figures for the stock journal build match the fixture', () => {
     const pinned = jumpFixture.builds.viperMkIV;
     assert.deepEqual(
         {
-            optMass: round6(build.frameShiftDrive.optMass),
-            maxFuel: build.frameShiftDrive.maxFuel,
-            fuelMul: build.frameShiftDrive.fuelMul,
-            fuelPower: build.frameShiftDrive.fuelPower,
-            jumpBoost: build.frameShiftDrive.jumpBoost,
+            optMass: round6(BuildMetrics.of(build).frameShiftDrive().optMass),
+            maxFuel: BuildMetrics.of(build).frameShiftDrive().maxFuel,
+            fuelMul: BuildMetrics.of(build).frameShiftDrive().fuelMul,
+            fuelPower: BuildMetrics.of(build).frameShiftDrive().fuelPower,
+            jumpBoost: BuildMetrics.of(build).frameShiftDrive().jumpBoost,
         },
         pinned.frameShiftDrive,
     );
 
-    const summary = build.jumpRangeSummary();
+    const summary = BuildMetrics.of(build).jumpRangeSummary();
     assert.equal(round6(summary.max), pinned.maxJumpRange);
     assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
     assert.equal(round6(summary.laden), pinned.ladenJumpRange);
@@ -676,16 +677,16 @@ test('the jump figures for the anti-xeno journal build match the fixture', () =>
     const pinned = jumpFixture.builds.pythonMkII;
     assert.deepEqual(
         {
-            optMass: round6(build.frameShiftDrive.optMass),
-            maxFuel: build.frameShiftDrive.maxFuel,
-            fuelMul: build.frameShiftDrive.fuelMul,
-            fuelPower: build.frameShiftDrive.fuelPower,
-            jumpBoost: build.frameShiftDrive.jumpBoost,
+            optMass: round6(BuildMetrics.of(build).frameShiftDrive().optMass),
+            maxFuel: BuildMetrics.of(build).frameShiftDrive().maxFuel,
+            fuelMul: BuildMetrics.of(build).frameShiftDrive().fuelMul,
+            fuelPower: BuildMetrics.of(build).frameShiftDrive().fuelPower,
+            jumpBoost: BuildMetrics.of(build).frameShiftDrive().jumpBoost,
         },
         pinned.frameShiftDrive,
     );
 
-    const summary = build.jumpRangeSummary();
+    const summary = BuildMetrics.of(build).jumpRangeSummary();
     assert.equal(round6(summary.max), pinned.maxJumpRange);
     assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
     assert.equal(round6(summary.laden), pinned.ladenJumpRange);
@@ -1240,7 +1241,7 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
         build.fittedModuleAt('MediumHardpoint1')?.symbol,
         'hpt_mining_subsurfdispmisle_fixed_medium',
     );
-    assert.equal(build.weaponMetrics().weapons.length, 1);
+    assert.equal(BuildMetrics.of(build).weaponMetrics().weapons.length, 1);
     assert.equal(
         build.slots().find((s) => s.key === 'MediumHardpoint1'),
         undefined,
@@ -1341,7 +1342,7 @@ test('every figure the Type-11 export needs is computable from it', () => {
         assert.ok(ours[key] !== undefined, `${key} was omitted`);
     }
     assert.equal(build.cargoCapacity, 208);
-    assert.equal(build.weaponMetrics().weapons.length, 5);
+    assert.equal(BuildMetrics.of(build).weaponMetrics().weapons.length, 5);
 });
 
 test('a build assembled here exports the slot keys a game journal would use', () => {

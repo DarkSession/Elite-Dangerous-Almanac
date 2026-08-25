@@ -29,8 +29,10 @@ export interface CalculationIssue {
         | 'frameShiftDrive'
         | 'powerCapacity'
         | 'powerDraw'
+        | 'heatEfficiency'
         | 'thrusters'
-        | 'shieldGenerator';
+        | 'shieldGenerator'
+        | 'powerDistributor';
     /** Machine-readable unavailable-state discriminator. */
     readonly reason: CalculationIssueReason;
     /** Slot containing the incomplete module, when the dependency belongs to a module. */

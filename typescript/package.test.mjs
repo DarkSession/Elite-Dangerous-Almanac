@@ -409,6 +409,17 @@ test('the ship-loadout subpath exports its facade and structured edit error', as
     assert.ok(LoadoutEditError.prototype instanceof TypeError);
 });
 
+test('the build-metrics subpath exports the analysis half over a loadout', async () => {
+    const metrics = await import('@elite-dangerous-almanac/core/ships/build-metrics');
+    assert.deepEqual(Object.keys(metrics), ['BuildMetrics']);
+    const { ShipLoadout: Loadout } =
+        await import('@elite-dangerous-almanac/core/ships/ship-loadout');
+    assert.equal(
+        typeof metrics.BuildMetrics.of(Loadout.default('Anaconda')).maxJumpRange(),
+        'number',
+    );
+});
+
 test('heavy catalogues stay on explicit subpaths', async () => {
     const [astro, ships, planetary, nebulae, modules] = await Promise.all([
         import('@elite-dangerous-almanac/core/astro'),
@@ -676,25 +687,28 @@ test('engineering menus and journal resolution do not bundle blueprint mechanics
 });
 
 test('engineering mechanics and shopping costs stay in separate leaf graphs', async () => {
-    const [loadout, blueprints, blueprintCosts, effects, effectCosts] = await Promise.all([
+    const [loadout, metrics, blueprints, blueprintCosts, effects, effectCosts] = await Promise.all([
         readReachableJs(new URL('./dist/ships/ship-loadout.js', import.meta.url)),
+        readReachableJs(new URL('./dist/ships/build-metrics.js', import.meta.url)),
         readReachableJs(new URL('./dist/ships/blueprints.js', import.meta.url)),
         readReachableJs(new URL('./dist/ships/blueprint-costs.js', import.meta.url)),
         readReachableJs(new URL('./dist/ships/experimental-effects.js', import.meta.url)),
         readReachableJs(new URL('./dist/ships/experimental-effect-costs.js', import.meta.url)),
     ]);
 
-    // `ShipLoadout.buildCost` prices a build in materials and Merc Coin as well as
-    // credits, so the facade carries the shopping lists too — about 100 KiB of its graph.
-    // The separation the rest of this test pins is between the leaf modules: a consumer
-    // who wants mechanics or costs alone still imports one without the other.
+    // `BuildMetrics.buildCost` prices a build in materials and Merc Coin as well as
+    // credits, so the metrics half carries the shopping lists — and the editing half does
+    // not, which is the point of the split. The separation the rest of this test pins is
+    // between the leaf modules: a consumer who wants mechanics or costs alone still
+    // imports one without the other.
     assert.ok(
         loadout.length < 1.2 * 1024 * 1024,
         `expected a loadout graph under the facade ceiling, got ${loadout.length} bytes`,
     );
     assert.match(loadout, /FSDOptimalMass/);
-    assert.match(loadout, /DataminedWake/);
-    assert.match(loadout, /HyperspaceTrajectories/);
+    assert.doesNotMatch(loadout, /DataminedWake/);
+    assert.match(metrics, /DataminedWake/);
+    assert.match(metrics, /HyperspaceTrajectories/);
 
     assert.ok(
         blueprints.length < 384 * 1024,

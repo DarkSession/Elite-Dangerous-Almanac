@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+import { BuildMetrics } from './build-metrics.js';
 import { ammunitionCapacity } from './ammunition.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -191,7 +192,9 @@ test('the two capacity paths agree, on a weapon and on a utility module', () => 
     build.applyBlueprint('MediumHardpoint1', 'Weapon_HighCapacity', { grade: 5 });
     build.applyBlueprint('TinyHardpoint1', 'Misc_ChaffCapacity', { grade: 1 });
 
-    const gun = build.weaponMetrics().weapons.find((weapon) => weapon.slot === 'MediumHardpoint1');
+    const gun = BuildMetrics.of(build)
+        .weaponMetrics()
+        .weapons.find((weapon) => weapon.slot === 'MediumHardpoint1');
     assert.deepEqual(gun?.ammunition, build.fittedModuleAt('MediumHardpoint1')!.ammunition);
     assert.deepEqual(build.fittedModuleAt('TinyHardpoint1')!.ammunition, {
         clipSize: 1,
@@ -201,7 +204,9 @@ test('the two capacity paths agree, on a weapon and on a utility module', () => 
     });
     // A utility module is not a weapon, so it is not in the firepower report at all.
     assert.equal(
-        build.weaponMetrics().weapons.some((weapon) => weapon.slot === 'TinyHardpoint1'),
+        BuildMetrics.of(build)
+            .weaponMetrics()
+            .weapons.some((weapon) => weapon.slot === 'TinyHardpoint1'),
         false,
     );
 });
@@ -211,7 +216,7 @@ test('a build reports the capacity of every weapon it carries', () => {
     build.setModule('SmallHardpoint1', module('Hpt_MultiCannon_Fixed_Small'));
     build.setModule('SmallHardpoint2', module('Hpt_BeamLaser_Fixed_Small'));
 
-    const guns = build.weaponMetrics();
+    const guns = BuildMetrics.of(build).weaponMetrics();
     const byslot = new Map(guns.weapons.map((weapon) => [weapon.slot, weapon.ammunition]));
     assert.deepEqual(byslot.get('SmallHardpoint1'), {
         clipSize: 100,
@@ -225,7 +230,7 @@ test('a build reports the capacity of every weapon it carries', () => {
     // A weapon switched off is still a weapon that holds rounds: it keeps its capacity in
     // the report, and only the per-second totals leave it out.
     build.setModuleEnabled('SmallHardpoint1', false);
-    const off = build.weaponMetrics();
+    const off = BuildMetrics.of(build).weaponMetrics();
     const disabled = off.weapons.find((weapon) => weapon.slot === 'SmallHardpoint1')!;
     assert.equal(disabled.enabled, false);
     assert.equal(disabled.ammunition?.total, 2200);
@@ -377,8 +382,8 @@ test('the Corsair capture recomputes to the figures Frontier reports for it', ()
     const build = ShipLoadout.fromLoadout(stripped as never);
     assert.ok(Math.abs(build.unladenMass! - pinned.unladenMass) < 1e-6);
     assert.ok(Math.abs(build.unladenMass! - pinned.journalUnladenMass) < 1e-4);
-    assert.equal(Number(build.maxJumpRange().toFixed(6)), pinned.maxJumpRange);
-    assert.ok(Math.abs(build.maxJumpRange() - pinned.journalMaxJumpRange) < 1e-4);
+    assert.equal(Number(BuildMetrics.of(build).maxJumpRange().toFixed(6)), pinned.maxJumpRange);
+    assert.ok(Math.abs(BuildMetrics.of(build).maxJumpRange() - pinned.journalMaxJumpRange) < 1e-4);
     assert.equal(build.cargoCapacity, pinned.cargoCapacity);
 });
 

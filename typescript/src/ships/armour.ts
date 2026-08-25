@@ -12,7 +12,7 @@
  * stack onto with diminishing returns — see `./resistances`. Module reinforcement
  * packages protect the *modules* rather than the hull, and are reported separately.
  *
- * This module is data-free. {@link ShipLoadout.armourMetrics} (in `./ship-loadout`)
+ * This module is data-free. {@link BuildMetrics.armourMetrics} (in `./build-metrics`)
  * gathers a build's bulkhead and reinforcement packages, post-engineering, and calls
  * {@link armourMetrics} for you.
  *
@@ -88,7 +88,7 @@ export interface ArmourInput {
      * @remarks
      * Absent means **no** bulkhead: no armour bonus and no resistances, so the hull
      * reports its bare `baseArmour`. No ship in the game flies like that;
-     * `ShipLoadout.armourMetrics()` substitutes the hull's stock lightweight alloy
+     * `BuildMetrics.armourMetrics()` substitutes the hull's stock lightweight alloy
      * instead, and you should pass the hull's own armour record here to do the same.
      */
     readonly bulkhead?: BulkheadParams | null;

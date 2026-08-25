@@ -16,7 +16,7 @@
  * Resistances stack separately, with their own diminishing returns — see
  * `./resistances`.
  *
- * This module is data-free. {@link ShipLoadout.shieldMetrics} (in `./ship-loadout`)
+ * This module is data-free. {@link BuildMetrics.shieldMetrics} (in `./build-metrics`)
  * pulls the generator, boosters and reinforcement packages out of a build,
  * post-engineering, and calls {@link shieldMetrics} for you.
  *

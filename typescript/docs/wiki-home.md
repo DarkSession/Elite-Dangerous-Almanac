@@ -16,6 +16,7 @@ ESM-only, Node.js 22+ and modern browser bundlers, every module side-effect free
 
 ```ts
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
@@ -24,7 +25,7 @@ ProceduralSystem.fromName('Synuefe EN-H d11-96')?.systemAddress; // -> 330917999
 // One `Loadout` line from a player journal.
 function jumpRangeOf(journalLine: string) {
     const event = JSON.parse(journalLine) as LoadoutEvent;
-    return ShipLoadout.fromLoadout(event).maxJumpRange(); // -> 60.5478
+    return BuildMetrics.of(ShipLoadout.fromLoadout(event)).maxJumpRange(); // -> 60.5478
 }
 ```
 

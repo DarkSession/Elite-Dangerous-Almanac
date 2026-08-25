@@ -149,34 +149,36 @@ continues to answer the stock module's ordinary experimental menu.
 
 ## Report what the build does
 
-Each metric is one call. The figures below are one build's — a Federal Corvette.
+Each metric is one call on a {@link ships!BuildMetrics | BuildMetrics} attached to the
+build with `BuildMetrics.of(build)`. The figures below are one build's — a Federal
+Corvette.
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout; // a Federal Corvette
+declare const metrics: BuildMetrics; // BuildMetrics.of(build), a Federal Corvette
 
-build.powerBudget().available; // -> 50.4     MW the plant makes
-build.powerBudget().deployed; // -> 46.8597  MW drawn, hardpoints out
-build.powerBudget().withinBudget; // -> true
-build.powerBudget().bands.length; // -> 5        the five priority groups
+metrics.powerBudget().available; // -> 50.4     MW the plant makes
+metrics.powerBudget().deployed; // -> 46.8597  MW drawn, hardpoints out
+metrics.powerBudget().withinBudget; // -> true
+metrics.powerBudget().bands.length; // -> 5        the five priority groups
 
-build.shieldMetrics()?.strength; // -> 3940.4   MJ
-build.armourMetrics().hitPoints; // -> 5062.6
+metrics.shieldMetrics()?.strength; // -> 3940.4   MJ
+metrics.armourMetrics().hitPoints; // -> 5062.6
 
-build.weaponMetrics().total.damagePerSecond; // -> 137.04
-build.weaponMetrics().total.sustainedDamagePerSecond; // -> 133.98
-build.weaponMetrics().weapons.length; // -> 7
+metrics.weaponMetrics().total.damagePerSecond; // -> 137.04
+metrics.weaponMetrics().total.sustainedDamagePerSecond; // -> 133.98
+metrics.weaponMetrics().weapons.length; // -> 7
 ```
 
 Jump range comes in the loads that matter, so a screen does not have to compute them:
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-const jumps = build.jumpRangeSummary();
+const jumps = metrics.jumpRangeSummary();
 jumps.max; // best single jump: one jump's fuel, empty hold
 jumps.unladen; // full tank, empty hold
 jumps.laden; // full tank, full hold
@@ -191,20 +193,20 @@ Mass and mobility come as figures rather than as ingredients, so the panel's mas
 and its speed line are both one call:
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-const mass = build.buildMass();
+const mass = metrics.buildMass();
 mass.hull; // the bare hull, in tonnes
 mass.modules; // every fitted module, post-engineering
 mass.total; // with a full main tank and an empty hold
 
-const mobility = build.mobilityMetrics();
+const mobility = metrics.mobilityMetrics();
 mobility?.speed; // m/s, at four ENG pips
 mobility?.loadedMass; // the mass that speed was calculated at
-build.thrusters?.optMass; // rated performance at or below this mass
-build.thrusters?.maxMass; // past this the ship does not move at all
+metrics.thrusters()?.optMass; // rated performance at or below this mass
+metrics.thrusters()?.maxMass; // past this the ship does not move at all
 ```
 
 The game's statistics panel counts the reserve tank in the current mass it displays;
@@ -224,9 +226,10 @@ import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loado
 
 declare const build: ShipLoadout;
 
-build.validation.valid; // is the fit structurally legal?
-build.validation.complete; // legal *and* every operational mount filled
-build.validation.issues; // what specifically, with a stable code per issue
+const validation = build.validation();
+validation.valid; // is the fit structurally legal?
+validation.complete; // legal *and* every operational mount filled
+validation.issues; // what specifically, with a stable code per issue
 ```
 
 Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,

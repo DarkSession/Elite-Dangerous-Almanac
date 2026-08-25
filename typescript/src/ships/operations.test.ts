@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import fixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
+import { BuildMetrics } from './build-metrics.js';
 import { mobilityMetrics } from './mobility.js';
 import { distributorMetrics } from './distributor.js';
 import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
@@ -83,18 +84,19 @@ test('shared ship-operation cases reproduce across public calculations', () => {
 test('shared catalogue-backed operation cases reproduce', () => {
     const distributorFacade = fixture.distributor.facade;
     const distributorBuild = ShipLoadout.fromLoadout(distributorFacade.loadout);
-    const distributorBand = distributorBuild.powerBudget().bands[4];
+    const distributorBand = BuildMetrics.of(distributorBuild).powerBudget().bands[4];
     assert.equal(distributorBand?.poweredRetracted, true);
     assert.equal(distributorBand?.poweredDeployed, false);
     assert.deepEqual(
-        distributorBuild.distributorMetrics(distributorFacade.options),
+        BuildMetrics.of(distributorBuild).distributorMetrics(distributorFacade.options),
         distributorFacade.expected,
     );
     for (const loadout of distributorFacade.nullLoadouts) {
-        assert.equal(ShipLoadout.fromLoadout(loadout).distributorMetrics(), null);
+        assert.equal(BuildMetrics.of(ShipLoadout.fromLoadout(loadout)).distributorMetrics(), null);
     }
 
-    const credits = ShipLoadout.default(fixture.buildCost.credits.ship).buildCost().credits;
+    const credits = BuildMetrics.of(ShipLoadout.default(fixture.buildCost.credits.ship)).buildCost()
+        .credits;
     assert.deepEqual(
         {
             total: credits.total,
@@ -110,7 +112,7 @@ test('shared catalogue-backed operation cases reproduce', () => {
         getModuleBySymbol(ordinary.symbol, ALL_MODULES)!,
     );
     ordinaryBuild.applyBlueprint(ordinary.slot, ordinary.blueprint, { grade: ordinary.grade });
-    assert.equal(ordinaryBuild.buildCost().mercCoins, ordinary.mercCoins);
+    assert.equal(BuildMetrics.of(ordinaryBuild).buildCost().mercCoins, ordinary.mercCoins);
     const mercenary = fixture.buildCost.mercenary;
     const mercCoinBuild = ShipLoadout.default(mercenary.ship);
     for (const module of mercenary.modules) {
@@ -121,15 +123,15 @@ test('shared catalogue-backed operation cases reproduce', () => {
         assert.equal(variant.mercCoinCost, module.cost);
         mercCoinBuild.setPreEngineeredVariant(module.slot, variant);
     }
-    assert.equal(mercCoinBuild.buildCost().mercCoins, mercenary.expected);
+    assert.equal(BuildMetrics.of(mercCoinBuild).buildCost().mercCoins, mercenary.expected);
     const climbed = mercenary.modules[0]!;
     mercCoinBuild
         .setModule(climbed.slot, getModuleBySymbol(climbed.symbol, ALL_MODULES)!)
         .applyBlueprint(climbed.slot, climbed.blueprint, { grade: mercenary.climbed.grade });
     assert.deepEqual(
         {
-            mercCoins: mercCoinBuild.buildCost().mercCoins,
-            materials: mercCoinBuild.buildCost().materials,
+            mercCoins: BuildMetrics.of(mercCoinBuild).buildCost().mercCoins,
+            materials: BuildMetrics.of(mercCoinBuild).buildCost().materials,
         },
         { mercCoins: mercenary.climbed.mercCoins, materials: mercenary.climbed.materials },
     );
@@ -236,16 +238,16 @@ test('shared diagnostic cases expose stable localization keys', () => {
         fixture.diagnostics.slef.expected,
     );
 
-    const loadoutIssue = ShipLoadout.fromLoadout(
-        fixture.diagnostics.loadout.input,
-    ).validation.issues.find((issue) => issue.code === fixture.diagnostics.loadout.expected.code);
+    const loadoutIssue = ShipLoadout.fromLoadout(fixture.diagnostics.loadout.input)
+        .validation()
+        .issues.find((issue) => issue.code === fixture.diagnostics.loadout.expected.code);
     assert.ok(loadoutIssue);
     assert.deepEqual(loadoutIssue.params, fixture.diagnostics.loadout.expected.params);
 
     const restricted = fixture.diagnostics.restrictedLoadout;
-    const restrictedIssue = ShipLoadout.fromLoadout(restricted.input).validation.issues.find(
-        (candidate) => candidate.code === restricted.expected.code,
-    );
+    const restrictedIssue = ShipLoadout.fromLoadout(restricted.input)
+        .validation()
+        .issues.find((candidate) => candidate.code === restricted.expected.code);
     assert.ok(restrictedIssue);
     assert.deepEqual(restrictedIssue.params, restricted.expected.params);
 });

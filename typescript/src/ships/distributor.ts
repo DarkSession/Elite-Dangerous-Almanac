@@ -5,8 +5,8 @@
  * and WEP use the same non-linear allocation curve:
  * `ratedRecharge * (pips / 4) ^ 1.1`.
  *
- * This module is data-free. {@link ShipLoadout.distributorMetrics}
- * (`./ship-loadout`) resolves the powered distributor in a build for you.
+ * This module is data-free. {@link BuildMetrics.distributorMetrics}
+ * (`./build-metrics`) resolves the powered distributor in a build for you.
  *
  * @remarks
  * The SYS and WEP curves follow EDCD/Coriolis; the ENG curve is cross-checked

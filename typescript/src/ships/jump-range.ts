@@ -3,7 +3,7 @@
  * the ship-build maths.
  *
  * These are the pure functions; they take the drive's constants and the ship's
- * mass and hand back light-years and tonnes. {@link ShipLoadout} (`./ship-loadout`)
+ * mass and hand back light-years and tonnes. {@link BuildMetrics} (`./build-metrics`)
  * is the convenient front end that pulls the constants out of a SLEF build for you.
  *
  * The model is the community-standard one used by EDSY and Coriolis, itself derived
@@ -162,7 +162,7 @@ export function frameShiftDriveMassFactor(
  * drive cannot jump (`maxFuel` or `fuel` = 0).
  * @remarks
  * Lighter ships and larger `optMass` jump farther; carrying more fuel than one jump
- * needs only weighs you down, which is why {@link ShipLoadout.maxJumpRange} loads
+ * needs only weighs you down, which is why {@link BuildMetrics.maxJumpRange} loads
  * exactly one jump's worth.
  * @throws {RangeError} If a quantity is negative or non-finite, or a required drive
  * constant is not positive.

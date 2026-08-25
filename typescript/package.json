@@ -305,6 +305,10 @@
             "types": "./dist/ships/blueprint-journal.d.ts",
             "import": "./dist/ships/blueprint-journal.js"
         },
+        "./ships/build-metrics": {
+            "types": "./dist/ships/build-metrics.d.ts",
+            "import": "./dist/ships/build-metrics.js"
+        },
         "./ships/blueprints": {
             "types": "./dist/ships/blueprints.d.ts",
             "import": "./dist/ships/blueprints.js"

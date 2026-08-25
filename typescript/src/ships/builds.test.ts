@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
+import { BuildMetrics } from './build-metrics.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -145,7 +146,7 @@ test('the corpus covers every hull with 2-5 builds and unique ids', () => {
 test('every corpus module fits and import restores the omitted cargo hatch', () => {
     for (const build of builds) {
         const loadout = assemble(build);
-        const validation = loadout.validation;
+        const validation = loadout.validation();
         const diagnostics = validation.issues
             .map((issue) => `${issue.code}: ${issue.message}`)
             .join('; ');
@@ -286,9 +287,13 @@ test('every build reproduces its pinned metrics', () => {
         close(loadout.unladenMass!, expected.unladenMass!, `${build.id} unladenMass`);
         assert.equal(loadout.cargoCapacity, expected.cargoCapacity, `${build.id} cargoCapacity`);
         close(loadout.fuelCapacity!.main, expected.fuelCapacity, `${build.id} fuelCapacity`);
-        close(loadout.maxJumpRange(), expected.maxJumpRange!, `${build.id} maxJumpRange`);
+        close(
+            BuildMetrics.of(loadout).maxJumpRange(),
+            expected.maxJumpRange!,
+            `${build.id} maxJumpRange`,
+        );
 
-        const power = loadout.powerBudget();
+        const power = BuildMetrics.of(loadout).powerBudget();
         close(power.available, expected.power.available, `${build.id} power.available`);
         close(power.retracted, expected.power.retracted, `${build.id} power.retracted`);
         close(power.deployed, expected.power.deployed, `${build.id} power.deployed`);
@@ -298,7 +303,7 @@ test('every build reproduces its pinned metrics', () => {
             `${build.id} power.withinBudget`,
         );
 
-        let shields = loadout.shieldMetrics();
+        let shields = BuildMetrics.of(loadout).shieldMetrics();
         if (expected.shieldsPowered === false) {
             assert.equal(shields, null, `${build.id}: expected shed shields`);
             const poweredLoadout = assemble(build);
@@ -307,7 +312,7 @@ test('every build reproduces its pinned metrics', () => {
             const plant = getModuleBySymbol(fittedPlant.symbol, ALL_MODULES);
             assert.ok(plant, `${build.id}: power plant stats`);
             poweredLoadout.setModule('PowerPlant', { ...plant, powerCapacity: 1_000_000 });
-            shields = poweredLoadout.shieldMetrics();
+            shields = BuildMetrics.of(poweredLoadout).shieldMetrics();
         }
         if (expected.shields === null) {
             assert.equal(shields, null, `${build.id}: expected no shields`);
@@ -323,7 +328,7 @@ test('every build reproduces its pinned metrics', () => {
             }
         }
 
-        const armour = loadout.armourMetrics()!;
+        const armour = BuildMetrics.of(loadout).armourMetrics()!;
         close(armour.hitPoints, expected.armour.hitPoints, `${build.id} armour.hitPoints`);
         for (const type of ['kinetic', 'thermal', 'explosive'] as const) {
             close(
@@ -333,7 +338,7 @@ test('every build reproduces its pinned metrics', () => {
             );
         }
 
-        const weapons = loadout.weaponMetrics();
+        const weapons = BuildMetrics.of(loadout).weaponMetrics();
         assert.equal(weapons.weapons.length, expected.weapons.count, `${build.id} weapons.count`);
         close(
             weapons.total.damagePerSecond,

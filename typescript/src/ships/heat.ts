@@ -21,8 +21,8 @@
  * else: it is thermal inertia, not a budget.
  *
  * This module is data-free — hand {@link heatMetrics} a hull's two heat stats, the
- * plant's efficiency and the build's draw. {@link ShipLoadout.heatMetrics} (in
- * `./ship-loadout`) reads all of that off a build, post-engineering, for you.
+ * plant's efficiency and the build's draw. {@link BuildMetrics.heatMetrics} (in
+ * `./build-metrics`) reads all of that off a build, post-engineering, for you.
  *
  * Two heat sources stand outside the scenarios reported here, both of them momentary
  * rather than sustained, and they are not interchangeable with the figures above:

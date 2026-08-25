@@ -44,6 +44,7 @@ for await (const line of lines) {
 `ShipLoadout.fromLoadout` takes the event as the game wrote it.
 
 ```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
@@ -55,10 +56,11 @@ build.shipSymbol; // -> 'krait_light'
 build.shipName; // -> 'Jenny Longuet'
 build.unladenMass; // -> 388.830017   tonnes
 
-build.maxJumpRange(); // -> 60.5478    ly, best single jump
-build.powerBudget().withinBudget; // -> true
-build.shieldMetrics()?.strength; // -> 743.12     MJ
-build.armourMetrics().hitPoints; // -> 307.8
+const metrics = BuildMetrics.of(build);
+metrics.maxJumpRange(); // -> 60.5478    ly, best single jump
+metrics.powerBudget().withinBudget; // -> true
+metrics.shieldMetrics()?.strength; // -> 743.12     MJ
+metrics.armourMetrics().hitPoints; // -> 307.8
 ```
 
 Figures the event already stated — `UnladenMass`, `CargoCapacity`, `FuelCapacity` — are
@@ -173,7 +175,7 @@ and `rebuy` read `null`, since nothing records what the discarded module cost;
 hatch is the exception — both stock articles are weightless and free — while an absent
 core internal stocked from the defaults invalidates them like any other change.
 
-`build.validation` therefore reports the fit that remains: optional, hardpoint and
+`build.validation()` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core
 mounts remain complete through their stock replacements. `build.importOutcomes` is the
 frozen, machine-readable account of each change: the exact slot, the source module
@@ -184,7 +186,7 @@ symbol when one was fitted.
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
-build.validation.issues; // -> structural problems in the normalized fit
+build.validation().issues; // -> structural problems in the normalized fit
 build.fittedModuleAt('Slot01_Size5'); // -> null if its imported symbol was unknown
 build.importOutcomes; // exact import changes for display or logging
 ```

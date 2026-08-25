@@ -6,8 +6,8 @@
  * `ratedRecharge * (weaponsPips / 4) ^ 1.1`. Endurance compares that rate with
  * the weapons' sustained draw, so magazine reloads are already folded in.
  *
- * This module is data-free. {@link ShipLoadout.weaponsCapacitorMetrics}
- * (`./ship-loadout`) resolves the powered distributor and weapons for you.
+ * This module is data-free. {@link BuildMetrics.weaponsCapacitorMetrics}
+ * (`./build-metrics`) resolves the powered distributor and weapons for you.
  *
  * @remarks
  * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Calculations.js`

@@ -30,19 +30,20 @@ powerBudget(20.4, [
 ]).deployed; // -> 8.65
 ```
 
-The **{@link ships!ShipLoadout | ShipLoadout} methods** of the same name gather those constants out of a
+The **{@link ships!BuildMetrics | BuildMetrics} methods** of the same name gather those constants out of a
 real build — the fitted modules, the hull, and whatever engineering each module carries —
-and call the function for you. This is what an outfitting screen wants.
+and call the function for you. This is what an outfitting screen wants. Attach one to a
+{@link ships!ShipLoadout | ShipLoadout} with `BuildMetrics.of(build)`.
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout; // a Federal Corvette
+declare const metrics: BuildMetrics; // a Federal Corvette
 
-build.powerBudget().deployed; // -> 46.8597
-build.shieldMetrics()?.strength; // -> 3940.4
-build.armourMetrics().hitPoints; // -> 5062.6
-build.weaponMetrics().total.damagePerSecond; // -> 137.04
+metrics.powerBudget().deployed; // -> 46.8597
+metrics.shieldMetrics()?.strength; // -> 3940.4
+metrics.armourMetrics().hitPoints; // -> 5062.6
+metrics.weaponMetrics().total.damagePerSecond; // -> 137.04
 ```
 
 The rest of this page is about the second layer, because the first is documented where it
@@ -51,7 +52,7 @@ implementation.
 
 ## Engineering happens first
 
-Every `ShipLoadout` metric reads **post-engineering** stats. A build's modifiers are
+Every `BuildMetrics` figure reads **post-engineering** stats. A build's modifiers are
 folded onto the module's catalogue values before any metric sees them, so there is no
 step where a caller applies engineering themselves — and no way to ask for the stock
 figure through these methods.
@@ -79,11 +80,11 @@ The plant's capacity against what the build draws, split two ways because weapon
 utility fittings only draw while the hardpoints are **deployed**.
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-const power = build.powerBudget();
+const power = metrics.powerBudget();
 power.available; // MW the plant makes
 power.retracted; // MW drawn with hardpoints in
 power.deployed; // MW drawn with hardpoints out
@@ -154,18 +155,18 @@ firing, the second folds in the clip and the reload, because a weapon that stops
 is not firing.
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-const weapons = build.weaponMetrics();
+const weapons = metrics.weaponMetrics();
 weapons.total.damagePerSecond; // while firing
 weapons.total.sustainedDamagePerSecond; // with reloads
 weapons.total.energyPerSecond; // weapons capacitor draw, MW
 weapons.total.heatPerSecond;
 weapons.weapons.length; // per-hardpoint breakdown
 
-const distributor = build.distributorMetrics({
+const distributor = metrics.distributorMetrics({
     systemsPips: 2,
     enginesPips: 2,
     weaponsPips: 2,
@@ -173,7 +174,7 @@ const distributor = build.distributorMetrics({
 distributor?.engines.ratedRecharge; // four-pip catalogue rate, MJ/s
 distributor?.engines.rechargeRate; // actual ENG recharge at two pips, MJ/s
 
-const capacitor = build.weaponsCapacitorMetrics({ weaponsPips: 2 });
+const capacitor = metrics.weaponsCapacitorMetrics({ weaponsPips: 2 });
 capacitor.rechargeRate; // actual WEP recharge at two pips, MJ/s
 capacitor.netDrainRate; // sustained draw minus recharge, floored at zero
 capacitor.timeToDrain; // seconds from full, or Infinity when recharge keeps pace
@@ -188,7 +189,8 @@ A distributor's three catalogue recharge figures are their four-pip maxima.
 returns each capacity, rated recharge and actual rate. Fractional allocations from zero
 through four are accepted; each defaults to four independently and they need not total
 six, so the result can compare three independent scenarios. It returns `null` without a
-powered distributor or when the fitted article's capacitor stats cannot be resolved.
+powered distributor or when the fitted article's capacitor stats cannot be resolved;
+`distributorMetricsResult()` says which of those four it was.
 
 `weaponsCapacitorMetrics()` adds firing endurance to the WEP calculation. It compares
 pip-scaled recharge with **sustained** energy per second: a magazine's reload is time for
@@ -244,11 +246,11 @@ no dissipation figure, so the model — and the per-hull `heatDissipation` it re
 community measurement of the game, ported from EDSY and credited in `ATTRIBUTIONS.md`.
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-const heat = build.heatMetrics();
+const heat = metrics.heatMetrics();
 heat?.idle.gauge; // hardpoints stowed, as the cockpit gauge reads it: 1 is 100%
 heat?.fsdCharging.gauge; // spooling a jump, the hottest thing most ships do
 heat?.firingSustained.overheats; // holding the trigger with the WEP capacitor keeping up
@@ -286,19 +288,20 @@ leaving a screen to reassemble it. `buildMass()` is the mass counterpart of
 `buildCost()`, and splits the same three ways:
 
 ```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
-const build = ShipLoadout.default('Anaconda');
+const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
 
-const mass = build.buildMass();
+const mass = metrics.buildMass();
 mass.hull; // -> 400      the bare hull, in tonnes
 mass.modules; // -> 664      every fitted module, post-engineering
-mass.unladen; // -> 1064     what `build.unladenMass` reports
+mass.unladen; // -> 1064     what `ShipLoadout.unladenMass` reports
 mass.total; // -> 1096     with the load below aboard
 mass.fuel; // -> 32       a full main tank by default
 mass.cargo; // -> 0        an empty hold by default
 
-build.buildMass({ fuel: 8, cargo: 32 }).total; // -> 1104
+metrics.buildMass({ fuel: 8, cargo: 32 }).total; // -> 1104
 ```
 
 `fuel` and `cargo` default exactly as they do for `jumpRange()` and `mobilityMetrics()`,
@@ -306,10 +309,11 @@ so the three agree by construction. Each of the standard loads carries its own r
 mass too:
 
 ```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
-const build = ShipLoadout.default('Anaconda');
-build.standardLoadResult('laden').value?.mass; // -> 1210
+const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
+metrics.standardLoad('laden')?.mass; // -> 1210
 ```
 
 **The reserve tank is in none of these.** The game's statistics panel counts it in the
@@ -321,20 +325,21 @@ observed builds reproduce their angular rates only with the reserve excluded. Ad
 `unladen` is the build's own unladen mass — which for an unedited import is the figure
 the **capture** stated, and is the one every calculation here uses.
 
-What the thrusters do with that mass is a three-point curve, and `thrusters` publishes
-it the way `frameShiftDrive` publishes the jump constants:
+What the thrusters do with that mass is a three-point curve, and `thrusters()` publishes
+it the way `frameShiftDrive()` publishes the jump constants:
 
 ```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import { thrusterMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/mobility';
 
-const build = ShipLoadout.default('Anaconda');
+const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
 
-const curve = build.thrusters!;
+const curve = metrics.thrusters()!;
 curve.optMass; // -> 1440   rated performance at or below this
 curve.maxMass; // -> 2160   past this the ship does not move at all
 
-const mobility = build.mobilityMetrics()!;
+const mobility = metrics.mobilityMetrics()!;
 mobility.loadedMass; // -> 1096   what the curve was evaluated at
 thrusterMassCurveMultiplier(mobility.loadedMass, curve) === mobility.massCurveMultiplier; // -> true
 ```
@@ -344,9 +349,9 @@ on its thrusters" — the reading an outfitting screen shows beside the speed. A
 `maxMass` reports zero performance rather than a fabricated curve value, which is the
 same convention the shield generator's own mass curve follows.
 
-The getter is the fitted article's curve, so a switched-off or shed thruster still has
-one; it is `mobilityMetricsResult()` that decides whether the build can use it. It
-answers `null` — rather than throwing, as `frameShiftDrive` does — when no complete
+`thrusters()` is the fitted article's curve, so a switched-off or shed thruster still
+has one; it is `mobilityMetricsResult()` that decides whether the build can use it. It
+answers `null` — rather than throwing, as `frameShiftDrive()` does — when no complete
 curve is fitted, because a build without usable thrusters is still a build.
 
 ## Jump range and fuel
@@ -355,11 +360,11 @@ curve is fitted, because a build without usable thrusters is still a build.
 assemble them:
 
 ```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
-declare const build: ShipLoadout;
+declare const metrics: BuildMetrics;
 
-const jumps = build.jumpRangeSummary();
+const jumps = metrics.jumpRangeSummary();
 jumps.max; // best single jump: one jump's fuel, empty hold
 jumps.unladen; // full tank, empty hold
 jumps.laden; // full tank, full hold
@@ -369,13 +374,13 @@ jumps.totalUnladen.range; // every jump on one tank, empty
 jumps.totalUnladen.jumps; // number of jumps, including the final partial one
 jumps.totalLaden.range; // every jump on one tank, full
 
-const tank = build.totalRange();
+const tank = metrics.totalRange();
 tank.range; // summed distance as the tank drains
 tank.jumps; // full and final-partial jumps before the tank is empty
 
-build.totalRange({ fuel: 8, cargo: 32 }); // total for a chosen partial load
+metrics.totalRange({ fuel: 8, cargo: 32 }); // total for a chosen partial load
 
-build.frameShiftDriveMassFactor(); // optMass / loadedMass, dimensionless
+metrics.frameShiftDriveMassFactor(); // optMass / loadedMass, dimensionless
 ```
 
 The model is the community-standard hyperspace one, and `ships/jump-range` holds it as

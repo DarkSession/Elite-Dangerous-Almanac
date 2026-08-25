@@ -9,13 +9,15 @@
  * export ({@link ShipLoadout.fromSlef}) or a journal `Loadout` event
  * ({@link ShipLoadout.fromLoadout}), writes either back out
  * ({@link ShipLoadout.toSlefString}, {@link ShipLoadout.toLoadoutEvent}), fits modules
- * and applies engineering, and answers the questions apps actually ask
- * ({@link ShipLoadout.maxJumpRange}, {@link ShipLoadout.powerBudget},
- * {@link ShipLoadout.shieldMetrics}, `unladenMass`, `rebuy`) — keeping what a capture
- * said it *paid* apart from what the build is worth at retail
- * ({@link ShipLoadout.sourcePurchase}). It is the batteries-included facade and pulls in
- * every catalogue; everything below is what it is built from, so drop to the pieces when
- * you need one answer rather than a whole ship.
+ * and applies engineering, and carries the figures a capture stated (`unladenMass`,
+ * `rebuy`) — keeping what a capture said it *paid* apart from what the build is worth at
+ * retail ({@link ShipLoadout.sourcePurchase}). **{@link BuildMetrics} is the other
+ * half**: `BuildMetrics.of(build)` answers the questions apps actually ask
+ * ({@link BuildMetrics.maxJumpRange}, {@link BuildMetrics.powerBudget},
+ * {@link BuildMetrics.shieldMetrics}), so an editor need not import the calculations nor
+ * a viewer the editors. Together they are the batteries-included facade and pull in
+ * every catalogue; everything below is what they are built from, so drop to the pieces
+ * when you need one answer rather than a whole ship.
  *
  * The area has five layers:
  *
@@ -57,7 +59,7 @@
  *   {@link ships/blueprint-costs!BLUEPRINT_COSTS | blueprint-costs} and
  *   {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | experimental-effect-costs}
  *   subpaths, so a consumer can price one recipe without the mechanics — and the facade
- *   carries them, since {@link ShipLoadout.buildCost} prices a whole build. A blueprint
+ *   carries them, since {@link BuildMetrics.buildCost} prices a whole build. A blueprint
  *   cost carries both halves of what a climb takes: the materials and the Merc Coin 25 of
  *   the recipes charge beside them.
  *
@@ -89,17 +91,18 @@
  * pulls in every catalogue.
  *
  * ```ts
+ * import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
  * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
  *
  * declare const event: LoadoutEvent;
  *
  * // Figures below are one build's — a Krait Phantom explorer.
- * const build = ShipLoadout.fromLoadout(event);
- * build.maxJumpRange(); // -> 60.5478  (ly)
- * build.powerBudget().withinBudget; // -> true
- * build.shieldMetrics()?.strength; // -> 743.12   (MJ)
- * build.weaponMetrics().total.damagePerSecond; // -> 34
+ * const metrics = BuildMetrics.of(ShipLoadout.fromLoadout(event));
+ * metrics.maxJumpRange(); // -> 60.5478  (ly)
+ * metrics.powerBudget().withinBudget; // -> true
+ * metrics.shieldMetrics()?.strength; // -> 743.12   (MJ)
+ * metrics.weaponMetrics().total.damagePerSecond; // -> 34
  * ```
  *
  * @example
@@ -230,19 +233,6 @@ export {
     ShipLoadout,
     type LoadoutEditErrorCode,
     type FixedMountRepairResult,
-    type JumpOptions,
-    type JumpRangeSummary,
-    type DefenceOptions,
-    type MobilityOptions,
-    type StandardLoad,
-    type StandardLoadInputs,
-    type DistributorOptions,
-    type WeaponsOptions,
-    type BuildCost,
-    type BuildCredits,
-    type BuildMass,
-    type FittedWeaponMetrics,
-    type BuildWeaponMetrics,
     type AvailableBlueprint,
     type ApplyBlueprintOptions,
     type EngineeringNormalizationCode,
@@ -259,6 +249,23 @@ export {
     type LoadoutImportOutcome,
     type SlefExportOptions,
 } from './ship-loadout.js';
+export {
+    BuildMetrics,
+    type JumpOptions,
+    type JumpRangeSummary,
+    type ShieldOptions,
+    type ShieldRecoveryOptions,
+    type MobilityOptions,
+    type StandardLoad,
+    type StandardLoadInputs,
+    type DistributorOptions,
+    type WeaponsOptions,
+    type BuildCost,
+    type BuildCredits,
+    type BuildMass,
+    type FittedWeaponMetrics,
+    type BuildWeaponMetrics,
+} from './build-metrics.js';
 export type { FittedModule } from './fitted-module.js';
 export type { LoadoutSlot, ImmovableReason } from './loadout-slot.js';
 export {

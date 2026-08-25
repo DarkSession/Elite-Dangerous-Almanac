@@ -1,9 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
+import { BuildMetrics } from './build-metrics.js';
 import { ShipLoadout } from './ship-loadout.js';
 import type { LoadoutSlot } from './loadout-slot.js';
-import { heatInputFor } from './internal/loadout-metrics.js';
+import { heatInputResultFor } from './internal/loadout-metrics.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
 import type { EngineeringModifier, LoadoutEvent, LoadoutModule } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
@@ -121,9 +122,9 @@ test('one-per-ship modules are filtered, rejected on edit and diagnosed on impor
             { Slot: 'Slot02_Size6', Item: generator.symbol },
         ],
     });
-    assert.equal(imported.validation.valid, false);
+    assert.equal(imported.validation().valid, false);
     assert.ok(
-        imported.validation.issues.some((issue) => issue.code === 'duplicateExclusiveModule'),
+        imported.validation().issues.some((issue) => issue.code === 'duplicateExclusiveModule'),
     );
 });
 
@@ -173,7 +174,7 @@ test('experimental-weapon limits are filtered, enforced, increased and diagnosed
         /experimentalWeapon would have 6 modules but the ship allows 4/,
     );
     assert.equal(
-        build.validation.issues.some((issue) => issue.code === 'moduleLimitExceeded'),
+        build.validation().issues.some((issue) => issue.code === 'moduleLimitExceeded'),
         false,
     );
     build.removeModule('MediumHardpoint2').removeModule('MediumHardpoint1');
@@ -191,7 +192,7 @@ test('experimental-weapon limits are filtered, enforced, increased and diagnosed
         ].map((Slot) => ({ Slot, Item: weapon.symbol })),
     });
     assert.deepEqual(
-        imported.validation.issues.find((issue) => issue.code === 'moduleLimitExceeded')?.params,
+        imported.validation().issues.find((issue) => issue.code === 'moduleLimitExceeded')?.params,
         { group: operationsFixture.moduleLimits.group, count: 5, limit: 4 },
     );
     assert.doesNotThrow(() => imported.removeModule('MediumHardpoint1'));
@@ -199,16 +200,16 @@ test('experimental-weapon limits are filtered, enforced, increased and diagnosed
 
 test('the facade reports loaded mobility, shield recovery and cell-bank pools', () => {
     const stock = ShipLoadout.default('SideWinder');
-    const mobility = stock.mobilityMetrics();
+    const mobility = BuildMetrics.of(stock).mobilityMetrics();
     assert.ok(mobility);
     assert.ok(mobility.speed > 0);
     assert.ok(mobility.boost > mobility.speed);
-    assert.ok(stock.mobilityMetrics({ enginesPips: 2 })!.speed < mobility.speed);
+    assert.ok(BuildMetrics.of(stock).mobilityMetrics({ enginesPips: 2 })!.speed < mobility.speed);
 
     const enhanced = ShipLoadout.default('SideWinder')
         .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class5', CORE_MODULES))
         .setModule('MainEngines', mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES));
-    const enhancedMobility = enhanced.mobilityMetrics()!;
+    const enhancedMobility = BuildMetrics.of(enhanced).mobilityMetrics()!;
     assert.notEqual(
         enhancedMobility.massCurveMultiplier,
         enhancedMobility.rotationMassCurveMultiplier,
@@ -230,11 +231,11 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
             baseEnhanced.maxRotationMultiplier! * enhancedPerformanceRatio,
         ),
     );
-    assert.notEqual(enhanced.mobilityMetrics()!.speed, enhancedMobility.speed);
+    assert.notEqual(BuildMetrics.of(enhanced).mobilityMetrics()!.speed, enhancedMobility.speed);
 
     const lynx = ShipLoadout.default('MediumTransport01');
-    const lynxFourPips = lynx.mobilityMetrics({ enginesPips: 4 })!;
-    const lynxZeroPips = lynx.mobilityMetrics({ enginesPips: 0 })!;
+    const lynxFourPips = BuildMetrics.of(lynx).mobilityMetrics({ enginesPips: 4 })!;
+    const lynxZeroPips = BuildMetrics.of(lynx).mobilityMetrics({ enginesPips: 0 })!;
     assert.ok(lynxZeroPips.pitch < lynxFourPips.pitch);
     assert.ok(near(lynxZeroPips.pitch / lynxFourPips.pitch, 23 / 26));
     assert.equal(lynxZeroPips.roll, lynxFourPips.roll);
@@ -253,7 +254,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     );
     const tunedMainFuel = tuned.fuelCapacity!.main;
     assert.equal(
-        tuned.mobilityMetrics()!.massCurveMultiplier,
+        BuildMetrics.of(tuned).mobilityMetrics()!.massCurveMultiplier,
         thrusterMassCurveMultiplier(tuned.unladenMass! + tunedMainFuel, {
             minMass: effectiveThrusters.minMass!,
             optMass: effectiveThrusters.optMass!,
@@ -264,7 +265,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
         }),
     );
 
-    const recovery = stock.shieldRecovery();
+    const recovery = BuildMetrics.of(stock).shieldRecovery();
     assert.ok(recovery);
     assert.ok(recovery.recoveryTime >= 16);
     assert.ok(recovery.regenTime > 0);
@@ -277,7 +278,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     const banked = ShipLoadout.default('Anaconda')
         .setModule('Slot02_Size6', bank)
         .setModule('Slot01_Size7', bank);
-    const cells = banked.cellBanks();
+    const cells = BuildMetrics.of(banked).cellBanks();
     assert.equal(cells.banks.length, 2);
     assert.deepEqual(
         cells.banks.map(({ slot }) => slot),
@@ -291,7 +292,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(cells.totalRestorable > 0);
 
     banked.setModuleEnabled('Slot02_Size6', false);
-    const disabled = banked.cellBanks();
+    const disabled = BuildMetrics.of(banked).cellBanks();
     assert.deepEqual(
         disabled.banks.map(({ slot, powered }) => ({ slot, powered })),
         [
@@ -321,11 +322,11 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
         .setModule('Slot01_Size7', bank)
         .setModulePriority('Slot01_Size7', 4)
         .setModule('PowerPlant', mod('Int_PowerPlant_Size6_Class4', CORE_MODULES));
-    const combatPower = combat.powerBudget();
+    const combatPower = BuildMetrics.of(combat).powerBudget();
     assert.equal(combatPower.bands[0]?.poweredDeployed, true);
     assert.equal(combatPower.bands[4]?.poweredRetracted, true);
     assert.equal(combatPower.bands[4]?.poweredDeployed, false);
-    const shed = combat.cellBanks();
+    const shed = BuildMetrics.of(combat).cellBanks();
     assert.deepEqual(
         shed.banks.map(({ powered }) => powered),
         [false],
@@ -341,63 +342,123 @@ test('mobility returns null before requiring mass when the thrusters are unpower
     const shed = ShipLoadout.empty('Anaconda')
         .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class1', CORE_MODULES))
         .setModulePriority('MainEngines', 4);
-    assert.equal(shed.powerBudget().withinBudget, false);
-    assert.equal(shed.mobilityMetrics(), null);
-    assert.throws(() => shed.mobilityMetrics({ enginesPips: 5 }), RangeError);
+    assert.equal(BuildMetrics.of(shed).powerBudget().withinBudget, false);
+    assert.equal(BuildMetrics.of(shed).mobilityMetrics(), null);
+    assert.throws(() => BuildMetrics.of(shed).mobilityMetrics({ enginesPips: 5 }), RangeError);
 });
 
 test('explicit mobility fuel overrides the tank load and excludes reserve mass', () => {
     const fixture = operationsFixture.mobility.facadeFuelOverride;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
     assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.25 });
-    const metrics = build.mobilityMetrics(fixture.options)!;
+    const metrics = BuildMetrics.of(build).mobilityMetrics(fixture.options)!;
     for (const [field, expected] of Object.entries(fixture.expected)) {
         assert.ok(near(metrics[field as keyof typeof metrics], expected), field);
     }
-    assert.ok(build.mobilityMetrics()!.speed < metrics.speed);
+    assert.ok(BuildMetrics.of(build).mobilityMetrics()!.speed < metrics.speed);
     for (const invalid of fixture.invalidLoads) {
-        assert.throws(() => build.mobilityMetrics(invalid.options), {
+        assert.throws(() => BuildMetrics.of(build).mobilityMetrics(invalid.options), {
             name: invalid.expectedError,
         });
     }
 });
 
 test('metric methods validate pips before build state and name their own scopes', () => {
-    const empty = ShipLoadout.empty('SideWinder');
-    assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), {
-        name: 'RangeError',
-        message: 'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
-    });
-    assert.throws(() => empty.mobilityMetricsResult({ enginesPips: 5 }), {
-        name: 'RangeError',
+    const metrics = BuildMetrics.of(ShipLoadout.empty('SideWinder'));
+    // Each nullable metric and its `…Result` companion share one implementation, so this
+    // table is what stops the two scope strings drifting apart: every entry must name the
+    // method the consumer actually called.
+    const pipScopes: readonly (readonly [string, () => unknown, string])[] = [
+        ['mobilityMetrics', () => metrics.mobilityMetrics({ enginesPips: 5 }), 'enginesPips'],
+        [
+            'mobilityMetricsResult',
+            () => metrics.mobilityMetricsResult({ enginesPips: 5 }),
+            'enginesPips',
+        ],
+        ['shieldMetrics', () => metrics.shieldMetrics({ systemsPips: 5 }), 'systemsPips'],
+        [
+            'shieldMetricsResult',
+            () => metrics.shieldMetricsResult({ systemsPips: 5 }),
+            'systemsPips',
+        ],
+        ['shieldRecovery', () => metrics.shieldRecovery({ systemsPips: 5 }), 'systemsPips'],
+        [
+            'shieldRecoveryResult',
+            () => metrics.shieldRecoveryResult({ systemsPips: 5 }),
+            'systemsPips',
+        ],
+        ['distributorMetrics', () => metrics.distributorMetrics({ enginesPips: 5 }), 'enginesPips'],
+        [
+            'distributorMetricsResult',
+            () => metrics.distributorMetricsResult({ weaponsPips: 5 }),
+            'weaponsPips',
+        ],
+        [
+            'weaponsCapacitorMetrics',
+            () => metrics.weaponsCapacitorMetrics({ weaponsPips: 5 }),
+            'weaponsPips',
+        ],
+    ];
+    for (const [method, call, option] of pipScopes) {
+        assert.throws(call, {
+            name: 'RangeError',
+            message: `BuildMetrics.${method}: ${option} must be a finite number from 0 to 4`,
+        });
+    }
+
+    // The load options are guarded by the same single implementation, so they get the
+    // same treatment.
+    for (const [method, call] of [
+        ['mobilityMetrics', () => metrics.mobilityMetrics({ fuel: -1 })],
+        ['mobilityMetricsResult', () => metrics.mobilityMetricsResult({ fuel: -1 })],
+        ['buildMass', () => metrics.buildMass({ fuel: -1 })],
+    ] as const) {
+        assert.throws(call, {
+            name: 'RangeError',
+            message: `BuildMetrics.${method}: fuel must be a finite non-negative number`,
+        });
+    }
+
+    // And the standard-load pair, whose argument is not a pip allocation at all.
+    for (const [method, call] of [
+        ['standardLoad', () => metrics.standardLoad('half' as 'laden')],
+        ['standardLoadResult', () => metrics.standardLoadResult('half' as 'laden')],
+    ] as const) {
+        assert.throws(call, {
+            name: 'RangeError',
+            message: `BuildMetrics.${method}: load must be 'maximum', 'unladen', or 'laden'`,
+        });
+    }
+
+    assert.equal(metrics.shieldRecovery(), null);
+});
+
+test('BuildMetrics.of names its own parameter when handed something else', () => {
+    assert.throws(() => BuildMetrics.of({ shipSymbol: 'Anaconda' } as unknown as ShipLoadout), {
+        name: 'TypeError',
         message:
-            'ShipLoadout.mobilityMetricsResult: enginesPips must be a finite number from 0 to 4',
+            'BuildMetrics.of: build must be a ShipLoadout, received object {"shipSymbol":"Anaconda"}',
     });
-    assert.throws(() => empty.shieldMetrics({ systemsPips: 5 }), {
-        name: 'RangeError',
-        message: 'ShipLoadout.shieldMetrics: systemsPips must be a finite number from 0 to 4',
+    assert.throws(() => BuildMetrics.of(undefined as unknown as ShipLoadout), {
+        name: 'TypeError',
+        message: 'BuildMetrics.of: build must be a ShipLoadout, received undefined',
     });
-    assert.throws(() => empty.shieldMetricsResult({ systemsPips: 5 }), {
-        name: 'RangeError',
-        message: 'ShipLoadout.shieldMetricsResult: systemsPips must be a finite number from 0 to 4',
-    });
-    assert.equal(empty.shieldRecovery(), null);
-    assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), {
-        name: 'RangeError',
-        message: 'ShipLoadout.shieldRecovery: systemsPips must be a finite number from 0 to 4',
-    });
-    assert.throws(() => empty.shieldRecoveryResult({ systemsPips: 5 }), {
-        name: 'RangeError',
-        message:
-            'ShipLoadout.shieldRecoveryResult: systemsPips must be a finite number from 0 to 4',
-    });
+});
+
+test('a metrics view reads the build it was attached to, not a snapshot of it', () => {
+    const build = ShipLoadout.default('Anaconda');
+    const metrics = BuildMetrics.of(build);
+    assert.equal(metrics.loadout(), build);
+    const before = metrics.buildMass().modules;
+    build.removeModule('Slot03_Size6');
+    assert.ok(metrics.buildMass().modules < before);
 });
 
 test('mobility and shield metrics stop when the power budget sheds their modules', () => {
     const disabled = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
-    assert.equal(disabled.powerBudget().available, 0);
-    assert.equal(disabled.mobilityMetrics(), null);
-    assert.equal(disabled.shieldRecovery(), null);
+    assert.equal(BuildMetrics.of(disabled).powerBudget().available, 0);
+    assert.equal(BuildMetrics.of(disabled).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(disabled).shieldRecovery(), null);
 
     const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
     const overloaded = ShipLoadout.fromLoadout({
@@ -412,14 +473,14 @@ test('mobility and shield metrics stop when the power budget sheds their modules
                     : 0,
         })),
     });
-    const budget = overloaded.powerBudget();
+    const budget = BuildMetrics.of(overloaded).powerBudget();
     assert.ok(budget.available > 0);
     assert.equal(budget.bands[4]?.poweredRetracted, false);
-    assert.equal(overloaded.mobilityMetrics(), null);
-    assert.equal(overloaded.shieldMetrics(), null);
-    assert.equal(overloaded.shieldRecovery(), null);
-    assert.equal(overloaded.mobilityMetricsResult().issues[0]?.reason, 'shed');
-    assert.deepEqual(overloaded.shieldMetricsResult().issues[0], {
+    assert.equal(BuildMetrics.of(overloaded).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(overloaded).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(overloaded).shieldRecovery(), null);
+    assert.equal(BuildMetrics.of(overloaded).mobilityMetricsResult().issues[0]?.reason, 'shed');
+    assert.deepEqual(BuildMetrics.of(overloaded).shieldMetricsResult().issues[0], {
         field: 'shieldGenerator',
         reason: 'shed',
         slot: 'Slot03_Size6',
@@ -433,18 +494,22 @@ test('mobility and shield metrics stop when the power budget sheds their modules
             symbol: 'int_shieldgenerator_size6_class1',
         },
     });
-    assert.equal(overloaded.shieldRecoveryResult().issues[0]?.reason, 'shed');
+    assert.equal(BuildMetrics.of(overloaded).shieldRecoveryResult().issues[0]?.reason, 'shed');
 
     // A mount switched off is diagnosed before anything downstream of it: the plant
     // first, since nothing runs without it, then the generator itself.
     const plantOff = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
     assert.deepEqual(
-        plantOff.shieldMetricsResult().issues.map((issue) => [issue.field, issue.reason]),
+        BuildMetrics.of(plantOff)
+            .shieldMetricsResult()
+            .issues.map((issue) => [issue.field, issue.reason]),
         [['powerCapacity', 'disabled']],
     );
     const generatorOff = ShipLoadout.default('SideWinder').setModuleEnabled('Slot01_Size2', false);
     assert.deepEqual(
-        generatorOff.shieldMetricsResult().issues.map((issue) => [issue.field, issue.reason]),
+        BuildMetrics.of(generatorOff)
+            .shieldMetricsResult()
+            .issues.map((issue) => [issue.field, issue.reason]),
         [['shieldGenerator', 'disabled']],
     );
 });
@@ -454,13 +519,13 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     delete incompletePlant.powerCapacity;
     const build = ShipLoadout.default('Anaconda').setModule('PowerPlant', incompletePlant);
 
-    assert.equal(build.validation.complete, true);
-    assert.deepEqual(build.validation.issues, []);
-    assert.equal(build.shieldMetrics(), null);
-    assert.equal(build.shieldMetricsResult().issues[0]?.field, 'powerCapacity');
-    assert.equal(build.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(build.validation().complete, true);
+    assert.deepEqual(build.validation().issues, []);
+    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().issues[0]?.field, 'powerCapacity');
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().issues[0]?.reason, 'unresolved');
     assert.equal(
-        build.shieldMetricsResult().issues[0]?.message,
+        BuildMetrics.of(build).shieldMetricsResult().issues[0]?.message,
         'PowerPlant: power capacity unavailable for Int_Powerplant_Size8_Class5',
     );
 
@@ -469,11 +534,11 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     const incompleteThrusters = { ...mod('Int_Engine_Size7_Class5') };
     delete incompleteThrusters.minMass;
     const noCurve = ShipLoadout.default('Anaconda').setModule('MainEngines', incompleteThrusters);
-    assert.equal(noCurve.mobilityMetrics(), null);
-    assert.equal(noCurve.mobilityMetricsResult().issues[0]?.field, 'thrusters');
-    assert.equal(noCurve.mobilityMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(BuildMetrics.of(noCurve).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(noCurve).mobilityMetricsResult().issues[0]?.field, 'thrusters');
+    assert.equal(BuildMetrics.of(noCurve).mobilityMetricsResult().issues[0]?.reason, 'unresolved');
     assert.equal(
-        noCurve.mobilityMetricsResult().issues[0]?.message,
+        BuildMetrics.of(noCurve).mobilityMetricsResult().issues[0]?.message,
         'MainEngines: thruster stats unavailable for Int_Engine_Size7_Class5',
     );
 
@@ -506,18 +571,18 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     }
 
     const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
-        assert.equal(invalid.mobilityMetrics(), null);
-        assert.equal(invalid.shieldMetrics(), null);
-        assert.equal(invalid.shieldRecovery(), null);
+        assert.equal(BuildMetrics.of(invalid).mobilityMetrics(), null);
+        assert.equal(BuildMetrics.of(invalid).shieldMetrics(), null);
+        assert.equal(BuildMetrics.of(invalid).shieldRecovery(), null);
         for (const result of [
-            invalid.mobilityMetricsResult(),
-            invalid.shieldMetricsResult(),
-            invalid.shieldRecoveryResult(),
+            BuildMetrics.of(invalid).mobilityMetricsResult(),
+            BuildMetrics.of(invalid).shieldMetricsResult(),
+            BuildMetrics.of(invalid).shieldRecoveryResult(),
         ]) {
             assert.equal(result.issues[0]?.field, 'powerCapacity');
             assert.equal(result.issues[0]?.reason, 'invalid');
         }
-        if (budgetThrows) assert.throws(() => invalid.powerBudget(), RangeError);
+        if (budgetThrows) assert.throws(() => BuildMetrics.of(invalid).powerBudget(), RangeError);
     };
     for (const capacity of [0, Number.NaN, Number.POSITIVE_INFINITY]) {
         const plant = { ...mod('Int_Powerplant_Size8_Class5'), powerCapacity: capacity };
@@ -556,14 +621,14 @@ test('metric results diagnose an invalid known power draw without weakening powe
         powerDraw: -1,
     });
 
-    assert.throws(() => build.powerBudget(), RangeError);
-    assert.equal(build.mobilityMetrics(), null);
-    assert.equal(build.shieldMetrics(), null);
-    assert.equal(build.shieldRecovery(), null);
+    assert.throws(() => BuildMetrics.of(build).powerBudget(), RangeError);
+    assert.equal(BuildMetrics.of(build).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldRecovery(), null);
     for (const result of [
-        build.mobilityMetricsResult(),
-        build.shieldMetricsResult(),
-        build.shieldRecoveryResult(),
+        BuildMetrics.of(build).mobilityMetricsResult(),
+        BuildMetrics.of(build).shieldMetricsResult(),
+        BuildMetrics.of(build).shieldRecoveryResult(),
     ]) {
         assert.deepEqual(result.issues[0], {
             field: 'powerDraw',
@@ -582,9 +647,9 @@ test('metric results diagnose an invalid known power draw without weakening powe
 });
 
 test('shield results distinguish an absent generator from a shed one', () => {
-    const result = ShipLoadout.empty('Anaconda')
-        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
-        .shieldMetricsResult();
+    const result = BuildMetrics.of(
+        ShipLoadout.empty('Anaconda').setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5')),
+    ).shieldMetricsResult();
     assert.equal(result.complete, false);
     assert.equal(result.issues[0]?.field, 'shieldGenerator');
     assert.equal(result.issues[0]?.reason, 'missing');
@@ -602,11 +667,14 @@ test('shield results distinguish an absent generator from a shed one', () => {
             { Slot: 'Decal1', Item: 'Int_ShieldGenerator_Size9_Class9_MadeUp' },
         ],
     });
-    assert.equal(noRecord.shieldMetrics(), null);
-    assert.equal(noRecord.shieldMetricsResult().issues[0]?.field, 'shieldGenerator');
-    assert.equal(noRecord.shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(BuildMetrics.of(noRecord).shieldMetrics(), null);
     assert.equal(
-        noRecord.shieldMetricsResult().issues[0]?.message,
+        BuildMetrics.of(noRecord).shieldMetricsResult().issues[0]?.field,
+        'shieldGenerator',
+    );
+    assert.equal(BuildMetrics.of(noRecord).shieldMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(
+        BuildMetrics.of(noRecord).shieldMetricsResult().issues[0]?.message,
         'Decal1: shield-generator stats unavailable for Int_ShieldGenerator_Size9_Class9_MadeUp',
     );
 });
@@ -614,7 +682,7 @@ test('shield results distinguish an absent generator from a shed one', () => {
 test('buildCost prices assembled builds directly and qualifies missing module prices', () => {
     const expected = operationsFixture.buildCost.credits;
     const stock = ShipLoadout.default(expected.ship);
-    const credits = stock.buildCost().credits;
+    const credits = BuildMetrics.of(stock).buildCost().credits;
     const event = stock.toLoadoutEvent();
     assert.deepEqual(
         {
@@ -633,28 +701,28 @@ test('buildCost prices assembled builds directly and qualifies missing module pr
     );
     assert.ok(Object.isFrozen(credits));
     assert.ok(Object.isFrozen(credits.unpriced));
-    assert.deepEqual(stock.buildCost().materials, []);
+    assert.deepEqual(BuildMetrics.of(stock).buildCost().materials, []);
 
     const unknown = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod('Int_CorrosionProofCargoRack_Size5_Class1', INTERNAL_MODULES),
     );
-    assert.ok(unknown.buildCost().credits.unpriced.length > 0);
+    assert.ok(BuildMetrics.of(unknown).buildCost().credits.unpriced.length > 0);
 });
 
 test('buildCost totals the engineering a build still has to pay for', () => {
     const build = ShipLoadout.default('Anaconda');
-    assert.deepEqual(build.buildCost().materials, []);
+    assert.deepEqual(BuildMetrics.of(build).buildCost().materials, []);
 
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
-    const blueprintOnly = build.buildCost().materials;
+    const blueprintOnly = BuildMetrics.of(build).buildCost().materials;
     assert.equal(blueprintOnly.find((material) => material.symbol === 'Arsenic')?.count, 5);
     assert.deepEqual(blueprintOnly, getBlueprintCost('FSD_LongRange', 5)!.materials);
     assert.ok(Object.isFrozen(blueprintOnly));
 
     build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
     assert.deepEqual(
-        build.buildCost().materials,
+        BuildMetrics.of(build).buildCost().materials,
         sumMaterials(blueprintOnly, getExperimentalEffectCost('special_fsd_heavy')!),
     );
 
@@ -664,8 +732,8 @@ test('buildCost totals the engineering a build still has to pay for', () => {
         (candidate) => candidate.acquisition === 'eventReward',
     )!;
     festive.setPreEngineeredVariant('MediumHardpoint1', reward);
-    assert.deepEqual(festive.buildCost().materials, []);
-    assert.equal(festive.buildCost().mercCoins, 0);
+    assert.deepEqual(BuildMetrics.of(festive).buildCost().materials, []);
+    assert.equal(BuildMetrics.of(festive).buildCost().mercCoins, 0);
 
     const ordinary = operationsFixture.buildCost.ordinaryEngineering;
     const fuelScoop = ShipLoadout.empty(ordinary.ship).setModule(
@@ -673,7 +741,7 @@ test('buildCost totals the engineering a build still has to pay for', () => {
         getModuleBySymbol(ordinary.symbol, ALL_MODULES)!,
     );
     fuelScoop.applyBlueprint(ordinary.slot, ordinary.blueprint, { grade: ordinary.grade });
-    assert.equal(fuelScoop.buildCost().mercCoins, ordinary.mercCoins);
+    assert.equal(BuildMetrics.of(fuelScoop).buildCost().mercCoins, ordinary.mercCoins);
 });
 
 test('buildCost prices only the engineering the catalogues carry', () => {
@@ -682,14 +750,16 @@ test('buildCost prices only the engineering the catalogues carry', () => {
     // consumer reading a total.
     const stock = ShipLoadout.default('SideWinder').toLoadoutEvent();
     const engineered = (engineering: Record<string, unknown>) =>
-        ShipLoadout.fromLoadout({
-            ...stock,
-            Modules: stock.Modules.map((module) =>
-                module.Slot === 'FrameShiftDrive'
-                    ? { ...module, Engineering: engineering }
-                    : module,
-            ),
-        } as LoadoutEvent).buildCost();
+        BuildMetrics.of(
+            ShipLoadout.fromLoadout({
+                ...stock,
+                Modules: stock.Modules.map((module) =>
+                    module.Slot === 'FrameShiftDrive'
+                        ? { ...module, Engineering: engineering }
+                        : module,
+                ),
+            } as LoadoutEvent),
+        ).buildCost();
 
     const unknownRecipe = engineered({
         BlueprintName: 'Totally_Made_Up',
@@ -708,7 +778,7 @@ test('buildCost prices only the engineering the catalogues carry', () => {
 test('buildCost totals Merc Coin purchases and the climbs above them', () => {
     const expected = operationsFixture.buildCost.mercenary;
     const build = ShipLoadout.default(expected.ship);
-    assert.equal(build.buildCost().mercCoins, 0);
+    assert.equal(BuildMetrics.of(build).buildCost().mercCoins, 0);
 
     for (const module of expected.modules) {
         const variant = getPreEngineeredVariants(module.symbol).find(
@@ -717,15 +787,15 @@ test('buildCost totals Merc Coin purchases and the climbs above them', () => {
         build.setPreEngineeredVariant(module.slot, variant);
     }
     // Bought at grade 1: the purchase price alone, with nothing rolled on top of it.
-    assert.equal(build.buildCost().mercCoins, expected.expected);
-    assert.deepEqual(build.buildCost().materials, []);
+    assert.equal(BuildMetrics.of(build).buildCost().mercCoins, expected.expected);
+    assert.deepEqual(BuildMetrics.of(build).buildCost().materials, []);
 
     const removed = expected.modules[0]!;
     build.setModule(removed.slot, getModuleBySymbol(removed.symbol, ALL_MODULES)!);
-    assert.equal(build.buildCost().mercCoins, expected.expected - removed.cost);
+    assert.equal(BuildMetrics.of(build).buildCost().mercCoins, expected.expected - removed.cost);
 
     build.applyBlueprint(removed.slot, removed.blueprint, { grade: expected.climbed.grade });
-    const climbed = build.buildCost();
+    const climbed = BuildMetrics.of(build).buildCost();
     assert.equal(climbed.mercCoins, expected.climbed.mercCoins);
     assert.deepEqual(climbed.materials, expected.climbed.materials);
 });
@@ -733,7 +803,7 @@ test('buildCost totals Merc Coin purchases and the climbs above them', () => {
 test('buildMass weighs a build the way buildCost prices one', () => {
     const build = ShipLoadout.default('Anaconda');
     const tank = build.fuelCapacity.main;
-    const mass = build.buildMass();
+    const mass = BuildMetrics.of(build).buildMass();
     assert.deepEqual(mass, {
         hull: getShipBySymbol('Anaconda')!.hullMass,
         modules: build.unladenMass - getShipBySymbol('Anaconda')!.hullMass,
@@ -747,7 +817,7 @@ test('buildMass weighs a build the way buildCost prices one', () => {
 
     // The load is the caller's, and defaults match the jump and mobility calls: a full
     // main tank, an empty hold, and the reserve tank in neither.
-    const laden = build.buildMass({ fuel: 8, cargo: build.cargoCapacity });
+    const laden = BuildMetrics.of(build).buildMass({ fuel: 8, cargo: build.cargoCapacity });
     assert.deepEqual(
         { fuel: laden.fuel, cargo: laden.cargo, total: laden.total },
         {
@@ -760,23 +830,29 @@ test('buildMass weighs a build the way buildCost prices one', () => {
         { hull: laden.hull, modules: laden.modules, unladen: laden.unladen },
         { hull: mass.hull, modules: mass.modules, unladen: mass.unladen },
     );
-    assert.equal(build.buildMass({ fuel: 0 }).total, build.unladenMass);
-    assert.equal(build.buildMass().total, build.standardLoadResult('unladen').value!.mass);
-    assert.throws(() => build.buildMass({ fuel: -1 }), RangeError);
-    assert.throws(() => build.buildMass({ cargo: Number.POSITIVE_INFINITY }), RangeError);
+    assert.equal(BuildMetrics.of(build).buildMass({ fuel: 0 }).total, build.unladenMass);
+    assert.equal(
+        BuildMetrics.of(build).buildMass().total,
+        BuildMetrics.of(build).standardLoadResult('unladen').value!.mass,
+    );
+    assert.throws(() => BuildMetrics.of(build).buildMass({ fuel: -1 }), RangeError);
+    assert.throws(
+        () => BuildMetrics.of(build).buildMass({ cargo: Number.POSITIVE_INFINITY }),
+        RangeError,
+    );
 
     // Every module figure is post-engineering, so a roll that moves a module's mass
     // moves the modules total and the unladen mass with it.
     const heavier = ShipLoadout.default('Anaconda');
     heavier.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
-    const rolled = heavier.buildMass();
+    const rolled = BuildMetrics.of(heavier).buildMass();
     assert.equal(rolled.hull, mass.hull);
     assert.ok(rolled.modules > mass.modules);
     assert.equal(rolled.hull + rolled.modules, heavier.unladenMass);
 
     // A hull with only its stock fixed-mount articles still weighs them, and with no
     // fuel aboard its total is exactly the decomposition.
-    const bare = ShipLoadout.empty('Anaconda').buildMass({ fuel: 0 });
+    const bare = BuildMetrics.of(ShipLoadout.empty('Anaconda')).buildMass({ fuel: 0 });
     assert.equal(bare.hull, mass.hull);
     assert.equal(bare.total, bare.hull + bare.modules);
     assert.ok(bare.modules < mass.modules);
@@ -787,7 +863,7 @@ test("buildMass reports the capture's own unladen mass, decomposed from the cata
     // jump and mobility calculations use — so it is what `unladen` and `total` report,
     // while `hull` and `modules` say what the catalogues make that mass out of.
     const build = ShipLoadout.fromLoadout(deepBlackJournal as LoadoutEvent);
-    const mass = build.buildMass();
+    const mass = BuildMetrics.of(build).buildMass();
     assert.equal(mass.unladen, build.unladenMass);
     assert.equal(mass.total, build.unladenMass + build.fuelCapacity.main);
     assert.equal(mass.hull, getShipBySymbol(build.shipSymbol)!.hullMass);
@@ -796,7 +872,7 @@ test("buildMass reports the capture's own unladen mass, decomposed from the cata
 
 test('the thrusters getter publishes the fitted curve without a mobility calculation', () => {
     const build = ShipLoadout.default('Anaconda');
-    const curve = build.thrusters!;
+    const curve = BuildMetrics.of(build).thrusters()!;
     const fitted = build.fittedModuleAt('MainEngines')!.effectiveStats!;
     assert.deepEqual(curve, {
         minMass: fitted.minMass,
@@ -809,8 +885,8 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
 
     // The curve and the metrics agree: the multiplier the build reports is the one the
     // exported curve function gives for the loaded mass the build reports.
-    const mobility = build.mobilityMetrics()!;
-    assert.equal(mobility.loadedMass, build.buildMass().total);
+    const mobility = BuildMetrics.of(build).mobilityMetrics()!;
+    assert.equal(mobility.loadedMass, BuildMetrics.of(build).buildMass().total);
     assert.equal(
         thrusterMassCurveMultiplier(mobility.loadedMass, curve),
         mobility.massCurveMultiplier,
@@ -819,7 +895,7 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
     // Post-engineering, like every other figure the facade reports.
     const engineered = ShipLoadout.default('Anaconda');
     engineered.applyBlueprint('MainEngines', 'Engine_Dirty', { grade: 5 });
-    assert.notEqual(engineered.thrusters!.optMultiplier, curve.optMultiplier);
+    assert.notEqual(BuildMetrics.of(engineered).thrusters()!.optMultiplier, curve.optMultiplier);
 
     // Enhanced-performance thrusters carry their two refining curves.
     const enhanced = ShipLoadout.default('SideWinder').setModule(
@@ -827,11 +903,11 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
         mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES),
     );
     assert.equal(
-        enhanced.thrusters!.speedCurve!.optMultiplier,
+        BuildMetrics.of(enhanced).thrusters()!.speedCurve!.optMultiplier,
         enhanced.fittedModuleAt('MainEngines')!.effectiveStats!.optSpeedMultiplier,
     );
     assert.equal(
-        enhanced.thrusters!.rotationCurve!.maxMultiplier,
+        BuildMetrics.of(enhanced).thrusters()!.rotationCurve!.maxMultiplier,
         enhanced.fittedModuleAt('MainEngines')!.effectiveStats!.maxRotationMultiplier,
     );
 
@@ -844,9 +920,9 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
             module.Slot === 'MainEngines' ? { ...module, On: false } : module,
         ),
     });
-    assert.deepEqual(off.thrusters, curve);
-    assert.equal(off.mobilityMetrics(), null);
-    assert.equal(off.mobilityMetricsResult().issues[0]?.reason, 'disabled');
+    assert.deepEqual(BuildMetrics.of(off).thrusters(), curve);
+    assert.equal(BuildMetrics.of(off).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(off).mobilityMetricsResult().issues[0]?.reason, 'disabled');
 
     // A record that cannot supply a whole curve answers null rather than throwing — the
     // jump equation cannot do without a drive, a flight model can do without thrusters.
@@ -858,8 +934,11 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
         'MainEngines',
         noCurve as unknown as OutfittingModule,
     );
-    assert.equal(unresolved.thrusters, null);
-    assert.equal(unresolved.mobilityMetricsResult().issues[0]?.reason, 'unresolved');
+    assert.equal(BuildMetrics.of(unresolved).thrusters(), null);
+    assert.equal(
+        BuildMetrics.of(unresolved).mobilityMetricsResult().issues[0]?.reason,
+        'unresolved',
+    );
 });
 
 test('fromSlef reads the ship identity and top-level figures', () => {
@@ -876,25 +955,25 @@ test('fromSlef reads the ship identity and top-level figures', () => {
 
 test('loadout validation makes empty builds explicit', () => {
     const captured = ShipLoadout.fromSlef(slefString);
-    assert.equal(captured.validation.valid, true);
-    assert.equal(captured.validation.complete, true);
-    assert.deepEqual(captured.validation.issues, []);
+    assert.equal(captured.validation().valid, true);
+    assert.equal(captured.validation().complete, true);
+    assert.deepEqual(captured.validation().issues, []);
 
     // A fresh build flies: its fixed mounts carry the hull's stock articles, and only
     // the mounts a commander outfits are open. `missingRequiredSlot` is reported by
     // `validateLoadout` on a layout a build did not come from — see its own suite.
     const empty = ShipLoadout.empty('SideWinder');
-    assert.equal(empty.validation.valid, true);
-    assert.equal(empty.validation.complete, true);
-    assert.deepEqual(empty.validation.issues, []);
+    assert.equal(empty.validation().valid, true);
+    assert.equal(empty.validation().complete, true);
+    assert.deepEqual(empty.validation().issues, []);
 
     const drive = getModuleBySymbol('Int_Hyperdrive_Size2_Class5', CORE_MODULES)!;
     const disguised = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',
         Modules: [{ Slot: 'PaintJob', Item: drive.symbol }],
     });
-    assert.equal(disguised.validation.valid, false);
-    assert.ok(disguised.validation.issues.some((issue) => issue.code === 'unknownSlot'));
+    assert.equal(disguised.validation().valid, false);
+    assert.ok(disguised.validation().issues.some((issue) => issue.code === 'unknownSlot'));
 });
 
 test('fromLoadout restores a known hull cargo hatch when omitted or unresolved', () => {
@@ -922,7 +1001,7 @@ test('fromLoadout restores a known hull cargo hatch when omitted or unresolved',
             replacementSymbol: 'ModularCargoBayDoor',
         },
     ]);
-    assert.deepEqual(omitted.validation, { valid: true, complete: true, issues: [] });
+    assert.deepEqual(omitted.validation(), { valid: true, complete: true, issues: [] });
     assert.equal(omitted.modulesValue, source.ModulesValue);
     assert.equal(omitted.rebuy, source.Rebuy);
     const omittedSource = omitted.toLoadoutEvent({ credits: 'source' });
@@ -1137,9 +1216,9 @@ test('a fixed mount takes the hull article when the capture names one it cannot 
     // A removable mount is not corrected: it may legally stand empty, so the article the
     // capture put there stays for the caller to see and remove.
     assert.equal(build.fittedModuleAt('Slot01_Size2')!.symbol, 'Int_Powerplant_Size2_Class1');
-    assert.equal(build.validation.valid, false);
+    assert.equal(build.validation().valid, false);
     assert.deepEqual(
-        build.validation.issues.map((issue) => [issue.code, issue.slot]),
+        build.validation().issues.map((issue) => [issue.code, issue.slot]),
         [['incompatibleModule', 'Slot01_Size2']],
     );
 
@@ -1177,11 +1256,15 @@ test('default builds fit every stock module and remain independently editable', 
     for (const ship of SHIPS) {
         const build = ShipLoadout.default(ship.symbol);
         assert.equal(build.shipSymbol, ship.symbol);
-        assert.deepEqual(build.validation, { valid: true, complete: true, issues: [] });
+        assert.deepEqual(build.validation(), { valid: true, complete: true, issues: [] });
         assert.ok(build.unladenMass !== null, `${ship.symbol}: mass`);
         assert.ok(build.fuelCapacity !== null, `${ship.symbol}: fuel`);
-        assert.ok(build.maxJumpRange() !== null, `${ship.symbol}: jump range`);
-        assert.equal(build.powerBudget().withinBudget, true, `${ship.symbol}: power`);
+        assert.ok(BuildMetrics.of(build).maxJumpRange() !== null, `${ship.symbol}: jump range`);
+        assert.equal(
+            BuildMetrics.of(build).powerBudget().withinBudget,
+            true,
+            `${ship.symbol}: power`,
+        );
     }
 
     const first = ShipLoadout.default(' sidewinder ');
@@ -1299,13 +1382,13 @@ test('fromLoadout rejects duplicate slot keys before its map can overwrite one',
 test('maxJumpRange reproduces the EDSY-exported MaxJumpRange', () => {
     const build = ShipLoadout.fromSlef(slefString);
     assert.ok(
-        near(build.maxJumpRange(), expected.edsyMaxJumpRange, 5e-2),
-        `got ${build.maxJumpRange()}`,
+        near(BuildMetrics.of(build).maxJumpRange(), expected.edsyMaxJumpRange, 5e-2),
+        `got ${BuildMetrics.of(build).maxJumpRange()}`,
     );
 });
 
 test('the resolved frame shift drive folds in engineering and the booster', () => {
-    const fsd = ShipLoadout.fromSlef(slefString).frameShiftDrive;
+    const fsd = BuildMetrics.of(ShipLoadout.fromSlef(slefString)).frameShiftDrive();
     assert.equal(fsd.optMass, expected.frameShiftDrive.optMass); // FSDOptimalMass modifier
     assert.equal(fsd.maxFuel, expected.frameShiftDrive.maxFuel);
     assert.equal(fsd.jumpBoost, expected.frameShiftDrive.jumpBoost); // Guardian booster size 5
@@ -1313,49 +1396,67 @@ test('the resolved frame shift drive folds in engineering and the booster', () =
 
 test('unladen / laden / total range and per-jump fuel match the fixture', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    assert.ok(near(build.jumpRange(), expected.unladenJumpRange), `unladen ${build.jumpRange()}`);
     assert.ok(
-        near(build.ladenJumpRange(), expected.ladenJumpRange),
-        `laden ${build.ladenJumpRange()}`,
+        near(BuildMetrics.of(build).jumpRange(), expected.unladenJumpRange),
+        `unladen ${BuildMetrics.of(build).jumpRange()}`,
     );
-    const total = build.totalRange();
+    assert.ok(
+        near(BuildMetrics.of(build).ladenJumpRange(), expected.ladenJumpRange),
+        `laden ${BuildMetrics.of(build).ladenJumpRange()}`,
+    );
+    const total = BuildMetrics.of(build).totalRange();
     assert.ok(near(total.range, expected.totalRange, 1e-2), `total ${total.range}`);
     assert.equal(total.jumps, expected.totalJumps);
     assert.ok(
-        near(build.frameShiftDriveMassFactor(), expected.massFactor, 1e-12),
-        `factor ${build.frameShiftDriveMassFactor()}`,
+        near(BuildMetrics.of(build).frameShiftDriveMassFactor(), expected.massFactor, 1e-12),
+        `factor ${BuildMetrics.of(build).frameShiftDriveMassFactor()}`,
     );
     assert.ok(
-        near(build.fuelPerJump(50), expected.fuelPerJump50Ly),
-        `fuel50 ${build.fuelPerJump(50)}`,
+        near(BuildMetrics.of(build).fuelPerJump(50), expected.fuelPerJump50Ly),
+        `fuel50 ${BuildMetrics.of(build).fuelPerJump(50)}`,
     );
 });
 
 test('jump calculations honour explicit fuel and cargo', () => {
     const build = ShipLoadout.fromSlef(slefString);
     // The default is a full main tank with no cargo.
-    assert.ok(near(build.jumpRange({ fuel: 128, cargo: 0 }), build.jumpRange()));
+    assert.ok(
+        near(
+            BuildMetrics.of(build).jumpRange({ fuel: 128, cargo: 0 }),
+            BuildMetrics.of(build).jumpRange(),
+        ),
+    );
     // more cargo -> shorter jump
-    assert.ok(build.jumpRange({ cargo: 100 }) < build.jumpRange({ cargo: 0 }));
-    const totalMax = build.totalRange({ fuel: build.frameShiftDrive.maxFuel });
+    assert.ok(
+        BuildMetrics.of(build).jumpRange({ cargo: 100 }) <
+            BuildMetrics.of(build).jumpRange({ cargo: 0 }),
+    );
+    const totalMax = BuildMetrics.of(build).totalRange({
+        fuel: BuildMetrics.of(build).frameShiftDrive().maxFuel,
+    });
     assert.equal(totalMax.jumps, 1);
-    assert.ok(near(totalMax.range, build.maxJumpRange()));
-    assert.ok(build.totalRange({ fuel: 64 }).range < build.totalRange().range);
-    assert.throws(() => build.totalRange({ fuel: 1e7 }), /more than 100000 jumps/);
+    assert.ok(near(totalMax.range, BuildMetrics.of(build).maxJumpRange()));
+    assert.ok(
+        BuildMetrics.of(build).totalRange({ fuel: 64 }).range <
+            BuildMetrics.of(build).totalRange().range,
+    );
+    assert.throws(() => BuildMetrics.of(build).totalRange({ fuel: 1e7 }), /more than 100000 jumps/);
 
     const partial = expected.explicitFuel;
     const partialTank = ShipLoadout.fromLoadout(partial.loadout as unknown as LoadoutEvent);
-    const partialTotal = partialTank.totalRange(partial.options);
+    const partialTotal = BuildMetrics.of(partialTank).totalRange(partial.options);
     assert.equal(partialTotal.jumps, partial.expected.jumps);
     assert.ok(near(partialTotal.range, partial.expected.range));
-    assert.ok(partialTank.totalRange().range > partialTotal.range);
+    assert.ok(BuildMetrics.of(partialTank).totalRange().range > partialTotal.range);
 
     for (const invalid of operationsFixture.mobility.facadeFuelOverride.invalidLoads) {
-        assert.throws(() => build.jumpRange(invalid.options), { name: invalid.expectedError });
-        assert.throws(() => build.fuelPerJump(1, invalid.options), {
+        assert.throws(() => BuildMetrics.of(build).jumpRange(invalid.options), {
             name: invalid.expectedError,
         });
-        assert.throws(() => build.totalRange(invalid.options), {
+        assert.throws(() => BuildMetrics.of(build).fuelPerJump(1, invalid.options), {
+            name: invalid.expectedError,
+        });
+        assert.throws(() => BuildMetrics.of(build).totalRange(invalid.options), {
             name: invalid.expectedError,
         });
     }
@@ -1364,7 +1465,7 @@ test('jump calculations honour explicit fuel and cargo', () => {
 test('fromLoadout works on a bare journal event', () => {
     const build = ShipLoadout.fromLoadout(slefFixture[0]!.data as unknown as LoadoutEvent);
     assert.equal(build.shipSymbol, 'explorer_nx');
-    assert.ok(near(build.maxJumpRange(), expected.edsyMaxJumpRange, 5e-2));
+    assert.ok(near(BuildMetrics.of(build).maxJumpRange(), expected.edsyMaxJumpRange, 5e-2));
 });
 
 test('loadout inputs and returned raw records cannot mutate internal state', () => {
@@ -1393,7 +1494,7 @@ test('loadout inputs and returned raw records cannot mutate internal state', () 
     sourceDrive.Item = 'int_hyperdrive_size99_class9_madeup';
     sourceDrive.Engineering!.Modifiers![0]!.Value = 1;
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
-    assert.equal(build.frameShiftDrive.optMass, 1980);
+    assert.equal(BuildMetrics.of(build).frameShiftDrive().optMass, 1980);
 
     const exposed = build.fittedModuleAt('FrameShiftDrive')!.raw as unknown as {
         Item: string;
@@ -1406,7 +1507,7 @@ test('loadout inputs and returned raw records cannot mutate internal state', () 
         exposed.Engineering!.Modifiers[0]!.Value = 2;
     }, TypeError);
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
-    assert.equal(build.frameShiftDrive.optMass, 1980);
+    assert.equal(BuildMetrics.of(build).frameShiftDrive().optMass, 1980);
 
     const listed = build.fittedModules()[0]!.raw as { Item: string };
     assert.throws(() => {
@@ -1451,7 +1552,8 @@ test("re-fitting a lower-cased import's same module preserves its credit figures
 });
 
 test('an unpowered Guardian booster contributes no jump bonus', () => {
-    const withBooster = ShipLoadout.fromSlef(slefString).frameShiftDrive.jumpBoost;
+    const withBooster = BuildMetrics.of(ShipLoadout.fromSlef(slefString)).frameShiftDrive()
+        .jumpBoost;
     const off: LoadoutEvent = {
         ...(slefFixture[0]!.data as unknown as LoadoutEvent),
         Modules: slefFixture[0]!.data.Modules.map((m) =>
@@ -1459,7 +1561,7 @@ test('an unpowered Guardian booster contributes no jump bonus', () => {
         ),
     };
     assert.equal(withBooster, 10.5);
-    assert.equal(ShipLoadout.fromLoadout(off).frameShiftDrive.jumpBoost, 0);
+    assert.equal(BuildMetrics.of(ShipLoadout.fromLoadout(off)).frameShiftDrive().jumpBoost, 0);
 });
 
 test('a booster is identified by the bonus it supplies, not by its engineering menu', () => {
@@ -1473,10 +1575,10 @@ test('a booster is identified by the bonus it supplies, not by its engineering m
     // caller-supplied record may legitimately leave it null — which would otherwise count
     // the booster's mass while its boost went uncounted.
     const supplied = conda().setModule('Slot02_Size6', { ...booster, engineeringGroup: null });
-    assert.equal(supplied.frameShiftDrive.jumpBoost, booster.jumpBoost);
+    assert.equal(BuildMetrics.of(supplied).frameShiftDrive().jumpBoost, booster.jumpBoost);
     assert.equal(
-        supplied.maxJumpRange(),
-        conda().setModule('Slot02_Size6', booster).maxJumpRange(),
+        BuildMetrics.of(supplied).maxJumpRange(),
+        BuildMetrics.of(conda().setModule('Slot02_Size6', booster)).maxJumpRange(),
     );
 
     // A zero bonus is not evidence of a booster: the first match wins, so believing one
@@ -1487,22 +1589,22 @@ test('a booster is identified by the bonus it supplies, not by its engineering m
             jumpBoost: 0,
         })
         .setModule('Slot02_Size6', booster);
-    assert.equal(shadowed.frameShiftDrive.jumpBoost, booster.jumpBoost);
+    assert.equal(BuildMetrics.of(shadowed).frameShiftDrive().jumpBoost, booster.jumpBoost);
 
     // A record that claims the menu but carries no bonus is a fault, not a zero.
     const menuOnly = { ...booster };
     delete menuOnly.jumpBoost;
     assert.throws(
-        () => conda().setModule('Slot02_Size6', menuOnly).frameShiftDrive,
+        () => BuildMetrics.of(conda().setModule('Slot02_Size6', menuOnly)).frameShiftDrive(),
         /has no jumpBoost/,
     );
 });
 
 test('standard load results expose the jump summary load conditions', () => {
     const build = ShipLoadout.default('SideWinder');
-    const maximum = build.standardLoadResult('maximum');
-    const unladen = build.standardLoadResult('unladen');
-    const laden = build.standardLoadResult('laden');
+    const maximum = BuildMetrics.of(build).standardLoadResult('maximum');
+    const unladen = BuildMetrics.of(build).standardLoadResult('unladen');
+    const laden = BuildMetrics.of(build).standardLoadResult('laden');
 
     // Each load also reports what the ship weighs carrying it, so a caller never has to
     // reassemble `unladenMass + fuel + cargo` — the reserve tank is excluded, exactly as
@@ -1523,20 +1625,29 @@ test('standard load results expose the jump summary load conditions', () => {
         complete: true,
         issues: [],
     });
-    assert.equal(laden.value!.mass, build.buildMass({ fuel: 2, cargo: 4 }).total);
+    assert.equal(laden.value!.mass, BuildMetrics.of(build).buildMass({ fuel: 2, cargo: 4 }).total);
     assert.equal(
-        build.mobilityMetrics({ ...laden.value!, enginesPips: 2 })!.loadedMass,
+        BuildMetrics.of(build).mobilityMetrics({ ...laden.value!, enginesPips: 2 })!.loadedMass,
         laden.value!.mass,
     );
-    assert.equal(build.jumpRange(maximum.value!), build.jumpRangeSummary().max);
-    assert.equal(build.jumpRange(unladen.value!), build.jumpRangeSummary().unladen);
-    assert.equal(build.jumpRange(laden.value!), build.jumpRangeSummary().laden);
+    assert.equal(
+        BuildMetrics.of(build).jumpRange(maximum.value!),
+        BuildMetrics.of(build).jumpRangeSummary().max,
+    );
+    assert.equal(
+        BuildMetrics.of(build).jumpRange(unladen.value!),
+        BuildMetrics.of(build).jumpRangeSummary().unladen,
+    );
+    assert.equal(
+        BuildMetrics.of(build).jumpRange(laden.value!),
+        BuildMetrics.of(build).jumpRangeSummary().laden,
+    );
     assert.deepEqual(
-        build.mobilityMetrics({ ...laden.value!, enginesPips: 2 }),
-        build.mobilityMetrics({ fuel: 2, cargo: 4, enginesPips: 2 }),
+        BuildMetrics.of(build).mobilityMetrics({ ...laden.value!, enginesPips: 2 }),
+        BuildMetrics.of(build).mobilityMetrics({ fuel: 2, cargo: 4, enginesPips: 2 }),
     );
     assert.throws(
-        () => build.standardLoadResult('other' as 'maximum'),
+        () => BuildMetrics.of(build).standardLoadResult('other' as 'maximum'),
         /load must be 'maximum', 'unladen', or 'laden'/,
     );
 });
@@ -1547,7 +1658,7 @@ test('standard maximum load reports invalid jump inputs', () => {
         ...source,
         FuelCapacity: { Main: 0, Reserve: 0 },
     });
-    assert.deepEqual(noFuel.standardLoadResult('maximum').value, {
+    assert.deepEqual(BuildMetrics.of(noFuel).standardLoadResult('maximum').value, {
         fuel: 0,
         cargo: 0,
         mass: noFuel.unladenMass,
@@ -1569,7 +1680,7 @@ test('standard maximum load reports invalid jump inputs', () => {
                 : module,
         ),
     });
-    const invalid = invalidDrive.standardLoadResult('maximum');
+    const invalid = BuildMetrics.of(invalidDrive).standardLoadResult('maximum');
     assert.equal(invalid.complete, false);
     assert.equal(invalid.issues[0]?.field, 'frameShiftDrive');
     assert.match(invalid.issues[0]!.message, /fuel must be a finite non-negative number/);
@@ -1578,9 +1689,9 @@ test('standard maximum load reports invalid jump inputs', () => {
     // "no frame shift drive is fitted" message a build without one gets.
     const noConstants = { ...mod('Int_Hyperdrive_Size2_Class1') };
     delete noConstants.fuelMul;
-    const unusable = ShipLoadout.default('SideWinder')
-        .setModule('FrameShiftDrive', noConstants)
-        .standardLoadResult('maximum');
+    const unusable = BuildMetrics.of(
+        ShipLoadout.default('SideWinder').setModule('FrameShiftDrive', noConstants),
+    ).standardLoadResult('maximum');
     assert.equal(unusable.issues[0]?.field, 'frameShiftDrive');
     assert.match(unusable.issues[0]!.message, /has no jump constants/);
 });
@@ -1591,10 +1702,11 @@ test('the power plant and fuel tank are found by their declared slots', () => {
     // record carries both signals, so it cannot tell the rules apart.
     const stock = ShipLoadout.empty('Anaconda');
     const plant = getModuleBySymbol('Int_PowerPlant_Size6_Class5', CORE_MODULES)!;
-    assert.ok(stock.powerBudget().available > 0);
+    assert.ok(BuildMetrics.of(stock).powerBudget().available > 0);
     assert.notEqual(
-        ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available,
-        stock.powerBudget().available,
+        BuildMetrics.of(ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant)).powerBudget()
+            .available,
+        BuildMetrics.of(stock).powerBudget().available,
     );
 
     // The declared mount is authoritative even when the symbol suggests another family:
@@ -1602,7 +1714,10 @@ test('the power plant and fuel tank are found by their declared slots', () => {
     // capacity the build has.
     const asThrusters: OutfittingModule = { ...plant, slot: 'thrusters' };
     const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
-    assert.equal(miswired.powerBudget().available, stock.powerBudget().available);
+    assert.equal(
+        BuildMetrics.of(miswired).powerBudget().available,
+        BuildMetrics.of(stock).powerBudget().available,
+    );
 
     // Capacity does not read that way and no longer has to: a fitted record states the
     // figures it contributes, so this rack is summed as cargo whatever mount it claims,
@@ -1628,8 +1743,8 @@ test('the drive mount answers ahead of a hardpoint record claiming to be one', (
             getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
         )
         .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
-    assert.ok(build.maxJumpRange() > 0);
-    assert.deepEqual(build.standardLoadResult('maximum').issues, []);
+    assert.ok(BuildMetrics.of(build).maxJumpRange() > 0);
+    assert.deepEqual(BuildMetrics.of(build).standardLoadResult('maximum').issues, []);
 });
 
 test('fromSlef throws when the entry index is out of range', () => {
@@ -1684,7 +1799,7 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
     // A mount the capture never named is stocked on the same terms as an unresolved one,
     // and every hull carries a default for all nine, so an import is never short one.
     assert.equal(unresolvedCore.fittedModuleAt('MainEngines')?.symbol, 'Int_Engine_Size7_Class1');
-    assert.equal(unresolvedCore.validation.complete, true);
+    assert.equal(unresolvedCore.validation().complete, true);
 
     const stripped = ShipLoadout.fromLoadout({
         Ship: 'sidewinder',
@@ -1727,8 +1842,8 @@ test('empty starts a hull on its stock fixed mounts and nothing else', () => {
             .every((slot) => slot.module === null),
     );
     // The build flies: it draws on the hull's own plant, and validation finds no hole.
-    assert.ok(conda.powerBudget().available > 0);
-    assert.equal(conda.validation.complete, true);
+    assert.ok(BuildMetrics.of(conda).powerBudget().available > 0);
+    assert.equal(conda.validation().complete, true);
 });
 
 test('empty rejects a hull with no known layout', () => {
@@ -1771,9 +1886,9 @@ test('an assembled explorer build computes a sane jump range', () => {
     assert.ok(build.unladenMass! > 400);
     // A stock class-5 size-6 drive with a +10.5 booster on an Anaconda-mass hull:
     // a positive, believable single-jump range.
-    const range = build.maxJumpRange();
+    const range = BuildMetrics.of(build).maxJumpRange();
     assert.ok(range > 10 && range < 80, `got ${range}`);
-    assert.ok(build.frameShiftDrive.jumpBoost === 10.5);
+    assert.ok(BuildMetrics.of(build).frameShiftDrive().jumpBoost === 10.5);
 });
 
 test('setModule rejects the wrong module kind, oversize, and hull-restricted fits', () => {
@@ -1817,9 +1932,9 @@ test('incompatible-module diagnostics carry every dynamic fitting value', () => 
             },
         ],
     });
-    const issues = imported.validation.issues.filter(
-        (issue) => issue.code === 'incompatibleModule',
-    );
+    const issues = imported
+        .validation()
+        .issues.filter((issue) => issue.code === 'incompatibleModule');
     assert.deepEqual(issues[0]?.params, {
         slot: 'Slot02_Size6',
         symbol: 'Int_CargoRack_Size8_Class1',
@@ -2496,7 +2611,7 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII'),
     );
-    const before = build.frameShiftDrive.optMass;
+    const before = BuildMetrics.of(build).frameShiftDrive().optMass;
     assert.equal(before, 4670); // base optimal mass
 
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
@@ -2506,7 +2621,7 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     });
 
     // The exact figures the real Deep Black export carries.
-    const fsd = build.frameShiftDrive;
+    const fsd = BuildMetrics.of(build).frameShiftDrive();
     assert.ok(Math.abs(fsd.optMass - 7528.04) < 1e-2, `optMass ${fsd.optMass}`);
     const engineered = build.fittedModuleAt('FrameShiftDrive')!.engineering!;
     assert.equal(engineered.BlueprintName, 'FSD_LongRange');
@@ -2715,7 +2830,7 @@ test('damage-converting experimentals replace the weapon split and export journa
 
         const fitted = build.fittedModuleAt('SmallHardpoint1')!;
         assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected[experimental]);
-        const metrics = build.weaponMetrics().weapons[0]!.metrics;
+        const metrics = BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics;
         for (const [type, share] of Object.entries(expected[experimental])) {
             assert.ok(
                 near(
@@ -2782,7 +2897,7 @@ test('thermal plasma conversion blueprints expose their absolute damage split', 
         assert.equal(modFor(modifiers, '$Thermal;'), expected.thermal * 100, blueprint);
         assert.equal(modFor(modifiers, '$Absolute;'), expected.absolute * 100, blueprint);
 
-        const weapon = build.weaponMetrics().weapons[0]!.metrics;
+        const weapon = BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics;
         assert.ok(
             near(weapon.damageByType.thermal, weapon.damagePerSecond * expected.thermal, 1e-6),
             `${blueprint} thermal`,
@@ -2833,7 +2948,7 @@ test('a damage conversion supersedes exact stock damage components', () => {
         engineeringFixture.experimentalDamageDistributions.map.special_high_yield_shell,
     );
 
-    const metrics = build.weaponMetrics().weapons[0]!.metrics;
+    const metrics = BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics;
     assert.ok(near(metrics.damageByType.kinetic, metrics.damagePerSecond / 2, 1e-6));
     assert.ok(near(metrics.damageByType.explosive, metrics.damagePerSecond / 2, 1e-6));
 });
@@ -3452,11 +3567,11 @@ test('clearEngineering restores base stats', () => {
         mod('Int_Hyperdrive_Size6_Class5'),
     );
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
-    const engineered = build.frameShiftDrive.optMass;
+    const engineered = BuildMetrics.of(build).frameShiftDrive().optMass;
     build.clearEngineering('FrameShiftDrive');
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.engineering, undefined);
-    assert.ok(build.frameShiftDrive.optMass < engineered); // back to base 1800
-    assert.equal(build.frameShiftDrive.optMass, 1800);
+    assert.ok(BuildMetrics.of(build).frameShiftDrive().optMass < engineered); // back to base 1800
+    assert.equal(BuildMetrics.of(build).frameShiftDrive().optMass, 1800);
 });
 
 test('clearing a fixed festive variant restores its stock module stats', () => {
@@ -3495,7 +3610,7 @@ test('resolved pre-engineered stats survive fitting and drive build calculations
     assert.equal(fitted.effectiveStats?.optMass, 1785);
     // 1020 t stock Anaconda, less its 40 t stock drive, plus the fitted 26 t V1.
     assert.equal(build.unladenMass, 1006);
-    assert.equal(build.frameShiftDrive.optMass, 1785);
+    assert.equal(BuildMetrics.of(build).frameShiftDrive().optMass, 1785);
 
     // Fitting snapshots the supplied record; later caller mutation cannot change a build.
     (resolved as { mass?: number }).mass = 999;
@@ -3591,13 +3706,13 @@ test('keyed facade mutations produce new fitted-module snapshots', () => {
         experimental: 'special_fsd_heavy',
     });
     const engineered = build.fittedModuleAt(slot.key)!;
-    assert.ok(Math.abs(build.frameShiftDrive.optMass - 7528.04) < 1e-2);
+    assert.ok(Math.abs(BuildMetrics.of(build).frameShiftDrive().optMass - 7528.04) < 1e-2);
     assert.equal(stock.engineering, undefined);
     assert.equal(engineered.engineering?.BlueprintName, 'FSD_LongRange');
 
     build.clearEngineering(slot.key);
     assert.equal(build.fittedModuleAt(slot.key)?.engineering, undefined);
-    assert.equal(build.frameShiftDrive.optMass, 4670); // base
+    assert.equal(BuildMetrics.of(build).frameShiftDrive().optMass, 4670); // base
 });
 
 test('availableBlueprints / availableExperimentalEffects answer available engineering', () => {
@@ -3664,7 +3779,7 @@ const withAllModulesEnabled = (event: LoadoutEvent): ShipLoadout =>
 /** Read the statistics panel's combined hardpoint-and-utility offense totals. */
 const offensePanelTotals = (build: ShipLoadout) => ({
     damagePerSecond:
-        build.weaponMetrics().total.damagePerSecond +
+        BuildMetrics.of(build).weaponMetrics().total.damagePerSecond +
         build
             .slots('utility')
             .reduce((total, slot) => total + damagePerSecond(slot.module?.effectiveStats ?? {}), 0),
@@ -3698,7 +3813,9 @@ test('all ten panel-audited builds reproduce their observed angular rates', () =
     // roll the largest misses at 0.06348252°/s and 0.05896712°/s.
     const tolerance = 0.005;
     for (const [name, event, expected] of cases) {
-        const actual = ShipLoadout.fromLoadout(event as LoadoutEvent).mobilityMetrics();
+        const actual = BuildMetrics.of(
+            ShipLoadout.fromLoadout(event as LoadoutEvent),
+        ).mobilityMetrics();
         assert.ok(actual, `${name}: missing mobility metrics`);
         for (const axis of ['pitch', 'roll', 'yaw'] as const) {
             const difference = Math.abs(actual[axis] - expected.speed[axis]);
@@ -3714,16 +3831,16 @@ test('the beam Corvette reproduces the externally observed in-game build totals'
     const expected = metrics.inGame.federalCorvetteBeams;
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
 
-    assert.equal(displayed(build.jumpRange(), 2), expected.jumpRange.fullTank);
+    assert.equal(displayed(BuildMetrics.of(build).jumpRange(), 2), expected.jumpRange.fullTank);
 
     const installedPowerBuild = withAllModulesEnabled(corvetteBeamsJournal as LoadoutEvent);
-    const power = installedPowerBuild.powerBudget();
+    const power = BuildMetrics.of(installedPowerBuild).powerBudget();
     assert.equal(displayed(power.available, 1), expected.power.available);
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -3742,8 +3859,11 @@ test('the beam Corvette reproduces the externally observed in-game build totals'
 
     const fuel = build.fuelCapacity;
     assert.ok(fuel);
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3764,25 +3884,25 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
 
     // The in-game panel counts reserve fuel as mass but cannot use it for the jump.
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
+    const weapons = BuildMetrics.of(installedBuild).weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     assert.equal(displayed(weapons.total.thermalLoad, 1), expected.offense.thermalLoad);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -3799,8 +3919,11 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3822,24 +3945,24 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
     assert.equal(expected.observedShipName, '[KDF] Slippery Fudge');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
+    const weapons = BuildMetrics.of(installedBuild).weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -3856,8 +3979,11 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3878,12 +4004,12 @@ test('The Deep Black reproduces every observed calculated total', () => {
     assert.equal(build.shipName, 'The Deep Black');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 0), expected.power.retracted);
@@ -3894,11 +4020,11 @@ test('The Deep Black reproduces every observed calculated total', () => {
     assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 0), expected.offense.thermalLoad);
 
-    const mobility = build.mobilityMetrics()!;
+    const mobility = BuildMetrics.of(build).mobilityMetrics()!;
     assert.equal(displayed(mobility.speed, 0), expected.speed.top);
     assert.equal(displayed(mobility.boost, 0), expected.speed.boost);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -3916,9 +4042,12 @@ test('The Deep Black reproduces every observed calculated total', () => {
         Math.abs(generator.shieldBrokenRegenRate - expected.shields.regeneration.broken) <= 0.05,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    assert.equal(displayed(build.thrusters!.maxMass, 1), expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    assert.equal(displayed(BuildMetrics.of(build).thrusters()!.maxMass, 1), expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3939,12 +4068,12 @@ test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', 
     assert.equal(build.shipName, '[KPV] Rescue 01');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
@@ -3955,7 +4084,7 @@ test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', 
     assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -3972,12 +4101,12 @@ test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', 
         expected.shields.regeneration.broken,
     );
 
-    const currentMass = build.buildMass().total + fuel.reserve;
+    const currentMass = BuildMetrics.of(build).buildMass().total + fuel.reserve;
     // Frontier's float32 total lies 0.000024 t over the half-tenth boundary but its
     // statistics panel displays the lower tenth.
     assert.ok(Math.abs(currentMass - expected.mass.current) <= 0.0501, `${currentMass}`);
-    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(BuildMetrics.of(build).thrusters()!.maxMass, expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -3998,24 +4127,24 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
     assert.equal(build.shipName, '[KPV] Rescue');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
+    const weapons = BuildMetrics.of(installedBuild).weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 0), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4032,9 +4161,12 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    assert.equal(BuildMetrics.of(build).thrusters()!.maxMass, expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -4055,12 +4187,12 @@ test('Fat Arse reproduces every observed calculated total', () => {
     assert.equal(build.shipName, '[KLD] Fat Arse');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 1), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
@@ -4071,7 +4203,7 @@ test('Fat Arse reproduces every observed calculated total', () => {
     assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4088,9 +4220,12 @@ test('Fat Arse reproduces every observed calculated total', () => {
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    assert.equal(BuildMetrics.of(build).thrusters()!.maxMass, expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -4111,24 +4246,24 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
     assert.equal(build.shipName, '[KDF] The Fixer');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 1), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
+    const weapons = BuildMetrics.of(installedBuild).weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4145,9 +4280,12 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    assert.equal(BuildMetrics.of(build).thrusters()!.maxMass, expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -4168,24 +4306,24 @@ test('Spire Ops reproduces the observed totals', () => {
     assert.equal(build.shipName, '[KAXF] Spire Ops');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
+    const weapons = BuildMetrics.of(installedBuild).weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4202,9 +4340,12 @@ test('Spire Ops reproduces the observed totals', () => {
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    assert.equal(BuildMetrics.of(build).thrusters()!.maxMass, expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -4225,18 +4366,18 @@ test('Slapaconda reproduces every observed calculated total', () => {
     assert.equal(build.shipName, '[KAXF] Slapaconda');
 
     assert.equal(
-        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        displayed(BuildMetrics.of(build).jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
         expected.jumpRange.fullTank,
     );
 
     const installedBuild = withAllModulesEnabled(event);
-    const power = installedBuild.powerBudget();
+    const power = BuildMetrics.of(installedBuild).powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
     assert.equal(displayed(power.available, 2), expected.power.available);
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
+    const weapons = BuildMetrics.of(installedBuild).weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
@@ -4251,11 +4392,14 @@ test('Slapaconda reproduces every observed calculated total', () => {
     assert.equal(shard.shotSpeed, 6299.208984);
 
     assert.equal(expected.shields.strength, 0);
-    assert.equal(build.shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
 
-    assert.equal(displayed(build.buildMass().total + fuel.reserve, 1), expected.mass.current);
-    assert.equal(build.thrusters!.maxMass, expected.mass.maximum);
-    const armour = build.armourMetrics()!;
+    assert.equal(
+        displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    assert.equal(BuildMetrics.of(build).thrusters()!.maxMass, expected.mass.maximum);
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
@@ -4316,7 +4460,7 @@ function fixtureAnaconda(): ShipLoadout {
 }
 
 test('the SLEF build reproduces the fixture power budget', () => {
-    const budget = ShipLoadout.fromSlef(slefString).powerBudget();
+    const budget = BuildMetrics.of(ShipLoadout.fromSlef(slefString)).powerBudget();
     const expectedPower = metrics.deepBlack.power;
     assert.ok(near(budget.available, expectedPower.available), `${budget.available}`);
     assert.ok(near(budget.retracted, expectedPower.retracted), `${budget.retracted}`);
@@ -4329,7 +4473,7 @@ test('the SLEF build reproduces the fixture power budget', () => {
 
 test('the SLEF build reproduces the fixture shield and armour metrics', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.ok(near(shields.strength, metrics.deepBlack.shields.strength), `${shields.strength}`);
     assert.ok(
         near(shields.massCurveMultiplier, metrics.deepBlack.shields.massCurveMultiplier),
@@ -4343,7 +4487,7 @@ test('the SLEF build reproduces the fixture shield and armour metrics', () => {
 
     // The armour is engineered: the journal reports its hull boost as 137.6%, so the
     // Caspian Explorer's 345 base armour becomes 345 x 2.376.
-    const armour = build.armourMetrics()!;
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.ok(near(armour.hitPoints, metrics.deepBlack.armour.hitPoints), `${armour.hitPoints}`);
     assert.ok(near(armour.hitPoints, 345 * 2.376));
     assert.deepEqual(rounded(armour.resistances), metrics.deepBlack.armour.resistances);
@@ -4351,14 +4495,17 @@ test('the SLEF build reproduces the fixture shield and armour metrics', () => {
         rounded(armour.effectiveHitPoints),
         metrics.deepBlack.armour.effectiveHitPoints,
     );
-    assert.equal(build.weaponMetrics().weapons.length, metrics.deepBlack.weaponCount);
+    assert.equal(
+        BuildMetrics.of(build).weaponMetrics().weapons.length,
+        metrics.deepBlack.weaponCount,
+    );
 });
 
 test('an assembled Anaconda reproduces the fixture metrics', () => {
     const build = fixtureAnaconda();
     const expectedBuild = metrics.anaconda;
 
-    const budget = build.powerBudget();
+    const budget = BuildMetrics.of(build).powerBudget();
     assert.ok(near(budget.available, expectedBuild.power.available));
     assert.ok(near(budget.retracted, expectedBuild.power.retracted));
     assert.ok(near(budget.deployed, expectedBuild.power.deployed));
@@ -4375,7 +4522,7 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
         expectedBuild.power.bands,
     );
 
-    const shields = build.shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetrics()!;
     assert.ok(near(shields.strength, expectedBuild.shields.strength));
     assert.ok(near(shields.generator, expectedBuild.shields.generator));
     assert.ok(near(shields.boosters, expectedBuild.shields.boosters));
@@ -4383,11 +4530,11 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     assert.deepEqual(rounded(shields.resistances), expectedBuild.shields.resistances);
     assert.deepEqual(rounded(shields.effectiveHitPoints), expectedBuild.shields.effectiveHitPoints);
     assert.deepEqual(
-        rounded(build.shieldMetrics({ systemsPips: 4 })!.resistances),
+        rounded(BuildMetrics.of(build).shieldMetrics({ systemsPips: 4 })!.resistances),
         expectedBuild.shields.resistancesAtFourPips,
     );
 
-    const armour = build.armourMetrics()!;
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.ok(near(armour.hitPoints, expectedBuild.armour.hitPoints));
     assert.ok(near(armour.bulkheads, expectedBuild.armour.bulkheads));
     assert.ok(near(armour.reinforcement, expectedBuild.armour.reinforcement));
@@ -4397,7 +4544,7 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     assert.ok(near(armour.moduleArmour, expectedBuild.armour.moduleArmour));
     assert.ok(near(armour.moduleProtection, expectedBuild.armour.moduleProtection));
 
-    const weapons = build.weaponMetrics();
+    const weapons = BuildMetrics.of(build).weaponMetrics();
     assert.equal(weapons.weapons.length, 2);
     assert.ok(near(weapons.total.damagePerSecond, expectedBuild.weapons.damagePerSecond));
     assert.ok(
@@ -4423,30 +4570,30 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
 
 test('weaponsCapacitorMetrics scales fitted distributor recharge by WEP pips', () => {
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
-    const rated = build.weaponsCapacitorMetrics();
-    const halfPips = build.weaponsCapacitorMetrics({ weaponsPips: 2 });
+    const rated = BuildMetrics.of(build).weaponsCapacitorMetrics();
+    const halfPips = BuildMetrics.of(build).weaponsCapacitorMetrics({ weaponsPips: 2 });
     const distributor = build.fittedModuleAt('PowerDistributor')!.effectiveStats!;
 
     assert.equal(rated.capacity, distributor.weaponsCapacity);
     assert.equal(rated.rechargeRate, distributor.weaponsRecharge);
     assert.equal(
         rated.sustainedEnergyPerSecond,
-        build.weaponMetrics().total.sustainedEnergyPerSecond,
+        BuildMetrics.of(build).weaponMetrics().total.sustainedEnergyPerSecond,
     );
     assert.ok(halfPips.rechargeRate < rated.rechargeRate);
     assert.ok(halfPips.netDrainRate >= rated.netDrainRate);
-    assert.throws(() => build.weaponsCapacitorMetrics({ weaponsPips: 5 }), {
+    assert.throws(() => BuildMetrics.of(build).weaponsCapacitorMetrics({ weaponsPips: 5 }), {
         name: 'RangeError',
         message:
-            'ShipLoadout.weaponsCapacitorMetrics: weaponsPips must be a finite number from 0 to 4',
+            'BuildMetrics.weaponsCapacitorMetrics: weaponsPips must be a finite number from 0 to 4',
     });
 });
 
 test('distributorMetrics reports every fitted capacitor at its selected pips', () => {
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
     const distributor = build.fittedModuleAt('PowerDistributor')!.effectiveStats!;
-    const rated = build.distributorMetrics()!;
-    const halfPips = build.distributorMetrics({
+    const rated = BuildMetrics.of(build).distributorMetrics()!;
+    const halfPips = BuildMetrics.of(build).distributorMetrics({
         systemsPips: 2,
         enginesPips: 2,
         weaponsPips: 2,
@@ -4465,16 +4612,16 @@ test('distributorMetrics reports every fitted capacitor at its selected pips', (
         halfPips.engines.rechargeRate,
         distributor.enginesRecharge! * Math.pow(2 / 4, 1.1),
     );
-    assert.throws(() => build.distributorMetrics({ enginesPips: 5 }), {
+    assert.throws(() => BuildMetrics.of(build).distributorMetrics({ enginesPips: 5 }), {
         name: 'RangeError',
-        message: 'ShipLoadout.distributorMetrics: enginesPips must be a finite number from 0 to 4',
+        message: 'BuildMetrics.distributorMetrics: enginesPips must be a finite number from 0 to 4',
     });
 });
 
 test('distributorMetrics returns null without a powered distributor', () => {
     // Every build mounts a distributor, so only switching it off answers `null`.
     const off = ShipLoadout.default('Anaconda').setModuleEnabled('PowerDistributor', false);
-    assert.equal(off.distributorMetrics(), null);
+    assert.equal(BuildMetrics.of(off).distributorMetrics(), null);
 });
 
 test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', () => {
@@ -4482,8 +4629,12 @@ test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', (
         'PowerPlant',
         getModuleBySymbol(heatFixture.unpowered.powerPlant, CORE_MODULES)!,
     );
-    assert.ok(starved.powerBudget().bands.every((band) => !band.poweredDeployed));
-    assert.deepEqual(starved.weaponsCapacitorMetrics(), {
+    assert.ok(
+        BuildMetrics.of(starved)
+            .powerBudget()
+            .bands.every((band) => !band.poweredDeployed),
+    );
+    assert.deepEqual(BuildMetrics.of(starved).weaponsCapacitorMetrics(), {
         weaponsPips: 4,
         capacity: 0,
         rechargeRate: 0,
@@ -4491,7 +4642,7 @@ test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', (
         netDrainRate: 0,
         timeToDrain: Infinity,
     });
-    assert.equal(starved.distributorMetrics(), null);
+    assert.equal(BuildMetrics.of(starved).distributorMetrics(), null);
 });
 
 test('a hull with no shield generator reports no shields', () => {
@@ -4499,70 +4650,77 @@ test('a hull with no shield generator reports no shields', () => {
         'PowerPlant',
         mod('Int_Powerplant_Size8_Class5'),
     );
-    assert.equal(build.shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
     // ...but still has the armour it left the shipyard with.
-    assert.equal(build.armourMetrics()!.hitPoints, 945);
+    assert.equal(BuildMetrics.of(build).armourMetrics()!.hitPoints, 945);
 });
 
 test('switched-off modules drop out of every metric', () => {
     const build = fixtureAnaconda();
-    const lit = build.weaponMetrics().total.damagePerSecond;
-    const shielded = build.shieldMetrics()!.strength;
+    const lit = BuildMetrics.of(build).weaponMetrics().total.damagePerSecond;
+    const shielded = BuildMetrics.of(build).shieldMetrics()!.strength;
 
     const off = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
         Modules: build.fittedModules().map(({ raw }) => ({ ...raw, On: false })),
     });
-    assert.equal(off.shieldMetrics(), null); // the generator is off
-    assert.equal(off.powerBudget().available, 0); // so is the plant
-    assert.equal(off.weaponMetrics().total.damagePerSecond, 0);
-    assert.equal(off.weaponsCapacitorMetrics().capacity, 0);
-    assert.equal(off.weaponsCapacitorMetrics().rechargeRate, 0);
-    assert.equal(off.weaponsCapacitorMetrics().timeToDrain, Infinity);
+    assert.equal(BuildMetrics.of(off).shieldMetrics(), null); // the generator is off
+    assert.equal(BuildMetrics.of(off).powerBudget().available, 0); // so is the plant
+    assert.equal(BuildMetrics.of(off).weaponMetrics().total.damagePerSecond, 0);
+    assert.equal(BuildMetrics.of(off).weaponsCapacitorMetrics().capacity, 0);
+    assert.equal(BuildMetrics.of(off).weaponsCapacitorMetrics().rechargeRate, 0);
+    assert.equal(BuildMetrics.of(off).weaponsCapacitorMetrics().timeToDrain, Infinity);
     // The weapons are still listed, with their own figures intact.
-    assert.equal(off.weaponMetrics().weapons.length, 2);
-    assert.ok(off.weaponMetrics().weapons.every((w) => !w.enabled));
+    assert.equal(BuildMetrics.of(off).weaponMetrics().weapons.length, 2);
+    assert.ok(
+        BuildMetrics.of(off)
+            .weaponMetrics()
+            .weapons.every((w) => !w.enabled),
+    );
     assert.ok(lit > 0 && shielded > 0);
 });
 
 test('engineering moves the metrics it should', () => {
     const build = fixtureAnaconda();
-    const before = build.shieldMetrics()!;
+    const before = BuildMetrics.of(build).shieldMetrics()!;
     build.applyBlueprint('Slot01_Size7', 'ShieldGenerator_Reinforced', { grade: 5 });
-    const after = build.shieldMetrics()!;
+    const after = BuildMetrics.of(build).shieldMetrics()!;
     assert.ok(after.strength > before.strength, `${before.strength} -> ${after.strength}`);
 
-    const bareArmour = build.armourMetrics()!.hitPoints;
+    const bareArmour = BuildMetrics.of(build).armourMetrics()!.hitPoints;
     build.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
-    const heavyArmour = build.armourMetrics()!;
+    const heavyArmour = BuildMetrics.of(build).armourMetrics()!;
     // Heavy Duty compounds on the armour multiplier: x3.5 becomes x4.62.
     assert.ok(near(heavyArmour.bulkheads, 525 * 4.62));
     assert.ok(heavyArmour.hitPoints > bareArmour);
     // It stiffens the resistances too.
     assert.ok(heavyArmour.resistances.kinetic > 0.26875);
 
-    const weaponsBefore = build.weaponMetrics().total.damagePerSecond;
+    const weaponsBefore = BuildMetrics.of(build).weaponMetrics().total.damagePerSecond;
     build.applyBlueprint('LargeHardpoint1', 'Weapon_Overcharged', { grade: 5 });
-    assert.ok(build.weaponMetrics().total.damagePerSecond > weaponsBefore);
+    assert.ok(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond > weaponsBefore);
 });
 
 test('jumpRangeSummary gathers the loads that matter', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    const summary = build.jumpRangeSummary();
-    assert.ok(near(summary.max, build.maxJumpRange()));
-    assert.ok(near(summary.unladen, build.jumpRange()));
-    assert.ok(near(summary.laden, build.ladenJumpRange()));
+    const summary = BuildMetrics.of(build).jumpRangeSummary();
+    assert.ok(near(summary.max, BuildMetrics.of(build).maxJumpRange()));
+    assert.ok(near(summary.unladen, BuildMetrics.of(build).jumpRange()));
+    assert.ok(near(summary.laden, BuildMetrics.of(build).ladenJumpRange()));
     assert.equal(summary.totalMax.jumps, expected.totalMaxJumps);
     assert.ok(near(summary.totalMax.range, expected.totalMaxRange));
     assert.ok(near(summary.totalMax.range, summary.max));
-    assert.deepEqual(summary.totalUnladen, build.totalRange());
-    assert.deepEqual(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! }));
+    assert.deepEqual(summary.totalUnladen, BuildMetrics.of(build).totalRange());
+    assert.deepEqual(
+        summary.totalLaden,
+        BuildMetrics.of(build).totalRange({ cargo: build.cargoCapacity! }),
+    );
     // Best single jump beats a full tank, which beats a full tank and a full hold.
     assert.ok(summary.max > summary.unladen);
     assert.ok(summary.unladen > summary.laden);
     assert.ok(summary.totalUnladen.range > summary.totalLaden.range);
     // A partial load sits between the two.
-    const partial = build.jumpRange({ cargo: build.cargoCapacity! / 2 });
+    const partial = BuildMetrics.of(build).jumpRange({ cargo: build.cargoCapacity! / 2 });
     assert.ok(partial < summary.unladen && partial > summary.laden);
 });
 
@@ -4605,8 +4763,8 @@ test('always-powered utility modules draw with the hardpoints stowed', () => {
         .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
         .setModule('TinyHardpoint1', mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES))
         .setModule('TinyHardpoint2', mod('Hpt_CrimeScanner_Size0_Class5', UTILITY_MODULES));
-    const budget = build.powerBudget();
-    const stock = bare.powerBudget().retracted;
+    const budget = BuildMetrics.of(build).powerBudget();
+    const stock = BuildMetrics.of(bare).powerBudget().retracted;
     const booster = mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES);
     const scanner = mod('Hpt_CrimeScanner_Size0_Class5', UTILITY_MODULES);
     // The shield booster is always powered; the kill warrant scanner is not.
@@ -4628,7 +4786,7 @@ test('power budgets expose known and disabled fitted consumers', () => {
             ),
         ],
     });
-    const budget = build.powerBudget();
+    const budget = BuildMetrics.of(build).powerBudget();
     const enabled = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint1');
     const disabled = budget.consumers.find((consumer) => consumer.label === 'SmallHardpoint2');
 
@@ -4644,7 +4802,7 @@ test("a build whose hull is beyond the generator's maximum mass has no shields",
         .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
         .setModule('Slot01_Size7', mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES));
     // A size-1 generator cannot cover a 400 t hull.
-    assert.equal(build.shieldMetrics()!.strength, 0);
+    assert.equal(BuildMetrics.of(build).shieldMetrics()!.strength, 0);
 });
 
 test('an engineered hull reinforcement package adds a share of the base armour', () => {
@@ -4669,7 +4827,7 @@ test('an engineered hull reinforcement package adds a share of the base armour',
             },
         ],
     });
-    const armour = build.armourMetrics()!;
+    const armour = BuildMetrics.of(build).armourMetrics()!;
     assert.equal(armour.reinforcement, 341 + 525 * 0.06);
     assert.equal(armour.hitPoints, 945 + 341 + 31.5);
 });
@@ -4681,7 +4839,7 @@ test('engineering the burst pattern exposes the journal rate of fire', () => {
         mod('Hpt_Slugshot_Gimbal_Large', HARDPOINT_MODULES),
     );
     const stockDamage = build.fittedModuleAt('LargeHardpoint1')!.stats!.damage!;
-    const before = build.weaponMetrics().total.damagePerSecond;
+    const before = BuildMetrics.of(build).weaponMetrics().total.damagePerSecond;
     // Double Shot's primitive recipe gives the weapon a two-round burst. Frontier writes
     // only the resulting RateOfFire and DamagePerSecond to the journal. Effective stats
     // retain the primitive burst values so reload-cycle calculations remain exact.
@@ -4696,7 +4854,7 @@ test('engineering the burst pattern exposes the journal rate of fire', () => {
             (modifier) => modifier.Label !== 'BurstSize' && modifier.Label !== 'BurstRateOfFire',
         ),
     );
-    const after = build.weaponMetrics();
+    const after = BuildMetrics.of(build).weaponMetrics();
     assert.ok(after.total.damagePerSecond > before);
     assert.ok(near(after.total.sustainedDamagePerSecond, 48.176470588, 1e-6));
     const expectedRate = modFor(fitted.engineering!.Modifiers!, 'RateOfFire')!;
@@ -4717,27 +4875,33 @@ test('a long-range weapon keeps its damage all the way out', () => {
 
 test('weapon metrics expose effective range, projectile boundaries and piercing', () => {
     const build = ShipLoadout.default('SideWinder');
-    const stock = build.weaponMetrics().weapons[0]!;
+    const stock = BuildMetrics.of(build).weaponMetrics().weapons[0]!;
     assert.equal(stock.maximumRange, 3000);
     assert.equal(stock.falloffRange, 500);
     assert.equal(stock.armourPiercing, 20);
 
     build.applyBlueprint(stock.slot, 'Weapon_LongRange', { grade: 5 });
-    const engineered = build.weaponMetrics().weapons[0]!;
+    const engineered = BuildMetrics.of(build).weaponMetrics().weapons[0]!;
     assert.equal(engineered.maximumRange, 6000);
     assert.equal(engineered.falloffRange, 6000);
 
-    const projectile = ShipLoadout.empty('Anaconda')
-        .setModule('MediumHardpoint1', mod('Hpt_ATDumbfireMissile_Fixed_Medium', HARDPOINT_MODULES))
-        .weaponMetrics().weapons[0]!;
+    const projectile = BuildMetrics.of(
+        ShipLoadout.empty('Anaconda').setModule(
+            'MediumHardpoint1',
+            mod('Hpt_ATDumbfireMissile_Fixed_Medium', HARDPOINT_MODULES),
+        ),
+    ).weaponMetrics().weapons[0]!;
     assert.deepEqual(projectile.projectileRange, {
         maximumBoundary: 0,
         falloffBoundary: 100000,
     });
 
-    const laser = ShipLoadout.empty('SideWinder')
-        .setModule('SmallHardpoint1', mod('Hpt_BeamLaser_Fixed_Small', HARDPOINT_MODULES))
-        .weaponMetrics().weapons[0]!;
+    const laser = BuildMetrics.of(
+        ShipLoadout.empty('SideWinder').setModule(
+            'SmallHardpoint1',
+            mod('Hpt_BeamLaser_Fixed_Small', HARDPOINT_MODULES),
+        ),
+    ).weaponMetrics().weapons[0]!;
     assert.equal('projectileRange' in laser, false);
 });
 
@@ -4754,7 +4918,9 @@ test('weapon metrics use hull slot order and append unmapped slots in source ord
     });
 
     assert.deepEqual(
-        build.weaponMetrics().weapons.map(({ slot }) => slot),
+        BuildMetrics.of(build)
+            .weaponMetrics()
+            .weapons.map(({ slot }) => slot),
         ['SmallHardpoint1', 'SmallHardpoint2', 'FutureHardpointB', 'FutureHardpointA'],
     );
 });
@@ -4778,7 +4944,7 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
     assert.ok(
         near(engineered.rateOfFire!, modFor(fitted.engineering!.Modifiers!, 'RateOfFire')!, 1e-6),
     );
-    assert.ok(build.weaponMetrics().total.damagePerSecond > 0);
+    assert.ok(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond > 0);
 });
 
 test('a festive pre-engineered variant changes only its slot and round-trips', () => {
@@ -5602,7 +5768,9 @@ test('journal DPS uses an engineered rounds-per-shot value', () => {
     assert.equal(rounds, 3);
     assert.ok(near(fitted.effectiveStats!.damage!, damage, 1e-6));
     assert.equal(fitted.effectiveStats!.roundsPerShot, rounds);
-    assert.ok(near(build.weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-6));
+    assert.ok(
+        near(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-6),
+    );
     assert.ok(damagePerSecond > damage * rate);
 });
 
@@ -5672,7 +5840,7 @@ test("a journal's own rate of fire wins over anything derived from the cycle", (
     });
     // The game's own figure is authoritative, even though the cycle implies 12.755.
     assert.equal(build.fittedModuleAt('LargeHardpoint1')!.effectiveStats!.rateOfFire, 12.9);
-    assert.equal(build.weaponMetrics().weapons[0]!.metrics.rateOfFire, 12.9);
+    assert.equal(BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics.rateOfFire, 12.9);
 });
 
 test('a fitted module answers to the same word a catalogue record does', () => {
@@ -5690,6 +5858,55 @@ test('a fitted module answers to the same word a catalogue record does', () => {
 });
 
 // ── Slot keys are matched case-insensitively ────────────────────────────────
+
+test('a slot key is matched with surrounding whitespace ignored, everywhere', () => {
+    // The documented rule is "matched case-insensitively, with surrounding whitespace
+    // ignored", and only the case half held: a padded key missed the mount silently, so
+    // `removeModule` reported success having emptied nothing.
+    const build = ShipLoadout.default('Anaconda');
+
+    assert.equal(
+        build.fittedModuleAt('  FrameShiftDrive  ')?.symbol,
+        build.fittedModuleAt('FrameShiftDrive')?.symbol,
+    );
+    assert.equal(build.fittedModuleAt('\tframeshiftdrive\n')?.slot, 'FrameShiftDrive');
+    assert.deepEqual(
+        build.availableBlueprints(' FrameShiftDrive '),
+        build.availableBlueprints('FrameShiftDrive'),
+    );
+    assert.deepEqual(
+        build.availableExperimentalEffects(' FrameShiftDrive '),
+        build.availableExperimentalEffects('FrameShiftDrive'),
+    );
+    assert.equal(
+        build.modulesForSlot(' Slot04_Size6 ').length,
+        build.modulesForSlot('Slot04_Size6').length,
+    );
+    assert.equal(build.repairFixedMount(' CargoHatch ').status, 'unchanged');
+
+    build.setModuleEnabled(' FrameShiftDrive ', false);
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.on, false);
+    build.setModulePriority(' FrameShiftDrive ', 3);
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.priority, 3);
+
+    build.setModule(' Slot04_Size6 ', mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES));
+    assert.equal(build.fittedModuleAt('Slot04_Size6')?.symbol, 'Int_CargoRack_Size6_Class1');
+    // A fresh fit still takes the layout's canonical spelling, not the padded request.
+    assert.equal(build.fittedModuleAt('Slot04_Size6')?.slot, 'Slot04_Size6');
+
+    build.removeModule(' Slot04_Size6 ');
+    assert.equal(build.fittedModuleAt('Slot04_Size6'), null);
+
+    // Padding is still not a wildcard: an unknown mount stays unknown.
+    assert.throws(
+        () =>
+            build.setModule('  NoSuchMount  ', mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES)),
+        {
+            name: 'RangeError',
+        },
+    );
+    assert.equal(build.fittedModuleAt('  NoSuchMount  '), null);
+});
 
 test('a build imported from Inara binds every one of its lower-cased slots', () => {
     // Inara lower-cases every slot key, as the SLEF specification's own example does.
@@ -5731,7 +5948,7 @@ test('editing a lower-cased slot replaces its module rather than adding one', ()
         build.fittedModuleAt('largemininghardpoint1')?.symbol,
         'Hpt_MiningLaser_Fixed_Medium',
     );
-    assert.equal(build.weaponMetrics().weapons.length, 5);
+    assert.equal(BuildMetrics.of(build).weaponMetrics().weapons.length, 5);
     // Replacing a 4 t mining tool with a 2 t laser takes 2 t off, rather than adding 2 t.
     assert.ok(build.unladenMass! < before.mass, `${build.unladenMass} !< ${before.mass}`);
 
@@ -5779,13 +5996,16 @@ test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', ()
         const modules = data.Modules.map((m) =>
             m.Slot === 'armour' ? { ...m, Slot: slot, Item: 'lakonminer_armour_grade3' } : m,
         );
-        return ShipLoadout.fromLoadout({ ...data, Modules: modules }).armourMetrics()!.hitPoints;
+        return BuildMetrics.of(
+            ShipLoadout.fromLoadout({ ...data, Modules: modules }),
+        ).armourMetrics()!.hitPoints;
     };
     assert.equal(upgrade('Armour'), 1225);
     assert.equal(upgrade('armour'), upgrade('Armour'));
     // ...and the untouched fixture's stock-grade bulkhead is the 630 it should be.
     assert.equal(
-        ShipLoadout.fromSlef(JSON.stringify(inaraFixture)).armourMetrics()!.hitPoints,
+        BuildMetrics.of(ShipLoadout.fromSlef(JSON.stringify(inaraFixture))).armourMetrics()!
+            .hitPoints,
         630,
     );
 });
@@ -5856,7 +6076,7 @@ test('slot snapshots are cached until an edit and fitted-module snapshots are de
 
 test('validation issues are frozen', () => {
     const build = ShipLoadout.empty('Anaconda');
-    const issue = build.validation.issues[0]!;
+    const issue = build.validation().issues[0]!;
     assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
 });
 
@@ -6115,7 +6335,7 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
         // reading's `42` would surface as an internal message from whichever reader
         // reached it, a step away from the call that accepted it.
         assert.ok(swappedBuild.fittedModuleAt('FrameShiftDrive'), field);
-        assert.ok(swappedBuild.validation, field);
+        assert.ok(swappedBuild.validation(), field);
         assert.ok(swappedBuild.toLoadoutEvent(), field);
     }
 
@@ -6273,13 +6493,13 @@ test('heatMetrics reproduces the pinned heat profile of each captured build', ()
         assert.ok(event, `no journal for ${expected.fixture}`);
         const build = ShipLoadout.fromLoadout(event);
         assert.equal(build.shipSymbol.toLowerCase(), expected.ship);
-        const heat = build.heatMetrics();
+        const heat = BuildMetrics.of(build).heatMetrics();
         assert.ok(heat, expected.fixture);
         assert.equal(heat.heatEfficiency, expected.heatEfficiency);
         assert.equal(heat.hullHeatCapacity, expected.hullHeatCapacity);
         assert.equal(heat.hullHeatDissipation, expected.hullHeatDissipation);
 
-        const power = build.powerBudget();
+        const power = BuildMetrics.of(build).powerBudget();
         assert.equal(displayed(power.retracted, 4), expected.retractedPowerDraw);
         assert.equal(displayed(power.deployed, 4), expected.deployedPowerDraw);
 
@@ -6349,7 +6569,7 @@ test('heat classifies caller-supplied core records from their fitted slots', () 
     ]);
     const ship = getShipBySymbol('SideWinder');
     assert.ok(ship);
-    const input = heatInputFor(
+    const input = heatInputResultFor(
         ship,
         modules,
         calculatePowerBudget(10, [
@@ -6359,9 +6579,9 @@ test('heat classifies caller-supplied core records from their fitted slots', () 
         (module) => stats.get(module.Item) ?? null,
     );
 
-    assert.equal(input?.thrusterHeatRate, 2);
-    assert.equal(input?.deployedThrusterHeatRate, 2);
-    assert.equal(input?.fsdHeatRate, 3);
+    assert.equal(input.value?.thrusterHeatRate, 2);
+    assert.equal(input.value?.deployedThrusterHeatRate, 2);
+    assert.equal(input.value?.fsdHeatRate, 3);
 });
 
 test('the Lynx uses its pinned maximum dissipation in build heat metrics', () => {
@@ -6369,7 +6589,10 @@ test('the Lynx uses its pinned maximum dissipation in build heat metrics', () =>
     const expected = heatFixture.hulls.lynx;
     assert.equal(build.shipSymbol.toLowerCase(), expected.symbol.toLowerCase());
     assert.equal(getShipBySymbol(build.shipSymbol)?.heatDissipation, expected.heatDissipation);
-    assert.equal(build.heatMetrics()?.hullHeatDissipation, expected.heatDissipation);
+    assert.equal(
+        BuildMetrics.of(build).heatMetrics()?.hullHeatDissipation,
+        expected.heatDissipation,
+    );
 });
 
 test('a build with no powered power plant has no heat profile', () => {
@@ -6381,13 +6604,13 @@ test('a build with no powered power plant has no heat profile', () => {
             module.Slot === 'PowerPlant' ? { ...module, On: false } : module,
         ),
     });
-    assert.equal(plantOff.heatMetrics(), null, 'plant switched off');
+    assert.equal(BuildMetrics.of(plantOff).heatMetrics(), null, 'plant switched off');
 });
 
 test('heat follows what the plant actually feeds, not what is fitted', () => {
     const event = corvetteBeamsJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
-    const idle = build.heatMetrics()!.idle.thermalLoad;
+    const idle = BuildMetrics.of(build).heatMetrics()!.idle.thermalLoad;
 
     // Switching a drawing module off takes its heat with it.
     const boosterOff = ShipLoadout.fromLoadout({
@@ -6396,7 +6619,7 @@ test('heat follows what the plant actually feeds, not what is fitted', () => {
             module.Slot === 'Slot01_Size7' ? { ...module, On: false } : module,
         ),
     });
-    assert.ok(boosterOff.heatMetrics()!.idle.thermalLoad < idle);
+    assert.ok(BuildMetrics.of(boosterOff).heatMetrics()!.idle.thermalLoad < idle);
 
     // And a group the plant cannot keep lit makes no heat either: dropping the plant to
     // its smallest rating unpowers the lower priorities rather than heating the hull.
@@ -6404,7 +6627,7 @@ test('heat follows what the plant actually feeds, not what is fitted', () => {
         'PowerPlant',
         getModuleBySymbol('Int_PowerPlant_Size2_Class1', CORE_MODULES)!,
     );
-    const budget = weakPlant.powerBudget();
+    const budget = BuildMetrics.of(weakPlant).powerBudget();
     assert.ok(!budget.withinBudget, 'the small plant must leave a group unpowered');
     const powered = budget.bands.reduce(
         (total, band) => (band.poweredRetracted ? total + band.retracted : total),
@@ -6412,8 +6635,8 @@ test('heat follows what the plant actually feeds, not what is fitted', () => {
     );
     assert.ok(powered < budget.retracted, 'and some retracted draw must go unfed');
     assert.equal(
-        weakPlant.heatMetrics()!.idle.thermalLoad,
-        powered * weakPlant.heatMetrics()!.heatEfficiency,
+        BuildMetrics.of(weakPlant).heatMetrics()!.idle.thermalLoad,
+        powered * BuildMetrics.of(weakPlant).heatMetrics()!.heatEfficiency,
     );
 });
 
@@ -6426,12 +6649,12 @@ test('a build the plant cannot feed at all generates no heat anywhere', () => {
         'PowerPlant',
         getModuleBySymbol(expected.powerPlant, CORE_MODULES)!,
     );
-    const bands = starved.powerBudget().bands;
+    const bands = BuildMetrics.of(starved).powerBudget().bands;
     assert.ok(
         bands.every((band) => !band.poweredRetracted && !band.poweredDeployed),
         'the reproduction needs every band unpowered',
     );
-    const heat = starved.heatMetrics();
+    const heat = BuildMetrics.of(starved).heatMetrics();
     assert.ok(heat);
     for (const scenario of HEAT_SCENARIOS) {
         assert.equal(heat[scenario].thermalLoad, expected.thermalLoad, scenario);
