@@ -5,9 +5,15 @@ import { BLUEPRINTS, getBlueprint, getBlueprintGrade } from './blueprints.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 
 test('every blueprint carries a display name and grades', () => {
-    for (const [fdname, bp] of Object.entries(BLUEPRINTS)) {
-        assert.ok(typeof bp.name === 'string' && bp.name.length > 0, `${fdname} has no name`);
-        assert.ok(bp.grades && Object.keys(bp.grades).length > 0, `${fdname} has no grades`);
+    for (const [blueprintSymbol, bp] of Object.entries(BLUEPRINTS)) {
+        assert.ok(
+            typeof bp.name === 'string' && bp.name.length > 0,
+            `${blueprintSymbol} has no name`,
+        );
+        assert.ok(
+            bp.grades && Object.keys(bp.grades).length > 0,
+            `${blueprintSymbol} has no grades`,
+        );
     }
 });
 
@@ -37,10 +43,10 @@ test('Anti-Guardian Zone Resistance is keyed once, under the id the game writes'
 });
 
 test('every grade carries its modifier features', () => {
-    for (const [fdname, bp] of Object.entries(BLUEPRINTS)) {
+    for (const [blueprintSymbol, bp] of Object.entries(BLUEPRINTS)) {
         for (const [grade, entry] of Object.entries(bp.grades)) {
-            assert.ok(Array.isArray(entry.features), `${fdname} ${grade} features`);
-            assert.ok(entry.features.length > 0, `${fdname} ${grade} has no features`);
+            assert.ok(Array.isArray(entry.features), `${blueprintSymbol} ${grade} features`);
+            assert.ok(entry.features.length > 0, `${blueprintSymbol} ${grade} has no features`);
         }
     }
 });
@@ -77,8 +83,8 @@ test('getBlueprint returns the name and complete per-grade mechanics', () => {
 
 test('a blueprint lookup names itself, and its grade facade names itself too', () => {
     for (const [call, label] of [
-        [() => getBlueprint(42 as unknown as string), 'getBlueprint: fdname'],
-        [() => getBlueprintGrade(42 as unknown as string, 5), 'getBlueprintGrade: fdname'],
+        [() => getBlueprint(42 as unknown as string), 'getBlueprint: blueprintSymbol'],
+        [() => getBlueprintGrade(42 as unknown as string, 5), 'getBlueprintGrade: blueprintSymbol'],
     ] as const) {
         assert.throws(call, {
             name: 'TypeError',
@@ -86,7 +92,10 @@ test('a blueprint lookup names itself, and its grade facade names itself too', (
         });
     }
     // The id is checked before the grade range, so a bad id is not reported as a bad grade.
-    assert.throws(() => getBlueprintGrade(42 as unknown as string, 9), /fdname must be a string/);
+    assert.throws(
+        () => getBlueprintGrade(42 as unknown as string, 9),
+        /blueprintSymbol must be a string/,
+    );
     assert.equal(getBlueprintGrade(null as unknown as string, 5), null);
 });
 
@@ -99,13 +108,13 @@ test('resolving a recipe id is strict about the id, and a miss about the module'
                 resolveBlueprintForModule('Int_Hyperdrive_Size6_Class5', bad as unknown as string),
             {
                 name: 'TypeError',
-                message: /^resolveBlueprintForModule: fdname must be a string, received /,
+                message: /^resolveBlueprintForModule: blueprintSymbol must be a string, received /,
             },
         );
     }
     assert.throws(() => resolveBlueprintForModule(42 as unknown as string, 'FSD_LongRange'), {
         name: 'TypeError',
-        message: 'resolveBlueprintForModule: symbol must be a string, received number 42',
+        message: 'resolveBlueprintForModule: moduleSymbol must be a string, received number 42',
     });
     // An unknown module offers no menu, so the id comes back unchanged.
     assert.equal(

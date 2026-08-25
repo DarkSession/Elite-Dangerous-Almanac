@@ -124,7 +124,7 @@ test('shared catalogue-backed operation cases reproduce', () => {
     const mercCoinBuild = ShipLoadout.default(mercenary.ship);
     for (const module of mercenary.modules) {
         const variant = getPreEngineeredVariants(module.symbol).find(
-            (candidate) => candidate.blueprint === module.blueprint,
+            (candidate) => candidate.blueprintSymbol === module.blueprint,
         );
         assert.ok(variant);
         assert.equal(variant.mercCoinCost, module.cost);

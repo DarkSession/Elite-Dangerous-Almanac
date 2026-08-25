@@ -53,7 +53,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Derivation:** each of the 107 current keys and its English name comes from
   `data/ships/blueprints.jsonc`. Names remain keyed per blueprint because a single
   English phrase can have different grammatical translations for different module
-  families. The Frontier `fdname` joins case-insensitively to the in-game modification
+  families. The Frontier symbol joins case-insensitively to the in-game modification
   name table, which supplies every locale for the 90 recipes it names. The remaining 17
   are ids this repository keys separately because their numbers differ, where the game
   offers only the generic recipe's menu entry and so publishes only its name: each takes
@@ -82,7 +82,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
   database version `424009901`, last-modified marker `20260810`.
 - **Derivation:** each of the 86 current keys and its English name comes from
-  `data/ships/experimental-effects.jsonc`. The Frontier `fdname` joins directly to
+  `data/ships/experimental-effects.jsonc`. The Frontier symbol joins directly to
   EDSY's `expeffect.fdname`; that record's id selects an explicit `expeffect-<id>` entry
   from each language file.
 - **Coverage:** English covers all 86 effects; EDSY covers 84 in German and 85 each in

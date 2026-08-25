@@ -51,10 +51,10 @@ test('the gate accepts every recipe the menu offers, for every module', () => {
     // The contract: "what can this module take?" and "may I put this on it?" read the
     // same catalogue, so no module can be offered a recipe that `applyBlueprint` refuses.
     for (const module of ALL_MODULES) {
-        for (const fdname of getBlueprintsForModule(module.symbol)) {
+        for (const blueprintSymbol of getBlueprintsForModule(module.symbol)) {
             assert.ok(
-                blueprintAvailableFor(module.symbol, fdname),
-                `${module.symbol} is offered ${fdname} but the gate refuses it`,
+                blueprintAvailableFor(module.symbol, blueprintSymbol),
+                `${module.symbol} is offered ${blueprintSymbol} but the gate refuses it`,
             );
         }
         for (const effect of getExperimentalsForModule(module.symbol)) {
@@ -142,8 +142,8 @@ test('the gate accepts what the menu omits only by a pinned alias or a Mercenary
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
         ),
     );
-    for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
-        pinned.add(`${journalName.toLowerCase()}|${fdname.toLowerCase()}`);
+    for (const [blueprintSymbol, journalName] of Object.entries(fixture.journalNames.map)) {
+        pinned.add(`${journalName.toLowerCase()}|${blueprintSymbol.toLowerCase()}`);
     }
     const seen = new Set<string>();
     for (const module of ALL_MODULES) {
@@ -151,21 +151,21 @@ test('the gate accepts what the menu omits only by a pinned alias or a Mercenary
         const sold = new Set(
             getPreEngineeredVariants(module.symbol)
                 .filter((variant) => variant.acquisition === 'mercenary')
-                .map((variant) => variant.blueprint.toLowerCase()),
+                .map((variant) => variant.blueprintSymbol.toLowerCase()),
         );
-        for (const fdname of Object.keys(BLUEPRINTS)) {
-            if (offered.includes(fdname)) continue;
-            if (!blueprintAvailableFor(module.symbol, fdname)) continue;
-            if (sold.has(fdname.toLowerCase())) continue;
+        for (const blueprintSymbol of Object.keys(BLUEPRINTS)) {
+            if (offered.includes(blueprintSymbol)) continue;
+            if (!blueprintAvailableFor(module.symbol, blueprintSymbol)) continue;
+            if (sold.has(blueprintSymbol.toLowerCase())) continue;
             const matched = offered.filter((id) =>
-                pinned.has(`${fdname.toLowerCase()}|${id.toLowerCase()}`),
+                pinned.has(`${blueprintSymbol.toLowerCase()}|${id.toLowerCase()}`),
             );
             assert.equal(
                 matched.length,
                 1,
-                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a Mercenary upgrade explains`,
+                `${module.symbol} accepts "${blueprintSymbol}", which neither a pinned alias nor a Mercenary upgrade explains`,
             );
-            seen.add(`${fdname.toLowerCase()}|${matched[0]!.toLowerCase()}`);
+            seen.add(`${blueprintSymbol.toLowerCase()}|${matched[0]!.toLowerCase()}`);
         }
     }
     // ...and every alias the fixture pins is one the gate actually honours.
@@ -294,7 +294,7 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
         const final = getPreEngineeredVariants(row.symbol).some(
             (variant) =>
                 variant.engineeringLocked &&
-                variant.blueprint.toLowerCase() === row.blueprint.toLowerCase(),
+                variant.blueprintSymbol.toLowerCase() === row.blueprint.toLowerCase(),
         );
         assert.equal(
             blueprintAvailableFor(row.symbol, row.blueprint),
@@ -339,7 +339,7 @@ test('no key carries the registry prefix no game data uses', () => {
         assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
         assert.ok(
             getPreEngineeredVariants(row.symbol).some(
-                (v) => v.blueprint.toLowerCase() === row.blueprint.toLowerCase(),
+                (v) => v.blueprintSymbol.toLowerCase() === row.blueprint.toLowerCase(),
             ),
             `${row.symbol} is not sold carrying ${row.blueprint}`,
         );
@@ -352,16 +352,20 @@ test('a shared journal id costs the same whichever of its two recipes is priced'
     // `getBlueprintCost` needs no module because both recipes under a shared journal id
     // define the same grades and costs. Check the complete collision map so every stored
     // pair enforces that invariant.
-    for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
+    for (const [blueprintSymbol, journalName] of Object.entries(fixture.journalNames.map)) {
         const shared = BLUEPRINTS[journalName];
-        assert.ok(shared, `${fdname}: ${journalName} is not a blueprint`);
-        const grades = Object.keys(BLUEPRINTS[fdname]!.grades);
-        assert.deepEqual(grades, Object.keys(shared.grades), `${fdname} vs ${journalName}`);
+        assert.ok(shared, `${blueprintSymbol}: ${journalName} is not a blueprint`);
+        const grades = Object.keys(BLUEPRINTS[blueprintSymbol]!.grades);
+        assert.deepEqual(
+            grades,
+            Object.keys(shared.grades),
+            `${blueprintSymbol} vs ${journalName}`,
+        );
         for (const grade of grades) {
             assert.deepEqual(
-                getBlueprintCost(fdname, Number(grade)),
+                getBlueprintCost(blueprintSymbol, Number(grade)),
                 getBlueprintCost(journalName, Number(grade)),
-                `${fdname} vs ${journalName} G${grade}`,
+                `${blueprintSymbol} vs ${journalName} G${grade}`,
             );
         }
     }
@@ -396,7 +400,8 @@ test('a final Guardian sale does not widen the stock module menu', () => {
     assert.deepEqual(getBlueprintsForModule(guardian), ['GuardianModule_Sturdy']);
     assert.ok(
         getPreEngineeredVariants(guardian).some(
-            (variant) => variant.blueprint === 'Weapon_LongRange' && variant.engineeringLocked,
+            (variant) =>
+                variant.blueprintSymbol === 'Weapon_LongRange' && variant.engineeringLocked,
         ),
     );
     assert.ok(!blueprintAvailableFor(guardian, 'Weapon_LongRange'));

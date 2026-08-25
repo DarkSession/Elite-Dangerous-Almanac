@@ -21,10 +21,10 @@ const NAMES = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
 export interface PreEngineeredVariantIdentity {
     /** Base outfitting-module symbol. */
     readonly symbol: string;
-    /** Frontier blueprint or fixed-reward id. */
-    readonly blueprint: string;
-    /** Frontier experimental-effect id, or `null`/omitted when none is fitted. */
-    readonly experimental?: string | null;
+    /** Frontier blueprint or fixed-reward symbol. */
+    readonly blueprintSymbol: string;
+    /** Frontier experimental-effect symbol, or `null`/omitted when none is fitted. */
+    readonly experimentalEffectSymbol?: string | null;
     /** Route through which the variant is obtained. */
     readonly acquisition: PreEngineeredAcquisition;
 }
@@ -33,9 +33,9 @@ function identityKey(identity: PreEngineeredVariantIdentity): string {
     const prefix = 'getPreEngineeredVariantName: variant';
     requireObject(identity, prefix);
     const symbol = requireString(identity.symbol, `${prefix}.symbol`).trim();
-    const blueprint = requireString(identity.blueprint, `${prefix}.blueprint`).trim();
-    requireStringIfPresent(identity.experimental, `${prefix}.experimental`);
-    const experimental = identity.experimental?.trim() ?? '';
+    const blueprint = requireString(identity.blueprintSymbol, `${prefix}.blueprintSymbol`).trim();
+    requireStringIfPresent(identity.experimentalEffectSymbol, `${prefix}.experimentalEffectSymbol`);
+    const experimental = identity.experimentalEffectSymbol?.trim() ?? '';
     const acquisition = requireString(identity.acquisition, `${prefix}.acquisition`).trim();
     return `${symbol}|${blueprint}|${experimental}|${acquisition}`;
 }
@@ -49,14 +49,15 @@ function identityKey(identity: PreEngineeredVariantIdentity): string {
  * @returns The explicit localized name, or `null` for an unknown variant or unavailable
  * translation. Decorative reward names currently have English values only.
  * @throws {TypeError} If `variant` is not an object, a required identity field or a
- * non-null `experimental` value is not a string, or `locale` is not a string.
+ * non-null `experimentalEffectSymbol` value is not a string, or `locale` is not a
+ * string.
  * @example
  * ```ts
  * import { getPreEngineeredVariantName } from '@elite-dangerous-almanac/core/i18n/pre-engineered';
  *
  * getPreEngineeredVariantName({
  *   symbol: 'Hpt_FlakMortar_Turret_Medium',
- *   blueprint: 'Decorative_Red',
+ *   blueprintSymbol: 'Decorative_Red',
  *   acquisition: 'eventReward',
  * }, 'en'); // -> 'Festive Red Remote Release Flak Launcher'
  * ```

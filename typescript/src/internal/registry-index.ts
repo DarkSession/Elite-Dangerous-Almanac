@@ -87,7 +87,7 @@ export function findInKeyIndex<T>(index: KeyIndex<T>, wanted: string, label: str
  *
  * @remarks
  * This is the counterpart to {@link findInKeyIndex} for a `Record` that keeps its
- * source's own casing — a Frontier `fdname` catalogue, say — rather than one built by
+ * source's own casing — a Frontier symbol catalogue, say — rather than one built by
  * {@link createKeyIndex}. The own-property hit is both the fast path and the tie-break:
  * a catalogue holding two keys differing only in case answers the exact spelling first,
  * and only a miss pays for the scan. Inherited keys never match, so `'toString'` is a

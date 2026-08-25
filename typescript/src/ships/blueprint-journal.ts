@@ -45,17 +45,18 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * unaffected — both spellings of a pair bill the same at every grade, so
  * `getBlueprintCost` needs no module.
  *
- * @param symbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
- * @param fdname - A blueprint catalogue or journal id, matched case-insensitively and
- * trimmed. Colliding journal spellings are resolved against `symbol`.
+ * @param moduleSymbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
+ * @param blueprintSymbol - A blueprint catalogue or journal id, matched case-insensitively and
+ * trimmed. Colliding journal spellings are resolved against `moduleSymbol`.
  * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when a journal
- * name resolved, and otherwise `fdname` exactly as it was passed — byte for byte, so a
+ * name resolved, and otherwise `blueprintSymbol` exactly as it was passed — byte for byte, so a
  * caller who never meets the collision never sees their own spelling rewritten.
  *
- * @throws {TypeError} If `fdname` is not a string, including when it is missing — this
+ * @throws {TypeError} If `blueprintSymbol` is not a string, including when it is missing — this
  * returns an id rather than reporting whether one is known, so there is no miss for a
- * nullish one to be. A nullish `symbol` *is* a miss: an unknown module offers no menu,
- * and `fdname` comes back unchanged.
+ * nullish one to be. A nullish `moduleSymbol` *is* a miss: an unknown module offers no
+ * menu,
+ * and `blueprintSymbol` comes back unchanged.
  * @example
  * ```ts
  * import { resolveBlueprintForModule } from '@elite-dangerous-almanac/core/ships/blueprint-journal';
@@ -75,22 +76,22 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * // -> 'Weapon_Overcharged'
  * ```
  */
-export function resolveBlueprintForModule(symbol: string, fdname: string): string {
-    requireStringIfPresent(symbol, 'resolveBlueprintForModule: symbol');
+export function resolveBlueprintForModule(moduleSymbol: string, blueprintSymbol: string): string {
+    requireStringIfPresent(moduleSymbol, 'resolveBlueprintForModule: moduleSymbol');
     // Strict, unlike the catalogue lookups: this hands an id back rather than answering
-    // whether one is known, so a nullish `fdname` would be a `string` return that is not
+    // whether one is known, so a nullish `blueprintSymbol` would be a `string` return that is not
     // one. `massCodeToSizeClass` is the same shape for the same reason.
     const wanted = normalizeKey(
-        requireString(fdname, 'resolveBlueprintForModule: fdname'),
-        'resolveBlueprintForModule: fdname',
+        requireString(blueprintSymbol, 'resolveBlueprintForModule: blueprintSymbol'),
+        'resolveBlueprintForModule: blueprintSymbol',
     );
-    const offered = getBlueprintsForModule(symbol);
+    const offered = getBlueprintsForModule(moduleSymbol);
     // An id the menu already lists is the recipe it names; hand back what the caller wrote,
     // so a caller who never meets the collision never sees their own spelling rewritten.
-    if (offered.some((id) => id.toLowerCase() === wanted)) return fdname;
+    if (offered.some((id) => id.toLowerCase() === wanted)) return blueprintSymbol;
     for (const id of offered) {
         const journalName = BLUEPRINT_JOURNAL_NAMES[id];
         if (journalName !== undefined && journalName.toLowerCase() === wanted) return id;
     }
-    return fdname;
+    return blueprintSymbol;
 }

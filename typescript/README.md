@@ -202,24 +202,26 @@ consumer could not narrow themselves. Nebula queries require an explicit catalog
 the large combined dataset is never an implicit dependency.
 
 `symbol` is Frontier's item id for a hull, module, suit, handheld weapon, material,
-micro-resource or commodity. Ship engineering uses a separate identity space: `fdname` identifies a
-blueprint recipe, experimental effect or fixed variant identity. The journal
-normally writes that id in its `Engineering` block, but a few blueprint aliases
-collide across module families; `resolveBlueprintForModule` resolves those journal
-spellings. Recipe and effect lookups take that `fdname`. Pre-engineered variants instead
-form a relation from the base module: after resolving a module by type or name,
-`getPreEngineeredVariants` lists the fixed articles associated with its `symbol`, and the
-caller can inspect each variant's `blueprint` identity. Those include the grade-5
-`Decorative_*` launchers whose −99% damage modifier is part of the awarded article rather
-than a generally applicable recipe. `ShipLoadout.setPreEngineeredVariant` fits the fixed
-article and writes its corresponding journal block.
+micro-resource or commodity. Ship engineering ids live in a space of their own: a
+`blueprintSymbol` names a blueprint recipe, a fixed variant's identity included, and an
+`experimentalEffectSymbol` names an experimental effect. The journal normally writes
+both in its `Engineering` block, but a few blueprint aliases collide across module
+families; `resolveBlueprintForModule` resolves those journal spellings. Pre-engineered
+variants instead form a relation from the base module: after resolving a module by type
+or name, `getPreEngineeredVariants` lists the fixed articles associated with its
+`symbol`, and the caller can inspect each variant's `blueprintSymbol` identity. Those
+include the grade-5 `Decorative_*` launchers whose −99% damage modifier is part of the
+awarded article rather than a generally applicable recipe.
+`ShipLoadout.setPreEngineeredVariant` fits the fixed article and writes its corresponding
+journal block.
 
-Personal-equipment modifications are keyed by their recipe symbol, just as ship
-blueprints and experimental effects are keyed by `fdname`; there is no second synthetic
-id. The journal omits the technology suffix from three weapon modification families, so
-`resolvePersonalModificationForWeapon` resolves those spellings against the weapon before
-joining to `PERSONAL_MODIFICATIONS` or `PERSONAL_MODIFICATION_COSTS`. Material shopping
-lists live on the separate `equipment/modification-costs` subpath and consume the
+Personal-equipment modifications are keyed by their own recipe symbol, the way ship
+blueprints and experimental effects are keyed by theirs; neither place invents a second
+synthetic id. The journal omits the technology suffix from three weapon modification
+families, so `resolvePersonalModificationForWeapon` resolves those spellings against the
+weapon before joining to `PERSONAL_MODIFICATIONS` or `PERSONAL_MODIFICATION_COSTS`.
+Material shopping lists live on the separate `equipment/modification-costs` subpath and
+consume the
 micro-resource symbols from the `materials` feature area.
 
 ## Important behavior

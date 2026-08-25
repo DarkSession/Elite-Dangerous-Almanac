@@ -102,9 +102,9 @@ for a nullish name.
 that hands you back a value has no "no such thing" answer to give, so there is nothing for
 a missing argument to mean — `ProceduralSystem.fromName(undefined)` and
 `ShipLoadout.empty(undefined)` throw rather than answering `null`, and so do
-`toSystemAddress`, `massCodeToSizeClass` and `resolveBlueprintForModule`'s `fdname`,
-which convert or resolve what you pass rather than looking it up. The rule is what the
-function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
+`toSystemAddress`, `massCodeToSizeClass` and `resolveBlueprintForModule`'s
+`blueprintSymbol`, which convert or resolve what you pass rather than looking it up. The
+rule is what the function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
 number and is still strict.
 
 **A build's slot key is loud too**, across every method that takes one, and it is the

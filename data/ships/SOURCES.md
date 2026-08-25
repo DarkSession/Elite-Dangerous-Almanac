@@ -568,7 +568,7 @@ Thirteen stored fields supply the base values referenced by engineering recipes:
   7, identical between the plain and SCO lines at every size — and the size-8 SCO drives
   are 50, so the size-8 plain drives take 50. Stated as derivation, not as a reading.
   The Mk II supercharge-optimised size-8 SCO drive is **not** among them: EDSY publishes
-  its `fsdheat: 50` outright, spelling the fdname
+  its `fsdheat: 50` outright, spelling the symbol
   `Int_Hyperdrive_Overcharge_Size8_Class5_Overchargebooster_MkII` where the outfitting
   registry this catalogue is keyed on capitalises the `B`. The case-insensitive source
   join makes it a reading.
@@ -1193,7 +1193,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   general alias mechanism: it says "the game writes this recipe as X", nothing about
   equivalence, and contains exactly these three records. EDSY publishes the sensor-suite
   and utility-scanner recipes as separate rows with different modifiers but the same
-  journal fdnames; its journal importer resolves them by module type. Coriolis supplies the
+  journal symbols; its journal importer resolves them by module type. Coriolis supplies the
   distinct stored recipe keys. The multi-cannon split is detailed under Engineering
   options.
 - **Blueprint source:** EDCD/coriolis-data,
@@ -1300,7 +1300,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     is absent for the same reason. That index is the whole evidence for the negative half
     of the claim: it is a completeness reading of one listing, not 197 pages checked one
     by one. Acquired 2026-08-22 UTC; the pages are live and expose no immutable revision.
-  - **Every row is joined to its `fdname` by its own material recipe, not by name.** Inara
+  - **Every row is joined to its blueprint symbol by its own material recipe, not by name.** Inara
     publishes one page per recipe, keyed by its display name; each of the 18 pages' per-grade
     material lists was compared against `blueprint-costs.jsonc` before its Merc-Coin figures
     were taken, and all 25 rows agree on every grade, every material and every count. That is what
@@ -1517,12 +1517,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the journal `BlueprintName` this catalogue joins on, so life support lists
     `LifeSupport_LightWeight`, an AFMU `AFM_Shielded`, a fuel scoop `FuelScoop_Shielded`,
     a refinery `Refineries_Shielded` and each limpet controller its own. **This is not
-    cosmetic for the scanners:** EDSY's `scan_lr` and `cs_lr` share the fdname
+    cosmetic for the scanners:** EDSY's `scan_lr` and `cs_lr` share the symbol
     `Sensor_LongRange`, but `Scanner_LongRange` is a different recipe (power draw, not
     mass; a larger range roll), so the utility scanners take the `Scanner_*` ids for Long
     Range and Wide Angle where the sensor suites take the `Sensor_*` ones. (Their other
     four ids are unaffected: `Sensor_FastScan` and the generic `Misc_*` trio, exactly as
-    coriolis has them.) The shared fdname is not a defect in EDSY's table, and §Scanner
+    coriolis has them.) The shared symbol is not a defect in EDSY's table, and §Scanner
     Long Range and Wide Angle below is what follows from that. Eleven groups carry a
     substitution; the substituted lists are then checked against coriolis's own, as are
     the nine further groups it carries a list for —
@@ -1646,7 +1646,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `MC_Overcharged`; other weapon menus list
   `Weapon_Overcharged`. Coriolis `modifications/modules.json` assigns the first key to
   multi-cannons and the second to six other weapon groups, while
-  `modifications/blueprints.json` gives both the journal fdname
+  `modifications/blueprints.json` gives both the journal symbol
   `Weapon_Overcharged`. The recipes differ only in the `AmmoClipSize` reduction carried
   by `MC_Overcharged` (−3% at grade 1 through −15% at grade 5).
   `modifications/blueprints.json` was acquired 2026-08-07 UTC and has SHA-256
@@ -1736,7 +1736,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   distributor, hull-reinforcement, module-reinforcement, shield-reinforcement or
   FSD-booster reward variants, so the absence of an `Int_Guardian*` row is deliberate. The
   catalogue's seven Guardian rows are all weapons (Gauss, Plasma and Shard), each with a
-  `blueprint` and no `experimental`. Source: maintainer confirmation recorded 2026-08-12
+  `blueprintSymbol` and no `experimentalEffectSymbol`. Source: maintainer confirmation
+  recorded 2026-08-12
   UTC; there is no immutable upstream revision.
 - **Records:** pair a base module `symbol` with its published pre-engineered identity:
   `{ symbol, name, blueprint, grade, acquisition }`, plus any sourced stat block and
@@ -1796,8 +1797,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   under Engineering options.
 - **A reward variant is not reproducible by engineering the same blueprint.** Alongside
   its blueprint and effect, each reward carries hand-set modifier overrides no blueprint
-  grants — that is what makes it a reward rather than a shortcut. The `blueprint` /
-  `grade` / `experimental` recorded here **identify** the variant; they are not a recipe
+  grants — that is what makes it a reward rather than a shortcut. The `blueprintSymbol` /
+  `grade` / `experimentalEffectSymbol` recorded here **identify** the variant; they are not
+  a recipe
   that recreates it. The ordinary blueprint material recipe does not price the reward.
 - **Two community-goal rewards are not stored:** the size-5 and size-6 Corrosion
   Resistant Cargo Racks carry no engineering at all. They already exist as ordinary

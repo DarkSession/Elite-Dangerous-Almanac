@@ -6,7 +6,7 @@
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * known gaps: data/i18n/SOURCES.md.
  *
- * Each Frontier fdname maps directly to the canonical English display name and only the
+ * Each Frontier symbol maps directly to the canonical English display name and only the
  * translations the pinned source explicitly carries; a missing locale makes the public
  * lookup return null.
  */

@@ -132,7 +132,7 @@ const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
 
 build.setModule('FrameShiftDrive', fsd).applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
     grade: 5,
-    experimental: 'special_fsd_heavy',
+    experimentalEffectSymbol: 'special_fsd_heavy',
 });
 
 build.removeModule('Slot01_Size7');

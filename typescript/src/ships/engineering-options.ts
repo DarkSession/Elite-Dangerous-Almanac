@@ -323,13 +323,13 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * that is the exact answer rather
  * than a miss: it has no experimental slot, on any of the nine groups that offer it.
  *
- * @param fdname - A blueprint recipe `fdname`, e.g. `"Weapon_Efficient"`.
+ * @param blueprintSymbol - A blueprint recipe's Frontier symbol, e.g. `"Weapon_Efficient"`.
  * Leading/trailing whitespace and case are ignored.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names
  * the blueprint, or when its groups take no experimental.
  *
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `blueprintSymbol` is present and not a string. A nullish
+ * `blueprintSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalsForBlueprint } from '@elite-dangerous-almanac/core/ships/engineering-options';
@@ -338,8 +338,11 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * // -> ['special_fsd_cooled', 'special_fsd_fuelcapacity', 'special_fsd_heavy', ...]
  * ```
  */
-export function getExperimentalsForBlueprint(fdname: string): readonly string[] {
-    const normalized = normalizeKey(fdname, 'getExperimentalsForBlueprint: fdname');
+export function getExperimentalsForBlueprint(blueprintSymbol: string): readonly string[] {
+    const normalized = normalizeKey(
+        blueprintSymbol,
+        'getExperimentalsForBlueprint: blueprintSymbol',
+    );
     const out = new Set<string>();
     for (const group of Object.values(ENGINEERING_OPTION_GROUPS)) {
         if (!group.blueprints.some((b) => b.toLowerCase() === normalized)) continue;

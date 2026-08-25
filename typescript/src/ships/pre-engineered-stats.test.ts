@@ -56,11 +56,11 @@ test('captured stat signatures identify fixed variants, including an added exper
         const actual = identifyPreEngineeredVariant(capturedModule(expected.source, expected.slot));
         assert.ok(actual, `${expected.source}: ${expected.slot} was not identified`);
         assert.equal(actual.symbol, expected.symbol);
-        assert.equal(actual.blueprint, expected.blueprint);
+        assert.equal(actual.blueprintSymbol, expected.blueprintSymbol);
         assert.equal(actual.grade, expected.grade);
         assert.equal(
-            actual.experimental,
-            'experimental' in expected ? expected.experimental : undefined,
+            actual.experimentalEffectSymbol,
+            'experimentalEffectSymbol' in expected ? expected.experimentalEffectSymbol : undefined,
         );
         assert.equal(actual.acquisition, expected.acquisition);
     }
@@ -139,7 +139,7 @@ test('a Mercenary-only blueprint identifies the bought article at every reachabl
     const expected = fixture.identification.mercenary;
     const variant = only({
         symbol: expected.symbol,
-        blueprint: expected.blueprint,
+        blueprintSymbol: expected.blueprintSymbol,
         acquisition: 'mercenary',
     });
     assert.equal(variant.grade, expected.purchaseGrade);
@@ -151,7 +151,7 @@ test('a Mercenary-only blueprint identifies the bought article at every reachabl
                 Slot: 'MediumHardpoint1',
                 Item: expected.symbol,
                 Engineering: {
-                    BlueprintName: expected.blueprint,
+                    BlueprintName: expected.blueprintSymbol,
                     Level: grade,
                     Quality: 1,
                 },
@@ -171,13 +171,13 @@ test('every Mercenary catalogue row identifies without a published modifier bloc
                 Slot: 'Slot',
                 Item: variant.symbol,
                 Engineering: {
-                    BlueprintName: variant.blueprint,
+                    BlueprintName: variant.blueprintSymbol,
                     Level: variant.grade,
                     Quality: 1,
                 },
             }),
             variant,
-            `${variant.symbol}: ${variant.blueprint}`,
+            `${variant.symbol}: ${variant.blueprintSymbol}`,
         );
     }
 });
@@ -186,9 +186,9 @@ test('Mercenary identification still requires a valid exclusive blueprint and gr
     const expected = fixture.identification.mercenary;
     for (const Engineering of [
         { BlueprintName: 'Weapon_HighCapacity', Level: expected.purchaseGrade, Quality: 1 },
-        { BlueprintName: expected.blueprint, Level: 0, Quality: 1 },
-        { BlueprintName: expected.blueprint, Level: 6, Quality: 1 },
-        { BlueprintName: expected.blueprint, Level: 1.5, Quality: 1 },
+        { BlueprintName: expected.blueprintSymbol, Level: 0, Quality: 1 },
+        { BlueprintName: expected.blueprintSymbol, Level: 6, Quality: 1 },
+        { BlueprintName: expected.blueprintSymbol, Level: 1.5, Quality: 1 },
     ]) {
         assert.equal(
             identifyPreEngineeredVariant({
@@ -218,13 +218,13 @@ test('resolved fallback stats include a baked experimental effect omitted by the
     };
     const variant = identifyPreEngineeredVariant(module);
     assert.ok(variant);
-    assert.equal(variant.experimental, 'special_feedback_cascade_cooled');
+    assert.equal(variant.experimentalEffectSymbol, 'special_feedback_cascade_cooled');
     assert.equal(getPreEngineeredStats(variant)?.thermalLoad, expected.expectedThermalLoad);
 });
 
 test('a pre-engineered drive resolves to its known in-game stats', () => {
-    const { symbol, blueprint, base, engineered, unresolved } = fixture.resolved.fsdV1Size5;
-    const variant = only({ symbol, blueprint });
+    const { symbol, blueprintSymbol, base, engineered, unresolved } = fixture.resolved.fsdV1Size5;
+    const variant = only({ symbol, blueprintSymbol });
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
     assert.equal(stock.optMass, base.optMass);
     assert.equal(stock.mass, base.mass);
@@ -241,8 +241,8 @@ test('a pre-engineered drive resolves to its known in-game stats', () => {
 
 test('grade-5 festive variants resolve and identify through the fixed-article path', () => {
     const expected = fixture.festive;
-    for (const blueprint of expected.blueprints) {
-        const variant = only({ symbol: expected.symbol, blueprint });
+    for (const blueprintSymbol of expected.blueprints) {
+        const variant = only({ symbol: expected.symbol, blueprintSymbol });
         const fitted = getPreEngineeredStats(variant)!;
         assert.equal(variant.grade, expected.grade);
         assert.equal(fitted.damage, expected.resolved.damage);
@@ -264,7 +264,7 @@ test('grade-5 festive variants resolve and identify through the fixed-article pa
                 Slot: 'MediumHardpoint1',
                 Item: variant.symbol,
                 Engineering: {
-                    BlueprintName: variant.blueprint,
+                    BlueprintName: variant.blueprintSymbol,
                     Level: expected.grade,
                     Quality: 1,
                     Modifiers: modifiers,
@@ -277,24 +277,24 @@ test('grade-5 festive variants resolve and identify through the fixed-article pa
 
 test('festive identification rejects a mismatched grade or experimental effect', () => {
     const expected = fixture.festive;
-    const variant = only({ symbol: expected.symbol, blueprint: expected.blueprints[1]! });
+    const variant = only({ symbol: expected.symbol, blueprintSymbol: expected.blueprints[1]! });
     const modifiers = getPreEngineeredJournalModifiers(variant);
     for (const Engineering of [
         {
-            BlueprintName: variant.blueprint,
+            BlueprintName: variant.blueprintSymbol,
             Level: 4,
             Quality: 1,
             Modifiers: modifiers,
         },
         {
-            BlueprintName: variant.blueprint,
+            BlueprintName: variant.blueprintSymbol,
             Level: expected.grade,
             Quality: 1,
             ExperimentalEffect: 'special_auto_loader',
             Modifiers: modifiers,
         },
         {
-            BlueprintName: variant.blueprint,
+            BlueprintName: variant.blueprintSymbol,
             Level: expected.grade,
             Quality: 1,
             ExperimentalEffect_Localised: 'Auto Loader',
@@ -316,7 +316,7 @@ test('setter-shaped fragment-cannon modifiers identify their fixed variants', ()
     for (const symbol of ['Hpt_Slugshot_Gimbal_Small', 'Hpt_Slugshot_Gimbal_Large']) {
         const variant = only({
             symbol,
-            blueprint: 'Weapon_DoubleShot',
+            blueprintSymbol: 'Weapon_DoubleShot',
             acquisition: 'communityGoal',
         });
         const grade = variant.grade;
@@ -325,12 +325,12 @@ test('setter-shaped fragment-cannon modifiers identify their fixed variants', ()
                 Slot: 'Hardpoint',
                 Item: symbol,
                 Engineering: {
-                    BlueprintName: variant.blueprint,
+                    BlueprintName: variant.blueprintSymbol,
                     Level: grade,
                     Quality: 1,
-                    ...(variant.experimental === undefined
+                    ...(variant.experimentalEffectSymbol === undefined
                         ? {}
-                        : { ExperimentalEffect: variant.experimental }),
+                        : { ExperimentalEffect: variant.experimentalEffectSymbol }),
                     Modifiers: getPreEngineeredJournalModifiers(variant),
                 },
             }),
@@ -347,7 +347,7 @@ test('a string-valued capability resolves to the boolean module field', () => {
     const variant: PreEngineeredVariant = {
         symbol: 'Int_GuardianPowerplant_Size7',
         name: 'Guardian Hybrid Power Plant',
-        blueprint: 'GuardianModule_Sturdy',
+        blueprintSymbol: 'GuardianModule_Sturdy',
         grade: 1,
         acquisition: 'communityGoal',
         modifiers: [{ label: 'GuardianModuleResistance', method: 'additive', value: 1 }],
@@ -360,9 +360,17 @@ test('a string-valued capability resolves to the boolean module field', () => {
 });
 
 test('a pre-engineered weapon resolves its damage-side stats too', () => {
-    const { symbol, blueprint, grade, base, engineered, displayed, displayedChanges, unresolved } =
-        fixture.resolved.guardianShardMediumG1;
-    const variant = only({ symbol, blueprint, grade });
+    const {
+        symbol,
+        blueprintSymbol,
+        grade,
+        base,
+        engineered,
+        displayed,
+        displayedChanges,
+        unresolved,
+    } = fixture.resolved.guardianShardMediumG1;
+    const variant = only({ symbol, blueprintSymbol, grade });
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
     assert.equal(stock.mass, base.mass);
     assert.equal(stock.powerDraw, base.powerDraw);
@@ -452,7 +460,7 @@ test('a pre-engineered damage modifier scales every exact damage component', () 
     const symbol = 'Hpt_ATMultiCannon_Gimbal_Medium';
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
     const fitted = getPreEngineeredStats(
-        only({ symbol, blueprint: 'Weapon_Overcharged', grade: 5 }),
+        only({ symbol, blueprintSymbol: 'Weapon_Overcharged', grade: 5 }),
     )!;
     assert.ok(Math.abs(fitted.damage! - stock.damage! * 1.1) < 1e-9);
     assert.ok(
@@ -467,14 +475,14 @@ test('a pre-engineered damage modifier scales every exact damage component', () 
 });
 
 test('pre-engineered ammunition is rounded to whole rounds', () => {
-    const { symbol, blueprint, grade, base, engineered } =
+    const { symbol, blueprintSymbol, grade, base, engineered } =
         fixture.resolved.fragmentCannonDoubleShot;
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
     assert.equal(stock.clipSize, base.clipSize);
     assert.equal(stock.ammoMaximum, base.ammoMaximum);
     assert.equal(stock.burstRounds, undefined);
 
-    const fitted = getPreEngineeredStats(only({ symbol, blueprint, grade }))!;
+    const fitted = getPreEngineeredStats(only({ symbol, blueprintSymbol, grade }))!;
     // 3 × 2.6667 is 8.0001, and the article holds 8 — the stated multiplier's precision is
     // snapped before the round-up, or the noise would buy a whole extra two-round burst.
     assert.equal(fitted.clipSize, engineered.clipSize);
@@ -596,15 +604,21 @@ test('variants that change a burst pattern move the interval their rate comes fr
     assert.equal(pinned.variants.length, pinned.count);
 
     for (const expected of pinned.variants) {
-        const { symbol, blueprint, grade, experimental } = expected;
+        const { symbol, blueprintSymbol, grade, experimentalEffectSymbol } = expected;
         const variant = only(
-            experimental === null
-                ? { symbol, blueprint, grade }
-                : { symbol, blueprint, grade, experimental },
+            experimentalEffectSymbol === null
+                ? { symbol, blueprintSymbol, grade }
+                : {
+                      symbol,
+                      blueprintSymbol,
+                      grade,
+                      experimentalEffectSymbol,
+                  },
         );
         // `only` cannot match on an absent field, so assert the absence separately —
         // otherwise a null pin would silently mean "any experimental".
-        if (experimental === null) assert.equal(variant.experimental, undefined, symbol);
+        if (experimentalEffectSymbol === null)
+            assert.equal(variant.experimentalEffectSymbol, undefined, symbol);
         const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
         assert.equal(stock.burstInterval, expected.stockBurstInterval, symbol);
 
@@ -633,8 +647,8 @@ test('resolved stats stay finite and non-negative', () => {
 });
 
 test('getPreEngineeredModifiers reports journal shape with the original value', () => {
-    const { symbol, blueprint } = fixture.resolved.fsdV1Size5;
-    const variant = only({ symbol, blueprint });
+    const { symbol, blueprintSymbol } = fixture.resolved.fsdV1Size5;
+    const variant = only({ symbol, blueprintSymbol });
     const modifiers = getPreEngineeredModifiers(variant);
     assert.ok(modifiers.length > 0);
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
@@ -655,7 +669,7 @@ test('every authored modifier is either computed or reported unresolved', () => 
         assert.deepEqual(
             [...computed, ...unresolved].sort(),
             (variant.modifiers ?? []).map((modifier) => modifier.label).sort(),
-            `${variant.symbol} / ${variant.blueprint}`,
+            `${variant.symbol} / ${variant.blueprintSymbol}`,
         );
     }
 });

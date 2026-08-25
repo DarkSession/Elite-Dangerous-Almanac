@@ -8,8 +8,8 @@
  * arrives, not as the stock module leaves the shipyard. That is what
  * {@link getPreEngineeredStats} returns.
  *
- * This module imports every module record to resolve stats. Its resolver is 362.4 KiB
- * minified in a consumer bundle; the complete runtime API is 395.6 KiB (43.1 KiB
+ * This module imports every module record to resolve stats. Its resolver is 362.5 KiB
+ * minified in a consumer bundle; the complete runtime API is 396.3 KiB (43.1 KiB
  * gzipped). Consumers that only list variants can import `./pre-engineered.js` without
  * these module catalogues.
  * A journal or SLEF module can instead be classified with
@@ -54,7 +54,7 @@ function modifiersWithExperimental(
     experimental?: string | null,
 ): EngineeringModifier[] | null {
     const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
-    const effectName = experimental === undefined ? variant.experimental : experimental;
+    const effectName = experimental === undefined ? variant.experimentalEffectSymbol : experimental;
     if (!module || (!variant.modifiers?.length && effectName == null)) return null;
     const effect = effectName == null ? undefined : getExperimentalEffect(effectName);
     if (effectName !== null && effectName !== undefined && !effect) return null;
@@ -86,7 +86,7 @@ function modifiersWithExperimental(
  * import { getPreEngineeredModifiers } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
  *
  * const railgun = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium')
- *     .find((variant) => variant.blueprint === 'Weapon_HighCapacity');
+ *     .find((variant) => variant.blueprintSymbol === 'Weapon_HighCapacity');
  * if (railgun) getPreEngineeredModifiers(railgun);
  * // -> [{ Label: 'Mass', Value: 2.85, OriginalValue: 1.5 }, ...]
  * ```
@@ -106,7 +106,7 @@ function journalModifiersWithExperimental(
         module,
         modifiersWithExperimental(variant, experimental) ?? [],
     );
-    const effectName = experimental === undefined ? variant.experimental : experimental;
+    const effectName = experimental === undefined ? variant.experimentalEffectSymbol : experimental;
     const damageDistribution = effectName
         ? getExperimentalEffect(effectName)?.damageDistribution
         : undefined;
@@ -142,7 +142,7 @@ function journalModifiersWithExperimental(
  * import { getPreEngineeredJournalModifiers } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
  *
  * const red = getPreEngineeredVariants('Hpt_FlakMortar_Turret_Medium')
- *     .find((variant) => variant.blueprint === 'Decorative_Red')!;
+ *     .find((variant) => variant.blueprintSymbol === 'Decorative_Red')!;
  * getPreEngineeredJournalModifiers(red);
  * // -> [{ Label: 'DamagePerSecond', Value: 0.17, OriginalValue: 17 }, { Label: 'Damage', Value: 0.34, OriginalValue: 34 }]
  * ```
@@ -255,7 +255,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     );
     const variants = getPreEngineeredVariants(module.Item);
     const blueprintMatches = variants.filter(
-        (candidate) => candidate.blueprint.toLowerCase() === capturedBlueprint,
+        (candidate) => candidate.blueprintSymbol.toLowerCase() === capturedBlueprint,
     );
     const blueprintMatch = blueprintMatches.length === 1 ? blueprintMatches[0]! : null;
     const capturedGrade = engineering.Level;
@@ -276,10 +276,10 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
             (candidate) =>
                 candidate.engineeringLocked === true &&
                 candidate.grade === capturedGrade &&
-                (candidate.experimental === undefined
+                (candidate.experimentalEffectSymbol === undefined
                     ? capturedExperimental === undefined &&
                       engineering.ExperimentalEffect_Localised === undefined
-                    : candidate.experimental.toLowerCase() === capturedExperimental),
+                    : candidate.experimentalEffectSymbol.toLowerCase() === capturedExperimental),
         );
         return identityMatches.length === 1 ? identityMatches[0]! : null;
     }
@@ -305,7 +305,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
             candidate.acquisition === 'eventReward' &&
             (engineering.ExperimentalEffect !== undefined ||
                 engineering.ExperimentalEffect_Localised !== undefined ||
-                capturedBlueprint !== candidate.blueprint.toLowerCase())
+                capturedBlueprint !== candidate.blueprintSymbol.toLowerCase())
         ) {
             continue;
         }
@@ -398,7 +398,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
     if (
         !variant.modifiers?.length &&
         !variant.engineeringLocked &&
-        variant.experimental === undefined
+        variant.experimentalEffectSymbol === undefined
     )
         // A copy, not `module` itself. Both return paths hand back a record the caller
         // owns, so whether a write to the result succeeds never depends on which of them
@@ -420,8 +420,8 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
             Object.assign(resolved, { [field]: true });
         }
     }
-    const experimentalDamageDistribution = variant.experimental
-        ? getExperimentalEffect(variant.experimental)?.damageDistribution
+    const experimentalDamageDistribution = variant.experimentalEffectSymbol
+        ? getExperimentalEffect(variant.experimentalEffectSymbol)?.damageDistribution
         : undefined;
     if (experimentalDamageDistribution) {
         resolved.damageDistribution = { ...experimentalDamageDistribution };

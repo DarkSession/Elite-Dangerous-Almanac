@@ -793,13 +793,13 @@
     "preEngineeredVariant": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["symbol", "name", "blueprint", "grade", "acquisition"],
+      "required": ["symbol", "name", "blueprintSymbol", "grade", "acquisition"],
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "name": { "$ref": "#/definitions/nonEmptyString" },
-        "blueprint": { "$ref": "#/definitions/nonEmptyString" },
+        "blueprintSymbol": { "$ref": "#/definitions/nonEmptyString" },
         "grade": { "type": "integer", "minimum": 1, "maximum": 5 },
-        "experimental": { "$ref": "#/definitions/nonEmptyString" },
+        "experimentalEffectSymbol": { "$ref": "#/definitions/nonEmptyString" },
         "acquisition": {
           "enum": ["mercenary", "communityGoal", "techBroker", "eventReward"]
         },
@@ -827,7 +827,7 @@
           "properties": { "acquisition": { "const": "eventReward" } },
           "not": {
             "anyOf": [
-              { "required": ["experimental"] },
+              { "required": ["experimentalEffectSymbol"] },
               { "required": ["engineeringLocked"] },
               { "required": ["mercCoinCost"] }
             ]

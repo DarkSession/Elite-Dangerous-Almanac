@@ -843,7 +843,7 @@ export class BuildMetrics {
             const experimental = engineering.ExperimentalEffect;
             if (
                 experimental !== undefined &&
-                experimental.toLowerCase() !== variant?.experimental?.toLowerCase()
+                experimental.toLowerCase() !== variant?.experimentalEffectSymbol?.toLowerCase()
             ) {
                 const cost = getExperimentalEffectCost(experimental);
                 if (cost) materials.push(cost);

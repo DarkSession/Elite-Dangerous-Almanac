@@ -20,7 +20,7 @@ import {
 import { getLoadoutSlotName, getSlotRestrictionLabel } from './slots.js';
 
 for (const row of fixture.preEngineered) {
-    test(`pre-engineered ${row.variant.blueprint} in ${row.locale}`, () => {
+    test(`pre-engineered ${row.variant.blueprintSymbol} in ${row.locale}`, () => {
         assert.equal(
             getPreEngineeredVariantName(row.variant as PreEngineeredVariantIdentity, row.locale),
             row.expected,
@@ -128,7 +128,7 @@ test('malformed pre-engineered identities fail at the public boundary', () => {
     assert.throws(
         () =>
             getPreEngineeredVariantName(
-                { symbol: 1 as never, blueprint: 'x', acquisition: 'mercenary' },
+                { symbol: 1 as never, blueprintSymbol: 'x', acquisition: 'mercenary' },
                 'en',
             ),
         /variant\.symbol must be a string/,

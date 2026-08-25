@@ -16,9 +16,9 @@
  * A pre-engineered module has **no symbol of its own**: the game sells or awards an
  * ordinary module with engineering already applied, and a journal `Loadout` reports it
  * as the base `symbol` plus an `Engineering` block. So each record here is a *pairing*,
- * not a new module — `symbol` joins to the module catalogues and `blueprint` is the
- * Frontier id written in `Engineering.BlueprintName`. Craftable blueprint identities join
- * to `blueprints.jsonc`, the optional `experimental` joins to
+ * not a new module — `symbol` joins to the module catalogues and `blueprintSymbol` is the
+ * Frontier symbol written in `Engineering.BlueprintName`. Craftable blueprint identities
+ * join to `blueprints.jsonc`, the optional `experimentalEffectSymbol` joins to
  * `experimental-effects.jsonc`, and `grade` is the grade already applied. The festive
  * variants carry a grade-5 `Decorative_*` identity that is not an engineer recipe;
  * `modifiers` carries the complete fixed transformation awarded with the module.
@@ -84,7 +84,7 @@
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
     "name": "Far-Reaching Abrasion Blaster",
-    "blueprint": "AbrasionBlaster_FarReaching",
+    "blueprintSymbol": "AbrasionBlaster_FarReaching",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 400
@@ -92,7 +92,7 @@
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
     "name": "High-Yield Enzyme Missile Rack",
-    "blueprint": "EnzymeMissileRack_HighYield",
+    "blueprintSymbol": "EnzymeMissileRack_HighYield",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 850
@@ -100,7 +100,7 @@
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
     "name": "Double Screaming Fragment Cannon",
-    "blueprint": "FragmentCannonSmall_DoubleScreaming",
+    "blueprintSymbol": "FragmentCannonSmall_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -108,7 +108,7 @@
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
     "name": "Double Screaming Fragment Cannon",
-    "blueprint": "FragmentCannonLarge_DoubleScreaming",
+    "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 950
@@ -116,7 +116,7 @@
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
     "name": "Long Range Mining Laser",
-    "blueprint": "MiningLaser_LongRange",
+    "blueprintSymbol": "MiningLaser_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 450
@@ -124,7 +124,7 @@
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
     "name": "Rapid Phase Multi-Cannon",
-    "blueprint": "MultiCannon_Rapid",
+    "blueprintSymbol": "MultiCannon_Rapid",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 850
@@ -132,7 +132,7 @@
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
     "name": "Enduring Feedback Rail Gun",
-    "blueprint": "RailGun_LongShot",
+    "blueprintSymbol": "RailGun_LongShot",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 950
@@ -140,7 +140,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Drag Seeker Missile Rack",
-    "blueprint": "SeekerMissileRack_Drag",
+    "blueprintSymbol": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -148,7 +148,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "name": "Drag Seeker Missile Rack",
-    "blueprint": "SeekerMissileRack_Drag",
+    "blueprintSymbol": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 900
@@ -156,7 +156,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Lightweight Thermal Seeker Missile Rack",
-    "blueprint": "SeekerMissileRack_LightWeightThermal",
+    "blueprintSymbol": "SeekerMissileRack_LightWeightThermal",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -164,7 +164,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Lockdown Seeker Missile Rack",
-    "blueprint": "SeekerMissileRackMedium_Lockdown",
+    "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -172,7 +172,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "name": "Lockdown Seeker Missile Rack",
-    "blueprint": "SeekerMissileRackLarge_Lockdown",
+    "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 900
@@ -180,7 +180,7 @@
   {
     "symbol": "Int_CargoRack_Size5_Class1",
     "name": "Extended Cargo Rack",
-    "blueprint": "CargoRackS5C1_Extended",
+    "blueprintSymbol": "CargoRackS5C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 550
@@ -188,7 +188,7 @@
   {
     "symbol": "Int_CargoRack_Size6_Class1",
     "name": "Extended Cargo Rack",
-    "blueprint": "CargoRackS6C1_Extended",
+    "blueprintSymbol": "CargoRackS6C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 550
@@ -196,7 +196,7 @@
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
     "name": "Long Range Detailed Surface Scanner",
-    "blueprint": "DetailedSurfaceScanner_LongRange",
+    "blueprintSymbol": "DetailedSurfaceScanner_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 350
@@ -204,7 +204,7 @@
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
     "name": "Heavy Duty Module Reinforcement Package",
-    "blueprint": "ModuleReinforcement_HeavyDuty",
+    "blueprintSymbol": "ModuleReinforcement_HeavyDuty",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 450
@@ -212,7 +212,7 @@
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
     "name": "Support Focused Power Distributor",
-    "blueprint": "PowerDistributorS3C2_SupportFocused",
+    "blueprintSymbol": "PowerDistributorS3C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 300
@@ -220,7 +220,7 @@
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
     "name": "Support Focused Power Distributor",
-    "blueprint": "PowerDistributorS3C5_SupportFocused",
+    "blueprintSymbol": "PowerDistributorS3C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 350
@@ -228,7 +228,7 @@
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
     "name": "Support Focused Power Distributor",
-    "blueprint": "PowerDistributorS4C2_SupportFocused",
+    "blueprintSymbol": "PowerDistributorS4C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 400
@@ -236,7 +236,7 @@
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
     "name": "Support Focused Power Distributor",
-    "blueprint": "PowerDistributorS4C5_SupportFocused",
+    "blueprintSymbol": "PowerDistributorS4C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 450
@@ -244,7 +244,7 @@
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
     "name": "Balanced Power Distributor",
-    "blueprint": "PowerDistributor_Balanced",
+    "blueprintSymbol": "PowerDistributor_Balanced",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 500
@@ -252,7 +252,7 @@
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
     "name": "Support Focused Power Distributor",
-    "blueprint": "PowerDistributorS6C5_SupportFocused",
+    "blueprintSymbol": "PowerDistributorS6C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 550
@@ -260,7 +260,7 @@
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
     "name": "Abrasion Blaster",
-    "blueprint": "Weapon_LongRange",
+    "blueprintSymbol": "Weapon_LongRange",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -299,7 +299,7 @@
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
     "name": "Enzyme Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
     "engineeringLocked": true,
@@ -334,10 +334,10 @@
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
     "name": "Fragment Cannon",
-    "blueprint": "Weapon_DoubleShot",
+    "blueprintSymbol": "Weapon_DoubleShot",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_screening_shell",
+    "experimentalEffectSymbol": "special_screening_shell",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -379,10 +379,10 @@
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
     "name": "Fragment Cannon",
-    "blueprint": "Weapon_DoubleShot",
+    "blueprintSymbol": "Weapon_DoubleShot",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_screening_shell",
+    "experimentalEffectSymbol": "special_screening_shell",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -424,7 +424,7 @@
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
     "name": "Guardian Shard Cannon",
-    "blueprint": "Weapon_LongRange",
+    "blueprintSymbol": "Weapon_LongRange",
     "grade": 5,
     "acquisition": "communityGoal",
     "engineeringLocked": true,
@@ -474,10 +474,10 @@
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
     "name": "Multi-Cannon",
-    "blueprint": "Weapon_RapidFire",
+    "blueprintSymbol": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "communityGoal",
-    "experimental": "special_phasing_sequence",
+    "experimentalEffectSymbol": "special_phasing_sequence",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -519,10 +519,10 @@
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
     "name": "Rail Gun",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_feedback_cascade_cooled",
+    "experimentalEffectSymbol": "special_feedback_cascade_cooled",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -569,10 +569,10 @@
   {
     "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
     "name": "Imperial Hammer Rail Gun",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_super_penetrator",
+    "experimentalEffectSymbol": "special_super_penetrator",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -609,10 +609,10 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 1,
     "acquisition": "communityGoal",
-    "experimental": "special_drag_munitions",
+    "experimentalEffectSymbol": "special_drag_munitions",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -649,10 +649,10 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_fsd_interrupt",
+    "experimentalEffectSymbol": "special_fsd_interrupt",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -704,10 +704,10 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "name": "Seeker Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_fsd_interrupt",
+    "experimentalEffectSymbol": "special_fsd_interrupt",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -759,7 +759,7 @@
   {
     "symbol": "Hpt_ElectronicCountermeasure_Tiny",
     "name": "Electronic Countermeasure",
-    "blueprint": "Misc_LightWeight",
+    "blueprintSymbol": "Misc_LightWeight",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -783,7 +783,7 @@
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class5",
     "name": "Kill Warrant Scanner",
-    "blueprint": "Sensor_FastScan",
+    "blueprintSymbol": "Sensor_FastScan",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -817,7 +817,7 @@
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class3",
     "name": "Kill Warrant Scanner",
-    "blueprint": "Sensor_FastScan",
+    "blueprintSymbol": "Sensor_FastScan",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -851,7 +851,7 @@
   {
     "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
     "name": "Point Defence",
-    "blueprint": "Misc_LightWeight",
+    "blueprintSymbol": "Misc_LightWeight",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -880,7 +880,7 @@
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
     "name": "Power Distributor",
-    "blueprint": "PowerDistributor_PrioritySystems",
+    "blueprintSymbol": "PowerDistributor_PrioritySystems",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -919,7 +919,7 @@
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
     "name": "Power Distributor",
-    "blueprint": "PowerDistributor_PrioritySystems",
+    "blueprintSymbol": "PowerDistributor_PrioritySystems",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -958,7 +958,7 @@
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
     "name": "Power Distributor",
-    "blueprint": "PowerDistributor_PrioritySystems",
+    "blueprintSymbol": "PowerDistributor_PrioritySystems",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -997,7 +997,7 @@
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
     "name": "Power Distributor",
-    "blueprint": "PowerDistributor_PrioritySystems",
+    "blueprintSymbol": "PowerDistributor_PrioritySystems",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1036,7 +1036,7 @@
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
     "name": "Power Distributor",
-    "blueprint": "PowerDistributor_PrioritySystems",
+    "blueprintSymbol": "PowerDistributor_PrioritySystems",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1075,7 +1075,7 @@
   {
     "symbol": "Int_Powerplant_Size3_Class5",
     "name": "Power Plant",
-    "blueprint": "PowerPlant_Armoured",
+    "blueprintSymbol": "PowerPlant_Armoured",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1104,7 +1104,7 @@
   {
     "symbol": "Int_Powerplant_Size3_Class5",
     "name": "Power Plant",
-    "blueprint": "PowerPlant_Boosted",
+    "blueprintSymbol": "PowerPlant_Boosted",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1128,7 +1128,7 @@
   {
     "symbol": "Int_Powerplant_Size4_Class5",
     "name": "Power Plant",
-    "blueprint": "PowerPlant_Boosted",
+    "blueprintSymbol": "PowerPlant_Boosted",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1152,7 +1152,7 @@
   {
     "symbol": "Int_Powerplant_Size5_Class5",
     "name": "Power Plant",
-    "blueprint": "PowerPlant_Boosted",
+    "blueprintSymbol": "PowerPlant_Boosted",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1176,7 +1176,7 @@
   {
     "symbol": "Int_Hyperdrive_Size3_Class5",
     "name": "Frame Shift Drive",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1215,7 +1215,7 @@
   {
     "symbol": "Int_Hyperdrive_Size4_Class5",
     "name": "Frame Shift Drive",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1254,7 +1254,7 @@
   {
     "symbol": "Int_Hyperdrive_Size6_Class5",
     "name": "Frame Shift Drive",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1293,7 +1293,7 @@
   {
     "symbol": "Int_CargoRack_Size5_Class1",
     "name": "Cargo Rack",
-    "blueprint": "CargoRack_IncreasedCapacity",
+    "blueprintSymbol": "CargoRack_IncreasedCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1307,7 +1307,7 @@
   {
     "symbol": "Int_CargoRack_Size6_Class1",
     "name": "Cargo Rack",
-    "blueprint": "CargoRack_IncreasedCapacity",
+    "blueprintSymbol": "CargoRack_IncreasedCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1321,7 +1321,7 @@
   {
     "symbol": "Int_ShieldGenerator_Size3_Class5",
     "name": "Shield Generator",
-    "blueprint": "ShieldGenerator_Kinetic",
+    "blueprintSymbol": "ShieldGenerator_Kinetic",
     "grade": 5,
     "acquisition": "communityGoal",
     "modifiers": [
@@ -1350,7 +1350,7 @@
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
     "name": "AX Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1405,7 +1405,7 @@
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
     "name": "AX Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1460,10 +1460,10 @@
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
     "name": "Enhanced AX Multi-Cannon",
-    "blueprint": "Weapon_Overcharged",
+    "blueprintSymbol": "Weapon_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
-    "experimental": "special_auto_loader",
+    "experimentalEffectSymbol": "special_auto_loader",
     "engineeringLocked": true,
     "modifiers": [
       {
@@ -1486,10 +1486,10 @@
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
     "name": "Enhanced AX Multi-Cannon",
-    "blueprint": "Weapon_Overcharged",
+    "blueprintSymbol": "Weapon_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
-    "experimental": "special_auto_loader",
+    "experimentalEffectSymbol": "special_auto_loader",
     "engineeringLocked": true,
     "modifiers": [
       {
@@ -1512,7 +1512,7 @@
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
     "name": "Guardian Gauss Cannon",
-    "blueprint": "Weapon_RapidFire",
+    "blueprintSymbol": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1567,7 +1567,7 @@
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
     "name": "Guardian Gauss Cannon",
-    "blueprint": "Weapon_RapidFire",
+    "blueprintSymbol": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1622,7 +1622,7 @@
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
     "name": "Guardian Plasma Charger",
-    "blueprint": "Weapon_Overcharged",
+    "blueprintSymbol": "Weapon_Overcharged",
     "grade": 1,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1662,7 +1662,7 @@
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
     "name": "Guardian Plasma Charger",
-    "blueprint": "Weapon_Overcharged",
+    "blueprintSymbol": "Weapon_Overcharged",
     "grade": 1,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1702,7 +1702,7 @@
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Small",
     "name": "Guardian Shard Cannon",
-    "blueprint": "Weapon_LongRange",
+    "blueprintSymbol": "Weapon_LongRange",
     "grade": 1,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1757,7 +1757,7 @@
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
     "name": "Guardian Shard Cannon",
-    "blueprint": "Weapon_LongRange",
+    "blueprintSymbol": "Weapon_LongRange",
     "grade": 1,
     "acquisition": "techBroker",
     "engineeringLocked": true,
@@ -1812,10 +1812,10 @@
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
     "name": "Mining Laser",
-    "blueprint": "Weapon_LongRange",
+    "blueprintSymbol": "Weapon_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
-    "experimental": "special_incendiary_rounds",
+    "experimentalEffectSymbol": "special_incendiary_rounds",
     "modifiers": [
       {
         "label": "Damage",
@@ -1857,10 +1857,10 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
-    "experimental": "special_thermal_cascade",
+    "experimentalEffectSymbol": "special_thermal_cascade",
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1902,7 +1902,7 @@
   {
     "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
     "name": "Heat Sink Launcher",
-    "blueprint": "Misc_HeatSinkCapacity",
+    "blueprintSymbol": "Misc_HeatSinkCapacity",
     "grade": 1,
     "acquisition": "techBroker",
     "modifiers": [
@@ -1921,7 +1921,7 @@
   {
     "symbol": "Int_Hyperdrive_Size5_Class5",
     "name": "Frame Shift Drive",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -1960,7 +1960,7 @@
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class5",
     "name": "Frame Shift Drive (SCO)",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -1999,7 +1999,7 @@
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class5",
     "name": "Frame Shift Drive (SCO)",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -2038,7 +2038,7 @@
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class5",
     "name": "Frame Shift Drive (SCO)",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -2077,7 +2077,7 @@
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
     "name": "Frame Shift Drive (SCO)",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -2116,7 +2116,7 @@
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
     "name": "Frame Shift Drive (SCO)",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -2155,7 +2155,7 @@
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
     "name": "Frame Shift Drive (SCO)",
-    "blueprint": "FSD_LongRange",
+    "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -2194,7 +2194,7 @@
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
     "name": "Detailed Surface Scanner",
-    "blueprint": "Sensor_Expanded",
+    "blueprintSymbol": "Sensor_Expanded",
     "grade": 5,
     "acquisition": "techBroker",
     "modifiers": [
@@ -2208,7 +2208,7 @@
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "name": "Festive Green Remote Release Flak Launcher",
-    "blueprint": "Decorative_Green",
+    "blueprintSymbol": "Decorative_Green",
     "grade": 5,
     "acquisition": "eventReward",
     "modifiers": [
@@ -2218,7 +2218,7 @@
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "name": "Festive Red Remote Release Flak Launcher",
-    "blueprint": "Decorative_Red",
+    "blueprintSymbol": "Decorative_Red",
     "grade": 5,
     "acquisition": "eventReward",
     "modifiers": [
@@ -2228,7 +2228,7 @@
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "name": "Festive Yellow Remote Release Flak Launcher",
-    "blueprint": "Decorative_Yellow",
+    "blueprintSymbol": "Decorative_Yellow",
     "grade": 5,
     "acquisition": "eventReward",
     "modifiers": [

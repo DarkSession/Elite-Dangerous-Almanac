@@ -33,10 +33,14 @@ test('experimental-effect costs and every nested value are frozen', () => {
 });
 
 test('every effect has a non-empty, valid material recipe with no duplicate symbol', () => {
-    for (const [fdname, materials] of Object.entries(EXPERIMENTAL_EFFECT_COSTS)) {
-        assert.ok(materials.length > 0, `${fdname} has no materials`);
+    for (const [experimentalEffectSymbol, materials] of Object.entries(EXPERIMENTAL_EFFECT_COSTS)) {
+        assert.ok(materials.length > 0, `${experimentalEffectSymbol} has no materials`);
         const symbols = materials.map((material) => material.symbol.toLowerCase());
-        assert.equal(new Set(symbols).size, symbols.length, `${fdname} duplicate material`);
+        assert.equal(
+            new Set(symbols).size,
+            symbols.length,
+            `${experimentalEffectSymbol} duplicate material`,
+        );
         for (const requirement of materials) {
             const material = getMaterialBySymbol(requirement.symbol, ALL_MATERIALS);
             assert.ok(material, `unknown material symbol: ${requirement.symbol}`);

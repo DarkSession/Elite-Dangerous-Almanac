@@ -1,6 +1,6 @@
 /*
  * Engineering **experimental-effect mechanics** — the stat modifiers each special
- * effect applies, keyed by its Frontier `fdname`.
+ * effect applies, keyed by its Frontier symbol.
  *
  * Sources: EDSY eddb.js `expeffect`, cross-checked against EDCD/coriolis-data; display
  * names observed in-game.

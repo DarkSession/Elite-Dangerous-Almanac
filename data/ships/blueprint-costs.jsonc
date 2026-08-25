@@ -1,6 +1,6 @@
 /*
  * Engineering **blueprint material costs** — the materials one roll consumes at each
- * grade, keyed by the blueprint's Frontier `fdname`.
+ * grade, keyed by the blueprint's Frontier symbol.
  *
  * Sources: EDCD/coriolis-data components, resolved to material symbols against the
  * materials domain; Operations and Anti-Guardian recipes from the Inara blueprint

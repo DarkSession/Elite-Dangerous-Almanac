@@ -68,10 +68,12 @@
  *
  * The registries use two distinct Frontier identity spaces. `symbol` identifies an
  * item — a hull, module, material, micro-resource or commodity — and is what item and
- * journal `Item` lookups accept. Engineering catalogues instead use `fdname` to identify
- * a recipe, effect or fixed variant, which is what the journal writes in
- * `Engineering.BlueprintName` and `Engineering.ExperimentalEffect`; the few colliding
- * blueprint aliases are resolved for their module by {@link resolveBlueprintForModule}.
+ * journal `Item` lookups accept. Engineering catalogues carry ids of their own:
+ * `blueprintSymbol` names a recipe, a fixed variant's identity included, and
+ * `experimentalEffectSymbol` names an effect. Those two are what the journal writes in
+ * `Engineering.BlueprintName` and `Engineering.ExperimentalEffect` respectively; the few
+ * colliding blueprint aliases are resolved for their module by
+ * {@link resolveBlueprintForModule}.
  * Pre-engineered variants are found from the base module's `symbol` with
  * {@link getPreEngineeredVariants}.
  *

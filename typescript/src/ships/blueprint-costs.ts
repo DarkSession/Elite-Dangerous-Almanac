@@ -41,7 +41,7 @@ import type { EngineeringMaterial } from './engineering.js';
 export type BlueprintGradeCosts = Readonly<Record<string, readonly EngineeringMaterial[]>>;
 
 /**
- * Every craftable blueprint's per-roll material recipes, keyed by Frontier `fdname` and then grade.
+ * Every craftable blueprint's per-roll material recipes, keyed by Frontier symbol and then grade.
  *
  * @remarks
  * Its ids and grade sets are the craftable subset of `BLUEPRINTS` from
@@ -64,7 +64,7 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
 /**
  * Look up all per-grade material recipes for one blueprint.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
+ * @param blueprintSymbol - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @remarks
  * The material half only, straight from the catalogue. The Merc Coin some recipes charge
@@ -73,8 +73,8 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
  *
  * @returns The frozen grade-to-material-list record, or `null` if no ordinary craft
  * cost is catalogued (including a known fixed reward identity).
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `blueprintSymbol` is present and not a string. A nullish
+ * `blueprintSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintCosts } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -83,8 +83,8 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
  * // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
  * ```
  */
-export function getBlueprintCosts(fdname: string): BlueprintGradeCosts | null {
-    return materialCosts(fdname, 'getBlueprintCosts: fdname');
+export function getBlueprintCosts(blueprintSymbol: string): BlueprintGradeCosts | null {
+    return materialCosts(blueprintSymbol, 'getBlueprintCosts: blueprintSymbol');
 }
 
 /**
@@ -118,15 +118,15 @@ export interface BlueprintCost {
 /**
  * Look up what **one roll** at one blueprint grade costs.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
+ * @param blueprintSymbol - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @param grade - The grade, `1`–`5`.
  * @returns The materials one roll consumes and the Merc Coin it bills, or `null` if no
  * ordinary craft cost is catalogued for the blueprint and grade. `materials` is the
  * frozen catalogue list; `mercCoins` is `0` unless the recipe charges a currency.
  * @throws {RangeError} If `grade` is not an integer from 1 through 5.
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `blueprintSymbol` is present and not a string. A nullish
+ * `blueprintSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintGradeCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -137,18 +137,21 @@ export interface BlueprintCost {
  * getBlueprintGradeCost('RailGun_LongShot', 5)?.mercCoins; // -> 50
  * ```
  */
-export function getBlueprintGradeCost(fdname: string, grade: number): BlueprintCost | null {
+export function getBlueprintGradeCost(
+    blueprintSymbol: string,
+    grade: number,
+): BlueprintCost | null {
     // Arguments are checked in the order they are declared, as `getBlueprintGrade` in
     // `ships/blueprints` does, so a call with two bad arguments reports the same one
     // whichever of the two functions the consumer reached for.
-    const label = 'getBlueprintGradeCost: fdname';
-    requireStringIfPresent(fdname, label);
+    const label = 'getBlueprintGradeCost: blueprintSymbol';
+    requireStringIfPresent(blueprintSymbol, label);
     if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
         throw new RangeError(`getBlueprintGradeCost: grade must be an integer in [1, 5]`);
     }
-    const materials = materialCosts(fdname, label)?.[String(grade)];
+    const materials = materialCosts(blueprintSymbol, label)?.[String(grade)];
     if (!materials) return null;
-    return { materials, mercCoins: mercCoinCosts(fdname, label)?.[String(grade)] ?? 0 };
+    return { materials, mercCoins: mercCoinCosts(blueprintSymbol, label)?.[String(grade)] ?? 0 };
 }
 
 /**
@@ -178,7 +181,7 @@ export function getBlueprintGradeCost(fdname: string, grade: number): BlueprintC
  * same at every grade. Either spelling therefore prices correctly without a fitted
  * module; cross-catalogue tests pin that invariant.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
+ * @param blueprintSymbol - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @param grade - The target grade, `1`–`5`.
  * @param currentGrade - The completed grade, `0`–`5`; defaults to `0` for an
@@ -191,8 +194,8 @@ export function getBlueprintGradeCost(fdname: string, grade: number): BlueprintC
  * charges no currency, so `null` remains the one answer meaning "not catalogued".
  * @throws {RangeError} If `grade` is not an integer from 1 through 5, or `currentGrade`
  * is not an integer from 0 through 5.
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `blueprintSymbol` is present and not a string. A nullish
+ * `blueprintSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -207,14 +210,14 @@ export function getBlueprintGradeCost(fdname: string, grade: number): BlueprintC
  * ```
  */
 export function getBlueprintCost(
-    fdname: string,
+    blueprintSymbol: string,
     grade: number,
     currentGrade = 0,
 ): BlueprintCost | null {
     // Declaration order, matching `getBlueprintGrade` and `getBlueprintGradeCost`: the id
     // first, then the target grade, then the completed one.
-    const label = 'getBlueprintCost: fdname';
-    requireStringIfPresent(fdname, label);
+    const label = 'getBlueprintCost: blueprintSymbol';
+    requireStringIfPresent(blueprintSymbol, label);
     if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
         throw new RangeError(`getBlueprintCost: grade must be an integer in [1, 5]`);
     }
@@ -222,10 +225,10 @@ export function getBlueprintCost(
         throw new RangeError(`getBlueprintCost: currentGrade must be an integer in [0, 5]`);
     }
 
-    const costs = materialCosts(fdname, label);
+    const costs = materialCosts(blueprintSymbol, label);
     if (!costs) return null;
     if (!costs[String(grade)]) return null;
-    const currency = mercCoinCosts(fdname, label);
+    const currency = mercCoinCosts(blueprintSymbol, label);
 
     const perGrade: EngineeringMaterial[][] = [];
     let mercCoins = 0;
@@ -260,7 +263,7 @@ export type BlueprintMercCoinCosts = Readonly<Record<string, number>>;
 
 /**
  * The Merc Coin charged per roll by every blueprint that charges any, keyed by Frontier
- * `fdname` and then grade.
+ * symbol and then grade.
  *
  * @remarks
  * The raw catalogue behind {@link BlueprintCost.mercCoins}; reach for
@@ -290,11 +293,11 @@ export const BLUEPRINT_MERC_COIN_COSTS: Readonly<Record<string, BlueprintMercCoi
  *
  * @internal
  */
-function materialCosts(fdname: string, label: string): BlueprintGradeCosts | null {
-    return findByRawKey(BLUEPRINT_COSTS, fdname, label);
+function materialCosts(blueprintSymbol: string, label: string): BlueprintGradeCosts | null {
+    return findByRawKey(BLUEPRINT_COSTS, blueprintSymbol, label);
 }
 
 /** Case-insensitive lookup into {@link BLUEPRINT_MERC_COIN_COSTS}. @internal */
-function mercCoinCosts(fdname: string, label: string): BlueprintMercCoinCosts | null {
-    return findByRawKey(BLUEPRINT_MERC_COIN_COSTS, fdname, label);
+function mercCoinCosts(blueprintSymbol: string, label: string): BlueprintMercCoinCosts | null {
+    return findByRawKey(BLUEPRINT_MERC_COIN_COSTS, blueprintSymbol, label);
 }

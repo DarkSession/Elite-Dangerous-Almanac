@@ -83,13 +83,14 @@ exact export/name/signature over describing it.
 - **Naming & self-explaining API.** Would each exported name make sense to an ED
   dev with no repo context? Flag jargon that isn't defined for the consumer —
   in `astro`, terms like `boxel`, `mass code`, `hand-authored sector`, `id64`
-  vs. `systemAddress`; in `ships`, terms like `symbol` vs. `fdname`, "core" vs.
-  "standard" modules, `BurstInterval` (this library's own label for a stat the
-  journal reports as `RateOfFire`), pre-engineered *variant* vs. a blueprint you
-  can apply, and Modifier `Label` strings generally. Distinguish "domain term
-  they'd know" from "internal term they'd have to reverse-engineer", and be
-  especially alert to a name this library chose that differs from the one the
-  game writes — a consumer matching on journal fields will not find it.
+  vs. `systemAddress`; in `ships`, terms like `blueprintSymbol` vs. the journal's
+  own `BlueprintName`, "core" vs. "standard" modules, `BurstInterval` (this
+  library's own label for a stat the journal reports as `RateOfFire`),
+  pre-engineered *variant* vs. a blueprint you can apply, and Modifier `Label`
+  strings generally. Distinguish "domain term they'd know" from "internal term
+  they'd have to reverse-engineer", and be especially alert to a name this
+  library chose that differs from the one the game writes — a consumer matching
+  on journal fields will not find it.
 - **Documentation completeness & accuracy.** TSDoc on every public symbol;
   `@param`/`@returns`/`@example`; **units and value ranges** stated; examples
   that actually work. Note undocumented exports and doc/behaviour mismatches.

@@ -20,15 +20,19 @@ const countFor = (
 
 test('every craft-cost entry matches its mechanics grades', () => {
     const craftable = Object.keys(BLUEPRINTS).filter(
-        (fdname) => fdname !== 'CargoRack_IncreasedCapacity',
+        (blueprintSymbol) => blueprintSymbol !== 'CargoRack_IncreasedCapacity',
     );
     assert.deepEqual(
-        Object.keys(BLUEPRINTS).filter((fdname) => !(fdname in BLUEPRINT_COSTS)),
+        Object.keys(BLUEPRINTS).filter((blueprintSymbol) => !(blueprintSymbol in BLUEPRINT_COSTS)),
         ['CargoRack_IncreasedCapacity'],
     );
     assert.deepEqual(Object.keys(BLUEPRINT_COSTS), craftable);
-    for (const [fdname, costs] of Object.entries(BLUEPRINT_COSTS)) {
-        assert.deepEqual(Object.keys(costs), Object.keys(BLUEPRINTS[fdname]!.grades), fdname);
+    for (const [blueprintSymbol, costs] of Object.entries(BLUEPRINT_COSTS)) {
+        assert.deepEqual(
+            Object.keys(costs),
+            Object.keys(BLUEPRINTS[blueprintSymbol]!.grades),
+            blueprintSymbol,
+        );
     }
 });
 
@@ -67,13 +71,13 @@ test('getBlueprintGradeCost rejects grades outside the supported range', () => {
 });
 
 test('every material requirement joins to a real material and occurs once per grade', () => {
-    for (const [fdname, grades] of Object.entries(BLUEPRINT_COSTS)) {
+    for (const [blueprintSymbol, grades] of Object.entries(BLUEPRINT_COSTS)) {
         for (const [grade, materials] of Object.entries(grades)) {
             const symbols = materials.map((material) => material.symbol.toLowerCase());
             assert.equal(
                 new Set(symbols).size,
                 symbols.length,
-                `${fdname} grade ${grade} duplicate material`,
+                `${blueprintSymbol} grade ${grade} duplicate material`,
             );
             for (const requirement of materials) {
                 const material = getMaterialBySymbol(requirement.symbol, ALL_MATERIALS);
@@ -90,17 +94,23 @@ test('every material requirement joins to a real material and occurs once per gr
 
 test('fixed reward identities have no ordinary craft cost', () => {
     assert.equal(getBlueprintGradeCost('CargoRack_IncreasedCapacity', 5), null);
-    const empty = Object.entries(BLUEPRINT_COSTS).flatMap(([fdname, grades]) =>
+    const empty = Object.entries(BLUEPRINT_COSTS).flatMap(([blueprintSymbol, grades]) =>
         Object.entries(grades)
             .filter(([, materials]) => materials.length === 0)
-            .map(([grade]) => `${fdname}:${grade}`),
+            .map(([grade]) => `${blueprintSymbol}:${grade}`),
     );
     assert.deepEqual(empty, []);
 });
 
 test('a colliding journal spelling bills the same materials as the recipe it names', () => {
-    for (const [fdname, journalName] of Object.entries(engineeringFixture.journalNames.map)) {
-        assert.deepEqual(BLUEPRINT_COSTS[fdname], BLUEPRINT_COSTS[journalName], fdname);
+    for (const [blueprintSymbol, journalName] of Object.entries(
+        engineeringFixture.journalNames.map,
+    )) {
+        assert.deepEqual(
+            BLUEPRINT_COSTS[blueprintSymbol],
+            BLUEPRINT_COSTS[journalName],
+            blueprintSymbol,
+        );
     }
 });
 
@@ -179,11 +189,15 @@ test('getBlueprintCost normalises ids and returns a fresh summed list', () => {
 });
 
 test('getBlueprintCost combines each material once and misses unknown requests', () => {
-    for (const fdname of Object.keys(BLUEPRINT_COSTS)) {
-        const cost = getBlueprintCost(fdname, 5);
+    for (const blueprintSymbol of Object.keys(BLUEPRINT_COSTS)) {
+        const cost = getBlueprintCost(blueprintSymbol, 5);
         if (!cost) continue;
         const symbols = cost.materials.map((material) => material.symbol.toLowerCase());
-        assert.equal(new Set(symbols).size, symbols.length, `${fdname} lists a material twice`);
+        assert.equal(
+            new Set(symbols).size,
+            symbols.length,
+            `${blueprintSymbol} lists a material twice`,
+        );
     }
 
     assert.equal(getBlueprintCost('nope', 5), null);
@@ -201,7 +215,7 @@ test('a wrong-typed id names the function the consumer called', () => {
     ] as const) {
         assert.throws(call, (error: unknown) => {
             assert.ok(error instanceof TypeError);
-            assert.match(error.message, new RegExp(`^${name}: fdname `));
+            assert.match(error.message, new RegExp(`^${name}: blueprintSymbol `));
             return true;
         });
     }
@@ -220,7 +234,7 @@ test('the blueprint id is checked before the grade, in every function that takes
         assert.throws(call, {
             name: 'TypeError',
             message:
-                /^getBlueprint(Grade|GradeCost|Cost): fdname must be a string, received number 42$/,
+                /^getBlueprint(Grade|GradeCost|Cost): blueprintSymbol must be a string, received number 42$/,
         });
     }
     // A nullish id stays a miss, so the grade range is still what a bad grade reports.
@@ -242,13 +256,17 @@ test('getBlueprintCost rejects target and current grades outside their supported
 
 test('the Merc-Coin catalogue is the fixture, keyed and graded like the material one', () => {
     assert.deepEqual(BLUEPRINT_MERC_COIN_COSTS, engineeringFixture.mercCoinCosts.perRoll);
-    for (const [fdname, grades] of Object.entries(BLUEPRINT_MERC_COIN_COSTS)) {
+    for (const [blueprintSymbol, grades] of Object.entries(BLUEPRINT_MERC_COIN_COSTS)) {
         // A currency cost only ever accompanies a material recipe, grade for grade.
-        assert.deepEqual(Object.keys(grades), Object.keys(BLUEPRINT_COSTS[fdname] ?? {}), fdname);
+        assert.deepEqual(
+            Object.keys(grades),
+            Object.keys(BLUEPRINT_COSTS[blueprintSymbol] ?? {}),
+            blueprintSymbol,
+        );
         for (const [grade, amount] of Object.entries(grades)) {
             assert.ok(
                 Number.isInteger(amount) && amount > 0,
-                `${fdname} grade ${grade} charges ${amount}`,
+                `${blueprintSymbol} grade ${grade} charges ${amount}`,
             );
         }
     }

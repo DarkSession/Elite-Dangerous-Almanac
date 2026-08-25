@@ -2,8 +2,8 @@
  * Sparse, source-backed localized display names for Elite Dangerous outfitting and
  * engineering catalogues.
  *
- * Each lookup takes the same Frontier symbol or `fdname` as its owning catalogue and a
- * BCP 47 locale. English is complete and exactly matches the owning record's `name`.
+ * Each lookup takes the same Frontier symbol as its owning catalogue and a BCP 47
+ * locale. English is complete and exactly matches the owning record's `name`.
  * Other locales are intentionally sparse: the function returns `null` when its pinned
  * sources carry no translation, leaving the application in control of fallback policy.
  * A source-backed localized spelling can be identical to English; the lookup returns

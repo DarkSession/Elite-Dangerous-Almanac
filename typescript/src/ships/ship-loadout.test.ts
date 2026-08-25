@@ -798,7 +798,7 @@ test('buildCost totals Merc Coin purchases and the climbs above them', () => {
 
     for (const module of expected.modules) {
         const variant = getPreEngineeredVariants(module.symbol).find(
-            (candidate) => candidate.blueprint === module.blueprint,
+            (candidate) => candidate.blueprintSymbol === module.blueprint,
         )!;
         build.setPreEngineeredVariant(module.slot, variant);
     }
@@ -2633,7 +2633,7 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
         grade: 5,
         quality: 1,
-        experimental: 'special_fsd_heavy',
+        experimentalEffectSymbol: 'special_fsd_heavy',
     });
 
     // The exact figures the real Deep Black export carries.
@@ -2675,7 +2675,7 @@ test('applyBlueprint reconstructs captured journal modifier values', () => {
             quality,
             ...(engineering.ExperimentalEffect === undefined
                 ? {}
-                : { experimental: engineering.ExperimentalEffect }),
+                : { experimentalEffectSymbol: engineering.ExperimentalEffect }),
         });
 
         const reconstructed = rebuilt.fittedModuleAt(module.Slot)!;
@@ -2695,7 +2695,7 @@ test('stock cargo racks cannot acquire a fixed reward identity as engineering', 
     assert.equal(
         build
             .availableBlueprints(slot)
-            .some(({ fdname }) => fdname === 'CargoRack_IncreasedCapacity'),
+            .some(({ blueprintSymbol }) => blueprintSymbol === 'CargoRack_IncreasedCapacity'),
         false,
     );
     assert.throws(
@@ -2704,7 +2704,7 @@ test('stock cargo racks cannot acquire a fixed reward identity as engineering', 
     );
 
     const variant = getPreEngineeredVariants('Int_CargoRack_Size5_Class1').find(
-        (candidate) => candidate.blueprint === 'CargoRack_IncreasedCapacity',
+        (candidate) => candidate.blueprintSymbol === 'CargoRack_IncreasedCapacity',
     )!;
     assert.equal(getPreEngineeredStats(variant)?.cargoCapacity, 43);
     const reward = ShipLoadout.empty('Python').setPreEngineeredVariant(slot, variant);
@@ -2731,7 +2731,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
         () =>
             build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
                 grade: 5,
-                experimental: 'special_nope',
+                experimentalEffectSymbol: 'special_nope',
             }),
         RangeError,
     );
@@ -2744,7 +2744,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
         () =>
             build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
                 grade: 5,
-                experimental: 'special_shieldbooster_toughened',
+                experimentalEffectSymbol: 'special_shieldbooster_toughened',
             }),
         /is not offered experimental effect "special_shieldbooster_toughened"/,
     );
@@ -2762,7 +2762,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
         () =>
             build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
                 grade: 5,
-                experimental: 'e'.repeat(20_000),
+                experimentalEffectSymbol: 'e'.repeat(20_000),
             }),
     ]) {
         assert.throws(operation, ({ message }: Error) => {
@@ -2796,7 +2796,7 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
     assert.ok(
         weapon
             .availableBlueprints('SmallHardpoint1')
-            .some((blueprint) => blueprint.fdname === 'Weapon_Overcharged'),
+            .some((blueprint) => blueprint.blueprintSymbol === 'Weapon_Overcharged'),
     );
     weapon.applyBlueprint('SmallHardpoint1', 'Weapon_Overcharged', { grade: 5 });
     const overcharged = weapon.fittedModuleAt('SmallHardpoint1')!.engineering!.Modifiers!;
@@ -2821,45 +2821,48 @@ test('damage-converting experimentals replace the weapon split and export journa
     const cases = [
         {
             symbol: 'Hpt_Cannon_Fixed_Small',
-            experimental: 'special_high_yield_shell',
+            experimentalEffectSymbol: 'special_high_yield_shell',
         },
         {
             symbol: 'Hpt_PulseLaserBurst_Fixed_Small',
-            experimental: 'special_distortion_field',
+            experimentalEffectSymbol: 'special_distortion_field',
         },
         {
             symbol: 'Hpt_DumbfireMissileRack_Fixed_Small',
-            experimental: 'special_overload_munitions',
+            experimentalEffectSymbol: 'special_overload_munitions',
         },
     ] as const;
     const expected = engineeringFixture.experimentalDamageDistributions.map;
 
-    for (const { symbol, experimental } of cases) {
+    for (const { symbol, experimentalEffectSymbol } of cases) {
         const build = ShipLoadout.empty('Sidewinder').setModule(
             'SmallHardpoint1',
             mod(symbol, HARDPOINT_MODULES),
         );
         build.applyBlueprint('SmallHardpoint1', 'Weapon_Sturdy', {
             grade: 5,
-            experimental,
+            experimentalEffectSymbol,
         });
 
         const fitted = build.fittedModuleAt('SmallHardpoint1')!;
-        assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected[experimental]);
+        assert.deepEqual(
+            fitted.effectiveStats?.damageDistribution,
+            expected[experimentalEffectSymbol],
+        );
         const metrics = BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics;
-        for (const [type, share] of Object.entries(expected[experimental])) {
+        for (const [type, share] of Object.entries(expected[experimentalEffectSymbol])) {
             assert.ok(
                 near(
                     metrics.damageByType[type as 'kinetic' | 'thermal' | 'explosive'],
                     metrics.damagePerSecond * share,
                     1e-6,
                 ),
-                `${experimental} ${type}`,
+                `${experimentalEffectSymbol} ${type}`,
             );
         }
 
         const modifiers = fitted.engineering?.Modifiers ?? [];
-        for (const type of Object.keys(expected[experimental])) {
+        for (const type of Object.keys(expected[experimentalEffectSymbol])) {
             const label = `$${type[0]!.toUpperCase()}${type.slice(1)};`;
             assert.ok(
                 modifiers.some((modifier) => modifier.Label === label),
@@ -2932,7 +2935,7 @@ test('a converting experimental supersedes a plasma-conversion blueprint split',
     );
     build.applyBlueprint('SmallHardpoint1', 'BurstLaser_ThermalPlasmaConversion', {
         grade: 5,
-        experimental: 'special_distortion_field',
+        experimentalEffectSymbol: 'special_distortion_field',
     });
 
     const fitted = build.fittedModuleAt('SmallHardpoint1')!;
@@ -2954,7 +2957,7 @@ test('a damage conversion supersedes exact stock damage components', () => {
     const build = ShipLoadout.empty('Sidewinder').setModule('SmallHardpoint1', withExactComponents);
     build.applyBlueprint('SmallHardpoint1', 'Weapon_Sturdy', {
         grade: 5,
-        experimental: 'special_high_yield_shell',
+        experimentalEffectSymbol: 'special_high_yield_shell',
     });
 
     const effective = build.fittedModuleAt('SmallHardpoint1')!.effectiveStats!;
@@ -3009,7 +3012,7 @@ test('a hull reinforcement package engineers a hull boost it never had', () => {
     assert.ok(
         build
             .availableBlueprints('Slot01_Size7')
-            .some((blueprint) => blueprint.fdname === 'HullReinforcement_Advanced'),
+            .some((blueprint) => blueprint.blueprintSymbol === 'HullReinforcement_Advanced'),
     );
     build.applyBlueprint('Slot01_Size7', 'HullReinforcement_Advanced', { grade: 5 });
     const boost = build
@@ -3074,7 +3077,7 @@ test('engineering accepts a sourced zero', () => {
     assert.ok(
         build
             .availableBlueprints('Slot01_Size7')
-            .some((blueprint) => blueprint.fdname === 'HatchBreakerLimpet_LightWeight'),
+            .some((blueprint) => blueprint.blueprintSymbol === 'HatchBreakerLimpet_LightWeight'),
     );
     build.applyBlueprint('Slot01_Size7', 'HatchBreakerLimpet_LightWeight', { grade: 5 });
     assert.equal(
@@ -3093,7 +3096,9 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
         assert.equal(stock.guardianZoneResistance, undefined, `${symbol} is stock`);
         const build = ShipLoadout.empty('Anaconda').setModule(slot, stock);
         assert.ok(
-            build.availableBlueprints(slot).some(({ fdname }) => fdname === capability.offeredAs),
+            build
+                .availableBlueprints(slot)
+                .some(({ blueprintSymbol }) => blueprintSymbol === capability.offeredAs),
             `${symbol} is not offered the capability`,
         );
         build.applyBlueprint(slot, blueprint, { grade: capability.grade });
@@ -3149,7 +3154,7 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
         () =>
             plant.applyBlueprint('PowerPlant', 'GuardianModule_Sturdy', {
                 grade: 1,
-                experimental: 'special_powerplant_lightweight',
+                experimentalEffectSymbol: 'special_powerplant_lightweight',
             }),
         /is not offered experimental effect "special_powerplant_lightweight"; it takes no experimental effect/,
     );
@@ -3158,7 +3163,7 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
             .setModule('PowerPlant', mod('Int_Powerplant_Size7_Class5'))
             .applyBlueprint('PowerPlant', 'PowerPlant_Armoured', {
                 grade: 1,
-                experimental: 'special_powerplant_lightweight',
+                experimentalEffectSymbol: 'special_powerplant_lightweight',
             }),
     );
 });
@@ -3267,7 +3272,7 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
     // The variant is sold at grade 1, which is why its recipe starts at 2.
     const [sold] = getPreEngineeredVariants(climb.symbol);
     assert.equal(sold?.grade, climb.soldAtGrade);
-    assert.equal(sold?.blueprint, climb.blueprint);
+    assert.equal(sold?.blueprintSymbol, climb.blueprint);
     build.applyBlueprint('Slot01_Size7', climb.blueprint, {
         grade: climb.grade,
         quality: climb.quality,
@@ -3321,7 +3326,7 @@ test('stock mining tools refuse ordinary engineering but keep their Mercenary cl
         );
         assert.deepEqual(
             build.availableBlueprints('SmallHardpoint1'),
-            [{ fdname: blueprint, grades: [2, 3, 4, 5], route: 'mercenary' }],
+            [{ blueprintSymbol: blueprint, grades: [2, 3, 4, 5], route: 'mercenary' }],
             symbol,
         );
         assert.throws(
@@ -3339,7 +3344,7 @@ test('stock mining tools refuse ordinary engineering but keep their Mercenary cl
             (variant) => variant.acquisition === 'mercenary',
         )!;
         assert.equal(mercenary.grade, 1, symbol);
-        assert.equal(mercenary.blueprint, blueprint, symbol);
+        assert.equal(mercenary.blueprintSymbol, blueprint, symbol);
         build.applyBlueprint('SmallHardpoint1', blueprint, { grade: 5, quality: 1 });
         assert.equal(
             build.fittedModuleAt('SmallHardpoint1')?.engineering?.BlueprintName,
@@ -3356,7 +3361,7 @@ test('a final pre-engineered Guardian weapon exposes no engineering', () => {
     assert.equal(resolved.engineeringLocked, true);
     assert.deepEqual(build.availableBlueprints('MediumHardpoint1'), []);
     assert.deepEqual(build.availableExperimentalEffects('MediumHardpoint1'), []);
-    for (const blueprint of ['GuardianModule_Sturdy', variant.blueprint]) {
+    for (const blueprint of ['GuardianModule_Sturdy', variant.blueprintSymbol]) {
         assert.throws(
             () => build.applyBlueprint('MediumHardpoint1', blueprint, { grade: 1 }),
             /is a final pre-engineered article and accepts no further engineering/,
@@ -3382,7 +3387,7 @@ test('fixed Enzyme and AX variants expose no engineering', () => {
         assert.deepEqual(build.availableBlueprints('MediumHardpoint1'), [], symbol);
         assert.deepEqual(build.availableExperimentalEffects('MediumHardpoint1'), [], symbol);
         assert.throws(
-            () => build.applyBlueprint('MediumHardpoint1', variant.blueprint, { grade: 5 }),
+            () => build.applyBlueprint('MediumHardpoint1', variant.blueprintSymbol, { grade: 5 }),
             /is a final pre-engineered article and accepts no further engineering/,
         );
 
@@ -3572,7 +3577,7 @@ test('imported Anti-Guardian Zone Resistance remains an engineerable stock artic
     const fitted = build.fittedModuleAt('MediumHardpoint1')!;
     assert.equal(fitted.stats?.engineeringLocked, undefined);
     assert.deepEqual(
-        build.availableBlueprints('MediumHardpoint1').map((blueprint) => blueprint.fdname),
+        build.availableBlueprints('MediumHardpoint1').map((blueprint) => blueprint.blueprintSymbol),
         ['GuardianModule_Sturdy'],
     );
 });
@@ -3593,7 +3598,7 @@ test('clearEngineering restores base stats', () => {
 test('clearing a fixed festive variant restores its stock module stats', () => {
     const expected = preEngineeredFixture.festive;
     const variant = getPreEngineeredVariants(expected.symbol).find(
-        (candidate) => candidate.blueprint === expected.blueprints[0],
+        (candidate) => candidate.blueprintSymbol === expected.blueprints[0],
     )!;
     const stock = mod(expected.symbol, HARDPOINT_MODULES);
     const direct = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
@@ -3614,7 +3619,7 @@ test('clearing a fixed festive variant restores its stock module stats', () => {
 
 test('resolved pre-engineered stats survive fitting and drive build calculations', () => {
     const variant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
-        (candidate) => candidate.blueprint === 'FSD_LongRange',
+        (candidate) => candidate.blueprintSymbol === 'FSD_LongRange',
     )!;
     const resolved = getPreEngineeredStats(variant)!;
     assert.equal(resolved.mass, 26);
@@ -3719,7 +3724,7 @@ test('keyed facade mutations produce new fitted-module snapshots', () => {
     build.applyBlueprint(slot.key, 'FSD_LongRange', {
         grade: 5,
         quality: 1,
-        experimental: 'special_fsd_heavy',
+        experimentalEffectSymbol: 'special_fsd_heavy',
     });
     const engineered = build.fittedModuleAt(slot.key)!;
     assert.ok(Math.abs(BuildMetrics.of(build).frameShiftDrive().optMass - 7528.04) < 1e-2);
@@ -3737,12 +3742,12 @@ test('availableBlueprints / availableExperimentalEffects answer available engine
         mod('Int_Hyperdrive_Size6_Class5'),
     );
     const blueprints = build.availableBlueprints('FrameShiftDrive');
-    const longRange = blueprints.find((b) => b.fdname === 'FSD_LongRange');
+    const longRange = blueprints.find((b) => b.blueprintSymbol === 'FSD_LongRange');
     assert.ok(longRange, 'FSD_LongRange should be offered on an FSD');
     assert.deepEqual([...longRange!.grades], [1, 2, 3, 4, 5]);
     assert.equal(longRange!.route, 'ordinary');
     // No armour recipe leaks onto a frame shift drive.
-    assert.ok(!blueprints.some((b) => b.fdname.toLowerCase().startsWith('armour_')));
+    assert.ok(!blueprints.some((b) => b.blueprintSymbol.toLowerCase().startsWith('armour_')));
 
     const experimentals = build.availableExperimentalEffects('FrameShiftDrive');
     assert.ok(experimentals.includes('special_fsd_heavy'));
@@ -4432,7 +4437,7 @@ test('an imported V1 drive is resolved before its added experimental is folded i
         'FrameShiftDrive',
     )!;
     assert.equal(drive.preEngineeredVariant?.acquisition, 'techBroker');
-    assert.equal(drive.preEngineeredVariant?.experimental, undefined);
+    assert.equal(drive.preEngineeredVariant?.experimentalEffectSymbol, undefined);
     assert.equal(drive.engineering?.ExperimentalEffect, 'special_fsd_heavy');
     assert.equal(drive.stats?.optMass, 5100);
     assert.equal(drive.effectiveStats?.optMass, 5304);
@@ -4461,7 +4466,10 @@ test('an identified reward supplies an omitted baked-experimental stat', () => {
     const rail = ShipLoadout.fromLoadout({ ...source, Modules: modules }).fittedModuleAt(
         expected.slot,
     )!;
-    assert.equal(rail.preEngineeredVariant?.experimental, 'special_feedback_cascade_cooled');
+    assert.equal(
+        rail.preEngineeredVariant?.experimentalEffectSymbol,
+        'special_feedback_cascade_cooled',
+    );
     assert.equal(rail.stats?.thermalLoad, expected.expectedThermalLoad);
     assert.equal(rail.effectiveStats?.thermalLoad, expected.expectedThermalLoad);
 });
@@ -4948,7 +4956,9 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
     );
     const gun = build.fittedModuleAt('LargeHardpoint1')!;
     assert.equal(gun.stats!.jitter, undefined);
-    assert.ok(build.availableBlueprints(gun.slot).some((b) => b.fdname === 'Weapon_RapidFire'));
+    assert.ok(
+        build.availableBlueprints(gun.slot).some((b) => b.blueprintSymbol === 'Weapon_RapidFire'),
+    );
 
     build.applyBlueprint('LargeHardpoint1', 'Weapon_RapidFire', { grade: 5 });
     const fitted = build.fittedModuleAt('LargeHardpoint1')!;
@@ -4966,7 +4976,7 @@ test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', (
 test('a festive pre-engineered variant changes only its slot and round-trips', () => {
     const expected = preEngineeredFixture.festive;
     const variant = getPreEngineeredVariants(expected.symbol).find(
-        (candidate) => candidate.blueprint === expected.blueprints[1],
+        (candidate) => candidate.blueprintSymbol === expected.blueprints[1],
     )!;
     const rapidFire = mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES);
     const build = ShipLoadout.empty('Anaconda')
@@ -4980,7 +4990,7 @@ test('a festive pre-engineered variant changes only its slot and round-trips', (
     const decorated = build.fittedModuleAt('MediumHardpoint1')!;
     const expectedModifiers = getPreEngineeredJournalModifiers(variant);
     assert.deepEqual(decorated.engineering, {
-        BlueprintName: variant.blueprint,
+        BlueprintName: variant.blueprintSymbol,
         Level: expected.grade,
         Quality: 1,
         Modifiers: expectedModifiers,
@@ -4999,20 +5009,21 @@ test('a festive pre-engineered variant changes only its slot and round-trips', (
     assert.deepEqual(exported.Engineering, decorated.engineering);
     const reimported = ShipLoadout.fromLoadout(event).fittedModuleAt('MediumHardpoint1')!;
     assert.ok(near(reimported.effectiveStats!.damage!, decorated.effectiveStats!.damage!, 1e-6));
-    assert.equal(reimported.preEngineeredVariant?.blueprint, variant.blueprint);
+    assert.equal(reimported.preEngineeredVariant?.blueprintSymbol, variant.blueprintSymbol);
 });
 
 test('a graded pre-engineered variant fits with its complete engineering state', () => {
     const expected = preEngineeredFixture.resolved.fsdV1Size5;
     const variant = getPreEngineeredVariants(expected.symbol).find(
         (candidate) =>
-            candidate.blueprint === expected.blueprint && candidate.acquisition === 'techBroker',
+            candidate.blueprintSymbol === expected.blueprintSymbol &&
+            candidate.acquisition === 'techBroker',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('FrameShiftDrive', variant);
 
     const fitted = build.fittedModuleAt('FrameShiftDrive')!;
     assert.deepEqual(fitted.engineering, {
-        BlueprintName: variant.blueprint,
+        BlueprintName: variant.blueprintSymbol,
         Level: variant.grade,
         Quality: 1,
         Modifiers: getPreEngineeredJournalModifiers(variant),
@@ -5032,7 +5043,7 @@ test('a graded pre-engineered variant fits with its complete engineering state',
 test('a craftable blueprint replaces fixed variant engineering from stock stats', () => {
     const variant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
         (candidate) =>
-            candidate.blueprint === 'FSD_LongRange' && candidate.acquisition === 'techBroker',
+            candidate.blueprintSymbol === 'FSD_LongRange' && candidate.acquisition === 'techBroker',
     )!;
     const fixed = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('FrameShiftDrive', variant);
     const imported = ShipLoadout.fromLoadout(fixed.toLoadoutEvent());
@@ -5040,13 +5051,13 @@ test('a craftable blueprint replaces fixed variant engineering from stock stats'
         .setModule('FrameShiftDrive', mod(variant.symbol, CORE_MODULES))
         .applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
             grade: 5,
-            experimental: 'special_fsd_heavy',
+            experimentalEffectSymbol: 'special_fsd_heavy',
         });
 
     for (const replacement of [fixed, imported]) {
         replacement.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
             grade: 5,
-            experimental: 'special_fsd_heavy',
+            experimentalEffectSymbol: 'special_fsd_heavy',
         });
         assert.deepEqual(
             replacement.fittedModuleAt('FrameShiftDrive')?.effectiveStats,
@@ -5066,8 +5077,8 @@ test('setExperimentalEffect preserves fixed reward modifiers and identity', () =
     const added = build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
     assert.deepEqual(added, {
         kind: 'updated',
-        previousExperimental: null,
-        experimental: 'special_fsd_heavy',
+        previousExperimentalEffectSymbol: null,
+        experimentalEffectSymbol: 'special_fsd_heavy',
     });
     assert.ok(Object.isFrozen(added));
     assert.ok(
@@ -5080,8 +5091,8 @@ test('setExperimentalEffect preserves fixed reward modifiers and identity', () =
 
     assert.deepEqual(build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_lightweight'), {
         kind: 'updated',
-        previousExperimental: 'special_fsd_heavy',
-        experimental: 'special_fsd_lightweight',
+        previousExperimentalEffectSymbol: 'special_fsd_heavy',
+        experimentalEffectSymbol: 'special_fsd_lightweight',
     });
     assert.equal(
         build.fittedModuleAt('FrameShiftDrive')!.effectiveStats!.optMass,
@@ -5095,8 +5106,8 @@ test('setExperimentalEffect preserves fixed reward modifiers and identity', () =
 
     assert.deepEqual(build.setExperimentalEffect('FrameShiftDrive', null), {
         kind: 'updated',
-        previousExperimental: 'special_fsd_lightweight',
-        experimental: null,
+        previousExperimentalEffectSymbol: 'special_fsd_lightweight',
+        experimentalEffectSymbol: null,
     });
     assert.equal(
         build.fittedModuleAt('FrameShiftDrive')!.effectiveStats!.optMass,
@@ -5105,13 +5116,13 @@ test('setExperimentalEffect preserves fixed reward modifiers and identity', () =
     assert.equal(build.fittedModuleAt('FrameShiftDrive')!.preEngineeredVariant, variant);
     assert.deepEqual(build.setExperimentalEffect('FrameShiftDrive', null), {
         kind: 'unchanged',
-        experimental: null,
+        experimentalEffectSymbol: null,
     });
 });
 
 test('fixed reward effect removal and replacement survive a loadout round trip', () => {
     const variant = getPreEngineeredVariants('Hpt_Slugshot_Gimbal_Large').find(
-        (candidate) => candidate.experimental === 'special_screening_shell',
+        (candidate) => candidate.experimentalEffectSymbol === 'special_screening_shell',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('LargeHardpoint1', variant);
     assert.equal(build.fittedModuleAt('LargeHardpoint1')!.effectiveStats!.reloadTime, 2.5);
@@ -5149,7 +5160,7 @@ test('a fixed reward effect updates related stats before and after a round trip'
 
 test('a fixed reward effect keeps recipe-only stats through a round trip', () => {
     const variant = getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').find(
-        (candidate) => candidate.experimental === 'special_drag_munitions',
+        (candidate) => candidate.experimentalEffectSymbol === 'special_drag_munitions',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
         'MediumHardpoint1',
@@ -5168,17 +5179,20 @@ test('a fixed reward effect keeps recipe-only stats through a round trip', () =>
 
 test('a baked effect outside the module menu can be kept and restored', () => {
     const variant = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
-        (candidate) => candidate.experimental === 'special_incendiary_rounds',
+        (candidate) => candidate.experimentalEffectSymbol === 'special_incendiary_rounds',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('SmallHardpoint1', variant);
 
-    assert.deepEqual(build.setExperimentalEffect('SmallHardpoint1', variant.experimental!), {
-        kind: 'unchanged',
-        experimental: variant.experimental,
-    });
+    assert.deepEqual(
+        build.setExperimentalEffect('SmallHardpoint1', variant.experimentalEffectSymbol!),
+        {
+            kind: 'unchanged',
+            experimentalEffectSymbol: variant.experimentalEffectSymbol,
+        },
+    );
     assert.equal(build.setExperimentalEffect('SmallHardpoint1', null).kind, 'updated');
     assert.equal(
-        build.setExperimentalEffect('SmallHardpoint1', variant.experimental!).kind,
+        build.setExperimentalEffect('SmallHardpoint1', variant.experimentalEffectSymbol!).kind,
         'updated',
     );
 });
@@ -5197,7 +5211,7 @@ test('setExperimentalEffect recomputes ordinary and Mercenary engineering in pla
         .setModule('MediumHardpoint1', mod('Hpt_BasicMissileRack_Fixed_Medium', HARDPOINT_MODULES))
         .applyBlueprint('MediumHardpoint1', 'Weapon_HighCapacity', {
             grade: 5,
-            experimental: 'special_overload_munitions',
+            experimentalEffectSymbol: 'special_overload_munitions',
         });
     assert.equal(converted.setExperimentalEffect('MediumHardpoint1', null).kind, 'updated');
 
@@ -5206,7 +5220,7 @@ test('setExperimentalEffect recomputes ordinary and Mercenary engineering in pla
     )!;
     const mercenary = ShipLoadout.empty('Anaconda')
         .setPreEngineeredVariant('PowerDistributor', variant)
-        .applyBlueprint('PowerDistributor', variant.blueprint, { grade: 2, quality: 0.5 });
+        .applyBlueprint('PowerDistributor', variant.blueprintSymbol, { grade: 2, quality: 0.5 });
     assert.equal(
         mercenary.setExperimentalEffect('PowerDistributor', 'special_powerdistributor_capacity')
             .kind,
@@ -5331,7 +5345,7 @@ test('setExperimentalEffect returns structured refusals without changing the mod
         params: {
             slot: 'FrameShiftDrive',
             symbol: fixedEvent.Modules.find((module) => module.Slot === 'FrameShiftDrive')!.Item,
-            blueprint: fixedVariant.blueprint,
+            blueprint: fixedVariant.blueprintSymbol,
         },
     });
     assert.deepEqual(unidentified.fittedModuleAt('FrameShiftDrive')!.raw, unidentifiedBefore);
@@ -5357,13 +5371,13 @@ test('completeEngineeringGrade recomputes imported ordinary and Mercenary rolls 
     const partial = ShipLoadout.default('SideWinder').applyBlueprint(
         'FrameShiftDrive',
         'FSD_LongRange',
-        { grade: 5, quality: 0.42, experimental: 'special_fsd_heavy' },
+        { grade: 5, quality: 0.42, experimentalEffectSymbol: 'special_fsd_heavy' },
     );
     const imported = ShipLoadout.fromLoadout(partial.toLoadoutEvent());
     const expected = ShipLoadout.default('SideWinder').applyBlueprint(
         'FrameShiftDrive',
         'FSD_LongRange',
-        { grade: 5, quality: 1, experimental: 'special_fsd_heavy' },
+        { grade: 5, quality: 1, experimentalEffectSymbol: 'special_fsd_heavy' },
     );
 
     const result = imported.completeEngineeringGrade('FrameShiftDrive');
@@ -5379,7 +5393,7 @@ test('completeEngineeringGrade recomputes imported ordinary and Mercenary rolls 
     )!;
     const mercenary = ShipLoadout.empty('Anaconda')
         .setPreEngineeredVariant('PowerDistributor', variant)
-        .applyBlueprint('PowerDistributor', variant.blueprint, { grade: 2, quality: 0.5 });
+        .applyBlueprint('PowerDistributor', variant.blueprintSymbol, { grade: 2, quality: 0.5 });
     assert.equal(mercenary.completeEngineeringGrade('PowerDistributor').kind, 'normalized');
     assert.equal(mercenary.fittedModuleAt('PowerDistributor')!.engineering!.Quality, 1);
     assert.equal(mercenary.fittedModuleAt('PowerDistributor')!.preEngineeredVariant, variant);
@@ -5389,7 +5403,7 @@ test('completeEngineeringGrade recomputes imported ordinary and Mercenary rolls 
         .applyBlueprint('MediumHardpoint1', 'Weapon_HighCapacity', {
             grade: 5,
             quality: 0.42,
-            experimental: 'special_overload_munitions',
+            experimentalEffectSymbol: 'special_overload_munitions',
         });
     const importedConverted = ShipLoadout.fromLoadout(converted.toLoadoutEvent());
     assert.equal(importedConverted.completeEngineeringGrade('MediumHardpoint1').kind, 'normalized');
@@ -5413,7 +5427,7 @@ test('completeEngineeringGrade rolls a completed roll that states no modifiers',
         .applyBlueprint('PowerPlant', 'PowerPlant_Armoured', {
             grade: 5,
             quality: 1,
-            experimental: 'special_powerplant_cooled',
+            experimentalEffectSymbol: 'special_powerplant_cooled',
         });
     assert.deepEqual(
         build.fittedModuleAt('PowerPlant')!.effectiveStats,
@@ -5570,7 +5584,7 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
                 Slot: 'FrameShiftDrive',
                 Item: fixedVariant.symbol,
                 Engineering: {
-                    BlueprintName: fixedVariant.blueprint,
+                    BlueprintName: fixedVariant.blueprintSymbol,
                     Level: fixedVariant.grade,
                     Quality: 0.5,
                     Modifiers: getPreEngineeredJournalModifiers(fixedVariant).slice(0, 1),
@@ -5583,7 +5597,7 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
     assert.equal(unidentifiedResult.code, 'unidentifiedPreEngineeredVariant');
 
     const miningLance = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
-        (candidate) => candidate.experimental === 'special_incendiary_rounds',
+        (candidate) => candidate.experimentalEffectSymbol === 'special_incendiary_rounds',
     )!;
     const lanceEvent = ShipLoadout.empty('Anaconda')
         .setPreEngineeredVariant('SmallHardpoint1', miningLance)
@@ -5599,7 +5613,7 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
     assert.equal(partialLance.completeEngineeringGrade('SmallHardpoint1').kind, 'normalized');
     assert.equal(
         partialLance.fittedModuleAt('SmallHardpoint1')!.engineering!.ExperimentalEffect,
-        miningLance.experimental,
+        miningLance.experimentalEffectSymbol,
     );
     assert.equal(partialLance.fittedModuleAt('SmallHardpoint1')!.preEngineeredVariant, miningLance);
 
@@ -5700,7 +5714,7 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
     const fitted = build.fittedModuleAt('PowerDistributor')!;
 
     assert.deepEqual(fitted.engineering, {
-        BlueprintName: variant.blueprint,
+        BlueprintName: variant.blueprintSymbol,
         Level: variant.grade,
         Quality: 1,
     });
@@ -5795,7 +5809,7 @@ test('blueprint and experimental aliases compound before journal presentation', 
         .setModule('Slot05_Size5', mod('Int_ShieldGenerator_Size5_Class5', INTERNAL_MODULES))
         .applyBlueprint('Slot05_Size5', 'ShieldGenerator_Reinforced', {
             grade: 5,
-            experimental: 'special_shield_health',
+            experimentalEffectSymbol: 'special_shield_health',
         });
 
     const fitted = build.fittedModuleAt('Slot05_Size5')!;
@@ -6140,19 +6154,20 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
         () => build.applyBlueprint('FrameShiftDrive', 42 as unknown as string, { grade: 5 }),
         {
             name: 'TypeError',
-            message: 'ShipLoadout.applyBlueprint: fdname must be a string, received number 42',
+            message:
+                'ShipLoadout.applyBlueprint: blueprintSymbol must be a string, received number 42',
         },
     );
     assert.throws(
         () =>
             build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
                 grade: 5,
-                experimental: 42 as unknown as string,
+                experimentalEffectSymbol: 42 as unknown as string,
             }),
         {
             name: 'TypeError',
             message:
-                'ShipLoadout.applyBlueprint: options.experimental must be a string, received number 42',
+                'ShipLoadout.applyBlueprint: options.experimentalEffectSymbol must be a string, received number 42',
         },
     );
     assert.throws(
@@ -6168,7 +6183,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
     assert.throws(
         () => build.applyBlueprint('Slot01_Size7', 42 as unknown as string, { grade: 5 }),
         {
-            message: /fdname must be a string/,
+            message: /blueprintSymbol must be a string/,
         },
     );
     // `options` belongs to the caller, so a property can answer differently on each
@@ -6182,7 +6197,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
     const swapExperimental = varying<unknown>('special_fsd_heavy', 42);
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
         grade: 5,
-        get experimental() {
+        get experimentalEffectSymbol() {
             return swapExperimental() as string;
         },
     });
@@ -6204,7 +6219,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
     assert.ok(
         build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
             grade: 5,
-            experimental: null as unknown as string,
+            experimentalEffectSymbol: null as unknown as string,
         }),
     );
     assert.equal(

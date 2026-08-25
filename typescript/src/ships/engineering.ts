@@ -166,7 +166,7 @@ export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
  * One engineering blueprint — its in-game display name and its per-grade data.
  *
  * @remarks
- * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier `fdname`; this is the record
+ * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier symbol; this is the record
  * that key maps to. Each member of `grades` carries modifier `features` and an optional
  * converted damage distribution (a blueprint need not define every grade `1`–`5`). A
  * journal id shared by two recipes is resolved against the fitted module by

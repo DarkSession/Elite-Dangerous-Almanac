@@ -164,7 +164,7 @@ test('engineering loads whole rounds in the clip and reserve', () => {
         build.applyBlueprint(roll.slot, roll.blueprint, {
             grade: roll.grade,
             quality: 1,
-            ...('experimental' in roll ? { experimental: roll.experimental } : {}),
+            ...('experimental' in roll ? { experimentalEffectSymbol: roll.experimental } : {}),
         });
         const engineered = build.fittedModuleAt(roll.slot)!;
         const label = `${roll.module} ${roll.blueprint} grade ${roll.grade}`;
@@ -336,7 +336,7 @@ test("Frontier's own engineered ammunition figures, against what this library co
         const simulated = ShipLoadout.empty(pinned.ship);
         if ('preEngineered' in pinned && pinned.preEngineered) {
             const variant = getPreEngineeredVariants(pinned.symbol).find(
-                (candidate) => candidate.blueprint === pinned.blueprint,
+                (candidate) => candidate.blueprintSymbol === pinned.blueprint,
             );
             assert.ok(variant, `${label}: missing pre-engineered variant`);
             simulated.setModule(pinned.slot, getPreEngineeredStats(variant)!);
@@ -345,7 +345,7 @@ test("Frontier's own engineered ammunition figures, against what this library co
             simulated.applyBlueprint(pinned.slot, pinned.blueprint, {
                 grade: pinned.grade,
                 quality: pinned.quality,
-                ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
+                ...(pinned.experimental ? { experimentalEffectSymbol: pinned.experimental } : {}),
             });
         }
         const rolled = simulated.fittedModuleAt(pinned.slot)!.ammunition!;

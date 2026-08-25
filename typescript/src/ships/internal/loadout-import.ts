@@ -359,9 +359,9 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         const catalogueVariantStats = variant ? getPreEngineeredStats(variant) : null;
         let variantStats = catalogueVariantStats;
         const retainsBakedExperimental =
-            variant?.experimental !== undefined &&
+            variant?.experimentalEffectSymbol !== undefined &&
             typeof engineering?.ExperimentalEffect === 'string' &&
-            variant.experimental.trim().toLowerCase() ===
+            variant.experimentalEffectSymbol.trim().toLowerCase() ===
                 engineering.ExperimentalEffect.trim().toLowerCase();
         if (
             variant &&
@@ -369,12 +369,13 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             !catalogueVariantStats.engineeringLocked &&
             !retainsBakedExperimental
         ) {
-            const { experimental: originalExperimental, ...withoutExperimental } = variant;
+            const { experimentalEffectSymbol: originalExperimental, ...withoutExperimental } =
+                variant;
             void originalExperimental;
             const currentExperimental = engineering?.ExperimentalEffect;
             const currentVariant =
                 typeof currentExperimental === 'string'
-                    ? { ...withoutExperimental, experimental: currentExperimental }
+                    ? { ...withoutExperimental, experimentalEffectSymbol: currentExperimental }
                     : withoutExperimental;
             // Seed the effect-free fixed article, then retain the complete primitive
             // inputs separately. Journal presentation omits recipe-only labels such as
@@ -413,23 +414,23 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         const exact = variants.find(
             (candidate) =>
                 candidate.engineeringLocked === true &&
-                candidate.blueprint.toLowerCase() === normalizedBlueprint &&
+                candidate.blueprintSymbol.toLowerCase() === normalizedBlueprint &&
                 candidate.grade === engineering.Level &&
-                candidate.experimental?.toLowerCase() === normalizedExperimental,
+                candidate.experimentalEffectSymbol?.toLowerCase() === normalizedExperimental,
         );
         const guardianBase = variants.find(
             (candidate) =>
                 candidate.engineeringLocked === true &&
-                candidate.blueprint.toLowerCase() === normalizedBlueprint &&
+                candidate.blueprintSymbol.toLowerCase() === normalizedBlueprint &&
                 candidate.grade === engineering.Level &&
-                candidate.experimental === undefined,
+                candidate.experimentalEffectSymbol === undefined,
         );
         const stats = exact
             ? getPreEngineeredStats(exact)
             : guardianBase && engineering.ExperimentalEffect !== undefined
               ? getPreEngineeredStats({
                     ...guardianBase,
-                    experimental: engineering.ExperimentalEffect,
+                    experimentalEffectSymbol: engineering.ExperimentalEffect,
                 })
               : builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
         if (stats) {

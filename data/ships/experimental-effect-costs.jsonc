@@ -1,6 +1,6 @@
 /*
  * Engineering **experimental-effect material costs** — the materials one application
- * consumes, keyed by the effect's Frontier `fdname`.
+ * consumes, keyed by the effect's Frontier symbol.
  *
  * Sources: EDSY eddb.js `expeffect`; combat-effect costs from the Inara registry.
  *

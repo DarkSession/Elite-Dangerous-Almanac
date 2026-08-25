@@ -87,8 +87,8 @@ interface EngineeringOptionsData {
 }
 
 interface PreEngineeredValue extends NamedSymbol {
-    readonly blueprint: string;
-    readonly experimental?: string;
+    readonly blueprintSymbol: string;
+    readonly experimentalEffectSymbol?: string;
     readonly acquisition: string;
 }
 
@@ -168,7 +168,10 @@ test('new display text stays aligned with its owning ships catalogues', () => {
                     (entry): entry is [string, NamedValue & { readonly description: string }] =>
                         entry[1].description !== undefined,
                 )
-                .map(([fdname, effect]) => [fdname, effect.description]),
+                .map(([experimentalEffectSymbol, effect]) => [
+                    experimentalEffectSymbol,
+                    effect.description,
+                ]),
         ),
     );
     assertEnglishNames(
@@ -177,8 +180,8 @@ test('new display text stays aligned with its owning ships catalogues', () => {
             variants.map((variant) => [
                 [
                     variant.symbol,
-                    variant.blueprint,
-                    variant.experimental ?? '',
+                    variant.blueprintSymbol,
+                    variant.experimentalEffectSymbol ?? '',
                     variant.acquisition,
                 ].join('|'),
                 variant.name,

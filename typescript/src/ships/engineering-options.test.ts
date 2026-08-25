@@ -86,11 +86,17 @@ test('no menu offers two blueprints the game writes the same way', () => {
     // this function would silently pick whichever came first.
     for (const [id, group] of Object.entries(ENGINEERING_OPTION_GROUPS)) {
         const seen = new Map<string, string>();
-        for (const fdname of group.blueprints) {
-            const journalName = (BLUEPRINT_JOURNAL_NAMES[fdname] ?? fdname).toLowerCase();
+        for (const blueprintSymbol of group.blueprints) {
+            const journalName = (
+                BLUEPRINT_JOURNAL_NAMES[blueprintSymbol] ?? blueprintSymbol
+            ).toLowerCase();
             const clash = seen.get(journalName);
-            assert.equal(clash, undefined, `${id}: ${fdname} and ${clash} are both ${journalName}`);
-            seen.set(journalName, fdname);
+            assert.equal(
+                clash,
+                undefined,
+                `${id}: ${blueprintSymbol} and ${clash} are both ${journalName}`,
+            );
+            seen.set(journalName, blueprintSymbol);
         }
     }
 });
@@ -98,11 +104,11 @@ test('no menu offers two blueprints the game writes the same way', () => {
 test('the journal-name catalogue contains only real recipe collisions', () => {
     assert.deepEqual(BLUEPRINT_JOURNAL_NAMES, engineeringFixture.journalNames.map);
     assert.ok(Object.isFrozen(BLUEPRINT_JOURNAL_NAMES));
-    for (const [fdname, journalName] of Object.entries(BLUEPRINT_JOURNAL_NAMES)) {
-        assert.notEqual(journalName.toLowerCase(), fdname.toLowerCase());
-        assert.ok(BLUEPRINTS[fdname], `${fdname} is not a blueprint`);
+    for (const [blueprintSymbol, journalName] of Object.entries(BLUEPRINT_JOURNAL_NAMES)) {
+        assert.notEqual(journalName.toLowerCase(), blueprintSymbol.toLowerCase());
+        assert.ok(BLUEPRINTS[blueprintSymbol], `${blueprintSymbol} is not a blueprint`);
         // The id it is written as is a real recipe in its own right — that is the collision.
-        assert.ok(BLUEPRINTS[journalName], `${fdname}: ${journalName}`);
+        assert.ok(BLUEPRINTS[journalName], `${blueprintSymbol}: ${journalName}`);
     }
 });
 
@@ -476,7 +482,8 @@ test('the final pre-engineered corpus entries are exactly the ones the fixture n
             isFinalGuardianWeaponEngineering(row.symbol, row.blueprint) ||
                 getPreEngineeredVariants(row.symbol).some(
                     (variant) =>
-                        variant.blueprint === row.blueprint && variant.acquisition !== 'mercenary',
+                        variant.blueprintSymbol === row.blueprint &&
+                        variant.acquisition !== 'mercenary',
                 ),
             `${row.symbol}: ${row.blueprint} is not recognised as a final article`,
         );
@@ -502,7 +509,7 @@ test('the engineering-menu lookups name themselves for a wrong-typed argument', 
         ],
         [
             () => getExperimentalsForBlueprint(42 as unknown as string),
-            'getExperimentalsForBlueprint: fdname',
+            'getExperimentalsForBlueprint: blueprintSymbol',
         ],
     ] as const) {
         assert.throws(call, {

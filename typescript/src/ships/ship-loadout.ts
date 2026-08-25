@@ -274,8 +274,8 @@ export interface ApplyBlueprintOptions {
      * reconstructed from its single reported quality; import its stated modifiers instead.
      */
     readonly quality?: number;
-    /** The experimental (special) effect's Frontier `fdname`, if any. */
-    readonly experimental?: string;
+    /** The experimental (special) effect's Frontier symbol, if any. */
+    readonly experimentalEffectSymbol?: string;
 }
 
 /** Stable reason {@link ShipLoadout.setExperimentalEffect} cannot perform an edit. */
@@ -293,18 +293,18 @@ export type ExperimentalEffectMutationCode =
 export interface ExperimentalEffectUpdated {
     /** Discriminator for an edit that changed the fitted module. */
     readonly kind: 'updated';
-    /** Effect id before the edit, or `null` when none was present. */
-    readonly previousExperimental: string | null;
-    /** Effect id after the edit, or `null` when it was removed. */
-    readonly experimental: string | null;
+    /** Effect symbol before the edit, or `null` when none was present. */
+    readonly previousExperimentalEffectSymbol: string | null;
+    /** Effect symbol after the edit, or `null` when it was removed. */
+    readonly experimentalEffectSymbol: string | null;
 }
 
 /** Effect-only edit that requested the fitted module's current effect. */
 export interface ExperimentalEffectUnchanged {
     /** Discriminator for a no-op edit. */
     readonly kind: 'unchanged';
-    /** Current effect id, or `null` when none is present. */
-    readonly experimental: string | null;
+    /** Current effect symbol, or `null` when none is present. */
+    readonly experimentalEffectSymbol: string | null;
 }
 
 /** Effect-only edit that cannot be performed losslessly. */
@@ -379,8 +379,8 @@ const engineeringNormalizationUnsupported = (
 ): EngineeringNormalizationUnsupported => deepFreeze({ kind: 'unsupported', code, params });
 /** A blueprint candidate for a module symbol, with its grades and availability route. */
 export interface AvailableBlueprint {
-    /** The blueprint's Frontier `fdname`, e.g. `"FSD_LongRange"`. */
-    readonly fdname: string;
+    /** The blueprint's Frontier symbol, e.g. `"FSD_LongRange"`. */
+    readonly blueprintSymbol: string;
     /** The grades the blueprint offers, ascending (e.g. `[1, 2, 3, 4, 5]`). */
     readonly grades: readonly number[];
     /**
@@ -1086,7 +1086,7 @@ export class ShipLoadout {
      *
      * declare const build: ShipLoadout;
      *
-     * build.availableBlueprints('FrameShiftDrive').map(({ fdname }) => fdname);
+     * build.availableBlueprints('FrameShiftDrive').map(({ blueprintSymbol }) => blueprintSymbol);
      * ```
      */
     availableBlueprints(slotKey: string): readonly AvailableBlueprint[] {
@@ -1470,17 +1470,17 @@ export class ShipLoadout {
      *
      * @param slotKey - The slot whose module to engineer, matched case-insensitively
      * (journal spelling).
-     * @param fdname - The blueprint recipe's Frontier `fdname`, e.g. `"FSD_LongRange"`.
+     * @param blueprintSymbol - The blueprint recipe's Frontier symbol, e.g. `"FSD_LongRange"`.
      * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
-     * (0–1, default 1), and optional `experimental` effect `fdname`. A nullish
+     * (0–1, default 1), and optional `experimental` effect symbol. A nullish
      * `experimental` means no effect, the same as leaving it out. Each is read once,
      * before anything is checked, so an accessor cannot answer the check and the use
      * differently.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
-     * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
-     * object, or `options.experimental` carries a value that is not a string — a nullish
+     * @throws {TypeError} If `slotKey` or `blueprintSymbol` is not a string, `options` is not an
+     * object, or `options.experimentalEffectSymbol` carries a value that is not a string — a nullish
      * one is no effect, not a wrong type. Also if the fitted module has no stats to
      * engineer, is final and accepts no further engineering, is not offered the blueprint
      * by its own menu, is not offered the experimental effect by it, or the id names a
@@ -1502,16 +1502,16 @@ export class ShipLoadout {
      * build.setModule('FrameShiftDrive', fsd)
      *      .applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
      *          grade: 5,
-     *          experimental: 'special_fsd_heavy',
+     *          experimentalEffectSymbol: 'special_fsd_heavy',
      *      });
      * BuildMetrics.of(build).maxJumpRange(); // uses the engineered optimal mass
      * ```
      */
-    applyBlueprint(slotKey: string, fdname: string, options: ApplyBlueprintOptions): this {
+    applyBlueprint(slotKey: string, blueprintSymbol: string, options: ApplyBlueprintOptions): this {
         // Both ids are checked before the build's state, so a wrong-typed one is named
         // rather than reported as whatever the slot happened to hold — and named here
         // rather than by whichever catalogue lookup reaches it first.
-        requireString(fdname, 'ShipLoadout.applyBlueprint: fdname');
+        requireString(blueprintSymbol, 'ShipLoadout.applyBlueprint: blueprintSymbol');
         if (options === null || typeof options !== 'object') {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: options must be an object with a grade, received ${describeValue(options)}`,
@@ -1524,10 +1524,10 @@ export class ShipLoadout {
         const wantedQuality = options.quality;
         // Nullish means no effect. Normalize it once so validation and all consumers read
         // the same value.
-        const wantedExperimental = options.experimental ?? undefined;
+        const wantedExperimental = options.experimentalEffectSymbol ?? undefined;
         requireStringIfPresent(
             wantedExperimental,
-            'ShipLoadout.applyBlueprint: options.experimental',
+            'ShipLoadout.applyBlueprint: options.experimentalEffectSymbol',
         );
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
@@ -1543,24 +1543,24 @@ export class ShipLoadout {
         }
         // Resolve before reading the grade, so the numbers folded are the ones this
         // module rolls rather than another family's — see the remarks above.
-        const recipe = resolveBlueprintForModule(module.Item, fdname);
+        const recipe = resolveBlueprintForModule(module.Item, blueprintSymbol);
         // Name both spellings once they differ, so an error about the recipe this module
         // rolls cannot read as an error about the id the caller passed.
         const named =
-            recipe === fdname
-                ? `"${truncate(fdname)}"`
-                : `"${truncate(fdname)}" (${truncate(recipe)} on this module)`;
+            recipe === blueprintSymbol
+                ? `"${truncate(blueprintSymbol)}"`
+                : `"${truncate(blueprintSymbol)}" (${truncate(recipe)} on this module)`;
         // A festive fixed variant reaches this method as a real journal identity that
         // names no craftable recipe. It is fitted as a pre-engineered variant, not applied
         // to an arbitrary stock module.
-        const written = fdname.trim().toLowerCase();
+        const written = blueprintSymbol.trim().toLowerCase();
         const resolved = recipe.trim().toLowerCase();
         if (
             getPreEngineeredVariants(module.Item).some(
                 (variant) =>
                     variant.acquisition === 'eventReward' &&
-                    (variant.blueprint.toLowerCase() === written ||
-                        variant.blueprint.toLowerCase() === resolved),
+                    (variant.blueprintSymbol.toLowerCase() === written ||
+                        variant.blueprintSymbol.toLowerCase() === resolved),
             )
         ) {
             throw new TypeError(
@@ -1602,7 +1602,7 @@ export class ShipLoadout {
         // catalogue answers `getBlueprintsForModule` and this gate. A module with no menu
         // may still be a grade-1 Mercenary article carrying a bespoke upgrade recipe;
         // `blueprintAvailableFor` knows that, so ask it before blaming the module.
-        if (!blueprintAvailableFor(module.Item, fdname)) {
+        if (!blueprintAvailableFor(module.Item, blueprintSymbol)) {
             const offered = [...blueprintRoutesFor(module.Item)].map(
                 ([blueprint, route]) => `${blueprint} (${route})`,
             );
@@ -1666,7 +1666,7 @@ export class ShipLoadout {
             }
         }
         const engineering: ModuleEngineering = {
-            BlueprintName: fdname,
+            BlueprintName: blueprintSymbol,
             Level: wantedGrade,
             Quality: quality,
             ...(wantedExperimental !== undefined ? { ExperimentalEffect: wantedExperimental } : {}),
@@ -1690,7 +1690,7 @@ export class ShipLoadout {
      * leave the build unchanged and return stable structured data.
      *
      * @param slotKey - The engineered slot, matched case-insensitively.
-     * @param experimental - Experimental-effect `fdname`, or `null` to remove the effect.
+     * @param experimental - Experimental-effect symbol, or `null` to remove the effect.
      * @returns A frozen result identifying an update, no-op or lossless refusal.
      * @throws {TypeError} If `slotKey` or a non-null `experimental` is not a string.
      * @example
@@ -1742,7 +1742,7 @@ export class ShipLoadout {
                 wanted !== null &&
                 previous.trim().toLowerCase() === wanted.trim().toLowerCase())
         ) {
-            return deepFreeze({ kind: 'unchanged', experimental: previous });
+            return deepFreeze({ kind: 'unchanged', experimentalEffectSymbol: previous });
         }
 
         const variant = identifyPreEngineeredVariant(module);
@@ -1757,8 +1757,9 @@ export class ShipLoadout {
                 });
             }
             const restoresBakedEffect =
-                variant?.experimental !== undefined &&
-                variant.experimental.trim().toLowerCase() === wanted.trim().toLowerCase();
+                variant?.experimentalEffectSymbol !== undefined &&
+                variant.experimentalEffectSymbol.trim().toLowerCase() ===
+                    wanted.trim().toLowerCase();
             if (!experimentalAvailableFor(module.Item, wanted) && !restoresBakedEffect) {
                 return experimentalEffectUnsupported('unsupportedExperimentalEffect', {
                     slot: module.Slot,
@@ -1784,10 +1785,12 @@ export class ShipLoadout {
                 });
             }
 
-            const { experimental: originalEffect, ...withoutEffect } = variant;
+            const { experimentalEffectSymbol: originalEffect, ...withoutEffect } = variant;
             void originalEffect;
             const adjusted: PreEngineeredVariant =
-                wanted === null ? withoutEffect : { ...withoutEffect, experimental: wanted };
+                wanted === null
+                    ? withoutEffect
+                    : { ...withoutEffect, experimentalEffectSymbol: wanted };
             const resolved = getPreEngineeredStats(withoutEffect);
             if (!resolved) {
                 return experimentalEffectUnsupported('unsupportedEngineering', {
@@ -1866,14 +1869,14 @@ export class ShipLoadout {
             this.applyBlueprint(module.Slot, blueprint, {
                 grade,
                 quality,
-                ...(wanted === null ? {} : { experimental: wanted }),
+                ...(wanted === null ? {} : { experimentalEffectSymbol: wanted }),
             });
         }
 
         return deepFreeze({
             kind: 'updated',
-            previousExperimental: previous,
-            experimental: wanted,
+            previousExperimentalEffectSymbol: previous,
+            experimentalEffectSymbol: wanted,
         });
     }
 
@@ -1965,8 +1968,9 @@ export class ShipLoadout {
         }
         const variant = identifyPreEngineeredVariant(module);
         const restoresBakedEffect =
-            variant?.experimental !== undefined &&
-            variant.experimental.trim().toLowerCase() === experimental?.trim().toLowerCase();
+            variant?.experimentalEffectSymbol !== undefined &&
+            variant.experimentalEffectSymbol.trim().toLowerCase() ===
+                experimental?.trim().toLowerCase();
         if (
             experimental !== null &&
             !experimentalAvailableFor(module.Item, experimental) &&
@@ -1996,10 +2000,12 @@ export class ShipLoadout {
                 });
             }
 
-            const { experimental: originalEffect, ...withoutEffect } = variant;
+            const { experimentalEffectSymbol: originalEffect, ...withoutEffect } = variant;
             void originalEffect;
             const adjusted: PreEngineeredVariant =
-                experimental === null ? withoutEffect : { ...withoutEffect, experimental };
+                experimental === null
+                    ? withoutEffect
+                    : { ...withoutEffect, experimentalEffectSymbol: experimental };
             const resolved = getPreEngineeredStats(withoutEffect);
             if (!resolved) {
                 return engineeringNormalizationUnsupported('unsupportedEngineering', {
@@ -2060,7 +2066,7 @@ export class ShipLoadout {
             this.applyBlueprint(module.Slot, blueprint, {
                 grade,
                 quality: 1,
-                ...(experimental === null ? {} : { experimental }),
+                ...(experimental === null ? {} : { experimentalEffectSymbol: experimental }),
             });
         }
 
@@ -2092,7 +2098,7 @@ export class ShipLoadout {
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
      * const festive = getPreEngineeredVariants('Hpt_FlakMortar_Turret_Medium')
-     *     .find((variant) => variant.blueprint === 'Decorative_Red')!;
+     *     .find((variant) => variant.blueprintSymbol === 'Decorative_Red')!;
      * const build = ShipLoadout.empty('Krait_MkII')
      *     .setPreEngineeredVariant('MediumHardpoint1', festive);
      * build.fittedModuleAt('MediumHardpoint1')?.effectiveStats?.damage; // -> 0.34
@@ -2105,42 +2111,47 @@ export class ShipLoadout {
             );
         }
         requireString(variant.symbol, 'ShipLoadout.setPreEngineeredVariant: variant.symbol');
-        requireString(variant.blueprint, 'ShipLoadout.setPreEngineeredVariant: variant.blueprint');
+        requireString(
+            variant.blueprintSymbol,
+            'ShipLoadout.setPreEngineeredVariant: variant.blueprintSymbol',
+        );
         requireString(
             variant.acquisition,
             'ShipLoadout.setPreEngineeredVariant: variant.acquisition',
         );
         requireStringIfPresent(
-            variant.experimental,
-            'ShipLoadout.setPreEngineeredVariant: variant.experimental',
+            variant.experimentalEffectSymbol,
+            'ShipLoadout.setPreEngineeredVariant: variant.experimentalEffectSymbol',
         );
         const known = getPreEngineeredVariants(variant.symbol).find(
             (candidate) =>
-                candidate.blueprint.toLowerCase() === variant.blueprint.toLowerCase() &&
+                candidate.blueprintSymbol.toLowerCase() === variant.blueprintSymbol.toLowerCase() &&
                 candidate.grade === variant.grade &&
-                (candidate.experimental?.toLowerCase() ?? '') ===
-                    (variant.experimental?.toLowerCase() ?? '') &&
+                (candidate.experimentalEffectSymbol?.toLowerCase() ?? '') ===
+                    (variant.experimentalEffectSymbol?.toLowerCase() ?? '') &&
                 candidate.acquisition === variant.acquisition,
         );
         if (!known) {
             throw new RangeError(
-                `ShipLoadout.setPreEngineeredVariant: no catalogued variant "${truncate(variant.blueprint)}" for module "${truncate(variant.symbol)}"`,
+                `ShipLoadout.setPreEngineeredVariant: no catalogued variant "${truncate(variant.blueprintSymbol)}" for module "${truncate(variant.symbol)}"`,
             );
         }
         const stats = getPreEngineeredStats(known)!;
         const unresolved = unresolvedModifiers(known);
         if (unresolved.length > 0) {
             throw new TypeError(
-                `ShipLoadout.setPreEngineeredVariant: cannot resolve "${truncate(variant.blueprint)}" for module "${truncate(variant.symbol)}"; missing base stats for ${unresolved.join(', ')}`,
+                `ShipLoadout.setPreEngineeredVariant: cannot resolve "${truncate(variant.blueprintSymbol)}" for module "${truncate(variant.symbol)}"; missing base stats for ${unresolved.join(', ')}`,
             );
         }
         this.setModule(slotKey, stats);
         const module = this.#fittedModuleFor(slotKey)!;
         const engineering: ModuleEngineering = {
-            BlueprintName: known.blueprint,
+            BlueprintName: known.blueprintSymbol,
             Level: known.grade,
             Quality: 1,
-            ...(known.experimental === undefined ? {} : { ExperimentalEffect: known.experimental }),
+            ...(known.experimentalEffectSymbol === undefined
+                ? {}
+                : { ExperimentalEffect: known.experimentalEffectSymbol }),
             ...(known.modifiers?.length
                 ? { Modifiers: getPreEngineeredJournalModifiers(known) }
                 : {}),

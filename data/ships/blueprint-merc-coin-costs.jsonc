@@ -1,6 +1,6 @@
 /*
  * Engineering **blueprint Merc-Coin costs** — the Merc Coin one roll charges at each
- * grade, keyed by the blueprint's Frontier `fdname`.
+ * grade, keyed by the blueprint's Frontier symbol.
  *
  * Sources: the Inara blueprint registry, whose crafting-cost table lists a Merc Coin
  * amount beside the materials on every recipe that charges one.

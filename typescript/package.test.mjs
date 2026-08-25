@@ -221,7 +221,7 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
     const festive = getPreEngineeredVariants('Hpt_FlakMortar_Turret_Medium').find(
-        (variant) => variant.blueprint === 'Decorative_Green',
+        (variant) => variant.blueprintSymbol === 'Decorative_Green',
     );
     assert.ok(festive);
     assert.deepEqual(getPreEngineeredJournalModifiers(festive), [

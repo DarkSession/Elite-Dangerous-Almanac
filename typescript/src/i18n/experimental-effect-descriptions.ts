@@ -12,12 +12,12 @@ const DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(descriptionsData a
 /**
  * Look up an experimental effect's display description.
  *
- * @param fdname - Frontier's experimental-effect id. Matching ignores case and
+ * @param experimentalEffectSymbol - Frontier's experimental-effect id. Matching ignores case and
  * surrounding whitespace.
  * @param locale - A BCP 47 locale. The current source supplies canonical English only.
  * @returns The localized description, or `null` when the effect is unknown, has no
  * source description, or the requested locale is unavailable.
- * @throws {TypeError} If a present `fdname` or `locale` is not a string.
+ * @throws {TypeError} If a present `experimentalEffectSymbol` or `locale` is not a string.
  * @example
  * ```ts
  * import { getExperimentalEffectDescription } from '@elite-dangerous-almanac/core/i18n/experimental-effect-descriptions';
@@ -26,12 +26,15 @@ const DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(descriptionsData a
  * getExperimentalEffectDescription('special_auto_loader', 'fr'); // -> null
  * ```
  */
-export function getExperimentalEffectDescription(fdname: string, locale: string): string | null {
+export function getExperimentalEffectDescription(
+    experimentalEffectSymbol: string,
+    locale: string,
+): string | null {
     return getLocalizedName(
         DESCRIPTIONS,
-        fdname,
+        experimentalEffectSymbol,
         locale,
         'getExperimentalEffectDescription',
-        'fdname',
+        'experimentalEffectSymbol',
     );
 }

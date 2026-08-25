@@ -130,7 +130,7 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 const launcher = getModulesByName('Remote Release Flak Launcher')
     .find((module) => module.mount === 'Turreted')!;
 const red = getPreEngineeredVariants(launcher.symbol)
-    .find((variant) => variant.blueprint === 'Decorative_Red')!;
+    .find((variant) => variant.blueprintSymbol === 'Decorative_Red')!;
 const festive = ShipLoadout.empty('Krait_MkII').setPreEngineeredVariant(
     'MediumHardpoint1',
     red,

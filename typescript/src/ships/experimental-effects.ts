@@ -1,6 +1,6 @@
 /**
  * The **experimental-effect mechanics catalogue** — each engineering special effect's
- * stat modifiers and qualitative behavior, keyed by the effect's Frontier `fdname` (as it
+ * stat modifiers and qualitative behavior, keyed by the effect's Frontier symbol (as it
  * appears in a journal `Loadout` event's `Engineering.ExperimentalEffect`).
  *
  * Its own module (and data file) so consumers who never engineer a build do not bundle
@@ -11,7 +11,7 @@
  * `ships/experimental-effect-costs`, so applying an effect does not bundle what it costs —
  * though `ShipLoadout` carries both, since it prices a build as well as engineering one.
  *
- * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
+ * Keys are Frontier symbols — the exact strings a journal `Loadout` event carries in
  * `Engineering.ExperimentalEffect` (e.g. `"special_fsd_heavy"`), not the in-game
  * display names. Enumerate the available effects with `Object.keys(EXPERIMENTAL_EFFECTS)`.
  *
@@ -27,7 +27,7 @@ import { findByRawKey } from '../internal/registry-index.js';
 import type { ExperimentalEffect } from './engineering.js';
 
 /**
- * Every experimental effect, keyed by Frontier `fdname` (e.g. `"special_fsd_heavy"`).
+ * Every experimental effect, keyed by Frontier symbol (e.g. `"special_fsd_heavy"`).
  * Each carries its `modifiers` (stat contributions), optional damage conversion, and
  * optional qualitative description.
  *
@@ -44,14 +44,14 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
 );
 
 /**
- * Look up an experimental effect by its Frontier `fdname`, case-insensitively.
+ * Look up an experimental effect by its Frontier symbol, case-insensitively.
  *
- * @param fdname - The effect id, e.g. `"special_fsd_heavy"`. Leading/trailing
+ * @param experimentalEffectSymbol - The effect id, e.g. `"special_fsd_heavy"`. Leading/trailing
  * whitespace and case are ignored.
  * @returns The effect record — its display `name`, modifier contributions, optional
  * `damageDistribution`, and optional qualitative description — or `null` if unknown.
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `experimentalEffectSymbol` is present and not a string. A nullish
+ * `experimentalEffectSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalEffect } from '@elite-dangerous-almanac/core/ships/experimental-effects';
@@ -61,6 +61,10 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
  * effect?.modifiers; // -> [{ label: 'Integrity', ... }, ...]
  * ```
  */
-export function getExperimentalEffect(fdname: string): ExperimentalEffect | null {
-    return findByRawKey(EXPERIMENTAL_EFFECTS, fdname, 'getExperimentalEffect: fdname');
+export function getExperimentalEffect(experimentalEffectSymbol: string): ExperimentalEffect | null {
+    return findByRawKey(
+        EXPERIMENTAL_EFFECTS,
+        experimentalEffectSymbol,
+        'getExperimentalEffect: experimentalEffectSymbol',
+    );
 }

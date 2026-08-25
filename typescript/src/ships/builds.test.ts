@@ -247,7 +247,7 @@ test('every applicable build declaration engineers through applyBlueprint', () =
                     loadout.applyBlueprint(entry.slot, engineering.blueprint, {
                         grade: engineering.grade,
                         ...(engineering.experimental !== undefined
-                            ? { experimental: engineering.experimental }
+                            ? { experimentalEffectSymbol: engineering.experimental }
                             : {}),
                     }),
                 );
@@ -258,7 +258,7 @@ test('every applicable build declaration engineers through applyBlueprint', () =
                 loadout.applyBlueprint(entry.slot, engineering.blueprint, {
                     grade: engineering.grade,
                     ...(engineering.experimental !== undefined
-                        ? { experimental: engineering.experimental }
+                        ? { experimentalEffectSymbol: engineering.experimental }
                         : {}),
                 });
             } catch (error) {

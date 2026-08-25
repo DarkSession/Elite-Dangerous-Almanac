@@ -264,8 +264,8 @@ type FixtureI18nDisplayText = {
         locale: string;
         variant: {
             acquisition: string;
-            blueprint: string;
-            experimental?: null | string;
+            blueprintSymbol: string;
+            experimentalEffectSymbol?: null | string;
             symbol: string;
         };
     }[];
@@ -3855,9 +3855,9 @@ type FixtureShipsPreEngineered = {
     burstIntervalVariants: {
         count: number;
         variants: {
-            blueprint: string;
+            blueprintSymbol: string;
             burstInterval: number;
-            experimental: string | null;
+            experimentalEffectSymbol: string | null;
             grade: number;
             rateOfFire: number;
             stockBurstInterval: number;
@@ -3905,15 +3905,15 @@ type FixtureShipsPreEngineered = {
         matches: {
             acquisition: string;
             appliedExperimental?: string;
-            blueprint: string;
-            experimental?: string;
+            blueprintSymbol: string;
+            experimentalEffectSymbol?: string;
             grade: number;
             slot: string;
             source: string;
             symbol: string;
         }[];
         mercenary: {
-            blueprint: string;
+            blueprintSymbol: string;
             mercCoinCost: number;
             purchaseGrade: number;
             symbol: string;
@@ -3962,9 +3962,9 @@ type FixtureShipsPreEngineered = {
     notPreEngineered: string[];
     records: {
         acquisition: string;
-        blueprint: string;
+        blueprintSymbol: string;
         engineeringLocked?: boolean;
-        experimental?: string;
+        experimentalEffectSymbol?: string;
         grade: number;
         mercCoinCost?: number;
         modifiers?: {
@@ -3981,7 +3981,7 @@ type FixtureShipsPreEngineered = {
                 ammoMaximum: number;
                 clipSize: number;
             };
-            blueprint: string;
+            blueprintSymbol: string;
             engineered: {
                 ammoMaximum: number;
                 burstRounds: number;
@@ -3998,7 +3998,7 @@ type FixtureShipsPreEngineered = {
                 mass: number;
                 optMass: number;
             };
-            blueprint: string;
+            blueprintSymbol: string;
             engineered: {
                 fsdHeatRate: number;
                 integrity: number;
@@ -4025,7 +4025,7 @@ type FixtureShipsPreEngineered = {
                 shotSpeed: number;
                 thermalLoad: number;
             };
-            blueprint: string;
+            blueprintSymbol: string;
             displayed: {
                 ammoMaximum: number;
                 armourPiercing: number;
@@ -4076,7 +4076,7 @@ type FixtureShipsPreEngineered = {
             unresolved: never[];
         };
         guardianShardMediumLongRange: {
-            blueprint: string;
+            blueprintSymbol: string;
             engineered: {
                 falloffRange: number;
                 maximumRange: number;
@@ -4087,13 +4087,13 @@ type FixtureShipsPreEngineered = {
         };
     };
     sameBlueprintTwice: {
-        blueprint: string;
+        blueprintSymbol: string;
         experimentals: string[];
         symbol: string;
     };
     sameTripleDifferentGrade: {
         acquisitions: string[];
-        blueprint: string;
+        blueprintSymbol: string;
         grades: number[];
         symbol: string;
     };

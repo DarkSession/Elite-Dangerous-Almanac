@@ -1,6 +1,6 @@
 /**
  * The **blueprint mechanics catalogue** — every engineering blueprint's per-grade stat
- * modifiers, keyed by the blueprint's Frontier `fdname`
+ * modifiers, keyed by the blueprint's Frontier symbol
  * (as it appears in a journal `Loadout` event's `Engineering.BlueprintName`).
  *
  * Its own module (and data file) so consumers who never engineer a build do not bundle
@@ -11,7 +11,7 @@
  * costs — though `ShipLoadout` carries both, since it prices a build as well as
  * engineering one.
  *
- * Keys are Frontier `fdname`s — normally the exact strings a journal `Loadout` event
+ * Keys are Frontier symbols — normally the exact strings a journal `Loadout` event
  * carries in `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display
  * names. **Three keys collide**: each is a recipe the game writes under an id another
  * record already answers to:
@@ -48,7 +48,7 @@ import type { Blueprint, BlueprintGrade } from './engineering.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
- * Every blueprint, keyed by Frontier `fdname` (e.g. `"FSD_LongRange"`). Each is a
+ * Every blueprint, keyed by Frontier symbol (e.g. `"FSD_LongRange"`). Each is a
  * {@link Blueprint} — its display `name` and its per-grade `grades`, where each grade
  * carries its `features` (modifiers) and optional converted `damageDistribution`.
  *
@@ -67,9 +67,9 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
 );
 
 /**
- * Look up a blueprint by its Frontier `fdname`, case-insensitively.
+ * Look up a blueprint by its Frontier symbol, case-insensitively.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`. Leading/trailing
+ * @param blueprintSymbol - The blueprint id, e.g. `"FSD_LongRange"`. Leading/trailing
  * whitespace and case are ignored.
  * @returns The blueprint (its `name` and `grades`), or `null` if this catalogue stores no
  * blueprint under that id.
@@ -80,25 +80,25 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * engineer — and are carried by the variants returned from
  * `getPreEngineeredVariants` in `ships/pre-engineered`. Their fixed modifiers still
  * change the fitted article's stats.
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `blueprintSymbol` is present and not a string. A nullish
+ * `blueprintSymbol` is a miss, answered the way an unrecognised one is.
  */
-export function getBlueprint(fdname: string): Blueprint | null {
-    return findByRawKey(BLUEPRINTS, fdname, 'getBlueprint: fdname');
+export function getBlueprint(blueprintSymbol: string): Blueprint | null {
+    return findByRawKey(BLUEPRINTS, blueprintSymbol, 'getBlueprint: blueprintSymbol');
 }
 
 /**
  * Look up one complete grade of a blueprint, case-insensitively.
  *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`. Leading/trailing
+ * @param blueprintSymbol - The blueprint id, e.g. `"FSD_LongRange"`. Leading/trailing
  * whitespace and case are ignored.
  * @param grade - The grade, `1`–`5`.
  * @returns The grade record — its modifier `features` and optional converted
  * `damageDistribution` — or `null` if the catalogue holds no such blueprint or grade.
  * See {@link getBlueprint} for what an absent blueprint can mean besides "unknown".
  * @throws {RangeError} If `grade` is not an integer from 1 through 5.
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `blueprintSymbol` is present and not a string. A nullish
+ * `blueprintSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintGrade } from '@elite-dangerous-almanac/core/ships/blueprints';
@@ -107,10 +107,10 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * grade?.features;  // -> [{ label: 'Integrity', ... }, ...]
  * ```
  */
-export function getBlueprintGrade(fdname: string, grade: number): BlueprintGrade | null {
-    requireStringIfPresent(fdname, 'getBlueprintGrade: fdname');
+export function getBlueprintGrade(blueprintSymbol: string, grade: number): BlueprintGrade | null {
+    requireStringIfPresent(blueprintSymbol, 'getBlueprintGrade: blueprintSymbol');
     if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
         throw new RangeError(`getBlueprintGrade: grade must be an integer in [1, 5]`);
     }
-    return getBlueprint(fdname)?.grades[String(grade)] ?? null;
+    return getBlueprint(blueprintSymbol)?.grades[String(grade)] ?? null;
 }

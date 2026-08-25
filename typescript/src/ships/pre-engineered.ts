@@ -105,15 +105,15 @@ export interface PreEngineeredVariant {
      * against it prices ordinary engineering rather than the reward. Read `modifiers`
      * for what the article actually carries.
      */
-    readonly blueprint: string;
+    readonly blueprintSymbol: string;
     /** The engineering grade already applied (1–5). */
     readonly grade: number;
     /**
-     * The experimental effect's Frontier `fdname`, e.g.
+     * The experimental effect's Frontier symbol, e.g.
      * `"special_feedback_cascade_cooled"`. Joins to `EXPERIMENTAL_EFFECTS`. Absent when
      * the variant carries none.
      */
-    readonly experimental?: string;
+    readonly experimentalEffectSymbol?: string;
     /** Where the variant comes from. */
     readonly acquisition: PreEngineeredAcquisition;
     /**
@@ -161,7 +161,7 @@ export interface PreEngineeredVariant {
  * PRE_ENGINEERED_MODULES.length; // -> 76
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
- * //      blueprint: 'AbrasionBlaster_FarReaching', grade: 1,
+ * //      blueprintSymbol: 'AbrasionBlaster_FarReaching', grade: 1,
  * //      acquisition: 'mercenary', mercCoinCost: 400 }
  * ```
  */
@@ -185,7 +185,7 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  * ```ts
  * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
  *
- * getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').map((v) => v.blueprint);
+ * getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').map((v) => v.blueprintSymbol);
  * // -> ['SeekerMissileRack_Drag',
  * //     'SeekerMissileRack_LightWeightThermal',
  * //     'SeekerMissileRackMedium_Lockdown',

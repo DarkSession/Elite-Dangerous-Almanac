@@ -7,7 +7,7 @@
     {
       "variant": {
         "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
-        "blueprint": "AbrasionBlaster_FarReaching",
+        "blueprintSymbol": "AbrasionBlaster_FarReaching",
         "acquisition": "mercenary"
       },
       "locale": "de-DE",
@@ -16,7 +16,7 @@
     {
       "variant": {
         "symbol": "Hpt_FlakMortar_Turret_Medium",
-        "blueprint": "Decorative_Red",
+        "blueprintSymbol": "Decorative_Red",
         "acquisition": "eventReward"
       },
       "locale": "fr",
@@ -25,8 +25,8 @@
     {
       "variant": {
         "symbol": "Hpt_FlakMortar_Turret_Medium",
-        "blueprint": "Decorative_Red",
-        "experimental": null,
+        "blueprintSymbol": "Decorative_Red",
+        "experimentalEffectSymbol": null,
         "acquisition": "eventReward"
       },
       "locale": "en",
@@ -35,8 +35,8 @@
     {
       "variant": {
         "symbol": "Hpt_Railgun_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
-        "experimental": "special_feedback_cascade_cooled",
+        "blueprintSymbol": "Weapon_HighCapacity",
+        "experimentalEffectSymbol": "special_feedback_cascade_cooled",
         "acquisition": "communityGoal"
       },
       "locale": "de",
@@ -45,8 +45,8 @@
     {
       "variant": {
         "symbol": "Hpt_Railgun_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
-        "experimental": "special_super_penetrator",
+        "blueprintSymbol": "Weapon_HighCapacity",
+        "experimentalEffectSymbol": "special_super_penetrator",
         "acquisition": "communityGoal"
       },
       "locale": "en",

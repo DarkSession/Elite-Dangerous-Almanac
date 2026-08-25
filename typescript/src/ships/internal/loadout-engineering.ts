@@ -79,8 +79,8 @@ export function missingBaseLabels(
  *
  * @internal
  */
-function recipeSignature(fdname: string): string | null {
-    const blueprint = getBlueprint(fdname);
+function recipeSignature(blueprintSymbol: string): string | null {
+    const blueprint = getBlueprint(blueprintSymbol);
     if (!blueprint) return null;
     const grades = Object.entries(blueprint.grades)
         .map(
@@ -96,7 +96,8 @@ function recipeSignature(fdname: string): string | null {
 }
 
 /** Frontier's family-agnostic spelling of a modification, e.g. `Misc_LightWeight`. */
-const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().startsWith('misc_');
+const isGenericSpelling = (blueprintSymbol: string): boolean =>
+    blueprintSymbol.toLowerCase().startsWith('misc_');
 
 /**
  * Whether a module is sold carrying this recipe in a form that can still be engineered.
@@ -126,7 +127,7 @@ const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().star
 function isSoldWithBlueprint(item: string, wanted: string): boolean {
     return getPreEngineeredVariants(item).some(
         (variant) =>
-            variant.acquisition === 'mercenary' && variant.blueprint.toLowerCase() === wanted,
+            variant.acquisition === 'mercenary' && variant.blueprintSymbol.toLowerCase() === wanted,
     );
 }
 
@@ -139,10 +140,11 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  */
 export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableBlueprint['route']> {
     const routes = new Map<string, AvailableBlueprint['route']>();
-    for (const fdname of getBlueprintsForModule(item)) routes.set(fdname, 'ordinary');
+    for (const blueprintSymbol of getBlueprintsForModule(item))
+        routes.set(blueprintSymbol, 'ordinary');
     for (const variant of getPreEngineeredVariants(item)) {
-        if (variant.acquisition === 'mercenary' && !routes.has(variant.blueprint)) {
-            routes.set(variant.blueprint, 'mercenary');
+        if (variant.acquisition === 'mercenary' && !routes.has(variant.blueprintSymbol)) {
+            routes.set(variant.blueprintSymbol, 'mercenary');
         }
     }
     return routes;
@@ -209,10 +211,10 @@ export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableB
  *
  * @internal
  */
-export function blueprintAvailableFor(item: string, fdname: string): boolean {
+export function blueprintAvailableFor(item: string, blueprintSymbol: string): boolean {
     const offered = getBlueprintsForModule(item);
-    const asWritten = normalizeKey(fdname, 'ShipLoadout.applyBlueprint: fdname');
-    const resolved = resolveBlueprintForModule(item, fdname).trim();
+    const asWritten = normalizeKey(blueprintSymbol, 'ShipLoadout.applyBlueprint: blueprintSymbol');
+    const resolved = resolveBlueprintForModule(item, blueprintSymbol).trim();
     const wanted = resolved.toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
     // Both spellings, so resolving cannot hide a sale recorded under the other one.
@@ -235,8 +237,11 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
  *
  * @internal
  */
-export function experimentalAvailableFor(item: string, fdname: string): boolean {
-    const wanted = normalizeKey(fdname, 'ShipLoadout.applyBlueprint: options.experimental');
+export function experimentalAvailableFor(item: string, experimentalEffectSymbol: string): boolean {
+    const wanted = normalizeKey(
+        experimentalEffectSymbol,
+        'ShipLoadout.applyBlueprint: options.experimentalEffectSymbol',
+    );
     return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
 }
 
@@ -333,7 +338,7 @@ export function ordinaryEngineeringProof(
     const fixedCandidate = getPreEngineeredVariants(item).some(
         (candidate) =>
             candidate.acquisition !== 'mercenary' &&
-            candidate.blueprint.trim().toLowerCase() === recipe.trim().toLowerCase(),
+            candidate.blueprintSymbol.trim().toLowerCase() === recipe.trim().toLowerCase(),
     );
     if (!fixedCandidate) return 'notFixedCandidate';
 
@@ -705,15 +710,15 @@ export function availableBlueprintsFor(
     if (!engineerable) return [];
     const { stats, base } = engineerable;
     const available: AvailableBlueprint[] = [];
-    for (const [fdname, route] of blueprintRoutesFor(item)) {
-        const blueprint = BLUEPRINTS[fdname];
+    for (const [blueprintSymbol, route] of blueprintRoutesFor(item)) {
+        const blueprint = BLUEPRINTS[blueprintSymbol];
         if (!blueprint) continue;
         const grades = Object.entries(blueprint.grades)
             .filter(([, grade]) => missingBaseLabels(stats, base, grade.features).length === 0)
             .map(([grade]) => Number(grade))
             .filter(Number.isFinite)
             .sort((a, b) => a - b);
-        if (grades.length > 0) available.push({ fdname, grades, route });
+        if (grades.length > 0) available.push({ blueprintSymbol, grades, route });
     }
     return available;
 }
@@ -726,8 +731,8 @@ export function availableExperimentalsFor(
     const engineerable = engineerableBase(item, statsOverride);
     if (!engineerable) return [];
     const { stats, base } = engineerable;
-    return getExperimentalsForModule(item).filter((fdname) => {
-        const effect = EXPERIMENTAL_EFFECTS[fdname];
+    return getExperimentalsForModule(item).filter((experimentalEffectSymbol) => {
+        const effect = EXPERIMENTAL_EFFECTS[experimentalEffectSymbol];
         return (
             effect !== undefined && missingBaseLabels(stats, base, effect.modifiers).length === 0
         );

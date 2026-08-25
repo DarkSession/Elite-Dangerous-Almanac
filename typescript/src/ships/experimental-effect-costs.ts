@@ -18,7 +18,7 @@ import { findByRawKey } from '../internal/registry-index.js';
 import type { EngineeringMaterial } from './engineering.js';
 
 /**
- * Every experimental effect's one-application material list, keyed by Frontier `fdname`.
+ * Every experimental effect's one-application material list, keyed by Frontier symbol.
  *
  * @remarks
  * Its ids exactly match `EXPERIMENTAL_EFFECTS` from `ships/experimental-effects`. The
@@ -44,11 +44,11 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
  * 25 blueprints whose {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost}
  * reports a non-zero `mercCoins`.
  *
- * @param fdname - The effect id, e.g. `"special_fsd_heavy"`, matched
+ * @param experimentalEffectSymbol - The effect id, e.g. `"special_fsd_heavy"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @returns The frozen material list, or `null` if the effect is unknown.
- * @throws {TypeError} If `fdname` is present and not a string. A nullish
- * `fdname` is a miss, answered the way an unrecognised one is.
+ * @throws {TypeError} If `experimentalEffectSymbol` is present and not a string. A nullish
+ * `experimentalEffectSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
@@ -57,6 +57,12 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
  * // -> [{ symbol: 'DisruptedWakeEchoes', ... }, ...]
  * ```
  */
-export function getExperimentalEffectCost(fdname: string): readonly EngineeringMaterial[] | null {
-    return findByRawKey(EXPERIMENTAL_EFFECT_COSTS, fdname, 'getExperimentalEffectCost: fdname');
+export function getExperimentalEffectCost(
+    experimentalEffectSymbol: string,
+): readonly EngineeringMaterial[] | null {
+    return findByRawKey(
+        EXPERIMENTAL_EFFECT_COSTS,
+        experimentalEffectSymbol,
+        'getExperimentalEffectCost: experimentalEffectSymbol',
+    );
 }

@@ -82,7 +82,7 @@ test('nullish identifiers are misses, while present non-strings are rejected', (
     assert.equal(getMicroResourceName(undefined as never, 'fr'), null);
     assert.throws(
         () => getBlueprintName(42 as never, 'en'),
-        /getBlueprintName: fdname must be a string/,
+        /getBlueprintName: blueprintSymbol must be a string/,
     );
 });
 

@@ -761,13 +761,13 @@
                 "additionalProperties": false,
                 "properties": {
                   "acquisition": { "type": "string" },
-                  "blueprint": { "type": "string" },
-                  "experimental": {
+                  "blueprintSymbol": { "type": "string" },
+                  "experimentalEffectSymbol": {
                     "anyOf": [{ "type": "null" }, { "type": "string" }]
                   },
                   "symbol": { "type": "string" }
                 },
-                "required": ["acquisition", "blueprint", "symbol"]
+                "required": ["acquisition", "blueprintSymbol", "symbol"]
               }
             },
             "required": ["expected", "locale", "variant"]
@@ -5412,9 +5412,9 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "blueprint": { "type": "string" },
+                  "blueprintSymbol": { "type": "string" },
                   "burstInterval": { "type": "number" },
-                  "experimental": {
+                  "experimentalEffectSymbol": {
                     "anyOf": [{ "type": "string" }, { "type": "null" }]
                   },
                   "grade": { "type": "integer" },
@@ -5423,9 +5423,9 @@
                   "symbol": { "type": "string" }
                 },
                 "required": [
-                  "blueprint",
+                  "blueprintSymbol",
                   "burstInterval",
-                  "experimental",
+                  "experimentalEffectSymbol",
                   "grade",
                   "rateOfFire",
                   "stockBurstInterval",
@@ -5516,8 +5516,8 @@
                 "properties": {
                   "acquisition": { "type": "string" },
                   "appliedExperimental": { "type": "string" },
-                  "blueprint": { "type": "string" },
-                  "experimental": { "type": "string" },
+                  "blueprintSymbol": { "type": "string" },
+                  "experimentalEffectSymbol": { "type": "string" },
                   "grade": { "type": "integer" },
                   "slot": { "type": "string" },
                   "source": { "type": "string" },
@@ -5525,7 +5525,7 @@
                 },
                 "required": [
                   "acquisition",
-                  "blueprint",
+                  "blueprintSymbol",
                   "grade",
                   "slot",
                   "source",
@@ -5537,14 +5537,14 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "blueprint": { "type": "string" },
+                "blueprintSymbol": { "type": "string" },
                 "mercCoinCost": { "type": "integer" },
                 "purchaseGrade": { "type": "integer" },
                 "symbol": { "type": "string" },
                 "upgradedGrade": { "type": "integer" }
               },
               "required": [
-                "blueprint",
+                "blueprintSymbol",
                 "mercCoinCost",
                 "purchaseGrade",
                 "symbol",
@@ -5651,9 +5651,9 @@
             "additionalProperties": false,
             "properties": {
               "acquisition": { "type": "string" },
-              "blueprint": { "type": "string" },
+              "blueprintSymbol": { "type": "string" },
               "engineeringLocked": { "type": "boolean" },
-              "experimental": { "type": "string" },
+              "experimentalEffectSymbol": { "type": "string" },
               "grade": { "type": "integer" },
               "mercCoinCost": { "type": "integer" },
               "modifiers": {
@@ -5663,7 +5663,13 @@
               "name": { "type": "string" },
               "symbol": { "type": "string" }
             },
-            "required": ["acquisition", "blueprint", "grade", "name", "symbol"]
+            "required": [
+              "acquisition",
+              "blueprintSymbol",
+              "grade",
+              "name",
+              "symbol"
+            ]
           }
         },
         "resolved": {
@@ -5675,7 +5681,7 @@
               "additionalProperties": false,
               "properties": {
                 "base": { "$ref": "#/definitions/shared58a45d8295b8" },
-                "blueprint": { "type": "string" },
+                "blueprintSymbol": { "type": "string" },
                 "engineered": {
                   "type": "object",
                   "additionalProperties": false,
@@ -5692,7 +5698,7 @@
               },
               "required": [
                 "base",
-                "blueprint",
+                "blueprintSymbol",
                 "engineered",
                 "grade",
                 "note",
@@ -5714,7 +5720,7 @@
                   },
                   "required": ["fsdHeatRate", "integrity", "mass", "optMass"]
                 },
-                "blueprint": { "type": "string" },
+                "blueprintSymbol": { "type": "string" },
                 "engineered": {
                   "type": "object",
                   "additionalProperties": false,
@@ -5731,7 +5737,7 @@
               },
               "required": [
                 "base",
-                "blueprint",
+                "blueprintSymbol",
                 "engineered",
                 "symbol",
                 "unresolved"
@@ -5777,7 +5783,7 @@
                     "thermalLoad"
                   ]
                 },
-                "blueprint": { "type": "string" },
+                "blueprintSymbol": { "type": "string" },
                 "displayed": {
                   "type": "object",
                   "additionalProperties": false,
@@ -5885,7 +5891,7 @@
               },
               "required": [
                 "base",
-                "blueprint",
+                "blueprintSymbol",
                 "displayed",
                 "displayedChanges",
                 "engineered",
@@ -5899,7 +5905,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "blueprint": { "type": "string" },
+                "blueprintSymbol": { "type": "string" },
                 "engineered": {
                   "type": "object",
                   "additionalProperties": false,
@@ -5913,7 +5919,7 @@
                 "grade": { "type": "integer" },
                 "symbol": { "type": "string" }
               },
-              "required": ["blueprint", "engineered", "grade", "symbol"]
+              "required": ["blueprintSymbol", "engineered", "grade", "symbol"]
             }
           },
           "required": [
@@ -5927,22 +5933,22 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "blueprint": { "type": "string" },
+            "blueprintSymbol": { "type": "string" },
             "experimentals": { "type": "array", "items": { "type": "string" } },
             "symbol": { "type": "string" }
           },
-          "required": ["blueprint", "experimentals", "symbol"]
+          "required": ["blueprintSymbol", "experimentals", "symbol"]
         },
         "sameTripleDifferentGrade": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
             "acquisitions": { "type": "array", "items": { "type": "string" } },
-            "blueprint": { "type": "string" },
+            "blueprintSymbol": { "type": "string" },
             "grades": { "type": "array", "items": { "type": "integer" } },
             "symbol": { "type": "string" }
           },
-          "required": ["acquisitions", "blueprint", "grades", "symbol"]
+          "required": ["acquisitions", "blueprintSymbol", "grades", "symbol"]
         }
       },
       "required": [

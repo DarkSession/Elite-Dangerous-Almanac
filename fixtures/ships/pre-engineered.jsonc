@@ -4,11 +4,11 @@
  * Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already
  * modified, whether bought from the Merc-Coin shop, awarded by an event or community goal, or
  * unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs
- * a base module `symbol` (joins to the module catalogues) with the journal `blueprint` identity
- * baked in, the `grade` already applied, and an optional `experimental`. The three festive event
+ * a base module `symbol` (joins to the module catalogues) with the journal `blueprintSymbol` identity
+ * baked in, the `grade` already applied, and an optional `experimentalEffectSymbol`. The three festive event
  * rewards carry grade-5 `Decorative_*` identities. `engineeringLocked` marks final articles that
  * accept no further engineering: the seven Guardian-weapon variants and the five fixed Enzyme/AX
- * variants. No narrower key than the (symbol, blueprint, grade, experimental)
+ * variants. No narrower key than the (symbol, blueprintSymbol, grade, experimentalEffectSymbol)
  * tuple is unique across the catalogue — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the
  * catalogue size and its split by acquisition; `records` pins individual pairings;
@@ -108,117 +108,117 @@
     "variants": [
       {
         "symbol": "Hpt_Slugshot_Gimbal_Small",
-        "blueprint": "Weapon_DoubleShot",
+        "blueprintSymbol": "Weapon_DoubleShot",
         "grade": 5,
-        "experimental": "special_screening_shell",
+        "experimentalEffectSymbol": "special_screening_shell",
         "stockBurstInterval": 0.17,
         "burstInterval": 0.1598,
         "rateOfFire": 1.724435
       },
       {
         "symbol": "Hpt_Slugshot_Gimbal_Large",
-        "blueprint": "Weapon_DoubleShot",
+        "blueprintSymbol": "Weapon_DoubleShot",
         "grade": 5,
-        "experimental": "special_screening_shell",
+        "experimentalEffectSymbol": "special_screening_shell",
         "stockBurstInterval": 0.21,
         "burstInterval": 0.1974,
         "rateOfFire": 1.670286
       },
       {
         "symbol": "Hpt_MultiCannon_Fixed_Medium",
-        "blueprint": "Weapon_RapidFire",
+        "blueprintSymbol": "Weapon_RapidFire",
         "grade": 1,
-        "experimental": "special_phasing_sequence",
+        "experimentalEffectSymbol": "special_phasing_sequence",
         "stockBurstInterval": 0.14,
         "burstInterval": 0.1,
         "rateOfFire": 10
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": "special_feedback_cascade_cooled",
+        "experimentalEffectSymbol": "special_feedback_cascade_cooled",
         "stockBurstInterval": 0.83,
         "burstInterval": 0.322496,
         "rateOfFire": 3.100814
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": "special_super_penetrator",
+        "experimentalEffectSymbol": "special_super_penetrator",
         "stockBurstInterval": 0.4,
         "burstInterval": 0.2946,
         "rateOfFire": 4.777577
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 1,
-        "experimental": "special_drag_munitions",
+        "experimentalEffectSymbol": "special_drag_munitions",
         "stockBurstInterval": 3,
         "burstInterval": 2.4,
         "rateOfFire": 0.416667
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": "special_fsd_interrupt",
+        "experimentalEffectSymbol": "special_fsd_interrupt",
         "stockBurstInterval": 3,
         "burstInterval": 4.05,
         "rateOfFire": 0.246914
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": "special_fsd_interrupt",
+        "experimentalEffectSymbol": "special_fsd_interrupt",
         "stockBurstInterval": 3,
         "burstInterval": 4.05,
         "rateOfFire": 0.246914
       },
       {
         "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": null,
+        "experimentalEffectSymbol": null,
         "stockBurstInterval": 2,
         "burstInterval": 1.4,
         "rateOfFire": 0.714286
       },
       {
         "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": null,
+        "experimentalEffectSymbol": null,
         "stockBurstInterval": 2,
         "burstInterval": 1.4,
         "rateOfFire": 0.714286
       },
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
-        "blueprint": "Weapon_RapidFire",
+        "blueprintSymbol": "Weapon_RapidFire",
         "grade": 1,
-        "experimental": null,
+        "experimentalEffectSymbol": null,
         "stockBurstInterval": 0.83,
         "burstInterval": 0.512633,
         "rateOfFire": 4.922271
       },
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
-        "blueprint": "Weapon_RapidFire",
+        "blueprintSymbol": "Weapon_RapidFire",
         "grade": 1,
-        "experimental": null,
+        "experimentalEffectSymbol": null,
         "stockBurstInterval": 0.83,
         "burstInterval": 0.512633,
         "rateOfFire": 4.922271
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": "special_thermal_cascade",
+        "experimentalEffectSymbol": "special_thermal_cascade",
         "stockBurstInterval": 3,
         "burstInterval": 2.7,
         "rateOfFire": 0.37037
@@ -243,7 +243,7 @@
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
       "name": "Enduring Feedback Rail Gun",
-      "blueprint": "RailGun_LongShot",
+      "blueprintSymbol": "RailGun_LongShot",
       "grade": 1,
       "acquisition": "mercenary",
       "mercCoinCost": 950
@@ -251,10 +251,10 @@
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
       "name": "Rail Gun",
-      "blueprint": "Weapon_HighCapacity",
+      "blueprintSymbol": "Weapon_HighCapacity",
       "grade": 5,
       "acquisition": "communityGoal",
-      "experimental": "special_feedback_cascade_cooled",
+      "experimentalEffectSymbol": "special_feedback_cascade_cooled",
       "modifiers": [
         {
           "label": "AmmoClipSize",
@@ -301,10 +301,10 @@
     {
       "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
       "name": "Imperial Hammer Rail Gun",
-      "blueprint": "Weapon_HighCapacity",
+      "blueprintSymbol": "Weapon_HighCapacity",
       "grade": 5,
       "acquisition": "communityGoal",
-      "experimental": "special_super_penetrator",
+      "experimentalEffectSymbol": "special_super_penetrator",
       "modifiers": [
         {
           "label": "AmmoClipSize",
@@ -341,7 +341,7 @@
     {
       "symbol": "Int_PowerDistributor_Size5_Class5",
       "name": "Balanced Power Distributor",
-      "blueprint": "PowerDistributor_Balanced",
+      "blueprintSymbol": "PowerDistributor_Balanced",
       "grade": 1,
       "acquisition": "mercenary",
       "mercCoinCost": 500
@@ -349,7 +349,7 @@
     {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
       "name": "Guardian Shard Cannon",
-      "blueprint": "Weapon_LongRange",
+      "blueprintSymbol": "Weapon_LongRange",
       "grade": 1,
       "acquisition": "techBroker",
       "engineeringLocked": true,
@@ -404,7 +404,7 @@
     {
       "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
       "name": "Frame Shift Drive (SCO)",
-      "blueprint": "FSD_LongRange",
+      "blueprintSymbol": "FSD_LongRange",
       "grade": 5,
       "acquisition": "techBroker",
       "modifiers": [
@@ -443,10 +443,10 @@
     {
       "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
       "name": "Enhanced AX Multi-Cannon",
-      "blueprint": "Weapon_Overcharged",
+      "blueprintSymbol": "Weapon_Overcharged",
       "grade": 5,
       "acquisition": "techBroker",
-      "experimental": "special_auto_loader",
+      "experimentalEffectSymbol": "special_auto_loader",
       "engineeringLocked": true,
       "modifiers": [
         {
@@ -469,10 +469,10 @@
     {
       "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
       "name": "Enhanced AX Multi-Cannon",
-      "blueprint": "Weapon_Overcharged",
+      "blueprintSymbol": "Weapon_Overcharged",
       "grade": 5,
       "acquisition": "techBroker",
-      "experimental": "special_auto_loader",
+      "experimentalEffectSymbol": "special_auto_loader",
       "engineeringLocked": true,
       "modifiers": [
         {
@@ -506,7 +506,7 @@
   },
   "sameBlueprintTwice": {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-    "blueprint": "Weapon_HighCapacity",
+    "blueprintSymbol": "Weapon_HighCapacity",
     "experimentals": [
       "special_drag_munitions",
       "special_fsd_interrupt",
@@ -515,14 +515,14 @@
   },
   "sameTripleDifferentGrade": {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-    "blueprint": "Weapon_LongRange",
+    "blueprintSymbol": "Weapon_LongRange",
     "grades": [5, 1],
     "acquisitions": ["communityGoal", "techBroker"]
   },
   "resolved": {
     "fsdV1Size5": {
       "symbol": "Int_Hyperdrive_Size5_Class5",
-      "blueprint": "FSD_LongRange",
+      "blueprintSymbol": "FSD_LongRange",
       "base": {
         "optMass": 1050,
         "mass": 20,
@@ -539,7 +539,7 @@
     },
     "guardianShardMediumG1": {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-      "blueprint": "Weapon_LongRange",
+      "blueprintSymbol": "Weapon_LongRange",
       "grade": 1,
       "base": {
         "mass": 4,
@@ -606,7 +606,7 @@
     },
     "fragmentCannonDoubleShot": {
       "symbol": "Hpt_Slugshot_Gimbal_Small",
-      "blueprint": "Weapon_DoubleShot",
+      "blueprintSymbol": "Weapon_DoubleShot",
       "grade": 5,
       "base": {
         "clipSize": 3,
@@ -621,7 +621,7 @@
     },
     "guardianShardMediumLongRange": {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-      "blueprint": "Weapon_LongRange",
+      "blueprintSymbol": "Weapon_LongRange",
       "grade": 5,
       "engineered": {
         "maximumRange": 8500,
@@ -637,7 +637,7 @@
         "source": "journal-anaconda-slapaconda.jsonc",
         "slot": "HugeHardpoint1",
         "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-        "blueprint": "Weapon_LongRange",
+        "blueprintSymbol": "Weapon_LongRange",
         "grade": 1,
         "acquisition": "techBroker"
       },
@@ -645,7 +645,7 @@
         "source": "journal-anaconda-slapaconda.jsonc",
         "slot": "TinyHardpoint4",
         "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
-        "blueprint": "Misc_HeatSinkCapacity",
+        "blueprintSymbol": "Misc_HeatSinkCapacity",
         "grade": 1,
         "acquisition": "techBroker"
       },
@@ -653,16 +653,16 @@
         "source": "journal-federation-corvette-mixed.jsonc",
         "slot": "MediumHardpoint1",
         "symbol": "Hpt_Railgun_Fixed_Medium",
-        "blueprint": "Weapon_HighCapacity",
+        "blueprintSymbol": "Weapon_HighCapacity",
         "grade": 5,
-        "experimental": "special_feedback_cascade_cooled",
+        "experimentalEffectSymbol": "special_feedback_cascade_cooled",
         "acquisition": "communityGoal"
       },
       {
         "source": "journal-panther-mkii-fat-arse.jsonc",
         "slot": "FrameShiftDrive",
         "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
-        "blueprint": "FSD_LongRange",
+        "blueprintSymbol": "FSD_LongRange",
         "grade": 5,
         "appliedExperimental": "special_fsd_heavy",
         "acquisition": "techBroker"
@@ -671,7 +671,7 @@
         "source": "journal-panther-mkii-fat-arse.jsonc",
         "slot": "Slot04_Size6",
         "symbol": "Int_CargoRack_Size6_Class1",
-        "blueprint": "CargoRack_IncreasedCapacity",
+        "blueprintSymbol": "CargoRack_IncreasedCapacity",
         "grade": 5,
         "acquisition": "communityGoal"
       }
@@ -688,7 +688,7 @@
     ],
     "mercenary": {
       "symbol": "Hpt_Railgun_Fixed_Medium",
-      "blueprint": "RailGun_LongShot",
+      "blueprintSymbol": "RailGun_LongShot",
       "purchaseGrade": 1,
       "upgradedGrade": 5,
       "mercCoinCost": 950
