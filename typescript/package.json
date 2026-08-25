@@ -1,6 +1,6 @@
 {
     "name": "@elite-dangerous-almanac/core",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Elite Dangerous static data and calculations: astronomy, ships and outfitting, personal equipment and engineering, materials, and market commodities.",
     "type": "module",
     "sideEffects": false,
