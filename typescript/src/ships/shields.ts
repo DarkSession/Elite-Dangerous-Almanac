@@ -54,6 +54,7 @@ import {
     type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
+import { massCurveMultiplier, type MassCurveLabels } from './internal/mass-curve.js';
 
 /**
  * The shield generator constants a strength calculation needs — all post-engineering.
@@ -65,6 +66,13 @@ import {
  * moves. Every field is optional because the type accepts those records; a generator
  * **missing** any of the six curve fields cannot be placed on the curve at all, and
  * raises no shield ({@link shieldMassCurveMultiplier} returns `0`).
+ *
+ * A generator that carries all six is held to the curve's shape: every value finite and
+ * non-negative, masses strictly ordered `minMass < optMass < maxMass` (or all equal, for
+ * a constant curve), multipliers strictly ordered
+ * `minMultiplier < optMultiplier < maxMultiplier` (or all equal), and equal multipliers
+ * wherever the masses are all equal. Anything else is a `RangeError` rather than a
+ * plausible-looking number.
  */
 export interface ShieldGeneratorParams extends DamageResistanceParams {
     /** Hull mass at which the generator performs at `maxMultiplier`, in tonnes. */
@@ -159,32 +167,23 @@ export interface ShieldMetrics {
 }
 
 /**
- * A shield generator's strength multiplier at a given hull mass.
- *
- * @param hullMass - The **hull's** mass, in tonnes (not the loaded ship's).
- * @param generator - The generator's mass/multiplier curve, post-engineering.
- * @returns The multiplier to apply to the hull's base shield strength: `minMultiplier`
- * for a hull sitting exactly on `maxMass`, no more than `maxMultiplier` for a
- * featherweight one, and **`0` past `maxMass`** — a generator cannot raise a shield
- * around a hull heavier than it is rated for. Also `0` for a generator whose record is
- * missing part of its curve.
- * @remarks
- * The curve is a power law fitted through the generator's three declared points:
- * normalize the mass into `[0, 1]` between `maxMass` and `minMass`, raise it to the
- * exponent that makes the curve pass through `(optMass, optMultiplier)`, then
- * interpolate between `minMultiplier` and `maxMultiplier`.
- * @example
- * ```ts
- * import { shieldMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/shields';
- *
- * // A 6A generator (opt 540 t) on a 400 t Anaconda performs slightly above spec
- * shieldMassCurveMultiplier(400, {
- *   minMass: 270, optMass: 540, maxMass: 1350,
- *   minMultiplier: 0.7, optMultiplier: 1.2, maxMultiplier: 1.7,
- * }); // -> 1.434…
- * ```
+ * How a mass-curve failure names the parameter that carried the curve. The scope is the
+ * public function the consumer actually called, so a curve rejected inside
+ * {@link shieldMetrics} reports `shieldMetrics`, never a helper.
  */
-export function shieldMassCurveMultiplier(
+const curveLabels = (scope: string): MassCurveLabels => ({
+    scope,
+    mass: 'hullMass',
+    curve: 'generator',
+});
+
+/**
+ * The generator's multiplier, reporting a failure as the public function the consumer
+ * called. A record missing part of its curve is not a failure — see
+ * {@link shieldMassCurveMultiplier}.
+ */
+function generatorCurveMultiplier(
+    scope: string,
     hullMass: number,
     generator: ShieldGeneratorParams,
 ): number {
@@ -201,17 +200,80 @@ export function shieldMassCurveMultiplier(
         // rather than a fabricated one.
         return 0;
     }
-    // The generator simply will not engage around a hull heavier than its maximum.
-    if (hullMass > maxMass) return 0;
-    const span = maxMass - minMass;
-    if (span <= 0 || maxMultiplier === minMultiplier) return optMultiplier;
-    const normalised = Math.max(0, Math.min(1, (maxMass - hullMass) / span));
-    const optNormalised = Math.min(1, (maxMass - optMass) / span);
-    const exponent =
-        Math.log((optMultiplier - minMultiplier) / (maxMultiplier - minMultiplier)) /
-        Math.log(optNormalised);
-    if (!Number.isFinite(exponent)) return optMultiplier;
-    return minMultiplier + Math.pow(normalised, exponent) * (maxMultiplier - minMultiplier);
+    // A hull heavier than the generator's maximum is handled by the shared curve, which
+    // answers `0` there: the generator simply will not engage.
+    return massCurveMultiplier(curveLabels(scope), hullMass, {
+        minMass,
+        optMass,
+        maxMass,
+        minMultiplier,
+        optMultiplier,
+        maxMultiplier,
+    });
+}
+
+/**
+ * A shield generator's strength multiplier at a given hull mass.
+ *
+ * @param hullMass - The **hull's** mass, in tonnes (not the loaded ship's). Finite and
+ * non-negative.
+ * @param generator - The generator's mass/multiplier curve, post-engineering. Either all
+ * six curve fields, or a record the catalogue left incomplete — see the `0` cases below.
+ * @returns The multiplier to apply to the hull's base shield strength: `minMultiplier`
+ * for a hull sitting exactly on `maxMass`, no more than `maxMultiplier` for a
+ * featherweight one, and **`0` past `maxMass`** — a generator cannot raise a shield
+ * around a hull heavier than it is rated for. Also `0` for a generator whose record is
+ * missing part of its curve.
+ * @throws {RangeError} If `hullMass` is not a finite number of zero or more, or if the
+ * generator carries all six curve fields and they are not a physical curve: every one
+ * has to be finite and non-negative, the masses strictly ordered
+ * `minMass < optMass < maxMass` (or all equal, for a constant curve), the multipliers
+ * strictly ordered `minMultiplier < optMultiplier < maxMultiplier` (or all equal), and an
+ * all-equal mass curve must have equal multipliers. A curve that is merely *absent* still
+ * answers `0`: a catalogue record missing any of the six fields is incomplete data, not a
+ * non-physical curve, and this is the only mass-curve outcome that is not a number or a
+ * throw.
+ * @remarks
+ * The curve is a power law fitted through the generator's three declared points:
+ * normalize the mass into `[0, 1]` between `maxMass` and `minMass`, raise it to the
+ * exponent that makes the curve pass through `(optMass, optMultiplier)`, then
+ * interpolate between `minMultiplier` and `maxMultiplier`. It is the same curve
+ * `thrusterMassCurveMultiplier` reads a thruster's performance off, and the two agree on
+ * every input they both accept.
+ * @example
+ * ```ts
+ * import { shieldMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/shields';
+ *
+ * // A 6A generator (opt 540 t) on a 400 t Anaconda performs slightly above spec
+ * shieldMassCurveMultiplier(400, {
+ *   minMass: 270, optMass: 540, maxMass: 1350,
+ *   minMultiplier: 0.7, optMultiplier: 1.2, maxMultiplier: 1.7,
+ * }); // -> 1.434…
+ * ```
+ * @example
+ * ```ts
+ * import { shieldMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/shields';
+ *
+ * // A generator whose optimal mass sits on its maximum is not a curve at all
+ * try {
+ *   shieldMassCurveMultiplier(400, {
+ *     minMass: 270, optMass: 1350, maxMass: 1350,
+ *     minMultiplier: 0.7, optMultiplier: 1.2, maxMultiplier: 1.7,
+ *   });
+ * } catch (error) {
+ *   (error as Error).message;
+ *   // -> 'shieldMassCurveMultiplier: generator: masses must be strictly ordered minMass < optMass < maxMass, or all equal'
+ * }
+ *
+ * // A record the catalogue left incomplete is data that is missing, not data that is wrong
+ * shieldMassCurveMultiplier(400, { optMass: 540, optMultiplier: 1.2 }); // -> 0
+ * ```
+ */
+export function shieldMassCurveMultiplier(
+    hullMass: number,
+    generator: ShieldGeneratorParams,
+): number {
+    return generatorCurveMultiplier('shieldMassCurveMultiplier', hullMass, generator);
 }
 
 /**
@@ -222,7 +284,12 @@ export function shieldMassCurveMultiplier(
  * @param generator - The fitted generator, post-engineering.
  * @param boostMultiplier - The boosters' combined multiplier — `1 + Σ shieldBoost`.
  * Defaults to `1` (no boosters).
- * @returns The shield's megajoules, before any Guardian reinforcement addition.
+ * @returns The shield's megajoules, before any Guardian reinforcement addition. `0` for a
+ * hull past the generator's `maxMass`, and `0` for a generator whose record is missing
+ * part of its curve — see {@link shieldMassCurveMultiplier}.
+ * @throws {RangeError} If `hullMass` is not a finite number of zero or more, or the
+ * generator carries a complete but non-physical curve — the contract
+ * {@link shieldMassCurveMultiplier} documents, reported as `shieldStrength`.
  */
 export function shieldStrength(
     hullMass: number,
@@ -230,7 +297,11 @@ export function shieldStrength(
     generator: ShieldGeneratorParams,
     boostMultiplier = 1,
 ): number {
-    return baseShieldStrength * shieldMassCurveMultiplier(hullMass, generator) * boostMultiplier;
+    return (
+        baseShieldStrength *
+        generatorCurveMultiplier('shieldStrength', hullMass, generator) *
+        boostMultiplier
+    );
 }
 
 /** Each booster's resistance to one damage type, reading an absent field as `0`. */
@@ -251,7 +322,12 @@ const boosterResistances = (boosters: readonly ShieldBoosterParams[], type: Dama
  * `systemsResistance`. `massCurveMultiplier` is `0` and `boostMultiplier` is `1`,
  * whatever boosters are fitted, since there is no generator strength to multiply.
  * @throws {RangeError} If `systemsPips` is not a finite number in `[0, 4]`. The pips are
- * checked before the generator, so this applies with no generator fitted too.
+ * checked before the generator, so this applies with no generator fitted too. With one
+ * fitted, also if `hullMass` is not a finite number of zero or more, or the generator
+ * carries a complete but non-physical curve — the contract
+ * {@link shieldMassCurveMultiplier} documents, reported as `shieldMetrics`. A generator
+ * whose record is simply *missing* part of its curve is not a failure: `hullMass` is
+ * never read, and `massCurveMultiplier` and every strength figure are `0`.
  * @example
  * ```ts
  * import { shieldMetrics } from '@elite-dangerous-almanac/core/ships/shields';
@@ -292,7 +368,11 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
         };
     }
 
-    const massCurveMultiplier = shieldMassCurveMultiplier(input.hullMass, generator);
+    const massCurveMultiplier = generatorCurveMultiplier(
+        'shieldMetrics',
+        input.hullMass,
+        generator,
+    );
     const boostMultiplier =
         1 + boosters.reduce((sum, booster) => sum + (booster.shieldBoost ?? 0), 0);
     const generatorStrength = input.baseShieldStrength * massCurveMultiplier;

@@ -9,6 +9,12 @@
  * @packageDocumentation
  */
 
+import {
+    massCurveMultiplier,
+    requireFiniteNonNegative,
+    validateMassCurve,
+} from './internal/mass-curve.js';
+
 /**
  * One post-engineering thruster performance curve.
  *
@@ -98,12 +104,6 @@ export interface MobilityMetrics {
     readonly rotationMassCurveMultiplier: number;
 }
 
-const requireFiniteNonNegative = (scope: string, name: string, value: number): void => {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
-    }
-};
-
 const requireFiniteRange = (
     scope: string,
     name: string,
@@ -118,56 +118,8 @@ const requireFiniteRange = (
     }
 };
 
-const validateCurve = (scope: string, curve: ThrusterCurveParams): void => {
-    for (const field of ['minMass', 'optMass', 'maxMass'] as const) {
-        requireFiniteNonNegative(scope, field, curve[field]);
-    }
-    const allMassesEqual = curve.minMass === curve.optMass && curve.optMass === curve.maxMass;
-    if (!allMassesEqual && !(curve.minMass < curve.optMass && curve.optMass < curve.maxMass)) {
-        throw new RangeError(
-            `${scope}: masses must be strictly ordered minMass < optMass < maxMass, or all equal`,
-        );
-    }
-    for (const field of ['minMultiplier', 'optMultiplier', 'maxMultiplier'] as const) {
-        requireFiniteNonNegative(scope, field, curve[field]);
-    }
-    const allMultipliersEqual =
-        curve.minMultiplier === curve.optMultiplier && curve.optMultiplier === curve.maxMultiplier;
-    const strictlyOrderedMultipliers =
-        curve.minMultiplier < curve.optMultiplier && curve.optMultiplier < curve.maxMultiplier;
-    if (!allMultipliersEqual && !strictlyOrderedMultipliers) {
-        throw new RangeError(
-            `${scope}: multipliers must be strictly ordered minMultiplier < optMultiplier < maxMultiplier, or all equal`,
-        );
-    }
-    if (allMassesEqual && !allMultipliersEqual) {
-        throw new RangeError(`${scope}: an all-equal mass curve must have equal multipliers`);
-    }
-};
-
-const curveMultiplier = (scope: string, mass: number, thrusters: ThrusterCurveParams): number => {
-    requireFiniteNonNegative(scope, 'mass', mass);
-    validateCurve(`${scope}: thrusters`, thrusters);
-    if (mass > thrusters.maxMass) return 0;
-    const span = thrusters.maxMass - thrusters.minMass;
-    if (span <= 0 || thrusters.maxMultiplier === thrusters.minMultiplier) {
-        return thrusters.optMultiplier;
-    }
-    const normalised = Math.max(0, Math.min(1, (thrusters.maxMass - mass) / span));
-    const optNormalised = Math.min(1, (thrusters.maxMass - thrusters.optMass) / span);
-    const exponent =
-        Math.log(
-            (thrusters.optMultiplier - thrusters.minMultiplier) /
-                (thrusters.maxMultiplier - thrusters.minMultiplier),
-        ) / Math.log(optNormalised);
-    if (!Number.isFinite(exponent)) {
-        throw new RangeError(`${scope}: curve values do not produce a finite exponent`);
-    }
-    return (
-        thrusters.minMultiplier +
-        Math.pow(normalised, exponent) * (thrusters.maxMultiplier - thrusters.minMultiplier)
-    );
-};
+const curveMultiplier = (scope: string, mass: number, thrusters: ThrusterCurveParams): number =>
+    massCurveMultiplier({ scope, mass: 'mass', curve: 'thrusters' }, mass, thrusters);
 
 /**
  * Resolve a thruster's performance multiplier at a loaded mass.
@@ -251,7 +203,7 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
         requireFiniteRange('mobilityMetrics', minimum, input[minimum], 0, input[maximum]);
     }
     if (!input.thrusters) return null;
-    validateCurve('mobilityMetrics: thrusters', input.thrusters);
+    validateMassCurve('mobilityMetrics: thrusters', input.thrusters);
     const massCurveMultiplier = curveMultiplier(
         'mobilityMetrics: speed curve',
         input.mass,
