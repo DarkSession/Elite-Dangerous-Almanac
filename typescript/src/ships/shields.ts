@@ -14,7 +14,8 @@
  * ```
  *
  * Resistances stack separately, with their own diminishing returns — see
- * `./resistances`.
+ * `./resistances`. Everything here is **pip-free**: the SYS capacitor's own resistance,
+ * and the effective figures it buys, live in `./shield-capacitor`.
  *
  * This module is data-free. {@link BuildMetrics.shieldMetrics} (in `./build-metrics`)
  * pulls the generator, boosters and reinforcement packages out of a build,
@@ -48,14 +49,12 @@ import {
     effectiveHitPoints,
     mapDamageTypes,
     stackShieldResistance,
-    systemsResistance,
     type DamageResistances,
     type DamageResistanceParams,
     type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
 import { massCurveMultiplier, type MassCurveLabels } from './internal/mass-curve.js';
-import { requirePips } from './internal/pips.js';
 
 /**
  * The shield generator constants a strength calculation needs — all post-engineering.
@@ -121,13 +120,6 @@ export interface ShieldInput {
      * {@link ShieldMetrics.reinforcement} is `0`.
      */
     readonly reinforcement?: number;
-    /**
-     * Pips to the systems capacitor, `0`–`4`, folded into the reported resistances when
-     * a generator is fitted; with none, they are reported only as
-     * {@link ShieldMetrics.systemsResistance}.
-     * Defaults to `0` — the bare shield, as an outfitting screen shows it.
-     */
-    readonly systemsPips?: number;
 }
 
 /**
@@ -159,9 +151,10 @@ export interface ShieldMetrics {
      */
     readonly boostMultiplier: number;
     /**
-     * Effective resistances, generator and boosters stacked with diminishing returns,
-     * and the SYS pips folded in. `0` for every damage type when no generator is fitted;
-     * the pips are then reported only in {@link ShieldMetrics.systemsResistance}.
+     * Effective resistances, generator and boosters stacked with diminishing returns.
+     * The SYS pips are **not** in these — they belong to the capacitor, and
+     * {@link shieldCapacitorMetrics} folds them in. `0` for every damage type when no
+     * generator is fitted.
      *
      * @remarks
      * Fractions rather than percentages, and **unrounded**: the stacking is
@@ -177,11 +170,6 @@ export interface ShieldMetrics {
      * `Infinity` where a resistance reaches 100%.
      */
     readonly effectiveHitPoints: DamageTypeValues;
-    /**
-     * The extra resistance the SYS pips contribute, as a fraction — unrounded, like
-     * {@link ShieldMetrics.resistances}.
-     */
-    readonly systemsResistance: number;
 }
 
 /**
@@ -327,21 +315,24 @@ const boosterResistances = (boosters: readonly ShieldBoosterParams[], type: Dama
     boosters.map((booster) => booster[`${type}Resistance`] ?? 0);
 
 /**
- * Everything an outfitting screen shows about a build's shields: strength, where it
- * comes from, and the effective resistances.
+ * A build's bare shields: strength, where it comes from, and the resistances the
+ * generator and boosters stack up between them.
+ *
+ * These are the **pip-free** figures, the ones an outfitting screen shows. The SYS
+ * capacitor is a separate story with its own entry point,
+ * {@link shieldCapacitorMetrics}, which takes what this returns and folds a pip
+ * allocation into it.
  *
  * @param input - The hull's mass and base shield strength, the fitted generator, and
- * any powered boosters, Guardian reinforcement and SYS pips.
+ * any powered boosters and Guardian reinforcement.
  * @returns The {@link ShieldMetrics}. With no generator fitted there is no shield for
  * a resistance to apply to: every strength figure is `0` — any `reinforcement` passed is
  * dropped, since a Guardian package has no shield to reinforce — and `resistances` and
- * `effectiveHitPoints` are `0` for every damage type, so a hull with no shields gets no
- * benefit from the SYS pips. The pips are still reported on their own, as
- * `systemsResistance`. `massCurveMultiplier` is `0` and `boostMultiplier` is `1`,
+ * `effectiveHitPoints` are `0` for every damage type.
+ * `massCurveMultiplier` is `0` and `boostMultiplier` is `1`,
  * whatever boosters are fitted, since there is no generator strength to multiply.
- * @throws {RangeError} If `systemsPips` is not a finite number in `[0, 4]`. The pips are
- * checked before the generator, so this applies with no generator fitted too. With one
- * fitted, also if `hullMass` is not a finite number of zero or more, or the generator
+ * @throws {RangeError} With a generator fitted, if `hullMass` is not a finite number of
+ * zero or more, or the generator
  * carries a complete but non-physical curve — the contract
  * {@link shieldMassCurveMultiplier} documents, reported as `shieldMetrics`. A generator
  * whose record is simply *missing* part of its curve is not a failure: `hullMass` is
@@ -367,11 +358,6 @@ const boosterResistances = (boosters: readonly ShieldBoosterParams[], type: Dama
 export function shieldMetrics(input: ShieldInput): ShieldMetrics {
     const boosters = input.boosters ?? [];
     const reinforcement = input.reinforcement ?? 0;
-    const pips = input.systemsPips ?? 0;
-    // Named for the parameter the caller wrote, and checked before the generator so a
-    // build with no shields still reports a bad pip allocation.
-    requirePips('shieldMetrics', 'systemsPips', pips);
-    const sysResistance = systemsResistance(pips);
     const generator = input.generator ?? null;
 
     if (!generator) {
@@ -385,7 +371,6 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
             boostMultiplier: 1,
             resistances: none,
             effectiveHitPoints: Object.freeze(effectiveHitPoints(0, none)),
-            systemsResistance: sysResistance,
         });
     }
 
@@ -400,15 +385,11 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
     const boostersStrength = generatorStrength * (boostMultiplier - 1);
     const strength = generatorStrength + boostersStrength + reinforcement;
 
-    // The SYS pips multiply with the stacked shield resistance rather than adding to it.
-    const withPips = (resistance: number): number => 1 - (1 - resistance) * (1 - sysResistance);
     const resistances: DamageResistances = Object.freeze(
         mapDamageTypes((type) =>
-            withPips(
-                stackShieldResistance(
-                    generator[`${type}Resistance`] ?? 0,
-                    boosterResistances(boosters, type),
-                ),
+            stackShieldResistance(
+                generator[`${type}Resistance`] ?? 0,
+                boosterResistances(boosters, type),
             ),
         ),
     );
@@ -422,6 +403,5 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
         boostMultiplier,
         resistances,
         effectiveHitPoints: Object.freeze(effectiveHitPoints(strength, resistances)),
-        systemsResistance: sysResistance,
     });
 }

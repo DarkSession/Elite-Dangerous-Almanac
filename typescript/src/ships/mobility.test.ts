@@ -19,7 +19,7 @@ test('the thruster curve passes through all three declared points', () => {
     assert.equal(thrusterMassCurveMultiplier(73, thrusters), 0);
 });
 
-test('mobility scales speed, boost and handling by loaded mass and ENG pips', () => {
+test('mobility scales speed, boost and handling by loaded mass, at full ENG', () => {
     const four = mobilityMetrics({
         minimumSpeed: 100,
         maximumSpeed: 220,
@@ -44,26 +44,11 @@ test('mobility scales speed, boost and handling by loaded mass and ENG pips', ()
         rotationMassCurveMultiplier: four.rotationMassCurveMultiplier,
     });
 
-    const two = mobilityMetrics({
-        minimumSpeed: 100,
-        maximumSpeed: 220,
-        boost: 320,
-        minPitch: 34,
-        pitch: 42,
-        minRoll: 110,
-        roll: 110,
-        minYaw: 16,
-        yaw: 16,
-        mass: 48,
-        thrusters,
-        enginesPips: 2,
-    });
-    assert.equal(two.speed, 160);
-    assert.equal(two.boost, 320);
-    assert.equal(two.pitch, 38);
-    // The mass is reported back so the curve position can be read off the result: ENG
-    // pips move the speed, never the mass the curve was evaluated at.
-    assert.equal(two.loadedMass, 48);
+    // These are the hull's four-pip endpoints on the curve and nothing else: no ENG
+    // allocation reaches this call, and none of its figures can be moved by one.
+    assert.equal(Object.hasOwn(four, 'enginesPips'), false);
+    // The mass is reported back so the curve position can be read off the result.
+    assert.equal(four.loadedMass, 48);
 });
 
 test('enhanced thrusters use distinct speed and rotation curves', () => {
@@ -142,7 +127,6 @@ test('mobility handles degenerate curves and validates physical inputs', () => {
         }),
         1.2,
     );
-    assert.throws(() => mobilityMetrics({ ...input, enginesPips: 5 }), RangeError);
     assert.throws(
         () => mobilityMetrics({ ...input, minimumSpeed: 2, maximumSpeed: 1 }),
         RangeError,

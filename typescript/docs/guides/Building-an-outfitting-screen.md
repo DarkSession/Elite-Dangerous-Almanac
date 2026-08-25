@@ -164,6 +164,8 @@ metrics.powerBudget().withinBudget; // -> true
 metrics.powerBudget().bands.length; // -> 5        the five priority groups
 
 metrics.shieldMetrics()?.strength; // -> 3940.4   MJ
+metrics.shieldMetrics()?.resistances.kinetic; // the generator and boosters, no pips
+metrics.shieldCapacitorMetrics()?.effectiveResistances.kinetic; // with four pips to SYS
 metrics.armourMetrics().hitPoints; // -> 5062.6
 
 metrics.weaponMetrics().total.damagePerSecond; // -> 137.04
@@ -205,6 +207,7 @@ mass.total; // with a full main tank and an empty hold
 const mobility = metrics.mobilityMetrics();
 mobility?.speed; // m/s, at four ENG pips
 mobility?.loadedMass; // the mass that speed was calculated at
+metrics.mobilityCapacitorMetrics({ enginesPips: 2 })?.speed; // m/s, at two
 metrics.thrusters()?.optMass; // rated performance at or below this mass
 metrics.thrusters()?.maxMass; // past this the ship does not move at all
 ```

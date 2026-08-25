@@ -361,6 +361,10 @@
             "types": "./dist/ships/mobility.d.ts",
             "import": "./dist/ships/mobility.js"
         },
+        "./ships/mobility-capacitor": {
+            "types": "./dist/ships/mobility-capacitor.d.ts",
+            "import": "./dist/ships/mobility-capacitor.js"
+        },
         "./ships/module-capabilities": {
             "types": "./dist/ships/module-capabilities.d.ts",
             "import": "./dist/ships/module-capabilities.js"
@@ -416,6 +420,10 @@
         "./ships/shield-recovery": {
             "types": "./dist/ships/shield-recovery.d.ts",
             "import": "./dist/ships/shield-recovery.js"
+        },
+        "./ships/shield-capacitor": {
+            "types": "./dist/ships/shield-capacitor.d.ts",
+            "import": "./dist/ships/shield-capacitor.js"
         },
         "./ships/shields": {
             "types": "./dist/ships/shields.d.ts",

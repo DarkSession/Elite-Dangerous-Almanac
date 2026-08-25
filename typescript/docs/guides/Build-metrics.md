@@ -147,6 +147,36 @@ from an unavailable power supply. Every imported build has a known hull and armo
 thrusters, generator and distributor, and their `…Result` companions explain an unavailable
 answer in the same way.
 
+**The pips are a separate call.** `shieldMetrics()` is the bare shield an outfitting
+screen shows, and the SYS capacitor is `shieldCapacitorMetrics()` — the same split
+`weaponMetrics()` and `weaponsCapacitorMetrics()` already use for WEP. It reports the SYS
+capacity and recharge the allocation buys, the resistance the pips add on their own, and
+the effective resistances and hit points with them folded in, so a panel showing both
+readings computes the shield once:
+
+```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
+
+metrics.shieldMetrics()?.resistances.kinetic; // the generator and boosters alone
+const sys = metrics.shieldCapacitorMetrics({ systemsPips: 2 });
+sys?.systemsResistance; // what two pips add, on their own
+sys?.effectiveResistances.kinetic; // the two, multiplied together
+sys?.effectiveHitPoints.kinetic; // MJ of kinetic damage soaked at two pips
+sys?.rechargeRate; // MJ/s into the SYS capacitor at two pips
+```
+
+The pips multiply with the shield's own stack rather than adding to it, which is why the
+capacitor owns the arithmetic: `1 − (1 − shieldResistance) × (1 − systemsResistance)`. At
+zero pips the effective figures are the bare ones, exactly.
+
+`shieldRecovery()` keeps its own `systemsPips`. Every figure it returns is a function of
+the allocation — there is no unpiped recovery time to report — so nothing there is being
+folded into a base figure and then discarded. Its recharge is the `rechargeRate`
+`shieldCapacitorMetrics()` reports at the same allocation.
+
 ## Weapon output
 
 `weaponMetrics()` reports per-weapon figures and a total. The distinction that matters is
@@ -344,6 +374,25 @@ mobility.loadedMass; // -> 1096   what the curve was evaluated at
 thrusterMassCurveMultiplier(mobility.loadedMass, curve) === mobility.massCurveMultiplier; // -> true
 ```
 
+`mobilityMetrics()` quotes speed, pitch, roll and yaw at **four** ENG pips, which is the
+hull's own upper endpoint for each. A lower allocation is `mobilityCapacitorMetrics()`,
+the ENG half of the same split the shields and weapons use:
+
+```ts
+import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
+
+metrics.mobilityMetrics()?.speed; // m/s at four ENG pips
+metrics.mobilityCapacitorMetrics({ enginesPips: 2 })?.speed; // m/s at two
+metrics.mobilityCapacitorMetrics({ enginesPips: 0 })?.enginesPips; // -> 0
+```
+
+Boost is not on the capacitor result, because the allocation cannot move it: it stays on
+`mobilityMetrics()` beside `loadedMass` and the two curve multipliers the two share. Both
+take the same `fuel` and `cargo`, so a screen can quote either at the same load.
+
 `loadedMass` against `optMass` and `maxMass` is the whole of "where does this build sit
 on its thrusters" — the reading an outfitting screen shows beside the speed. A mass past
 `maxMass` reports zero performance rather than a fabricated curve value, which is the
@@ -394,7 +443,8 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 The shield generator may be absent, and any fitted record may omit a stat a metric needs.
 Do not assume a nullable figure is load-bearing:
 
-- `mobilityMetrics()`, `shieldMetrics()` and `shieldRecovery()` come in nullable/`…Result`
+- `mobilityMetrics()`, `mobilityCapacitorMetrics()`, `shieldMetrics()`,
+  `shieldCapacitorMetrics()` and `shieldRecovery()` come in nullable/`…Result`
   pairs: the convenience value is `null` and the result names what was missing, switched
   off or shed. Each issue's typed `reason` is `missing`, `unresolved`, `disabled`, `shed`
   or `invalid`; use it instead of parsing the diagnostic message.

@@ -1,7 +1,10 @@
 /**
- * Data-free speed and handling calculations for a loaded ship. Speed and angular-rate
- * endpoints interpolate linearly by the ENG-PIP fraction before thruster mass curves
- * are applied.
+ * Data-free speed and handling calculations for a loaded ship, at **full ENG** — the
+ * hull's four-pip endpoints with the fitted thruster mass curves applied.
+ *
+ * The ENG capacitor is a separate story with its own entry point,
+ * `./mobility-capacitor`, which interpolates the hull's zero-pip endpoints towards the
+ * four-pip ones before the same curves are applied.
  *
  * Ported from EDCD/Coriolis and cross-checked against EDSY's mass-curve calculation;
  * see [`ATTRIBUTIONS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
@@ -9,11 +12,7 @@
  * @packageDocumentation
  */
 
-import {
-    massCurveMultiplier,
-    requireFiniteNonNegative,
-    validateMassCurve,
-} from './internal/mass-curve.js';
+import { curveMultiplier, resolveMobilityCurves } from './internal/mobility-core.js';
 
 /**
  * One post-engineering thruster performance curve.
@@ -70,8 +69,6 @@ export interface MobilityInput {
     readonly mass: number;
     /** The fitted thrusters' post-engineering curve, or no curve when none are fitted. */
     readonly thrusters?: ThrusterParams | null;
-    /** Finite pips assigned to ENG, in `[0, 4]`. Defaults to `4`. */
-    readonly enginesPips?: number;
 }
 
 /**
@@ -95,38 +92,21 @@ export interface MobilityMetrics {
      * move the ship at all — {@link massCurveMultiplier} is `0` there.
      */
     readonly loadedMass: number;
-    /** Top speed at this mass and ENG allocation, in metres per second. */
+    /** Top speed at this mass and **four** ENG pips, in metres per second. */
     readonly speed: number;
-    /** Boost speed at this mass, in metres per second. */
+    /** Boost speed at this mass, in metres per second. Boost ignores the ENG allocation. */
     readonly boost: number;
-    /** Pitch rate at this mass and ENG allocation, in degrees per second. */
+    /** Pitch rate at this mass and **four** ENG pips, in degrees per second. */
     readonly pitch: number;
-    /** Roll rate at this mass and ENG allocation, in degrees per second. */
+    /** Roll rate at this mass and **four** ENG pips, in degrees per second. */
     readonly roll: number;
-    /** Yaw rate at this mass and ENG allocation, in degrees per second. */
+    /** Yaw rate at this mass and **four** ENG pips, in degrees per second. */
     readonly yaw: number;
     /** The thruster mass curve's performance multiplier at this loaded mass. */
     readonly massCurveMultiplier: number;
     /** The rotation curve's multiplier; differs for enhanced-performance thrusters. */
     readonly rotationMassCurveMultiplier: number;
 }
-
-const requireFiniteRange = (
-    scope: string,
-    name: string,
-    value: number,
-    minimum: number,
-    maximum: number,
-): void => {
-    if (!Number.isFinite(value) || value < minimum || value > maximum) {
-        throw new RangeError(
-            `${scope}: ${name} must be a finite number from ${minimum} to ${maximum}`,
-        );
-    }
-};
-
-const curveMultiplier = (scope: string, mass: number, thrusters: ThrusterCurveParams): number =>
-    massCurveMultiplier({ scope, mass: 'mass', curve: 'thrusters' }, mass, thrusters);
 
 /**
  * Resolve a thruster's performance multiplier at a loaded mass.
@@ -152,15 +132,19 @@ export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCur
 }
 
 /**
- * Calculate a loaded ship's top speed, boost speed and rotation rates.
+ * Calculate a loaded ship's top speed, boost speed and rotation rates at **full ENG**.
  *
  * @remarks
- * Speed, pitch, roll and yaw interpolate linearly from their installed zero-ENG-PIP
- * endpoints to their four-PIP endpoints. The fitted thruster's speed and rotation
- * mass-curve multipliers are then applied to those interpolated hull values. Boost is
- * independent of ENG allocation and uses the speed curve at the loaded mass.
+ * Speed, pitch, roll and yaw are the hull's four-ENG-PIP endpoints with the fitted
+ * thruster's speed and rotation mass-curve multipliers applied. Boost is independent of
+ * the ENG allocation and uses the speed curve at the loaded mass, so it is the same
+ * figure whatever the pips.
  *
- * @param input - Hull figures, loaded mass, fitted thrusters and ENG pips.
+ * A **lower** allocation is {@link mobilityCapacitorMetrics}: it interpolates each figure
+ * from the hull's zero-pip endpoint (`minimumSpeed`, `minPitch`, `minRoll`, `minYaw`)
+ * towards the endpoint used here, and applies the same curves.
+ *
+ * @param input - Hull figures, loaded mass and fitted thrusters.
  * @returns The build's {@link MobilityMetrics}, or `null` without thrusters. A mass above
  * the thrusters' maximum returns zero performance rather than a fabricated curve value.
  * @throws {RangeError} If an input is not finite or is outside its documented range,
@@ -186,53 +170,16 @@ export function mobilityMetrics(
 ): MobilityMetrics;
 export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null;
 export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
-    const pips = input.enginesPips ?? 4;
-    requireFiniteRange('mobilityMetrics', 'enginesPips', pips, 0, 4);
-    for (const field of [
-        'minimumSpeed',
-        'maximumSpeed',
-        'boost',
-        'pitch',
-        'roll',
-        'yaw',
-        'mass',
-    ] as const) {
-        requireFiniteNonNegative('mobilityMetrics', field, input[field]);
-    }
-    if (input.minimumSpeed > input.maximumSpeed) {
-        throw new RangeError('mobilityMetrics: minimumSpeed must not exceed maximumSpeed');
-    }
-    for (const [minimum, maximum] of [
-        ['minPitch', 'pitch'],
-        ['minRoll', 'roll'],
-        ['minYaw', 'yaw'],
-    ] as const) {
-        requireFiniteRange('mobilityMetrics', minimum, input[minimum], 0, input[maximum]);
-    }
-    if (!input.thrusters) return null;
-    validateMassCurve('mobilityMetrics: thrusters', input.thrusters);
-    const massCurveMultiplier = curveMultiplier(
-        'mobilityMetrics: speed curve',
-        input.mass,
-        input.thrusters.speedCurve ?? input.thrusters,
-    );
-    const rotationMassCurveMultiplier = curveMultiplier(
-        'mobilityMetrics: rotation curve',
-        input.mass,
-        input.thrusters.rotationCurve ?? input.thrusters,
-    );
-    const pipMultiplier = pips / 4;
-    const speedAtPips =
-        input.minimumSpeed + (input.maximumSpeed - input.minimumSpeed) * pipMultiplier;
-    const handlingAtPips = (maximum: number, minimum: number): number =>
-        minimum + (maximum - minimum) * pipMultiplier;
+    const curves = resolveMobilityCurves('mobilityMetrics', input);
+    if (!curves) return null;
+    const { massCurveMultiplier, rotationMassCurveMultiplier } = curves;
     return Object.freeze({
         loadedMass: input.mass,
-        speed: speedAtPips * massCurveMultiplier,
+        speed: input.maximumSpeed * massCurveMultiplier,
         boost: input.boost * massCurveMultiplier,
-        pitch: handlingAtPips(input.pitch, input.minPitch) * rotationMassCurveMultiplier,
-        roll: handlingAtPips(input.roll, input.minRoll) * rotationMassCurveMultiplier,
-        yaw: handlingAtPips(input.yaw, input.minYaw) * rotationMassCurveMultiplier,
+        pitch: input.pitch * rotationMassCurveMultiplier,
+        roll: input.roll * rotationMassCurveMultiplier,
+        yaw: input.yaw * rotationMassCurveMultiplier,
         massCurveMultiplier,
         rotationMassCurveMultiplier,
     });

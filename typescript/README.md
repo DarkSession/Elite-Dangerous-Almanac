@@ -134,14 +134,16 @@ build.toSlefString({
 outfitting editor need not import the calculations. Both import every ship and module
 catalogue so they can resolve any build. When only one calculation is required, use the
 data-free leaf modules under `ships/jump-range`, `ships/power`, `ships/shields`,
-`ships/armour`, `ships/weapons`, `ships/weapons-capacitor`, `ships/ammunition`,
-`ships/heat` or `ships/resistances`.
+`ships/shield-capacitor`, `ships/armour`, `ships/weapons`, `ships/weapons-capacitor`,
+`ships/mobility`, `ships/mobility-capacitor`, `ships/ammunition`, `ships/heat` or
+`ships/resistances`.
 
 `build.validation()` reports validity and operational completeness. `cargoCapacity`,
 `fuelCapacity` and `unladenMass` always have an answer, because no article the
 catalogue cannot weigh reaches a build; the metrics that depend on build state
-(`mobilityMetrics`, `shieldMetrics`, `shieldRecovery`) are nullable and have a
-diagnostic counterpart naming what is missing, switched off or unpowered. `parseSlef`
+(`mobilityMetrics`, `shieldMetrics`, `shieldCapacitorMetrics`, `shieldRecovery`) are
+nullable and have a diagnostic counterpart naming what is missing, switched off or
+unpowered. `parseSlef`
 is strict; `inspectSlef` is the tolerant importer for mixed files and returns indexed
 diagnostics instead of silently dropping entries.
 

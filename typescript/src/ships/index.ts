@@ -253,9 +253,9 @@ export {
     BuildMetrics,
     type JumpOptions,
     type JumpRangeSummary,
-    type ShieldOptions,
+    type ShieldCapacitorOptions,
     type ShieldRecoveryOptions,
-    type MobilityOptions,
+    type MobilityCapacitorOptions,
     type StandardLoad,
     type StandardLoadInputs,
     type DistributorOptions,
@@ -326,6 +326,11 @@ export {
     type ShieldMetrics,
 } from './shields.js';
 export {
+    shieldCapacitorMetrics,
+    type ShieldCapacitorInput,
+    type ShieldCapacitorMetrics,
+} from './shield-capacitor.js';
+export {
     mobilityMetrics,
     thrusterMassCurveMultiplier,
     type MobilityInput,
@@ -333,6 +338,11 @@ export {
     type ThrusterParams,
     type ThrusterCurveParams,
 } from './mobility.js';
+export {
+    mobilityCapacitorMetrics,
+    type MobilityCapacitorInput,
+    type MobilityCapacitorMetrics,
+} from './mobility-capacitor.js';
 export {
     shieldRecovery,
     cellBankSummary,

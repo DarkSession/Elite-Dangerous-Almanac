@@ -42,6 +42,7 @@ import { scaleDamageComponents } from './damage-components.js';
 import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
 import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
+import type { ShieldCapacitorInput } from '../shield-capacitor.js';
 import type { WeaponsCapacitorInput } from '../weapons-capacitor.js';
 import type { DistributorInput } from '../distributor.js';
 import { ammunitionCapacity } from '../ammunition.js';
@@ -548,7 +549,6 @@ export function shieldInputFor(
     ship: Ship,
     modules: readonly LoadoutModule[],
     budget: PowerBudget,
-    systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldInput {
     let generator: ShieldGeneratorParams | null = null;
@@ -596,7 +596,6 @@ export function shieldInputFor(
         generator,
         boosters,
         reinforcement,
-        systemsPips,
     };
 }
 
@@ -605,13 +604,80 @@ export function shieldInputResultFor(
     ship: Ship,
     modules: readonly LoadoutModule[],
     getBudget: () => PowerBudget,
-    systemsPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<ShieldInput> {
     const fitted = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!fitted.complete) return fitted;
-    const input = shieldInputFor(ship, modules, fitted.value.budget, systemsPips, statsFor);
-    return completeResult(input);
+    return completeResult(shieldInputFor(ship, modules, fitted.value.budget, statsFor));
+}
+
+/**
+ * Gather the SYS capacitor behind a powered shield, with an unavailable-state
+ * diagnostic.
+ *
+ * @remarks
+ * The bare shield comes first: the effective figures the SYS pips buy are built on a
+ * strength and a resistance stack, so a build whose generator is missing, switched off,
+ * shed or unresolved has no capacitor story either. The distributor's two SYS figures
+ * follow the rule `shieldRecoveryInputResultFor` uses — no distributor fitted is a
+ * modelled zero, a fitted one that does not state them is `unresolved`.
+ */
+export function shieldCapacitorInputResultFor(
+    ship: Ship,
+    modules: readonly LoadoutModule[],
+    getBudget: () => PowerBudget,
+    systemsPips: number,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationResult<ShieldCapacitorInput> {
+    const fitted = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
+    if (!fitted.complete) return fitted;
+    const budget = fitted.value.budget;
+    const capacitor = systemsCapacitorResultFor(modules, budget, statsFor);
+    if (!capacitor.complete) return capacitor;
+    const shields = shieldMetrics(shieldInputFor(ship, modules, budget, statsFor));
+    return completeResult({
+        strength: shields.strength,
+        resistances: shields.resistances,
+        systemsCapacity: capacitor.value.systemsCapacity,
+        systemsRecharge: capacitor.value.systemsRecharge,
+        systemsPips,
+    });
+}
+
+/**
+ * The SYS half of the powered distributor, or the modelled zero a build with no
+ * distributor has.
+ *
+ * @remarks
+ * No distributor fitted is no SYS capacitor at all, and both
+ * {@link ShieldRecoveryInput.systemsCapacity} and {@link ShieldCapacitorInput} document
+ * that as zero — modelled truth rather than an invention. A distributor that *is* fitted
+ * but does not state its SYS figures is the unresolved record
+ * `distributorInputResultFor` reports, not a zero-capacity one.
+ */
+function systemsCapacitorResultFor(
+    modules: readonly LoadoutModule[],
+    budget: PowerBudget,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CalculationResult<{ systemsCapacity: number; systemsRecharge: number }> {
+    let distributor: LoadoutModule | null = null;
+    for (const module of modules) {
+        const stats = statsFor(module);
+        if (
+            isPowerDistributor(module, stats) &&
+            isEnabled(module) &&
+            budget.available > 0 &&
+            poweredStates(module, stats, budget).retracted
+        )
+            distributor = module;
+    }
+    if (!distributor) return completeResult({ systemsCapacity: 0, systemsRecharge: 0 });
+    const stats = statsFor(distributor);
+    const systemsCapacity = effectiveStat(distributor, 'systemsCapacity', stats);
+    const systemsRecharge = effectiveStat(distributor, 'systemsRecharge', stats);
+    return systemsCapacity === undefined || systemsRecharge === undefined
+        ? incompleteResult([metricIssue('powerDistributor', 'unresolved', distributor)])
+        : completeResult({ systemsCapacity, systemsRecharge });
 }
 
 /**
@@ -707,7 +773,6 @@ export function mobilityInputResultFor(
     modules: readonly LoadoutModule[],
     getBudget: () => PowerBudget,
     mass: number | (() => number),
-    enginesPips: number,
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): CalculationResult<MobilityInput> {
     let thrusters: ThrusterParams | null = null;
@@ -740,7 +805,6 @@ export function mobilityInputResultFor(
         yaw: ship.yaw,
         mass: typeof mass === 'function' ? mass() : mass,
         thrusters,
-        enginesPips,
     });
 }
 
@@ -755,39 +819,29 @@ export function shieldRecoveryInputResultFor(
     const generator = poweredShieldGeneratorResultFor(modules, getBudget, statsFor);
     if (!generator.complete) return generator;
     const { module: generatorModule, budget } = generator.value;
-    let distributor: LoadoutModule | null = null;
-    for (const module of modules) {
-        const stats = statsFor(module);
-        if (
-            isPowerDistributor(module, stats) &&
-            isEnabled(module) &&
-            budget.available > 0 &&
-            poweredStates(module, stats, budget).retracted
-        )
-            distributor = module;
-    }
     const generatorStats = statsFor(generatorModule);
-    const distributorStats = distributor ? statsFor(distributor) : null;
     // Absent is not zero, and it is not a guessed constant either. Every catalogued
-    // generator states this draw, so only a caller-supplied record can omit it — and a
-    // recovery time computed from an invented draw is indistinguishable from a real one.
+    // generator states its draw and both regeneration rates, so only a caller-supplied
+    // record can omit one — and a recovery time computed from an invented rate is
+    // indistinguishable from a real one. A stripped generator used to report
+    // `complete`, no issues, and the same `Infinity` a genuine build reports at zero
+    // SYS pips.
     const distributorDraw = effectiveStat(generatorModule, 'distributorDraw', generatorStats);
-    if (distributorDraw === undefined) {
+    const regenRate = effectiveStat(generatorModule, 'shieldRegenRate', generatorStats);
+    const brokenRegenRate = effectiveStat(generatorModule, 'shieldBrokenRegenRate', generatorStats);
+    if (distributorDraw === undefined || regenRate === undefined || brokenRegenRate === undefined) {
         return incompleteResult([metricIssue('shieldGenerator', 'unresolved', generatorModule)]);
     }
-    const strength = shieldMetrics(shieldInputFor(ship, modules, budget, 0, statsFor)).strength;
+    const capacitor = systemsCapacitorResultFor(modules, budget, statsFor);
+    if (!capacitor.complete) return capacitor;
+    const strength = shieldMetrics(shieldInputFor(ship, modules, budget, statsFor)).strength;
     return completeResult({
         strength,
-        regenRate: effectiveStat(generatorModule, 'shieldRegenRate', generatorStats) ?? 0,
-        brokenRegenRate:
-            effectiveStat(generatorModule, 'shieldBrokenRegenRate', generatorStats) ?? 0,
+        regenRate,
+        brokenRegenRate,
         distributorDraw,
-        systemsCapacity: distributor
-            ? (effectiveStat(distributor, 'systemsCapacity', distributorStats) ?? 0)
-            : 0,
-        systemsRecharge: distributor
-            ? (effectiveStat(distributor, 'systemsRecharge', distributorStats) ?? 0)
-            : 0,
+        systemsCapacity: capacitor.value.systemsCapacity,
+        systemsRecharge: capacitor.value.systemsRecharge,
         systemsPips,
     });
 }

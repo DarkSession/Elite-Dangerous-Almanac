@@ -204,7 +204,11 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(mobility);
     assert.ok(mobility.speed > 0);
     assert.ok(mobility.boost > mobility.speed);
-    assert.ok(BuildMetrics.of(stock).mobilityMetrics({ enginesPips: 2 })!.speed < mobility.speed);
+    assert.ok(
+        BuildMetrics.of(stock).mobilityCapacitorMetrics({ enginesPips: 2 })!.speed < mobility.speed,
+    );
+    // Four pips is the pip-free baseline, so the capacitor's default reproduces it.
+    assert.equal(BuildMetrics.of(stock).mobilityCapacitorMetrics()!.speed, mobility.speed);
 
     const enhanced = ShipLoadout.default('SideWinder')
         .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class5', CORE_MODULES))
@@ -234,8 +238,8 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.notEqual(BuildMetrics.of(enhanced).mobilityMetrics()!.speed, enhancedMobility.speed);
 
     const lynx = ShipLoadout.default('MediumTransport01');
-    const lynxFourPips = BuildMetrics.of(lynx).mobilityMetrics({ enginesPips: 4 })!;
-    const lynxZeroPips = BuildMetrics.of(lynx).mobilityMetrics({ enginesPips: 0 })!;
+    const lynxFourPips = BuildMetrics.of(lynx).mobilityCapacitorMetrics({ enginesPips: 4 })!;
+    const lynxZeroPips = BuildMetrics.of(lynx).mobilityCapacitorMetrics({ enginesPips: 0 })!;
     assert.ok(lynxZeroPips.pitch < lynxFourPips.pitch);
     assert.ok(near(lynxZeroPips.pitch / lynxFourPips.pitch, 23 / 26));
     assert.equal(lynxZeroPips.roll, lynxFourPips.roll);
@@ -344,7 +348,11 @@ test('mobility returns null before requiring mass when the thrusters are unpower
         .setModulePriority('MainEngines', 4);
     assert.equal(BuildMetrics.of(shed).powerBudget().withinBudget, false);
     assert.equal(BuildMetrics.of(shed).mobilityMetrics(), null);
-    assert.throws(() => BuildMetrics.of(shed).mobilityMetrics({ enginesPips: 5 }), RangeError);
+    assert.equal(BuildMetrics.of(shed).mobilityCapacitorMetrics(), null);
+    assert.throws(
+        () => BuildMetrics.of(shed).mobilityCapacitorMetrics({ enginesPips: 5 }),
+        RangeError,
+    );
 });
 
 test('explicit mobility fuel overrides the tank load and excludes reserve mass', () => {
@@ -369,16 +377,24 @@ test('metric methods validate pips before build state and name their own scopes'
     // table is what stops the two scope strings drifting apart: every entry must name the
     // method the consumer actually called.
     const pipScopes: readonly (readonly [string, () => unknown, string])[] = [
-        ['mobilityMetrics', () => metrics.mobilityMetrics({ enginesPips: 5 }), 'enginesPips'],
         [
-            'mobilityMetricsResult',
-            () => metrics.mobilityMetricsResult({ enginesPips: 5 }),
+            'mobilityCapacitorMetrics',
+            () => metrics.mobilityCapacitorMetrics({ enginesPips: 5 }),
             'enginesPips',
         ],
-        ['shieldMetrics', () => metrics.shieldMetrics({ systemsPips: 5 }), 'systemsPips'],
         [
-            'shieldMetricsResult',
-            () => metrics.shieldMetricsResult({ systemsPips: 5 }),
+            'mobilityCapacitorMetricsResult',
+            () => metrics.mobilityCapacitorMetricsResult({ enginesPips: 5 }),
+            'enginesPips',
+        ],
+        [
+            'shieldCapacitorMetrics',
+            () => metrics.shieldCapacitorMetrics({ systemsPips: 5 }),
+            'systemsPips',
+        ],
+        [
+            'shieldCapacitorMetricsResult',
+            () => metrics.shieldCapacitorMetricsResult({ systemsPips: 5 }),
             'systemsPips',
         ],
         ['shieldRecovery', () => metrics.shieldRecovery({ systemsPips: 5 }), 'systemsPips'],
@@ -1627,7 +1643,7 @@ test('standard load results expose the jump summary load conditions', () => {
     });
     assert.equal(laden.value!.mass, BuildMetrics.of(build).buildMass({ fuel: 2, cargo: 4 }).total);
     assert.equal(
-        BuildMetrics.of(build).mobilityMetrics({ ...laden.value!, enginesPips: 2 })!.loadedMass,
+        BuildMetrics.of(build).mobilityMetrics(laden.value!)!.loadedMass,
         laden.value!.mass,
     );
     assert.equal(
@@ -1643,8 +1659,8 @@ test('standard load results expose the jump summary load conditions', () => {
         BuildMetrics.of(build).jumpRangeSummary().laden,
     );
     assert.deepEqual(
-        BuildMetrics.of(build).mobilityMetrics({ ...laden.value!, enginesPips: 2 }),
-        BuildMetrics.of(build).mobilityMetrics({ fuel: 2, cargo: 4, enginesPips: 2 }),
+        BuildMetrics.of(build).mobilityCapacitorMetrics({ ...laden.value!, enginesPips: 2 }),
+        BuildMetrics.of(build).mobilityCapacitorMetrics({ fuel: 2, cargo: 4, enginesPips: 2 }),
     );
     assert.throws(
         () => BuildMetrics.of(build).standardLoadResult('other' as 'maximum'),
@@ -4530,7 +4546,7 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     assert.deepEqual(rounded(shields.resistances), expectedBuild.shields.resistances);
     assert.deepEqual(rounded(shields.effectiveHitPoints), expectedBuild.shields.effectiveHitPoints);
     assert.deepEqual(
-        rounded(BuildMetrics.of(build).shieldMetrics({ systemsPips: 4 })!.resistances),
+        rounded(BuildMetrics.of(build).shieldCapacitorMetrics()!.effectiveResistances),
         expectedBuild.shields.resistancesAtFourPips,
     );
 

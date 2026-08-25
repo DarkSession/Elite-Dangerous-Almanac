@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import fixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
 import { BuildMetrics } from './build-metrics.js';
 import { mobilityMetrics } from './mobility.js';
+import { mobilityCapacitorMetrics } from './mobility-capacitor.js';
 import { distributorMetrics } from './distributor.js';
 import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
 import { validateLoadout } from './loadout-validation.js';
@@ -21,7 +22,13 @@ test('shared ship-operation cases reproduce across public calculations', () => {
     for (const [field, expected] of Object.entries(fixture.mobility.expected)) {
         assert.ok(Math.abs(mobility[field as keyof typeof mobility] - expected) < 1e-12, field);
     }
-    const zeroPipRotation = mobilityMetrics(fixture.mobility.zeroPipRotation.input);
+    // What a panel shows at one allocation: the pip-free figures with the ENG
+    // capacitor's four laid over them.
+    const atPips = (input: typeof fixture.mobility.pipAllocation.input) => ({
+        ...mobilityMetrics(input),
+        ...mobilityCapacitorMetrics(input),
+    });
+    const zeroPipRotation = atPips(fixture.mobility.zeroPipRotation.input);
     for (const [field, expected] of Object.entries(fixture.mobility.zeroPipRotation.expected)) {
         assert.ok(
             Math.abs(zeroPipRotation[field as keyof typeof zeroPipRotation] - expected) < 1e-12,
@@ -29,7 +36,7 @@ test('shared ship-operation cases reproduce across public calculations', () => {
         );
     }
     const lynxSequence = Array.from({ length: 5 }, (_, enginesPips) =>
-        mobilityMetrics({ ...fixture.mobility.zeroPipRotation.input, enginesPips }),
+        mobilityCapacitorMetrics({ ...fixture.mobility.zeroPipRotation.input, enginesPips }),
     );
     assert.deepEqual(
         lynxSequence.map(({ speed }) => speed),
@@ -40,7 +47,7 @@ test('shared ship-operation cases reproduce across public calculations', () => {
         fixture.mobility.zeroPipRotation.pitchSequence,
     );
     assert.ok(lynxSequence.every(({ roll, yaw }) => roll === 60 && yaw === 19));
-    const pipAllocation = mobilityMetrics(fixture.mobility.pipAllocation.input);
+    const pipAllocation = atPips(fixture.mobility.pipAllocation.input);
     for (const [field, expected] of Object.entries(fixture.mobility.pipAllocation.expected)) {
         assert.ok(
             Math.abs(pipAllocation[field as keyof typeof pipAllocation] - expected) < 1e-12,

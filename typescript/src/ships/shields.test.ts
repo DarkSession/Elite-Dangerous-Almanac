@@ -82,13 +82,16 @@ test('a build with no generator reports zero shields but well-defined figures', 
     });
 });
 
-test('resistances come from the generator, the boosters and the pips', () => {
+test('resistances come from the generator and the boosters, and nothing else', () => {
     const bare = shieldMetrics({ hullMass: 400, baseShieldStrength: 350, generator });
     // A stock generator resists kinetic and explosive damage and is weak to thermal.
     assert.ok(near(bare.resistances.kinetic, 0.4));
     assert.ok(near(bare.resistances.thermal, -0.2));
     assert.ok(near(bare.resistances.explosive, 0.5));
-    assert.equal(bare.systemsResistance, 0);
+    // Nothing a generator does not carry appears: caustic is untouched, and the SYS
+    // pips belong to `shieldCapacitorMetrics` rather than to the bare shield.
+    assert.equal(bare.resistances.caustic, 0);
+    assert.equal(Object.hasOwn(bare, 'systemsResistance'), false);
 
     const boosted = shieldMetrics({
         hullMass: 400,
@@ -97,17 +100,6 @@ test('resistances come from the generator, the boosters and the pips', () => {
         boosters: [{ kineticResistance: 0.2 }, { kineticResistance: 0.2 }],
     });
     assert.ok(boosted.resistances.kinetic > bare.resistances.kinetic);
-
-    const pipped = shieldMetrics({
-        hullMass: 400,
-        baseShieldStrength: 350,
-        generator,
-        systemsPips: 4,
-    });
-    // Pips multiply with the shield's own resistance rather than adding to it.
-    assert.ok(near(pipped.resistances.kinetic, 1 - 0.6 * 0.4));
-    assert.ok(near(pipped.resistances.caustic, 0.6));
-    assert.ok(near(pipped.systemsResistance, 0.6));
 });
 
 test('effective hit points scale the strength by each resistance', () => {
@@ -253,54 +245,6 @@ test('a curve failure names the public function the consumer called', () => {
             scope,
         );
     }
-    // The pips are still checked ahead of the generator: a bad allocation is reported
-    // even when the curve behind it is the worse problem.
-    assert.throws(
-        () =>
-            shieldMetrics({
-                hullMass: 400,
-                baseShieldStrength: 350,
-                generator: broken,
-                systemsPips: 5,
-            }),
-        (error: unknown) =>
-            error instanceof RangeError &&
-            error.message === 'shieldMetrics: systemsPips must be a finite number from 0 to 4',
-    );
-});
-
-test('a bad pip allocation names shieldMetrics and the parameter the caller wrote', () => {
-    const generator = {
-        minMass: 270,
-        optMass: 540,
-        maxMass: 1350,
-        minMultiplier: 0.7,
-        optMultiplier: 1.2,
-        maxMultiplier: 1.7,
-    };
-    const message = 'shieldMetrics: systemsPips must be a finite number from 0 to 4';
-    const rejects = (systemsPips: number, what: string): void => {
-        assert.throws(
-            () => shieldMetrics({ hullMass: 400, baseShieldStrength: 350, generator, systemsPips }),
-            (error: unknown) => error instanceof RangeError && error.message === message,
-            what,
-        );
-    };
-    rejects(5, 'above four');
-    rejects(-1, 'below zero');
-    rejects(Number.NaN, 'not a number');
-    rejects(Number.POSITIVE_INFINITY, 'infinite');
-    // The same message with no generator fitted — the pips are checked first, so there is
-    // no shield state that can change which half of the call is named.
-    assert.throws(
-        () => shieldMetrics({ hullMass: 400, baseShieldStrength: 350, systemsPips: 5 }),
-        (error: unknown) => error instanceof RangeError && error.message === message,
-    );
-    // Fractional pips are legal, so this is a range check and not an integer check.
-    assert.ok(
-        shieldMetrics({ hullMass: 400, baseShieldStrength: 350, generator, systemsPips: 2.5 })
-            .systemsResistance > 0,
-    );
 });
 
 test('an ordered curve with no exponent that fits it is a RangeError too', () => {
@@ -397,12 +341,4 @@ test('resistances are unrounded fractions, as their documentation says', () => {
     assert.notEqual(bare.resistances.thermal, -0.2);
     assert.ok(Math.abs(bare.resistances.thermal + 0.2) < 1e-12);
     assert.equal(Number(bare.resistances.thermal.toFixed(2)), -0.2);
-    // The SYS-pip fraction is unrounded on the same terms.
-    const pipped = shieldMetrics({
-        hullMass: 400,
-        baseShieldStrength: 350,
-        generator,
-        systemsPips: 1,
-    });
-    assert.ok(pipped.systemsResistance > 0.18 && pipped.systemsResistance < 0.19);
 });

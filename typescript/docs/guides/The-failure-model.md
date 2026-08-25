@@ -156,7 +156,7 @@ The metrics that depend on *build state* are a different question, and those kee
 diagnostic pairs. The nullable method is the convenience; its `…Result` companion is what
 you show a user when the convenience is `null`:
 
-**Every one of them is a pair, with no exceptions to remember.** Six build metrics can be
+**Every one of them is a pair, with no exceptions to remember.** Eight build metrics can be
 unavailable, and each is offered twice under the same rule:
 
 ```ts
@@ -166,8 +166,12 @@ declare const metrics: BuildMetrics;
 
 metrics.mobilityMetrics(); // MobilityMetrics | null
 metrics.mobilityMetricsResult(); // the value, or why it is unavailable
+metrics.mobilityCapacitorMetrics(); // the same figures at a chosen ENG allocation
+metrics.mobilityCapacitorMetricsResult();
 metrics.shieldMetrics();
 metrics.shieldMetricsResult();
+metrics.shieldCapacitorMetrics(); // what SYS pips make of that shield
+metrics.shieldCapacitorMetricsResult();
 metrics.shieldRecovery();
 metrics.shieldRecoveryResult();
 metrics.heatMetrics();
