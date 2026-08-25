@@ -216,6 +216,12 @@ test('a slot is priced by either spelling of its key', () => {
     assert.equal(getSourceModuleValue(record, stated.Slot.toLowerCase())?.value, stated.Value);
     assert.equal(getSourceModuleValue(record, stated.Slot.toUpperCase())?.value, stated.Value);
     assert.equal(getSourceModuleValue(record, stated.Slot)?.item, stated.Item);
+    // Whitespace around an identifier is ignored library-wide, here as anywhere else.
+    assert.equal(getSourceModuleValue(record, `  ${stated.Slot}\n`)?.value, stated.Value);
+    assert.equal(
+        getSourceModuleValue(record, ` ${stated.Slot.toUpperCase()} `)?.value,
+        stated.Value,
+    );
 });
 
 test('a slot the source left unpriced is null, and so is a slot it never named', () => {

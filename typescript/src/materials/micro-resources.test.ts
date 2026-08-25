@@ -90,7 +90,7 @@ test('symbols and names are unique across the whole catalogue', () => {
 
 test('microResourcesInCategory returns exactly the requested category', () => {
     for (const category of CATEGORIES) {
-        const found = microResourcesInCategory(category, ALL_MICRO_RESOURCES);
+        const found = microResourcesInCategory(category);
         assert.ok(found.length > 0);
         assert.ok(found.every((r) => r.category === category));
         // Every category catalogue is homogeneous and matches the ALL slice.
@@ -99,11 +99,11 @@ test('microResourcesInCategory returns exactly the requested category', () => {
 });
 
 test('microResourcesInCategory ignores case and whitespace', () => {
-    const consumables = microResourcesInCategory('consumable', ALL_MICRO_RESOURCES);
+    const consumables = microResourcesInCategory('consumable');
     assert.ok(consumables.length > 0);
     for (const spelling of ['Consumable', 'CONSUMABLE', ' consumable ']) {
         assert.deepEqual(
-            microResourcesInCategory(spelling, ALL_MICRO_RESOURCES),
+            microResourcesInCategory(spelling),
             consumables,
             `${spelling} should resolve like 'consumable'`,
         );
@@ -128,11 +128,29 @@ test('every lookup searches all micro resources when no catalogue is given', () 
     }
 });
 
-test('an explicit catalogue still narrows the search', () => {
+test('an explicit catalogue still narrows a by-key search', () => {
     // Graphene is a component, so a consumable-only search must not find it.
     assert.equal(getMicroResourceBySymbol('graphene', CONSUMABLE_MICRO_RESOURCES), null);
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
-    assert.deepEqual(microResourcesInCategory('item', COMPONENT_MICRO_RESOURCES), []);
+    // The category lookup takes no catalogue: narrowing it is `.filter()`.
+    assert.deepEqual(
+        microResourcesInCategory('item').filter((r) => COMPONENT_MICRO_RESOURCES.includes(r)),
+        [],
+    );
+});
+
+test('a copy of ALL_MICRO_RESOURCES is scanned, and answers exactly as the index does', () => {
+    // The indexed path is chosen by reference identity, so a copy of the same 226
+    // records takes the scan instead; only identical answers make that a performance
+    // note rather than a bug.
+    const copy = [...ALL_MICRO_RESOURCES];
+    for (const symbol of ['circuitboard', 'CircuitBoard', ' graphene ', 'nonexistent']) {
+        assert.equal(getMicroResourceBySymbol(symbol, copy), getMicroResourceBySymbol(symbol));
+    }
+    assert.equal(
+        getMicroResourceByName(' CIRCUIT BOARD ', copy),
+        getMicroResourceByName('circuit board'),
+    );
 });
 
 test('catalogues and their records are frozen', () => {

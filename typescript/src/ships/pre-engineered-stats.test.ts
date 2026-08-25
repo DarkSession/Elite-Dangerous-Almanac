@@ -526,17 +526,36 @@ test('identity fields survive resolution — a variant is the same article', () 
     );
 });
 
-test('a variant with no stat block resolves to the base record itself', () => {
+test('a variant with no stat block resolves to a copy of the base record', () => {
     // Every Merc row: the pre-engineering it arrives with is not published, so the
-    // honest answer is the stock record rather than an invented one.
+    // honest answer is the stock stats rather than an invented set.
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (variant.acquisition !== 'mercenary') continue;
-        assert.equal(
-            getPreEngineeredStats(variant),
-            getModuleBySymbol(variant.symbol, ALL_MODULES),
-        );
+        const stock = getModuleBySymbol(variant.symbol, ALL_MODULES);
+        const resolved = getPreEngineeredStats(variant);
+        assert.deepEqual(resolved, stock);
+        // A copy, though: handing back the frozen singleton would make this the one
+        // resolved record a consumer cannot adjust before fitting it.
+        assert.notEqual(resolved, stock);
         assert.deepEqual(getPreEngineeredModifiers(variant), []);
         assert.deepEqual(unresolvedModifiers(variant), []);
+    }
+});
+
+test('both resolution paths hand back a record the caller owns', () => {
+    // One return type, one mutability contract: whether the variant had a stat block to
+    // apply must not decide whether writing to the result throws.
+    const withoutStatBlock = PRE_ENGINEERED_MODULES.find(
+        (variant) => variant.acquisition === 'mercenary',
+    )!;
+    const withStatBlock = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium')[0]!;
+    for (const variant of [withoutStatBlock, withStatBlock]) {
+        const resolved = getPreEngineeredStats(variant)!;
+        assert.equal(Object.isFrozen(resolved), false, variant.symbol);
+        (resolved as { mass?: number }).mass = 999;
+        assert.equal(resolved.mass, 999);
+        // And the shared catalogue record is untouched by that write.
+        assert.notEqual(getModuleBySymbol(variant.symbol, ALL_MODULES)!.mass, 999);
     }
 });
 

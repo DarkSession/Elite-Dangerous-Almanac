@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 
 import {
     sectorNameFromGridPosition,
@@ -30,6 +31,39 @@ test('round-trips ambiguous and four-fragment generated names', () => {
         assert.equal(name, expectedName);
         assert.deepEqual(sectorGridPositionFromName(name), coords);
     }
+});
+
+test('generates a pinned corpus of names from the ported fragment tables', () => {
+    // The run-length and offset tables are derived from the EDTS fragment tables once,
+    // at module load. This pins what that derivation generates across 16 384 grid slots
+    // so restructuring it cannot quietly shift a name; a slot with no assigned name
+    // records `-`.
+    const lines: string[] = [];
+    for (let sectorX = 0; sectorX < 128; sectorX++)
+        for (let sectorY = 0; sectorY < 64; sectorY += 8)
+            for (let sectorZ = 0; sectorZ < 128; sectorZ += 8) {
+                let name = '-';
+                try {
+                    name = sectorNameFromGridPosition({ sectorX, sectorY, sectorZ });
+                } catch (error) {
+                    if (!(error instanceof RangeError)) throw error;
+                }
+                lines.push(`${sectorX},${sectorY},${sectorZ}=${name}`);
+            }
+    assert.equal(lines.length, 16384);
+
+    // Spot values first, so a table change reports a readable name rather than only a
+    // changed digest. The last two are the ones the digest alone would not localise.
+    assert.deepEqual(
+        [lines[0], lines[3000], lines[12345], lines.at(-1)],
+        ['0,0,0=Thob', '23,24,64=Glaiyao', '96,24,72=Mynua Scho', '127,56,120=-'],
+    );
+    assert.equal(
+        createHash('sha256')
+            .update(lines.join('\n') + '\n', 'utf8')
+            .digest('hex'),
+        'c66e8c56d020094f0f1c8afe4dac10a087ac13dff588a40c5c22a9e830482c74',
+    );
 });
 
 test('rejects in-range grid slots that have no assigned procedural name', () => {

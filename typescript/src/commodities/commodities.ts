@@ -15,8 +15,8 @@
  * getCommodityByName('lavian brandy')?.rare; // -> true
  * ```
  *
- * Each lookup takes an optional second argument to **narrow** the search to a
- * subset — one registry's catalogue, or any array you have filtered yourself:
+ * The two **by-key** lookups take an optional second argument to **narrow** the search
+ * to a subset — one registry's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
@@ -27,6 +27,15 @@
  * It narrows *results*, not bundle size: importing a lookup pulls both catalogues,
  * since that is what it falls back to — 29.5 KiB minified for all 399. Every record
  * carries a {@link Commodity.rare} flag, so a subset is one `.filter()` away.
+ *
+ * **Only `ALL_COMMODITIES` itself is indexed.** A by-key lookup answers from an O(1)
+ * index when the catalogue you pass *is* `ALL_COMMODITIES` — the same object, not a
+ * copy — and scans linearly otherwise, including for `[...ALL_COMMODITIES]`, which
+ * holds the same 399 records. Omitting the argument always takes the indexed path, so
+ * pass one only when you mean to exclude the other registry.
+ *
+ * {@link commoditiesInCategory} takes no catalogue: it returns an array, so narrowing
+ * it is `.filter()` on the result — `rare` tells the two registries apart.
  *
  * @example
  * ```ts
@@ -118,7 +127,10 @@ const COMMODITIES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_COMMODITIES, 'nam
  * market/journal reports (`"platinum"`). Leading/trailing whitespace is ignored.
  * @param commodities - Optional subset to search instead of all 399 commodities —
  * `COMMODITIES` (standard only), `RARE_COMMODITIES`, or any array you have filtered
- * yourself. Omit it unless you specifically want to exclude the other registry.
+ * yourself. Omit it unless you specifically want to exclude the other registry: the
+ * indexed O(1) path is taken only when the argument is omitted or is `ALL_COMMODITIES`
+ * **by reference**, and every other array — a copy of that same catalogue included —
+ * is scanned.
  * @returns The matching {@link Commodity}, or `null` if no commodity has that symbol.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
  * `symbol` is a miss, answered the way an unrecognised one is.
@@ -170,22 +182,17 @@ export function getCommodityByName(
  * whitespace and case are ignored, like every other lookup here, so a group name
  * that arrived from a market payload or a user's dropdown resolves without
  * re-casing it first.
- * @param commodities - Optional subset to search (see {@link getCommodityBySymbol}).
- * @returns A new array of matches (possibly empty). The input is not modified.
+ * @returns A new array of matches (possibly empty).
  * @throws {TypeError} If `category` is present and not a string. A nullish
  * `category` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities/commodities';
- * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
  *
- * commoditiesInCategory('Metals').length;            // -> every metal, standard and rare
- * commoditiesInCategory('metals', COMMODITIES).length; // -> the standard ones only
+ * commoditiesInCategory('Metals').length; // -> every metal, standard and rare
+ * commoditiesInCategory('metals').filter((c) => !c.rare).length; // -> the standard ones only
  * ```
  */
-export function commoditiesInCategory(
-    category: string,
-    commodities: readonly Commodity[] = ALL_COMMODITIES,
-): Commodity[] {
-    return filterByKey(commodities, 'category', category, 'commoditiesInCategory: category');
+export function commoditiesInCategory(category: string): Commodity[] {
+    return filterByKey(ALL_COMMODITIES, 'category', category, 'commoditiesInCategory: category');
 }

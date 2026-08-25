@@ -20,6 +20,7 @@
 import blueprintCostsData from '../../../data/ships/blueprint-costs.jsonc' with { type: 'json' };
 import blueprintMercCoinCostsData from '../../../data/ships/blueprint-merc-coin-costs.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 import { findByRawKey } from '../internal/registry-index.js';
 import { rollsForGrade, sumMaterials } from './engineering.js';
 import type { EngineeringMaterial } from './engineering.js';
@@ -137,10 +138,14 @@ export interface BlueprintCost {
  * ```
  */
 export function getBlueprintGradeCost(fdname: string, grade: number): BlueprintCost | null {
+    // Arguments are checked in the order they are declared, as `getBlueprintGrade` in
+    // `ships/blueprints` does, so a call with two bad arguments reports the same one
+    // whichever of the two functions the consumer reached for.
+    const label = 'getBlueprintGradeCost: fdname';
+    requireStringIfPresent(fdname, label);
     if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
         throw new RangeError(`getBlueprintGradeCost: grade must be an integer in [1, 5]`);
     }
-    const label = 'getBlueprintGradeCost: fdname';
     const materials = materialCosts(fdname, label)?.[String(grade)];
     if (!materials) return null;
     return { materials, mercCoins: mercCoinCosts(fdname, label)?.[String(grade)] ?? 0 };
@@ -203,6 +208,10 @@ export function getBlueprintCost(
     grade: number,
     currentGrade = 0,
 ): BlueprintCost | null {
+    // Declaration order, matching `getBlueprintGrade` and `getBlueprintGradeCost`: the id
+    // first, then the target grade, then the completed one.
+    const label = 'getBlueprintCost: fdname';
+    requireStringIfPresent(fdname, label);
     if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
         throw new RangeError(`getBlueprintCost: grade must be an integer in [1, 5]`);
     }
@@ -210,7 +219,6 @@ export function getBlueprintCost(
         throw new RangeError(`getBlueprintCost: currentGrade must be an integer in [0, 5]`);
     }
 
-    const label = 'getBlueprintCost: fdname';
     const costs = materialCosts(fdname, label);
     if (!costs) return null;
     if (!costs[String(grade)]) return null;

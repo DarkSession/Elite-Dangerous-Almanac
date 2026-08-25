@@ -15,8 +15,8 @@
  * getMicroResourceBySymbol('graphene')?.category; // -> 'component'
  * ```
  *
- * Each lookup takes an optional second argument to **narrow** the search to a
- * subset — one category's catalogue, or any array you have filtered yourself:
+ * The two **by-key** lookups take an optional second argument to **narrow** the search
+ * to a subset — one category's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
@@ -29,6 +29,15 @@
  * It narrows *results*, not bundle size: importing a lookup pulls all four
  * catalogues, since that is what it falls back to — 13.0 KiB minified for all 226.
  * {@link microResourcesInCategory} reaches the same subsets from a plain string.
+ *
+ * **Only `ALL_MICRO_RESOURCES` itself is indexed.** A by-key lookup answers from an
+ * O(1) index when the catalogue you pass *is* `ALL_MICRO_RESOURCES` — the same object,
+ * not a copy — and scans linearly otherwise, including for `[...ALL_MICRO_RESOURCES]`,
+ * which holds the same 226 records. Omitting the argument always takes the indexed
+ * path, so pass one only when you mean to exclude the rest.
+ *
+ * {@link microResourcesInCategory} takes no catalogue: it returns an array, so
+ * narrowing it is `.filter()` on the result or on the subset you already imported.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`), in-game verification and
  * Inara; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
@@ -97,7 +106,10 @@ const MICRO_RESOURCES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURC
  * @param microResources - Optional subset to search instead of all 226 micro
  * resources — `COMPONENT_MICRO_RESOURCES`, `CONSUMABLE_MICRO_RESOURCES`,
  * `DATA_MICRO_RESOURCES`, `ITEM_MICRO_RESOURCES`, or any array you have filtered
- * yourself. Omit it unless you specifically want to exclude the rest.
+ * yourself. Omit it unless you specifically want to exclude the rest: the indexed O(1)
+ * path is taken only when the argument is omitted or is `ALL_MICRO_RESOURCES` **by
+ * reference**, and every other array — a copy of that same catalogue included — is
+ * scanned.
  * @returns The matching {@link MicroResource}, or `null` if no micro resource has
  * that symbol.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
@@ -149,8 +161,7 @@ export function getMicroResourceByName(
  *
  * @param category - The category to match, e.g. `'component'`. Leading/trailing
  * whitespace and case are ignored, like every other lookup here.
- * @param microResources - Optional subset to search (see {@link getMicroResourceBySymbol}).
- * @returns A new array of matches (possibly empty). The input is not modified.
+ * @returns A new array of matches (possibly empty).
  * @throws {TypeError} If `category` is present and not a string. A nullish
  * `category` is a miss, answered the way an unrecognised one is.
  * @example
@@ -161,9 +172,11 @@ export function getMicroResourceByName(
  * microResourcesInCategory('Consumable').length; // -> 6; case is ignored
  * ```
  */
-export function microResourcesInCategory(
-    category: string,
-    microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
-): MicroResource[] {
-    return filterByKey(microResources, 'category', category, 'microResourcesInCategory: category');
+export function microResourcesInCategory(category: string): MicroResource[] {
+    return filterByKey(
+        ALL_MICRO_RESOURCES,
+        'category',
+        category,
+        'microResourcesInCategory: category',
+    );
 }

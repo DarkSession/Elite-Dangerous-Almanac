@@ -10,6 +10,7 @@ import {
     getPersonalWeaponByName,
     getPersonalWeaponBySymbol,
     getPersonalWeaponGrade,
+    type PersonalWeapon,
 } from './weapons.js';
 import {
     PERSONAL_UPGRADE_COSTS,
@@ -80,6 +81,42 @@ test('suit grades enforce their range and preserve a deliberate missing grade', 
     }
 });
 
+test('every handheld weapon carries all five grades, unlike the Flight Suit', () => {
+    // `PersonalWeapon.grades` is typed as a total record on the strength of this; the
+    // lookup is still nullable, so a consumer writes weapons and suits the same way.
+    for (const weapon of PERSONAL_WEAPONS) {
+        assert.deepEqual(Object.keys(weapon.grades), ['1', '2', '3', '4', '5'], weapon.symbol);
+    }
+    assert.deepEqual(Object.keys(getSuitByFamily('flightsuit')!.grades), ['1']);
+});
+
+test('the two grade lookups answer a missing grade and a bad one the same way', () => {
+    // Sibling lookups over one grade scale: same nullable result for a grade the record
+    // does not carry, same RangeError text for a grade off the scale. No catalogued
+    // weapon has a gap, so the weapon side is exercised with the record a JavaScript
+    // caller — or a future data gap — would hand in: the guard is what makes the `null`
+    // a promise the library keeps rather than one the shipped data happens to satisfy.
+    const flightSuit = getSuitByFamily('flightsuit');
+    assert.ok(flightSuit);
+    const gradelessWeapon = {
+        ...PERSONAL_WEAPONS[0]!,
+        grades: {},
+    } as unknown as PersonalWeapon;
+    assert.equal(getPersonalWeaponGrade(gradelessWeapon, 3), null);
+    assert.equal(getSuitGrade(flightSuit, 3), null);
+
+    for (const invalid of [0, 1.5, 6, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => getPersonalWeaponGrade(PERSONAL_WEAPONS[0]!, invalid), {
+            name: 'RangeError',
+            message: 'getPersonalWeaponGrade: grade must be an integer in [1, 5]',
+        });
+        assert.throws(() => getSuitGrade(flightSuit, invalid), {
+            name: 'RangeError',
+            message: 'getSuitGrade: grade must be an integer in [1, 5]',
+        });
+    }
+});
+
 test('representative handheld weapons resolve with their pinned grade stats', () => {
     for (const expected of equipmentFixture.weapons) {
         const weapon = getPersonalWeaponBySymbol(expected.symbol);
@@ -90,6 +127,7 @@ test('representative handheld weapons resolve with their pinned grade stats', ()
         assert.equal(weapon.magazineSize, expected.magazineSize);
         assert.equal(weapon.effectiveRange, expected.effectiveRange);
         const grade = getPersonalWeaponGrade(weapon, expected.grade);
+        assert.ok(grade);
         assert.equal(grade.damage, expected.damage);
         assert.equal(grade.modificationSlots, expected.modificationSlots);
     }

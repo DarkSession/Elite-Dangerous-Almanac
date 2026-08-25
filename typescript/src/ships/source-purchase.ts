@@ -10,7 +10,7 @@
  */
 
 import { deepFreeze } from '../internal/deep-freeze.js';
-import { requireStringIfPresent } from '../internal/argument-guards.js';
+import { normalizeKey } from '../internal/registry-index.js';
 import type { LoadoutEvent } from './slef.js';
 
 /** One slot's captured purchase price, exactly as the source stated it. */
@@ -120,7 +120,8 @@ export function sourcePurchaseFromLoadout(event: LoadoutEvent): SourcePurchaseRe
  *
  * @param record - Purchase snapshot to query.
  * @param slotKey - Slot key such as `"PowerPlant"`. An exact spelling wins; otherwise
- * matching is case-insensitive so journal and lower-cased SLEF keys interoperate.
+ * matching folds case and ignores surrounding whitespace, as every identifier lookup in
+ * the library does, so journal and lower-cased SLEF keys interoperate.
  * @returns The frozen entry, or `null` when the source priced no module in that slot.
  * `null` never means the module was free.
  * @throws {TypeError} If `slotKey` is present and not a string. A nullish `slotKey` is a
@@ -140,13 +141,15 @@ export function getSourceModuleValue(
     record: SourcePurchaseRecord,
     slotKey: string,
 ): SourceModuleValue | null {
-    requireStringIfPresent(slotKey, 'getSourceModuleValue: slotKey');
+    // Normalizing first is also the type guard, so a wrong-typed key fails before it is
+    // compared against anything. A nullish one normalizes to `undefined`, which no
+    // entry's key can equal, and so stays a miss.
+    const wanted = normalizeKey(slotKey, 'getSourceModuleValue: slotKey');
     for (const entry of record.moduleValues) {
         if (entry.slot === slotKey) return entry;
     }
-    const wanted = slotKey?.toLowerCase();
     for (const entry of record.moduleValues) {
-        if (entry.slot.toLowerCase() === wanted) return entry;
+        if (entry.slot.trim().toLowerCase() === wanted) return entry;
     }
     return null;
 }

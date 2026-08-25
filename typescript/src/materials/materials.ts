@@ -16,8 +16,9 @@
  * getMaterialByName('iron')?.grade; // -> MaterialGrade.VeryCommon (1)
  * ```
  *
- * Each lookup takes an optional second argument to **narrow** the search to a
- * subset — one category's catalogue, or any array you have filtered yourself:
+ * The three **by-key** lookups take an optional second argument to **narrow** the
+ * search to a subset — one category's catalogue, or any array you have filtered
+ * yourself:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
@@ -29,6 +30,16 @@
  * It narrows *results*, not bundle size: importing a lookup pulls all three
  * catalogues, since that is what it falls back to — 16.9 KiB minified for all 146.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
+ *
+ * **Only `ALL_MATERIALS` itself is indexed.** A by-key lookup answers from an O(1)
+ * index when the catalogue you pass *is* `ALL_MATERIALS` — the same object, not a copy
+ * — and scans linearly otherwise, including for `[...ALL_MATERIALS]`, which holds the
+ * same 146 records. Omitting the argument always takes the indexed path, so pass one
+ * only when you mean to exclude the rest.
+ *
+ * The filtering lookups ({@link materialsByGrade}, {@link materialsInLine},
+ * {@link materialsInCategory}) take no catalogue: each returns an array, so narrowing
+ * one is `.filter()` on the result or on the subset you already imported.
  *
  * Data originates from EDCD FDevIDs, with Thargoid materials absent from that
  * pinned source supplied by INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
@@ -45,6 +56,7 @@
  */
 
 import { ALL_MATERIALS } from './materials-all.js';
+import { describeValue } from '../internal/argument-guards.js';
 import {
     createKeyIndex,
     filterByKey,
@@ -188,7 +200,10 @@ const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elem
  * form the player journal reports (`"gridresistors"`).
  * @param materials - Optional subset to search instead of all 146 materials —
  * `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`, `ENCODED_MATERIALS`, or any array you
- * have filtered yourself. Omit it unless you specifically want to exclude the rest.
+ * have filtered yourself. Omit it unless you specifically want to exclude the rest:
+ * the indexed O(1) path is taken only when the argument is omitted or is
+ * `ALL_MATERIALS` **by reference**, and every other array — a copy of that same
+ * catalogue included — is scanned.
  * @returns The matching {@link Material}, or `null` if no material has that symbol.
  * @throws {TypeError} If `symbol` is present and not a string. A nullish
  * `symbol` is a miss, answered the way an unrecognised one is.
@@ -267,25 +282,30 @@ export function getMaterialByElementSymbol(
 }
 
 /**
- * Every material of a given grade, in catalogue order.
+ * Every material of a given grade, across all three categories, in catalogue order.
  *
- * @param grade - The grade to match, 1–5 (or a {@link MaterialGrade} member).
- * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
- * @returns A new array of matches (possibly empty). The input is not modified.
+ * @param grade - The grade to match, 1–5 (or a {@link MaterialGrade} member). A grade
+ * no material carries matches nothing, the way an unrecognised symbol does.
+ * @returns A new array of matches (possibly empty).
+ * @throws {TypeError} If `grade` is present and not a number. A nullish `grade` is a
+ * miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { MaterialGrade, materialsByGrade } from '@elite-dangerous-almanac/core/materials/materials';
  * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
  *
- * materialsByGrade(MaterialGrade.VeryRare).length;                 // -> across every category
- * materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length;      // -> 7, one per raw line
+ * materialsByGrade(MaterialGrade.VeryRare).length;                        // -> across every category
+ * RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.Rare).length;     // -> 7, one per raw line
  * ```
  */
-export function materialsByGrade(
-    grade: MaterialGrade,
-    materials: readonly Material[] = ALL_MATERIALS,
-): Material[] {
-    return materials.filter((material) => material.grade === grade);
+export function materialsByGrade(grade: MaterialGrade): Material[] {
+    if (grade == null) return [];
+    if (typeof grade !== 'number') {
+        throw new TypeError(
+            `materialsByGrade: grade must be a number, received ${describeValue(grade)}`,
+        );
+    }
+    return ALL_MATERIALS.filter((material) => material.grade === grade);
 }
 
 /**
@@ -294,8 +314,7 @@ export function materialsByGrade(
  * @param line - The line to match, e.g. `MaterialLine.Chemical`. A plain string of
  * the line's value works too: leading/trailing whitespace and case are ignored, like
  * every other lookup here.
- * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
- * @returns A new array of matches (possibly empty). The input is not modified.
+ * @returns A new array of matches (possibly empty).
  * @throws {TypeError} If `line` is present and not a string. A nullish
  * `line` is a miss, answered the way an unrecognised one is.
  * @example
@@ -305,11 +324,8 @@ export function materialsByGrade(
  * materialsInLine(MaterialLine.Chemical).map((m) => m.grade); // -> [1, 2, 3, 4, 5]
  * ```
  */
-export function materialsInLine(
-    line: string,
-    materials: readonly Material[] = ALL_MATERIALS,
-): Material[] {
-    return filterByKey(materials, 'line', line, 'materialsInLine: line');
+export function materialsInLine(line: string): Material[] {
+    return filterByKey(ALL_MATERIALS, 'line', line, 'materialsInLine: line');
 }
 
 /**
@@ -322,8 +338,7 @@ export function materialsInLine(
  *
  * @param category - The category to match: `'raw'`, `'manufactured'` or `'encoded'`.
  * Leading/trailing whitespace and case are ignored, like every other lookup here.
- * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
- * @returns A new array of matches (possibly empty). The input is not modified.
+ * @returns A new array of matches (possibly empty).
  * @throws {TypeError} If `category` is present and not a string. A nullish
  * `category` is a miss, answered the way an unrecognised one is.
  * @example
@@ -334,9 +349,6 @@ export function materialsInLine(
  * materialsInCategory('Encoded').length;      // -> 47; case is ignored
  * ```
  */
-export function materialsInCategory(
-    category: string,
-    materials: readonly Material[] = ALL_MATERIALS,
-): Material[] {
-    return filterByKey(materials, 'category', category, 'materialsInCategory: category');
+export function materialsInCategory(category: string): Material[] {
+    return filterByKey(ALL_MATERIALS, 'category', category, 'materialsInCategory: category');
 }

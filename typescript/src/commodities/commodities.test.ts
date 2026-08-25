@@ -86,29 +86,32 @@ test('every category value is one the fixture lists, and every listed category i
 
 test('commoditiesInCategory selects exactly the requested market group', () => {
     for (const [category, count] of Object.entries(commoditiesFixture.categoryCounts)) {
-        const found = commoditiesInCategory(category as CommodityCategory, ALL_COMMODITIES);
+        const found = commoditiesInCategory(category as CommodityCategory);
         assert.equal(found.length, count);
         assert.ok(found.every((c) => c.category === category));
     }
-    // A category with no members in a given catalogue yields an empty array
+    // A category with no members in a given registry yields an empty array
     // (Minerals is a standard-only group, absent from the rares).
-    assert.deepEqual(commoditiesInCategory('Minerals', RARE_COMMODITIES), []);
+    assert.deepEqual(
+        commoditiesInCategory('Minerals').filter((c) => c.rare),
+        [],
+    );
 });
 
 test('commoditiesInCategory ignores case and whitespace, like every other lookup', () => {
-    const metals = commoditiesInCategory('Metals', COMMODITIES);
+    const metals = commoditiesInCategory('Metals');
     assert.ok(metals.length > 0);
     for (const spelling of ['metals', 'METALS', ' Metals ']) {
         assert.deepEqual(
-            commoditiesInCategory(spelling, COMMODITIES),
+            commoditiesInCategory(spelling),
             metals,
             `${spelling} should resolve like 'Metals'`,
         );
     }
     // Multi-word groups too, where a caller is most likely to re-case.
     assert.deepEqual(
-        commoditiesInCategory('consumer items', COMMODITIES),
-        commoditiesInCategory('Consumer Items', COMMODITIES),
+        commoditiesInCategory('consumer items'),
+        commoditiesInCategory('Consumer Items'),
     );
 });
 
@@ -117,18 +120,30 @@ test('every lookup searches both registries when no catalogue is given', () => {
     assert.equal(getCommodityBySymbol('platinum')?.rare, false);
     assert.equal(getCommodityBySymbol('lavianbrandy')?.rare, true);
     assert.equal(getCommodityByName('lavian brandy')?.symbol, 'LavianBrandy');
+    // The category lookup spans both registries; `rare` splits the result again.
+    const metals = commoditiesInCategory('Metals');
     assert.equal(
-        commoditiesInCategory('Metals').length,
-        commoditiesInCategory('Metals', COMMODITIES).length +
-            commoditiesInCategory('Metals', RARE_COMMODITIES).length,
+        metals.length,
+        metals.filter((c) => !c.rare).length + metals.filter((c) => c.rare).length,
     );
+    assert.ok(metals.some((c) => c.rare) && metals.some((c) => !c.rare));
 });
 
-test('an explicit catalogue still narrows the search', () => {
+test('an explicit catalogue still narrows a by-key search', () => {
     // Lavian Brandy is rare, so a standard-only search must not find it.
     assert.equal(getCommodityBySymbol('lavianbrandy', COMMODITIES), null);
     assert.equal(getCommodityByName('platinum', RARE_COMMODITIES), null);
-    assert.deepEqual(commoditiesInCategory('Minerals', RARE_COMMODITIES), []);
+});
+
+test('a copy of ALL_COMMODITIES is scanned, and answers exactly as the index does', () => {
+    // The indexed path is chosen by reference identity, so a copy of the same 399
+    // records takes the scan instead; only identical answers make that a performance
+    // note rather than a bug.
+    const copy = [...ALL_COMMODITIES];
+    for (const symbol of ['platinum', 'Platinum', ' lavianbrandy ', 'nonexistent']) {
+        assert.equal(getCommodityBySymbol(symbol, copy), getCommodityBySymbol(symbol));
+    }
+    assert.equal(getCommodityByName(' LAVIAN BRANDY ', copy), getCommodityByName('lavian brandy'));
 });
 
 test('catalogues and their records are frozen', () => {

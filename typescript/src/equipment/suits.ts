@@ -7,6 +7,7 @@
 import suitsData from '../../../data/equipment/suits.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { createKeyIndex, findInKeyIndex, normalizeKey } from '../internal/registry-index.js';
+import { assertEquipmentGrade } from './internal/equipment-grade.js';
 
 /** A Pioneer Supplies equipment grade, from the stock grade 1 through grade 5. */
 export type EquipmentGrade = 1 | 2 | 3 | 4 | 5;
@@ -141,13 +142,4 @@ export function getSuitBySymbol(
 export function getSuitGrade(suit: Suit, grade: number): SuitGrade | null {
     assertEquipmentGrade(grade, 'getSuitGrade');
     return suit.grades[String(grade) as `${EquipmentGrade}`] ?? null;
-}
-
-function assertEquipmentGrade(
-    grade: number,
-    functionName: string,
-): asserts grade is EquipmentGrade {
-    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
-        throw new RangeError(`${functionName}: grade must be an integer in [1, 5]`);
-    }
 }

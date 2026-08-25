@@ -500,30 +500,38 @@ const INFIX_RUN_LENGTHS = new Map<string, number>([
     ['wr', 31],
 ]);
 
+/** Run length of a `PREFIXES` fragment with no entry in `PREFIX_RUN_LENGTHS`. */
 const PREFIX_DEFAULT_RUN_LENGTH = 35;
 
 // --- Offset tables (built once from the fragment tables) ------------------------
 
 /**
- * Assign each fragment a start offset within its table and return the total run
- * length. Fills a default run length into `runLengths` for every fragment lacking
- * an explicit one, so later run-length lookups never miss.
+ * Assign each fragment a start offset within its table.
+ *
+ * `explicitRunLengths` is only read. The returned `runLengths` is a fresh map
+ * carrying a resolved length for *every* fragment in `items` — the explicit one
+ * where there is one, `defaultLen` otherwise — so the lookups built from it are
+ * total over the table and one call's default can never reach another's table.
+ *
+ * @returns The per-fragment start offsets, the resolved per-fragment run lengths,
+ * and the table's total run length.
  */
 function buildOffsets(
     items: readonly string[],
-    runLengths: Map<string, number>,
+    explicitRunLengths: ReadonlyMap<string, number>,
     defaultLen: number,
-): { offsets: Map<string, number>; total: number } {
+): { offsets: Map<string, number>; runLengths: Map<string, number>; total: number } {
     const offsets = new Map<string, number>();
+    const runLengths = new Map<string, number>();
     let cnt = 0;
     for (const item of items) {
         const key = item.toLowerCase();
-        const len = runLengths.get(key) ?? defaultLen;
-        if (!runLengths.has(key)) runLengths.set(key, len);
+        const len = explicitRunLengths.get(key) ?? defaultLen;
+        runLengths.set(key, len);
         offsets.set(key, cnt);
         cnt += len;
     }
-    return { offsets, total: cnt };
+    return { offsets, runLengths, total: cnt };
 }
 
 const prefixTable = buildOffsets(PREFIXES, PREFIX_RUN_LENGTHS, PREFIX_DEFAULT_RUN_LENGTH);
@@ -531,18 +539,25 @@ const prefixOffsets = prefixTable.offsets;
 const prefixTotalRunLength = prefixTable.total;
 
 // Vowel infixes default to the consonant-suffix table length; consonant infixes to
-// the vowel-suffix table length. Both passes share one run-length map (disjoint
-// keys) and one offset map, mirroring the reference exactly.
+// the vowel-suffix table length, mirroring the reference exactly. The two passes read
+// the one explicit map and each returns its own resolved lengths, so the differing
+// defaults stay in their own tables and the order of these two lines is irrelevant.
 const infix1Table = buildOffsets(INFIXES1, INFIX_RUN_LENGTHS, SUFFIXES2.length);
 const infix2Table = buildOffsets(INFIXES2, INFIX_RUN_LENGTHS, SUFFIXES1.length);
 const infixOffsets = new Map<string, number>([...infix1Table.offsets, ...infix2Table.offsets]);
 const infix1TotalRunLength = infix1Table.total;
 const infix2TotalRunLength = infix2Table.total;
 
-const prefixRunLength = (key: string): number =>
-    PREFIX_RUN_LENGTHS.get(key) ?? PREFIX_DEFAULT_RUN_LENGTH;
-const infixRunLength = (key: string): number =>
-    INFIX_RUN_LENGTHS.get(key) ?? PREFIX_DEFAULT_RUN_LENGTH;
+const prefixRunLengths = prefixTable.runLengths;
+const infixRunLengths = new Map<string, number>([
+    ...infix1Table.runLengths,
+    ...infix2Table.runLengths,
+]);
+
+// Each resolved map covers every fragment of its table(s), and every caller passes a
+// fragment that came out of those tables, so neither lookup can miss.
+const prefixRunLength = (key: string): number => prefixRunLengths.get(key)!;
+const infixRunLength = (key: string): number => infixRunLengths.get(key)!;
 
 // --- Fragment table for parsing (name -> coords) --------------------------------
 

@@ -7,6 +7,7 @@
 import weaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { createKeyIndex, findInKeyIndex } from '../internal/registry-index.js';
+import { assertEquipmentGrade } from './internal/equipment-grade.js';
 import type { EquipmentGrade } from './suits.js';
 
 /** A weapon manufacturer's shared Pioneer grade-upgrade recipe. */
@@ -59,7 +60,11 @@ export interface PersonalWeapon {
     readonly headshotMultiplier: number;
     /** Nominal effective range in metres. */
     readonly effectiveRange: number;
-    /** Grade records keyed by `"1"` through `"5"`. */
+    /**
+     * Grade records keyed by `"1"` through `"5"` — every weapon carries all five,
+     * unlike {@link Suit.grades}, and `equipment.test.ts` pins that. Read one through
+     * {@link getPersonalWeaponGrade} to get the same nullable answer suits give.
+     */
     readonly grades: Readonly<Record<`${EquipmentGrade}`, PersonalWeaponGrade>>;
 }
 
@@ -119,17 +124,21 @@ export function getPersonalWeaponByName(name: string): PersonalWeapon | null {
  *
  * @param weapon - A catalogue weapon record.
  * @param grade - Integer grade `1`–`5`.
- * @returns The frozen grade record.
+ * @returns The frozen grade record, or `null` when the record carries no such grade.
+ * Every catalogued weapon carries all five, so the `null` is the same promise
+ * {@link getSuitGrade} makes rather than an outcome the shipped catalogue produces —
+ * write the two the same way and neither can surprise you.
  * @throws {RangeError} If `grade` is not an integer from 1 through 5.
  * @example
  * ```ts
  * import { PERSONAL_WEAPONS, getPersonalWeaponGrade } from '@elite-dangerous-almanac/core/equipment/weapons';
- * getPersonalWeaponGrade(PERSONAL_WEAPONS[0]!, 5).modificationSlots; // -> 4
+ * getPersonalWeaponGrade(PERSONAL_WEAPONS[0]!, 5)?.modificationSlots; // -> 4
  * ```
  */
-export function getPersonalWeaponGrade(weapon: PersonalWeapon, grade: number): PersonalWeaponGrade {
-    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
-        throw new RangeError(`getPersonalWeaponGrade: grade must be an integer in [1, 5]`);
-    }
-    return weapon.grades[String(grade) as `${EquipmentGrade}`];
+export function getPersonalWeaponGrade(
+    weapon: PersonalWeapon,
+    grade: number,
+): PersonalWeaponGrade | null {
+    assertEquipmentGrade(grade, 'getPersonalWeaponGrade');
+    return weapon.grades[String(grade) as `${EquipmentGrade}`] ?? null;
 }

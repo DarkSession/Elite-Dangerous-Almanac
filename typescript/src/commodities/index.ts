@@ -12,14 +12,25 @@
  * commoditiesInCategory('Metals').length; // -> every metal, standard and rare
  * ```
  *
- * Every lookup also takes an optional trailing argument to **narrow** the search to
- * one registry, or to an array you have filtered yourself:
+ * The by-key lookups also take an optional trailing argument to **narrow** the search
+ * to one registry, or to an array you have filtered yourself. It must be one of the
+ * exported catalogues *by reference*; `ALL_COMMODITIES` (or omitting it) is the one
+ * that answers from an index rather than a scan:
+ *
+ * ```ts
+ * import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities';
+ * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
+ *
+ * getCommodityByName('lavian brandy', COMMODITIES); // -> null; it is a rare
+ * ```
+ *
+ * A lookup that returns an array takes no catalogue — narrow its result with
+ * `.filter()`:
  *
  * ```ts
  * import { commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities';
- * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
  *
- * commoditiesInCategory('Metals', COMMODITIES).length; // -> the standard ones only
+ * commoditiesInCategory('Metals').filter((c) => !c.rare).length; // -> the standard ones only
  * ```
  *
  * @packageDocumentation

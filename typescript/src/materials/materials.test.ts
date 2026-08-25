@@ -73,7 +73,7 @@ test('grade is the rarity: every grade is 1-5, its enum name is the tier, raw ne
     assert.ok(!('rarity' in (getMaterialByName('Iron', RAW_MATERIALS) as object)));
     assert.equal(MaterialGrade[MaterialGrade.VeryRare], 'VeryRare');
     assert.ok(RAW_MATERIALS.every((m) => m.grade <= MaterialGrade.Rare));
-    assert.equal(materialsByGrade(MaterialGrade.VeryRare, RAW_MATERIALS).length, 0);
+    assert.equal(RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.VeryRare).length, 0);
 });
 
 test('getMaterialBySymbol matches the Frontier symbol / journal id, case-insensitively', () => {
@@ -109,39 +109,65 @@ test('only raw materials carry an element symbol', () => {
 test('materialsByGrade selects by grade across every grade', () => {
     // Every grade 1-5 is represented somewhere (raw lacks 5, but manufactured/encoded have it).
     for (const grade of GRADES) {
-        assert.ok(materialsByGrade(grade, ALL_MATERIALS).length > 0);
+        assert.ok(materialsByGrade(grade).length > 0);
     }
-    // A grade-4 raw material exists in each of the seven lines.
-    assert.equal(materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length, 7);
+    // A grade-4 raw material exists in each of the seven lines. Narrowing is `.filter()`
+    // now that the lookup takes no catalogue.
+    assert.equal(
+        materialsByGrade(MaterialGrade.Rare).filter((m) => m.category === 'raw').length,
+        7,
+    );
+    assert.deepEqual(
+        materialsByGrade(MaterialGrade.Rare).filter((m) => m.category === 'raw'),
+        RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.Rare),
+    );
+    // A grade no material carries is a miss, not a failure.
+    assert.deepEqual(materialsByGrade(9 as MaterialGrade), []);
+});
+
+test('materialsByGrade names a wrong-typed grade and answers a missing one', () => {
+    // Every neighbouring lookup throws on a wrong-typed key rather than quietly
+    // matching nothing; a grade that arrived as a string from a form is no different.
+    for (const [bad, described] of [
+        ['4', 'string "4"'],
+        [true, 'boolean true'],
+        [{ grade: 4 }, 'object {"grade":4}'],
+    ] as const) {
+        assert.throws(() => materialsByGrade(bad as unknown as MaterialGrade), {
+            name: 'TypeError',
+            message: `materialsByGrade: grade must be a number, received ${described}`,
+        });
+    }
+    assert.deepEqual(materialsByGrade(null as unknown as MaterialGrade), []);
+    assert.deepEqual(materialsByGrade(undefined as unknown as MaterialGrade), []);
 });
 
 test('materialsInLine returns exactly the requested line', () => {
     for (const { catalogue, line, grades } of materialsFixture.lineGrades) {
-        const found = materialsInLine(line as MaterialLine, CATALOGUES[catalogue]!);
+        const found = materialsInLine(line as MaterialLine).filter((material) =>
+            CATALOGUES[catalogue]!.includes(material),
+        );
         assert.deepEqual(
             found.map((m) => m.grade),
             grades,
         );
     }
-    // A line with no members in this catalogue yields an empty array.
-    assert.deepEqual(materialsInLine(MaterialLine.Guardian, RAW_MATERIALS), []);
+    // A line no material sits in yields an empty array.
+    assert.deepEqual(materialsInLine('no such line'), []);
 });
 
 test('materialsInLine ignores case and whitespace', () => {
-    const alloys = materialsInLine(MaterialLine.Alloys, MANUFACTURED_MATERIALS);
+    const alloys = materialsInLine(MaterialLine.Alloys);
     assert.ok(alloys.length > 0);
     for (const spelling of ['alloys', 'ALLOYS', ' Alloys ']) {
         assert.deepEqual(
-            materialsInLine(spelling, MANUFACTURED_MATERIALS),
+            materialsInLine(spelling),
             alloys,
             `${spelling} should resolve like MaterialLine.Alloys`,
         );
     }
     // A multi-word line, where a caller is most likely to re-case.
-    assert.deepEqual(
-        materialsInLine('emission data', ENCODED_MATERIALS),
-        materialsInLine(MaterialLine.EmissionData, ENCODED_MATERIALS),
-    );
+    assert.deepEqual(materialsInLine('emission data'), materialsInLine(MaterialLine.EmissionData));
 });
 
 test('every material line value is a member of the MaterialLine enum', () => {
@@ -172,10 +198,6 @@ test('every lookup searches all materials when no catalogue is given', () => {
     );
     assert.equal(getMaterialByName('iron')?.elementSymbol, 'Fe');
     assert.equal(getMaterialByElementSymbol('fe')?.name, 'Iron');
-    assert.equal(
-        materialsByGrade(MaterialGrade.VeryRare).length,
-        materialsByGrade(MaterialGrade.VeryRare, ALL_MATERIALS).length,
-    );
     assert.deepEqual(
         materialsInLine(MaterialLine.Chemical).map((m) => m.grade),
         [1, 2, 3, 4, 5],
@@ -185,17 +207,26 @@ test('every lookup searches all materials when no catalogue is given', () => {
     assert.equal(getMaterialBySymbol('bulkscandata')?.category, 'encoded');
 });
 
-test('an explicit catalogue still narrows the search', () => {
+test('an explicit catalogue still narrows a by-key search', () => {
     // Iron is raw, so a manufactured-only search must not find it.
     assert.equal(getMaterialByName('iron', MANUFACTURED_MATERIALS), null);
     assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.category, 'raw');
-    assert.equal(materialsByGrade(MaterialGrade.VeryRare, RAW_MATERIALS).length, 0);
-    assert.deepEqual(materialsInLine(MaterialLine.Chemical, ENCODED_MATERIALS), []);
-    assert.deepEqual(materialsInCategory('raw', MANUFACTURED_MATERIALS), []);
     // Any array works, not only the shipped catalogues.
     const justIron = ALL_MATERIALS.filter((m) => m.name === 'Iron');
     assert.equal(getMaterialByName('carbon', justIron), null);
     assert.equal(getMaterialByName('iron', justIron)?.name, 'Iron');
+});
+
+test('a copy of ALL_MATERIALS is scanned, and answers exactly as the index does', () => {
+    // The indexed path is chosen by reference identity, so a copy of the same 146
+    // records takes the scan instead. Documented on the parameter; pinned here because
+    // only the answers being identical makes that a performance note and not a bug.
+    const copy = [...ALL_MATERIALS];
+    for (const symbol of ['temperedalloys', 'TemperedAlloys', ' iron ', 'nonexistent']) {
+        assert.equal(getMaterialBySymbol(symbol, copy), getMaterialBySymbol(symbol));
+    }
+    assert.equal(getMaterialByName(' IRON ', copy), getMaterialByName('iron'));
+    assert.equal(getMaterialByElementSymbol('FE', copy), getMaterialByElementSymbol('fe'));
 });
 
 test('materialsInCategory returns exactly one category, case-insensitively', () => {

@@ -11,7 +11,7 @@ import {
     getBlueprintCosts,
     getBlueprintGradeCost,
 } from './blueprint-costs.js';
-import { BLUEPRINTS } from './blueprints.js';
+import { BLUEPRINTS, getBlueprintGrade } from './blueprints.js';
 
 const countFor = (
     cost: { materials: readonly { symbol: string; count: number }[] } | null,
@@ -183,6 +183,28 @@ test('a wrong-typed id names the function the consumer called', () => {
             return true;
         });
     }
+});
+
+test('the blueprint id is checked before the grade, in every function that takes both', () => {
+    // With both arguments bad, which error a consumer catches must not depend on which
+    // of the sibling lookups they called: all three check their arguments in declaration
+    // order, so the id wins. `getBlueprintGrade` pins the same order in `blueprints.test.ts`.
+    for (const call of [
+        () => getBlueprintGradeCost(42 as unknown as string, 9),
+        () => getBlueprintCost(42 as unknown as string, 9),
+        () => getBlueprintCost(42 as unknown as string, 5, 9),
+        () => getBlueprintGrade(42 as unknown as string, 9),
+    ]) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message:
+                /^getBlueprint(Grade|GradeCost|Cost): fdname must be a string, received number 42$/,
+        });
+    }
+    // A nullish id stays a miss, so the grade range is still what a bad grade reports.
+    assert.throws(() => getBlueprintGradeCost(null as unknown as string, 9), RangeError);
+    assert.throws(() => getBlueprintCost(null as unknown as string, 9), RangeError);
+    assert.throws(() => getBlueprintGrade(null as unknown as string, 9), RangeError);
 });
 
 test('getBlueprintCost rejects target and current grades outside their supported ranges', () => {

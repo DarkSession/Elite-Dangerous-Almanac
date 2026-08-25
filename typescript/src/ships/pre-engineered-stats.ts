@@ -369,13 +369,15 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * Exact damage components scale with an engineered `damage` value so their proportions
  * and the anti-xeno overlay remain coherent with the resolved scalar.
  *
- * A variant with no stat block (every `mercenary` row) resolves to the base record
- * unchanged, which is the honest answer — the pre-engineering those arrive with is not
- * published anywhere, so the catalogue does not guess at it.
+ * A variant with no stat block (every `mercenary` row) resolves to a copy of the base
+ * record with nothing changed, which is the honest answer — the pre-engineering those
+ * arrive with is not published anywhere, so the catalogue does not guess at it.
  *
  * @param variant - A pre-engineered variant.
  * @returns The resolved module record, or `null` when the variant's symbol is not in the
- * module catalogues.
+ * module catalogues. It is always a record of your own — never the shared catalogue
+ * singleton — so you may adjust it before fitting it; its nested values are still the
+ * catalogue's frozen ones, so replace them rather than write into them.
  *
  * @example
  * ```ts
@@ -398,7 +400,10 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         !variant.engineeringLocked &&
         variant.experimental === undefined
     )
-        return module;
+        // A copy, not `module` itself. Both return paths hand back a record the caller
+        // owns, so whether a write to the result succeeds never depends on which of them
+        // ran — and the shared catalogue singleton is never handed out at all.
+        return { ...module };
     const modifiers = variant.modifiers ?? [];
     const resolved: { -readonly [K in keyof OutfittingModule]: OutfittingModule[K] } = {
         ...module,

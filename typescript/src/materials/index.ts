@@ -22,14 +22,26 @@
  * getMicroResourceBySymbol('graphene')?.name;     // -> 'Graphene'
  * ```
  *
- * Every lookup also takes an optional trailing argument to **narrow** the search to
- * a subset — one category's catalogue, or an array you have filtered yourself:
+ * The by-key lookups also take an optional trailing argument to **narrow** the search
+ * to a subset — one category's catalogue, or an array you have filtered yourself. It
+ * must be one of the exported catalogues *by reference*; `ALL_MATERIALS` (or omitting
+ * it) is the one that answers from an index rather than a scan:
  *
  * ```ts
- * import { materialsByGrade } from '@elite-dangerous-almanac/core/materials';
+ * import { getMaterialByName } from '@elite-dangerous-almanac/core/materials';
  * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
  *
- * materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // -> 7, one per raw line
+ * getMaterialByName('imperial shielding', RAW_MATERIALS); // -> null; it is manufactured
+ * ```
+ *
+ * A lookup that returns an array takes no catalogue — narrow its result, or the subset
+ * you already imported, with `.filter()`:
+ *
+ * ```ts
+ * import { MaterialGrade } from '@elite-dangerous-almanac/core/materials';
+ * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+ *
+ * RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.Rare).length; // -> 7, one per raw line
  * ```
  *
  * @packageDocumentation
