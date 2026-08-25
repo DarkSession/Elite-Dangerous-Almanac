@@ -33,7 +33,14 @@ export interface WeaponsCapacitorInput {
     readonly weaponsPips?: number;
 }
 
-/** Recharge, drain and endurance of one weapons capacitor. */
+/**
+ * Recharge, drain and endurance of one weapons capacitor.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface WeaponsCapacitorMetrics {
     /** Pips assigned to WEP for this result, in `[0, 4]`. */
     readonly weaponsPips: number;
@@ -93,12 +100,12 @@ export function weaponsCapacitorMetrics(input: WeaponsCapacitorInput): WeaponsCa
 
     const rechargeRate = capacitorRechargeAtPips(input.weaponsRecharge, weaponsPips);
     const netDrainRate = Math.max(0, input.sustainedEnergyPerSecond - rechargeRate);
-    return {
+    return Object.freeze({
         weaponsPips,
         capacity: input.weaponsCapacity,
         rechargeRate,
         sustainedEnergyPerSecond: input.sustainedEnergyPerSecond,
         netDrainRate,
         timeToDrain: netDrainRate === 0 ? Infinity : input.weaponsCapacity / netDrainRate,
-    };
+    });
 }

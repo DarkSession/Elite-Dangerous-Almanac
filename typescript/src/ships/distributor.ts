@@ -60,7 +60,14 @@ export interface DistributorPips {
     readonly weapons: number;
 }
 
-/** All three capacitor figures for one power distributor and pip allocation. */
+/**
+ * All three capacitor figures for one power distributor and pip allocation.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface DistributorMetrics {
     /** SYS-capacitor capacity and recharge. */
     readonly systems: DistributorCapacitorMetrics;
@@ -88,11 +95,12 @@ const capacitorMetrics = (
     capacity: number,
     ratedRecharge: number,
     pips: number,
-): DistributorCapacitorMetrics => ({
-    capacity,
-    ratedRecharge,
-    rechargeRate: capacitorRechargeAtPips(ratedRecharge, pips),
-});
+): DistributorCapacitorMetrics =>
+    Object.freeze({
+        capacity,
+        ratedRecharge,
+        rechargeRate: capacitorRechargeAtPips(ratedRecharge, pips),
+    });
 
 /**
  * Calculate SYS, ENG and WEP recharge at one set of pip allocations.
@@ -123,11 +131,11 @@ const capacitorMetrics = (
  * ```
  */
 export function distributorMetrics(input: DistributorInput): DistributorMetrics {
-    const pips = {
+    const pips = Object.freeze({
         systems: input.systemsPips ?? 4,
         engines: input.enginesPips ?? 4,
         weapons: input.weaponsPips ?? 4,
-    };
+    });
     requirePips('systemsPips', pips.systems);
     requirePips('enginesPips', pips.engines);
     requirePips('weaponsPips', pips.weapons);
@@ -142,10 +150,10 @@ export function distributorMetrics(input: DistributorInput): DistributorMetrics 
         requireFiniteNonNegative(field, input[field]);
     }
 
-    return {
+    return Object.freeze({
         systems: capacitorMetrics(input.systemsCapacity, input.systemsRecharge, pips.systems),
         engines: capacitorMetrics(input.enginesCapacity, input.enginesRecharge, pips.engines),
         weapons: capacitorMetrics(input.weaponsCapacity, input.weaponsRecharge, pips.weapons),
         pips,
-    };
+    });
 }

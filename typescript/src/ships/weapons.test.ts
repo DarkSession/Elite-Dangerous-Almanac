@@ -503,3 +503,22 @@ test('an unspecified burst rate falls back to one shot a second', () => {
     // A single-shot weapon never pays a within-burst cost, whatever the rate says.
     assert.ok(near(combinedRateOfFire({ burstInterval: 0.13 })!, 1 / 0.13));
 });
+
+test('every weapon result is frozen, damage splits included', () => {
+    const metrics = weaponMetrics(weapon('Hpt_BeamLaser_Fixed_Small'));
+    assert.ok(Object.isFrozen(metrics));
+    assert.ok(Object.isFrozen(metrics.damageByType));
+    assert.ok(Object.isFrozen(metrics.sustainedDamageByType));
+    assert.throws(() => {
+        (metrics as { damagePerSecond: number }).damagePerSecond = 0;
+    }, TypeError);
+
+    const totals = sumWeaponMetrics([metrics, metrics]);
+    assert.ok(Object.isFrozen(totals));
+    assert.ok(Object.isFrozen(totals.damageByType));
+    assert.ok(Object.isFrozen(totals.sustainedDamageByType));
+
+    // Both `splitDamage` paths: a distribution, and the absolute fallback with none.
+    assert.ok(Object.isFrozen(splitDamage(60, { kinetic: 1 / 3, thermal: 2 / 3 })));
+    assert.ok(Object.isFrozen(splitDamage(60)));
+});

@@ -324,3 +324,20 @@ test('heatMetrics rejects figures that are not finite and non-negative', () => {
     assert.throws(() => heatMetrics({ ...INPUT, fsdHeatRate: -1 }), RangeError);
     assert.throws(() => heatMetrics({ ...INPUT, weaponsCapacity: -1 }), RangeError);
 });
+
+test('heatMetrics returns a frozen result, every scenario included', () => {
+    const metrics = heatMetrics({ ...HULL, heatEfficiency: 0.4, retractedPowerDraw: 10 });
+    assert.ok(Object.isFrozen(metrics));
+    for (const scenario of [
+        metrics.idle,
+        metrics.thrusters,
+        metrics.fsdCharging,
+        metrics.firingSustained,
+        metrics.firingDrained,
+    ]) {
+        assert.ok(Object.isFrozen(scenario));
+    }
+    assert.throws(() => {
+        (metrics.idle as { heatLevel: number }).heatLevel = 0;
+    }, TypeError);
+});

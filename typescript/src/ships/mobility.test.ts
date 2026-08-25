@@ -212,3 +212,23 @@ test('mobility handles degenerate curves and validates physical inputs', () => {
         RangeError,
     );
 });
+
+test('mobilityMetrics returns a frozen result', () => {
+    const metrics = mobilityMetrics({
+        minimumSpeed: 100,
+        maximumSpeed: 220,
+        boost: 320,
+        minPitch: 34,
+        pitch: 42,
+        minRoll: 110,
+        roll: 110,
+        minYaw: 16,
+        yaw: 16,
+        mass: 48,
+        thrusters,
+    })!;
+    assert.ok(Object.isFrozen(metrics));
+    assert.throws(() => {
+        (metrics as { speed: number }).speed = 0;
+    }, TypeError);
+});

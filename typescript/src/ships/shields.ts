@@ -130,7 +130,14 @@ export interface ShieldInput {
     readonly systemsPips?: number;
 }
 
-/** A build's shield strength, where it comes from, and what it resists. */
+/**
+ * A build's shield strength, where it comes from, and what it resists.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface ShieldMetrics {
     /** Total shield strength, in megajoules. `0` when no generator is fitted. */
     readonly strength: number;
@@ -155,6 +162,13 @@ export interface ShieldMetrics {
      * Effective resistances, generator and boosters stacked with diminishing returns,
      * and the SYS pips folded in. `0` for every damage type when no generator is fitted;
      * the pips are then reported only in {@link ShieldMetrics.systemsResistance}.
+     *
+     * @remarks
+     * Fractions rather than percentages, and **unrounded**: the stacking is
+     * floating-point arithmetic, so a nominal −20% reads as `-0.19999999999999996`
+     * rather than `-0.2`. Round where the figure is displayed, not before it is
+     * composed further — {@link ShieldMetrics.effectiveHitPoints} is derived from
+     * exactly these values.
      */
     readonly resistances: DamageResistances;
     /**
@@ -163,7 +177,10 @@ export interface ShieldMetrics {
      * `Infinity` where a resistance reaches 100%.
      */
     readonly effectiveHitPoints: DamageTypeValues;
-    /** The extra resistance the SYS pips contribute, as a fraction. */
+    /**
+     * The extra resistance the SYS pips contribute, as a fraction — unrounded, like
+     * {@link ShieldMetrics.resistances}.
+     */
     readonly systemsResistance: number;
 }
 
@@ -358,8 +375,8 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
     const generator = input.generator ?? null;
 
     if (!generator) {
-        const none = mapDamageTypes(() => 0);
-        return {
+        const none = Object.freeze(mapDamageTypes(() => 0));
+        return Object.freeze({
             strength: 0,
             generator: 0,
             boosters: 0,
@@ -367,9 +384,9 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
             massCurveMultiplier: 0,
             boostMultiplier: 1,
             resistances: none,
-            effectiveHitPoints: effectiveHitPoints(0, none),
+            effectiveHitPoints: Object.freeze(effectiveHitPoints(0, none)),
             systemsResistance: sysResistance,
-        };
+        });
     }
 
     const massCurveMultiplier = generatorCurveMultiplier(
@@ -385,16 +402,18 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
 
     // The SYS pips multiply with the stacked shield resistance rather than adding to it.
     const withPips = (resistance: number): number => 1 - (1 - resistance) * (1 - sysResistance);
-    const resistances: DamageResistances = mapDamageTypes((type) =>
-        withPips(
-            stackShieldResistance(
-                generator[`${type}Resistance`] ?? 0,
-                boosterResistances(boosters, type),
+    const resistances: DamageResistances = Object.freeze(
+        mapDamageTypes((type) =>
+            withPips(
+                stackShieldResistance(
+                    generator[`${type}Resistance`] ?? 0,
+                    boosterResistances(boosters, type),
+                ),
             ),
         ),
     );
 
-    return {
+    return Object.freeze({
         strength,
         generator: generatorStrength,
         boosters: boostersStrength,
@@ -402,7 +421,7 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
         massCurveMultiplier,
         boostMultiplier,
         resistances,
-        effectiveHitPoints: effectiveHitPoints(strength, resistances),
+        effectiveHitPoints: Object.freeze(effectiveHitPoints(strength, resistances)),
         systemsResistance: sysResistance,
-    };
+    });
 }

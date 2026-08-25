@@ -162,3 +162,13 @@ test('totalRange rejects a non-finite accumulated result', () => {
         /non-finite total range/,
     );
 });
+
+test('totalRange returns a frozen result on both of its paths', () => {
+    const details = totalRange(expected.unladenMass, expected.mainFuel, fsd);
+    assert.ok(Object.isFrozen(details));
+    assert.throws(() => {
+        (details as { jumps: number }).jumps = 0;
+    }, TypeError);
+    // The drive that cannot jump returns early, and returns a frozen result too.
+    assert.ok(Object.isFrozen(totalRange(1000, 32, { ...fsd, maxFuel: 0 })));
+});

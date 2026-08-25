@@ -28,7 +28,14 @@ export interface ShieldRecoveryInput {
     readonly systemsPips?: number;
 }
 
-/** Time and rates for a shield to return after collapsing. */
+/**
+ * Time and rates for a shield to return after collapsing.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface ShieldRecovery {
     /** Megajoules per second regenerated while the shield is raised. */
     readonly regenRate: number;
@@ -80,7 +87,14 @@ export interface CellBankMetrics {
     readonly powered: boolean;
 }
 
-/** Every fitted shield cell bank and the combined pool available from powered banks. */
+/**
+ * Every fitted shield cell bank and the combined pool available from powered banks.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface CellBankSummary {
     /** Fitted banks in slot order. */
     readonly banks: readonly CellBankMetrics[];
@@ -149,7 +163,7 @@ export function shieldRecovery(input: ShieldRecoveryInput): ShieldRecovery {
     }
     const recharge = capacitorRechargeAtPips(input.systemsRecharge, pips);
     const half = input.strength / 2;
-    return {
+    return Object.freeze({
         regenRate: input.regenRate,
         brokenRegenRate: input.brokenRegenRate,
         recoveryTime:
@@ -168,7 +182,7 @@ export function shieldRecovery(input: ShieldRecoveryInput): ShieldRecovery {
             input.systemsCapacity,
             recharge,
         ),
-    };
+    });
 }
 
 /**

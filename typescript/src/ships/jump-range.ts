@@ -45,7 +45,14 @@ export interface FrameShiftDriveParams {
     readonly jumpBoost?: number;
 }
 
-/** A multi-jump tank-range result and the number of jumps that produce it. */
+/**
+ * A multi-jump tank-range result and the number of jumps that produce it.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface TotalRangeDetails {
     /** Sum of the successive jumps as the tank drains, in light-years. */
     readonly range: number;
@@ -260,7 +267,7 @@ export function totalRange(
     requireNonNegative(scope, 'mass', mass);
     requireNonNegative(scope, 'fuel', fuel);
     validateFsd(scope, fsd);
-    if (fsd.maxFuel <= 0) return { range: 0, jumps: 0 };
+    if (fsd.maxFuel <= 0) return Object.freeze({ range: 0, jumps: 0 });
     const jumps = fuel > 0 ? Math.max(1, Math.ceil(fuel / fsd.maxFuel)) : 0;
     if (!Number.isFinite(jumps) || jumps > MAX_TOTAL_RANGE_JUMPS) {
         throw new RangeError(
@@ -276,5 +283,5 @@ export function totalRange(
         }
         remaining = Math.max(0, remaining - fsd.maxFuel);
     }
-    return { range, jumps };
+    return Object.freeze({ range, jumps });
 }

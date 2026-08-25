@@ -74,7 +74,14 @@ export interface MobilityInput {
     readonly enginesPips?: number;
 }
 
-/** Speed and rotation rates for one loaded ship. */
+/**
+ * Speed and rotation rates for one loaded ship.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface MobilityMetrics {
     /**
      * The loaded mass these figures were calculated at, in tonnes — the
@@ -219,7 +226,7 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
         input.minimumSpeed + (input.maximumSpeed - input.minimumSpeed) * pipMultiplier;
     const handlingAtPips = (maximum: number, minimum: number): number =>
         minimum + (maximum - minimum) * pipMultiplier;
-    return {
+    return Object.freeze({
         loadedMass: input.mass,
         speed: speedAtPips * massCurveMultiplier,
         boost: input.boost * massCurveMultiplier,
@@ -228,5 +235,5 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
         yaw: handlingAtPips(input.yaw, input.minYaw) * rotationMassCurveMultiplier,
         massCurveMultiplier,
         rotationMassCurveMultiplier,
-    };
+    });
 }

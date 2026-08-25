@@ -54,3 +54,15 @@ test('distributorMetrics rejects non-physical inputs', () => {
         assert.throws(() => distributorMetrics(input), RangeError);
     }
 });
+
+test('distributorMetrics returns a frozen result, each capacitor included', () => {
+    const metrics = distributorMetrics(fixture.distributor.input);
+    assert.ok(Object.isFrozen(metrics));
+    assert.ok(Object.isFrozen(metrics.systems));
+    assert.ok(Object.isFrozen(metrics.engines));
+    assert.ok(Object.isFrozen(metrics.weapons));
+    assert.ok(Object.isFrozen(metrics.pips));
+    assert.throws(() => {
+        (metrics.systems as { rechargeRate: number }).rechargeRate = 0;
+    }, TypeError);
+});

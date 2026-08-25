@@ -98,7 +98,14 @@ export interface ArmourInput {
     readonly moduleReinforcements?: readonly ModuleReinforcementParams[];
 }
 
-/** A build's armour: hit points, where they come from, and what the hull resists. */
+/**
+ * A build's armour: hit points, where they come from, and what the hull resists.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface ArmourMetrics {
     /** Total hull hit points. */
     readonly hitPoints: number;
@@ -106,7 +113,16 @@ export interface ArmourMetrics {
     readonly bulkheads: number;
     /** What the hull reinforcement packages add. */
     readonly reinforcement: number;
-    /** Effective resistances, bulkhead and reinforcement stacked with diminishing returns. */
+    /**
+     * Effective resistances, bulkhead and reinforcement stacked with diminishing returns.
+     *
+     * @remarks
+     * Fractions rather than percentages, and **unrounded**: the stacking is
+     * floating-point arithmetic, so a nominal −20% reads as `-0.19999999999999996`
+     * rather than `-0.2`. Round where the figure is displayed, not before it is
+     * composed further — {@link ArmourMetrics.effectiveHitPoints} is derived from
+     * exactly these values.
+     */
     readonly resistances: DamageResistances;
     /**
      * Effective hit points against each damage type — `hitPoints / (1 − resistance)`,
@@ -161,19 +177,21 @@ export function armourMetrics(input: ArmourInput): ArmourMetrics {
     );
     const hitPoints = bulkheads + reinforcement;
 
-    const resistances: DamageResistances = mapDamageTypes((type) =>
-        stackArmourResistance(
-            bulkhead[`${type}Resistance`] ?? 0,
-            reinforcementResistances(reinforcements, type),
+    const resistances: DamageResistances = Object.freeze(
+        mapDamageTypes((type) =>
+            stackArmourResistance(
+                bulkhead[`${type}Resistance`] ?? 0,
+                reinforcementResistances(reinforcements, type),
+            ),
         ),
     );
 
-    return {
+    return Object.freeze({
         hitPoints,
         bulkheads,
         reinforcement,
         resistances,
-        effectiveHitPoints: effectiveHitPoints(hitPoints, resistances),
+        effectiveHitPoints: Object.freeze(effectiveHitPoints(hitPoints, resistances)),
         moduleArmour: moduleReinforcements.reduce((sum, pack) => sum + (pack.integrity ?? 0), 0),
         moduleProtection:
             1 -
@@ -181,5 +199,5 @@ export function armourMetrics(input: ArmourInput): ArmourMetrics {
                 (product, pack) => product * (1 - (pack.moduleProtection ?? 0)),
                 1,
             ),
-    };
+    });
 }

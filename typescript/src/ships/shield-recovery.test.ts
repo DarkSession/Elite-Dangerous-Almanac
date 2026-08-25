@@ -147,3 +147,18 @@ test('cell banks report every fitted bank and total only the powered pool', () =
         /banks\[0\]\.powered must be a boolean/,
     );
 });
+
+test('shieldRecovery returns a frozen result, as cellBankSummary does', () => {
+    const recovery = shieldRecovery({
+        strength: 200,
+        regenRate: 2,
+        brokenRegenRate: 4,
+        distributorDraw: 0.6,
+        systemsCapacity: 20,
+        systemsRecharge: 2,
+    });
+    assert.ok(Object.isFrozen(recovery));
+    assert.throws(() => {
+        (recovery as { regenTime: number }).regenTime = 0;
+    }, TypeError);
+});

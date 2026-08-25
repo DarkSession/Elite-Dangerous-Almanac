@@ -366,3 +366,43 @@ test('the shield and thruster mass curves are one curve with one failure model',
     assert.throws(() => shieldMassCurveMultiplier(400, nonPhysical), RangeError);
     assert.throws(() => thrusterMassCurveMultiplier(400, nonPhysical), RangeError);
 });
+
+test('shieldMetrics returns a frozen result, both with and without a generator', () => {
+    const metrics = shieldMetrics({ hullMass: 400, baseShieldStrength: 350, generator });
+    assert.ok(Object.isFrozen(metrics));
+    assert.ok(Object.isFrozen(metrics.resistances));
+    assert.ok(Object.isFrozen(metrics.effectiveHitPoints));
+    assert.throws(() => {
+        (metrics as { strength: number }).strength = 0;
+    }, TypeError);
+    assert.throws(() => {
+        (metrics.resistances as { thermal: number }).thermal = 0;
+    }, TypeError);
+
+    // The shieldless build takes the other return path, and holds the same contract.
+    const bare = shieldMetrics({ hullMass: 400, baseShieldStrength: 350 });
+    assert.ok(Object.isFrozen(bare));
+    assert.ok(Object.isFrozen(bare.resistances));
+    assert.ok(Object.isFrozen(bare.effectiveHitPoints));
+});
+
+test('resistances are unrounded fractions, as their documentation says', () => {
+    // A nominal -20% thermal resistance comes back as the exact stacked double, not as
+    // a display figure: consumers round, the calculation does not.
+    const bare = shieldMetrics({
+        hullMass: 400,
+        baseShieldStrength: 350,
+        generator: { ...generator, thermalResistance: -0.2 },
+    });
+    assert.notEqual(bare.resistances.thermal, -0.2);
+    assert.ok(Math.abs(bare.resistances.thermal + 0.2) < 1e-12);
+    assert.equal(Number(bare.resistances.thermal.toFixed(2)), -0.2);
+    // The SYS-pip fraction is unrounded on the same terms.
+    const pipped = shieldMetrics({
+        hullMass: 400,
+        baseShieldStrength: 350,
+        generator,
+        systemsPips: 1,
+    });
+    assert.ok(pipped.systemsResistance > 0.18 && pipped.systemsResistance < 0.19);
+});

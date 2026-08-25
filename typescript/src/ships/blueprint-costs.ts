@@ -22,7 +22,7 @@ import blueprintMercCoinCostsData from '../../../data/ships/blueprint-merc-coin-
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 import { findByRawKey } from '../internal/registry-index.js';
-import { rollsForGrade, sumMaterials } from './engineering.js';
+import { sumMaterials } from './engineering.js';
 import type { EngineeringMaterial } from './engineering.js';
 
 /**
@@ -153,9 +153,12 @@ export function getBlueprintGradeCost(fdname: string, grade: number): BlueprintC
 
 /**
  * Compute the **total** cost of engineering a module up to a grade — every grade the
- * module still has to climb, each rolled the number of times it takes to complete
- * ({@link rollsForGrade}: grade `g` needs `g` rolls), summed into one shopping list and
- * one Merc Coin total.
+ * module still has to climb, each rolled the number of times it takes to complete,
+ * summed into one shopping list and one Merc Coin total.
+ *
+ * **Grade `N` takes `N` rolls** to fill its progress bar (grade 1 → 1 roll, grade 2 → 2
+ * rolls, … grade 5 → 5 rolls), and each roll costs that grade's recipe once, so the
+ * climb is weighted rather than a plain sum — for the materials and the Merc Coin alike.
  *
  * By default it prices the whole climb from unengineered; pass `currentGrade` to price
  * only what remains. Each grade `g` in `currentGrade + 1 … grade` contributes
@@ -229,7 +232,8 @@ export function getBlueprintCost(
     for (let g = currentGrade + 1; g <= grade; g++) {
         const recipe = costs[String(g)];
         if (!recipe) continue;
-        const rolls = rollsForGrade(g);
+        // Grade `g` takes `g` rolls, and each roll costs the grade's recipe once.
+        const rolls = g;
         mercCoins += (currency?.[String(g)] ?? 0) * rolls;
         perGrade.push(
             recipe.map((material) => ({

@@ -107,7 +107,14 @@ export interface PowerBand {
     readonly poweredDeployed: boolean;
 }
 
-/** What a build's power plant makes and what the build asks of it. */
+/**
+ * What a build's power plant makes and what the build asks of it.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface PowerBudget {
     /** Power the plant generates, in megawatts, post-engineering. */
     readonly available: number;
@@ -184,14 +191,16 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
             throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
         }
     }
-    const consumerResults: PowerConsumerResult[] = consumers.map((consumer) => ({
-        ...(consumer.label === undefined ? {} : { label: consumer.label }),
-        ...(consumer.symbol === undefined ? {} : { symbol: consumer.symbol }),
-        draw: consumer.draw,
-        enabled: consumer.enabled !== false,
-        priority: bandIndex(consumer.priority) + 1,
-        deployedOnly: consumer.deployedOnly ?? false,
-    }));
+    const consumerResults: PowerConsumerResult[] = consumers.map((consumer) =>
+        Object.freeze({
+            ...(consumer.label === undefined ? {} : { label: consumer.label }),
+            ...(consumer.symbol === undefined ? {} : { symbol: consumer.symbol }),
+            draw: consumer.draw,
+            enabled: consumer.enabled !== false,
+            priority: bandIndex(consumer.priority) + 1,
+            deployedOnly: consumer.deployedOnly ?? false,
+        }),
+    );
 
     for (const consumer of consumers) {
         if (consumer.enabled === false) continue;
@@ -211,26 +220,28 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
         retractedTotal += retracted;
         // Deployed includes everything that draws when retracted, plus the weapons.
         deployedTotal += retracted + deployed;
-        bands.push({
-            priority: i + 1,
-            retracted,
-            // A deployed build still draws everything it drew stowed.
-            deployed: retracted + deployed,
-            retractedTotal,
-            deployedTotal,
-            poweredRetracted: retractedTotal <= available + EPSILON,
-            poweredDeployed: deployedTotal <= available + EPSILON,
-        });
+        bands.push(
+            Object.freeze({
+                priority: i + 1,
+                retracted,
+                // A deployed build still draws everything it drew stowed.
+                deployed: retracted + deployed,
+                retractedTotal,
+                deployedTotal,
+                poweredRetracted: retractedTotal <= available + EPSILON,
+                poweredDeployed: deployedTotal <= available + EPSILON,
+            }),
+        );
     }
 
-    return {
+    return Object.freeze({
         available,
         retracted: retractedTotal,
         deployed: deployedTotal,
         headroom: available - deployedTotal,
         utilisation: available > 0 ? deployedTotal / available : deployedTotal > 0 ? Infinity : 0,
         withinBudget: deployedTotal <= available + EPSILON,
-        bands,
-        consumers: consumerResults,
-    };
+        bands: Object.freeze(bands),
+        consumers: Object.freeze(consumerResults),
+    });
 }

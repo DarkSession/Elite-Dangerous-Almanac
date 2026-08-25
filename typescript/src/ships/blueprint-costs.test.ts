@@ -120,6 +120,28 @@ test('getBlueprintCost sums every grade weighted by its roll count', () => {
     assert.equal(countFor(getBlueprintCost('FSD_LongRange', 5), 'DataminedWake'), 5);
 });
 
+test('every grade costs its recipe once per roll, and grade N takes N rolls', () => {
+    // The rule the whole climb is built from, pinned grade by grade: pricing grade `g`
+    // alone charges `g` copies of that grade's single-roll recipe.
+    for (const grade of [1, 2, 3, 4, 5]) {
+        const oneRoll = getBlueprintGradeCost('FSD_LongRange', grade)!;
+        assert.deepEqual(getBlueprintCost('FSD_LongRange', grade, grade - 1), {
+            materials: oneRoll.materials.map((material) => ({
+                symbol: material.symbol,
+                name: material.name,
+                count: material.count * grade,
+            })),
+            mercCoins: oneRoll.mercCoins * grade,
+        });
+    }
+    // And on a recipe that bills Merc Coin, the currency is weighted the same way.
+    const railGunGrade5 = getBlueprintGradeCost('RailGun_LongShot', 5)!;
+    assert.equal(
+        getBlueprintCost('RailGun_LongShot', 5, 4)?.mercCoins,
+        railGunGrade5.mercCoins * 5,
+    );
+});
+
 test('getBlueprintCost charges only grades above currentGrade and skips absent grades', () => {
     assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 4), {
         materials: getBlueprintGradeCost('FSD_LongRange', 5)!.materials.map((material) => ({
@@ -233,8 +255,8 @@ test('the Merc-Coin catalogue is the fixture, keyed and graded like the material
 });
 
 test('getBlueprintCost weights every charged grade by its roll count', () => {
-    // Totals are fixture literals, not recomputed here: a test that re-derived them with
-    // rollsForGrade could not fail if the weighting rule itself were wrong.
+    // Totals are fixture literals, not recomputed here: a test that re-derived them from
+    // the same roll-weighting rule could not fail if that rule itself were wrong.
     for (const climb of engineeringFixture.mercCoinCosts.climbs) {
         assert.equal(
             getBlueprintCost(climb.blueprint, climb.grade, climb.currentGrade)?.mercCoins,

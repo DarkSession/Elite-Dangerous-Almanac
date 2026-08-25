@@ -61,3 +61,15 @@ test('weaponsCapacitorMetrics rejects non-physical inputs', () => {
         assert.throws(() => weaponsCapacitorMetrics(input), RangeError);
     }
 });
+
+test('weaponsCapacitorMetrics returns a frozen result', () => {
+    const metrics = weaponsCapacitorMetrics({
+        weaponsCapacity: 20,
+        weaponsRecharge: 5,
+        sustainedEnergyPerSecond: 7,
+    });
+    assert.ok(Object.isFrozen(metrics));
+    assert.throws(() => {
+        (metrics as { timeToDrain: number }).timeToDrain = 0;
+    }, TypeError);
+});

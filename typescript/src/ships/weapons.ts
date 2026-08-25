@@ -122,6 +122,11 @@ export interface WeaponStats {
 /**
  * Damage split across the established, unclassified and anti-xeno types, in the same
  * unit as the figure it splits (for example, damage per second when splitting DPS).
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
  */
 export interface DamageSplit {
     /** Kinetic share. */
@@ -141,7 +146,14 @@ export interface DamageSplit {
     readonly antiXeno: number;
 }
 
-/** What one weapon does per second, sustained and unsustained. */
+/**
+ * What one weapon does per second, sustained and unsustained.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
+ */
 export interface WeaponMetrics {
     /** Damage of one shot — `damage × roundsPerShot`. */
     readonly damagePerShot: number;
@@ -192,6 +204,10 @@ export interface WeaponMetrics {
  * therefore do not appear here: adding a beam laser's cadence to a multi-cannon's does
  * not describe either weapon or the build. Use the individual {@link WeaponMetrics}
  * when those figures matter.
+ *
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
  */
 export interface WeaponTotals {
     /** Damage per second while firing, summed across the weapons. */
@@ -279,8 +295,8 @@ const ZERO_SPLIT: DamageSplit = {
  * ```
  */
 export function splitDamage(damage: number, distribution?: DamageDistribution): DamageSplit {
-    if (!distribution) return { ...ZERO_SPLIT, absolute: damage };
-    return {
+    if (!distribution) return Object.freeze({ ...ZERO_SPLIT, absolute: damage });
+    return Object.freeze({
         kinetic: damage * (distribution.kinetic ?? 0),
         thermal: damage * (distribution.thermal ?? 0),
         explosive: damage * (distribution.explosive ?? 0),
@@ -289,7 +305,7 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
             ? {}
             : { unclassified: damage * distribution.unclassified! }),
         antiXeno: damage * (distribution.antiXeno ?? 0),
-    };
+    });
 }
 
 function splitComponents(damage: number, components: DamageComponents): DamageSplit {
@@ -300,16 +316,16 @@ function splitComponents(damage: number, components: DamageComponents): DamageSp
         (components.explosive ?? 0) +
         (components.absolute ?? 0) +
         unclassified;
-    if (conventional <= 0) return { ...ZERO_SPLIT, absolute: damage };
+    if (conventional <= 0) return Object.freeze({ ...ZERO_SPLIT, absolute: damage });
     const scale = damage / conventional;
-    return {
+    return Object.freeze({
         kinetic: (components.kinetic ?? 0) * scale,
         thermal: (components.thermal ?? 0) * scale,
         explosive: (components.explosive ?? 0) * scale,
         absolute: (components.absolute ?? 0) * scale,
         ...(unclassified === 0 ? {} : { unclassified: unclassified * scale }),
         antiXeno: (components.antiXeno ?? 0) * scale,
-    };
+    });
 }
 
 /**
@@ -488,7 +504,7 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
     const hps = heatPerSecond(weapon);
     const rounds = weapon.roundsPerShot && weapon.roundsPerShot > 0 ? weapon.roundsPerShot : 1;
 
-    return {
+    return Object.freeze({
         damagePerShot: (weapon.damage ?? 0) * rounds,
         rateOfFire,
         sustainedRateOfFire: rateOfFire * factor,
@@ -507,7 +523,7 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
             ? splitComponents(sdps, weapon.damageComponents)
             : splitDamage(sdps, weapon.damageDistribution),
         continuous,
-    };
+    });
 }
 
 /**
@@ -550,7 +566,7 @@ export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotal
         addDamageSplit(sustainedDamageByType, metric.sustainedDamageByType);
     }
 
-    return {
+    return Object.freeze({
         damagePerSecond,
         sustainedDamagePerSecond,
         energyPerSecond,
@@ -561,7 +577,7 @@ export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotal
         powerDraw,
         damageByType: finishDamageSplit(damageByType),
         sustainedDamageByType: finishDamageSplit(sustainedDamageByType),
-    };
+    });
 }
 
 interface DamageSplitAccumulator {
@@ -588,5 +604,5 @@ function addDamageSplit(total: DamageSplitAccumulator, split: DamageSplit): void
 
 function finishDamageSplit(total: DamageSplitAccumulator): DamageSplit {
     const { unclassified, ...classified } = total;
-    return unclassified === 0 ? classified : { ...classified, unclassified };
+    return Object.freeze(unclassified === 0 ? classified : { ...classified, unclassified });
 }

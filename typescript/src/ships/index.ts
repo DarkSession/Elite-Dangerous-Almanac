@@ -420,7 +420,6 @@ export {
 // ── Engineering: blueprint + experimental-effect calculator ─────────────────
 export {
     computeModifiers,
-    rollsForGrade,
     sumMaterials,
     type ModifierMethod,
     type BlueprintFeature,

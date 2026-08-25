@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { powerBudget } from './power.js';
+import { powerBudget, type PowerBand } from './power.js';
 import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 
 test('a build inside its budget powers every group', () => {
@@ -190,4 +190,20 @@ test('the shared fixture pins the priority-band model', () => {
         })),
         bands,
     );
+});
+
+test('powerBudget returns a frozen result, bands and consumers included', () => {
+    const budget = powerBudget(20, [
+        { draw: 5, priority: 1, label: 'PowerDistributor' },
+        { draw: 4, priority: 2, deployedOnly: true },
+    ]);
+    assert.ok(Object.isFrozen(budget));
+    assert.ok(Object.isFrozen(budget.bands));
+    assert.ok(budget.bands.every((band) => Object.isFrozen(band)));
+    assert.ok(Object.isFrozen(budget.consumers));
+    assert.ok(budget.consumers.every((consumer) => Object.isFrozen(consumer)));
+    assert.throws(() => {
+        (budget as { headroom: number }).headroom = 0;
+    }, TypeError);
+    assert.throws(() => (budget.bands as PowerBand[]).push(budget.bands[0]!), TypeError);
 });

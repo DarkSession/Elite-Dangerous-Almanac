@@ -205,6 +205,11 @@ export interface HeatState {
 /**
  * A build's heat: what the plant and the hull make of each other, and what the build
  * runs at stowed, flying, jumping and firing.
+ *
+ * @remarks
+ * Frozen — nested records and lists included — so a result can be held, cached and
+ * shared without a defensive copy. Derive a changed figure with a spread rather than
+ * by assigning into one.
  */
 export interface HeatMetrics {
     /** The fitted plant's heat efficiency, post-engineering. */
@@ -514,7 +519,7 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
     const state = (load: number, base: number): HeatState =>
         heatState(heatCapacity, heatDissipation, load, base);
 
-    return {
+    return Object.freeze({
         heatEfficiency,
         hullHeatCapacity: heatCapacity,
         hullHeatDissipation: heatDissipation,
@@ -523,7 +528,7 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
         fsdCharging: state(idleLoad + thrusterHeat + fsdHeat, idleLoad + thrusterHeat),
         firingSustained: state(firingBase + weaponHeat(1), firingBase),
         firingDrained: state(firingBase + weaponHeat(0), firingBase),
-    };
+    });
 }
 
 /** One scenario's settled level, and how long it has before the gauge reads 100%. */
@@ -537,7 +542,7 @@ function heatState(
     const heatLevel = overheats ? Infinity : equilibriumHeatLevel(heatDissipation, thermalLoad);
     const baseLevel =
         baseLoad > heatDissipation ? 1 : equilibriumHeatLevel(heatDissipation, baseLoad);
-    return {
+    return Object.freeze({
         thermalLoad,
         heatLevel,
         gauge: heatLevel / OVERHEAT_HEAT_LEVEL,
@@ -551,7 +556,7 @@ function heatState(
                   targetLevel: OVERHEAT_HEAT_LEVEL,
               })
             : null,
-    };
+    });
 }
 
 /**

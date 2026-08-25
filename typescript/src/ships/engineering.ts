@@ -477,26 +477,6 @@ function resolveFalloffFromRange(
 }
 
 /**
- * The number of engineering rolls to complete a single blueprint grade: grade `N` takes
- * `N` rolls (grade 1 → 1 roll, grade 2 → 2 rolls, … grade 5 → 5 rolls). Each roll at a
- * grade consumes that grade's cost, so the total to engineer a module *up to* a
- * grade is the running sum of `rollsForGrade(g) ·` (grade `g`'s cost) for every
- * grade `g` up to the target — what
- * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} computes, for the
- * materials and the Merc Coin alike.
- *
- * @param grade - The blueprint grade, `1`–`5`.
- * @returns The rolls to complete that grade (equal to the grade number).
- * @throws {RangeError} If `grade` is not an integer from 1 through 5.
- */
-export function rollsForGrade(grade: number): number {
-    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
-        throw new RangeError(`rollsForGrade: grade must be an integer in [1, 5]`);
-    }
-    return grade;
-}
-
-/**
  * Combine several material lists into one, summing the counts of any material that
  * appears in more than one list (matched by `symbol`, case-insensitively). Use it to
  * fold a blueprint's cost together with an experimental effect's — the two data modules

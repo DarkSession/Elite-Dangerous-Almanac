@@ -216,12 +216,10 @@ priced without the other: `ships/blueprints` answers what a recipe *does*;
 ```ts
 import { getBlueprint } from '@elite-dangerous-almanac/core/ships/blueprints';
 import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
-import { rollsForGrade } from '@elite-dangerous-almanac/core/ships/engineering';
 
 getBlueprint('FSD_LongRange'); // the mechanics: every grade's features
 getBlueprintCost('FSD_LongRange', 5); // the whole climb, grades 1–5
 getBlueprintCost('FSD_LongRange', 5, 4); // grade 5 alone, from a grade-4 module
-rollsForGrade(5); // rolls to fill the grade's progress bar
 ```
 
 A grade costs its recipe once per roll and grade `g` takes `g` rolls, so the climb is

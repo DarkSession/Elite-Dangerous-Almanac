@@ -95,3 +95,28 @@ test('module reinforcement is reported apart from the hull', () => {
     // ...and does not touch the hull's own figures.
     assert.equal(metrics.hitPoints, 945);
 });
+
+test('armourMetrics returns a frozen result, nested records included', () => {
+    const metrics = armourMetrics({ baseArmour: anaconda.baseArmour!, bulkhead: reactive });
+    assert.ok(Object.isFrozen(metrics));
+    assert.ok(Object.isFrozen(metrics.resistances));
+    assert.ok(Object.isFrozen(metrics.effectiveHitPoints));
+    assert.throws(() => {
+        (metrics as { hitPoints: number }).hitPoints = 0;
+    }, TypeError);
+    assert.throws(() => {
+        (metrics.resistances as { kinetic: number }).kinetic = 0;
+    }, TypeError);
+});
+
+test('armour resistances are unrounded fractions, as their documentation says', () => {
+    const metrics = armourMetrics({
+        baseArmour: 525,
+        bulkhead: { hullBoost: 0.8, kineticResistance: -0.2, explosiveResistance: -0.4 },
+    });
+    assert.notEqual(metrics.resistances.kinetic, -0.2);
+    assert.ok(Math.abs(metrics.resistances.kinetic + 0.2) < 1e-12);
+    assert.equal(Number(metrics.resistances.kinetic.toFixed(2)), -0.2);
+    assert.notEqual(metrics.resistances.explosive, -0.4);
+    assert.ok(Math.abs(metrics.resistances.explosive + 0.4) < 1e-12);
+});
