@@ -187,7 +187,8 @@ export class ProceduralSystem {
      * Unknown naming regions and out-of-range address fields are rejected here rather
      * than creating an object whose address getter fails later.
      *
-     * @param name - A system name in any casing, e.g. `blae eock kc-c d0`.
+     * @param name - A system name in any casing, with optional surrounding
+     *   whitespace, e.g. `blae eock kc-c d0`.
      * @returns The system, or `null` when `name` is not a **procedurally named**
      * system. Hand-named systems (`Sol`, `Maia`, `Shinrarta Dezhra`) have no
      * algorithmic address and so yield `null` too — that is a "not covered by the

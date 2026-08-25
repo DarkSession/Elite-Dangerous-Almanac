@@ -134,13 +134,16 @@ export function boxelCodeToLetters(boxelCode: number): BoxelLetters {
  * well-formed procedural system name.
  *
  * @remarks
- * Parsing does **not** canonicalize casing: `regionName` is captured verbatim from
- * the input (`parseSystemName('synuefe …').regionName === 'synuefe'`). The letters
- * and mass code become numeric indices, so re-formatting them is always canonical,
- * but the region is not — use {@link canonicalizeSystemName} (or build a
- * {@link ProceduralSystem} via `ProceduralSystem.fromName`) if you need the region re-cased too.
+ * Surrounding whitespace is trimmed off the name before it is parsed, so it never
+ * reaches `regionName` either (`parseSystemName('  synuefe … ').regionName === 'synuefe'`).
+ * Beyond that, parsing does **not** canonicalize casing: `regionName` is captured
+ * verbatim from the input. The letters and mass code become numeric indices, so
+ * re-formatting them is always canonical, but the region is not — use
+ * {@link canonicalizeSystemName} (or build a {@link ProceduralSystem} via
+ * `ProceduralSystem.fromName`) if you need the region re-cased too.
  *
- * @param name - A system name in any casing, e.g. `blae eock kc-c d0`.
+ * @param name - A system name in any casing, with optional surrounding whitespace,
+ *   e.g. `blae eock kc-c d0`.
  * @returns The parsed parts, or `null` if the name is malformed. A nullish `name`
  * answers `null` too: this parser tolerates an absent name, deliberately, so a caller
  * can hand it a field that may not be there. `ProceduralSystem.fromName` is the stricter
@@ -151,7 +154,7 @@ export function boxelCodeToLetters(boxelCode: number): BoxelLetters {
  */
 export function parseSystemName(name: string): SystemNameParts | null {
     if (name == null) return null;
-    const s = requireString(name, 'parseSystemName: name');
+    const s = requireString(name, 'parseSystemName: name').trim();
     const lower = s.toLowerCase();
     let i = s.length - 1;
 
@@ -235,7 +238,7 @@ export function formatSystemName(parts: SystemNameParts): string {
  * Unknown region strings are left untouched so syntactic parsing remains separate
  * from address encodability.
  *
- * @param name - A system name in any casing.
+ * @param name - A system name in any casing, with optional surrounding whitespace.
  * @returns The canonically-cased name, or `null` if it is not a system name — including
  * a nullish `name`, which {@link parseSystemName} tolerates on this path too.
  * @throws {TypeError} If `name` is present and not a string.
@@ -266,7 +269,8 @@ export interface IsProceduralSystemNameOptions {
 /**
  * Whether a string is a well-formed procedural system name.
  *
- * @param name - The candidate name.
+ * @param name - The candidate name, in any casing and with optional surrounding
+ *   whitespace.
  * @param options - See {@link IsProceduralSystemNameOptions}.
  * @returns `true` when the name parses as a procedural system name. A hand-named
  * system (`Sol`, `Maia`) is `false`: it is a real system, just not a procedural name. A
@@ -277,6 +281,7 @@ export interface IsProceduralSystemNameOptions {
  * import { isProceduralSystemName } from '@elite-dangerous-almanac/core/astro/system-name';
  *
  * isProceduralSystemName('Blae Eock KC-C d0');                    // -> true
+ * isProceduralSystemName('  Blae Eock KC-C d0\n');                 // -> true
  * isProceduralSystemName('Pleiades Sector HR-W d1-79');           // -> true
  * isProceduralSystemName('Pleiades Sector HR-W d1-79', { strict: true }); // -> false
  * ```
@@ -286,7 +291,7 @@ export function isProceduralSystemName(
     options: IsProceduralSystemNameOptions = {},
 ): boolean {
     requireStringIfPresent(name, 'isProceduralSystemName: name');
-    const parts = parseSystemName(name?.trim());
+    const parts = parseSystemName(name);
     if (!parts) return false;
     return options.strict ? sectorGridPositionFromName(parts.regionName) !== null : true;
 }

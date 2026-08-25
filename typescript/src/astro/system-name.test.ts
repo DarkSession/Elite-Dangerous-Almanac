@@ -69,10 +69,38 @@ test('recognises procedural system names', () => {
     assert.equal(isProceduralSystemName('Sol'), false);
     assert.equal(isProceduralSystemName('Pleiades Sector HR-W d1-79', { strict: true }), false); // named region
     assert.equal(isProceduralSystemName('Blae Eock KC-C d0', { strict: true }), true);
-    // Nullish is `false` on both paths that could answer it: the `trim` here, and the
-    // parser's own tolerance behind it.
+    // Nullish is `false` through the parser's own tolerance for an absent name.
     assert.equal(isProceduralSystemName(null as unknown as string), false);
     assert.equal(isProceduralSystemName(undefined as unknown as string, { strict: true }), false);
+});
+
+// Whitespace-padded names are what a clipboard, a form field or a journal line read
+// with its newline still attached hand a consumer, so every entry point over the
+// grammar has to answer the same way for them.
+const PADDED = [
+    ['leading', '  Synuefe EN-H d11-96'],
+    ['trailing', 'Synuefe EN-H d11-96  '],
+    ['both sides', '\t Synuefe EN-H d11-96 \n'],
+] as const;
+
+test('the name entry points ignore surrounding whitespace, and agree that they do', () => {
+    for (const [label, padded] of PADDED) {
+        assert.deepEqual(parseSystemName(padded), parseSystemName('Synuefe EN-H d11-96'), label);
+        assert.equal(canonicalizeSystemName(padded), 'Synuefe EN-H d11-96', label);
+        assert.equal(isProceduralSystemName(padded), true, label);
+        assert.equal(isProceduralSystemName(padded, { strict: true }), true, label);
+    }
+});
+
+test('the padding never reaches the parsed region name', () => {
+    // `regionName` is sliced from the front of the name, so untrimmed input would bake
+    // the padding into it and hand a consumer a padded string to compare or display.
+    for (const [label, padded] of PADDED) {
+        assert.equal(parseSystemName(padded)?.regionName, 'Synuefe', label);
+    }
+    // An uncatalogued region is the case that would otherwise leak the padding all the
+    // way out: canonicalizing falls back to the region name exactly as parsed.
+    assert.equal(canonicalizeSystemName('  Zzzq Sector AB-C d1  '), 'Zzzq Sector AB-C d1');
 });
 
 test('boxel code <-> letters is a bijection', () => {
