@@ -79,10 +79,17 @@ test('systems pips add resistance on their own curve', () => {
     }
 });
 
-test('systemsResistance rejects pips outside 0-4', () => {
-    assert.throws(() => systemsResistance(-1), RangeError);
-    assert.throws(() => systemsResistance(5), RangeError);
-    assert.throws(() => systemsResistance(Number.NaN), RangeError);
+test('systemsResistance rejects pips outside 0-4, naming its own parameter', () => {
+    // Called directly, the parameter the consumer wrote is `pips`; reached through
+    // `shieldMetrics` it is `systemsPips`, and that call names itself instead.
+    const message = 'systemsResistance: pips must be a finite number from 0 to 4';
+    for (const bad of [-1, 5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(
+            () => systemsResistance(bad),
+            (error: unknown) => error instanceof RangeError && error.message === message,
+            String(bad),
+        );
+    }
 });
 
 test('mapDamageTypes visits each damage type exactly once, under its own key', () => {

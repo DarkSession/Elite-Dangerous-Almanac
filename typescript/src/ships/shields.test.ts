@@ -253,7 +253,8 @@ test('a curve failure names the public function the consumer called', () => {
             scope,
         );
     }
-    // The pips are still checked ahead of the generator.
+    // The pips are still checked ahead of the generator: a bad allocation is reported
+    // even when the curve behind it is the worse problem.
     assert.throws(
         () =>
             shieldMetrics({
@@ -262,7 +263,43 @@ test('a curve failure names the public function the consumer called', () => {
                 generator: broken,
                 systemsPips: 5,
             }),
-        (error: unknown) => error instanceof RangeError && /pips/.test(error.message),
+        (error: unknown) =>
+            error instanceof RangeError &&
+            error.message === 'shieldMetrics: systemsPips must be a finite number from 0 to 4',
+    );
+});
+
+test('a bad pip allocation names shieldMetrics and the parameter the caller wrote', () => {
+    const generator = {
+        minMass: 270,
+        optMass: 540,
+        maxMass: 1350,
+        minMultiplier: 0.7,
+        optMultiplier: 1.2,
+        maxMultiplier: 1.7,
+    };
+    const message = 'shieldMetrics: systemsPips must be a finite number from 0 to 4';
+    const rejects = (systemsPips: number, what: string): void => {
+        assert.throws(
+            () => shieldMetrics({ hullMass: 400, baseShieldStrength: 350, generator, systemsPips }),
+            (error: unknown) => error instanceof RangeError && error.message === message,
+            what,
+        );
+    };
+    rejects(5, 'above four');
+    rejects(-1, 'below zero');
+    rejects(Number.NaN, 'not a number');
+    rejects(Number.POSITIVE_INFINITY, 'infinite');
+    // The same message with no generator fitted — the pips are checked first, so there is
+    // no shield state that can change which half of the call is named.
+    assert.throws(
+        () => shieldMetrics({ hullMass: 400, baseShieldStrength: 350, systemsPips: 5 }),
+        (error: unknown) => error instanceof RangeError && error.message === message,
+    );
+    // Fractional pips are legal, so this is a range check and not an integer check.
+    assert.ok(
+        shieldMetrics({ hullMass: 400, baseShieldStrength: 350, generator, systemsPips: 2.5 })
+            .systemsResistance > 0,
     );
 });
 

@@ -39,6 +39,8 @@
  * @packageDocumentation
  */
 
+import { requirePips } from './internal/pips.js';
+
 /**
  * One value per damage type — whatever the value happens to be: a resistance, a pool of
  * effective hit points, a share of incoming damage.
@@ -271,8 +273,6 @@ export function stackArmourResistance(
  * ```
  */
 export function systemsResistance(pips: number): number {
-    if (!Number.isFinite(pips) || pips < 0 || pips > 4) {
-        throw new RangeError('systemsResistance: pips must be a finite number in [0, 4]');
-    }
+    requirePips('systemsResistance', 'pips', pips);
     return (Math.pow(pips, 0.85) * 0.6) / Math.pow(4, 0.85);
 }

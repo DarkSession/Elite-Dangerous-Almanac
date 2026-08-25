@@ -55,6 +55,7 @@ import {
     type DamageTypeValues,
 } from './resistances.js';
 import { massCurveMultiplier, type MassCurveLabels } from './internal/mass-curve.js';
+import { requirePips } from './internal/pips.js';
 
 /**
  * The shield generator constants a strength calculation needs — all post-engineering.
@@ -350,6 +351,9 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
     const boosters = input.boosters ?? [];
     const reinforcement = input.reinforcement ?? 0;
     const pips = input.systemsPips ?? 0;
+    // Named for the parameter the caller wrote, and checked before the generator so a
+    // build with no shields still reports a bad pip allocation.
+    requirePips('shieldMetrics', 'systemsPips', pips);
     const sysResistance = systemsResistance(pips);
     const generator = input.generator ?? null;
 
