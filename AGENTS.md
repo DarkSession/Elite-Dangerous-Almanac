@@ -205,7 +205,7 @@ A related habit, for the same reason:
 
 ## Pull requests
 
-**Before opening any PR, have a subagent re-review the complete change.** Address every actionable finding, then ask a subagent to review the updated change again. Repeat this review-and-fix cycle until the subagent reports no actionable findings; only then may the PR be opened.
+**Before opening any PR, have a subagent re-review the complete change.** Address every meaningful finding, then ask a subagent to review the updated change again. Repeat this review-and-fix cycle until the subagent reports no more meaningful findings; only then may the PR be opened.
 
 ## Commands
 
