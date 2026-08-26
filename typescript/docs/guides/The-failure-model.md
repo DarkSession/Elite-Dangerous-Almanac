@@ -237,9 +237,45 @@ Each issue carries a stable `code` and a `severity`:
   reaches you from `validateLoadout` on a module list you assembled yourself — a
   `ShipLoadout` throws `TypeError` on a duplicate rather than reporting one, so do not
   write a UI branch for it on a build.)
+  - `thrusterMassExceeded` is the one error that is a figure rather than a shape: the
+    ship weighs more than its fitted thrusters are rated to move, so above that rating
+    the thruster curve gives nothing and the ship does not move at all. Its `params`
+    carry the exact `mass` and `maxMass`, in tonnes; the message rounds them to the tenth
+    an outfitting screen shows. See **Weighed at three loads** below for the `load` it
+    also carries, and for when this code arrives as a warning instead.
 - **`incomplete`** — `missingRequiredSlot`: a core or armour mount left empty. **No
   `ShipLoadout` reports it**, since every build fills those mounts; like `duplicateSlot`
   it reaches you only from `validateLoadout` on a list you assembled yourself.
+- **`warning`** — the build is legal and fully mounted, but it does not fly at every load
+  it can carry. A warning clears neither `valid` nor `complete`, so a panel that only
+  gates on those will never see it: read the issues. `thrusterMassExceeded` at the
+  `laden` load is the only warning today.
+
+### Weighed at three loads
+
+A ship's mass is not one number, so `thrusterMassExceeded` is weighed the way an
+outfitting tool weighs it — against each load the build can reach without being
+re-fitted. `params.load` names which one the rating failed at:
+
+| `load` | What it weighs | Severity |
+| --- | --- | --- |
+| `dry` | Hull and fitted modules, empty tank, no cargo | `error` |
+| `unladen` | That plus a full main tank | `error` |
+| `laden` | That plus a full cargo hold | `warning` |
+
+The loads only grow, so **only the lightest failing load is reported** — one issue per
+overloaded thruster, never three saying the same thing.
+
+`dry` and `unladen` are errors because neither is a choice: a ship undocks with a full
+tank, so a build that cannot move fuelled never leaves the pad. `laden` is a warning
+because how much cargo to take is the pilot's, and a hauler that outgrows its thrusters
+only with the hold full is a perfectly legal ship — `BuildMetrics.mobilityMetrics` at
+that load is what shows the cost.
+
+Mind the names: `ShipLoadout.unladenMass` is the **`dry`** figure, because that is what a
+journal's `UnladenMass` states. The game's own "unladen mass" readout, and the `unladen`
+load here, include a full tank. A fuel tank's own mass is in the fit; the fuel it holds
+is not, which is exactly how a build can sit under its rating dry and still be immobile.
 
 **Neither question reports normalization.** A build whose unknown power plant was stocked
 from the hull defaults is `valid` and `complete` with no issues — the fit that remains

@@ -9,6 +9,8 @@ import { getModuleBySymbol } from './modules.js';
 import { enumerateSlots, parseSlotName } from './slots.js';
 import { isBuiltInHullModule } from './internal/loadout-state.js';
 import { moduleFitError } from './internal/loadout-fitting.js';
+import { ShipLoadout } from './ship-loadout.js';
+import { BuildMetrics } from './build-metrics.js';
 
 test('every hull carries a free, weightless stock bulkhead and cargo hatch', () => {
     // What lets import stock those two mounts from absence without invalidating a
@@ -113,4 +115,19 @@ test('default-loadout lookup trims and folds case, returns misses, and guards wr
         name: 'TypeError',
         message: 'getDefaultLoadout: shipSymbol must be a string, received number 42',
     });
+});
+
+test('every hull leaves the shipyard light enough for its own stock thrusters', () => {
+    // The stock fit is the floor the outfitting screen starts from, so a hull that
+    // shipped over its own rating would open the editor already invalid.
+    for (const ship of SHIPS) {
+        const build = ShipLoadout.default(ship.symbol);
+        const maxMass = BuildMetrics.of(build).thrusters()?.maxMass;
+        assert.ok(maxMass !== undefined, `${ship.symbol}: stock thrusters state no rated mass`);
+        assert.ok(
+            build.unladenMass <= maxMass,
+            `${ship.symbol}: ${build.unladenMass} t unladen against a ${maxMass} t rating`,
+        );
+        assert.equal(build.validation().valid, true, ship.symbol);
+    }
 });

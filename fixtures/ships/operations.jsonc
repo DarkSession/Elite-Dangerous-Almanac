@@ -2,10 +2,10 @@
  * Shared test fixture — not shipped in any package.
  *
  * Cross-language parity cases for loaded mobility, shield recovery, distributor
- * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship and
- * counted-module validation, direct credit, Merc Coin and material pricing,
- * alpha-strike thermal load, import rejections, structured diagnostics and editor
- * failures. Inputs pin the public data-free and ShipLoadout facade contracts;
+ * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship,
+ * counted-module and thruster-mass validation, direct credit, Merc Coin and material
+ * pricing, alpha-strike thermal load, import rejections, structured diagnostics and
+ * editor failures. Inputs pin the public data-free and ShipLoadout facade contracts;
  * catalogue-backed expectations pin the shared ship and module snapshots.
  */
 {
@@ -254,6 +254,76 @@
   "exclusivity": {
     "group": "shieldGenerator",
     "expectedCode": "duplicateExclusiveModule"
+  },
+  // A 2E thruster rated to 72 t, weighed at the three loads an outfitting tool shows a
+  // speed for. `dry` is the fit alone, `unladen` adds a full main tank, `laden` adds a
+  // full hold; the lightest load past the rating is the one reported, and only a
+  // laden-only overload is a warning rather than an error.
+  "thrusterMass": {
+    "input": {
+      "slot": "MainEngines",
+      "symbol": "Int_Engine_Size2_Class1",
+      "thrusterMaxMass": 72
+    },
+    // Each case states a mass the rule can weigh and the single issue it should draw.
+    "cases": [
+      {
+        "name": "too heavy before it is even fuelled",
+        "mass": { "dry": 85.6, "fuel": 8, "cargo": 16 },
+        "expectedIssue": {
+          "code": "thrusterMassExceeded",
+          "severity": "error",
+          "message": "MainEngines: Int_Engine_Size2_Class1 is rated to 72 t but the ship weighs 85.6 t before fuel",
+          "params": {
+            "slot": "MainEngines",
+            "symbol": "Int_Engine_Size2_Class1",
+            "load": "dry",
+            "mass": 85.6,
+            "maxMass": 72
+          }
+        }
+      },
+      {
+        "name": "flies dry, but never leaves a pad with a full tank",
+        "mass": { "dry": 68, "fuel": 8, "cargo": 16 },
+        "expectedIssue": {
+          "code": "thrusterMassExceeded",
+          "severity": "error",
+          "message": "MainEngines: Int_Engine_Size2_Class1 is rated to 72 t but the ship weighs 76 t with a full tank",
+          "params": {
+            "slot": "MainEngines",
+            "symbol": "Int_Engine_Size2_Class1",
+            "load": "unladen",
+            "mass": 76,
+            "maxMass": 72
+          }
+        }
+      },
+      {
+        "name": "flies fuelled, and only a full hold sinks it",
+        "mass": { "dry": 60, "fuel": 8, "cargo": 16 },
+        "expectedIssue": {
+          "code": "thrusterMassExceeded",
+          "severity": "warning",
+          "message": "MainEngines: Int_Engine_Size2_Class1 is rated to 72 t but the ship weighs 84 t fully laden",
+          "params": {
+            "slot": "MainEngines",
+            "symbol": "Int_Engine_Size2_Class1",
+            "load": "laden",
+            "mass": 84,
+            "maxMass": 72
+          }
+        }
+      }
+    ],
+    // Masses that draw nothing: a build landing exactly on the rating once laden, and a
+    // capacity the build never stated, which ends the list of loads rather than being
+    // guessed at zero — an unstated tank is one of unknown size, not an empty one.
+    "quiet": [
+      { "dry": 56, "fuel": 8, "cargo": 8 },
+      { "dry": 68 },
+      { "dry": 68, "cargo": 400 }
+    ]
   },
   "moduleLimits": {
     "group": "experimentalWeapon",

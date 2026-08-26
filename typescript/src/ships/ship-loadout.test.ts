@@ -22,6 +22,7 @@ import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with 
 import preEngineeredFixture from '../../../fixtures/ships/pre-engineered.jsonc' with { type: 'json' };
 import heatFixture from '../../../fixtures/ships/heat.jsonc' with { type: 'json' };
 import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.jsonc' with { type: 'json' };
+import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.jsonc' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.jsonc' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.jsonc' with { type: 'json' };
 import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.jsonc' with { type: 'json' };
@@ -196,6 +197,172 @@ test('experimental-weapon limits are filtered, enforced, increased and diagnosed
         { group: operationsFixture.moduleLimits.group, count: 5, limit: 4 },
     );
     assert.doesNotThrow(() => imported.removeModule('MediumHardpoint1'));
+});
+
+test('a build too heavy for its own thrusters is an error, and the error follows the fit', () => {
+    const { input } = operationsFixture.thrusterMass;
+    const build = ShipLoadout.default('SideWinder');
+    const hangar = mod('Int_BuggyBay_Size2_Class1', INTERNAL_MODULES);
+    // Dirty Drive Tuning buys thrust with rated mass: the 2E drops from 72 t to 63 t,
+    // and two Planetary Vehicle Hangars then put the hull over what is left.
+    build.applyBlueprint('MainEngines', 'Engine_Dirty', { grade: 5, quality: 1 });
+    build.setModule('Slot01_Size2', hangar).setModule('Slot02_Size2', hangar);
+
+    const maxMass = BuildMetrics.of(build).thrusters()?.maxMass;
+    assert.ok(maxMass !== undefined && build.unladenMass > maxMass);
+    const validation = build.validation();
+    assert.equal(validation.valid, false);
+    const issue = validation.issues.find((item) => item.code === 'thrusterMassExceeded');
+    assert.equal(issue?.severity, 'error');
+    assert.deepEqual(issue?.params, {
+        slot: input.slot,
+        symbol: input.symbol,
+        // Too heavy before a drop of fuel is aboard, so the lightest load is the finding.
+        load: 'dry',
+        mass: build.unladenMass,
+        maxMass,
+    });
+    // Past the rating the curve gives nothing back, which is what makes this an error
+    // rather than a slow ship.
+    assert.equal(BuildMetrics.of(build).mobilityMetrics()?.speed, 0);
+
+    // The rating is the engineered one, and the weighing is the current fit: unfit one
+    // hangar and the same build is legal again.
+    build.removeModule('Slot02_Size2');
+    assert.ok(build.unladenMass + build.fuelCapacity.main < maxMass);
+    assert.equal(build.validation().valid, true);
+    assert.equal(
+        ShipLoadout.default('SideWinder').validation().issues.length,
+        0,
+        'a stock hull is within its own thrusters',
+    );
+});
+
+test('a ship that only cannot move once fuelled is an error, not a footnote', () => {
+    // A tank's own mass is in the fit, but the fuel it holds is not, so a build can sit
+    // under its rating dry and still be immobile on the pad — where the tank is always
+    // full. This is a real capture with its main tank doubled.
+    const build = ShipLoadout.fromLoadout(caspianJournal as LoadoutEvent);
+    assert.equal(build.validation().valid, true, 'the capture as flown is within its rating');
+
+    build.setModule('Slot01_Size7', mod('Int_FuelTank_Size7_Class3'));
+    const maxMass = BuildMetrics.of(build).thrusters()?.maxMass;
+    assert.ok(maxMass !== undefined);
+    assert.ok(build.unladenMass < maxMass, 'the fit alone still fits the rating');
+    assert.ok(build.unladenMass + build.fuelCapacity.main > maxMass);
+
+    const issue = build.validation().issues.find((item) => item.code === 'thrusterMassExceeded');
+    assert.equal(build.validation().valid, false);
+    assert.equal(issue?.severity, 'error');
+    assert.equal(issue?.params?.load, 'unladen');
+    assert.equal(issue?.params?.mass, build.unladenMass + build.fuelCapacity.main);
+    // `mobilityMetrics` weighs a full main tank by default, and agrees.
+    assert.equal(BuildMetrics.of(build).mobilityMetrics()?.speed, 0);
+});
+
+test('a ship that only cannot move with a full hold is a warning, and still a legal build', () => {
+    // How much cargo to take is the one load a pilot chooses, so a hauler that outgrows
+    // its thrusters only when the hold is full stays both valid and complete.
+    const build = ShipLoadout.default('Type9');
+    build.applyBlueprint('MainEngines', 'Engine_Dirty', { grade: 5, quality: 1 });
+    for (const slot of build.slots('optional')) {
+        const rack = build
+            .modulesForSlot(slot.key)
+            .filter((module) => module.symbol.startsWith('Int_CargoRack_'))
+            .sort((left, right) => right.class - left.class)[0];
+        if (rack) build.setModule(slot.key, rack);
+    }
+
+    const maxMass = BuildMetrics.of(build).thrusters()?.maxMass;
+    assert.ok(maxMass !== undefined);
+    assert.ok(build.unladenMass + build.fuelCapacity.main < maxMass);
+    assert.ok(build.unladenMass + build.fuelCapacity.main + build.cargoCapacity > maxMass);
+
+    const validation = build.validation();
+    const issue = validation.issues.find((item) => item.code === 'thrusterMassExceeded');
+    assert.equal(issue?.severity, 'warning');
+    assert.equal(issue?.params?.load, 'laden');
+    assert.equal(
+        issue?.params?.mass,
+        build.unladenMass + build.fuelCapacity.main + build.cargoCapacity,
+    );
+    assert.equal(validation.valid, true);
+    assert.equal(validation.complete, true);
+    // It flies as loaded by default, and stops at the load the warning names.
+    assert.ok(BuildMetrics.of(build).mobilityMetrics()!.speed > 0);
+    assert.equal(BuildMetrics.of(build).mobilityMetrics({ cargo: build.cargoCapacity })?.speed, 0);
+});
+
+test('a capture stating a mass nobody can weigh is reported, not refused', () => {
+    // An import copies `UnladenMass` and every modifier verbatim, so a report has to
+    // survive figures a calculation would throw on: `validation()` describes a build,
+    // and a build that cannot be weighed still has a structure worth describing.
+    const stated = { ...(slapacondaJournal as LoadoutEvent), UnladenMass: -5 };
+    const imported = ShipLoadout.fromLoadout(stated);
+    assert.equal(imported.unladenMass, -5);
+    const report = imported.validation();
+    assert.equal(report.valid, true);
+    assert.equal(
+        report.issues.some((issue) => issue.code === 'thrusterMassExceeded'),
+        false,
+        'an unweighable mass leaves the rule with nothing to weigh',
+    );
+
+    // The rating can be the unweighable half instead: a modifier drives it below zero,
+    // and the ship is still structurally a ship.
+    const rated = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [
+            {
+                Slot: 'MainEngines',
+                Item: 'Int_Engine_Size2_Class1',
+                Engineering: {
+                    BlueprintName: 'Engine_Dirty',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'EngineOptimalMass', Value: -500_000, OriginalValue: 72 }],
+                },
+            },
+        ],
+    } as LoadoutEvent);
+    assert.doesNotThrow(() => rated.validation());
+    assert.equal(
+        rated.validation().issues.some((issue) => issue.code === 'thrusterMassExceeded'),
+        false,
+    );
+});
+
+test('the outfitting offer holds one identity per article a station sells', () => {
+    const build = ShipLoadout.empty('SideWinder');
+    const offered = build.modulesForSlot('MainEngines');
+    // The 2E Thrusters exist twice in the catalogues: the article a station sells, and
+    // the grant-only twin a hull arrives with. A picker offers the first alone.
+    assert.deepEqual(
+        offered
+            .filter((module) => module.class === 2 && module.rating === 'E')
+            .map((m) => m.symbol),
+        ['Int_Engine_Size2_Class1'],
+    );
+    assert.equal(
+        offered.some((module) => module.grantOnly),
+        false,
+    );
+    assert.ok(ALL_MODULES.some((module) => module.grantOnly));
+
+    // Filtering the offer does not hide the article: it still resolves, still fits, and
+    // an imported build keeps the one it arrived with.
+    const granted = mod('Int_Engine_Size2_Class1_free');
+    assert.equal(granted.grantOnly, true);
+    assert.equal(build.setModule('MainEngines', granted).validation().valid, true);
+    assert.equal(
+        ShipLoadout.fromLoadout({
+            Ship: 'sidewinder',
+            Modules: [{ Slot: 'MainEngines', Item: granted.symbol }],
+        })
+            .fittedModules()
+            .find((fitted) => fitted.slot === 'MainEngines')?.symbol,
+        granted.symbol,
+    );
 });
 
 test('the facade reports loaded mobility, shield recovery and cell-bank pools', () => {

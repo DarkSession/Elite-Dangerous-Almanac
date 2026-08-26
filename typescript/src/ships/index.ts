@@ -290,8 +290,10 @@ export {
     type LoadoutIssueCode,
     type LoadoutIssueParam,
     type LoadoutIssueParams,
+    type LoadoutMass,
     type LoadoutValidation,
     type LoadoutValidationInput,
+    type ThrusterLoad,
     type ValidationModule,
     type ModuleFitConstraint,
 } from './loadout-validation.js';

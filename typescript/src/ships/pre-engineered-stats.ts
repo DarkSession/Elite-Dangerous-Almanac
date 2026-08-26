@@ -8,8 +8,8 @@
  * arrives, not as the stock module leaves the shipyard. That is what
  * {@link getPreEngineeredStats} returns.
  *
- * This module imports every module record to resolve stats. Its resolver is 362.5 KiB
- * minified in a consumer bundle; the complete runtime API is 396.3 KiB (43.1 KiB
+ * This module imports every module record to resolve stats. Its resolver is 362.7 KiB
+ * minified in a consumer bundle; the complete runtime API is 396.5 KiB (43.2 KiB
  * gzipped). Consumers that only list variants can import `./pre-engineered.js` without
  * these module catalogues.
  * A journal or SLEF module can instead be classified with

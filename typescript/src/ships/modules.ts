@@ -40,7 +40,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — 337.4 KiB minified (33.3 KiB gzipped) — since
+ * here pulls all four catalogues — 337.6 KiB minified (33.4 KiB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:
@@ -363,6 +363,26 @@ export interface OutfittingModuleIdentity {
      * `"ELITE_HORIZONS_V_PLANETARY_LANDINGS"`. Present only on gated modules.
      */
     readonly entitlement?: string;
+    /**
+     * `true` on an article that arrives granted — with a hull or with a bundle — and
+     * that no outfitting screen sells. Absent on every module a station offers.
+     *
+     * @remarks
+     * The fifteen are the nine starter `*_free` fittings and the six bundle-granted
+     * Vessel Hangars. Each is a second identity for an article the game already sells:
+     * `Int_Engine_Size2_Class1_free` is the 2E Thrusters again, which is why
+     * {@link ShipLoadout.modulesForSlot} leaves them out — a picker that offered both
+     * would list "2E Thrusters" twice, once unpriced.
+     *
+     * They are still real fitted articles, so they stay in the catalogues and every
+     * lookup resolves one: a build imported from a journal can carry one, and
+     * {@link getModuleBySymbol} answers for it like any other symbol. Absent is not
+     * `false` — nothing carries `grantOnly: false`.
+     *
+     * Do not read it as a price: {@link OutfittingModule.cost} is missing on these but
+     * also on articles that are sold and simply unpriced by every registry.
+     */
+    readonly grantOnly?: true;
 
     /**
      * The hull symbol(s) a module is restricted to, when it is ship-specific — e.g.

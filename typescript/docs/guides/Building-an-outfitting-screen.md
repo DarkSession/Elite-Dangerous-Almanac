@@ -71,6 +71,12 @@ The method searches all 1199 modules because some mounts accept modules from mor
 one outfitting category: a fuel tank is a core module that also fits optional mounts.
 `ShipLoadout` already carries the complete catalogue for whole-build operations.
 
+What it never offers is the fifteen `grantOnly` articles — the starter `*_free` fittings
+and the bundle-granted Vessel Hangars — because each is a second identity for a module
+the game already sells. Offer them and the thruster list shows "2E Thrusters" twice, the
+second one unpriced. A build that arrived carrying one keeps it, and `getModuleBySymbol`
+still resolves it; only the choices are filtered.
+
 ## Group the offer into collapsible families
 
 Every module carries a `familyId`, core modules included, so the whole result of
@@ -250,6 +256,22 @@ through to an off-panel list if it does not. That list is not an edge case — `
 carries a key that is by definition no mount on this hull. And on a build `complete`
 tracks `valid`: every build fills its core and armour mounts, so the `missingRequiredSlot`
 half of the question only reaches you from `validateLoadout` on a list of your own.
+
+One issue on this panel is not about where a module went: `thrusterMassExceeded` says the
+thrusters the player just picked are rated below what the ship now weighs, and above that
+rating the mass curve gives nothing back, so the ship does not move at all. It is the one
+code that carries figures — `params.mass` and `params.maxMass`, in tonnes — so mark the
+thruster mount with them rather than with the generic message. Reach for it when a swap
+elsewhere on the panel adds mass too: a heavier module in an optional mount can invalidate
+a thruster choice the player made ten edits ago, and re-reading `validation()` after every
+edit is what surfaces that.
+
+It also carries `params.load`, naming which of the ship's three loads the rating failed
+at — `dry`, `unladen` (a full main tank) or `laden` (a full hold as well). The first two
+are errors, and the third is the panel's one `warning` severity: a hauler that only
+outgrows its thrusters with the hold full is still a legal build, so it stays `valid` and
+`complete` and reaches you through `issues` alone. Put that one beside the cargo figure
+rather than on the thruster mount — the fix is usually to carry less, not to refit.
 
 ## Next
 

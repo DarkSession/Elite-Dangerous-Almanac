@@ -148,6 +148,71 @@
     "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. Only the built-in cargo hatch is listed: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded because a hull's stock bulkhead is free, one per hull.",
     "symbols": ["ModularCargoBayDoor"]
   },
+  "grantOnly": {
+    "note": "Every record flagged `grantOnly`: it arrives granted with a hull or a bundle and no outfitting screen sells it. Each is a second identity for `soldTwin`, the article the game does sell, which is why an outfitting picker offers the twin and not this. Pinned as an exact set so membership stays deliberate — an absent price is not what puts a record here, and eleven unflagged records also carry none.",
+    "modules": [
+      {
+        "symbol": "Int_PowerPlant_Size2_Class1_free",
+        "soldTwin": "Int_Powerplant_Size2_Class1"
+      },
+      {
+        "symbol": "Int_Engine_Size2_Class1_free",
+        "soldTwin": "Int_Engine_Size2_Class1"
+      },
+      {
+        "symbol": "Int_Hyperdrive_Size2_Class1_free",
+        "soldTwin": "Int_Hyperdrive_Size2_Class1"
+      },
+      {
+        "symbol": "Int_LifeSupport_Size1_Class1_free",
+        "soldTwin": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "symbol": "Int_PowerDistributor_Size1_Class1_free",
+        "soldTwin": "Int_PowerDistributor_Size1_Class1"
+      },
+      {
+        "symbol": "Int_Sensors_Size1_Class1_free",
+        "soldTwin": "Int_Sensors_Size1_Class1"
+      },
+      {
+        "symbol": "Int_FuelTank_Size1_Class3_free",
+        "soldTwin": "Int_FuelTank_Size1_Class3"
+      },
+      {
+        "symbol": "Int_ShieldGenerator_Size2_Class1_free",
+        "soldTwin": "Int_ShieldGenerator_Size2_Class1"
+      },
+      {
+        "symbol": "Int_CargoRack_Size2_Class1_free",
+        "soldTwin": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "symbol": "Int_FighterBay_Size5_Class1_Free",
+        "soldTwin": "Int_FighterBay_Size5_Class1"
+      },
+      {
+        "symbol": "Int_FighterBay_Size6_Class1_Free",
+        "soldTwin": "Int_FighterBay_Size6_Class1"
+      },
+      {
+        "symbol": "Int_FighterBay_Size7_Class1_Free",
+        "soldTwin": "Int_FighterBay_Size7_Class1"
+      },
+      {
+        "symbol": "Int_FighterBayMk2_Size5_Class1_Free",
+        "soldTwin": "Int_FighterBayMk2_Size5_Class1"
+      },
+      {
+        "symbol": "Int_FighterBayMk2_Size6_Class1_Free",
+        "soldTwin": "Int_FighterBayMk2_Size6_Class1"
+      },
+      {
+        "symbol": "Int_FighterBayMk2_Size7_Class1_Free",
+        "soldTwin": "Int_FighterBayMk2_Size7_Class1"
+      }
+    ]
+  },
   "spot": [
     {
       "symbol": "Int_Hyperdrive_Size5_Class5",

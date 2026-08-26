@@ -3920,6 +3920,26 @@
           },
           "required": ["note", "symbols"]
         },
+        "grantOnly": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "modules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "soldTwin": { "type": "string" },
+                  "symbol": { "type": "string" }
+                },
+                "required": ["soldTwin", "symbol"]
+              }
+            },
+            "note": { "type": "string" }
+          },
+          "required": ["modules", "note"]
+        },
         "inGameAudit": {
           "type": "object",
           "additionalProperties": false,
@@ -4193,6 +4213,7 @@
         "counts",
         "countsNote",
         "freeModules",
+        "grantOnly",
         "inGameAudit",
         "inGameVerifiedAbsentFields",
         "inGameVerifiedValues",
@@ -5311,6 +5332,85 @@
           },
           "required": ["expected", "ship"]
         },
+        "thrusterMass": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cases": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "expectedIssue": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": { "type": "string" },
+                      "message": { "type": "string" },
+                      "params": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "load": { "type": "string" },
+                          "mass": { "type": "number" },
+                          "maxMass": { "type": "integer" },
+                          "slot": { "type": "string" },
+                          "symbol": { "type": "string" }
+                        },
+                        "required": [
+                          "load",
+                          "mass",
+                          "maxMass",
+                          "slot",
+                          "symbol"
+                        ]
+                      },
+                      "severity": { "type": "string" }
+                    },
+                    "required": ["code", "message", "params", "severity"]
+                  },
+                  "mass": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "cargo": { "type": "integer" },
+                      "dry": { "type": "number" },
+                      "fuel": { "type": "integer" }
+                    },
+                    "required": ["cargo", "dry", "fuel"]
+                  },
+                  "name": { "type": "string" }
+                },
+                "required": ["expectedIssue", "mass", "name"]
+              }
+            },
+            "input": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "slot": { "type": "string" },
+                "symbol": { "type": "string" },
+                "thrusterMaxMass": { "type": "integer" }
+              },
+              "required": ["slot", "symbol", "thrusterMaxMass"]
+            },
+            "quiet": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "cargo": { "type": "integer" },
+                  "dry": { "type": "integer" },
+                  "fuel": { "type": "integer" }
+                },
+                "required": ["dry"]
+              }
+            }
+          },
+          "required": ["cases", "input", "quiet"]
+        },
         "weapons": {
           "type": "object",
           "additionalProperties": false,
@@ -5384,6 +5484,7 @@
         "moduleLimits",
         "shieldRecovery",
         "slotRemoval",
+        "thrusterMass",
         "weapons",
         "weaponsCapacitor"
       ]

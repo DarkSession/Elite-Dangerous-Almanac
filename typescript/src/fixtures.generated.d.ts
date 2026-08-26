@@ -3047,6 +3047,13 @@ type FixtureShipsModuleStats = {
         note: string;
         symbols: string[];
     };
+    grantOnly: {
+        modules: {
+            soldTwin: string;
+            symbol: string;
+        }[];
+        note: string;
+    };
     inGameAudit: {
         armourModulesOutsideNumericVerification: number;
         catalogueFieldCounts: {
@@ -3817,6 +3824,38 @@ type FixtureShipsOperations = {
             size: number;
         }[];
         ship: string;
+    };
+    thrusterMass: {
+        cases: {
+            expectedIssue: {
+                code: string;
+                message: string;
+                params: {
+                    load: string;
+                    mass: number;
+                    maxMass: number;
+                    slot: string;
+                    symbol: string;
+                };
+                severity: string;
+            };
+            mass: {
+                cargo: number;
+                dry: number;
+                fuel: number;
+            };
+            name: string;
+        }[];
+        input: {
+            slot: string;
+            symbol: string;
+            thrusterMaxMass: number;
+        };
+        quiet: {
+            cargo?: number;
+            dry: number;
+            fuel?: number;
+        }[];
     };
     weapons: {
         expectedThermalLoad: number;

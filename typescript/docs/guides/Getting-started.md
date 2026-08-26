@@ -118,7 +118,7 @@ imports are:
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
   about 9 KiB. The geometry-backed lookup therefore stays off the astro barrel.
 
-`ships/modules` is 337.4 KiB and `ships/modules-all` 336.0 KiB — heavier than the codex
+`ships/modules` is 337.6 KiB and `ships/modules-all` 336.2 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
 materials 17.2 KiB, micro resources 13.4 KiB, commodities 29.6 KiB.

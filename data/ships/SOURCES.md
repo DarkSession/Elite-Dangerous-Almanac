@@ -415,6 +415,29 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     size-determined `fsdHeatRate` above), so no calculation reads the flag; the
     overcharged supercruise behaviour the drives are named for has no published figures
     and none are stored.
+- **`grantOnly` — the articles that arrive granted rather than sold.** Fifteen records
+  carry `true`: the nine `*_free` starter fittings (power plant, thrusters, drive, life
+  support, distributor, sensors, fuel tank, shield generator, cargo rack) and the six
+  `*_Free` Vessel Hangars. Every other record omits it, and nothing carries `false`.
+  - **Source:** Frontier's own symbol naming, and for the six hangars the pinned CAPI
+    response, which lists them `bundle: true` under the grant tokens
+    `ELITE_V_MKIFIGHTERBAY_FREE` / `ELITE_V_MKIIFIGHTERBAY_FREE` — see "Records sourced
+    outside the baseline registries" below, which also reads that response's zero as the
+    bundle charge rather than a purchase price. No registry publishes a field for
+    "offered in outfitting": coriolis-data and EDSY carry these records beside the sold
+    ones.
+  - **Derivation:** the `_free` / `_Free` symbol family is the classification, applied
+    once here so a consumer reads a datum instead of matching the suffix — the same rule
+    `slot` and `supercruiseOvercharge` follow above. Each starter record is its priced
+    twin bar the price (§Prices), so a screen offering both would show one article twice,
+    once unpriced.
+  - **It is not a statement about price, and the flag is not extended on a missing one.**
+    Eleven further records carry no `cost` — the five size-8 drives, the three Mk II
+    Vessel Hangars, the two unsold Corrosion Resistant Cargo Racks and the 1B shield
+    generator — and none is flagged. The two racks are the closest case and still fail
+    the rule: no source states them as a hull or bundle grant, and each is its own
+    identity at a capacity no other rack carries, not a second identity for something a
+    station already sells.
 
 ### `module-families.jsonc` — the family ids and their English names
 

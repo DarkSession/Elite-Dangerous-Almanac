@@ -514,6 +514,35 @@ test('only the modules that really are free are priced at 0', () => {
     assert.deepEqual(free.sort(), [...statsFixture.freeModules.symbols].sort());
 });
 
+test('the grant-only articles are exactly the ones that duplicate a module a station sells', () => {
+    // A missing price is not what puts a record here: articles the game sells are
+    // unpriced too. Each of these is a second identity for something already on the
+    // shelf, which is what an outfitting picker must not show twice.
+    assert.deepEqual(
+        ALL_MODULES.filter((m) => m.grantOnly).map((m) => m.symbol),
+        statsFixture.grantOnly.modules.map((entry) => entry.symbol),
+    );
+    for (const { symbol, soldTwin } of statsFixture.grantOnly.modules) {
+        const granted = getModuleBySymbol(symbol, ALL_MODULES);
+        const sold = getModuleBySymbol(soldTwin, ALL_MODULES);
+        assert.ok(granted, `missing ${symbol}`);
+        assert.ok(sold, `missing ${soldTwin}`);
+        assert.equal(granted.grantOnly, true, symbol);
+        // The twin is the same article: same family, size and rating, and it is the one
+        // that stays offered, so it carries no flag of its own.
+        assert.equal(sold.grantOnly, undefined, soldTwin);
+        assert.equal(sold.familyId, granted.familyId, soldTwin);
+        assert.equal(sold.class, granted.class, soldTwin);
+        assert.equal(sold.rating, granted.rating, soldTwin);
+    }
+});
+
+test('a sold module states no grantOnly flag rather than a false one', () => {
+    const sold = getModuleBySymbol('Int_Engine_Size2_Class1', CORE_MODULES);
+    assert.equal(sold?.grantOnly, undefined);
+    assert.equal(Object.hasOwn(sold!, 'grantOnly'), false);
+});
+
 test('every price is a non-negative integer number of credits', () => {
     for (const m of ALL_MODULES) {
         if (m.cost === undefined) continue;

@@ -377,6 +377,26 @@ const engineeringNormalizationUnsupported = (
     code: EngineeringNormalizationCode,
     params: LoadoutIssueParams,
 ): EngineeringNormalizationUnsupported => deepFreeze({ kind: 'unsupported', code, params });
+
+/**
+ * Keep a mass only where it can be weighed.
+ *
+ * @remarks
+ * A capture states its own `UnladenMass`, and an engineering modifier its own value;
+ * {@link ShipLoadout.fromLoadout} copies both without judging them, so either can reach
+ * a report as a negative, a `NaN` or an `Infinity`. {@link validateLoadout} refuses a
+ * figure it cannot weigh, and a refusal is the wrong answer from the one method whose
+ * job is to *describe* what is wrong with a build. Drop the figure instead and check
+ * the structure alone; a mass nobody can weigh is still reported, as a thrown figure,
+ * by whichever metric goes on to read it.
+ *
+ * @param tonnes - The stated figure, or `undefined` where none was stated.
+ * @returns The figure when it is a finite number of zero or more, otherwise `undefined`.
+ */
+function weighable(tonnes: number | undefined): number | undefined {
+    return tonnes !== undefined && Number.isFinite(tonnes) && tonnes >= 0 ? tonnes : undefined;
+}
+
 /** A blueprint candidate for a module symbol, with its grades and availability route. */
 export interface AvailableBlueprint {
     /** The blueprint's Frontier symbol, e.g. `"FSD_LongRange"`. */
@@ -932,11 +952,29 @@ export class ShipLoadout {
      *
      * @remarks
      * `valid` asks whether the fit is legal: a module in a nonexistent or incompatible
-     * slot, a duplicated exclusive family, or a module count past the build's allowance
-     * makes it `false`. `complete` asks that *and* whether armour and the seven core
-     * mounts are filled — every build fills those, so on a build the two answers agree.
-     * Neither question reports import normalization, so read {@link importOutcomes}
-     * beside them.
+     * slot, a duplicated exclusive family, a module count past the build's allowance, or
+     * a ship heavier than its own thrusters can move makes it `false`. `complete` asks
+     * that *and* whether armour and the seven core mounts are filled — every build fills
+     * those, so on a build the two answers agree. Neither question reports import
+     * normalization, so read {@link importOutcomes} beside them.
+     *
+     * The thruster rule weighs the fitted thrusters' post-engineering `maxMass` against
+     * what the ship comes to at each load it can reach without being re-fitted:
+     * {@link unladenMass} alone, then with a full {@link fuelCapacity | main tank}, then
+     * with a full {@link cargoCapacity | hold} as well. The lightest of those that is
+     * already too heavy is what gets reported. A ship that cannot move on a full tank is
+     * an error — it never leaves the pad, where the tank always is one — while a ship
+     * that only fails with the hold full is a warning, and leaves the build valid and
+     * complete: how much cargo to take is the pilot's call. Either way
+     * {@link ships!BuildMetrics.mobilityMetrics | BuildMetrics.mobilityMetrics} reports
+     * a speed of zero at the load in question.
+     *
+     * A capture may state a mass nobody can weigh — a negative `UnladenMass`, or an
+     * engineering modifier that drives a rating below zero. Neither is refused here:
+     * this method reports a build rather than rejecting one, so an unweighable figure is
+     * left out and the rule it feeds simply does not run. The figure itself is still
+     * reported, as a thrown one, by whichever {@link ships!BuildMetrics | BuildMetrics}
+     * calculation reads it.
      *
      * @returns The validation report, recomputed from the current fit on every call.
      */
@@ -950,6 +988,13 @@ export class ShipLoadout {
                 (stats === null && isNonOutfittingSlot(module.Slot)) || isBuiltInHullModule(module);
             const fitProblem =
                 stats && slot && !builtIn ? moduleFitProblem(this.#shipSymbol, slot, stats) : null;
+            // A shield generator carries a `maxMass` of its own, so the rating is read
+            // only off the article the mount says is the thrusters.
+            const thrusterMaxMass = weighable(
+                stats?.slot === 'thrusters'
+                    ? effectiveModule(this.#moduleForEffectiveStats(module), stats)?.maxMass
+                    : undefined,
+            );
             return {
                 slot: module.Slot,
                 symbol: module.Item,
@@ -964,9 +1009,26 @@ export class ShipLoadout {
                 ...(stats?.limitIncrease === undefined
                     ? {}
                     : { limitIncrease: stats.limitIncrease }),
+                ...(thrusterMaxMass === undefined ? {} : { thrusterMaxMass }),
             };
         });
-        return validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
+        const dry = weighable(this.unladenMass);
+        const fuel = weighable(this.fuelCapacity.main);
+        const cargo = weighable(this.cargoCapacity);
+        const mass =
+            dry === undefined
+                ? undefined
+                : {
+                      dry,
+                      ...(fuel === undefined ? {} : { fuel }),
+                      ...(fuel === undefined || cargo === undefined ? {} : { cargo }),
+                  };
+        return validateLoadout({
+            shipSymbol: this.#shipSymbol,
+            slots,
+            modules,
+            ...(mass === undefined ? {} : { mass }),
+        });
     }
 
     /**
@@ -1125,6 +1187,13 @@ export class ShipLoadout {
      * satisfied, with candidates that would worsen a one-per-ship or module-count limit
      * omitted.
      *
+     * @remarks
+     * This is the outfitting *offer*, so the fifteen {@link ships!OutfittingModule.grantOnly | grantOnly}
+     * articles are never in it: each is a second identity for a module the game already
+     * sells — `Int_Engine_Size2_Class1_free` is the 2E Thrusters — and listing both puts
+     * the same article on the screen twice, once with no price. A build that already
+     * carries one keeps it; only the choices are filtered.
+     *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
      * @throws {RangeError} If the hull has no slot with that key.
@@ -1152,6 +1221,7 @@ export class ShipLoadout {
         const currentStats = this.#moduleStatsAt(slot.key);
         return ALL_MODULES.filter(
             (module) =>
+                module.grantOnly === undefined &&
                 moduleFitError(this.#shipSymbol, slot, module) === null &&
                 (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)) &&
                 this.#moduleLimitRegression(slot.key, module, currentLimits, currentStats) === null,

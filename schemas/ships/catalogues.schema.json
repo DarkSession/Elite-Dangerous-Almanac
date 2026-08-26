@@ -345,6 +345,10 @@
         },
         "ship": { "$ref": "#/definitions/nonEmptyString" },
         "entitlement": { "$ref": "#/definitions/nonEmptyString" },
+        "grantOnly": {
+          "description": "Present, and always `true`, on the articles no outfitting screen sells: they arrive granted with a hull or a bundle. Never `false` — an absent flag is the ordinary sold module.",
+          "const": true
+        },
 
         "restrictedToShips": {
           "type": "array",
