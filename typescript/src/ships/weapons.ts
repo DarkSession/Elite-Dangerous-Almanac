@@ -42,6 +42,7 @@
  */
 
 import type { DamageComponents, DamageDistribution, ProjectileRangeBoundaries } from './modules.js';
+import { requireFiniteNonNegative } from './internal/range-guards.js';
 
 /**
  * The weapon stats a DPS calculation needs — all post-engineering.
@@ -464,14 +465,8 @@ export function damageFalloff(weapon: WeaponStats, metres: number): number {
  * ```
  */
 export function armourPiercingFactor(armourPiercing: number, hardness: number): number {
-    if (!Number.isFinite(armourPiercing) || armourPiercing < 0) {
-        throw new RangeError(
-            'armourPiercingFactor: armour piercing must be a finite non-negative number',
-        );
-    }
-    if (!Number.isFinite(hardness) || hardness < 0) {
-        throw new RangeError('armourPiercingFactor: hardness must be a finite non-negative number');
-    }
+    requireFiniteNonNegative('armourPiercingFactor', 'armour piercing', armourPiercing);
+    requireFiniteNonNegative('armourPiercingFactor', 'hardness', hardness);
     if (hardness === 0) return 1;
     return Math.min(1, armourPiercing / hardness);
 }

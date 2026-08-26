@@ -20,6 +20,7 @@
  */
 
 import { capacitorRechargeAtPips } from './internal/capacitor-recharge.js';
+import { requireFiniteNonNegative, requirePips } from './internal/range-guards.js';
 
 /** Everything {@link weaponsCapacitorMetrics} needs about one firing load. */
 export interface WeaponsCapacitorInput {
@@ -56,12 +57,6 @@ export interface WeaponsCapacitorMetrics {
     readonly timeToDrain: number;
 }
 
-function requireFiniteNonNegative(scope: string, name: string, value: number): void {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
-    }
-}
-
 /**
  * Calculate WEP recharge and time to drain while a weapon load fires continuously.
  *
@@ -86,10 +81,7 @@ function requireFiniteNonNegative(scope: string, name: string, value: number): v
  */
 export function weaponsCapacitorMetrics(input: WeaponsCapacitorInput): WeaponsCapacitorMetrics {
     const scope = 'weaponsCapacitorMetrics';
-    const weaponsPips = input.weaponsPips ?? 4;
-    if (!Number.isFinite(weaponsPips) || weaponsPips < 0 || weaponsPips > 4) {
-        throw new RangeError(`${scope}: weaponsPips must be a finite number from 0 to 4`);
-    }
+    const weaponsPips = requirePips(scope, 'weaponsPips', input.weaponsPips ?? 4);
     for (const field of [
         'weaponsCapacity',
         'weaponsRecharge',

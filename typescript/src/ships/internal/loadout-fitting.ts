@@ -66,7 +66,7 @@ const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
 };
 
 /** A fitting failure's stable code and English fallback. */
-export interface ModuleFitProblem {
+interface ModuleFitProblem {
     readonly constraint: ModuleFitConstraint;
     readonly message: string;
     readonly params?: LoadoutIssueParams;

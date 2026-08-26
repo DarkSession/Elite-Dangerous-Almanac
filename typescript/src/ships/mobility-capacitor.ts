@@ -27,7 +27,7 @@
  * @packageDocumentation
  */
 
-import { requirePips } from './internal/pips.js';
+import { requirePips } from './internal/range-guards.js';
 import { resolveMobilityCurves } from './internal/mobility-core.js';
 import type { MobilityInput, ThrusterParams } from './mobility.js';
 

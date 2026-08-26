@@ -10,7 +10,7 @@ import {
 import type { CatalogueLocale } from '../locale.js';
 
 /** One source-backed name, complete in English and sparse in every other locale. @internal */
-export type LocalizedName = Readonly<Partial<Record<CatalogueLocale, string>>> & {
+type LocalizedName = Readonly<Partial<Record<CatalogueLocale, string>>> & {
     readonly en: string;
 };
 
@@ -24,7 +24,7 @@ export interface LocalizedNameCatalogue {
 }
 
 /** An immutable normalized identifier-to-localized-name index. @internal */
-export type LocalizedNameIndex = KeyIndex<LocalizedName>;
+type LocalizedNameIndex = KeyIndex<LocalizedName>;
 
 const CANONICAL_LOCALE: Readonly<Record<string, CatalogueLocale>> = Object.freeze({
     en: 'en',

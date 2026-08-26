@@ -17,6 +17,7 @@
  */
 
 import { capacitorRechargeAtPips } from './internal/capacitor-recharge.js';
+import { requireFiniteNonNegative, requirePips } from './internal/range-guards.js';
 
 /** Everything {@link distributorMetrics} needs about one power distributor. */
 export interface DistributorInput {
@@ -79,18 +80,6 @@ export interface DistributorMetrics {
     readonly pips: DistributorPips;
 }
 
-const requirePips = (name: string, value: number): void => {
-    if (!Number.isFinite(value) || value < 0 || value > 4) {
-        throw new RangeError(`distributorMetrics: ${name} must be a finite number from 0 to 4`);
-    }
-};
-
-const requireFiniteNonNegative = (name: string, value: number): void => {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`distributorMetrics: ${name} must be a finite non-negative number`);
-    }
-};
-
 const capacitorMetrics = (
     capacity: number,
     ratedRecharge: number,
@@ -136,9 +125,9 @@ export function distributorMetrics(input: DistributorInput): DistributorMetrics 
         engines: input.enginesPips ?? 4,
         weapons: input.weaponsPips ?? 4,
     });
-    requirePips('systemsPips', pips.systems);
-    requirePips('enginesPips', pips.engines);
-    requirePips('weaponsPips', pips.weapons);
+    requirePips('distributorMetrics', 'systemsPips', pips.systems);
+    requirePips('distributorMetrics', 'enginesPips', pips.engines);
+    requirePips('distributorMetrics', 'weaponsPips', pips.weapons);
     for (const field of [
         'systemsCapacity',
         'systemsRecharge',
@@ -147,7 +136,7 @@ export function distributorMetrics(input: DistributorInput): DistributorMetrics 
         'weaponsCapacity',
         'weaponsRecharge',
     ] as const) {
-        requireFiniteNonNegative(field, input[field]);
+        requireFiniteNonNegative('distributorMetrics', field, input[field]);
     }
 
     return Object.freeze({

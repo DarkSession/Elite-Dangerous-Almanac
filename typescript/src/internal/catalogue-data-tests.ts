@@ -17,7 +17,7 @@ import { stripJsonComments } from '../../scripts/jsonc.mjs';
 const BANNED_PAYLOAD_KEYS = ['attribution', 'description', 'comment'] as const;
 
 /** Configuration for one domain's shared catalogue validation suite. */
-export interface CatalogueDataTestOptions {
+interface CatalogueDataTestOptions {
     /** Domain directory name used in test descriptions, such as `astro`. */
     readonly domain: string;
     /** Expected schema definition for each JSONC file. */
@@ -25,7 +25,7 @@ export interface CatalogueDataTestOptions {
 }
 
 /** One discovered catalogue exposed to domain-specific invariant tests. */
-export interface CatalogueDataTestCase {
+interface CatalogueDataTestCase {
     /** JSONC file name within the domain directory. */
     readonly name: string;
     /** Read and parse this catalogue, caching the result. */

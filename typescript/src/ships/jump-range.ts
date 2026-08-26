@@ -19,6 +19,8 @@
  * @packageDocumentation
  */
 
+import { requireFiniteNonNegative } from './internal/range-guards.js';
+
 /**
  * The frame shift drive constants a jump calculation needs — all post-engineering.
  *
@@ -63,13 +65,6 @@ export interface TotalRangeDetails {
 /** Maximum work accepted by {@link totalRange} in one call. */
 const MAX_TOTAL_RANGE_JUMPS = 100_000;
 
-/** Reject a quantity that cannot represent a physical non-negative input. */
-function requireNonNegative(scope: string, name: string, value: number): void {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
-    }
-}
-
 /** Reject a drive constant that would make the jump equation undefined. */
 function requirePositive(scope: string, name: string, value: number): void {
     if (!Number.isFinite(value) || value <= 0) {
@@ -80,11 +75,11 @@ function requirePositive(scope: string, name: string, value: number): void {
 /** Validate the common drive-parameter contract. */
 function validateFsd(scope: string, fsd: FrameShiftDriveParams): void {
     requirePositive(scope, 'optMass', fsd.optMass);
-    requireNonNegative(scope, 'fsd.maxFuel', fsd.maxFuel);
+    requireFiniteNonNegative(scope, 'fsd.maxFuel', fsd.maxFuel);
     requirePositive(scope, 'fuelMul', fsd.fuelMul);
     requirePositive(scope, 'fuelPower', fsd.fuelPower);
     if (fsd.jumpBoost !== undefined) {
-        requireNonNegative(scope, 'fsd.jumpBoost', fsd.jumpBoost);
+        requireFiniteNonNegative(scope, 'fsd.jumpBoost', fsd.jumpBoost);
     }
 }
 
@@ -148,8 +143,8 @@ export function frameShiftDriveMassFactor(
     fsd: Pick<FrameShiftDriveParams, 'optMass'>,
 ): number {
     const scope = 'frameShiftDriveMassFactor';
-    requireNonNegative(scope, 'mass', mass);
-    requireNonNegative(scope, 'fuel', fuel);
+    requireFiniteNonNegative(scope, 'mass', mass);
+    requireFiniteNonNegative(scope, 'fuel', fuel);
     requirePositive(scope, 'optMass', fsd.optMass);
     if (mass + fuel <= 0) {
         throw new RangeError(`${scope}: mass plus fuel must be positive`);
@@ -183,8 +178,8 @@ export function frameShiftDriveMassFactor(
  */
 export function singleJumpRange(mass: number, fuel: number, fsd: FrameShiftDriveParams): number {
     const scope = 'singleJumpRange';
-    requireNonNegative(scope, 'mass', mass);
-    requireNonNegative(scope, 'fuel', fuel);
+    requireFiniteNonNegative(scope, 'mass', mass);
+    requireFiniteNonNegative(scope, 'fuel', fuel);
     validateFsd(scope, fsd);
     return singleJumpRangeUnchecked(mass, fuel, fsd, scope);
 }
@@ -220,9 +215,9 @@ export function fuelPerJump(
     fsd: FrameShiftDriveParams,
 ): number {
     const scope = 'fuelPerJump';
-    requireNonNegative(scope, 'distance', distance);
-    requireNonNegative(scope, 'mass', mass);
-    requireNonNegative(scope, 'fuel', fuel);
+    requireFiniteNonNegative(scope, 'distance', distance);
+    requireFiniteNonNegative(scope, 'mass', mass);
+    requireFiniteNonNegative(scope, 'fuel', fuel);
     validateFsd(scope, fsd);
     if (distance <= 0) return 0;
     const burn = Math.min(fuel, fsd.maxFuel);
@@ -264,8 +259,8 @@ export function totalRange(
     fsd: FrameShiftDriveParams,
 ): TotalRangeDetails {
     const scope = 'totalRange';
-    requireNonNegative(scope, 'mass', mass);
-    requireNonNegative(scope, 'fuel', fuel);
+    requireFiniteNonNegative(scope, 'mass', mass);
+    requireFiniteNonNegative(scope, 'fuel', fuel);
     validateFsd(scope, fsd);
     if (fsd.maxFuel <= 0) return Object.freeze({ range: 0, jumps: 0 });
     const jumps = fuel > 0 ? Math.max(1, Math.ceil(fuel / fsd.maxFuel)) : 0;

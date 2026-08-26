@@ -545,7 +545,7 @@ function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): M
 }
 
 /** Gather a build's shield generator, boosters and Guardian reinforcement. */
-export function shieldInputFor(
+function shieldInputFor(
     ship: Ship,
     modules: readonly LoadoutModule[],
     budget: PowerBudget,

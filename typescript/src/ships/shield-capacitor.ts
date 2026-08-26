@@ -34,7 +34,7 @@
  */
 
 import { capacitorRechargeAtPips } from './internal/capacitor-recharge.js';
-import { requirePips } from './internal/pips.js';
+import { requireFiniteNonNegative, requirePips } from './internal/range-guards.js';
 import {
     effectiveHitPoints,
     mapDamageTypes,
@@ -103,12 +103,6 @@ export interface ShieldCapacitorMetrics {
 }
 
 const DAMAGE_TYPES: readonly DamageType[] = ['kinetic', 'thermal', 'explosive', 'caustic'];
-
-function requireFiniteNonNegative(scope: string, name: string, value: number): void {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
-    }
-}
 
 /**
  * Calculate what a SYS-pip allocation gives a raised shield.

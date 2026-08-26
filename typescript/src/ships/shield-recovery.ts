@@ -9,6 +9,7 @@
  */
 
 import { capacitorRechargeAtPips } from './internal/capacitor-recharge.js';
+import { requireFiniteNonNegative, requirePips } from './internal/range-guards.js';
 
 /** Everything {@link shieldRecovery} needs about a powered shield and SYS capacitor. */
 export interface ShieldRecoveryInput {
@@ -123,12 +124,6 @@ const phaseTime = (
     return capacitorLifetime + (megajoules - beforeEmpty) / (recharge / draw);
 };
 
-const requireFiniteNonNegative = (name: string, value: number): void => {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`shieldRecovery: ${name} must be a finite non-negative number`);
-    }
-};
-
 /**
  * Calculate shield recovery and regeneration times at one SYS-pip allocation.
  *
@@ -147,10 +142,7 @@ const requireFiniteNonNegative = (name: string, value: number): void => {
  * ```
  */
 export function shieldRecovery(input: ShieldRecoveryInput): ShieldRecovery {
-    const pips = input.systemsPips ?? 4;
-    if (!Number.isFinite(pips) || pips < 0 || pips > 4) {
-        throw new RangeError('shieldRecovery: systemsPips must be a finite number from 0 to 4');
-    }
+    const pips = requirePips('shieldRecovery', 'systemsPips', input.systemsPips ?? 4);
     for (const field of [
         'strength',
         'regenRate',
@@ -159,7 +151,7 @@ export function shieldRecovery(input: ShieldRecoveryInput): ShieldRecovery {
         'systemsCapacity',
         'systemsRecharge',
     ] as const) {
-        requireFiniteNonNegative(field, input[field]);
+        requireFiniteNonNegative('shieldRecovery', field, input[field]);
     }
     const recharge = capacitorRechargeAtPips(input.systemsRecharge, pips);
     const half = input.strength / 2;

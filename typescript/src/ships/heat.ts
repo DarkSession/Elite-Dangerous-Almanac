@@ -67,6 +67,8 @@
  * @packageDocumentation
  */
 
+import { requireFiniteNonNegative } from './internal/range-guards.js';
+
 /**
  * The heat level the cockpit gauge shows as `100%` — where a ship starts to cook.
  *
@@ -259,8 +261,8 @@ export interface HeatMetrics {
  * ```
  */
 export function equilibriumHeatLevel(dissipation: number, thermalLoad: number): number {
-    requireNonNegative('equilibriumHeatLevel', 'dissipation', dissipation);
-    requireNonNegative('equilibriumHeatLevel', 'thermal load', thermalLoad);
+    requireFiniteNonNegative('equilibriumHeatLevel', 'dissipation', dissipation);
+    requireFiniteNonNegative('equilibriumHeatLevel', 'thermal load', thermalLoad);
     if (dissipation === 0) return thermalLoad === 0 ? 0 : Infinity;
     return Math.sqrt(thermalLoad / dissipation);
 }
@@ -293,10 +295,10 @@ export function effectiveWeaponThermalLoad(
     weaponsCapacity: number,
     capacitorLevel: number,
 ): number {
-    requireNonNegative('effectiveWeaponThermalLoad', 'thermal load', thermalLoad);
-    requireNonNegative('effectiveWeaponThermalLoad', 'distributor draw', distributorDraw);
-    requireNonNegative('effectiveWeaponThermalLoad', 'weapons capacity', weaponsCapacity);
-    requireNonNegative('effectiveWeaponThermalLoad', 'capacitor level', capacitorLevel);
+    requireFiniteNonNegative('effectiveWeaponThermalLoad', 'thermal load', thermalLoad);
+    requireFiniteNonNegative('effectiveWeaponThermalLoad', 'distributor draw', distributorDraw);
+    requireFiniteNonNegative('effectiveWeaponThermalLoad', 'weapons capacity', weaponsCapacity);
+    requireFiniteNonNegative('effectiveWeaponThermalLoad', 'capacitor level', capacitorLevel);
     if (capacitorLevel > 1) {
         throw new RangeError('effectiveWeaponThermalLoad: capacitor level must be at most 1');
     }
@@ -342,7 +344,7 @@ export function heatLevelAtTime(params: {
 }): number {
     const { heatCapacity, heatDissipation, thermalLoad, startLevel, seconds } = params;
     validateHeatParams('heatLevelAtTime', heatCapacity, heatDissipation, thermalLoad, startLevel);
-    requireNonNegative('heatLevelAtTime', 'seconds', seconds);
+    requireFiniteNonNegative('heatLevelAtTime', 'seconds', seconds);
     if (seconds === 0) return startLevel;
 
     const linearRate = (thermalLoad - heatDissipation) / heatCapacity;
@@ -413,7 +415,7 @@ export function secondsToHeatLevel(params: {
         thermalLoad,
         startLevel,
     );
-    requireNonNegative('secondsToHeatLevel', 'target level', targetLevel);
+    requireFiniteNonNegative('secondsToHeatLevel', 'target level', targetLevel);
     if (targetLevel === startLevel) return 0;
 
     const linearRate = (thermalLoad - heatDissipation) / heatCapacity;
@@ -468,32 +470,36 @@ export function secondsToHeatLevel(params: {
  */
 export function heatMetrics(input: HeatInput): HeatMetrics {
     const { heatCapacity, heatDissipation, heatEfficiency } = input;
-    requireNonNegative('heatMetrics', 'heat capacity', heatCapacity);
-    requireNonNegative('heatMetrics', 'heat dissipation', heatDissipation);
+    requireFiniteNonNegative('heatMetrics', 'heat capacity', heatCapacity);
+    requireFiniteNonNegative('heatMetrics', 'heat dissipation', heatDissipation);
     if (heatCapacity === 0) throw new RangeError('heatMetrics: heat capacity must be above 0');
-    requireNonNegative('heatMetrics', 'heat efficiency', heatEfficiency);
-    const retracted = requireNonNegative(
+    requireFiniteNonNegative('heatMetrics', 'heat efficiency', heatEfficiency);
+    const retracted = requireFiniteNonNegative(
         'heatMetrics',
         'retracted power draw',
         input.retractedPowerDraw ?? 0,
     );
-    const deployed = requireNonNegative(
+    const deployed = requireFiniteNonNegative(
         'heatMetrics',
         'deployed power draw',
         input.deployedPowerDraw ?? retracted,
     );
-    const thrusterHeat = requireNonNegative(
+    const thrusterHeat = requireFiniteNonNegative(
         'heatMetrics',
         'thruster heat rate',
         input.thrusterHeatRate ?? 0,
     );
-    const deployedThrusterHeat = requireNonNegative(
+    const deployedThrusterHeat = requireFiniteNonNegative(
         'heatMetrics',
         'deployed thruster heat rate',
         input.deployedThrusterHeatRate ?? thrusterHeat,
     );
-    const fsdHeat = requireNonNegative('heatMetrics', 'FSD heat rate', input.fsdHeatRate ?? 0);
-    const weaponsCapacity = requireNonNegative(
+    const fsdHeat = requireFiniteNonNegative(
+        'heatMetrics',
+        'FSD heat rate',
+        input.fsdHeatRate ?? 0,
+    );
+    const weaponsCapacity = requireFiniteNonNegative(
         'heatMetrics',
         'weapons capacity',
         input.weaponsCapacity ?? 0,
@@ -623,13 +629,6 @@ function clamp(value: number): number {
     return Math.min(Math.max(value, 0), 1);
 }
 
-function requireNonNegative(caller: string, what: string, value: number): number {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`${caller}: ${what} must be a finite non-negative number`);
-    }
-    return value;
-}
-
 function validateHeatParams(
     caller: string,
     heatCapacity: number,
@@ -637,9 +636,9 @@ function validateHeatParams(
     thermalLoad: number,
     startLevel: number,
 ): void {
-    requireNonNegative(caller, 'heat capacity', heatCapacity);
-    requireNonNegative(caller, 'heat dissipation', heatDissipation);
-    requireNonNegative(caller, 'thermal load', thermalLoad);
-    requireNonNegative(caller, 'start level', startLevel);
+    requireFiniteNonNegative(caller, 'heat capacity', heatCapacity);
+    requireFiniteNonNegative(caller, 'heat dissipation', heatDissipation);
+    requireFiniteNonNegative(caller, 'thermal load', thermalLoad);
+    requireFiniteNonNegative(caller, 'start level', startLevel);
     if (heatCapacity === 0) throw new RangeError(`${caller}: heat capacity must be above 0`);
 }

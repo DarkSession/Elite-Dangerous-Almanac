@@ -71,6 +71,7 @@ import {
     weaponsCapacitorInputFor,
     weaponStatsFor,
 } from './internal/loadout-metrics.js';
+import { requireFiniteNonNegative, requirePips } from './internal/range-guards.js';
 import { loadoutInternals, type LoadoutInternals } from './internal/loadout-internals.js';
 import { completeResult, incompleteResult } from './internal/calculation-result.js';
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
@@ -382,18 +383,8 @@ export interface JumpRangeSummary {
 function requireLoadOptions(scope: string, options: JumpOptions): void {
     for (const field of ['fuel', 'cargo'] as const) {
         const value = options[field];
-        if (value !== undefined && (!Number.isFinite(value) || value < 0)) {
-            throw new RangeError(`${scope}: ${field} must be a finite non-negative number`);
-        }
+        if (value !== undefined) requireFiniteNonNegative(scope, field, value);
     }
-}
-
-/** Validate one named pip allocation, naming the method the consumer called. */
-function requirePipAllocation(scope: string, name: string, value: number): number {
-    if (!Number.isFinite(value) || value < 0 || value > 4) {
-        throw new RangeError(`${scope}: ${name} must be a finite number from 0 to 4`);
-    }
-    return value;
 }
 
 /**
@@ -1344,7 +1335,7 @@ export class BuildMetrics {
      * ```
      */
     weaponsCapacitorMetrics(options: WeaponsOptions = {}): WeaponsCapacitorMetrics {
-        const weaponsPips = requirePipAllocation(
+        const weaponsPips = requirePips(
             `${FACADE}.weaponsCapacitorMetrics`,
             'weaponsPips',
             options.weaponsPips ?? 4,
@@ -1435,7 +1426,7 @@ export class BuildMetrics {
         options: MobilityCapacitorOptions,
     ): CalculationResult<MobilityCapacitorMetrics> {
         const scope = `${FACADE}.${method}`;
-        const enginesPips = requirePipAllocation(scope, 'enginesPips', options.enginesPips ?? 4);
+        const enginesPips = requirePips(scope, 'enginesPips', options.enginesPips ?? 4);
         const input = this.#mobilityInput(scope, options);
         return input.complete
             ? completeResult(mobilityCapacitorMetrics({ ...input.value, enginesPips })!)
@@ -1476,7 +1467,7 @@ export class BuildMetrics {
         method: string,
         options: ShieldCapacitorOptions,
     ): CalculationResult<ShieldCapacitorMetrics> {
-        const systemsPips = requirePipAllocation(
+        const systemsPips = requirePips(
             `${FACADE}.${method}`,
             'systemsPips',
             options.systemsPips ?? 4,
@@ -1493,7 +1484,7 @@ export class BuildMetrics {
 
     /** The one implementation of shield recovery — see {@link BuildMetrics.#mobility}. */
     #recovery(method: string, options: ShieldRecoveryOptions): CalculationResult<ShieldRecovery> {
-        const systemsPips = requirePipAllocation(
+        const systemsPips = requirePips(
             `${FACADE}.${method}`,
             'systemsPips',
             options.systemsPips ?? 4,
@@ -1515,9 +1506,9 @@ export class BuildMetrics {
     ): CalculationResult<DistributorMetrics> {
         const scope = `${FACADE}.${method}`;
         const pips = {
-            systemsPips: requirePipAllocation(scope, 'systemsPips', options.systemsPips ?? 4),
-            enginesPips: requirePipAllocation(scope, 'enginesPips', options.enginesPips ?? 4),
-            weaponsPips: requirePipAllocation(scope, 'weaponsPips', options.weaponsPips ?? 4),
+            systemsPips: requirePips(scope, 'systemsPips', options.systemsPips ?? 4),
+            enginesPips: requirePips(scope, 'enginesPips', options.enginesPips ?? 4),
+            weaponsPips: requirePips(scope, 'weaponsPips', options.weaponsPips ?? 4),
         };
         const input = distributorInputResultFor(
             this.#state.effectiveModules(),

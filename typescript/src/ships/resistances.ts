@@ -39,7 +39,7 @@
  * @packageDocumentation
  */
 
-import { requirePips } from './internal/pips.js';
+import { requirePips } from './internal/range-guards.js';
 
 /**
  * One value per damage type — whatever the value happens to be: a resistance, a pool of

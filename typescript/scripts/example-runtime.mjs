@@ -32,7 +32,7 @@ export function runExampleEntries(
         const result = spawnSync(nodePath, [...importArgs, runner, manifestPath, String(index)], {
             cwd,
             encoding: 'utf8',
-            input: JSON.stringify({ protocol: 1, entryIndex: index, nonce }),
+            input: JSON.stringify({ nonce }),
             timeout: timeoutMs,
             killSignal: 'SIGKILL',
             maxBuffer: 10 * 1024 * 1024,

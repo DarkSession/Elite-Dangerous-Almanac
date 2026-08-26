@@ -16,14 +16,14 @@ import {
 } from './loadout-state.js';
 
 /** The public export options consumed by the serializer. */
-export interface LoadoutExportShape {
+interface LoadoutExportShape {
     readonly moduleOrder?: 'fitted' | 'slots';
     readonly explicitPower?: boolean;
     readonly credits?: 'retail' | 'source';
 }
 
 /** Everything the facade resolves before handing a build to the serializer. */
-export interface LoadoutExportInput {
+interface LoadoutExportInput {
     readonly shipSymbol: string;
     readonly shipName?: string;
     readonly shipIdent?: string;

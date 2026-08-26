@@ -33,6 +33,8 @@
  * @packageDocumentation
  */
 
+import { requireFiniteNonNegative } from './internal/range-guards.js';
+
 /** How many priority groups the game offers. */
 const PRIORITY_GROUPS = 5;
 
@@ -180,16 +182,12 @@ function bandIndex(priority: number | undefined): number {
  * ```
  */
 export function powerBudget(available: number, consumers: readonly PowerConsumer[]): PowerBudget {
-    if (!Number.isFinite(available) || available < 0) {
-        throw new RangeError('powerBudget: available power must be a finite non-negative number');
-    }
+    requireFiniteNonNegative('powerBudget', 'available power', available);
 
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     for (const consumer of consumers) {
-        if (!Number.isFinite(consumer.draw) || consumer.draw < 0) {
-            throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
-        }
+        requireFiniteNonNegative('powerBudget', 'consumer draw', consumer.draw);
     }
     const consumerResults: PowerConsumerResult[] = consumers.map((consumer) =>
         Object.freeze({

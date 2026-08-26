@@ -21,6 +21,8 @@
  * @internal
  */
 
+import { requireFiniteNonNegative } from './range-guards.js';
+
 /**
  * The three masses and three multipliers one power-law mass curve passes through.
  *
@@ -29,7 +31,7 @@
  * or all equal. An all-equal mass curve must have equal multipliers — three different
  * multipliers at one mass is not a curve.
  */
-export interface MassCurve {
+interface MassCurve {
     /** Mass at which performance reaches {@link maxMultiplier}, in tonnes. */
     readonly minMass: number;
     /** Mass at which performance is exactly {@link optMultiplier}, in tonnes. */
@@ -57,20 +59,6 @@ export interface MassCurveLabels {
     readonly mass: string;
     /** The public parameter carrying the curve, e.g. `'generator'`. */
     readonly curve: string;
-}
-
-/**
- * Require a finite, non-negative number.
- *
- * @param scope - The public function to name, e.g. `'mobilityMetrics'`.
- * @param name - The public parameter or field to name.
- * @param value - The value as received.
- * @throws {RangeError} If `value` is not a finite number of zero or more.
- */
-export function requireFiniteNonNegative(scope: string, name: string, value: number): void {
-    if (!Number.isFinite(value) || value < 0) {
-        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
-    }
 }
 
 /**

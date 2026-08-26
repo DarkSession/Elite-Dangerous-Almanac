@@ -11,18 +11,19 @@
  * @internal
  */
 
-import { massCurveMultiplier, requireFiniteNonNegative, validateMassCurve } from './mass-curve.js';
+import { massCurveMultiplier, validateMassCurve } from './mass-curve.js';
+import { requireFiniteNonNegative } from './range-guards.js';
 import type { MobilityInput, ThrusterCurveParams } from '../mobility.js';
 
 /** The two thruster multipliers a loaded build sits at. */
-export interface MobilityCurves {
+interface MobilityCurves {
     /** The speed curve's multiplier at the loaded mass. */
     readonly massCurveMultiplier: number;
     /** The rotation curve's multiplier; differs for enhanced-performance thrusters. */
     readonly rotationMassCurveMultiplier: number;
 }
 
-export const requireFiniteRange = (
+const requireFiniteRange = (
     scope: string,
     name: string,
     value: number,

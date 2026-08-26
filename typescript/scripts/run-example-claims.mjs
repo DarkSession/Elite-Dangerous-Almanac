@@ -26,12 +26,7 @@ if (!Number.isInteger(entryIndex) || entryIndex < 0) {
 }
 
 const handshake = JSON.parse(readFileSync(0, 'utf8'));
-if (
-    handshake?.protocol !== 1 ||
-    handshake.entryIndex !== entryIndex ||
-    typeof handshake.nonce !== 'string' ||
-    !/^[A-Za-z0-9_-]{43}$/.test(handshake.nonce)
-) {
+if (typeof handshake?.nonce !== 'string' || handshake.nonce === '') {
     throw new TypeError('run-example-claims: invalid parent handshake');
 }
 const nonce = handshake.nonce;

@@ -81,7 +81,7 @@ test('systems pips add resistance on their own curve', () => {
 
 test('systemsResistance rejects pips outside 0-4, naming its own parameter', () => {
     // Called directly, the parameter the consumer wrote is `pips`; reached through
-    // `shieldMetrics` it is `systemsPips`, and that call names itself instead.
+    // `shieldCapacitorMetrics` it is `systemsPips`, and that call names itself instead.
     const message = 'systemsResistance: pips must be a finite number from 0 to 4';
     for (const bad of [-1, 5, Number.NaN, Number.POSITIVE_INFINITY]) {
         assert.throws(
