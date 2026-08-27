@@ -154,6 +154,46 @@ specification's own example does. Both name the same mount, and lookups are
 case-insensitive in both directions. What a build already carries is never rewritten, so
 re-exporting an import returns the producer's own spelling untouched.
 
+## A recipe stated without its modifiers is rolled
+
+A journal writes the modifier block beside the recipe. SLEF permits stating the recipe
+alone — `BlueprintName`, `Level` and `Quality`, no `Modifiers` — and Inara writes it that
+way for every engineered module. Import rolls that recipe at the grade and quality the
+block states, so the module publishes the figures the commander built rather than the
+ones it was sold with.
+
+Two rules settle what a bare identity names, because a module's fixed articles can carry
+the same blueprint at the same grade as one of its craftable recipes:
+
+- **The module's engineering menu offers the recipe** — the block is an ordinary roll of
+  it. That is what nearly every such block is, and a fixed article of the same module
+  carrying that blueprint does not change the reading. Where you know the article was
+  meant, fit it yourself with
+  {@link ships!ShipLoadout.setPreEngineeredVariant | setPreEngineeredVariant}.
+- **The menu does not offer it** — no ordinary roll could have written the block, so a
+  single catalogued article answering to the stated blueprint, grade and effect is fitted
+  and its fixed stats stand.
+
+Where neither answers, the module keeps unengineered figures and says so: `importOutcomes`
+carries an `unresolvedEngineering` entry naming the slot, the module and the recipe.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const build = ShipLoadout.fromLoadout({
+    Ship: 'Anaconda',
+    Modules: [
+        {
+            Slot: 'TinyHardpoint4',
+            Item: 'hpt_heatsinklauncher_turret_tiny',
+            Engineering: { BlueprintName: 'misc_heatsinkcapacity', Level: 1, Quality: 1 },
+        },
+    ],
+});
+
+build.fittedModuleAt('TinyHardpoint4')?.effectiveStats?.reloadTime; // -> 15
+```
+
 ## Next
 
 - [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)

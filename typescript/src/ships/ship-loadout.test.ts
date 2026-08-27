@@ -5577,17 +5577,14 @@ test('completeEngineeringGrade recomputes imported ordinary and Mercenary rolls 
     assert.equal(importedConverted.fittedModuleAt('MediumHardpoint1')!.engineering!.Quality, 1);
 });
 
-test('completeEngineeringGrade rolls a completed roll that states no modifiers', () => {
+test('an import rolls a completed roll that states no modifiers', () => {
     // The defect this pins: Inara states engineering identity only, and writes `Quality: 1`
-    // for a finished roll. Completing the grade saw a quality that needed no rerolling and
-    // called the module unchanged, so an armoured G5 plant kept its stock draw for good.
+    // for a finished roll. Left as stated, an armoured G5 plant kept its stock draw, so
+    // the import rolls the recipe and completing the grade then finds nothing to do.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
     const stock = mod('Int_Powerplant_Size6_Class5');
-    assert.equal(build.fittedModuleAt('PowerPlant')!.engineering!.Modifiers, undefined);
-    assert.equal(build.fittedModuleAt('PowerPlant')!.effectiveStats!.integrity, stock.integrity);
-
-    const result = build.completeEngineeringGrade('PowerPlant');
-    assert.deepEqual(result, { kind: 'normalized', previousQuality: 1, quality: 1 });
+    assert.ok(build.fittedModuleAt('PowerPlant')!.engineering!.Modifiers!.length > 0);
+    assert.notEqual(build.fittedModuleAt('PowerPlant')!.effectiveStats!.integrity, stock.integrity);
 
     const expected = ShipLoadout.empty('LakonMiner')
         .setModule('PowerPlant', stock)
@@ -5600,7 +5597,7 @@ test('completeEngineeringGrade rolls a completed roll that states no modifiers',
         build.fittedModuleAt('PowerPlant')!.effectiveStats,
         expected.fittedModuleAt('PowerPlant')!.effectiveStats,
     );
-    assert.ok(build.fittedModuleAt('PowerPlant')!.engineering!.Modifiers!.length > 0);
+    assert.deepEqual(build.completeEngineeringGrade('PowerPlant'), { kind: 'unchanged' });
 
     // A stated array is the module's own record, so a completed roll keeps it untouched.
     const stated = ShipLoadout.fromLoadout(
@@ -5609,6 +5606,51 @@ test('completeEngineeringGrade rolls a completed roll that states no modifiers',
             .toLoadoutEvent(),
     );
     assert.deepEqual(stated.completeEngineeringGrade('FrameShiftDrive'), { kind: 'unchanged' });
+});
+
+test('an article resolved from a bare identity is an article, not a new base', () => {
+    // A community-goal cargo rack states its blueprint and no modifiers, and no ordinary
+    // recipe of that rack answers to it, so the import fits the article. Every reader has
+    // to see the same article: taken as the module's own base instead, its fixed capacity
+    // would survive clearing the engineering and be folded in twice by the next recipe.
+    const imported = (): ShipLoadout =>
+        ShipLoadout.fromLoadout({
+            Ship: 'PantherMkII',
+            Modules: [
+                {
+                    Slot: 'Slot04_Size6',
+                    Item: 'int_cargorack_size6_class1',
+                    Engineering: {
+                        BlueprintName: 'cargorack_increasedcapacity',
+                        Level: 5,
+                        Quality: 1,
+                    },
+                },
+            ],
+        });
+    const build = imported();
+    const fitted = build.fittedModuleAt('Slot04_Size6')!;
+    assert.equal(fitted.preEngineeredVariant?.blueprintSymbol, 'CargoRack_IncreasedCapacity');
+    assert.equal(fitted.preEngineeredVariant?.acquisition, 'communityGoal');
+    assert.equal(fitted.effectiveStats?.cargoCapacity, 86);
+
+    const cleared = imported();
+    cleared.clearEngineering('Slot04_Size6');
+    assert.equal(cleared.fittedModuleAt('Slot04_Size6')?.effectiveStats?.cargoCapacity, 64);
+
+    // The Mercenary recipe this rack does offer rolls from the stock 64 t either way.
+    const stock = ShipLoadout.fromLoadout({
+        Ship: 'PantherMkII',
+        Modules: [{ Slot: 'Slot04_Size6', Item: 'int_cargorack_size6_class1' }],
+    }).applyBlueprint('Slot04_Size6', 'CargoRackS6C1_Extended', { grade: 2 });
+    const rerolled = imported().applyBlueprint('Slot04_Size6', 'CargoRackS6C1_Extended', {
+        grade: 2,
+    });
+    assert.deepEqual(
+        rerolled.fittedModuleAt('Slot04_Size6')!.effectiveStats,
+        stock.fittedModuleAt('Slot04_Size6')!.effectiveStats,
+    );
+    assert.equal(rerolled.fittedModuleAt('Slot04_Size6')?.effectiveStats?.cargoCapacity, 72);
 });
 
 test('completeEngineeringGrade preserves an imported fixed reward', () => {
@@ -6187,7 +6229,8 @@ test('every editor and reader on the facade takes a lower-cased key', () => {
 test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', () => {
     // The fixture's own bulkhead is grade 1, which *is* the Type-11's stock lightweight
     // alloy, so it cannot tell a bound slot from the fallback. Grade 3 — Military Grade
-    // Composite — can: 1225 hull points against the 630 a build with no armour reports.
+    // Composite — can. Both figures carry the bulkhead's own heavy-duty G2 roll, which
+    // the source states without modifiers and the import rolls from the recipe.
     const upgrade = (slot: string): number => {
         const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
         const modules = data.Modules.map((m) =>
@@ -6197,13 +6240,13 @@ test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', ()
             ShipLoadout.fromLoadout({ ...data, Modules: modules }),
         ).armourMetrics()!.hitPoints;
     };
-    assert.equal(upgrade('Armour'), 1225);
+    assert.equal(upgrade('Armour'), 1433.2498914999999);
     assert.equal(upgrade('armour'), upgrade('Armour'));
-    // ...and the untouched fixture's stock-grade bulkhead is the 630 it should be.
+    // ...and the untouched fixture's stock-grade bulkhead is the 737.1 it should be.
     assert.equal(
         BuildMetrics.of(ShipLoadout.fromSlef(JSON.stringify(inaraFixture))).armourMetrics()!
             .hitPoints,
-        630,
+        737.0999685,
     );
 });
 

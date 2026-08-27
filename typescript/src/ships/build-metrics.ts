@@ -49,7 +49,7 @@ import {
 import { getBlueprintCost } from './blueprint-costs.js';
 import { getExperimentalEffectCost } from './experimental-effect-costs.js';
 import { sumMaterials, type EngineeringMaterial } from './engineering.js';
-import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
+import { preEngineeredVariantFor } from './internal/loadout-import.js';
 import type { ProjectileRangeBoundaries } from './modules.js';
 import {
     isBuiltInHullModule,
@@ -816,7 +816,7 @@ export class BuildMetrics {
             ) {
                 unpriced.push({ slot: module.Slot, symbol: module.Item });
             }
-            const variant = identifyPreEngineeredVariant(module);
+            const variant = preEngineeredVariantFor(module);
             mercCoins += variant?.mercCoinCost ?? 0;
             const engineering = module.Engineering;
             if (!engineering) continue;

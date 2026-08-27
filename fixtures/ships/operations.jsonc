@@ -4,9 +4,10 @@
  * Cross-language parity cases for loaded mobility, shield recovery, distributor
  * recharge, WEP-capacitor endurance, shield-cell pools, one-per-ship,
  * counted-module and thruster-mass validation, direct credit, Merc Coin and material
- * pricing, alpha-strike thermal load, import rejections, structured diagnostics and
- * editor failures. Inputs pin the public data-free and ShipLoadout facade contracts;
- * catalogue-backed expectations pin the shared ship and module snapshots.
+ * pricing, alpha-strike thermal load, import rejections, recipes stated without
+ * modifiers, structured diagnostics and editor failures. Inputs pin the public data-free
+ * and ShipLoadout facade contracts; catalogue-backed expectations pin the shared ship and
+ * module snapshots.
  */
 {
   "mobility": {
@@ -568,6 +569,155 @@
     "unknownHull": {
       "input": { "Ship": "FutureHull", "Modules": [] },
       "expected": { "accepted": false, "reason": "unknownHull" }
+    }
+  },
+  // An `Engineering` block may name a recipe and state no `Modifiers` at all; SLEF
+  // permits it and Inara writes it. Each case pins how the stated identity is read.
+  "statedRecipes": {
+    // The module's own menu offers the recipe, so the block is an ordinary roll of it —
+    // even though a fixed article of the same module carries the same blueprint at the
+    // same grade. Rolling at the stated grade and quality is what nearly every such block
+    // means; a caller who knows the fixed article was meant fits it deliberately.
+    "craftableRecipe": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "TinyHardpoint4",
+            "Item": "hpt_heatsinklauncher_turret_tiny",
+            "Engineering": {
+              "BlueprintName": "misc_heatsinkcapacity",
+              "Level": 1,
+              "Quality": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "slot": "TinyHardpoint4",
+        "modifiers": [
+          { "Label": "Mass", "Value": 2.6, "OriginalValue": 1.3 },
+          { "Label": "AmmoMaximum", "Value": 3, "OriginalValue": 2 },
+          { "Label": "ReloadTime", "Value": 15, "OriginalValue": 10 }
+        ],
+        "stats": { "ammoMaximum": 3, "reloadTime": 15 },
+        "outcomes": []
+      }
+    },
+    // The menu does not offer the recipe, so no ordinary roll could have written the
+    // block and the one catalogued article answering to it is what was meant. Its fixed
+    // stats stand in place of modifiers: 64 t of stock capacity becomes 86 t.
+    "fixedArticle": {
+      "input": {
+        "Ship": "PantherMkII",
+        "Modules": [
+          {
+            "Slot": "Slot04_Size6",
+            "Item": "int_cargorack_size6_class1",
+            "Engineering": {
+              "BlueprintName": "cargorack_increasedcapacity",
+              "Level": 5,
+              "Quality": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "slot": "Slot04_Size6",
+        "modifiers": null,
+        "stats": { "cargoCapacity": 86 },
+        "outcomes": []
+      }
+    },
+    // Neither answers to what the source named — this module has no engineering menu, and
+    // the one article carrying the blueprint is identified by an experimental effect the
+    // block does not state. The module keeps unengineered figures, and says so.
+    "unresolvedRecipe": {
+      "input": {
+        "Ship": "Cutter",
+        "Modules": [
+          {
+            "Slot": "LargeHardpoint1",
+            "Item": "hpt_atmulticannon_gimbal_large",
+            "Engineering": {
+              "BlueprintName": "weapon_overcharged",
+              "Level": 5,
+              "Quality": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "slot": "LargeHardpoint1",
+        "modifiers": null,
+        "stats": { "damage": 2.19, "maximumRange": 4000 },
+        "outcomes": [
+          {
+            "action": "unresolvedEngineering",
+            "slot": "LargeHardpoint1",
+            "sourceSymbol": "hpt_atmulticannon_gimbal_large",
+            "blueprintSymbol": "weapon_overcharged"
+          }
+        ]
+      }
+    },
+    // A Mercenary article is bought at its own grade carrying a modifier block nobody has
+    // published, and climbs from there on a bespoke recipe its module's menu does offer.
+    // A block stating a grade above the purchase is that climb, and is rolled from the
+    // stock module; one stating the purchase grade has nothing to roll and stands.
+    "mercenaryClimb": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "SmallHardpoint1",
+            "Item": "hpt_mining_abrblstr_fixed_small",
+            "Engineering": {
+              "BlueprintName": "abrasionblaster_farreaching",
+              "Level": 5,
+              "Quality": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "slot": "SmallHardpoint1",
+        "modifiers": [
+          { "Label": "Integrity", "Value": 20, "OriginalValue": 40 },
+          { "Label": "PowerDraw", "Value": 0.17, "OriginalValue": 0.34 },
+          { "Label": "DistributorDraw", "Value": 1, "OriginalValue": 2 },
+          { "Label": "ThermalLoad", "Value": 1, "OriginalValue": 2 },
+          { "Label": "MaximumRange", "Value": 5000, "OriginalValue": 1000 },
+          { "Label": "ShotSpeed", "Value": 3335, "OriginalValue": 667 },
+          { "Label": "DamageFalloffRange", "Value": 5000, "OriginalValue": 1000 }
+        ],
+        "stats": { "maximumRange": 5000, "shotSpeed": 3335 },
+        "outcomes": []
+      }
+    },
+    // The same article at the grade it was bought at: the purchase block is unpublished,
+    // so the stock stats stand and nothing is rolled over them.
+    "mercenaryPurchase": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "SmallHardpoint1",
+            "Item": "hpt_mining_abrblstr_fixed_small",
+            "Engineering": {
+              "BlueprintName": "abrasionblaster_farreaching",
+              "Level": 1,
+              "Quality": 1
+            }
+          }
+        ]
+      },
+      "expected": {
+        "slot": "SmallHardpoint1",
+        "modifiers": null,
+        "stats": { "maximumRange": 1000, "shotSpeed": 667 },
+        "outcomes": []
+      }
     }
   },
   "diagnostics": {

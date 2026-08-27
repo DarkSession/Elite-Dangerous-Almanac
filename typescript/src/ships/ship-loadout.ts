@@ -97,7 +97,6 @@ import {
     getPreEngineeredJournalModifiers,
     getPreEngineeredModifiers,
     getPreEngineeredStats,
-    identifyPreEngineeredVariant,
     unresolvedModifiers,
 } from './pre-engineered-stats.js';
 import { getPreEngineeredVariants, type PreEngineeredVariant } from './pre-engineered.js';
@@ -114,6 +113,7 @@ import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js'
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
     normalizeLoadoutEvent,
+    preEngineeredVariantFor,
     type ImportedLoadoutState,
     type ImportedTopFigures as TopFigures,
 } from './internal/loadout-import.js';
@@ -350,8 +350,9 @@ export interface EngineeringNormalized {
     /** Discriminator for a successful normalization. */
     readonly kind: 'normalized';
     /**
-     * Quality reported by the fitted module before normalization, in `[0, 1]`. It reads
-     * `1` where a completed roll stated no modifiers and this call spelled them out.
+     * Quality reported by the fitted module before normalization, in `[0, 1]`. A block
+     * that stated no modifiers still reports the quality it stated, so this reads `1` for
+     * a completed roll whose figures this call was the first to spell out.
      */
     readonly previousQuality: number;
     /** Completed engineering quality. Always `1`. */
@@ -594,7 +595,8 @@ export class ShipLoadout {
      * Defaults to the first.
      * @returns The loadout for that entry.
      * @remarks Module normalization follows {@link ShipLoadout.fromLoadout}; inspect
-     * {@link importOutcomes} for modules that were emptied or defaulted.
+     * {@link importOutcomes} for modules that were emptied or defaulted, and for stated
+     * engineering it could not resolve.
      * @throws {SyntaxError} If `input` is a string that is not valid JSON.
      * @throws {TypeError} If the export holds no usable loadout, `index` is out of range,
      * or the selected entry names a hull absent from the catalogue.
@@ -629,6 +631,20 @@ export class ShipLoadout {
      * Guardian weapon — is identified where the capture's evidence names one uniquely,
      * and the catalogue's stat block then supplies the values the capture omits; the
      * capture's own modifiers stay authoritative over it.
+     *
+     * **A recipe stated without `Modifiers` is rolled.** A journal writes the modifier
+     * block beside the recipe, but SLEF permits stating the recipe alone and Inara does,
+     * so such a block is materialised here at the grade and quality it states — otherwise
+     * the module would report that it is engineered while publishing the figures of one
+     * that is not. Where the module's own engineering menu offers the recipe, the block
+     * is read as an ordinary roll of it, even if a fixed article of that module carries
+     * the same blueprint at the same grade; use {@link setPreEngineeredVariant} to say
+     * the article was meant instead. A Mercenary article is read as its own article at
+     * the grade it was bought at, and as that purchase climbed by its bespoke recipe
+     * above it. Where the menu does not offer the recipe, no ordinary roll
+     * could have written the block, so a single catalogued article answering to it is
+     * fitted. Where neither answers, the module keeps unengineered figures and
+     * {@link importOutcomes} reports the slot as `unresolvedEngineering`.
      *
      * Modules are imported as one complete snapshot, so their order does not affect
      * per-ship count allowances. An entry stands as the event stated it when the mount
@@ -687,7 +703,8 @@ export class ShipLoadout {
 
     /** Assemble already-normalized state whose hull has been resolved. */
     static #fromImported(imported: ImportedLoadoutState, ship: Ship): ShipLoadout {
-        return new ShipLoadout(
+        const outcomes = [...imported.outcomes];
+        const loadout = new ShipLoadout(
             ship,
             imported.shipSymbol,
             imported.modules,
@@ -695,8 +712,81 @@ export class ShipLoadout {
             imported.sourcePurchase,
             imported.moduleStats,
             imported.primitiveModifiers,
-            imported.outcomes,
+            outcomes,
         );
+        const { UnladenMass, CargoCapacity, FuelCapacity } = imported.top;
+        // `outcomes` is still the array the constructor stored, so a recipe that cannot
+        // be rolled joins the import's own report before anything can read it.
+        for (const module of [...imported.modules.values()]) {
+            const unresolved = loadout.#rollStatedRecipe(module);
+            if (unresolved !== null) outcomes.push(unresolved);
+        }
+        // A roll spells out figures the capture already counted, so the aggregates it
+        // stated stand. The editor path the roll goes through carries the mass and
+        // capacity bookkeeping an edit needs, which here would subtract the engineering
+        // delta a second time from a figure the game weighed with it in place.
+        if (UnladenMass !== undefined) loadout.#top.UnladenMass = UnladenMass;
+        if (CargoCapacity !== undefined) loadout.#top.CargoCapacity = CargoCapacity;
+        if (FuelCapacity !== undefined) loadout.#top.FuelCapacity = FuelCapacity;
+        deepFreeze(outcomes);
+        return loadout;
+    }
+
+    /**
+     * Roll a stated recipe whose source wrote no `Modifiers`, over the imported module.
+     *
+     * A journal writes the modifier block beside the recipe; SLEF permits stating the
+     * recipe alone, and Inara does. Left as stated, every figure the module publishes
+     * would be the unengineered one while the module reports that it is engineered, so
+     * the recipe is rolled here at the stated grade and quality.
+     *
+     * A slot the import already resolved to a catalogued article keeps that article's
+     * stats: a fixed identity is not a recipe, and rolling one over it would fold the
+     * same figures in twice. A Mercenary article is the exception once the block states a
+     * grade above the one it was bought at, because its bespoke recipe is exactly how it
+     * climbs — at its purchase grade there is nothing to roll and its stats stand.
+     *
+     * @returns The outcome to report when the recipe cannot be rolled, or `null`.
+     */
+    #rollStatedRecipe(module: LoadoutModule): LoadoutImportOutcome | null {
+        const engineering = module.Engineering;
+        if (
+            !engineering ||
+            engineering.Modifiers !== undefined ||
+            typeof engineering.BlueprintName !== 'string'
+        ) {
+            return null;
+        }
+        if (this.#moduleStats.has(module.Slot)) {
+            const variant = preEngineeredVariantFor(module);
+            if (variant?.acquisition !== 'mercenary' || engineering.Level <= variant.grade) {
+                return null;
+            }
+        }
+        try {
+            this.applyBlueprint(module.Slot, engineering.BlueprintName, {
+                grade: engineering.Level,
+                quality: engineering.Quality ?? 1,
+                ...(typeof engineering.ExperimentalEffect === 'string'
+                    ? { experimentalEffectSymbol: engineering.ExperimentalEffect }
+                    : {}),
+            });
+            return null;
+        } catch (error) {
+            // Every refusal here is a recipe this module cannot roll: an unknown or
+            // unoffered blueprint or experimental effect, a grade or quality outside the
+            // recipe, or a base stat the catalogue does not carry. The block stands as
+            // the source stated it, and the figures stay stock — which is what the
+            // outcome says. Anything else thrown out of the calculator is a defect, and
+            // is not laundered into one.
+            if (!(error instanceof TypeError) && !(error instanceof RangeError)) throw error;
+            return {
+                action: 'unresolvedEngineering',
+                slot: module.Slot,
+                sourceSymbol: module.Item,
+                blueprintSymbol: engineering.BlueprintName,
+            };
+        }
     }
 
     /**
@@ -930,18 +1020,23 @@ export class ShipLoadout {
     }
 
     /**
-     * Changes made while importing this build, in source order, followed by the fixed
-     * mounts stocked from the hull defaults because the source named none, in the
-     * defaults' own order.
+     * What the import made of this build: the changes it applied, in source order,
+     * followed by the fixed mounts stocked from the hull defaults because the source
+     * named none, in the defaults' own order, followed by the modules whose stated
+     * engineering it could not resolve.
      *
      * @returns A deeply frozen list. It is empty for builds created with
      * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
-     * needed no normalization.
+     * needed no normalization and left no engineering unresolved.
      * @remarks
      * Each entry names the exact slot, and the source identity where the source gave one.
      * `emptied` means an unknown module was removed from a removable mount; `defaulted`
      * names the stock article fitted to armour, a core internal or the cargo hatch, with
      * a `null` `sourceSymbol` when the source named nothing there at all.
+     * `unresolvedEngineering` is the one entry that reports a *non*-change: the source
+     * stated a recipe and no `Modifiers`, nothing the catalogues carry answers to it, and
+     * that module alone keeps the figures of an unengineered one (see
+     * {@link ShipLoadout.fromLoadout}).
      */
     get importOutcomes(): readonly LoadoutImportOutcome[] {
         return this.#importOutcomes;
@@ -1103,7 +1198,7 @@ export class ShipLoadout {
             stats: stats === null ? null : cloneModuleStats(stats),
             effectiveStats: effective === null ? null : cloneModuleStats(effective),
             ammunition: ammunitionCapacity(effective),
-            preEngineeredVariant: identifyPreEngineeredVariant(raw),
+            preEngineeredVariant: preEngineeredVariantFor(raw),
         });
     }
 
@@ -1815,7 +1910,7 @@ export class ShipLoadout {
             return deepFreeze({ kind: 'unchanged', experimentalEffectSymbol: previous });
         }
 
-        const variant = identifyPreEngineeredVariant(module);
+        const variant = preEngineeredVariantFor(module);
         let effect;
         if (wanted !== null) {
             effect = getExperimentalEffect(wanted);
@@ -1959,9 +2054,13 @@ export class ShipLoadout {
      * purchase identity. A refusal never changes the loadout.
      *
      * A block that names a blueprint and grade but states no `Modifiers` at all is rolled
-     * here too, even at quality `1` — SLEF permits that identity-only shape and Inara
-     * writes it, so a capture of a completed roll would otherwise stay stock. A stated
-     * modifier array, empty or partial, is left alone at quality `1`.
+     * here too, even at quality `1`, so a completed roll cannot stay stock. On an imported
+     * build such a block is one {@link ShipLoadout.fromLoadout} did not roll: a catalogued
+     * article it fitted instead, whose fixed modifiers this spells out unless the article
+     * is final; a Mercenary article at the grade it was bought at, whose block no registry
+     * publishes and which this refuses; or a recipe nothing answered to, which this
+     * refuses for the reason the import could not roll it. A stated modifier array, empty
+     * or partial, is left alone at quality `1`.
      *
      * @param slotKey - The engineered slot, matched case-insensitively.
      * @returns A frozen result identifying a normalized, unchanged or unsupported state.
@@ -2005,8 +2104,8 @@ export class ShipLoadout {
             });
         }
         // A completed roll that states its modifiers is already whole. One that states
-        // none — SLEF permits an identity-only block, and Inara writes one — has nothing
-        // to keep, so it is rolled from the recipe rather than left stock.
+        // none has nothing to keep, so it is rolled from the recipe rather than left
+        // stock.
         if (engineering.Quality === 1 && engineering.Modifiers !== undefined) {
             return deepFreeze({ kind: 'unchanged' });
         }
@@ -2036,7 +2135,7 @@ export class ShipLoadout {
                 symbol: module.Item,
             });
         }
-        const variant = identifyPreEngineeredVariant(module);
+        const variant = preEngineeredVariantFor(module);
         const restoresBakedEffect =
             variant?.experimentalEffectSymbol !== undefined &&
             variant.experimentalEffectSymbol.trim().toLowerCase() ===
@@ -2500,7 +2599,7 @@ export class ShipLoadout {
     /** Stock/base snapshot to use when replacing the fitted engineering block. */
     #engineeringBaseStats(module: LoadoutModule): OutfittingModule | null {
         const fitted = this.#statsFor(module);
-        if (!module.Engineering || identifyPreEngineeredVariant(module) === null) return fitted;
+        if (!module.Engineering || preEngineeredVariantFor(module) === null) return fitted;
         const stock = builtInModuleBySymbol(module.Item, FITTED_ITEM);
         if (!stock) return fitted;
         return fitted?.engineeringLocked

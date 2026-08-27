@@ -96,7 +96,10 @@ export interface BlueprintModuleEngineering {
      * `BlueprintName`, `Level` and `Quality` — the specification's own example omits it —
      * so an export from another app may name the blueprint and its roll without spelling
      * out the resulting stats. Treat a missing array as "not stated", not as "nothing was
-     * changed". A craftable recipe can be reconstructed with
+     * changed". {@link ShipLoadout.fromLoadout} resolves what a missing array implies —
+     * rolling the stated recipe, or fitting the catalogued article the identity can only
+     * mean — so a build imported through it needs none of this. Working from the wire
+     * shape directly, a craftable recipe is reconstructed with
      * {@link ShipLoadout.applyBlueprint}, or rolled where it stands with
      * {@link ShipLoadout.completeEngineeringGrade}, which spells out a stated identity
      * at quality `1`; resolve a fixed identity through the pre-engineered catalogue and

@@ -12,7 +12,7 @@ import {
 } from '../engineering-options.js';
 import { resolveBlueprintForModule } from '../blueprint-journal.js';
 import { EXPERIMENTAL_EFFECTS } from '../experimental-effects.js';
-import { getPreEngineeredVariants } from '../pre-engineered.js';
+import { getPreEngineeredVariants, type PreEngineeredVariant } from '../pre-engineered.js';
 import {
     baseStats,
     fieldForLabel,
@@ -317,6 +317,38 @@ function matchesCalculatedModifiers(
         }
         return actual.ValueStr === expected.ValueStr;
     });
+}
+
+/**
+ * The fixed article an engineering block naming no `Modifiers` can only mean.
+ *
+ * Such a block is read as an ordinary roll of the recipe it names wherever the module's
+ * own menu offers that recipe — which is what nearly every one of them is. Where the menu
+ * does not offer it, no roll could have produced the block, so a single catalogued article
+ * answering to the stated blueprint, grade and effect is what the source described.
+ *
+ * @internal
+ */
+export function unrollableFixedArticle(
+    item: string,
+    engineering: ModuleEngineering,
+): PreEngineeredVariant | null {
+    if (engineering.Modifiers !== undefined || typeof engineering.BlueprintName !== 'string') {
+        return null;
+    }
+    const wanted = engineering.BlueprintName.trim().toLowerCase();
+    const experimental = engineering.ExperimentalEffect?.trim().toLowerCase();
+    const matches = getPreEngineeredVariants(item).filter(
+        (candidate) =>
+            candidate.blueprintSymbol.trim().toLowerCase() === wanted &&
+            candidate.grade === engineering.Level &&
+            (candidate.experimentalEffectSymbol === undefined
+                ? experimental === undefined &&
+                  engineering.ExperimentalEffect_Localised === undefined
+                : candidate.experimentalEffectSymbol.trim().toLowerCase() === experimental) &&
+            !blueprintAvailableFor(item, candidate.blueprintSymbol),
+    );
+    return matches.length === 1 ? matches[0]! : null;
 }
 
 /**

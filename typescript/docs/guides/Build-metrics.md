@@ -64,7 +64,10 @@ Two consequences are worth knowing before you read a number.
 stated. That is deliberate: the game is the
 authority on a build it exported, and a recomputation that disagreed would silently
 replace a fact with a model. The library recomputes only what it rolled itself, through
-{@link ships!ShipLoadout.applyBlueprint | applyBlueprint}.
+{@link ships!ShipLoadout.applyBlueprint | applyBlueprint} — which includes a block that
+states a recipe and *no* `Modifiers`, since there is then no fact to replace. See
+[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#a-recipe-stated-without-its-modifiers-is-rolled)
+for what such a block resolves to.
 
 **Four stats are percentages of a multiplier, not of the stat.** Hull boost, shield boost
 and the four damage resistances compound on `1 + v` and `1 − v` respectively, whichever
@@ -485,7 +488,8 @@ A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for, wh
 stocks from the hull defaults. A stocked bulkhead moves no metric at all, and a stocked
 cargo hatch only its own 0.6 MW draw — most third-party exports omit the hatch, so most
 produce exactly that one entry. Every other entry means the figures are the normalized
-fit's.
+fit's — except `unresolvedEngineering`, which means the opposite: nothing was changed, and
+that module's figures are the unengineered ones its source only claimed to engineer.
 
 ## Next
 

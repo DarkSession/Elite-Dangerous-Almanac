@@ -67,10 +67,34 @@ test('exporting is idempotent — re-importing an export re-exports identically'
     assert.deepEqual(twice, once);
 });
 
-test('a blueprint that states no modifiers leaves the catalogue stats standing', () => {
+test("rolling a stated recipe leaves the capture's own aggregates alone", () => {
+    // The roll goes through the same editor an edit does, and that path keeps the
+    // capture's mass and capacity in step with what changed. Here nothing changed: the
+    // game already weighed this ship with the engineering in place, so the delta must not
+    // be counted a second time.
+    const built = ShipLoadout.default('Anaconda')
+        .applyBlueprint('SmallHardpoint1', 'Weapon_LightWeight', { grade: 4, quality: 0.95 })
+        .applyBlueprint('Slot03_Size6', 'ShieldGenerator_Optimised', { grade: 5, quality: 1 });
+    const stated = built.toLoadoutEvent();
+    const bare = structuredClone(stated);
+    for (const module of bare.Modules) {
+        if (module.Engineering) delete (module.Engineering as { Modifiers?: unknown }).Modifiers;
+    }
+    const imported = ShipLoadout.fromLoadout(bare);
+    // Mass is the figure a roll moves; no craftable recipe reaches capacity today, so
+    // those two hold the same ground for the day one does.
+    assert.equal(imported.unladenMass, stated.UnladenMass);
+    assert.equal(imported.cargoCapacity, stated.CargoCapacity);
+    assert.equal(imported.fuelCapacity.main, stated.FuelCapacity?.Main);
+    // Re-fitting nothing leaves the purchase record alone too.
+    assert.equal(imported.modulesValue, stated.ModulesValue);
+    assert.equal(imported.rebuy, stated.Rebuy);
+});
+
+test('a blueprint that states no modifiers is rolled from the recipe', () => {
     // SLEF allows an Engineering block to name a blueprint without spelling out what it
-    // changed. There is then nothing to fold in, so the module performs as sold rather
-    // than the build failing to compute.
+    // changed. The import rolls the recipe it names, so the module performs as the
+    // commander built it rather than as it was sold.
     const laser = module('Hpt_BeamLaser_Gimbal_Huge');
     const build = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
@@ -83,14 +107,28 @@ test('a blueprint that states no modifiers leaves the catalogue stats standing',
         ],
     });
     const fitted = build.fittedModuleAt('HugeHardpoint1')!;
-    assert.equal(fitted.effectiveStats?.mass, laser.mass);
-    assert.equal(fitted.effectiveStats?.damage, laser.damage);
-    // …and it exports exactly as it came in, without an empty Modifiers array appearing.
+    assert.equal(fitted.effectiveStats?.mass, 4.12);
+    assert.notEqual(fitted.effectiveStats?.mass, laser.mass);
+    // The stated grade and quality are the ones rolled, not a completed grade 5.
+    const rolled = ShipLoadout.empty('Anaconda')
+        .setModule('HugeHardpoint1', laser)
+        .applyBlueprint('HugeHardpoint1', 'Weapon_LightWeight', { grade: 4, quality: 0.95 });
+    assert.deepEqual(
+        fitted.effectiveStats,
+        rolled.fittedModuleAt('HugeHardpoint1')!.effectiveStats,
+    );
+    // …and the export now spells out what the source left implied.
     const exported = build.toLoadoutEvent().Modules[0]!.Engineering!;
     assert.deepEqual(exported, {
         BlueprintName: 'Weapon_LightWeight',
         Level: 4,
         Quality: 0.95,
+        Modifiers: [
+            { Label: 'Mass', Value: 4.12, OriginalValue: 16 },
+            { Label: 'Integrity', Value: 40, OriginalValue: 80 },
+            { Label: 'PowerDraw', Value: 1.81185, OriginalValue: 2.57 },
+            { Label: 'DistributorDraw', Value: 6.315475, OriginalValue: 8.99 },
+        ],
     });
 });
 

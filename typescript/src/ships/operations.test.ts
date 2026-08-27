@@ -195,6 +195,36 @@ test('shared catalogue-backed operation cases reproduce', () => {
     );
 });
 
+test('a stated recipe without modifiers is read the same way everywhere', () => {
+    for (const [name, shared] of Object.entries(fixture.statedRecipes)) {
+        const build = ShipLoadout.fromLoadout(shared.input);
+        const fitted = build.fittedModuleAt(shared.expected.slot)!;
+        assert.deepEqual(
+            fitted.engineering?.Modifiers ?? null,
+            shared.expected.modifiers,
+            `${name} modifiers`,
+        );
+        const stats = fitted.effectiveStats as unknown as Record<string, number | undefined>;
+        for (const [field, value] of Object.entries(shared.expected.stats)) {
+            assert.equal(stats[field], value, `${name} ${field}`);
+        }
+        // Every other outcome on these builds is a fixed mount stocked from the hull
+        // defaults, which each single-module case reports for the mounts it omits.
+        assert.deepEqual(
+            build.importOutcomes.filter((outcome) => outcome.action !== 'defaulted'),
+            shared.expected.outcomes,
+            `${name} outcomes`,
+        );
+        // SLEF wraps the same event, so it reads it the same way.
+        assert.deepEqual(
+            ShipLoadout.fromSlef([shared.input]).fittedModuleAt(shared.expected.slot)!
+                .effectiveStats,
+            fitted.effectiveStats,
+            `${name} via SLEF`,
+        );
+    }
+});
+
 test('shared import rejection cases apply to journal and SLEF entry points', () => {
     const rejection = fixture.importRejections.unknownHull;
     assert.deepEqual(rejection.expected, { accepted: false, reason: 'unknownHull' });

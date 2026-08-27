@@ -3825,6 +3825,135 @@ type FixtureShipsOperations = {
         }[];
         ship: string;
     };
+    statedRecipes: {
+        craftableRecipe: {
+            expected: {
+                modifiers: {
+                    Label: string;
+                    OriginalValue: number;
+                    Value: number;
+                }[];
+                outcomes: never[];
+                slot: string;
+                stats: {
+                    ammoMaximum: number;
+                    reloadTime: number;
+                };
+            };
+            input: {
+                Modules: {
+                    Engineering: {
+                        BlueprintName: string;
+                        Level: number;
+                        Quality: number;
+                    };
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        fixedArticle: {
+            expected: {
+                modifiers: null;
+                outcomes: never[];
+                slot: string;
+                stats: {
+                    cargoCapacity: number;
+                };
+            };
+            input: {
+                Modules: {
+                    Engineering: {
+                        BlueprintName: string;
+                        Level: number;
+                        Quality: number;
+                    };
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        mercenaryClimb: {
+            expected: {
+                modifiers: {
+                    Label: string;
+                    OriginalValue: number;
+                    Value: number;
+                }[];
+                outcomes: never[];
+                slot: string;
+                stats: {
+                    maximumRange: number;
+                    shotSpeed: number;
+                };
+            };
+            input: {
+                Modules: {
+                    Engineering: {
+                        BlueprintName: string;
+                        Level: number;
+                        Quality: number;
+                    };
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        mercenaryPurchase: {
+            expected: {
+                modifiers: null;
+                outcomes: never[];
+                slot: string;
+                stats: {
+                    maximumRange: number;
+                    shotSpeed: number;
+                };
+            };
+            input: {
+                Modules: {
+                    Engineering: {
+                        BlueprintName: string;
+                        Level: number;
+                        Quality: number;
+                    };
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        unresolvedRecipe: {
+            expected: {
+                modifiers: null;
+                outcomes: {
+                    action: string;
+                    blueprintSymbol: string;
+                    slot: string;
+                    sourceSymbol: string;
+                }[];
+                slot: string;
+                stats: {
+                    damage: number;
+                    maximumRange: number;
+                };
+            };
+            input: {
+                Modules: {
+                    Engineering: {
+                        BlueprintName: string;
+                        Level: number;
+                        Quality: number;
+                    };
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+    };
     thrusterMass: {
         cases: {
             expectedIssue: {

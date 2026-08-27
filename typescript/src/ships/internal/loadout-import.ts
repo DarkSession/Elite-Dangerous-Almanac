@@ -1,6 +1,6 @@
 /** Durable state normalization for imported journal loadouts. @internal */
 
-import { getPreEngineeredVariants } from '../pre-engineered.js';
+import { getPreEngineeredVariants, type PreEngineeredVariant } from '../pre-engineered.js';
 import {
     getPreEngineeredModifiers,
     getPreEngineeredStats,
@@ -18,7 +18,7 @@ import type {
     ModuleEngineering,
 } from '../slef.js';
 import type { LoadoutImportOutcome } from '../loadout-import-outcome.js';
-import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
+import { isFinalGuardianWeaponEngineering, unrollableFixedArticle } from './loadout-engineering.js';
 import { moduleFitProblem } from './loadout-fitting.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import {
@@ -59,6 +59,25 @@ export interface ImportedLoadoutState {
     readonly top: ImportedTopFigures;
     readonly sourcePurchase: SourcePurchaseRecord | null;
     readonly outcomes: readonly LoadoutImportOutcome[];
+}
+
+/**
+ * The catalogued fixed article a fitted module describes, however it says so.
+ *
+ * A capture that spells out its modifiers is identified by that signature. One that
+ * states a bare identity and no `Modifiers` is identified by the identity, but only where
+ * no ordinary roll could have written it: the article is final, or the module's own
+ * engineering menu does not offer the blueprint it is named for. Everything that asks
+ * whether a slot holds an article asks this, so the answer cannot differ between the
+ * import that resolved one and the editor that later reads it back.
+ *
+ * @internal
+ */
+export function preEngineeredVariantFor(module: LoadoutModule): PreEngineeredVariant | null {
+    return (
+        identifyPreEngineeredVariant(module) ??
+        (module.Engineering ? unrollableFixedArticle(module.Item, module.Engineering) : null)
+    );
 }
 
 /**
@@ -355,7 +374,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     // ordinary AX rolls under the same symbol/blueprint/grade tuple.
     for (const module of modules.values()) {
         const engineering = module.Engineering;
-        const variant = identifyPreEngineeredVariant(module);
+        const variant = preEngineeredVariantFor(module);
         const catalogueVariantStats = variant ? getPreEngineeredStats(variant) : null;
         let variantStats = catalogueVariantStats;
         const retainsBakedExperimental =
