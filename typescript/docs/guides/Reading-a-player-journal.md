@@ -4,12 +4,13 @@ title: Reading a player journal
 
 # Reading a player journal
 
-Elite Dangerous writes a newline-delimited JSON journal. Two of its events carry most of
-what this library is for: `Loadout` describes the ship the commander is flying, and
-`FSDJump` (and `Location`, and `FSDTarget`) names the system they are in.
+Elite Dangerous writes a newline-delimited JSON journal. Three of its events carry most
+of what this library is for: `Loadout` describes the ship the commander is flying,
+`FSDJump` (and `Location`, and `FSDTarget`) names the system they are in, and `Scan`
+describes a body they have just resolved.
 
-This guide turns both into library objects, and covers what to do when the game hands
-you something the catalogues do not recognise.
+This guide turns all three into library objects, and covers what to do when the game
+hands you something the catalogues do not recognise.
 
 ## Reading the journal
 
@@ -34,6 +35,9 @@ for await (const line of lines) {
         case 'FSDJump':
         case 'Location':
             // → a ProceduralSystem, below
+            break;
+        case 'Scan':
+            // → a BodyScanEvent, below
             break;
     }
 }
@@ -146,6 +150,80 @@ nearestNebulae(position, REAL_NEBULAE, 1)[0]?.name; // -> 'Pleiades'
 
 Pass `StarSystem` to the permit-lock lookup described in
 [Systems, sectors and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions#permit-locks).
+
+## `Scan` → a body
+
+There is nothing to convert. `BodyScanEvent` **is** the `Scan` event — the journal's own
+field names, capitalisation and units — so a parsed line is already the right type.
+
+```ts
+import type { BodyScanEvent } from '@elite-dangerous-almanac/core/astro';
+
+declare const line: string;
+
+const scan = JSON.parse(line) as BodyScanEvent;
+scan.BodyName; // the body's in-game name
+scan.SystemAddress; // passes straight to every address entry point
+```
+
+One line describes a star, a planet, a moon or a belt cluster, and which one it is shows
+in which fields it carries: `StarType` for a star, `PlanetClass` for a planet or moon,
+neither for a belt cluster. Almost everything else is optional for the same reason, so
+treat a missing field as "not written for this body", never as a zero.
+
+### Working out what it means
+
+The calculations take `BodyProperties` — the physical half of the event, with none of the
+journal's bookkeeping required — so the scan goes straight in, and so does a record you
+rebuilt from a database.
+
+```ts
+import { bulkDensity } from '@elite-dangerous-almanac/core/astro/body-physics';
+import { orbitExtents, spinOrbitResonance } from '@elite-dangerous-almanac/core/astro/body-orbit';
+import { classifyNeutronStar } from '@elite-dangerous-almanac/core/astro/star-physics';
+
+const moon = { MassEM: 0.0123, Radius: 1_737_400, SemiMajorAxis: 3.844e8, Eccentricity: 0.0549 };
+
+bulkDensity(moon); // -> 3343.7…      kg/m³
+orbitExtents(moon)?.periapsis; // -> 363296440     metres, its closest approach
+spinOrbitResonance({ RotationPeriod: 2_360_591.5, OrbitalPeriod: 2_360_591.5 });
+// -> { rotations: 1, orbits: 1 }     tidally locked
+classifyNeutronStar(moon); // -> null            not a neutron star
+```
+
+Every unit is the journal's: metres, seconds, kilograms, kelvin, pascals. They are not
+the units the game's own UI shows — surface gravity is m/s² rather than g, pressure is
+pascals rather than atmospheres, and `AxialTilt` is the one angle in radians rather than
+degrees.
+
+### A body and the one it orbits
+
+A `Scan` names a body's parent only by `BodyID`, in its `Parents` chain, so a calculation
+comparing the two takes both. Keep the scans you have already read, keyed by
+`SystemAddress` and `BodyID`, and look the parent up when one arrives:
+
+```ts
+import type { BodyScanEvent } from '@elite-dangerous-almanac/core/astro';
+import { hillRadius, rocheLimits } from '@elite-dangerous-almanac/core/astro/body-physics';
+import { orbitExtents } from '@elite-dangerous-almanac/core/astro/body-orbit';
+
+declare const bodies: Map<number, BodyScanEvent>; // by BodyID, within one system
+declare const scan: BodyScanEvent;
+
+const parentId = scan.Parents?.[0]?.Planet ?? scan.Parents?.[0]?.Star;
+const primary = parentId === undefined ? undefined : bodies.get(parentId);
+
+if (primary !== undefined) {
+    const limits = rocheLimits(scan, primary);
+    const closest = orbitExtents(scan)?.periapsis;
+    // A breach is set by closest approach, not by the mean distance.
+    const breached = limits !== null && closest !== undefined && closest < limits.rigid;
+    hillRadius(scan, primary); // how far this body's own gravity reaches
+}
+```
+
+Every calculation answers `null` when the scan did not write what it needs, so an
+`AutoScan` that resolved little says so rather than guessing.
 
 ## When the game hands you something unknown
 

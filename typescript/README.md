@@ -45,7 +45,8 @@ coordinate lookup are only exported from their leaf subpaths, not the feature ba
 
 The package has six feature areas:
 
-- `astro`: procedural names, id64 addresses, regions, nebulae and permit locks;
+- `astro`: procedural names, id64 addresses, regions, nebulae, permit locks, and scanned
+  bodies with their physics;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
 - `equipment`: Odyssey suits, handheld weapons, grade upgrades and modifications;
 - `i18n`: sparse localized catalogue names, descriptions, slot labels and structured

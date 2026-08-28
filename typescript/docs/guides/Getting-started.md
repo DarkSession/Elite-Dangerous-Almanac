@@ -67,6 +67,11 @@ symbols you are most likely to reach for first:
 | `nearestNebulae`, `nebulaeWithin`, `getNebulaByName` | `core/astro/nebulae` |
 | `REAL_NEBULAE` / `PLANETARY_NEBULAE` / `PROCGEN_NEBULAE` / `ALL_NEBULAE` | `core/astro/nebulae-real` / `-planetary` / `-procgen` / `-all` |
 | `permitLockForSystemName` | `core/astro/permit-locks` |
+| `BodyScanEvent`, `BodyProperties` | `core/astro` |
+| `bulkDensity`, `rocheLimits`, `hillRadius`, `primaryAngularDiameter` | `core/astro/body-physics` |
+| `orbitExtents`, `classifyEccentricity`, `spinOrbitResonance`, `equatorialVelocity` | `core/astro/body-orbit` |
+| `ringDynamics`, `ringSurfaceDensity`, `isInvisibleRing`, `ringParticleDensity` | `core/astro/body-rings` |
+| `mainSequenceLifetime`, `schwarzschildRadius`, `assessMassStability`, `classifyNeutronStar` | `core/astro/star-physics` |
 | `ShipLoadout` | `core/ships/ship-loadout` |
 | `BuildMetrics` | `core/ships/build-metrics` |
 | `parseSlef`, `inspectSlef`, `toSlef`, `LoadoutEvent` | `core/ships/slef` |

@@ -4,6 +4,181 @@
  * Run `pnpm run generate:fixtures` from `typescript/` after changing a fixture.
  */
 
+type FixtureAstroBodyCalculations = {
+    absoluteBolometricMagnitude: {
+        body: {
+            Radius: number;
+            SurfaceTemperature?: number;
+        };
+        case: string;
+        magnitude: number | null;
+    }[];
+    bulkDensity: {
+        body: {
+            MassEM?: number;
+            Radius?: number;
+            StellarMass?: number;
+        };
+        case: string;
+        kgPerCubicMetre: number | null;
+    }[];
+    eccentricityClass: {
+        class: string;
+        eccentricity: number;
+    }[];
+    equatorialVelocity: {
+        body: {
+            Radius: number;
+            RotationPeriod?: number;
+        };
+        case: string;
+        metresPerSecond: number | null;
+    }[];
+    hillRadius: {
+        body: {
+            MassEM: number;
+            SemiMajorAxis?: number;
+        };
+        case: string;
+        metres: number | null;
+        primary: {
+            MassEM?: number;
+            StellarMass?: number;
+        };
+    }[];
+    mainSequenceLifetime: {
+        body: {
+            MassEM?: number;
+            StellarMass?: number;
+        };
+        case: string;
+        millionYears: number | null;
+    }[];
+    massStability: {
+        assessment: null | {
+            limit: string;
+            limitSolarMasses: number;
+            severity: string;
+        };
+        body: {
+            StarType: string;
+            StellarMass: number;
+        };
+        case: string;
+    }[];
+    neutronStarClass: {
+        body: {
+            AbsoluteMagnitude?: number;
+            RotationPeriod: number;
+            StellarMass: number;
+        };
+        case: string;
+        class: string | null;
+    }[];
+    orbitExtents: {
+        apoapsis: number | null;
+        body: {
+            Eccentricity?: number;
+            SemiMajorAxis?: number;
+            StellarMass?: number;
+        };
+        case: string;
+        eccentricityClass: string | null;
+        periapsis: number | null;
+    }[];
+    primaryAngularDiameter: {
+        body: {
+            SemiMajorAxis: number;
+        };
+        case: string;
+        degrees: number;
+        primary: {
+            Radius: number;
+        };
+    }[];
+    ringDynamics: {
+        case: string;
+        innerVelocity: number | null;
+        nominalRadius: number | null;
+        orbitalPeriod: number | null;
+        outerVelocity: number | null;
+        primary: {
+            MassEM?: number;
+            Radius?: number;
+        };
+        ring: {
+            InnerRad: number;
+            MassMT: number;
+            Name: string;
+            OuterRad: number;
+            RingClass: string;
+        };
+    }[];
+    ringParticleDensity: {
+        kgPerCubicMetre: number;
+        ringClass: string;
+    }[];
+    ringSurfaceDensity: {
+        case: string;
+        invisible: boolean;
+        megatonnesPerSquareKilometre: number | null;
+        ring: {
+            InnerRad: number;
+            MassMT: number;
+            Name: string;
+            OuterRad: number;
+            RingClass: string;
+        };
+    }[];
+    rocheLimits: {
+        case: string;
+        fluid: number | null;
+        primary: {
+            MassEM: number;
+            Radius?: number;
+        };
+        rigid: number | null;
+        satellite: {
+            MassEM: number;
+            Radius: number;
+        };
+    }[];
+    rocheLimitsForDensity: {
+        case: string;
+        fluid: number;
+        primary: {
+            MassEM: number;
+            Radius: number;
+        };
+        rigid: number;
+        satelliteDensityKgM3: number;
+    }[];
+    schwarzschildRadius: {
+        body: {
+            Radius?: number;
+            StellarMass?: number;
+        };
+        case: string;
+        metres: number | null;
+    }[];
+    spinOrbitResonance: {
+        body: {
+            OrbitalPeriod?: number;
+            RotationPeriod: number;
+        };
+        case: string;
+        resonance: {
+            orbits: number;
+            rotations: number;
+        } | null;
+    }[];
+};
+
+declare module '*/fixtures/astro/body-calculations.jsonc' {
+    const value: FixtureAstroBodyCalculations;
+    export default value;
+}
+
 type FixtureAstroGalacticRegion = {
     boxels: {
         id64: string;

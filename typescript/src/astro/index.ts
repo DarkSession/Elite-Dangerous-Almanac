@@ -24,6 +24,22 @@
  * the rest — {@link astro/nebulae-planetary!PLANETARY_NEBULAE | PLANETARY_NEBULAE} and
  * {@link astro/nebulae-all!ALL_NEBULAE | ALL_NEBULAE}.
  *
+ * **Bodies arrive as the journal writes them.** {@link BodyScanEvent} is the game's `Scan`
+ * event typed field for field — the record every journal reader, EDDN relay and body
+ * database already speaks — so a parsed line is already the right type and needs no
+ * adapter. Its `SystemAddress` is the same {@link SystemAddressInput} every address entry
+ * point takes.
+ *
+ * **The body calculations read {@link BodyProperties}, the physical half of that.** A
+ * `BodyScanEvent` is one, so a parsed line goes straight in; so does a record rebuilt from
+ * a database, because none of the journal's bookkeeping — `event`, `BodyID`, the discovery
+ * flags — is required. They work in the journal's own units and answer `null` rather than
+ * guess: {@link bulkDensity} and {@link rocheLimits} on `./body-physics`,
+ * {@link orbitExtents} and {@link spinOrbitResonance} on `./body-orbit`,
+ * {@link ringDynamics} on `./body-rings`, {@link classifyNeutronStar} and
+ * {@link mainSequenceLifetime} on `./star-physics`. A calculation comparing a body with
+ * the one it orbits takes both, since a scan names its parent only by `BodyID`.
+ *
  * **Coordinate spaces have different shapes.**
  * {@link GalacticPosition} is `{x, y, z}` in light-years with Sol at the origin — what the journal,
  * EDSM and Spansh report, and what {@link findHandAuthoredRegionAt} and
@@ -120,6 +136,22 @@
  * permitLockForSystemName('Synuefe EN-H d11-96'); // -> null       not locked at all
  * ```
  *
+ * @example
+ * Bodies: a journal `Scan` line goes in as it comes, and each calculation reads only the
+ * fields it needs — so a record with just a mass and a radius works too.
+ *
+ * ```ts
+ * import { bulkDensity, rocheLimits } from '@elite-dangerous-almanac/core/astro/body-physics';
+ * import { orbitExtents } from '@elite-dangerous-almanac/core/astro/body-orbit';
+ *
+ * const moon = { MassEM: 0.0123, Radius: 1_737_400, SemiMajorAxis: 3.844e8, Eccentricity: 0.0549 };
+ * const earth = { MassEM: 1, Radius: 6_371_000 };
+ *
+ * bulkDensity(moon); // -> 3343.7…
+ * orbitExtents(moon)?.periapsis; // -> 363296440
+ * rocheLimits(moon, earth)?.rigid; // -> 9483500.2…
+ * ```
+ *
  * @packageDocumentation
  */
 
@@ -129,6 +161,77 @@ export { ProceduralSystem } from './procedural-system.js';
 
 // ── Shared types ────────────────────────────────────────────────────────────
 export type { GalacticPosition } from './galactic-position.js';
+
+// ── Bodies: the journal `Scan` event, typed ─────────────────────────────────
+// The import shape for body data — the journal's own field names and units. Types
+// only: no catalogue, no parser, nothing to bundle. `BodyProperties` is the physical
+// body every calculation below reads; `BodyScanEvent` is that plus the journal line's
+// own bookkeeping.
+export type {
+    BodyProperties,
+    BodyScanEvent,
+    BodyParent,
+    BodyRing,
+    BodyComposition,
+    AtmosphereComponent,
+    SurfaceMaterial,
+} from './body-scan.js';
+
+// ── Body calculations ───────────────────────────────────────────────────────
+// Pure physics over a scanned body, in the journal's own units: metres, seconds,
+// kilograms, kelvin. Each returns `null` when the scan did not write what it needs.
+// Grouped by what they read — the body alone, the body and the one it orbits, a ring,
+// or a star.
+export {
+    bodyMass,
+    bulkDensity,
+    rocheLimits,
+    rocheLimitsForDensity,
+    hillRadius,
+    primaryAngularDiameter,
+    GRAVITATIONAL_CONSTANT,
+    KG_PER_EARTH_MASS,
+    KG_PER_SOLAR_MASS,
+    type RocheLimits,
+} from './body-physics.js';
+
+export {
+    orbitExtents,
+    classifyEccentricity,
+    spinOrbitResonance,
+    equatorialVelocity,
+    type OrbitExtents,
+    type EccentricityClass,
+    type SpinOrbitResonance,
+} from './body-orbit.js';
+
+export {
+    ringParticleDensity,
+    ringSurfaceDensity,
+    isInvisibleRing,
+    ringDynamics,
+    ringRocheLimits,
+    RING_NOMINAL_RADIUS_FRACTION,
+    VISIBLE_RING_MIN_SURFACE_DENSITY,
+    VISIBLE_RING_MAX_WIDTH,
+    type RingDynamics,
+} from './body-rings.js';
+
+export {
+    mainSequenceLifetime,
+    absoluteBolometricMagnitude,
+    schwarzschildRadius,
+    assessMassStability,
+    classifyNeutronStar,
+    SPEED_OF_LIGHT,
+    SOLAR_RADIUS,
+    CHANDRASEKHAR_LIMIT_SOLAR_MASSES,
+    TOV_LIMIT_SOLAR_MASSES,
+    NEUTRON_STAR_MASS_DROP_OFF_SOLAR_MASSES,
+    type MassStabilityAssessment,
+    type MassStabilityLimit,
+    type NeutronStarClass,
+} from './star-physics.js';
 
 // ── System names: parse / format / classify ─────────────────────────────────
 export {

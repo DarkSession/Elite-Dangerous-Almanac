@@ -53,6 +53,18 @@
             "import": "./dist/astro/index.js"
         },
         "./astro/internal/*": null,
+        "./astro/body-orbit": {
+            "types": "./dist/astro/body-orbit.d.ts",
+            "import": "./dist/astro/body-orbit.js"
+        },
+        "./astro/body-physics": {
+            "types": "./dist/astro/body-physics.d.ts",
+            "import": "./dist/astro/body-physics.js"
+        },
+        "./astro/body-rings": {
+            "types": "./dist/astro/body-rings.d.ts",
+            "import": "./dist/astro/body-rings.js"
+        },
         "./astro/codex-region-lookup": {
             "types": "./dist/astro/codex-region-lookup.d.ts",
             "import": "./dist/astro/codex-region-lookup.js"
@@ -116,6 +128,10 @@
         "./astro/sector-name": {
             "types": "./dist/astro/sector-name.d.ts",
             "import": "./dist/astro/sector-name.js"
+        },
+        "./astro/star-physics": {
+            "types": "./dist/astro/star-physics.d.ts",
+            "import": "./dist/astro/star-physics.js"
         },
         "./astro/system-address-input": {
             "types": "./dist/astro/system-address-input.d.ts",

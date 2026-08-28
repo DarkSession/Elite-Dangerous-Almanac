@@ -1,0 +1,448 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the body calculations ported from canonn-signals: bulk properties,
+ * orbits and rotation, rings, and stars. Each case carries its inputs as journal `Scan`
+ * fields — the same shape `BodyProperties` describes — so every language implementation
+ * feeds identical numbers into identical formulas.
+ *
+ * Units are the journal's throughout: metres, seconds, kilograms, kelvin, Earth masses
+ * (`MassEM`) for a planet and solar masses (`StellarMass`) for a star. A ring's surface
+ * density is megatonnes per square kilometre, in the journal's own `MassMT`. Angles are
+ * degrees.
+ *
+ * The bodies are the real Solar System ones where a familiar figure makes an error
+ * obvious, and constructed otherwise. Their field values are physical measurements, not
+ * game data: the fixture pins the *arithmetic*, so what matters is that every
+ * implementation reads the same inputs, not that the game reports these exact bodies.
+ * Expected values are computed from the stated formulas with the constants the library
+ * documents (G = 6.6743e-11, 5.972e24 kg per Earth mass, 1.989e30 kg per solar mass) and
+ * are rounded to 12 significant figures, so compare with a small relative tolerance.
+ */
+{
+  "bulkDensity": [
+    {
+      "case": "Earth",
+      "body": { "MassEM": 1, "Radius": 6371000 },
+      "kgPerCubicMetre": 5513.25873859
+    },
+    {
+      "case": "the Moon",
+      "body": { "MassEM": 0.0123, "Radius": 1737400 },
+      "kgPerCubicMetre": 3343.77348511
+    },
+    {
+      "case": "the Sun, from its stellar mass",
+      "body": { "StellarMass": 1, "Radius": 695700000 },
+      "kgPerCubicMetre": 1410.19822516
+    },
+    {
+      "case": "no radius written",
+      "body": { "MassEM": 1 },
+      "kgPerCubicMetre": null
+    },
+    {
+      "case": "no mass written",
+      "body": { "Radius": 6371000 },
+      "kgPerCubicMetre": null
+    },
+    {
+      "case": "a zero radius is not a body",
+      "body": { "MassEM": 1, "Radius": 0 },
+      "kgPerCubicMetre": null
+    }
+  ],
+  "orbitExtents": [
+    {
+      "case": "Earth about the Sun",
+      "body": { "SemiMajorAxis": 149600000000, "Eccentricity": 0.0167 },
+      "periapsis": 147101680000,
+      "apoapsis": 152098320000,
+      "eccentricityClass": "nearly-circular"
+    },
+    {
+      "case": "the Moon about Earth",
+      "body": { "SemiMajorAxis": 384400000, "Eccentricity": 0.0549 },
+      "periapsis": 363296440,
+      "apoapsis": 405503560,
+      "eccentricityClass": "nearly-circular"
+    },
+    {
+      "case": "no eccentricity written is a circle",
+      "body": { "SemiMajorAxis": 1000000000 },
+      "periapsis": 1000000000,
+      "apoapsis": 1000000000,
+      "eccentricityClass": "circular"
+    },
+    {
+      "case": "a long ellipse",
+      "body": { "SemiMajorAxis": 1000000000, "Eccentricity": 0.9 },
+      "periapsis": 100000000,
+      "apoapsis": 1900000000,
+      "eccentricityClass": "highly-eccentric"
+    },
+    {
+      "case": "a body that orbits nothing",
+      "body": { "StellarMass": 1 },
+      "periapsis": null,
+      "apoapsis": null,
+      "eccentricityClass": null
+    }
+  ],
+  "eccentricityClass": [
+    { "eccentricity": 0, "class": "circular" },
+    { "eccentricity": 0.0549, "class": "nearly-circular" },
+    { "eccentricity": 0.399999, "class": "nearly-circular" },
+    { "eccentricity": 0.4, "class": "eccentric" },
+    { "eccentricity": 0.799999, "class": "eccentric" },
+    { "eccentricity": 0.8, "class": "highly-eccentric" },
+    { "eccentricity": 0.99, "class": "highly-eccentric" }
+  ],
+  "spinOrbitResonance": [
+    {
+      "case": "the Moon, tidally locked",
+      "body": { "RotationPeriod": 2360591.5, "OrbitalPeriod": 2360591.5 },
+      "resonance": { "rotations": 1, "orbits": 1 }
+    },
+    {
+      "case": "retrograde rotation is still 1:1",
+      "body": { "RotationPeriod": -2360591.5, "OrbitalPeriod": 2360591.5 },
+      "resonance": { "rotations": 1, "orbits": 1 }
+    },
+    {
+      "case": "Mercury, three rotations to two orbits",
+      "body": { "RotationPeriod": 5067360, "OrbitalPeriod": 7600544 },
+      "resonance": { "rotations": 3, "orbits": 2 }
+    },
+    {
+      "case": "two rotations per orbit",
+      "body": { "RotationPeriod": 43200, "OrbitalPeriod": 86400 },
+      "resonance": { "rotations": 2, "orbits": 1 }
+    },
+    {
+      "case": "no simple ratio",
+      "body": { "RotationPeriod": 86400, "OrbitalPeriod": 271828 },
+      "resonance": null
+    },
+    {
+      "case": "Earth, which is in no resonance",
+      "body": { "RotationPeriod": 86164.1, "OrbitalPeriod": 31558149.8 },
+      "resonance": null
+    },
+    {
+      "case": "no orbital period written",
+      "body": { "RotationPeriod": 86400 },
+      "resonance": null
+    }
+  ],
+  "equatorialVelocity": [
+    {
+      "case": "Earth at its mean radius",
+      "body": { "Radius": 6371000, "RotationPeriod": 86164.1 },
+      "metresPerSecond": 464.580650086
+    },
+    {
+      "case": "retrograde is the same speed",
+      "body": { "Radius": 6371000, "RotationPeriod": -86164.1 },
+      "metresPerSecond": 464.580650086
+    },
+    {
+      "case": "the Sun",
+      "body": { "Radius": 695700000, "RotationPeriod": 2192832 },
+      "metresPerSecond": 1993.40944414
+    },
+    {
+      "case": "a body the scan reports as not rotating",
+      "body": { "Radius": 6371000 },
+      "metresPerSecond": null
+    }
+  ],
+  "rocheLimits": [
+    {
+      "case": "the Moon about Earth",
+      "satellite": { "MassEM": 0.0123, "Radius": 1737400 },
+      "primary": { "MassEM": 1, "Radius": 6371000 },
+      "rigid": 9483500.21717,
+      "fluid": 18485298.836
+    },
+    {
+      "case": "the primary has no radius",
+      "satellite": { "MassEM": 0.0123, "Radius": 1737400 },
+      "primary": { "MassEM": 1 },
+      "rigid": null,
+      "fluid": null
+    }
+  ],
+  "rocheLimitsForDensity": [
+    {
+      "case": "icy particles about Earth",
+      "primary": { "MassEM": 1, "Radius": 6371000 },
+      "satelliteDensityKgM3": 1000,
+      "rigid": 14181242.2221,
+      "fluid": 27642167.379
+    }
+  ],
+  "hillRadius": [
+    {
+      "case": "Earth about the Sun",
+      "body": { "MassEM": 1, "SemiMajorAxis": 149600000000 },
+      "primary": { "StellarMass": 1 },
+      "metres": 1496417737.09
+    },
+    {
+      "case": "the Moon about Earth",
+      "body": { "MassEM": 0.0123, "SemiMajorAxis": 384400000 },
+      "primary": { "MassEM": 1 },
+      "metres": 61524014.3197
+    },
+    {
+      "case": "no orbit written",
+      "body": { "MassEM": 1 },
+      "primary": { "StellarMass": 1 },
+      "metres": null
+    }
+  ],
+  "primaryAngularDiameter": [
+    {
+      "case": "Earth seen from the Moon",
+      "body": { "SemiMajorAxis": 384400000 },
+      "primary": { "Radius": 6371000 },
+      "degrees": 1.89905303258
+    },
+    {
+      "case": "the Sun seen from Earth",
+      "body": { "SemiMajorAxis": 149600000000 },
+      "primary": { "Radius": 695700000 },
+      "degrees": 0.532892867187
+    },
+    {
+      "case": "a primary as far away as it is wide fills a right angle",
+      "body": { "SemiMajorAxis": 1000000000 },
+      "primary": { "Radius": 1000000000 },
+      "degrees": 90
+    }
+  ],
+  "ringParticleDensity": [
+    { "ringClass": "eRingClass_Icy", "kgPerCubicMetre": 1000 },
+    { "ringClass": "eRingClass_Rocky", "kgPerCubicMetre": 3000 },
+    { "ringClass": "eRingClass_MetalRich", "kgPerCubicMetre": 4500 },
+    { "ringClass": "eRingClass_Metalic", "kgPerCubicMetre": 4500 },
+    { "ringClass": "eRingClass_Unknown_Future_Class", "kgPerCubicMetre": 1000 }
+  ],
+  "ringSurfaceDensity": [
+    {
+      "case": "a compact ring",
+      "ring": {
+        "Name": "Test A Ring",
+        "RingClass": "eRingClass_Icy",
+        "MassMT": 10000000000000,
+        "InnerRad": 100000000,
+        "OuterRad": 200000000
+      },
+      "megatonnesPerSquareKilometre": 106.103295395,
+      "invisible": false
+    },
+    {
+      "case": "wide and diffuse — the game draws nothing",
+      "ring": {
+        "Name": "Test A Ring",
+        "RingClass": "eRingClass_Icy",
+        "MassMT": 1000000,
+        "InnerRad": 1000000000,
+        "OuterRad": 3000000000
+      },
+      "megatonnesPerSquareKilometre": 0.00000003978873577297,
+      "invisible": true
+    },
+    {
+      "case": "as little mass, but narrow enough to draw",
+      "ring": {
+        "Name": "Test A Ring",
+        "RingClass": "eRingClass_Icy",
+        "MassMT": 1000000,
+        "InnerRad": 1000000000,
+        "OuterRad": 1100000000
+      },
+      "megatonnesPerSquareKilometre": 0.0000015157613627799,
+      "invisible": false
+    },
+    {
+      "case": "an outer radius that does not exceed the inner one",
+      "ring": {
+        "Name": "Test A Ring",
+        "RingClass": "eRingClass_Icy",
+        "MassMT": 10000000000000,
+        "InnerRad": 200000000,
+        "OuterRad": 200000000
+      },
+      "megatonnesPerSquareKilometre": null,
+      "invisible": false
+    }
+  ],
+  "ringDynamics": [
+    {
+      "case": "a ring about a gas giant",
+      "ring": {
+        "Name": "Test A Ring",
+        "RingClass": "eRingClass_Icy",
+        "MassMT": 10000000000000,
+        "InnerRad": 100000000,
+        "OuterRad": 200000000
+      },
+      "primary": { "MassEM": 300 },
+      "nominalRadius": 137500000,
+      "orbitalPeriod": 29296.1484003,
+      "innerVelocity": 21447.1377647,
+      "outerVelocity": 42894.2755294
+    },
+    {
+      "case": "the primary's mass is unknown",
+      "ring": {
+        "Name": "Test A Ring",
+        "RingClass": "eRingClass_Icy",
+        "MassMT": 10000000000000,
+        "InnerRad": 100000000,
+        "OuterRad": 200000000
+      },
+      "primary": { "Radius": 70000000 },
+      "nominalRadius": null,
+      "orbitalPeriod": null,
+      "innerVelocity": null,
+      "outerVelocity": null
+    }
+  ],
+  "mainSequenceLifetime": [
+    { "case": "the Sun", "body": { "StellarMass": 1 }, "millionYears": 10000 },
+    { "case": "a heavy blue star", "body": { "StellarMass": 20 }, "millionYears": 5.59016994375 },
+    { "case": "a red dwarf", "body": { "StellarMass": 0.2 }, "millionYears": 559016.994375 },
+    { "case": "a planet has no stellar mass", "body": { "MassEM": 1 }, "millionYears": null }
+  ],
+  "absoluteBolometricMagnitude": [
+    {
+      "case": "a star the size and temperature of the Sun",
+      "body": { "Radius": 695700000, "SurfaceTemperature": 5772 },
+      "magnitude": 4.74
+    },
+    {
+      "case": "an Earth-sized white dwarf at 15 000 K",
+      "body": { "Radius": 6371000, "SurfaceTemperature": 15000 },
+      "magnitude": 10.783422625
+    },
+    {
+      "case": "no temperature written",
+      "body": { "Radius": 695700000 },
+      "magnitude": null
+    }
+  ],
+  "schwarzschildRadius": [
+    { "case": "the Sun", "body": { "StellarMass": 1 }, "metres": 2954.12655506 },
+    { "case": "a heavy neutron star", "body": { "StellarMass": 2.3 }, "metres": 6794.49107663 },
+    { "case": "no mass written", "body": { "Radius": 695700000 }, "metres": null }
+  ],
+  "massStability": [
+    {
+      "case": "an ordinary neutron star",
+      "body": { "StarType": "N", "StellarMass": 1.8 },
+      "assessment": null
+    },
+    {
+      "case": "a neutron star past the theoretical ceiling",
+      "body": { "StarType": "N", "StellarMass": 2.3 },
+      "assessment": {
+        "limit": "tolman-oppenheimer-volkoff",
+        "limitSolarMasses": 2.17,
+        "severity": "warning"
+      }
+    },
+    {
+      "case": "a neutron star past the mass where the game's population drops off",
+      "body": { "StarType": "N", "StellarMass": 2.6 },
+      "assessment": {
+        "limit": "neutron-star-mass-drop-off",
+        "limitSolarMasses": 2.51,
+        "severity": "danger"
+      }
+    },
+    {
+      "case": "a super-Chandrasekhar white dwarf",
+      "body": { "StarType": "DA", "StellarMass": 1.6 },
+      "assessment": {
+        "limit": "chandrasekhar",
+        "limitSolarMasses": 1.44,
+        "severity": "danger"
+      }
+    },
+    {
+      "case": "an ordinary white dwarf",
+      "body": { "StarType": "D", "StellarMass": 0.9 },
+      "assessment": null
+    },
+    {
+      "case": "a black hole has already collapsed",
+      "body": { "StarType": "H", "StellarMass": 8 },
+      "assessment": null
+    },
+    {
+      "case": "a main-sequence star is not degenerate",
+      "body": { "StarType": "G", "StellarMass": 1 },
+      "assessment": null
+    }
+  ],
+  "neutronStarClass": [
+    {
+      "case": "a hundred turns a second",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 0.005, "AbsoluteMagnitude": 12 },
+      "class": "millisecond-pulsar"
+    },
+    {
+      "case": "the same spin, above the mass ceiling",
+      "body": { "StellarMass": 2.4, "RotationPeriod": 0.005, "AbsoluteMagnitude": 12 },
+      "class": "hyper-massive-millisecond-pulsar"
+    },
+    {
+      "case": "twenty turns a second",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 0.05, "AbsoluteMagnitude": 12 },
+      "class": "standard-pulsar"
+    },
+    {
+      "case": "twenty turns a second, above the mass ceiling",
+      "body": { "StellarMass": 2.4, "RotationPeriod": 0.05, "AbsoluteMagnitude": 12 },
+      "class": "anomalous-mass-pulsar"
+    },
+    {
+      "case": "ten seconds a turn",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 10, "AbsoluteMagnitude": 12 },
+      "class": "slow-period-pulsar"
+    },
+    {
+      "case": "ten seconds a turn, above the mass ceiling",
+      "body": { "StellarMass": 2.4, "RotationPeriod": 10, "AbsoluteMagnitude": 12 },
+      "class": "anomalous-mass-slow-period-pulsar"
+    },
+    {
+      "case": "half an hour a turn, and bright with it",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 1800, "AbsoluteMagnitude": 8 },
+      "class": "ultra-long-period-magnetar"
+    },
+    {
+      "case": "half an hour a turn, and faint",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 1800, "AbsoluteMagnitude": 12 },
+      "class": "ultra-long-period-pulsar"
+    },
+    {
+      "case": "barely turning at all",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 7200, "AbsoluteMagnitude": 12 },
+      "class": "anomalous-slow-rotator"
+    },
+    {
+      "case": "retrograde spin classes on its magnitude",
+      "body": { "StellarMass": 1.5, "RotationPeriod": -0.05, "AbsoluteMagnitude": 12 },
+      "class": "standard-pulsar"
+    },
+    {
+      "case": "no absolute magnitude written",
+      "body": { "StellarMass": 1.5, "RotationPeriod": 0.05 },
+      "class": null
+    }
+  ]
+}

@@ -5,6 +5,10 @@
   "description": "Generated language-neutral structural schemas for every JSONC payload in fixtures/.",
   "x-fixture-families": [
     {
+      "definition": "astroBodyCalculations",
+      "files": ["astro/body-calculations.jsonc"]
+    },
+    {
       "definition": "astroGalacticRegion",
       "files": ["astro/galactic-region.jsonc"]
     },
@@ -291,6 +295,466 @@
     }
   ],
   "definitions": {
+    "astroBodyCalculations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "absoluteBolometricMagnitude": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Radius": { "type": "integer" },
+                  "SurfaceTemperature": { "type": "integer" }
+                },
+                "required": ["Radius"]
+              },
+              "case": { "type": "string" },
+              "magnitude": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              }
+            },
+            "required": ["body", "case", "magnitude"]
+          }
+        },
+        "bulkDensity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "number" },
+                  "Radius": { "type": "integer" },
+                  "StellarMass": { "type": "integer" }
+                }
+              },
+              "case": { "type": "string" },
+              "kgPerCubicMetre": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              }
+            },
+            "required": ["body", "case", "kgPerCubicMetre"]
+          }
+        },
+        "eccentricityClass": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "class": { "type": "string" },
+              "eccentricity": { "type": "number" }
+            },
+            "required": ["class", "eccentricity"]
+          }
+        },
+        "equatorialVelocity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Radius": { "type": "integer" },
+                  "RotationPeriod": { "type": "number" }
+                },
+                "required": ["Radius"]
+              },
+              "case": { "type": "string" },
+              "metresPerSecond": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              }
+            },
+            "required": ["body", "case", "metresPerSecond"]
+          }
+        },
+        "hillRadius": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "number" },
+                  "SemiMajorAxis": { "type": "integer" }
+                },
+                "required": ["MassEM"]
+              },
+              "case": { "type": "string" },
+              "metres": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+              "primary": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "integer" },
+                  "StellarMass": { "type": "integer" }
+                }
+              }
+            },
+            "required": ["body", "case", "metres", "primary"]
+          }
+        },
+        "mainSequenceLifetime": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "integer" },
+                  "StellarMass": { "type": "number" }
+                }
+              },
+              "case": { "type": "string" },
+              "millionYears": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              }
+            },
+            "required": ["body", "case", "millionYears"]
+          }
+        },
+        "massStability": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "assessment": {
+                "anyOf": [
+                  { "type": "null" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "limit": { "type": "string" },
+                      "limitSolarMasses": { "type": "number" },
+                      "severity": { "type": "string" }
+                    },
+                    "required": ["limit", "limitSolarMasses", "severity"]
+                  }
+                ]
+              },
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "StarType": { "type": "string" },
+                  "StellarMass": { "type": "number" }
+                },
+                "required": ["StarType", "StellarMass"]
+              },
+              "case": { "type": "string" }
+            },
+            "required": ["assessment", "body", "case"]
+          }
+        },
+        "neutronStarClass": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "AbsoluteMagnitude": { "type": "integer" },
+                  "RotationPeriod": { "type": "number" },
+                  "StellarMass": { "type": "number" }
+                },
+                "required": ["RotationPeriod", "StellarMass"]
+              },
+              "case": { "type": "string" },
+              "class": { "anyOf": [{ "type": "string" }, { "type": "null" }] }
+            },
+            "required": ["body", "case", "class"]
+          }
+        },
+        "orbitExtents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apoapsis": {
+                "anyOf": [{ "type": "integer" }, { "type": "null" }]
+              },
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Eccentricity": { "type": "number" },
+                  "SemiMajorAxis": { "type": "integer" },
+                  "StellarMass": { "type": "integer" }
+                }
+              },
+              "case": { "type": "string" },
+              "eccentricityClass": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "periapsis": {
+                "anyOf": [{ "type": "integer" }, { "type": "null" }]
+              }
+            },
+            "required": [
+              "apoapsis",
+              "body",
+              "case",
+              "eccentricityClass",
+              "periapsis"
+            ]
+          }
+        },
+        "primaryAngularDiameter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "SemiMajorAxis": { "type": "integer" } },
+                "required": ["SemiMajorAxis"]
+              },
+              "case": { "type": "string" },
+              "degrees": { "type": "number" },
+              "primary": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "Radius": { "type": "integer" } },
+                "required": ["Radius"]
+              }
+            },
+            "required": ["body", "case", "degrees", "primary"]
+          }
+        },
+        "ringDynamics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "case": { "type": "string" },
+              "innerVelocity": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              },
+              "nominalRadius": {
+                "anyOf": [{ "type": "integer" }, { "type": "null" }]
+              },
+              "orbitalPeriod": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              },
+              "outerVelocity": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              },
+              "primary": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "integer" },
+                  "Radius": { "type": "integer" }
+                }
+              },
+              "ring": { "$ref": "#/definitions/shared33f6351b3a1e" }
+            },
+            "required": [
+              "case",
+              "innerVelocity",
+              "nominalRadius",
+              "orbitalPeriod",
+              "outerVelocity",
+              "primary",
+              "ring"
+            ]
+          }
+        },
+        "ringParticleDensity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kgPerCubicMetre": { "type": "integer" },
+              "ringClass": { "type": "string" }
+            },
+            "required": ["kgPerCubicMetre", "ringClass"]
+          }
+        },
+        "ringSurfaceDensity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "case": { "type": "string" },
+              "invisible": { "type": "boolean" },
+              "megatonnesPerSquareKilometre": {
+                "anyOf": [{ "type": "number" }, { "type": "null" }]
+              },
+              "ring": { "$ref": "#/definitions/shared33f6351b3a1e" }
+            },
+            "required": [
+              "case",
+              "invisible",
+              "megatonnesPerSquareKilometre",
+              "ring"
+            ]
+          }
+        },
+        "rocheLimits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "case": { "type": "string" },
+              "fluid": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+              "primary": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "integer" },
+                  "Radius": { "type": "integer" }
+                },
+                "required": ["MassEM"]
+              },
+              "rigid": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+              "satellite": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "number" },
+                  "Radius": { "type": "integer" }
+                },
+                "required": ["MassEM", "Radius"]
+              }
+            },
+            "required": ["case", "fluid", "primary", "rigid", "satellite"]
+          }
+        },
+        "rocheLimitsForDensity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "case": { "type": "string" },
+              "fluid": { "type": "number" },
+              "primary": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "MassEM": { "type": "integer" },
+                  "Radius": { "type": "integer" }
+                },
+                "required": ["MassEM", "Radius"]
+              },
+              "rigid": { "type": "number" },
+              "satelliteDensityKgM3": { "type": "integer" }
+            },
+            "required": [
+              "case",
+              "fluid",
+              "primary",
+              "rigid",
+              "satelliteDensityKgM3"
+            ]
+          }
+        },
+        "schwarzschildRadius": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "Radius": { "type": "integer" },
+                  "StellarMass": { "type": "number" }
+                }
+              },
+              "case": { "type": "string" },
+              "metres": { "anyOf": [{ "type": "number" }, { "type": "null" }] }
+            },
+            "required": ["body", "case", "metres"]
+          }
+        },
+        "spinOrbitResonance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "body": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "OrbitalPeriod": { "type": "number" },
+                  "RotationPeriod": { "type": "number" }
+                },
+                "required": ["RotationPeriod"]
+              },
+              "case": { "type": "string" },
+              "resonance": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "orbits": { "type": "integer" },
+                      "rotations": { "type": "integer" }
+                    },
+                    "required": ["orbits", "rotations"]
+                  },
+                  { "type": "null" }
+                ]
+              }
+            },
+            "required": ["body", "case", "resonance"]
+          }
+        }
+      },
+      "required": [
+        "absoluteBolometricMagnitude",
+        "bulkDensity",
+        "eccentricityClass",
+        "equatorialVelocity",
+        "hillRadius",
+        "mainSequenceLifetime",
+        "massStability",
+        "neutronStarClass",
+        "orbitExtents",
+        "primaryAngularDiameter",
+        "ringDynamics",
+        "ringParticleDensity",
+        "ringSurfaceDensity",
+        "rocheLimits",
+        "rocheLimitsForDensity",
+        "schwarzschildRadius",
+        "spinOrbitResonance"
+      ]
+    },
     "astroGalacticRegion": {
       "type": "object",
       "additionalProperties": false,
@@ -8161,6 +8625,18 @@
         "speed",
         "yaw"
       ]
+    },
+    "shared33f6351b3a1e": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InnerRad": { "type": "integer" },
+        "MassMT": { "type": "integer" },
+        "Name": { "type": "string" },
+        "OuterRad": { "type": "integer" },
+        "RingClass": { "type": "string" }
+      },
+      "required": ["InnerRad", "MassMT", "Name", "OuterRad", "RingClass"]
     },
     "shared34f9a7d23a34": {
       "type": "object",

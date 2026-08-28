@@ -61,6 +61,28 @@ a verbatim copy produced at build time — edit this file, never the copy.
 - **SLEF parsing and writing** — both follow the
   [Inara Ship Loadout Export Format specification](https://inara.cz/elite/inara-impexp-slef/)
   published by **Inara** (Artie).
+- **Body calculations** — bulk density, the rigid and fluid Roche limits, the Hill radius,
+  a primary's angular diameter, orbit extents and their eccentricity bands, spin-orbit
+  resonance, equatorial velocity, ring dynamics and surface density, the invisible-ring
+  heuristic, ring-particle densities, main-sequence lifetime, absolute bolometric
+  magnitude, the Schwarzschild radius, the degeneracy-pressure mass limits and the
+  neutron-star classes are ported as fact (our own implementation, re-expressed in the
+  journal's units) from **canonn-signals**' `body-physics.service.ts`,
+  `stellar-physics.service.ts` and `stellar-reference.ts` — credited under Data below.
+  Most of it is textbook astrophysics; three parts are the **Canonn Research Group's own
+  observational research** into how the game behaves, and are theirs rather than
+  astronomy's: the `3/8` nominal-radius factor that recovers a ring's single rigid-body
+  rotation period, the invisible-ring width and surface-density thresholds, and the
+  neutron-star classification bands with the observed in-game mass past which neutron
+  stars become rare.
+  Each carries that provenance in its own TSDoc.
+- **The journal `Scan` event shape** — the body-scan import interface describes the format
+  **Frontier Developments plc** writes its Player Journal in, and its field set, types and
+  conditional presence are cross-checked against
+  [jixxed/ed-journal-schemas](https://github.com/jixxed/ed-journal-schemas), the
+  community-maintained JSON Schemas for post-Odyssey journal events, **Apache-2.0**.
+  Field names and types are facts about Frontier's format; no schema text is redistributed
+  and no code from that project is used.
 
 ## Data
 
@@ -101,8 +123,8 @@ a verbatim copy produced at build time — edit this file, never the copy.
   [Frontier forums](https://forums.frontier.co.uk/threads/determining-the-region-of-a-system.537845/).
 - **[canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)** by
   the **Canonn Research Group**, **MIT**, © 2023 — the route by which two of the sources
-  below were obtained, and the TypeScript port the procedural-naming algorithm passed
-  through.
+  below were obtained, the TypeScript port the procedural-naming algorithm passed through,
+  and the source of the body calculations credited under Algorithms above.
 - **EDAstro nebulae coordinates** published by **CMDR Orvidius**
   ([EDAstro](https://edastro.com/mapcharts/)) — nebula names, catalogued systems,
   coordinates, classes and region ids, obtained via canonn-signals. EDAstro states no
