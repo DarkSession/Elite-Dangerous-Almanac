@@ -29,7 +29,7 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 Both give you the same object. Prefer the leaf import when you know what you want: it is
 unambiguous about what gets bundled and never depends on tree-shaking. There is no
-package-wide root entry because it would load about 1.4 MiB in native ESM even without
+package-wide root entry because it would load about 1 MiB in native ESM even without
 the heaviest optional data.
 
 **Heavy data-backed modules are reachable only by leaf import.** Exporting them from a
@@ -109,19 +109,19 @@ imports are:
   `ships/blueprint-costs` or `ships/experimental-effect-costs` on their own to price one
   recipe, or a data-free calculation module, when you need one answer rather than a whole
   ship.
-- `astro/nebulae-all` is 431.7 KiB. That is why the nebula query functions take an
+- `astro/nebulae-all` is ~432 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice. Almost all
-  of that weight is `astro/nebulae-planetary` (399.4 KiB); the sibling catalogues are
-  small, `astro/nebulae-real` being 16.4 KiB, so pick the one that answers your question.
+  of that weight is `astro/nebulae-planetary` (~399 KiB); the sibling catalogues are
+  small, `astro/nebulae-real` being ~16 KiB, so pick the one that answers your question.
 - `astro/codex-region-lookup` is about 208 KiB. Its 42-region cell geometry answers
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
   about 9 KiB. The geometry-backed lookup therefore stays off the astro barrel.
 
-`ships/modules` is 337.6 KiB and `ships/modules-all` 336.2 KiB — heavier than the codex
+`ships/modules` is ~338 KiB and `ships/modules-all` ~336 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
-materials 17.2 KiB, micro resources 13.4 KiB, commodities 29.6 KiB.
+materials ~17 KiB, micro resources ~13 KiB, commodities ~30 KiB.
 
 ## Published source maps
 
@@ -143,10 +143,10 @@ carry a second copy of its source.
 
 ## What the package weighs on disk
 
-`npm pack --dry-run` reports about 69.8 MB unpacked and about 18.3 MB as a compressed
+`npm pack --dry-run` reports about 70 MB unpacked and about 18 MB as a compressed
 npm archive. Read that number before you judge it: the ship art in `assets/` is about
-66.5 MB of it — 192 SVG files, four per hull, shipped as static package files rather
-than as subpath exports. Everything a bundler can reach is the roughly 3.0 MB of
+67 MB of it — 192 SVG files, four per hull, shipped as static package files rather
+than as subpath exports. Everything a bundler can reach is the roughly 3 MB of
 `dist/`, which is the JavaScript, the type declarations and the source maps above,
 and no import of this package pulls an SVG into an application bundle.
 
@@ -194,7 +194,7 @@ the catalogues. Malformed and out-of-range input throw instead.
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 sets out all four outcomes, the `try…` variants that convert a throw into a `null`, and
-the nullable/diagnostic-result pairs the aggregate figures come in.
+the diagnostic results returned by aggregate figures that may be unavailable.
 
 ## Next
 

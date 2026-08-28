@@ -59,7 +59,7 @@ build.unladenMass; // -> 388.830017   tonnes
 const metrics = BuildMetrics.of(build);
 metrics.maxJumpRange(); // -> 60.5478    ly, best single jump
 metrics.powerBudget().withinBudget; // -> true
-metrics.shieldMetrics()?.strength; // -> 743.12     MJ
+metrics.shieldMetricsResult().value?.strength; // -> 743.12     MJ
 metrics.armourMetrics().hitPoints; // -> 307.8
 ```
 

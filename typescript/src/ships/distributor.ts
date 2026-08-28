@@ -5,7 +5,7 @@
  * and WEP use the same non-linear allocation curve:
  * `ratedRecharge * (pips / 4) ^ 1.1`.
  *
- * This module is data-free. {@link BuildMetrics.distributorMetrics}
+ * This module is data-free. {@link BuildMetrics.distributorMetricsResult}
  * (`./build-metrics`) resolves the powered distributor in a build for you.
  *
  * @remarks

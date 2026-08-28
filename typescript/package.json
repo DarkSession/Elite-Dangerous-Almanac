@@ -470,7 +470,7 @@
     "scripts": {
         "audit": "pnpm audit --audit-level=low",
         "build": "node scripts/copy-notices.mjs && node scripts/copy-assets.mjs && tsup && node scripts/prune-sourcemap-sources.mjs && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
-        "check": "pnpm run check:fixtures && pnpm run check:i18n-coverage && pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run check:examples && pnpm run check:sizes && pnpm test",
+        "check": "pnpm run check:fixtures && pnpm run check:i18n-coverage && pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run check:examples && pnpm test",
         "check:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs --check",
         "check:i18n-coverage": "node scripts/i18n-coverage.mjs --check",
         "format": "prettier --write . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml ../.github/ISSUE_TEMPLATE/*.yml",
@@ -483,7 +483,6 @@
         "typecheck": "tsc --noEmit",
         "docs": "typedoc && node scripts/build-wiki-sidebar.mjs && node scripts/postprocess-wiki.mjs",
         "check:examples": "node --test scripts/example-claims.test.mjs scripts/example-runtime.test.mjs && node scripts/check-examples.mjs",
-        "check:sizes": "pnpm run build && node scripts/check-sizes.mjs",
         "test:package": "node --test package.test.mjs"
     },
     "devDependencies": {

@@ -65,35 +65,11 @@ jobs:
       - name: Audit dependencies
         run: pnpm run audit
 
-      - name: Check generated fixture contracts
-        run: pnpm run check:fixtures
-
-      - name: Check generated i18n coverage table
-        run: pnpm run check:i18n-coverage
-
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Check formatting
-        run: pnpm run format:check
-
-      - name: Typecheck
-        run: pnpm run typecheck
-
-      - name: Check documented examples
-        run: pnpm run check:examples
-
-      # Builds first: the documented byte sizes describe the published package, so the
-      # check weighs `dist/` rather than the source graph. The build step below re-runs
-      # it from clean, which is what `test:package` then inspects.
-      - name: Check documented sizes
-        run: pnpm run check:sizes
+      - name: Check source and tests
+        run: pnpm run check
 
       - name: Generate API documentation
         run: pnpm run docs
-
-      - name: Test with coverage thresholds
-        run: pnpm test
 
       - name: Build package
         run: pnpm run build

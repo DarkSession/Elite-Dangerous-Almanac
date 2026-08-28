@@ -17,7 +17,7 @@
  * `./resistances`. Everything here is **pip-free**: the SYS capacitor's own resistance,
  * and the effective figures it buys, live in `./shield-capacitor`.
  *
- * This module is data-free. {@link BuildMetrics.shieldMetrics} (in `./build-metrics`)
+ * This module is data-free. {@link BuildMetrics.shieldMetricsResult} (in `./build-metrics`)
  * pulls the generator, boosters and reinforcement packages out of a build,
  * post-engineering, and calls {@link shieldMetrics} for you.
  *

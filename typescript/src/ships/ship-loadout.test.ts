@@ -224,7 +224,7 @@ test('a build too heavy for its own thrusters is an error, and the error follows
     });
     // Past the rating the curve gives nothing back, which is what makes this an error
     // rather than a slow ship.
-    assert.equal(BuildMetrics.of(build).mobilityMetrics()?.speed, 0);
+    assert.equal(BuildMetrics.of(build).mobilityMetricsResult().value?.speed, 0);
 
     // The rating is the engineered one, and the weighing is the current fit: unfit one
     // hangar and the same build is legal again.
@@ -256,8 +256,8 @@ test('a ship that only cannot move once fuelled is an error, not a footnote', ()
     assert.equal(issue?.severity, 'error');
     assert.equal(issue?.params?.load, 'unladen');
     assert.equal(issue?.params?.mass, build.unladenMass + build.fuelCapacity.main);
-    // `mobilityMetrics` weighs a full main tank by default, and agrees.
-    assert.equal(BuildMetrics.of(build).mobilityMetrics()?.speed, 0);
+    // `mobilityMetricsResult` weighs a full main tank by default, and agrees.
+    assert.equal(BuildMetrics.of(build).mobilityMetricsResult().value?.speed, 0);
 });
 
 test('a ship that only cannot move with a full hold is a warning, and still a legal build', () => {
@@ -289,8 +289,11 @@ test('a ship that only cannot move with a full hold is a warning, and still a le
     assert.equal(validation.valid, true);
     assert.equal(validation.complete, true);
     // It flies as loaded by default, and stops at the load the warning names.
-    assert.ok(BuildMetrics.of(build).mobilityMetrics()!.speed > 0);
-    assert.equal(BuildMetrics.of(build).mobilityMetrics({ cargo: build.cargoCapacity })?.speed, 0);
+    assert.ok(BuildMetrics.of(build).mobilityMetricsResult().value!.speed > 0);
+    assert.equal(
+        BuildMetrics.of(build).mobilityMetricsResult({ cargo: build.cargoCapacity }).value?.speed,
+        0,
+    );
 });
 
 test('a capture stating a mass nobody can weigh is reported, not refused', () => {
@@ -367,20 +370,24 @@ test('the outfitting offer holds one identity per article a station sells', () =
 
 test('the facade reports loaded mobility, shield recovery and cell-bank pools', () => {
     const stock = ShipLoadout.default('SideWinder');
-    const mobility = BuildMetrics.of(stock).mobilityMetrics();
+    const mobility = BuildMetrics.of(stock).mobilityMetricsResult().value;
     assert.ok(mobility);
     assert.ok(mobility.speed > 0);
     assert.ok(mobility.boost > mobility.speed);
     assert.ok(
-        BuildMetrics.of(stock).mobilityCapacitorMetrics({ enginesPips: 2 })!.speed < mobility.speed,
+        BuildMetrics.of(stock).mobilityCapacitorMetricsResult({ enginesPips: 2 }).value!.speed <
+            mobility.speed,
     );
     // Four pips is the pip-free baseline, so the capacitor's default reproduces it.
-    assert.equal(BuildMetrics.of(stock).mobilityCapacitorMetrics()!.speed, mobility.speed);
+    assert.equal(
+        BuildMetrics.of(stock).mobilityCapacitorMetricsResult().value!.speed,
+        mobility.speed,
+    );
 
     const enhanced = ShipLoadout.default('SideWinder')
         .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class5', CORE_MODULES))
         .setModule('MainEngines', mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES));
-    const enhancedMobility = BuildMetrics.of(enhanced).mobilityMetrics()!;
+    const enhancedMobility = BuildMetrics.of(enhanced).mobilityMetricsResult().value!;
     assert.notEqual(
         enhancedMobility.massCurveMultiplier,
         enhancedMobility.rotationMassCurveMultiplier,
@@ -402,11 +409,18 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
             baseEnhanced.maxRotationMultiplier! * enhancedPerformanceRatio,
         ),
     );
-    assert.notEqual(BuildMetrics.of(enhanced).mobilityMetrics()!.speed, enhancedMobility.speed);
+    assert.notEqual(
+        BuildMetrics.of(enhanced).mobilityMetricsResult().value!.speed,
+        enhancedMobility.speed,
+    );
 
     const lynx = ShipLoadout.default('MediumTransport01');
-    const lynxFourPips = BuildMetrics.of(lynx).mobilityCapacitorMetrics({ enginesPips: 4 })!;
-    const lynxZeroPips = BuildMetrics.of(lynx).mobilityCapacitorMetrics({ enginesPips: 0 })!;
+    const lynxFourPips = BuildMetrics.of(lynx).mobilityCapacitorMetricsResult({
+        enginesPips: 4,
+    }).value!;
+    const lynxZeroPips = BuildMetrics.of(lynx).mobilityCapacitorMetricsResult({
+        enginesPips: 0,
+    }).value!;
     assert.ok(lynxZeroPips.pitch < lynxFourPips.pitch);
     assert.ok(near(lynxZeroPips.pitch / lynxFourPips.pitch, 23 / 26));
     assert.equal(lynxZeroPips.roll, lynxFourPips.roll);
@@ -425,7 +439,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     );
     const tunedMainFuel = tuned.fuelCapacity!.main;
     assert.equal(
-        BuildMetrics.of(tuned).mobilityMetrics()!.massCurveMultiplier,
+        BuildMetrics.of(tuned).mobilityMetricsResult().value!.massCurveMultiplier,
         thrusterMassCurveMultiplier(tuned.unladenMass! + tunedMainFuel, {
             minMass: effectiveThrusters.minMass!,
             optMass: effectiveThrusters.optMass!,
@@ -436,7 +450,7 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
         }),
     );
 
-    const recovery = BuildMetrics.of(stock).shieldRecovery();
+    const recovery = BuildMetrics.of(stock).shieldRecoveryResult().value;
     assert.ok(recovery);
     assert.ok(recovery.recoveryTime >= 16);
     assert.ok(recovery.regenTime > 0);
@@ -514,10 +528,10 @@ test('mobility returns null before requiring mass when the thrusters are unpower
         .setModule('PowerPlant', mod('Int_PowerPlant_Size2_Class1', CORE_MODULES))
         .setModulePriority('MainEngines', 4);
     assert.equal(BuildMetrics.of(shed).powerBudget().withinBudget, false);
-    assert.equal(BuildMetrics.of(shed).mobilityMetrics(), null);
-    assert.equal(BuildMetrics.of(shed).mobilityCapacitorMetrics(), null);
+    assert.equal(BuildMetrics.of(shed).mobilityMetricsResult().value, null);
+    assert.equal(BuildMetrics.of(shed).mobilityCapacitorMetricsResult().value, null);
     assert.throws(
-        () => BuildMetrics.of(shed).mobilityCapacitorMetrics({ enginesPips: 5 }),
+        () => BuildMetrics.of(shed).mobilityCapacitorMetricsResult({ enginesPips: 5 }).value,
         RangeError,
     );
 });
@@ -526,13 +540,13 @@ test('explicit mobility fuel overrides the tank load and excludes reserve mass',
     const fixture = operationsFixture.mobility.facadeFuelOverride;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
     assert.deepEqual(build.fuelCapacity, { main: 4, reserve: 0.25 });
-    const metrics = BuildMetrics.of(build).mobilityMetrics(fixture.options)!;
+    const metrics = BuildMetrics.of(build).mobilityMetricsResult(fixture.options).value!;
     for (const [field, expected] of Object.entries(fixture.expected)) {
         assert.ok(near(metrics[field as keyof typeof metrics], expected), field);
     }
-    assert.ok(BuildMetrics.of(build).mobilityMetrics()!.speed < metrics.speed);
+    assert.ok(BuildMetrics.of(build).mobilityMetricsResult().value!.speed < metrics.speed);
     for (const invalid of fixture.invalidLoads) {
-        assert.throws(() => BuildMetrics.of(build).mobilityMetrics(invalid.options), {
+        assert.throws(() => BuildMetrics.of(build).mobilityMetricsResult(invalid.options).value, {
             name: invalid.expectedError,
         });
     }
@@ -540,37 +554,22 @@ test('explicit mobility fuel overrides the tank load and excludes reserve mass',
 
 test('metric methods validate pips before build state and name their own scopes', () => {
     const metrics = BuildMetrics.of(ShipLoadout.empty('SideWinder'));
-    // Each nullable metric and its `…Result` companion share one implementation, so this
-    // table is what stops the two scope strings drifting apart: every entry must name the
-    // method the consumer actually called.
     const pipScopes: readonly (readonly [string, () => unknown, string])[] = [
-        [
-            'mobilityCapacitorMetrics',
-            () => metrics.mobilityCapacitorMetrics({ enginesPips: 5 }),
-            'enginesPips',
-        ],
         [
             'mobilityCapacitorMetricsResult',
             () => metrics.mobilityCapacitorMetricsResult({ enginesPips: 5 }),
             'enginesPips',
         ],
         [
-            'shieldCapacitorMetrics',
-            () => metrics.shieldCapacitorMetrics({ systemsPips: 5 }),
-            'systemsPips',
-        ],
-        [
             'shieldCapacitorMetricsResult',
             () => metrics.shieldCapacitorMetricsResult({ systemsPips: 5 }),
             'systemsPips',
         ],
-        ['shieldRecovery', () => metrics.shieldRecovery({ systemsPips: 5 }), 'systemsPips'],
         [
             'shieldRecoveryResult',
             () => metrics.shieldRecoveryResult({ systemsPips: 5 }),
             'systemsPips',
         ],
-        ['distributorMetrics', () => metrics.distributorMetrics({ enginesPips: 5 }), 'enginesPips'],
         [
             'distributorMetricsResult',
             () => metrics.distributorMetricsResult({ weaponsPips: 5 }),
@@ -589,10 +588,7 @@ test('metric methods validate pips before build state and name their own scopes'
         });
     }
 
-    // The load options are guarded by the same single implementation, so they get the
-    // same treatment.
     for (const [method, call] of [
-        ['mobilityMetrics', () => metrics.mobilityMetrics({ fuel: -1 })],
         ['mobilityMetricsResult', () => metrics.mobilityMetricsResult({ fuel: -1 })],
         ['buildMass', () => metrics.buildMass({ fuel: -1 })],
     ] as const) {
@@ -602,18 +598,12 @@ test('metric methods validate pips before build state and name their own scopes'
         });
     }
 
-    // And the standard-load pair, whose argument is not a pip allocation at all.
-    for (const [method, call] of [
-        ['standardLoad', () => metrics.standardLoad('half' as 'laden')],
-        ['standardLoadResult', () => metrics.standardLoadResult('half' as 'laden')],
-    ] as const) {
-        assert.throws(call, {
-            name: 'RangeError',
-            message: `BuildMetrics.${method}: load must be 'maximum', 'unladen', or 'laden'`,
-        });
-    }
+    assert.throws(() => metrics.standardLoadResult('half' as 'laden'), {
+        name: 'RangeError',
+        message: "BuildMetrics.standardLoadResult: load must be 'maximum', 'unladen', or 'laden'",
+    });
 
-    assert.equal(metrics.shieldRecovery(), null);
+    assert.equal(metrics.shieldRecoveryResult().value, null);
 });
 
 test('BuildMetrics.of names its own parameter when handed something else', () => {
@@ -640,8 +630,8 @@ test('a metrics view reads the build it was attached to, not a snapshot of it', 
 test('mobility and shield metrics stop when the power budget sheds their modules', () => {
     const disabled = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
     assert.equal(BuildMetrics.of(disabled).powerBudget().available, 0);
-    assert.equal(BuildMetrics.of(disabled).mobilityMetrics(), null);
-    assert.equal(BuildMetrics.of(disabled).shieldRecovery(), null);
+    assert.equal(BuildMetrics.of(disabled).mobilityMetricsResult().value, null);
+    assert.equal(BuildMetrics.of(disabled).shieldRecoveryResult().value, null);
 
     const source = ShipLoadout.default('Anaconda').toLoadoutEvent();
     const overloaded = ShipLoadout.fromLoadout({
@@ -659,9 +649,9 @@ test('mobility and shield metrics stop when the power budget sheds their modules
     const budget = BuildMetrics.of(overloaded).powerBudget();
     assert.ok(budget.available > 0);
     assert.equal(budget.bands[4]?.poweredRetracted, false);
-    assert.equal(BuildMetrics.of(overloaded).mobilityMetrics(), null);
-    assert.equal(BuildMetrics.of(overloaded).shieldMetrics(), null);
-    assert.equal(BuildMetrics.of(overloaded).shieldRecovery(), null);
+    assert.equal(BuildMetrics.of(overloaded).mobilityMetricsResult().value, null);
+    assert.equal(BuildMetrics.of(overloaded).shieldMetricsResult().value, null);
+    assert.equal(BuildMetrics.of(overloaded).shieldRecoveryResult().value, null);
     assert.equal(BuildMetrics.of(overloaded).mobilityMetricsResult().issues[0]?.reason, 'shed');
     assert.deepEqual(BuildMetrics.of(overloaded).shieldMetricsResult().issues[0], {
         field: 'shieldGenerator',
@@ -704,7 +694,7 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
 
     assert.equal(build.validation().complete, true);
     assert.deepEqual(build.validation().issues, []);
-    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().value, null);
     assert.equal(BuildMetrics.of(build).shieldMetricsResult().issues[0]?.field, 'powerCapacity');
     assert.equal(BuildMetrics.of(build).shieldMetricsResult().issues[0]?.reason, 'unresolved');
     assert.equal(
@@ -717,7 +707,7 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     const incompleteThrusters = { ...mod('Int_Engine_Size7_Class5') };
     delete incompleteThrusters.minMass;
     const noCurve = ShipLoadout.default('Anaconda').setModule('MainEngines', incompleteThrusters);
-    assert.equal(BuildMetrics.of(noCurve).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(noCurve).mobilityMetricsResult().value, null);
     assert.equal(BuildMetrics.of(noCurve).mobilityMetricsResult().issues[0]?.field, 'thrusters');
     assert.equal(BuildMetrics.of(noCurve).mobilityMetricsResult().issues[0]?.reason, 'unresolved');
     assert.equal(
@@ -754,9 +744,9 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     }
 
     const assertInvalidPower = (invalid: ShipLoadout, budgetThrows: boolean): void => {
-        assert.equal(BuildMetrics.of(invalid).mobilityMetrics(), null);
-        assert.equal(BuildMetrics.of(invalid).shieldMetrics(), null);
-        assert.equal(BuildMetrics.of(invalid).shieldRecovery(), null);
+        assert.equal(BuildMetrics.of(invalid).mobilityMetricsResult().value, null);
+        assert.equal(BuildMetrics.of(invalid).shieldMetricsResult().value, null);
+        assert.equal(BuildMetrics.of(invalid).shieldRecoveryResult().value, null);
         for (const result of [
             BuildMetrics.of(invalid).mobilityMetricsResult(),
             BuildMetrics.of(invalid).shieldMetricsResult(),
@@ -805,9 +795,9 @@ test('metric results diagnose an invalid known power draw without weakening powe
     });
 
     assert.throws(() => BuildMetrics.of(build).powerBudget(), RangeError);
-    assert.equal(BuildMetrics.of(build).mobilityMetrics(), null);
-    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
-    assert.equal(BuildMetrics.of(build).shieldRecovery(), null);
+    assert.equal(BuildMetrics.of(build).mobilityMetricsResult().value, null);
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().value, null);
+    assert.equal(BuildMetrics.of(build).shieldRecoveryResult().value, null);
     for (const result of [
         BuildMetrics.of(build).mobilityMetricsResult(),
         BuildMetrics.of(build).shieldMetricsResult(),
@@ -850,7 +840,7 @@ test('shield results distinguish an absent generator from a shed one', () => {
             { Slot: 'Decal1', Item: 'Int_ShieldGenerator_Size9_Class9_MadeUp' },
         ],
     });
-    assert.equal(BuildMetrics.of(noRecord).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(noRecord).shieldMetricsResult().value, null);
     assert.equal(
         BuildMetrics.of(noRecord).shieldMetricsResult().issues[0]?.field,
         'shieldGenerator',
@@ -1068,7 +1058,7 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
 
     // The curve and the metrics agree: the multiplier the build reports is the one the
     // exported curve function gives for the loaded mass the build reports.
-    const mobility = BuildMetrics.of(build).mobilityMetrics()!;
+    const mobility = BuildMetrics.of(build).mobilityMetricsResult().value!;
     assert.equal(mobility.loadedMass, BuildMetrics.of(build).buildMass().total);
     assert.equal(
         thrusterMassCurveMultiplier(mobility.loadedMass, curve),
@@ -1104,7 +1094,7 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
         ),
     });
     assert.deepEqual(BuildMetrics.of(off).thrusters(), curve);
-    assert.equal(BuildMetrics.of(off).mobilityMetrics(), null);
+    assert.equal(BuildMetrics.of(off).mobilityMetricsResult().value, null);
     assert.equal(BuildMetrics.of(off).mobilityMetricsResult().issues[0]?.reason, 'disabled');
 
     // A record that cannot supply a whole curve answers null rather than throwing — the
@@ -1810,7 +1800,7 @@ test('standard load results expose the jump summary load conditions', () => {
     });
     assert.equal(laden.value!.mass, BuildMetrics.of(build).buildMass({ fuel: 2, cargo: 4 }).total);
     assert.equal(
-        BuildMetrics.of(build).mobilityMetrics(laden.value!)!.loadedMass,
+        BuildMetrics.of(build).mobilityMetricsResult(laden.value!).value!.loadedMass,
         laden.value!.mass,
     );
     assert.equal(
@@ -1826,8 +1816,10 @@ test('standard load results expose the jump summary load conditions', () => {
         BuildMetrics.of(build).jumpRangeSummary().laden,
     );
     assert.deepEqual(
-        BuildMetrics.of(build).mobilityCapacitorMetrics({ ...laden.value!, enginesPips: 2 }),
-        BuildMetrics.of(build).mobilityCapacitorMetrics({ fuel: 2, cargo: 4, enginesPips: 2 }),
+        BuildMetrics.of(build).mobilityCapacitorMetricsResult({ ...laden.value!, enginesPips: 2 })
+            .value,
+        BuildMetrics.of(build).mobilityCapacitorMetricsResult({ fuel: 2, cargo: 4, enginesPips: 2 })
+            .value,
     );
     assert.throws(
         () => BuildMetrics.of(build).standardLoadResult('other' as 'maximum'),
@@ -4003,7 +3995,7 @@ test('all ten panel-audited builds reproduce their observed angular rates', () =
     for (const [name, event, expected] of cases) {
         const actual = BuildMetrics.of(
             ShipLoadout.fromLoadout(event as LoadoutEvent),
-        ).mobilityMetrics();
+        ).mobilityMetricsResult().value;
         assert.ok(actual, `${name}: missing mobility metrics`);
         for (const axis of ['pitch', 'roll', 'yaw'] as const) {
             const difference = Math.abs(actual[axis] - expected.speed[axis]);
@@ -4028,7 +4020,7 @@ test('the beam Corvette reproduces the externally observed in-game build totals'
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4090,7 +4082,7 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
     assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4150,7 +4142,7 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4208,11 +4200,11 @@ test('The Deep Black reproduces every observed calculated total', () => {
     assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 0), expected.offense.thermalLoad);
 
-    const mobility = BuildMetrics.of(build).mobilityMetrics()!;
+    const mobility = BuildMetrics.of(build).mobilityMetricsResult().value!;
     assert.equal(displayed(mobility.speed, 0), expected.speed.top);
     assert.equal(displayed(mobility.boost, 0), expected.speed.boost);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4272,7 +4264,7 @@ test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', 
     assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4332,7 +4324,7 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 0), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4391,7 +4383,7 @@ test('Fat Arse reproduces every observed calculated total', () => {
     assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4451,7 +4443,7 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4511,7 +4503,7 @@ test('Spire Ops reproduces the observed totals', () => {
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
@@ -4580,7 +4572,7 @@ test('Slapaconda reproduces every observed calculated total', () => {
     assert.equal(shard.shotSpeed, 6299.208984);
 
     assert.equal(expected.shields.strength, 0);
-    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().value, null);
 
     assert.equal(
         displayed(BuildMetrics.of(build).buildMass().total + fuel.reserve, 1),
@@ -4664,7 +4656,7 @@ test('the SLEF build reproduces the fixture power budget', () => {
 
 test('the SLEF build reproduces the fixture shield and armour metrics', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.ok(near(shields.strength, metrics.deepBlack.shields.strength), `${shields.strength}`);
     assert.ok(
         near(shields.massCurveMultiplier, metrics.deepBlack.shields.massCurveMultiplier),
@@ -4713,7 +4705,7 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
         expectedBuild.power.bands,
     );
 
-    const shields = BuildMetrics.of(build).shieldMetrics()!;
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.ok(near(shields.strength, expectedBuild.shields.strength));
     assert.ok(near(shields.generator, expectedBuild.shields.generator));
     assert.ok(near(shields.boosters, expectedBuild.shields.boosters));
@@ -4721,7 +4713,7 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     assert.deepEqual(rounded(shields.resistances), expectedBuild.shields.resistances);
     assert.deepEqual(rounded(shields.effectiveHitPoints), expectedBuild.shields.effectiveHitPoints);
     assert.deepEqual(
-        rounded(BuildMetrics.of(build).shieldCapacitorMetrics()!.effectiveResistances),
+        rounded(BuildMetrics.of(build).shieldCapacitorMetricsResult().value!.effectiveResistances),
         expectedBuild.shields.resistancesAtFourPips,
     );
 
@@ -4780,15 +4772,15 @@ test('weaponsCapacitorMetrics scales fitted distributor recharge by WEP pips', (
     });
 });
 
-test('distributorMetrics reports every fitted capacitor at its selected pips', () => {
+test('distributorMetricsResult reports every fitted capacitor at its selected pips', () => {
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
     const distributor = build.fittedModuleAt('PowerDistributor')!.effectiveStats!;
-    const rated = BuildMetrics.of(build).distributorMetrics()!;
-    const halfPips = BuildMetrics.of(build).distributorMetrics({
+    const rated = BuildMetrics.of(build).distributorMetricsResult().value!;
+    const halfPips = BuildMetrics.of(build).distributorMetricsResult({
         systemsPips: 2,
         enginesPips: 2,
         weaponsPips: 2,
-    })!;
+    }).value!;
 
     assert.deepEqual(rated.pips, { systems: 4, engines: 4, weapons: 4 });
     for (const capacitor of ['systems', 'engines', 'weapons'] as const) {
@@ -4803,16 +4795,17 @@ test('distributorMetrics reports every fitted capacitor at its selected pips', (
         halfPips.engines.rechargeRate,
         distributor.enginesRecharge! * Math.pow(2 / 4, 1.1),
     );
-    assert.throws(() => BuildMetrics.of(build).distributorMetrics({ enginesPips: 5 }), {
+    assert.throws(() => BuildMetrics.of(build).distributorMetricsResult({ enginesPips: 5 }).value, {
         name: 'RangeError',
-        message: 'BuildMetrics.distributorMetrics: enginesPips must be a finite number from 0 to 4',
+        message:
+            'BuildMetrics.distributorMetricsResult: enginesPips must be a finite number from 0 to 4',
     });
 });
 
-test('distributorMetrics returns null without a powered distributor', () => {
+test('distributorMetricsResult returns a null value without a powered distributor', () => {
     // Every build mounts a distributor, so only switching it off answers `null`.
     const off = ShipLoadout.default('Anaconda').setModuleEnabled('PowerDistributor', false);
-    assert.equal(BuildMetrics.of(off).distributorMetrics(), null);
+    assert.equal(BuildMetrics.of(off).distributorMetricsResult().value, null);
 });
 
 test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', () => {
@@ -4833,7 +4826,7 @@ test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', (
         netDrainRate: 0,
         timeToDrain: Infinity,
     });
-    assert.equal(BuildMetrics.of(starved).distributorMetrics(), null);
+    assert.equal(BuildMetrics.of(starved).distributorMetricsResult().value, null);
 });
 
 test('a hull with no shield generator reports no shields', () => {
@@ -4841,7 +4834,7 @@ test('a hull with no shield generator reports no shields', () => {
         'PowerPlant',
         mod('Int_Powerplant_Size8_Class5'),
     );
-    assert.equal(BuildMetrics.of(build).shieldMetrics(), null);
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().value, null);
     // ...but still has the armour it left the shipyard with.
     assert.equal(BuildMetrics.of(build).armourMetrics()!.hitPoints, 945);
 });
@@ -4849,13 +4842,13 @@ test('a hull with no shield generator reports no shields', () => {
 test('switched-off modules drop out of every metric', () => {
     const build = fixtureAnaconda();
     const lit = BuildMetrics.of(build).weaponMetrics().total.damagePerSecond;
-    const shielded = BuildMetrics.of(build).shieldMetrics()!.strength;
+    const shielded = BuildMetrics.of(build).shieldMetricsResult().value!.strength;
 
     const off = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
         Modules: build.fittedModules().map(({ raw }) => ({ ...raw, On: false })),
     });
-    assert.equal(BuildMetrics.of(off).shieldMetrics(), null); // the generator is off
+    assert.equal(BuildMetrics.of(off).shieldMetricsResult().value, null); // the generator is off
     assert.equal(BuildMetrics.of(off).powerBudget().available, 0); // so is the plant
     assert.equal(BuildMetrics.of(off).weaponMetrics().total.damagePerSecond, 0);
     assert.equal(BuildMetrics.of(off).weaponsCapacitorMetrics().capacity, 0);
@@ -4873,9 +4866,9 @@ test('switched-off modules drop out of every metric', () => {
 
 test('engineering moves the metrics it should', () => {
     const build = fixtureAnaconda();
-    const before = BuildMetrics.of(build).shieldMetrics()!;
+    const before = BuildMetrics.of(build).shieldMetricsResult().value!;
     build.applyBlueprint('Slot01_Size7', 'ShieldGenerator_Reinforced', { grade: 5 });
-    const after = BuildMetrics.of(build).shieldMetrics()!;
+    const after = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.ok(after.strength > before.strength, `${before.strength} -> ${after.strength}`);
 
     const bareArmour = BuildMetrics.of(build).armourMetrics()!.hitPoints;
@@ -4993,7 +4986,7 @@ test("a build whose hull is beyond the generator's maximum mass has no shields",
         .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
         .setModule('Slot01_Size7', mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES));
     // A size-1 generator cannot cover a 400 t hull.
-    assert.equal(BuildMetrics.of(build).shieldMetrics()!.strength, 0);
+    assert.equal(BuildMetrics.of(build).shieldMetricsResult().value!.strength, 0);
 });
 
 test('an engineered hull reinforcement package adds a share of the base armour', () => {
@@ -6728,13 +6721,13 @@ const HEAT_SCENARIOS = [
     'firingDrained',
 ] as const;
 
-test('heatMetrics reproduces the pinned heat profile of each captured build', () => {
+test('heatMetricsResult reproduces the pinned heat profile of each captured build', () => {
     for (const expected of heatFixture.builds) {
         const event = HEAT_BUILDS[expected.fixture];
         assert.ok(event, `no journal for ${expected.fixture}`);
         const build = ShipLoadout.fromLoadout(event);
         assert.equal(build.shipSymbol.toLowerCase(), expected.ship);
-        const heat = BuildMetrics.of(build).heatMetrics();
+        const heat = BuildMetrics.of(build).heatMetricsResult().value;
         assert.ok(heat, expected.fixture);
         assert.equal(heat.heatEfficiency, expected.heatEfficiency);
         assert.equal(heat.hullHeatCapacity, expected.hullHeatCapacity);
@@ -6831,7 +6824,7 @@ test('the Lynx uses its pinned maximum dissipation in build heat metrics', () =>
     assert.equal(build.shipSymbol.toLowerCase(), expected.symbol.toLowerCase());
     assert.equal(getShipBySymbol(build.shipSymbol)?.heatDissipation, expected.heatDissipation);
     assert.equal(
-        BuildMetrics.of(build).heatMetrics()?.hullHeatDissipation,
+        BuildMetrics.of(build).heatMetricsResult().value?.hullHeatDissipation,
         expected.heatDissipation,
     );
 });
@@ -6845,13 +6838,13 @@ test('a build with no powered power plant has no heat profile', () => {
             module.Slot === 'PowerPlant' ? { ...module, On: false } : module,
         ),
     });
-    assert.equal(BuildMetrics.of(plantOff).heatMetrics(), null, 'plant switched off');
+    assert.equal(BuildMetrics.of(plantOff).heatMetricsResult().value, null, 'plant switched off');
 });
 
 test('heat follows what the plant actually feeds, not what is fitted', () => {
     const event = corvetteBeamsJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
-    const idle = BuildMetrics.of(build).heatMetrics()!.idle.thermalLoad;
+    const idle = BuildMetrics.of(build).heatMetricsResult().value!.idle.thermalLoad;
 
     // Switching a drawing module off takes its heat with it.
     const boosterOff = ShipLoadout.fromLoadout({
@@ -6860,7 +6853,7 @@ test('heat follows what the plant actually feeds, not what is fitted', () => {
             module.Slot === 'Slot01_Size7' ? { ...module, On: false } : module,
         ),
     });
-    assert.ok(BuildMetrics.of(boosterOff).heatMetrics()!.idle.thermalLoad < idle);
+    assert.ok(BuildMetrics.of(boosterOff).heatMetricsResult().value!.idle.thermalLoad < idle);
 
     // And a group the plant cannot keep lit makes no heat either: dropping the plant to
     // its smallest rating unpowers the lower priorities rather than heating the hull.
@@ -6876,8 +6869,8 @@ test('heat follows what the plant actually feeds, not what is fitted', () => {
     );
     assert.ok(powered < budget.retracted, 'and some retracted draw must go unfed');
     assert.equal(
-        BuildMetrics.of(weakPlant).heatMetrics()!.idle.thermalLoad,
-        powered * BuildMetrics.of(weakPlant).heatMetrics()!.heatEfficiency,
+        BuildMetrics.of(weakPlant).heatMetricsResult().value!.idle.thermalLoad,
+        powered * BuildMetrics.of(weakPlant).heatMetricsResult().value!.heatEfficiency,
     );
 });
 
@@ -6895,7 +6888,7 @@ test('a build the plant cannot feed at all generates no heat anywhere', () => {
         bands.every((band) => !band.poweredRetracted && !band.poweredDeployed),
         'the reproduction needs every band unpowered',
     );
-    const heat = BuildMetrics.of(starved).heatMetrics();
+    const heat = BuildMetrics.of(starved).heatMetricsResult().value;
     assert.ok(heat);
     for (const scenario of HEAT_SCENARIOS) {
         assert.equal(heat[scenario].thermalLoad, expected.thermalLoad, scenario);

@@ -89,7 +89,7 @@
  * ```
  *
  * The catalogue argument is required here rather than defaulted: `ALL_NEBULAE` is
- * 431.7 KiB, so importing it must be your decision.
+ * ~432 KiB, so importing it must be your decision.
  *
  * @example
  * The two coordinate spaces, side by side. Light-years and sector indices are both

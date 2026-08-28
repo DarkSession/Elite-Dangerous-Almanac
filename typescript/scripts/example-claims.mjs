@@ -20,10 +20,9 @@ const RUNTIME_AMBIENT_KINDS = new Set([
  * skipped rather than guessed at.
  *
  * @param {string} code - The snippet source.
- * @param {{ idPrefix?: string }} [options] - A stable prefix for generated claim ids.
  * @returns {{ code: string, claims: object[], skipped: object[], ambient: boolean }}
  */
-export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
+export function transformExampleClaims(code) {
     const source = ts.createSourceFile(
         'example.ts',
         code,
@@ -61,7 +60,7 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
     const replacements = [];
     const claimBinding = unusedClaimBinding(identifiers);
 
-    for (const [index, comment] of comments.entries()) {
+    for (const comment of comments) {
         const parsed = parseExpectedClaim(comment.expected);
         if (parsed.status === 'skip') {
             skipped.push({ ...comment, reason: parsed.reason });
@@ -73,12 +72,8 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
             skipped.push({ ...comment, reason: 'not attached to an executable expression' });
             continue;
         }
-        const context = contextSensitiveExpression(target.expression);
-        if (context !== null) {
-            skipped.push({
-                ...comment,
-                reason: `${context} expression needs its original context`,
-            });
+        if (containsYield(target.expression)) {
+            skipped.push({ ...comment, reason: 'yield expression needs its original context' });
             continue;
         }
         if (ambient) {
@@ -87,19 +82,15 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
         }
 
         const claimIndex = claims.length;
-        const id = `${idPrefix}:${index}`;
         const start = target.expression.getStart(source);
         const end = target.expression.end;
         const expression = code.slice(start, end);
         replacements.push({
             start,
             end,
-            // Generated code receives only a transformer-owned integer. The descriptive
-            // id remains in the data-only manifest, so no string needs to be embedded in
-            // JavaScript source.
-            text: `${claimBinding}(() => (${expression}), ${claimIndex})`,
+            text: `${claimBinding}((${expression}), ${JSON.stringify(parsed.spec)}, ${JSON.stringify(comment.expected)}, ${claimIndex})`,
         });
-        claims.push({ id, line: comment.line, expected: comment.expected, spec: parsed.spec });
+        claims.push({ line: comment.line, expected: comment.expected, spec: parsed.spec });
     }
 
     let transformed = code;
@@ -110,12 +101,8 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
             transformed.slice(replacement.end);
     }
     if (claims.length > 0) {
-        // Indirect eval resolves in the real global environment, so a snippet-level
-        // `globalThis` binding cannot redirect this capture. The fresh local name cannot
-        // be shadowed anywhere in the original AST, and captures the immutable hook
-        // before the snippet can rebind the globalThis property itself.
         transformed =
-            `const ${claimBinding} = (0, eval)('globalThis').__almanacExampleClaim;\n` +
+            `import { assertExampleValue as ${claimBinding} } from ${JSON.stringify(new URL('./example-value-match.mjs', import.meta.url).href)};\n` +
             transformed;
     }
 
@@ -248,28 +235,15 @@ function precedingTarget(targets, code, commentStart) {
     return best;
 }
 
-function contextSensitiveExpression(expression) {
-    let context = null;
-
+function containsYield(expression) {
+    let found = false;
     function visit(node) {
-        if (context !== null) return;
-        // An await/yield inside its own nested function keeps that function's context
-        // when the outer expression is wrapped. Only one belonging to the expression we
-        // are moving into a plain arrow would become invalid.
-        if (node !== expression && ts.isFunctionLike(node)) return;
-        if (node.kind === ts.SyntaxKind.AwaitExpression) {
-            context = 'await';
-            return;
-        }
-        if (node.kind === ts.SyntaxKind.YieldExpression) {
-            context = 'yield';
-            return;
-        }
-        ts.forEachChild(node, visit);
+        if (found || (node !== expression && ts.isFunctionLike(node))) return;
+        if (node.kind === ts.SyntaxKind.YieldExpression) found = true;
+        else ts.forEachChild(node, visit);
     }
-
-    if (!ts.isFunctionLike(expression)) visit(expression);
-    return context;
+    visit(expression);
+    return found;
 }
 
 function literalPrefix(text) {
@@ -435,9 +409,8 @@ function decodePrefixUnary(operator, decoded) {
 }
 
 function exactNumberSpec(value) {
-    // JSON.stringify normalises -0 to 0. The runtime manifest crosses a JSON boundary,
-    // so use the string-backed special-number representation to retain Object.is
-    // semantics for scalar and recursively decoded structured claims.
+    // JSON.stringify normalises -0 to 0. Specs are embedded in generated JavaScript
+    // through that boundary, so retain Object.is semantics with a string-backed form.
     return Object.is(value, -0)
         ? { kind: 'number-special', value: '-0' }
         : { kind: 'number-exact', value };

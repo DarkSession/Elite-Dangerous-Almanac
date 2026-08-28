@@ -29,13 +29,7 @@ import { fileURLToPath } from 'node:url';
 /** Barrels whose `@packageDocumentation` must reach the published declarations. */
 const BARRELS = ['astro/index', 'ships/index', 'materials/index', 'commodities/index'];
 
-/**
- * Read the leading block comment of a source file.
- *
- * @param source - The TypeScript source text.
- * @returns The comment including its delimiters, or `null` if the file does not
- *   open with one.
- */
+/** Read a source file's leading block comment. */
 function leadingBlockComment(source) {
     const trimmed = source.trimStart();
     if (!trimmed.startsWith('/**')) return null;
@@ -47,17 +41,12 @@ let attached = 0;
 for (const barrel of BARRELS) {
     const from = new URL(`../src/${barrel}.ts`, import.meta.url);
     const to = new URL(`../dist/${barrel}.d.ts`, import.meta.url);
-
     const comment = leadingBlockComment(await readFile(from, 'utf8'));
-    if (!comment) {
-        throw new Error(`${fileURLToPath(from)} has no leading /** */ block to attach`);
-    }
+    if (!comment) throw new Error(`${fileURLToPath(from)} has no leading documentation block`);
 
     const declarations = await readFile(to, 'utf8').catch((cause) => {
         throw new Error(`${fileURLToPath(to)} is missing — run \`pnpm run build\``, { cause });
     });
-    // Idempotent: a rebuild over a clean dist starts from tsup's output, but do not
-    // double-prepend if this ever runs twice against the same file.
     if (declarations.startsWith('/**')) continue;
 
     await writeFile(to, `${comment}\n${declarations}`);

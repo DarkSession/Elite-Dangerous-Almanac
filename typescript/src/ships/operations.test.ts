@@ -95,11 +95,14 @@ test('shared catalogue-backed operation cases reproduce', () => {
     assert.equal(distributorBand?.poweredRetracted, true);
     assert.equal(distributorBand?.poweredDeployed, false);
     assert.deepEqual(
-        BuildMetrics.of(distributorBuild).distributorMetrics(distributorFacade.options),
+        BuildMetrics.of(distributorBuild).distributorMetricsResult(distributorFacade.options).value,
         distributorFacade.expected,
     );
     for (const loadout of distributorFacade.nullLoadouts) {
-        assert.equal(BuildMetrics.of(ShipLoadout.fromLoadout(loadout)).distributorMetrics(), null);
+        assert.equal(
+            BuildMetrics.of(ShipLoadout.fromLoadout(loadout)).distributorMetricsResult().value,
+            null,
+        );
     }
 
     const credits = BuildMetrics.of(ShipLoadout.default(fixture.buildCost.credits.ship)).buildCost()

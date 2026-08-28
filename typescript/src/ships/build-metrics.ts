@@ -18,12 +18,8 @@
  * `./shield-recovery`, `./armour`, `./weapons`, `./weapons-capacitor` and
  * `./distributor` each take a plain input object and import no catalogue. This class is the convenience that reads those inputs off a build.
  *
- * **Unavailable metrics come in pairs.** Eight metrics depend on build state that may not
- * be there — no module fitted, a record that does not state a number, a switch turned
- * off, a priority group the plant sheds. Each is offered twice: a nullable method that
- * is the convenience, and a `…Result` companion carrying the same value plus the reason
- * it is unavailable. `standardLoad` / `standardLoadResult` is the same pair for a load
- * condition the fitted drive may not support.
+ * Metrics that depend on optional build state return a {@link CalculationResult}: its
+ * `value` is the completed figure or `null`, and `issues` explains an unavailable one.
  *
  * @example
  * ```ts
@@ -114,8 +110,7 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @remarks
  * The error facade rule is that a message names the function the consumer called, so
- * each guard is told the method name it is guarding for. Written once here so the two
- * halves of a metric pair cannot drift into two spellings of one option's rule.
+ * each guard is told the method name it is guarding for.
  */
 const FACADE = 'BuildMetrics';
 
@@ -128,26 +123,26 @@ export interface JumpOptions {
 }
 
 /**
- * Optional SYS allocation for {@link BuildMetrics.shieldCapacitorMetrics}.
+ * Optional SYS allocation for {@link BuildMetrics.shieldCapacitorMetricsResult}.
  *
  * @remarks
  * Its own type, rather than one shared with {@link ShieldRecoveryOptions}, because the
  * two answer different questions from the same allocation — resistance here, recharge
  * there — and each is free to document its own rule.
- * {@link BuildMetrics.shieldMetrics} takes no allocation at all: the bare shield is
+ * {@link BuildMetrics.shieldMetricsResult} takes no allocation at all: the bare shield is
  * pip-free.
  */
 export interface ShieldCapacitorOptions {
     /**
      * Pips to the systems capacitor, `0`–`4`. Defaults to `4` — a full SYS capacitor,
      * the condition the game's own panel quotes. Pass `0` for the bare shield, whose
-     * effective figures then equal {@link BuildMetrics.shieldMetrics}.
+     * effective figures then equal {@link BuildMetrics.shieldMetricsResult}.
      */
     readonly systemsPips?: number;
 }
 
 /**
- * Optional SYS allocation for {@link BuildMetrics.shieldRecovery}.
+ * Optional SYS allocation for {@link BuildMetrics.shieldRecoveryResult}.
  *
  * @remarks
  * See {@link ShieldCapacitorOptions} for why recovery has an options type of its own.
@@ -160,11 +155,11 @@ export interface ShieldRecoveryOptions {
     readonly systemsPips?: number;
 }
 
-/** Optional load and ENG allocation for {@link BuildMetrics.mobilityCapacitorMetrics}. */
+/** Optional load and ENG allocation for {@link BuildMetrics.mobilityCapacitorMetricsResult}. */
 export interface MobilityCapacitorOptions extends JumpOptions {
     /**
      * Pips assigned to the engines capacitor, `0`–`4`. Defaults to `4`, which reproduces
-     * {@link BuildMetrics.mobilityMetrics} exactly.
+     * {@link BuildMetrics.mobilityMetricsResult} exactly.
      */
     readonly enginesPips?: number;
 }
@@ -188,13 +183,13 @@ export interface StandardLoadInputs {
      * to show beside them rather than one reassembled by the caller. The reserve tank
      * is **not** in it: the game's statistics panel counts the reserve in the current
      * mass it displays, and neither calculation here does — see
-     * {@link BuildMetrics.mobilityMetrics}. Add
+     * {@link BuildMetrics.mobilityMetricsResult}. Add
      * {@link ships!FuelCapacity.reserve | FuelCapacity.reserve} to
      * match the panel.
      *
      * The extra `fuel` and `cargo` are the load a screen labels; the mass is what they
      * add up to, and passing the whole value back into {@link BuildMetrics.jumpRange} or
-     * {@link BuildMetrics.mobilityMetrics} is unaffected by its presence.
+     * {@link BuildMetrics.mobilityMetricsResult} is unaffected by its presence.
      */
     readonly mass: number;
 }
@@ -205,7 +200,7 @@ export interface WeaponsOptions {
     readonly weaponsPips?: number;
 }
 
-/** Optional SYS, ENG and WEP allocations for {@link BuildMetrics.distributorMetrics}. */
+/** Optional SYS, ENG and WEP allocations for {@link BuildMetrics.distributorMetricsResult}. */
 export interface DistributorOptions {
     /** Pips assigned to the systems capacitor, `0`–`4`. Defaults to `4`. */
     readonly systemsPips?: number;
@@ -395,20 +390,15 @@ function requireLoadOptions(scope: string, options: JumpOptions): void {
  * - **Attach** — {@link of}.
  * - **Jump** — {@link frameShiftDrive}, {@link frameShiftDriveMassFactor},
  *   {@link maxJumpRange}, {@link jumpRange}, {@link ladenJumpRange}, {@link fuelPerJump},
- *   {@link totalRange}, {@link jumpRangeSummary}, {@link standardLoad},
- *   {@link standardLoadResult}.
+ *   {@link totalRange}, {@link jumpRangeSummary}, {@link standardLoadResult}.
  * - **Mass and cost** — {@link buildMass}, {@link buildCost}.
- * - **Power and heat** — {@link powerBudget}, {@link heatMetrics},
- *   {@link heatMetricsResult}.
- * - **Mobility** — {@link thrusters}, {@link mobilityMetrics},
- *   {@link mobilityMetricsResult}, {@link mobilityCapacitorMetrics},
+ * - **Power and heat** — {@link powerBudget}, {@link heatMetricsResult}.
+ * - **Mobility** — {@link thrusters}, {@link mobilityMetricsResult},
  *   {@link mobilityCapacitorMetricsResult}.
- * - **Defence** — {@link armourMetrics}, {@link shieldMetrics},
- *   {@link shieldMetricsResult}, {@link shieldCapacitorMetrics},
- *   {@link shieldCapacitorMetricsResult}, {@link shieldRecovery},
- *   {@link shieldRecoveryResult}, {@link cellBanks}.
+ * - **Defence** — {@link armourMetrics}, {@link shieldMetricsResult},
+ *   {@link shieldCapacitorMetricsResult}, {@link shieldRecoveryResult}, {@link cellBanks}.
  * - **Offence** — {@link weaponMetrics}, {@link weaponsCapacitorMetrics},
- *   {@link distributorMetrics}, {@link distributorMetricsResult}.
+ *   {@link distributorMetricsResult}.
  *
  * Every member is a method. Nothing here is a fact the fit already carries — each one
  * computes from build state — so there are no properties to confuse with them.
@@ -628,30 +618,6 @@ export class BuildMetrics {
     }
 
     /**
-     * One of the package's standard load conditions, or `null` when the fitted drive
-     * cannot support it.
-     *
-     * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
-     * full main tank and no cargo, or `'laden'` for a full main tank and full hold.
-     * @returns The fuel and cargo carried and the {@link StandardLoadInputs.mass}, or
-     * `null`. Only `'maximum'` can answer `null`: it validates the whole fitted drive,
-     * jump booster included, so a non-null one can be passed straight to
-     * {@link jumpRange}. Use {@link standardLoadResult} to learn why it is unavailable.
-     * @throws {RangeError} If `load` is not a recognised standard load.
-     * @example
-     * ```ts
-     * import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     *
-     * const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
-     * metrics.standardLoad('laden')?.mass; // -> 1210, tonnes with a full tank and hold
-     * ```
-     */
-    standardLoad(load: StandardLoad): StandardLoadInputs | null {
-        return this.#standardLoad('standardLoad', load).value;
-    }
-
-    /**
      * Resolve one of the package's standard load conditions for jump and mobility views.
      *
      * @param load - `'maximum'` for one jump's fuel and no cargo, `'unladen'` for a
@@ -667,11 +633,11 @@ export class BuildMetrics {
      *
      * declare const metrics: BuildMetrics;
      * const load = metrics.standardLoadResult('maximum');
-     * if (load.complete) metrics.mobilityCapacitorMetrics({ ...load.value, enginesPips: 2 });
+     * if (load.complete) metrics.mobilityCapacitorMetricsResult({ ...load.value, enginesPips: 2 });
      * ```
      */
     standardLoadResult(load: StandardLoad): CalculationResult<StandardLoadInputs> {
-        return this.#standardLoad('standardLoadResult', load);
+        return this.#standardLoad(load);
     }
 
     /**
@@ -717,15 +683,15 @@ export class BuildMetrics {
      * Lightweight roll is already in `modules`.
      *
      * The reserve tank is **not** counted. The main tank is the fuel the drive and the
-     * flight model see, and it is what {@link jumpRange} and {@link mobilityMetrics}
+     * flight model see, and it is what {@link jumpRange} and {@link mobilityMetricsResult}
      * weigh; the game's statistics panel additionally counts the reserve in the current
      * mass it displays, so add
      * {@link ships!ShipLoadout.fuelCapacity | fuelCapacity}`.reserve` to
      * reproduce that reading.
      *
      * @param options - {@link JumpOptions}. `fuel` defaults to a full main tank and
-     * `cargo` to `0`, matching {@link jumpRange} and {@link mobilityMetrics}. Pass
-     * {@link standardLoad} to weigh one of the standard loads.
+     * `cargo` to `0`, matching {@link jumpRange} and {@link mobilityMetricsResult}. Pass
+     * a complete {@link standardLoadResult} value to weigh one of the standard loads.
      * @returns A frozen {@link BuildMass}, every figure in tonnes.
      * @throws {RangeError} If fuel or cargo is not finite and non-negative.
      * @example
@@ -888,33 +854,6 @@ export class BuildMetrics {
     }
 
     /**
-     * The build's heat: what it idles at, what it runs at flying and jumping, and
-     * whether firing everything cooks it.
-     *
-     * Every figure is post-engineering. The heat a build makes follows what the plant
-     * actually feeds, so a module switched off — or one in a priority group the plant
-     * cannot keep lit — contributes nothing.
-     *
-     * @returns The {@link HeatMetrics}, or `null` when the build has no powered power
-     * plant whose heat efficiency it can read. Use {@link heatMetricsResult} to
-     * distinguish the unavailable conditions.
-     * @example
-     * ```ts
-     * import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     *
-     * declare const metrics: BuildMetrics;
-     *
-     * const heat = metrics.heatMetrics();
-     * heat?.idle.gauge; // -> 0.23, i.e. the gauge reads 23%
-     * heat?.firingSustained.overheats; // -> false: the guns run cool enough to hold
-     * heat?.firingDrained.secondsToOverheat; // -> how long an alpha strike has on an empty WEP
-     * ```
-     */
-    heatMetrics(): HeatMetrics | null {
-        return this.heatMetricsResult().value;
-    }
-
-    /**
      * The build's heat with a diagnostic when its power plant is unavailable.
      *
      * @returns A complete {@link HeatMetrics} value, otherwise `null` plus the fitted
@@ -941,36 +880,6 @@ export class BuildMetrics {
     }
 
     /**
-     * The build's speed, boost and rotation rates at a chosen load and **full ENG**.
-     *
-     * @remarks
-     * Main-tank fuel contributes to the flight model's loaded mass. Reserve-tank fuel
-     * does not: although the statistics panel includes it in the displayed current
-     * mass, ten observed builds reproduce their angular rates only when the reserve is
-     * excluded from the thruster mass curve.
-     *
-     * These are the four-ENG-pip figures. A **lower** allocation is
-     * {@link mobilityCapacitorMetrics}, which owns the pip story the way
-     * {@link weaponsCapacitorMetrics} owns WEP's.
-     *
-     * @param options - Fuel defaults to a full main tank and cargo to `0`.
-     * @returns Loaded {@link MobilityMetrics}, or `null` when no fully described
-     * thrusters are powered with hardpoints retracted. Use
-     * {@link mobilityMetricsResult} to distinguish the unavailable conditions.
-     * @throws {RangeError} If fuel or cargo is not finite and non-negative.
-     * @example
-     * ```ts
-     * import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     *
-     * declare const metrics: BuildMetrics;
-     * metrics.mobilityMetrics({ cargo: 32, fuel: 8 })?.speed; // -> m/s at four ENG pips
-     * ```
-     */
-    mobilityMetrics(options: JumpOptions = {}): MobilityMetrics | null {
-        return this.#mobility('mobilityMetrics', options).value;
-    }
-
-    /**
      * The build's mobility with a diagnostic when its thrusters or retracted power
      * supply is unavailable.
      *
@@ -989,37 +898,7 @@ export class BuildMetrics {
      * ```
      */
     mobilityMetricsResult(options: JumpOptions = {}): CalculationResult<MobilityMetrics> {
-        return this.#mobility('mobilityMetricsResult', options);
-    }
-
-    /**
-     * The build's speed and rotation rates at a chosen load and ENG-pip allocation.
-     *
-     * Boost is not here: it does not move with the allocation, so it stays on
-     * {@link mobilityMetrics} beside the loaded mass and the two curve multipliers these
-     * figures share.
-     *
-     * @param options - {@link MobilityCapacitorOptions}. Fuel defaults to a full main
-     * tank, cargo to `0`, and `enginesPips` to `4` — which reproduces
-     * {@link mobilityMetrics} exactly.
-     * @returns The {@link MobilityCapacitorMetrics}, or `null` when no fully described
-     * thrusters are powered with hardpoints retracted. Use
-     * {@link mobilityCapacitorMetricsResult} to distinguish the unavailable conditions.
-     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
-     * `enginesPips` is outside `[0, 4]`.
-     * @example
-     * ```ts
-     * import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     *
-     * const metrics = BuildMetrics.of(ShipLoadout.default('SideWinder'));
-     * metrics.mobilityCapacitorMetrics({ enginesPips: 0 })?.enginesPips; // -> 0
-     * ```
-     */
-    mobilityCapacitorMetrics(
-        options: MobilityCapacitorOptions = {},
-    ): MobilityCapacitorMetrics | null {
-        return this.#mobilityCapacitor('mobilityCapacitorMetrics', options).value;
+        return this.#mobility(options);
     }
 
     /**
@@ -1045,39 +924,7 @@ export class BuildMetrics {
     mobilityCapacitorMetricsResult(
         options: MobilityCapacitorOptions = {},
     ): CalculationResult<MobilityCapacitorMetrics> {
-        return this.#mobilityCapacitor('mobilityCapacitorMetricsResult', options);
-    }
-
-    /**
-     * The build's shields: strength in megajoules, where it comes from, and the
-     * effective resistances.
-     *
-     * Shield strength scales with the **hull's** mass, not the build's, so fitting
-     * more modules never weakens it. Boosters, Guardian shield reinforcement and any
-     * engineering are all folded in; switched-off or shed boosters and reinforcement
-     * are ignored, while a switched-off or shed generator makes the metric unavailable.
-     *
-     * These are the **pip-free** figures, which is what an outfitting screen shows. What
-     * the SYS capacitor makes of them is {@link shieldCapacitorMetrics}, which owns the
-     * pip story the way {@link weaponsCapacitorMetrics} owns WEP's.
-     *
-     * @returns The {@link ShieldMetrics}, or `null` when the build has no shield
-     * generator powered with hardpoints retracted. Use
-     * {@link shieldMetricsResult} to distinguish the unavailable conditions.
-     * @example
-     * ```ts
-     * import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     *
-     * declare const metrics: BuildMetrics;
-     *
-     * const shields = metrics.shieldMetrics();
-     * shields?.strength; // -> MJ
-     * shields?.resistances.thermal; // -> negative on a stock generator
-     * metrics.shieldCapacitorMetrics()?.effectiveResistances.thermal; // -> with 4 pips to SYS
-     * ```
-     */
-    shieldMetrics(): ShieldMetrics | null {
-        return this.#shields().value;
+        return this.#mobilityCapacitor(options);
     }
 
     /**
@@ -1098,39 +945,6 @@ export class BuildMetrics {
      */
     shieldMetricsResult(): CalculationResult<ShieldMetrics> {
         return this.#shields();
-    }
-
-    /**
-     * The build's SYS capacitor: what the pips hold and recharge, the resistance they
-     * add, and what the shields are worth with them folded in.
-     *
-     * The effective resistances and hit points here are the ones the game's own panel
-     * shows while the allocation stands; {@link shieldMetrics} is the bare shield they
-     * are built from. Both come from one pass over the build, so a screen showing them
-     * side by side need not compute the shield twice.
-     *
-     * @param options - {@link ShieldCapacitorOptions}. `systemsPips` (0–4) defaults to
-     * `4`; at `0` the effective figures equal {@link shieldMetrics}.
-     * @returns The {@link ShieldCapacitorMetrics}, or `null` when the build has no
-     * shield generator powered with hardpoints retracted, or a fitted distributor does
-     * not state its SYS figures. Use {@link shieldCapacitorMetricsResult} to distinguish
-     * the unavailable conditions. With no distributor fitted, capacity and recharge are
-     * zero — the modelled truth for a build that has no SYS capacitor at all.
-     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
-     * @example
-     * ```ts
-     * import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     *
-     * const metrics = BuildMetrics.of(ShipLoadout.default('SideWinder'));
-     * const sys = metrics.shieldCapacitorMetrics({ systemsPips: 4 });
-     * sys?.systemsResistance; // -> 0.6
-     * // Effective hit points behind those pips, against the shield's weakest type.
-     * (sys?.effectiveHitPoints.thermal ?? 0) > (metrics.shieldMetrics()?.strength ?? 0); // -> true
-     * ```
-     */
-    shieldCapacitorMetrics(options: ShieldCapacitorOptions = {}): ShieldCapacitorMetrics | null {
-        return this.#shieldCapacitor('shieldCapacitorMetrics', options).value;
     }
 
     /**
@@ -1157,29 +971,7 @@ export class BuildMetrics {
     shieldCapacitorMetricsResult(
         options: ShieldCapacitorOptions = {},
     ): CalculationResult<ShieldCapacitorMetrics> {
-        return this.#shieldCapacitor('shieldCapacitorMetricsResult', options);
-    }
-
-    /**
-     * Time for this build's shield to rise after collapse and then regenerate to full.
-     *
-     * @param options - {@link ShieldRecoveryOptions}. SYS pips in `[0, 4]`, defaulting
-     * to `4` — **not** the `0` {@link shieldMetrics} defaults to.
-     * @returns Recovery rates and seconds, or `null` when no shield generator is powered
-     * with hardpoints retracted. Use
-     * {@link shieldRecoveryResult} to distinguish the unavailable conditions.
-     * Insufficient zero-pip recharge produces `Infinity`.
-     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
-     * @example
-     * ```ts
-     * import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     *
-     * declare const metrics: BuildMetrics;
-     * metrics.shieldRecovery({ systemsPips: 4 })?.recoveryTime; // -> seconds from collapse to 50%
-     * ```
-     */
-    shieldRecovery(options: ShieldRecoveryOptions = {}): ShieldRecovery | null {
-        return this.#recovery('shieldRecovery', options).value;
+        return this.#shieldCapacitor(options);
     }
 
     /**
@@ -1202,7 +994,7 @@ export class BuildMetrics {
      * ```
      */
     shieldRecoveryResult(options: ShieldRecoveryOptions = {}): CalculationResult<ShieldRecovery> {
-        return this.#recovery('shieldRecoveryResult', options);
+        return this.#recovery(options);
     }
 
     /**
@@ -1351,36 +1143,6 @@ export class BuildMetrics {
     }
 
     /**
-     * All three power-distributor capacitors at selected pip allocations.
-     *
-     * @param options - SYS, ENG and WEP pips in `[0, 4]`, each defaulting
-     * independently to `4`. The allocations need not sum to six, which permits
-     * independent comparisons of the three maxima.
-     * @returns Capacity, rated four-pip recharge and actual pip-scaled recharge for
-     * SYS, ENG and WEP, or `null` when the distributor is not fitted, switched off,
-     * shed by the retracted power budget, or its six capacitor stats cannot be
-     * resolved. Use {@link distributorMetricsResult} to distinguish those four. That
-     * retracted state represents the distributor itself; firing endurance in
-     * {@link weaponsCapacitorMetrics} separately applies the deployed state.
-     * @throws {RangeError} If any pip allocation is outside `[0, 4]` or not finite.
-     * @example
-     * ```ts
-     * import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
-     *
-     * declare const metrics: BuildMetrics;
-     * const distributor = metrics.distributorMetrics({
-     *     systemsPips: 2,
-     *     enginesPips: 2,
-     *     weaponsPips: 2,
-     * });
-     * distributor?.engines.rechargeRate; // MJ/s
-     * ```
-     */
-    distributorMetrics(options: DistributorOptions = {}): DistributorMetrics | null {
-        return this.#distributor('distributorMetrics', options).value;
-    }
-
-    /**
      * The build's distributor with a diagnostic when it is unavailable.
      *
      * @param options - SYS, ENG and WEP pips in `[0, 4]`, each defaulting to `4`.
@@ -1403,29 +1165,20 @@ export class BuildMetrics {
     distributorMetricsResult(
         options: DistributorOptions = {},
     ): CalculationResult<DistributorMetrics> {
-        return this.#distributor('distributorMetricsResult', options);
+        return this.#distributor(options);
     }
 
-    /**
-     * The one implementation of the mobility metric, told which public method wants it.
-     *
-     * @remarks
-     * Each pair of a nullable metric and its `…Result` companion validates once, here,
-     * with the caller's own name. The two used to guard separately so the thrown
-     * message could name the method the consumer called, which meant every option's
-     * rule was written twice and free to drift apart.
-     */
-    #mobility(method: string, options: JumpOptions): CalculationResult<MobilityMetrics> {
-        const input = this.#mobilityInput(`${FACADE}.${method}`, options);
+    /** Shared implementation of the mobility metric. */
+    #mobility(options: JumpOptions): CalculationResult<MobilityMetrics> {
+        const input = this.#mobilityInput(`${FACADE}.mobilityMetricsResult`, options);
         return input.complete ? completeResult(mobilityMetrics(input.value)!) : input;
     }
 
     /** The one implementation of the ENG capacitor — see {@link BuildMetrics.#mobility}. */
     #mobilityCapacitor(
-        method: string,
         options: MobilityCapacitorOptions,
     ): CalculationResult<MobilityCapacitorMetrics> {
-        const scope = `${FACADE}.${method}`;
+        const scope = `${FACADE}.mobilityCapacitorMetricsResult`;
         const enginesPips = requirePips(scope, 'enginesPips', options.enginesPips ?? 4);
         const input = this.#mobilityInput(scope, options);
         return input.complete
@@ -1463,12 +1216,9 @@ export class BuildMetrics {
     }
 
     /** The one implementation of the SYS capacitor — see {@link BuildMetrics.#mobility}. */
-    #shieldCapacitor(
-        method: string,
-        options: ShieldCapacitorOptions,
-    ): CalculationResult<ShieldCapacitorMetrics> {
+    #shieldCapacitor(options: ShieldCapacitorOptions): CalculationResult<ShieldCapacitorMetrics> {
         const systemsPips = requirePips(
-            `${FACADE}.${method}`,
+            `${FACADE}.shieldCapacitorMetricsResult`,
             'systemsPips',
             options.systemsPips ?? 4,
         );
@@ -1483,9 +1233,9 @@ export class BuildMetrics {
     }
 
     /** The one implementation of shield recovery — see {@link BuildMetrics.#mobility}. */
-    #recovery(method: string, options: ShieldRecoveryOptions): CalculationResult<ShieldRecovery> {
+    #recovery(options: ShieldRecoveryOptions): CalculationResult<ShieldRecovery> {
         const systemsPips = requirePips(
-            `${FACADE}.${method}`,
+            `${FACADE}.shieldRecoveryResult`,
             'systemsPips',
             options.systemsPips ?? 4,
         );
@@ -1500,11 +1250,8 @@ export class BuildMetrics {
     }
 
     /** The one implementation of the distributor metric — see {@link BuildMetrics.#mobility}. */
-    #distributor(
-        method: string,
-        options: DistributorOptions,
-    ): CalculationResult<DistributorMetrics> {
-        const scope = `${FACADE}.${method}`;
+    #distributor(options: DistributorOptions): CalculationResult<DistributorMetrics> {
+        const scope = `${FACADE}.distributorMetricsResult`;
         const pips = {
             systemsPips: requirePips(scope, 'systemsPips', options.systemsPips ?? 4),
             enginesPips: requirePips(scope, 'enginesPips', options.enginesPips ?? 4),
@@ -1520,10 +1267,10 @@ export class BuildMetrics {
     }
 
     /** The one implementation of the standard loads — see {@link BuildMetrics.#mobility}. */
-    #standardLoad(method: string, load: StandardLoad): CalculationResult<StandardLoadInputs> {
+    #standardLoad(load: StandardLoad): CalculationResult<StandardLoadInputs> {
         if (load !== 'maximum' && load !== 'unladen' && load !== 'laden') {
             throw new RangeError(
-                `${FACADE}.${method}: load must be 'maximum', 'unladen', or 'laden'`,
+                `${FACADE}.standardLoadResult: load must be 'maximum', 'unladen', or 'laden'`,
             );
         }
 

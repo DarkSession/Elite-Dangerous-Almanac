@@ -585,18 +585,28 @@ test('published pure annotations keep unused catalogue indexes tree-shakeable', 
     assert.doesNotMatch(gradeBundle, /AdaptiveEncryptorsCapture|AbnormalCompactEmissionsData/);
 });
 
-test('catalogue-derived fields stay compact in consumer bundles', async () => {
-    const [planetary, allNebulae, microResources] = await Promise.all([
-        consumerBundle(
-            "import { PLANETARY_NEBULAE as value } from '@elite-dangerous-almanac/core/astro/nebulae-planetary'; console.log(value);",
-        ),
-        consumerBundle(
-            "import { ALL_NEBULAE as value } from '@elite-dangerous-almanac/core/astro/nebulae-all'; console.log(value);",
-        ),
-        consumerBundle(
-            "import { getMicroResourceByName as value } from '@elite-dangerous-almanac/core/materials/micro-resources'; console.log(value);",
-        ),
-    ]);
+test('catalogue-backed consumer bundles stay within their coarse budgets', async () => {
+    const [planetary, allNebulae, microResources, materials, commodities, modules] =
+        await Promise.all([
+            consumerBundle(
+                "import { PLANETARY_NEBULAE as value } from '@elite-dangerous-almanac/core/astro/nebulae-planetary'; console.log(value);",
+            ),
+            consumerBundle(
+                "import { ALL_NEBULAE as value } from '@elite-dangerous-almanac/core/astro/nebulae-all'; console.log(value);",
+            ),
+            consumerBundle(
+                "import { getMicroResourceByName as value } from '@elite-dangerous-almanac/core/materials/micro-resources'; console.log(value);",
+            ),
+            consumerBundle(
+                "import { getMaterialByName as value } from '@elite-dangerous-almanac/core/materials/materials'; console.log(value);",
+            ),
+            consumerBundle(
+                "import { getCommodityByName as value } from '@elite-dangerous-almanac/core/commodities/commodities'; console.log(value);",
+            ),
+            consumerBundle(
+                "import { getModuleBySymbol as value } from '@elite-dangerous-almanac/core/ships/modules'; console.log(value);",
+            ),
+        ]);
     assert.ok(
         planetary.length < 416 * 1024,
         `planetary nebulae bundle is ${planetary.length} bytes`,
@@ -606,6 +616,9 @@ test('catalogue-derived fields stay compact in consumer bundles', async () => {
         microResources.length < 14 * 1024,
         `micro-resource bundle is ${microResources.length} bytes`,
     );
+    assert.ok(materials.length < 24 * 1024, `material bundle is ${materials.length} bytes`);
+    assert.ok(commodities.length < 40 * 1024, `commodity bundle is ${commodities.length} bytes`);
+    assert.ok(modules.length < 384 * 1024, `module bundle is ${modules.length} bytes`);
 });
 
 test('a journal address reaches every id64 entry point without conversion', async () => {
@@ -826,11 +839,6 @@ test('the data-free build calculations are importable on their own', async () =>
 });
 
 test('each barrel ships its orientation documentation in the declarations', async () => {
-    // A barrel is pure re-exports, so tsup's declaration rollup emits a flat export
-    // list and drops the file-level comment. `scripts/attach-barrel-docs.mjs` puts it
-    // back. Without it, a consumer who opens (or goes to definition on) the module
-    // they just imported finds a bare export list, and the guidance that orients the
-    // feature area ships only to the repository.
     const barrels = [
         'astro/index.d.ts',
         'ships/index.d.ts',
@@ -840,21 +848,10 @@ test('each barrel ships its orientation documentation in the declarations', asyn
     for (const file of barrels) {
         const text = await readFile(new URL(`./dist/${file}`, import.meta.url), 'utf8');
         assert.ok(
-            text.startsWith('/**'),
-            `dist/${file} lost its @packageDocumentation block — run \`pnpm run build\``,
+            text.startsWith('/**') && text.includes('@packageDocumentation'),
+            `dist/${file} lost its @packageDocumentation block`,
         );
-        assert.ok(
-            text.includes('@packageDocumentation'),
-            `dist/${file} has no @packageDocumentation`,
-        );
-        // Match on size, not on prose: a reworded intro is fine, a lost one is not.
-        // The floor only has to separate "the guide" from "a stub". Feature-area
-        // barrels run from ~980 to ~3100 characters, so this stays deliberately low.
-        const block = text.slice(0, text.indexOf('*/'));
-        assert.ok(
-            block.length > 150,
-            `dist/${file} has only a stub doc block (${block.length} chars) — expected the guide`,
-        );
+        assert.ok(text.indexOf('*/') > 150, `dist/${file} has only a stub doc block`);
     }
 });
 

@@ -14,7 +14,7 @@
  * retail ({@link ShipLoadout.sourcePurchase}). **{@link BuildMetrics} is the other
  * half**: `BuildMetrics.of(build)` answers the questions apps actually ask
  * ({@link BuildMetrics.maxJumpRange}, {@link BuildMetrics.powerBudget},
- * {@link BuildMetrics.shieldMetrics}), so an editor need not import the calculations nor
+ * {@link BuildMetrics.shieldMetricsResult}), so an editor need not import the calculations nor
  * a viewer the editors. Together they are the batteries-included facade and pull in
  * every catalogue; everything below is what they are built from, so drop to the pieces
  * when you need one answer rather than a whole ship.
@@ -106,7 +106,7 @@
  * const metrics = BuildMetrics.of(ShipLoadout.fromLoadout(event));
  * metrics.maxJumpRange(); // -> 60.5478  (ly)
  * metrics.powerBudget().withinBudget; // -> true
- * metrics.shieldMetrics()?.strength; // -> 743.12   (MJ)
+ * metrics.shieldMetricsResult().value?.strength; // -> 743.12   (MJ)
  * metrics.weaponMetrics().total.damagePerSecond; // -> 34
  * ```
  *

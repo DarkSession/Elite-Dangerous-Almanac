@@ -120,7 +120,7 @@ const build = ShipLoadout.fromSlef(slefJsonString);
 const metrics = BuildMetrics.of(build);
 metrics.maxJumpRange();
 metrics.powerBudget();
-metrics.shieldMetrics();
+metrics.shieldMetricsResult().value;
 metrics.armourMetrics();
 metrics.weaponMetrics();
 metrics.weaponsCapacitorMetrics({ weaponsPips: 2 });

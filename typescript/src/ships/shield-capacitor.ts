@@ -20,7 +20,7 @@
  * raised shield — is {@link shieldRecovery}, which takes the same allocation and the
  * generator's regeneration rates.
  *
- * This module is data-free. {@link BuildMetrics.shieldCapacitorMetrics} (in
+ * This module is data-free. {@link BuildMetrics.shieldCapacitorMetricsResult} (in
  * `./build-metrics`) resolves the powered generator, boosters and distributor for you.
  *
  * @remarks

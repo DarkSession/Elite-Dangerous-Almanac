@@ -303,7 +303,7 @@ test('every build reproduces its pinned metrics', () => {
             `${build.id} power.withinBudget`,
         );
 
-        let shields = BuildMetrics.of(loadout).shieldMetrics();
+        let shields = BuildMetrics.of(loadout).shieldMetricsResult().value;
         if (expected.shieldsPowered === false) {
             assert.equal(shields, null, `${build.id}: expected shed shields`);
             const poweredLoadout = assemble(build);
@@ -312,7 +312,7 @@ test('every build reproduces its pinned metrics', () => {
             const plant = getModuleBySymbol(fittedPlant.symbol, ALL_MODULES);
             assert.ok(plant, `${build.id}: power plant stats`);
             poweredLoadout.setModule('PowerPlant', { ...plant, powerCapacity: 1_000_000 });
-            shields = BuildMetrics.of(poweredLoadout).shieldMetrics();
+            shields = BuildMetrics.of(poweredLoadout).shieldMetricsResult().value;
         }
         if (expected.shields === null) {
             assert.equal(shields, null, `${build.id}: expected no shields`);

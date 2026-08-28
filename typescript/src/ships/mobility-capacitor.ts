@@ -15,7 +15,7 @@
  * {@link MobilityMetrics.boost}, along with the loaded mass and the two curve
  * multipliers these figures share.
  *
- * This module is data-free. {@link BuildMetrics.mobilityCapacitorMetrics} (in
+ * This module is data-free. {@link BuildMetrics.mobilityCapacitorMetricsResult} (in
  * `./build-metrics`) reads the hull, the loaded mass and the powered thrusters out of a
  * build and calls {@link mobilityCapacitorMetrics} for you.
  *

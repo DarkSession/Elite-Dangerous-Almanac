@@ -13,7 +13,7 @@ function matchingSpec(text) {
     return parsed.spec;
 }
 
-function manifestRoundTripSpec(text) {
+function jsonRoundTripSpec(text) {
     return JSON.parse(JSON.stringify(matchingSpec(text)));
 }
 
@@ -29,32 +29,17 @@ test('instruments same-line and following-line expression claims without reading
         `}`,
     ].join('\n');
 
-    const result = transformExampleClaims(source, { idPrefix: 'fixture' });
+    const result = transformExampleClaims(source);
 
     assert.equal(result.claims.length, 2);
     assert.deepEqual(
-        result.claims.map(({ id, line }) => ({ id, line })),
-        [
-            { id: 'fixture:0', line: 2 },
-            { id: 'fixture:1', line: 7 },
-        ],
+        result.claims.map(({ line }) => line),
+        [2, 7],
     );
     assert.equal(result.skipped.length, 0);
-    assert.match(result.code, /__almanacCapturedExampleClaim\(\(\) => \(Math\.max\(1, 2\)\)/);
-    assert.match(
-        result.code,
-        /__almanacCapturedExampleClaim\(\(\) => \(error instanceof TypeError\)/,
-    );
+    assert.match(result.code, /__almanacCapturedExampleClaim\(\(Math\.max\(1, 2\)\)/);
+    assert.match(result.code, /__almanacCapturedExampleClaim\(\(error instanceof TypeError\)/);
     assert.match(result.code, /const marker = '\/\/ -> not a claim'/);
-});
-
-test('keeps descriptive claim ids out of generated JavaScript', () => {
-    const idPrefix = `hostile'); throw new Error('injected') //`;
-    const result = transformExampleClaims('1; // -> 1', { idPrefix });
-
-    assert.equal(result.claims[0]?.id, `${idPrefix}:0`);
-    assert.doesNotMatch(result.code, /hostile|injected/);
-    assert.match(result.code, /__almanacCapturedExampleClaim\(\(\) => \(1\), 0\)/);
 });
 
 test('keeps ambient and prose claims compile-only with explicit reasons', () => {
@@ -72,7 +57,7 @@ test('keeps ambient and prose claims compile-only with explicit reasons', () => 
         result.skipped.map(({ reason }) => reason),
         ['snippet needs an ambient runtime value', 'prose or unsupported expected value'],
     );
-    assert.doesNotMatch(result.code, /__almanacExampleClaim/);
+    assert.doesNotMatch(result.code, /__almanacCapturedExampleClaim/);
 });
 
 test('instruments a variable initializer and rejects a claim without an executable expression', () => {
@@ -80,21 +65,21 @@ test('instruments a variable initializer and rejects a claim without an executab
 
     assert.equal(result.claims.length, 1);
     assert.match(result.code, /const answer = __almanacCapturedExampleClaim/);
+    assert.match(result.code, /"42", 0\)/);
     assert.equal(result.skipped[0]?.reason, 'not attached to an executable expression');
 });
 
-test('keeps await and yield claims in their original context instead of emitting invalid arrows', () => {
+test('runs await claims in place and keeps yield claims compile-only', () => {
     const awaited = transformExampleClaims('await Promise.resolve(3); // -> 3');
     const yielded = transformExampleClaims(
         ['function* values() {', '    yield 3; // -> 3', '}'].join('\n'),
     );
 
-    assert.equal(awaited.claims.length, 0);
-    assert.equal(awaited.skipped[0]?.reason, 'await expression needs its original context');
-    assert.equal(awaited.code, 'await Promise.resolve(3); // -> 3');
+    assert.equal(awaited.claims.length, 1);
+    assert.match(awaited.code, /__almanacCapturedExampleClaim\(\(await Promise\.resolve\(3\)\)/);
     assert.equal(yielded.claims.length, 0);
     assert.equal(yielded.skipped[0]?.reason, 'yield expression needs its original context');
-    assert.doesNotMatch(yielded.code, /__almanacExampleClaim/);
+    assert.doesNotMatch(yielded.code, /__almanacCapturedExampleClaim/);
 });
 
 test('parses exact primitive and structured values', () => {
@@ -114,14 +99,14 @@ test('parses exact primitive and structured values', () => {
     }
 });
 
-test('preserves exact negative zero through the JSON runtime manifest', () => {
-    const scalar = manifestRoundTripSpec('-0');
+test('preserves exact negative zero through embedded JSON', () => {
+    const scalar = jsonRoundTripSpec('-0');
 
     assert.deepEqual(scalar, { kind: 'number-special', value: '-0' });
     assert.deepEqual(compareExampleValue(-0, scalar), { pass: true });
     assert.equal(compareExampleValue(0, scalar).pass, false);
 
-    const structured = manifestRoundTripSpec('[-0, { nested: -0 }]');
+    const structured = jsonRoundTripSpec('[-0, { nested: -0 }]');
 
     assert.deepEqual(structured, {
         kind: 'array',

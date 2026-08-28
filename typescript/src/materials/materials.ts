@@ -28,7 +28,7 @@
  * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all three
- * catalogues, since that is what it falls back to — 17.2 KiB minified for all 146.
+ * catalogues, since that is what it falls back to — ~17 KiB minified for all 146.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
  * **Only `ALL_MATERIALS` itself is indexed.** A by-key lookup answers from an O(1)

@@ -152,33 +152,23 @@ identifies, and `setModule` refuses one — as it refuses a record that drops th
 fit. A hull with no rack has a cargo capacity of `0`, and it means `0`. `buildMass` is
 those figures decomposed, so it always answers too.
 
-The metrics that depend on *build state* are a different question, and those keep their
-diagnostic pairs. The nullable method is the convenience; its `…Result` companion is what
-you show a user when the convenience is `null`:
+The metrics that depend on *build state* return a diagnostic result, whose `value` is
+either the completed metric or `null`:
 
-**Every one of them is a pair, with no exceptions to remember.** Eight build metrics can be
-unavailable, and each is offered twice under the same rule:
+Eight build metrics can be unavailable, and each follows the same rule:
 
 ```ts
 import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 
 declare const metrics: BuildMetrics;
 
-metrics.mobilityMetrics(); // MobilityMetrics | null
 metrics.mobilityMetricsResult(); // the value, or why it is unavailable
-metrics.mobilityCapacitorMetrics(); // the same figures at a chosen ENG allocation
 metrics.mobilityCapacitorMetricsResult();
-metrics.shieldMetrics();
 metrics.shieldMetricsResult();
-metrics.shieldCapacitorMetrics(); // what SYS pips make of that shield
 metrics.shieldCapacitorMetricsResult();
-metrics.shieldRecovery();
 metrics.shieldRecoveryResult();
-metrics.heatMetrics();
 metrics.heatMetricsResult();
-metrics.distributorMetrics();
 metrics.distributorMetricsResult();
-metrics.standardLoad('maximum');
 metrics.standardLoadResult('maximum');
 
 metrics.thrusters(); // ThrusterParams | null — the fitted curve, whatever the power state
@@ -269,7 +259,7 @@ overloaded thruster, never three saying the same thing.
 `dry` and `unladen` are errors because neither is a choice: a ship undocks with a full
 tank, so a build that cannot move fuelled never leaves the pad. `laden` is a warning
 because how much cargo to take is the pilot's, and a hauler that outgrows its thrusters
-only with the hold full is a perfectly legal ship — `BuildMetrics.mobilityMetrics` at
+only with the hold full is a perfectly legal ship — `BuildMetrics.mobilityMetricsResult` at
 that load is what shows the cost.
 
 Mind the names: `ShipLoadout.unladenMass` is the **`dry`** figure, because that is what a

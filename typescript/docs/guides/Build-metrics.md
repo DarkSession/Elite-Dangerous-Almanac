@@ -41,7 +41,7 @@ import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-met
 declare const metrics: BuildMetrics; // a Federal Corvette
 
 metrics.powerBudget().deployed; // -> 46.8597
-metrics.shieldMetrics()?.strength; // -> 3940.4
+metrics.shieldMetricsResult().value?.strength; // -> 3940.4
 metrics.armourMetrics().hitPoints; // -> 5062.6
 metrics.weaponMetrics().total.damagePerSecond; // -> 137.04
 ```
@@ -142,20 +142,21 @@ curve against the **bare hull mass**, not the loaded ship — so fitting more mo
 weakens your shields. And past the generator's `maxMass` it will not raise a shield at
 all, which the curve reports as `0` rather than as a small number.
 
-`shieldMetrics()` evaluates the generator, boosters and reinforcement against the
-hardpoints-stowed (`retracted`) budget. It returns `null` when no generator is powered in
-that state. `shieldMetricsResult()` distinguishes a missing, switched-off or shed generator
-from an unavailable power supply. Every imported build has a known hull and armour.
-`mobilityMetrics()` and `shieldRecovery()` use the same retracted power state for their
-thrusters, generator and distributor, and their `…Result` companions explain an unavailable
-answer in the same way.
+`shieldMetricsResult()` evaluates the generator, boosters and reinforcement against the
+hardpoints-stowed (`retracted`) budget. Its `value` is `null` when no generator is powered
+in that state, and its issues distinguish a missing, switched-off or shed generator from
+an unavailable power supply. Every imported build has a known hull and armour.
+`mobilityMetricsResult()` and `shieldRecoveryResult()` use the same retracted power state
+for their thrusters, generator and distributor, and explain an unavailable answer in the
+same way.
 
-**The pips are a separate call.** `shieldMetrics()` is the bare shield an outfitting
-screen shows, and the SYS capacitor is `shieldCapacitorMetrics()` — the same split
-`weaponMetrics()` and `weaponsCapacitorMetrics()` already use for WEP. It reports the SYS
-capacity and recharge the allocation buys, the resistance the pips add on their own, and
-the effective resistances and hit points with them folded in, so a panel showing both
-readings computes the shield once:
+**The pips are a separate call.** `shieldMetricsResult().value` is the bare shield an
+outfitting screen shows, and the SYS capacitor is
+`shieldCapacitorMetricsResult().value` — the same split `weaponMetrics()` and
+`weaponsCapacitorMetrics()` already use for WEP. It reports the SYS capacity and recharge
+the allocation buys, the resistance the pips add on their own, and the effective
+resistances and hit points with them folded in, so a panel showing both readings computes
+the shield once:
 
 ```ts
 import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
@@ -163,8 +164,8 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
 
-metrics.shieldMetrics()?.resistances.kinetic; // the generator and boosters alone
-const sys = metrics.shieldCapacitorMetrics({ systemsPips: 2 });
+metrics.shieldMetricsResult().value?.resistances.kinetic; // the generator and boosters alone
+const sys = metrics.shieldCapacitorMetricsResult({ systemsPips: 2 }).value;
 sys?.systemsResistance; // what two pips add, on their own
 sys?.effectiveResistances.kinetic; // the two, multiplied together
 sys?.effectiveHitPoints.kinetic; // MJ of kinetic damage soaked at two pips
@@ -175,10 +176,10 @@ The pips multiply with the shield's own stack rather than adding to it, which is
 capacitor owns the arithmetic: `1 − (1 − shieldResistance) × (1 − systemsResistance)`. At
 zero pips the effective figures are the bare ones, exactly.
 
-`shieldRecovery()` keeps its own `systemsPips`. Every figure it returns is a function of
-the allocation — there is no unpiped recovery time to report — so nothing there is being
-folded into a base figure and then discarded. Its recharge is the `rechargeRate`
-`shieldCapacitorMetrics()` reports at the same allocation.
+`shieldRecoveryResult().value` keeps its own `systemsPips`. Every figure it contains is a
+function of the allocation — there is no unpiped recovery time to report — so nothing
+there is being folded into a base figure and then discarded. Its recharge is the
+`rechargeRate` in `shieldCapacitorMetricsResult().value` at the same allocation.
 
 ## Weapon output
 
@@ -199,11 +200,11 @@ weapons.total.energyPerSecond; // weapons capacitor draw, MW
 weapons.total.heatPerSecond;
 weapons.weapons.length; // per-hardpoint breakdown
 
-const distributor = metrics.distributorMetrics({
+const distributor = metrics.distributorMetricsResult({
     systemsPips: 2,
     enginesPips: 2,
     weaponsPips: 2,
-});
+}).value;
 distributor?.engines.ratedRecharge; // four-pip catalogue rate, MJ/s
 distributor?.engines.rechargeRate; // actual ENG recharge at two pips, MJ/s
 
@@ -218,12 +219,12 @@ distributor draw and thermal load are already per second, so the per-shot arithm
 collapses to the raw stats.
 
 A distributor's three catalogue recharge figures are their four-pip maxima.
-`distributorMetrics()` scales SYS, ENG and WEP independently by `(pips / 4) ^ 1.1` and
-returns each capacity, rated recharge and actual rate. Fractional allocations from zero
-through four are accepted; each defaults to four independently and they need not total
-six, so the result can compare three independent scenarios. It returns `null` without a
-powered distributor or when the fitted article's capacitor stats cannot be resolved;
-`distributorMetricsResult()` says which of those four it was.
+`distributorMetricsResult().value` scales SYS, ENG and WEP independently by
+`(pips / 4) ^ 1.1` and returns each capacity, rated recharge and actual rate. Fractional
+allocations from zero through four are accepted; each defaults to four independently and
+they need not total six, so the result can compare three independent scenarios. It
+returns `null` without a powered distributor or when the fitted article's capacitor stats
+cannot be resolved; `distributorMetricsResult()` says which of those four it was.
 
 `weaponsCapacitorMetrics()` adds firing endurance to the WEP calculation. It compares
 pip-scaled recharge with **sustained** energy per second: a magazine's reload is time for
@@ -283,7 +284,7 @@ import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-met
 
 declare const metrics: BuildMetrics;
 
-const heat = metrics.heatMetrics();
+const heat = metrics.heatMetricsResult().value;
 heat?.idle.gauge; // hardpoints stowed, as the cockpit gauge reads it: 1 is 100%
 heat?.fsdCharging.gauge; // spooling a jump, the hottest thing most ships do
 heat?.firingSustained.overheats; // holding the trigger with the WEP capacitor keeping up
@@ -337,16 +338,16 @@ mass.cargo; // -> 0        an empty hold by default
 metrics.buildMass({ fuel: 8, cargo: 32 }).total; // -> 1104
 ```
 
-`fuel` and `cargo` default exactly as they do for `jumpRange()` and `mobilityMetrics()`,
-so the three agree by construction. Each of the standard loads carries its own resulting
-mass too:
+`fuel` and `cargo` default exactly as they do for `jumpRange()` and
+`mobilityMetricsResult()`, so the three agree by construction. Each of the standard loads
+carries its own resulting mass too:
 
 ```ts
 import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
-metrics.standardLoad('laden')?.mass; // -> 1210
+metrics.standardLoadResult('laden').value?.mass; // -> 1210
 ```
 
 **The reserve tank is in none of these.** The game's statistics panel counts it in the
@@ -372,14 +373,15 @@ const curve = metrics.thrusters()!;
 curve.optMass; // -> 1440   rated performance at or below this
 curve.maxMass; // -> 2160   past this the ship does not move at all
 
-const mobility = metrics.mobilityMetrics()!;
+const mobility = metrics.mobilityMetricsResult().value!;
 mobility.loadedMass; // -> 1096   what the curve was evaluated at
 thrusterMassCurveMultiplier(mobility.loadedMass, curve) === mobility.massCurveMultiplier; // -> true
 ```
 
-`mobilityMetrics()` quotes speed, pitch, roll and yaw at **four** ENG pips, which is the
-hull's own upper endpoint for each. A lower allocation is `mobilityCapacitorMetrics()`,
-the ENG half of the same split the shields and weapons use:
+`mobilityMetricsResult().value` quotes speed, pitch, roll and yaw at **four** ENG pips,
+which is the hull's own upper endpoint for each. A lower allocation is
+`mobilityCapacitorMetricsResult().value`, the ENG half of the same split the shields and
+weapons use:
 
 ```ts
 import { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
@@ -387,14 +389,15 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
 
-metrics.mobilityMetrics()?.speed; // m/s at four ENG pips
-metrics.mobilityCapacitorMetrics({ enginesPips: 2 })?.speed; // m/s at two
-metrics.mobilityCapacitorMetrics({ enginesPips: 0 })?.enginesPips; // -> 0
+metrics.mobilityMetricsResult().value?.speed; // m/s at four ENG pips
+metrics.mobilityCapacitorMetricsResult({ enginesPips: 2 }).value?.speed; // m/s at two
+metrics.mobilityCapacitorMetricsResult({ enginesPips: 0 }).value?.enginesPips; // -> 0
 ```
 
 Boost is not on the capacitor result, because the allocation cannot move it: it stays on
-`mobilityMetrics()` beside `loadedMass` and the two curve multipliers the two share. Both
-take the same `fuel` and `cargo`, so a screen can quote either at the same load.
+`mobilityMetricsResult().value` beside `loadedMass` and the two curve multipliers the two
+share. Both take the same `fuel` and `cargo`, so a screen can quote either at the same
+load.
 
 `loadedMass` against `optMass` and `maxMass` is the whole of "where does this build sit
 on its thrusters" — the reading an outfitting screen shows beside the speed. A mass past
@@ -446,42 +449,37 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 The shield generator may be absent, and any fitted record may omit a stat a metric needs.
 Do not assume a nullable figure is load-bearing:
 
-- Eight metrics come in nullable/`…Result` pairs, with no exceptions to remember:
-  `mobilityMetrics()`, `mobilityCapacitorMetrics()`, `shieldMetrics()`,
-  `shieldCapacitorMetrics()`, `shieldRecovery()`, `heatMetrics()`,
-  `distributorMetrics()` and `standardLoad()`. The convenience value is `null` and the
-  result names what was missing, switched off or shed. Each issue's typed `reason` is
+- Eight `…Result` methods can be unavailable. Their `value` is `null` and `issues` names
+  what was missing, switched off or shed. Each issue's typed `reason` is
   `missing`, `unresolved`, `disabled`, `shed` or `invalid`; use it instead of parsing the
   diagnostic message.
 - `unladenMass`, `fuelCapacity`, `cargoCapacity` and `buildMass()` are not nullable and
-  have no result companion: no article a build can hold is unweighable, so they always
-  answer. `thrusters` is nullable but has no result companion either — it reports the
+  have no diagnostic result: no article a build can hold is unweighable, so they always
+  answer. `thrusters` is nullable — it reports the
   fitted article's curve, and `mobilityMetricsResult()` is what explains an unusable one.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
 - `armourMetrics()` always has the known hull's base figures.
 - A caller-supplied power plant without a usable capacity makes every power-dependent
   metric unavailable rather than projecting its dependants as powered. `powerBudget()`
-  reports `available: 0`; the mobility, shield and recovery result companions identify
-  `powerCapacity` directly. Those result companions report a non-positive or non-finite
+  reports `available: 0`; the mobility, shield and recovery results identify
+  `powerCapacity` directly. Those results report a non-positive or non-finite
   capacity as `invalid` rather than asking `powerBudget()` to accept it; they likewise
   identify a malformed known module draw as `powerDraw`. The direct budget remains strict
   and throws for either invalid numeric input.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, when the fitted drive's record carries no usable jump constants.
-- `heatMetrics()` returns `null` when the build has no powered plant whose heat
-  efficiency it can read; `heatMetricsResult()` names which of those it was.
-
-Use each available `…Result` companion before trusting a nullable metric.
+- `heatMetricsResult()` returns a null value when the build has no powered plant whose
+  heat efficiency it can read, and its issue names which condition caused it.
 
 **On an imported build, every figure here describes the fit that remains.** Import
 discards a module in a removable mount and stocks a fixed one from the hull defaults, and
 neither the figures nor `validation` say so —
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-says why. What normalization can still do is leave a companion incomplete for an ordinary
+says why. What normalization can still do is leave a result incomplete for an ordinary
 reason: discard the only shield generator and `shieldMetricsResult` reports
 `shieldGenerator` / `missing`, exactly as an empty mount would; stock a plant over an
-engineered one and the mobility, shield and recovery companions report `shed`.
+engineered one and the mobility, shield and recovery results report `shed`.
 
 `build.importOutcomes` is the account, and it is the entries that matter, not the length.
 A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for, which import

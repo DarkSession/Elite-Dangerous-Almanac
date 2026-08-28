@@ -25,7 +25,7 @@ function without(symbol: string, field: keyof OutfittingModule): OutfittingModul
 
 test('heatMetricsResult names the power plant state that made heat unavailable', () => {
     const disabled = ShipLoadout.default('SideWinder').setModuleEnabled('PowerPlant', false);
-    assert.equal(BuildMetrics.of(disabled).heatMetrics(), null);
+    assert.equal(BuildMetrics.of(disabled).heatMetricsResult().value, null);
     assert.deepEqual(BuildMetrics.of(disabled).heatMetricsResult().issues[0], {
         field: 'powerCapacity',
         reason: 'disabled',
@@ -46,7 +46,7 @@ test('heatMetricsResult names the power plant state that made heat unavailable',
         'PowerPlant',
         without('Int_Powerplant_Size2_Class1', 'heatEfficiency'),
     );
-    assert.equal(BuildMetrics.of(vague).heatMetrics(), null);
+    assert.equal(BuildMetrics.of(vague).heatMetricsResult().value, null);
     assert.deepEqual(BuildMetrics.of(vague).heatMetricsResult().issues[0], {
         field: 'heatEfficiency',
         reason: 'unresolved',
@@ -87,7 +87,7 @@ test('distributorMetricsResult tells the four unavailable states apart', () => {
     assert.equal(stock.complete, true);
 
     const disabled = ShipLoadout.default('Anaconda').setModuleEnabled('PowerDistributor', false);
-    assert.equal(BuildMetrics.of(disabled).distributorMetrics(), null);
+    assert.equal(BuildMetrics.of(disabled).distributorMetricsResult().value, null);
     assert.deepEqual(BuildMetrics.of(disabled).distributorMetricsResult().issues[0], {
         field: 'powerDistributor',
         reason: 'disabled',
@@ -131,7 +131,7 @@ test('distributorMetricsResult tells the four unavailable states apart', () => {
             Priority: module.Slot === 'PowerDistributor' ? 4 : 0,
         })),
     });
-    assert.equal(BuildMetrics.of(shed).distributorMetrics(), null);
+    assert.equal(BuildMetrics.of(shed).distributorMetricsResult().value, null);
     assert.deepEqual(BuildMetrics.of(shed).distributorMetricsResult().issues[0], {
         field: 'powerDistributor',
         reason: 'shed',
@@ -180,22 +180,21 @@ test('a disabled distributor does not hide an enabled one', () => {
     assert.equal(result.value?.enginesCapacity, record.enginesCapacity);
 });
 
-test('standardLoad is the nullable twin of standardLoadResult', () => {
+test('standardLoadResult reports complete and unavailable loads', () => {
     const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
-    assert.deepEqual(metrics.standardLoad('laden'), metrics.standardLoadResult('laden').value);
-    assert.equal(metrics.standardLoad('laden')?.mass, 1210);
+    assert.equal(metrics.standardLoadResult('laden').value?.mass, 1210);
 
     // Only `'maximum'` validates the drive, so only it can answer `null`.
     const noDrive = ShipLoadout.default('Anaconda').setModule(
         'FrameShiftDrive',
         without('Int_Hyperdrive_Size6_Class1', 'maxFuel'),
     );
-    assert.equal(BuildMetrics.of(noDrive).standardLoad('maximum'), null);
+    assert.equal(BuildMetrics.of(noDrive).standardLoadResult('maximum').value, null);
     assert.equal(
         BuildMetrics.of(noDrive).standardLoadResult('maximum').issues[0]?.reason,
         'unresolved',
     );
-    assert.ok(BuildMetrics.of(noDrive).standardLoad('unladen'));
+    assert.ok(BuildMetrics.of(noDrive).standardLoadResult('unladen').value);
 });
 
 test('an absent shield-generator distributorDraw is unresolved, never a stand-in 0.6', () => {
@@ -213,7 +212,7 @@ test('an absent shield-generator distributorDraw is unresolved, never a stand-in
         without('Int_ShieldGenerator_Size6_Class1', 'distributorDraw'),
     );
     const metrics = BuildMetrics.of(build);
-    assert.equal(metrics.shieldRecovery(), null);
+    assert.equal(metrics.shieldRecoveryResult().value, null);
     assert.deepEqual(metrics.shieldRecoveryResult().issues[0], {
         field: 'shieldGenerator',
         reason: 'unresolved',
@@ -230,11 +229,11 @@ test('an absent shield-generator distributorDraw is unresolved, never a stand-in
     });
 
     // Strength does not depend on the draw, so that metric still answers.
-    assert.ok((metrics.shieldMetrics()?.strength ?? 0) > 0);
+    assert.ok((metrics.shieldMetricsResult().value?.strength ?? 0) > 0);
 
     // The complete record recovers, so the branch above is the missing stat and not the fit.
     const stated = ShipLoadout.default('Anaconda');
-    assert.ok((BuildMetrics.of(stated).shieldRecovery()?.recoveryTime ?? 0) > 0);
+    assert.ok((BuildMetrics.of(stated).shieldRecoveryResult().value?.recoveryTime ?? 0) > 0);
 });
 
 test('a shield recovery input a record does not state is unresolved, never a stand-in 0', () => {
@@ -243,7 +242,7 @@ test('a shield recovery input a record does not state is unresolved, never a sta
     // zero SYS pips — the same defect class as the deleted `?? 0.6` draw fallback.
     const genuine = BuildMetrics.of(ShipLoadout.default('Anaconda'));
     assert.equal(genuine.shieldRecoveryResult({ systemsPips: 0 }).complete, true);
-    assert.equal(genuine.shieldRecovery({ systemsPips: 0 })?.recoveryTime, Infinity);
+    assert.equal(genuine.shieldRecoveryResult({ systemsPips: 0 }).value?.recoveryTime, Infinity);
 
     for (const field of ['shieldRegenRate', 'shieldBrokenRegenRate'] as const) {
         const build = ShipLoadout.default('Anaconda').setModule(
@@ -251,7 +250,7 @@ test('a shield recovery input a record does not state is unresolved, never a sta
             without('Int_ShieldGenerator_Size6_Class1', field),
         );
         const metrics = BuildMetrics.of(build);
-        assert.equal(metrics.shieldRecovery({ systemsPips: 0 }), null);
+        assert.equal(metrics.shieldRecoveryResult({ systemsPips: 0 }).value, null);
         assert.deepEqual(metrics.shieldRecoveryResult().issues[0], {
             field: 'shieldGenerator',
             reason: 'unresolved',
@@ -267,7 +266,7 @@ test('a shield recovery input a record does not state is unresolved, never a sta
             },
         });
         // The generator's curve is untouched, so strength still answers.
-        assert.ok((metrics.shieldMetrics()?.strength ?? 0) > 0);
+        assert.ok((metrics.shieldMetricsResult().value?.strength ?? 0) > 0);
     }
 
     // The distributor's own two figures agree with `distributorMetricsResult`, which
@@ -278,7 +277,7 @@ test('a shield recovery input a record does not state is unresolved, never a sta
             without('Int_PowerDistributor_Size7_Class1', field),
         );
         const metrics = BuildMetrics.of(build);
-        assert.equal(metrics.shieldRecovery(), null);
+        assert.equal(metrics.shieldRecoveryResult().value, null);
         assert.deepEqual(metrics.shieldRecoveryResult().issues[0], {
             field: 'powerDistributor',
             reason: 'unresolved',
@@ -316,46 +315,43 @@ test('a build with no distributor keeps the modelled zero SYS capacity', () => {
 
 test('both SYS options types default to four pips, and the bare shield takes none', () => {
     const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
-    // The bare shield has no allocation to take, so `shieldMetrics` has no options at
+    // The bare shield has no allocation to take, so `shieldMetricsResult` has no options at
     // all — the pip story is the capacitor's, and both of its readers quote four.
-    assert.equal(metrics.shieldMetrics.length, 0);
+    assert.equal(metrics.shieldMetricsResult.length, 0);
     assert.equal(
-        metrics.shieldMetrics()?.resistances.thermal,
-        metrics.shieldCapacitorMetrics({ systemsPips: 0 })?.effectiveResistances.thermal,
+        metrics.shieldMetricsResult().value?.resistances.thermal,
+        metrics.shieldCapacitorMetricsResult({ systemsPips: 0 }).value?.effectiveResistances
+            .thermal,
     );
     assert.deepEqual(
-        metrics.shieldCapacitorMetrics(),
-        metrics.shieldCapacitorMetrics({ systemsPips: 4 }),
+        metrics.shieldCapacitorMetricsResult().value,
+        metrics.shieldCapacitorMetricsResult({ systemsPips: 4 }).value,
     );
     assert.notEqual(
-        metrics.shieldMetrics()?.resistances.thermal,
-        metrics.shieldCapacitorMetrics()?.effectiveResistances.thermal,
+        metrics.shieldMetricsResult().value?.resistances.thermal,
+        metrics.shieldCapacitorMetricsResult().value?.effectiveResistances.thermal,
     );
-    assert.deepEqual(metrics.shieldRecovery(), metrics.shieldRecovery({ systemsPips: 4 }));
-    assert.notDeepEqual(metrics.shieldRecovery(), metrics.shieldRecovery({ systemsPips: 0 }));
+    assert.deepEqual(
+        metrics.shieldRecoveryResult().value,
+        metrics.shieldRecoveryResult({ systemsPips: 4 }).value,
+    );
+    assert.notDeepEqual(
+        metrics.shieldRecoveryResult().value,
+        metrics.shieldRecoveryResult({ systemsPips: 0 }).value,
+    );
 
     // The capacitor's own recharge is the rate the recovery times are built on.
     assert.equal(
-        metrics.shieldCapacitorMetrics()?.rechargeRate,
-        metrics.distributorMetrics()?.systems.rechargeRate,
+        metrics.shieldCapacitorMetricsResult().value?.rechargeRate,
+        metrics.distributorMetricsResult().value?.systems.rechargeRate,
     );
 });
 
-test('the capacitor metrics come in the same diagnostic pairs as the metrics they cover', () => {
-    const metrics = BuildMetrics.of(ShipLoadout.default('Anaconda'));
-    assert.deepEqual(
-        metrics.shieldCapacitorMetrics(),
-        metrics.shieldCapacitorMetricsResult().value,
-    );
-    assert.deepEqual(
-        metrics.mobilityCapacitorMetrics({ enginesPips: 2 }),
-        metrics.mobilityCapacitorMetricsResult({ enginesPips: 2 }).value,
-    );
-
+test('capacitor results share the unavailable reasons of their base metrics', () => {
     // Both are unavailable for exactly the reasons their pip-free halves are.
     const noGenerator = ShipLoadout.default('Anaconda').removeModule('Slot03_Size6');
     const shieldless = BuildMetrics.of(noGenerator);
-    assert.equal(shieldless.shieldCapacitorMetrics(), null);
+    assert.equal(shieldless.shieldCapacitorMetricsResult().value, null);
     assert.deepEqual(
         shieldless.shieldCapacitorMetricsResult().issues,
         shieldless.shieldMetricsResult().issues,
@@ -363,7 +359,7 @@ test('the capacitor metrics come in the same diagnostic pairs as the metrics the
 
     const noThrusters = ShipLoadout.default('Anaconda').setModuleEnabled('MainEngines', false);
     const grounded = BuildMetrics.of(noThrusters);
-    assert.equal(grounded.mobilityCapacitorMetrics(), null);
+    assert.equal(grounded.mobilityCapacitorMetricsResult().value, null);
     assert.deepEqual(
         grounded.mobilityCapacitorMetricsResult().issues,
         grounded.mobilityMetricsResult().issues,
@@ -371,7 +367,8 @@ test('the capacitor metrics come in the same diagnostic pairs as the metrics the
 });
 
 test('the SYS capacitor reads the distributor, and says so when the record cannot', () => {
-    const stock = BuildMetrics.of(ShipLoadout.default('Anaconda')).shieldCapacitorMetrics()!;
+    const stock = BuildMetrics.of(ShipLoadout.default('Anaconda')).shieldCapacitorMetricsResult()
+        .value!;
     const distributor = catalogued('Int_PowerDistributor_Size8_Class1');
     assert.equal(stock.capacity, distributor.systemsCapacity);
     assert.equal(stock.rechargeRate, distributor.systemsRecharge);
@@ -384,18 +381,18 @@ test('the SYS capacitor reads the distributor, and says so when the record canno
             without('Int_PowerDistributor_Size8_Class1', 'systemsCapacity'),
         ),
     );
-    assert.equal(vague.shieldCapacitorMetrics(), null);
+    assert.equal(vague.shieldCapacitorMetricsResult().value, null);
     assert.equal(vague.shieldCapacitorMetricsResult().issues[0]?.field, 'powerDistributor');
     assert.equal(vague.shieldCapacitorMetricsResult().issues[0]?.reason, 'unresolved');
     // The bare shield is unaffected: it never reads the distributor.
-    assert.ok((vague.shieldMetrics()?.strength ?? 0) > 0);
+    assert.ok((vague.shieldMetricsResult().value?.strength ?? 0) > 0);
 
     // Switched off is no SYS capacitor at all, which is a modelled zero rather than a
     // missing figure — the resistances still stand.
     const off = BuildMetrics.of(
         ShipLoadout.default('Anaconda').setModuleEnabled('PowerDistributor', false),
     );
-    const unfed = off.shieldCapacitorMetrics()!;
+    const unfed = off.shieldCapacitorMetricsResult().value!;
     assert.equal(unfed.capacity, 0);
     assert.equal(unfed.rechargeRate, 0);
     assert.ok(unfed.systemsResistance > 0);

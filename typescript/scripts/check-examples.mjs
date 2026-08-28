@@ -259,7 +259,7 @@ async function main() {
             const name = `${scratchPath.replaceAll('/', '__').replace(/\.(ts|md)$/, '')}__${index}.ts`;
             const target = join(scratch, 'snippets', name);
             const { code, problems } = localiseImports(snippet.code);
-            const runtime = transformExampleClaims(code, { idPrefix: name });
+            const runtime = transformExampleClaims(code);
             await writeFile(target, `export {};\n${code}\n`);
             cases.push({
                 file: relativePath,
@@ -352,7 +352,7 @@ async function main() {
     const executable = cases.filter(
         (entry) => !failures.has(entry.name) && entry.claims.length > 0,
     );
-    const runtimeManifest = [];
+    const runtimeEntries = [];
     for (const entry of executable) {
         const target = join(scratch, 'runtime', entry.name.replace(/\.ts$/, '.mjs'));
         const emitted = ts.transpileModule(`export {};\n${entry.runtimeCode}\n`, {
@@ -360,7 +360,7 @@ async function main() {
             fileName: entry.name,
         }).outputText;
         await writeFile(target, emitted);
-        runtimeManifest.push({
+        runtimeEntries.push({
             name: entry.name,
             file: entry.file,
             line: entry.line,
@@ -369,13 +369,9 @@ async function main() {
         });
     }
 
-    let runtimeResult = { failures: [], checked: 0 };
-    if (runtimeManifest.length > 0) {
-        const manifest = join(scratch, 'runtime-manifest.json');
-        await writeFile(manifest, JSON.stringify(runtimeManifest));
-        runtimeResult = runExampleEntries(runtimeManifest, {
-            manifestPath: manifest,
-            runner: join(packageRoot, 'scripts', 'run-example-claims.mjs'),
+    let runtimeResult = { failures: [], checked: 0, matched: 0 };
+    if (runtimeEntries.length > 0) {
+        runtimeResult = runExampleEntries(runtimeEntries, {
             cwd: packageRoot,
             imports: ['tsx', join(packageRoot, 'scripts', 'register-jsonc.mjs')],
         });
@@ -390,16 +386,10 @@ async function main() {
         }
     }
 
-    const executableClaims = runtimeManifest.flatMap((entry) => entry.claims);
-    const failedClaimIds = new Set(
-        runtimeResult.failures.map((failure) => failure.claimId).filter(Boolean),
-    );
-    const matchedClaims = executableClaims.length - failedClaimIds.size;
+    const executableClaims = runtimeEntries.flatMap((entry) => entry.claims);
+    const matchedClaims = runtimeResult.matched;
     console.log(
-        `check-examples: ${matchedClaims}/${executableClaims.length} executable value claims match` +
-            (runtimeResult.checked < executableClaims.length
-                ? ` — ${runtimeResult.checked} reached at runtime`
-                : ''),
+        `check-examples: ${matchedClaims}/${executableClaims.length} executable value claims match`,
     );
 
     const skippedClaims = cases.flatMap((entry) => entry.skipped);

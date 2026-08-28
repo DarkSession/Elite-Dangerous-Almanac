@@ -169,9 +169,9 @@ metrics.powerBudget().deployed; // -> 46.8597  MW drawn, hardpoints out
 metrics.powerBudget().withinBudget; // -> true
 metrics.powerBudget().bands.length; // -> 5        the five priority groups
 
-metrics.shieldMetrics()?.strength; // -> 3940.4   MJ
-metrics.shieldMetrics()?.resistances.kinetic; // the generator and boosters, no pips
-metrics.shieldCapacitorMetrics()?.effectiveResistances.kinetic; // with four pips to SYS
+metrics.shieldMetricsResult().value?.strength; // -> 3940.4   MJ
+metrics.shieldMetricsResult().value?.resistances.kinetic; // the generator and boosters, no pips
+metrics.shieldCapacitorMetricsResult().value?.effectiveResistances.kinetic; // with four pips to SYS
 metrics.armourMetrics().hitPoints; // -> 5062.6
 
 metrics.weaponMetrics().total.damagePerSecond; // -> 137.04
@@ -210,10 +210,10 @@ mass.hull; // the bare hull, in tonnes
 mass.modules; // every fitted module, post-engineering
 mass.total; // with a full main tank and an empty hold
 
-const mobility = metrics.mobilityMetrics();
+const mobility = metrics.mobilityMetricsResult().value;
 mobility?.speed; // m/s, at four ENG pips
 mobility?.loadedMass; // the mass that speed was calculated at
-metrics.mobilityCapacitorMetrics({ enginesPips: 2 })?.speed; // m/s, at two
+metrics.mobilityCapacitorMetricsResult({ enginesPips: 2 }).value?.speed; // m/s, at two
 metrics.thrusters()?.optMass; // rated performance at or below this mass
 metrics.thrusters()?.maxMass; // past this the ship does not move at all
 ```
@@ -244,7 +244,7 @@ validation.issues; // what specifically, with a stable code per issue
 Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
 and one severity covers problems that belong in different places on the panel.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-explains the codes and covers the nullable/`…Result` pairs for mobility, shields and
+explains the codes and covers the `…Result` methods for mobility, shields and
 shield recovery. On an imported build, read `build.importOutcomes` alongside the issues:
 validation says nothing about normalization, so an empty mount on your panel may be one
 the player left empty or one import emptied for them.

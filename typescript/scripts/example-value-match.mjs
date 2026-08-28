@@ -6,6 +6,8 @@ import { inspect } from 'node:util';
 const apply = Reflect.apply;
 const arrayIsArray = Array.isArray;
 const bigintFrom = BigInt;
+const claimConsole = console;
+const consoleLog = console.log;
 const numberFrom = Number;
 const numberIsFinite = Number.isFinite;
 const numberToFixed = Number.prototype.toFixed;
@@ -13,6 +15,9 @@ const objectIs = Object.is;
 const objectKeys = Object.keys;
 const stringFrom = String;
 const stringStartsWith = String.prototype.startsWith;
+
+export const EXAMPLE_CLAIM_MARKER = 'ALMANAC_EXAMPLE_CLAIM ';
+export const EXAMPLE_CLAIM_MATCHED_MARKER = 'ALMANAC_EXAMPLE_CLAIM_MATCHED ';
 
 /**
  * Compare a runtime value with a parsed documented-value claim.
@@ -28,6 +33,15 @@ const stringStartsWith = String.prototype.startsWith;
 export function compareExampleValue(actual, spec) {
     const mismatch = compareEncoded(actual, spec, 'value');
     return mismatch === null ? { pass: true } : { pass: false, message: mismatch };
+}
+
+/** Throw when a documented example value does not match its claim. */
+export function assertExampleValue(actual, spec, expected, claimIndex) {
+    apply(consoleLog, claimConsole, [`\n${EXAMPLE_CLAIM_MARKER}${claimIndex}`]);
+    const result = compareExampleValue(actual, spec);
+    if (!result.pass) throw new Error(`expected ${expected}: ${result.message}`);
+    apply(consoleLog, claimConsole, [`${EXAMPLE_CLAIM_MATCHED_MARKER}${claimIndex}`]);
+    return actual;
 }
 
 function compareEncoded(actual, spec, path) {

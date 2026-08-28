@@ -533,7 +533,7 @@ const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'fuelCapacity'] as const;
  * const metrics = BuildMetrics.of(build);
  * metrics.maxJumpRange(); // -> 60.5478   (ly, best single jump)
  * metrics.powerBudget().withinBudget; // -> true
- * metrics.shieldMetrics()?.strength; // -> 743.12  (MJ)
+ * metrics.shieldMetricsResult().value?.strength; // -> 743.12  (MJ)
  * metrics.armourMetrics().hitPoints; // -> 307.8
  * ```
  */
@@ -1061,7 +1061,7 @@ export class ShipLoadout {
      * an error — it never leaves the pad, where the tank always is one — while a ship
      * that only fails with the hold full is a warning, and leaves the build valid and
      * complete: how much cargo to take is the pilot's call. Either way
-     * {@link ships!BuildMetrics.mobilityMetrics | BuildMetrics.mobilityMetrics} reports
+     * {@link ships!BuildMetrics.mobilityMetricsResult | BuildMetrics.mobilityMetricsResult} reports
      * a speed of zero at the load in question.
      *
      * A capture may state a mass nobody can weigh — a negative `UnladenMass`, or an

@@ -5,8 +5,8 @@
  * The three sums here consume already-resolved module contributions, so they import no
  * catalogue and know nothing of {@link ShipLoadout}. Every contribution is a known number
  * — a record missing one is refused long before it reaches a build — so each returns its
- * figure outright. The {@link CalculationResult} types below belong to the build metrics
- * that *can* come back unavailable, which `ShipLoadout` exposes as `…Result` companions.
+ * figure outright. The {@link CalculationResult} types below belong to the
+ * {@link ships!BuildMetrics | BuildMetrics} methods that can come back unavailable.
  *
  * @packageDocumentation
  */
