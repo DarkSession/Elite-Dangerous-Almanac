@@ -3833,7 +3833,24 @@ type FixtureShipsOperations = {
                     OriginalValue: number;
                     Value: number;
                 }[];
-                outcomes: never[];
+                outcomes: {
+                    action: string;
+                    blueprintSymbol: string;
+                    preEngineeredVariant: {
+                        acquisition: string;
+                        blueprintSymbol: string;
+                        grade: number;
+                        modifiers: {
+                            label: string;
+                            method: string;
+                            value: number;
+                        }[];
+                        name: string;
+                        symbol: string;
+                    };
+                    slot: string;
+                    sourceSymbol: string;
+                }[];
                 slot: string;
                 stats: {
                     ammoMaximum: number;
@@ -3867,6 +3884,43 @@ type FixtureShipsOperations = {
                     Engineering: {
                         BlueprintName: string;
                         Level: number;
+                        Quality: number;
+                    };
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        inertModifiers: {
+            expected: {
+                modifiers: {
+                    Label: string;
+                    OriginalValue: number;
+                    Value: number;
+                }[];
+                outcomes: {
+                    action: string;
+                    blueprintSymbol: string;
+                    slot: string;
+                    sourceSymbol: string;
+                }[];
+                slot: string;
+                stats: {
+                    ammoMaximum: number;
+                    reloadTime: number;
+                };
+            };
+            input: {
+                Modules: {
+                    Engineering: {
+                        BlueprintName: string;
+                        Level: number;
+                        Modifiers: {
+                            Label: string;
+                            OriginalValue: number;
+                            Value: number;
+                        }[];
                         Quality: number;
                     };
                     Item: string;

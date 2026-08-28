@@ -486,8 +486,11 @@ A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for, wh
 stocks from the hull defaults. A stocked bulkhead moves no metric at all, and a stocked
 cargo hatch only its own 0.6 MW draw — most third-party exports omit the hatch, so most
 produce exactly that one entry. Every other entry means the figures are the normalized
-fit's — except `unresolvedEngineering`, which means the opposite: nothing was changed, and
-that module's figures are the unengineered ones its source only claimed to engineer.
+fit's — except two that mean the opposite. `unresolvedEngineering` says nothing was
+changed and that module's figures are the unengineered ones its source only claimed to
+engineer. `ambiguousEngineering` says the fit is one of two legitimate readings of an
+identity-only block: these figures are the roll, and `preEngineeredVariant` is the
+catalogued article that would give a different set.
 
 ## Next
 

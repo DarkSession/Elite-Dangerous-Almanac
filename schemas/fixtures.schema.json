@@ -2326,14 +2326,7 @@
               "required": ["Label", "ValueStr"]
             },
             "numericImportedModifier": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "Label": { "type": "string" },
-                "OriginalValue": { "type": "integer" },
-                "Value": { "type": "integer" }
-              },
-              "required": ["Label", "OriginalValue", "Value"]
+              "$ref": "#/definitions/sharedcada8deed4bb"
             },
             "offeredAs": { "type": "string" },
             "refused": { "$ref": "#/definitions/sharedf2b662a2eeee" }
@@ -5348,19 +5341,48 @@
                     "modifiers": { "$ref": "#/definitions/shared528e5444e605" },
                     "outcomes": {
                       "type": "array",
-                      "maxItems": 0,
-                      "items": false
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "action": { "type": "string" },
+                          "blueprintSymbol": { "type": "string" },
+                          "preEngineeredVariant": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "acquisition": { "type": "string" },
+                              "blueprintSymbol": { "type": "string" },
+                              "grade": { "type": "integer" },
+                              "modifiers": {
+                                "$ref": "#/definitions/shared2a52d42245cc"
+                              },
+                              "name": { "type": "string" },
+                              "symbol": { "type": "string" }
+                            },
+                            "required": [
+                              "acquisition",
+                              "blueprintSymbol",
+                              "grade",
+                              "modifiers",
+                              "name",
+                              "symbol"
+                            ]
+                          },
+                          "slot": { "type": "string" },
+                          "sourceSymbol": { "type": "string" }
+                        },
+                        "required": [
+                          "action",
+                          "blueprintSymbol",
+                          "preEngineeredVariant",
+                          "slot",
+                          "sourceSymbol"
+                        ]
+                      }
                     },
                     "slot": { "type": "string" },
-                    "stats": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "ammoMaximum": { "type": "integer" },
-                        "reloadTime": { "type": "integer" }
-                      },
-                      "required": ["ammoMaximum", "reloadTime"]
-                    }
+                    "stats": { "$ref": "#/definitions/shared83e0550c69e4" }
                   },
                   "required": ["modifiers", "outcomes", "slot", "stats"]
                 },
@@ -5393,6 +5415,65 @@
                   "required": ["modifiers", "outcomes", "slot", "stats"]
                 },
                 "input": { "$ref": "#/definitions/sharedf8ece950066e" }
+              },
+              "required": ["expected", "input"]
+            },
+            "inertModifiers": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "modifiers": { "$ref": "#/definitions/shared528e5444e605" },
+                    "outcomes": { "$ref": "#/definitions/sharede3a830290068" },
+                    "slot": { "type": "string" },
+                    "stats": { "$ref": "#/definitions/shared83e0550c69e4" }
+                  },
+                  "required": ["modifiers", "outcomes", "slot", "stats"]
+                },
+                "input": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "Engineering": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "BlueprintName": { "type": "string" },
+                              "Level": { "type": "integer" },
+                              "Modifiers": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "#/definitions/sharedcada8deed4bb"
+                                }
+                              },
+                              "Quality": { "type": "integer" }
+                            },
+                            "required": [
+                              "BlueprintName",
+                              "Level",
+                              "Modifiers",
+                              "Quality"
+                            ]
+                          },
+                          "Item": { "type": "string" },
+                          "Slot": { "type": "string" }
+                        },
+                        "required": ["Engineering", "Item", "Slot"]
+                      }
+                    },
+                    "Ship": { "type": "string" }
+                  },
+                  "required": ["Modules", "Ship"]
+                }
               },
               "required": ["expected", "input"]
             },
@@ -5451,25 +5532,7 @@
                   "additionalProperties": false,
                   "properties": {
                     "modifiers": { "type": "null" },
-                    "outcomes": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "action": { "type": "string" },
-                          "blueprintSymbol": { "type": "string" },
-                          "slot": { "type": "string" },
-                          "sourceSymbol": { "type": "string" }
-                        },
-                        "required": [
-                          "action",
-                          "blueprintSymbol",
-                          "slot",
-                          "sourceSymbol"
-                        ]
-                      }
-                    },
+                    "outcomes": { "$ref": "#/definitions/sharede3a830290068" },
                     "slot": { "type": "string" },
                     "stats": {
                       "type": "object",
@@ -5491,6 +5554,7 @@
           "required": [
             "craftableRecipe",
             "fixedArticle",
+            "inertModifiers",
             "mercenaryClimb",
             "mercenaryPurchase",
             "unresolvedRecipe"
@@ -5922,10 +5986,7 @@
               "experimentalEffectSymbol": { "type": "string" },
               "grade": { "type": "integer" },
               "mercCoinCost": { "type": "integer" },
-              "modifiers": {
-                "type": "array",
-                "items": { "$ref": "#/definitions/shared8064b9491813" }
-              },
+              "modifiers": { "$ref": "#/definitions/shared2a52d42245cc" },
               "name": { "type": "string" },
               "symbol": { "type": "string" }
             },
@@ -7959,6 +8020,17 @@
       },
       "required": ["boost", "pitch", "roll", "top", "yaw"]
     },
+    "shared0ff8838421c7": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "action": { "type": "string" },
+        "blueprintSymbol": { "type": "string" },
+        "slot": { "type": "string" },
+        "sourceSymbol": { "type": "string" }
+      },
+      "required": ["action", "blueprintSymbol", "slot", "sourceSymbol"]
+    },
     "shared1183bc8491e7": {
       "type": "object",
       "additionalProperties": false,
@@ -8053,6 +8125,10 @@
         "optMass",
         "optMultiplier"
       ]
+    },
+    "shared2a52d42245cc": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/shared8064b9491813" }
     },
     "shared2c98e2673bf9": {
       "type": "object",
@@ -8348,6 +8424,15 @@
       },
       "required": ["Item", "Slot"]
     },
+    "shared83e0550c69e4": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ammoMaximum": { "type": "integer" },
+        "reloadTime": { "type": "integer" }
+      },
+      "required": ["ammoMaximum", "reloadTime"]
+    },
     "shared8480e44f47ab": {
       "type": "array",
       "items": { "$ref": "#/definitions/sharedf77bc75a6f0c" }
@@ -8472,6 +8557,16 @@
       "properties": { "slot": { "type": "string" } },
       "required": ["slot"]
     },
+    "sharedcada8deed4bb": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Label": { "type": "string" },
+        "OriginalValue": { "type": "integer" },
+        "Value": { "type": "integer" }
+      },
+      "required": ["Label", "OriginalValue", "Value"]
+    },
     "sharedce8a1d5c0f7c": {
       "type": "object",
       "additionalProperties": false,
@@ -8564,6 +8659,10 @@
     "sharede39a40d9a9fa": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared066cc3500e8c" }
+    },
+    "sharede3a830290068": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/shared0ff8838421c7" }
     },
     "sharede953dd8e8f23": {
       "type": "array",

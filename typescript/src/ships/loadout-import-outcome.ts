@@ -1,3 +1,5 @@
+import type { PreEngineeredVariant } from './pre-engineered.js';
+
 /**
  * A change made while normalizing a journal or SLEF loadout against the catalogues.
  *
@@ -8,7 +10,11 @@
  * `sourceSymbol` when the source named nothing there at all. A module whose source stated
  * a recipe and no `Modifiers` reports `unresolvedEngineering` when neither a craftable
  * recipe nor a catalogued article answers to what it named, because that module alone
- * keeps the figures of an unengineered one.
+ * keeps the figures of an unengineered one. Two further entries report a *reading* the
+ * import chose rather than a change it made: `ambiguousEngineering` where an identity-only
+ * block was rolled while a catalogued article answers to it just as well, and
+ * `rerolledEngineering` where a stated modifier block moved nothing the module has and the
+ * recipe beside it was rolled in its place.
  *
  * @example
  * ```ts
@@ -50,6 +56,45 @@ export type LoadoutImportOutcome =
            * carry — so this module's figures are the unengineered ones.
            */
           readonly action: 'unresolvedEngineering';
+          /** Exact slot spelling used by the imported build. */
+          readonly slot: string;
+          /** Module identity the recipe was stated for. */
+          readonly sourceSymbol: string;
+          /** Recipe the source named, in its own spelling. */
+          readonly blueprintSymbol: string;
+      }
+    | {
+          /**
+           * The source stated a recipe and no `Modifiers`, and both readings of that
+           * identity are legitimate: the module's own engineering menu offers the recipe,
+           * *and* a catalogued fixed article carries the same blueprint at the same grade
+           * and effect. The roll was fitted, because that is what nearly every such block
+           * is; {@link preEngineeredVariant} is the article passed over.
+           */
+          readonly action: 'ambiguousEngineering';
+          /** Exact slot spelling used by the imported build. */
+          readonly slot: string;
+          /** Module identity the recipe was stated for. */
+          readonly sourceSymbol: string;
+          /** Recipe the source named, in its own spelling. */
+          readonly blueprintSymbol: string;
+          /**
+           * The catalogued article the same block equally describes. Pass it to
+           * {@link ships!ShipLoadout.setPreEngineeredVariant |
+           * ShipLoadout.setPreEngineeredVariant} to take that reading instead.
+           */
+          readonly preEngineeredVariant: PreEngineeredVariant;
+      }
+    | {
+          /**
+           * The source stated `Modifiers` that move no stat this module has — an empty
+           * array, or labels the catalogues model nothing for — and identified no
+           * catalogued article, so the module would have published unengineered figures
+           * while reporting that it is engineered. The recipe stated beside them was
+           * rolled at the stated grade and quality in their place, and the source's own
+           * modifier block is gone from the build.
+           */
+          readonly action: 'rerolledEngineering';
           /** Exact slot spelling used by the imported build. */
           readonly slot: string;
           /** Module identity the recipe was stated for. */

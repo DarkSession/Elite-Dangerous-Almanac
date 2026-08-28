@@ -15,6 +15,8 @@ import { EXPERIMENTAL_EFFECTS } from '../experimental-effects.js';
 import { getPreEngineeredVariants, type PreEngineeredVariant } from '../pre-engineered.js';
 import {
     baseStats,
+    capabilityValueForLabel,
+    damageTypeForLabel,
     fieldForLabel,
     labelsForDamageType,
     scaleForLabel,
@@ -320,6 +322,33 @@ function matchesCalculatedModifiers(
 }
 
 /**
+ * Every catalogued article an engineering block naming no `Modifiers` answers to.
+ *
+ * A block that states its modifiers describes an article by that signature and is matched
+ * elsewhere; a bare identity is matched on the blueprint, grade and experimental effect it
+ * names, and nothing else distinguishes the readings of it.
+ */
+function identityArticles(
+    item: string,
+    engineering: ModuleEngineering,
+): readonly PreEngineeredVariant[] {
+    if (engineering.Modifiers !== undefined || typeof engineering.BlueprintName !== 'string') {
+        return [];
+    }
+    const wanted = engineering.BlueprintName.trim().toLowerCase();
+    const experimental = engineering.ExperimentalEffect?.trim().toLowerCase();
+    return getPreEngineeredVariants(item).filter(
+        (candidate) =>
+            candidate.blueprintSymbol.trim().toLowerCase() === wanted &&
+            candidate.grade === engineering.Level &&
+            (candidate.experimentalEffectSymbol === undefined
+                ? experimental === undefined &&
+                  engineering.ExperimentalEffect_Localised === undefined
+                : candidate.experimentalEffectSymbol.trim().toLowerCase() === experimental),
+    );
+}
+
+/**
  * The fixed article an engineering block naming no `Modifiers` can only mean.
  *
  * Such a block is read as an ordinary roll of the recipe it names wherever the module's
@@ -333,22 +362,57 @@ export function unrollableFixedArticle(
     item: string,
     engineering: ModuleEngineering,
 ): PreEngineeredVariant | null {
-    if (engineering.Modifiers !== undefined || typeof engineering.BlueprintName !== 'string') {
-        return null;
-    }
-    const wanted = engineering.BlueprintName.trim().toLowerCase();
-    const experimental = engineering.ExperimentalEffect?.trim().toLowerCase();
-    const matches = getPreEngineeredVariants(item).filter(
-        (candidate) =>
-            candidate.blueprintSymbol.trim().toLowerCase() === wanted &&
-            candidate.grade === engineering.Level &&
-            (candidate.experimentalEffectSymbol === undefined
-                ? experimental === undefined &&
-                  engineering.ExperimentalEffect_Localised === undefined
-                : candidate.experimentalEffectSymbol.trim().toLowerCase() === experimental) &&
-            !blueprintAvailableFor(item, candidate.blueprintSymbol),
+    const matches = identityArticles(item, engineering).filter(
+        (candidate) => !blueprintAvailableFor(item, candidate.blueprintSymbol),
     );
     return matches.length === 1 ? matches[0]! : null;
+}
+
+/**
+ * The fixed article an identity-only block answers to *besides* the roll it was read as.
+ *
+ * The counterpart of {@link unrollableFixedArticle}: where the module's own menu does
+ * offer the blueprint, both readings are legitimate and the roll is taken, so this is the
+ * article that was passed over and the one a consumer may want fitted instead.
+ *
+ * @internal
+ */
+export function rolledOverFixedArticle(
+    item: string,
+    engineering: ModuleEngineering,
+): PreEngineeredVariant | null {
+    const matches = identityArticles(item, engineering).filter((candidate) =>
+        blueprintAvailableFor(item, candidate.blueprintSymbol),
+    );
+    return matches.length === 1 ? matches[0]! : null;
+}
+
+/**
+ * Whether a stated modifier block moves nothing this module carries.
+ *
+ * Every label naming a stat this module's record has no value for — or no labels at all —
+ * describes some other module, and leaves this one publishing stock figures under a block
+ * that reports it is engineered. That is not a reading of the capture worth preserving, so
+ * the recipe stated beside it is rolled instead and the import says so. A damage-split or
+ * capability label always moves something, and one stated value that lands on a stat the
+ * record does carry is enough to make the whole block the source's own account.
+ *
+ * @internal
+ */
+export function statesInertModifiers(
+    stats: OutfittingModule,
+    modifiers: readonly EngineeringModifier[],
+): boolean {
+    return modifiers.every((modifier) => {
+        if (
+            damageTypeForLabel(modifier.Label) !== null ||
+            capabilityValueForLabel(modifier.Label) !== null
+        ) {
+            return false;
+        }
+        const field = fieldForLabel(modifier.Label, stats);
+        return field === null || typeof stats[field] !== 'number';
+    });
 }
 
 /**

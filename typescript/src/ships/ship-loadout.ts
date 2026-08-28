@@ -88,6 +88,8 @@ import {
     missingBaseLabels,
     ordinaryEngineeringProof,
     primitiveEngineeringInputsFor,
+    rolledOverFixedArticle,
+    statesInertModifiers,
 } from './internal/loadout-engineering.js';
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import { effectiveModule } from './internal/loadout-metrics.js';
@@ -638,13 +640,22 @@ export class ShipLoadout {
      * the module would report that it is engineered while publishing the figures of one
      * that is not. Where the module's own engineering menu offers the recipe, the block
      * is read as an ordinary roll of it, even if a fixed article of that module carries
-     * the same blueprint at the same grade; use {@link setPreEngineeredVariant} to say
-     * the article was meant instead. A Mercenary article is read as its own article at
-     * the grade it was bought at, and as that purchase climbed by its bespoke recipe
-     * above it. Where the menu does not offer the recipe, no ordinary roll
-     * could have written the block, so a single catalogued article answering to it is
-     * fitted. Where neither answers, the module keeps unengineered figures and
+     * the same blueprint at the same grade — a reading {@link importOutcomes} reports as
+     * `ambiguousEngineering`, carrying the article passed over so
+     * {@link setPreEngineeredVariant} can take the other one. A Mercenary article is read
+     * as its own article at the grade it was bought at, and as that purchase climbed by
+     * its bespoke recipe above it. Where the menu does not offer the recipe, no ordinary
+     * roll could have written the block, so a single catalogued article answering to it
+     * is fitted. Where neither answers, the module keeps unengineered figures and
      * {@link importOutcomes} reports the slot as `unresolvedEngineering`.
+     *
+     * **A stated modifier block that moves nothing is replaced by the roll.** A block
+     * naming only stats the module has no value for describes some other module, and
+     * preserving it would publish unengineered figures under an engineered block, so the
+     * recipe stated beside it is rolled instead and the slot is reported as
+     * `rerolledEngineering`. Every block that moves at least one stat this module carries
+     * stays exactly as the source wrote it: a capture's own figures are what the game
+     * reported, and outrank anything recomputed here.
      *
      * Modules are imported as one complete snapshot, so their order does not affect
      * per-ship count allowances. An entry stands as the event stated it when the mount
@@ -746,18 +757,28 @@ export class ShipLoadout {
      * grade above the one it was bought at, because its bespoke recipe is exactly how it
      * climbs — at its purchase grade there is nothing to roll and its stats stand.
      *
-     * @returns The outcome to report when the recipe cannot be rolled, or `null`.
+     * A block that *does* state modifiers describes the module itself and is left alone,
+     * with one exception: one whose every label names a stat this module has not, and
+     * which identified no catalogued article, moves nothing at all. Preserving it would
+     * publish unengineered figures under an engineered block, so the recipe beside it is
+     * rolled and the import reports `rerolledEngineering`.
+     *
+     * @returns The outcome to report about this slot, or `null`.
      */
     #rollStatedRecipe(module: LoadoutModule): LoadoutImportOutcome | null {
         const engineering = module.Engineering;
+        if (!engineering || typeof engineering.BlueprintName !== 'string') return null;
+        const stated = engineering.Modifiers;
+        const stats = this.#statsFor(module);
         if (
-            !engineering ||
-            engineering.Modifiers !== undefined ||
-            typeof engineering.BlueprintName !== 'string'
+            stated !== undefined &&
+            (this.#moduleStats.has(module.Slot) ||
+                stats === null ||
+                !statesInertModifiers(stats, stated))
         ) {
             return null;
         }
-        if (this.#moduleStats.has(module.Slot)) {
+        if (stated === undefined && this.#moduleStats.has(module.Slot)) {
             const variant = preEngineeredVariantFor(module);
             if (variant?.acquisition !== 'mercenary' || engineering.Level <= variant.grade) {
                 return null;
@@ -771,7 +792,28 @@ export class ShipLoadout {
                     ? { experimentalEffectSymbol: engineering.ExperimentalEffect }
                     : {}),
             });
-            return null;
+            if (stated !== undefined) {
+                return {
+                    action: 'rerolledEngineering',
+                    slot: module.Slot,
+                    sourceSymbol: module.Item,
+                    blueprintSymbol: engineering.BlueprintName,
+                };
+            }
+            // Both readings of a bare identity are legitimate wherever the menu offers the
+            // recipe a fixed article also carries. The roll is what nearly every such
+            // block is, so it stands — but the choice is reported rather than made in
+            // silence, and the article it passed over comes with it.
+            const passedOver = rolledOverFixedArticle(module.Item, engineering);
+            return passedOver === null
+                ? null
+                : {
+                      action: 'ambiguousEngineering',
+                      slot: module.Slot,
+                      sourceSymbol: module.Item,
+                      blueprintSymbol: engineering.BlueprintName,
+                      preEngineeredVariant: passedOver,
+                  };
         } catch (error) {
             // Every refusal here is a recipe this module cannot roll: an unknown or
             // unoffered blueprint or experimental effect, a grade or quality outside the
@@ -1022,21 +1064,26 @@ export class ShipLoadout {
     /**
      * What the import made of this build: the changes it applied, in source order,
      * followed by the fixed mounts stocked from the hull defaults because the source
-     * named none, in the defaults' own order, followed by the modules whose stated
-     * engineering it could not resolve.
+     * named none, in the defaults' own order, followed by what it made of each module's
+     * stated engineering.
      *
      * @returns A deeply frozen list. It is empty for builds created with
      * {@link ShipLoadout.empty} or {@link ShipLoadout.default}, and for imports that
-     * needed no normalization and left no engineering unresolved.
+     * needed no normalization and read every stated recipe unambiguously.
      * @remarks
      * Each entry names the exact slot, and the source identity where the source gave one.
      * `emptied` means an unknown module was removed from a removable mount; `defaulted`
      * names the stock article fitted to armour, a core internal or the cargo hatch, with
      * a `null` `sourceSymbol` when the source named nothing there at all.
-     * `unresolvedEngineering` is the one entry that reports a *non*-change: the source
-     * stated a recipe and no `Modifiers`, nothing the catalogues carry answers to it, and
-     * that module alone keeps the figures of an unengineered one (see
-     * {@link ShipLoadout.fromLoadout}).
+     * `rerolledEngineering` names a module whose stated `Modifiers` moved no stat it
+     * carries, so the recipe beside them was rolled in their place.
+     *
+     * Two entries report no change to the fit at all. `unresolvedEngineering` means the
+     * source stated a recipe and no `Modifiers`, nothing the catalogues carry answers to
+     * it, and that module alone keeps the figures of an unengineered one.
+     * `ambiguousEngineering` means such a block had *two* answers — an ordinary roll and
+     * a catalogued fixed article — and carries the article that was passed over, ready
+     * for {@link setPreEngineeredVariant} (see {@link ShipLoadout.fromLoadout}).
      */
     get importOutcomes(): readonly LoadoutImportOutcome[] {
         return this.#importOutcomes;

@@ -572,12 +572,15 @@
     }
   },
   // An `Engineering` block may name a recipe and state no `Modifiers` at all; SLEF
-  // permits it and Inara writes it. Each case pins how the stated identity is read.
+  // permits it and Inara writes it. Each case pins how the stated identity is read, and
+  // the last pins the one modifier block that is not read at all because it moves
+  // nothing.
   "statedRecipes": {
     // The module's own menu offers the recipe, so the block is an ordinary roll of it —
     // even though a fixed article of the same module carries the same blueprint at the
     // same grade. Rolling at the stated grade and quality is what nearly every such block
-    // means; a caller who knows the fixed article was meant fits it deliberately.
+    // means; the article it passed over rides along on an `ambiguousEngineering` outcome,
+    // so a caller who knows that reading was meant can fit it deliberately.
     "craftableRecipe": {
       "input": {
         "Ship": "Anaconda",
@@ -601,7 +604,25 @@
           { "Label": "ReloadTime", "Value": 15, "OriginalValue": 10 }
         ],
         "stats": { "ammoMaximum": 3, "reloadTime": 15 },
-        "outcomes": []
+        "outcomes": [
+          {
+            "action": "ambiguousEngineering",
+            "slot": "TinyHardpoint4",
+            "sourceSymbol": "hpt_heatsinklauncher_turret_tiny",
+            "blueprintSymbol": "misc_heatsinkcapacity",
+            "preEngineeredVariant": {
+              "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
+              "name": "Heat Sink Launcher",
+              "blueprintSymbol": "Misc_HeatSinkCapacity",
+              "grade": 1,
+              "acquisition": "techBroker",
+              "modifiers": [
+                { "label": "AmmoMaximum", "method": "multiplicative", "value": 1 },
+                { "label": "ReloadTime", "method": "multiplicative", "value": 0.75 }
+              ]
+            }
+          }
+        ]
       }
     },
     // The menu does not offer the recipe, so no ordinary roll could have written the
@@ -717,6 +738,45 @@
         "modifiers": null,
         "stats": { "maximumRange": 1000, "shotSpeed": 667 },
         "outcomes": []
+      }
+    },
+    // A block that does state `Modifiers` describes its own article and is left alone —
+    // unless none of them moves a stat this module has, as here, where the labels name a
+    // frame shift drive's stats on a heat sink launcher. Kept, the module would publish
+    // unengineered figures under an engineered block, so the recipe beside them is rolled
+    // in their place and the import says which slot it re-rolled.
+    "inertModifiers": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "TinyHardpoint4",
+            "Item": "hpt_heatsinklauncher_turret_tiny",
+            "Engineering": {
+              "BlueprintName": "misc_heatsinkcapacity",
+              "Level": 1,
+              "Quality": 1,
+              "Modifiers": [{ "Label": "FSDOptimalMass", "Value": 1, "OriginalValue": 1 }]
+            }
+          }
+        ]
+      },
+      "expected": {
+        "slot": "TinyHardpoint4",
+        "modifiers": [
+          { "Label": "Mass", "Value": 2.6, "OriginalValue": 1.3 },
+          { "Label": "AmmoMaximum", "Value": 3, "OriginalValue": 2 },
+          { "Label": "ReloadTime", "Value": 15, "OriginalValue": 10 }
+        ],
+        "stats": { "ammoMaximum": 3, "reloadTime": 15 },
+        "outcomes": [
+          {
+            "action": "rerolledEngineering",
+            "slot": "TinyHardpoint4",
+            "sourceSymbol": "hpt_heatsinklauncher_turret_tiny",
+            "blueprintSymbol": "misc_heatsinkcapacity"
+          }
+        ]
       }
     }
   },

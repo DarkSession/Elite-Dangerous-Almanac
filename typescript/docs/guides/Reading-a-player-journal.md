@@ -180,10 +180,13 @@ utility modules leave empty mounts and need no diagnostic, while required armour
 mounts remain complete through their stock replacements. `build.importOutcomes` is the
 frozen, machine-readable account of each change: the exact slot, the source module
 where the capture named one, whether it was `emptied` or `defaulted`, and the replacement
-symbol when one was fitted. It carries one entry that reports a *non*-change:
-`unresolvedEngineering`, for a module whose source stated a recipe and no `Modifiers` that
-neither a craftable recipe nor a catalogued article answers to — that module alone keeps
-the figures of an unengineered one.
+symbol when one was fitted. It also reports what the import made of each module's stated
+engineering: `rerolledEngineering`, where a stated modifier block moved no stat the module
+carries and the recipe beside it was rolled in its place; `unresolvedEngineering`, for a
+module whose source stated a recipe and no `Modifiers` that neither a craftable recipe nor
+a catalogued article answers to — that module alone keeps the figures of an unengineered
+one; and `ambiguousEngineering`, where such a block had two legitimate readings and the
+roll was taken, carrying the catalogued article passed over so you can fit it instead.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

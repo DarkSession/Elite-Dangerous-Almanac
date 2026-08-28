@@ -167,15 +167,24 @@ the same blueprint at the same grade as one of its craftable recipes:
 
 - **The module's engineering menu offers the recipe** — the block is an ordinary roll of
   it. That is what nearly every such block is, and a fixed article of the same module
-  carrying that blueprint does not change the reading. Where you know the article was
-  meant, fit it yourself with
-  {@link ships!ShipLoadout.setPreEngineeredVariant | setPreEngineeredVariant}.
+  carrying that blueprint does not change the reading. It does make the reading a choice,
+  though, so `importOutcomes` carries an `ambiguousEngineering` entry for that slot with
+  the article it passed over in `preEngineeredVariant`. Hand that straight to
+  {@link ships!ShipLoadout.setPreEngineeredVariant | setPreEngineeredVariant} to take the
+  other reading.
 - **The menu does not offer it** — no ordinary roll could have written the block, so a
   single catalogued article answering to the stated blueprint, grade and effect is fitted
   and its fixed stats stand.
 
 Where neither answers, the module keeps unengineered figures and says so: `importOutcomes`
 carries an `unresolvedEngineering` entry naming the slot, the module and the recipe.
+
+A block that *does* state `Modifiers` is the source's own account of the module and is
+kept verbatim — its figures are what the game reported, and outrank anything the library
+would recompute. The exception is a block that moves nothing: every label naming a stat
+the module has no value for, or no labels at all. Such a block describes some other
+module, so the recipe stated beside it is rolled in its place and `importOutcomes` reports
+the slot as `rerolledEngineering`.
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
