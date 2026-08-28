@@ -1,12 +1,11 @@
 name: Publish npm Package
 
 on:
-  push:
-    tags: ["v*"]
+  workflow_dispatch:
 
 concurrency:
-  group: publish-npm-${{ github.ref }}
-  cancel-in-progress: false
+  group: publish-npm
+  cancel-in-progress: false # a publish that is already running must finish
 
 permissions:
   contents: read
@@ -28,53 +27,32 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-depth: 0
+
+      - name: Verify the release branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          RELEASE_REF: ${{ github.ref }}
+        run: |
+          if [ "$RELEASE_REF" != "refs/heads/$DEFAULT_BRANCH" ]; then
+            echo "::error::releases must run from the default branch ($DEFAULT_BRANCH), not $RELEASE_REF"
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
 
-      - name: Verify package version
-        id: package
-        env:
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: |
-          set -euo pipefail
-          version=$(node -p 'require("./package.json").version')
-          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
-            echo "::error::tag $GITHUB_REF_NAME does not match manifest v$version"
-            exit 1
-          fi
-          if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-            echo "::error::release version $version is not a stable SemVer"
-            exit 1
-          fi
-          git merge-base --is-ancestor "$GITHUB_SHA" "origin/$DEFAULT_BRANCH"
-          latest=$(npm view @elite-dangerous-almanac/core version)
-          node - "$version" "$latest" <<'NODE'
-          const [version, latest] = process.argv.slice(2);
-          const stable = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
-          if (!stable.test(latest)) {
-              console.error(`::error::npm latest ${latest} is not a stable SemVer`);
-              process.exit(1);
-          }
-          const candidate = version.split('.').map(Number);
-          const current = latest.split('.').map(Number);
-          const comparison = candidate.findIndex((part, index) => part !== current[index]);
-          if (comparison < 0 || candidate[comparison] <= current[comparison]) {
-              console.error(`::error::release version ${version} is not newer than npm latest ${latest}`);
-              process.exit(1);
-          }
-          NODE
-          echo "version=$version" >>"$GITHUB_OUTPUT"
-
+      # Stamp and pack with a pinned npm 11 client rather than
+      # whichever npm release happens to ship with Node 22.
       - name: Install the packing npm client
         run: |
           set -euo pipefail
           npm install --global npm@11.19.0 --ignore-scripts
           test "$(npm --version)" = 11.19.0
 
+      # pnpm installs the dependency tree; the publish itself stays on npm, which is
+      # the client that mints the provenance attestation. See the publish step below.
       - name: Enable Corepack
         run: corepack enable pnpm
 
@@ -92,10 +70,121 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve what to publish
+        id: package
+        run: |
+          set -euo pipefail
+
+          name=$(node -p 'require("./package.json").name')
+          manifest_version=$(node -p 'require("./package.json").version')
+          if ! published_versions=$(npm view --json "$name" versions 2>/dev/null); then
+            case "$published_versions" in
+              *'"E404"'*) published_versions='[]' ;;
+              *)
+                echo "::error::could not ask the registry for $name versions: $published_versions"
+                exit 1
+                ;;
+            esac
+          fi
+          version=$(
+            MANIFEST_VERSION="$manifest_version" PUBLISHED_VERSIONS="$published_versions" node <<'NODE'
+          const match = /^(\d+)\.(\d+)\./.exec(process.env.MANIFEST_VERSION);
+          if (!match) throw new Error(`Invalid package version: ${process.env.MANIFEST_VERSION}`);
+
+          const [, major, minor] = match;
+          const versions = JSON.parse(process.env.PUBLISHED_VERSIONS);
+          const list = Array.isArray(versions) ? versions : [versions];
+          const patches = list.flatMap((version) => {
+            const published = new RegExp(`^${major}\\.${minor}\\.(\\d+)(?:$|-)`).exec(version);
+            return published ? [Number(published[1])] : [];
+          });
+          const next = [Number(major), Number(minor), Math.max(-1, ...patches) + 1];
+          const stable = list.flatMap((version) => {
+            const published = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
+            return published ? [[Number(published[1]), Number(published[2]), Number(published[3])]] : [];
+          });
+          const compare = (left, right) =>
+            left[0] - right[0] || left[1] - right[1] || left[2] - right[2];
+          const highestStable = stable.sort(compare).at(-1);
+
+          if (highestStable && compare(next, highestStable) <= 0) {
+            throw new Error(
+              `${next.join('.')} would move the latest tag behind ${highestStable.join('.')}`,
+            );
+          }
+
+          console.log(next.join('.'));
+          NODE
+          )
+
+          # npm is the release ledger. The manifest chooses the major/minor line;
+          # every version already published on that line advances its patch.
+          npm version "$version" \
+            --no-git-tag-version \
+            --allow-same-version \
+            --ignore-scripts >/dev/null
+
+          {
+            echo "name=$name"
+            echo "version=$version"
+          } >>"$GITHUB_OUTPUT"
+
+          echo "$name@$version -> dist-tag latest" >>"$GITHUB_STEP_SUMMARY"
+
+      - name: Check the version is still unpublished
+        env:
+          SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          # npm versions are immutable, so a repeat publish fails after a full
+          # build rather than at the start. Public package metadata needs no
+          # credential. A registry that cannot be asked is not the same answer
+          # as a version that is free, so the two are told apart: only npm's own
+          # "no such package or version" is a pass.
+          #
+          # `--json` puts everything needed on stdout — the version when there is
+          # one, an error object when there is not — so stderr is discarded
+          # rather than merged, and a warning npm happens to print cannot read as
+          # a version that already exists.
+          if answer=$(npm view --json "$SPEC" version 2>/dev/null); then
+            if [ -n "$answer" ] && [ "$answer" != null ]; then
+              echo "::error::$SPEC is already on the registry — rerun the workflow to calculate the next patch"
+              exit 1
+            fi
+          else
+            case "$answer" in
+              *'"E404"'*) : ;; # the expected answer for a version that is still free
+              *)
+                echo "::error::could not ask the registry about $SPEC: $answer"
+                exit 1
+                ;;
+            esac
+          fi
+
+      - name: Check the release tag is unused
+        env:
+          VERSION: ${{ steps.package.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::v$VERSION already exists"
+            exit 1
+          else
+            status=$?
+            if [ "$status" -ne 2 ]; then
+              echo "::error::could not check whether v$VERSION exists"
+              exit "$status"
+            fi
+          fi
+
       - name: Audit dependencies
         run: pnpm run audit
 
-      # This job deliberately has no id-token permission while installed dependencies run.
+      # This job has no `id-token` permission. ESLint, tsc, the test suite and
+      # esbuild execute the installed dependency tree, but none of it can request
+      # the identity npm trusts for publishing.
       - name: Check, build and verify the package
         run: pnpm run check && pnpm run build && pnpm run test:package
 
@@ -105,13 +194,21 @@ jobs:
           EXPECTED_VERSION: ${{ steps.package.outputs.version }}
         run: |
           set -euo pipefail
+
           tarball=$(npm pack --ignore-scripts)
-          test -f "$tarball"
-          echo "tarball=$tarball" >>"$GITHUB_OUTPUT"
-          echo "tarball-sha256=$(sha256sum "$tarball" | cut -d ' ' -f 1)" >>"$GITHUB_OUTPUT"
-          packed_version=$(tar -xOf "$tarball" package/package.json | node -p 'JSON.parse(require("fs").readFileSync(0)).version')
-          if [ "$packed_version" != "$EXPECTED_VERSION" ]; then
-            echo "::error::packed manifest $packed_version does not match $EXPECTED_VERSION"
+          if [ ! -f "$tarball" ]; then
+            echo "::error::npm pack did not create $tarball"
+            exit 1
+          fi
+
+          {
+            echo "tarball=$tarball"
+            echo "tarball-sha256=$(sha256sum "$tarball" | cut -d ' ' -f 1)"
+          } >>"$GITHUB_OUTPUT"
+
+          published_version=$(tar -xOf "$tarball" package/package.json | node -p 'JSON.parse(require("fs").readFileSync(0)).version')
+          if [ "$published_version" != "$EXPECTED_VERSION" ]; then
+            echo "::error::package.json contains $published_version instead of $EXPECTED_VERSION"
             exit 1
           fi
 
@@ -133,7 +230,7 @@ jobs:
       url: https://www.npmjs.com/package/@elite-dangerous-almanac/core
     permissions:
       contents: read
-      id-token: write
+      id-token: write # lets npm exchange GitHub's OIDC identity for publish access
     defaults:
       run:
         working-directory: typescript
@@ -141,6 +238,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
+          # This exact Node release includes npm 11.17.0, which supports Trusted
+          # Publishing without installing new code in the OIDC-enabled job.
           node-version: 24.19.0
           registry-url: https://registry.npmjs.org
 
@@ -150,19 +249,48 @@ jobs:
           name: npm-package
           path: typescript
 
+      - name: Verify the Trusted Publishing client
+        run: test "$(npm --version)" = 11.17.0
+
       - name: Verify package digest
         env:
           TARBALL: ${{ needs.prepare.outputs.tarball }}
           TARBALL_SHA256: ${{ needs.prepare.outputs.tarball-sha256 }}
         run: |
           set -euo pipefail
-          [[ "$TARBALL" = *.tgz && "$TARBALL" != */* && "$TARBALL" != .* && "$TARBALL" != -* ]]
-          [[ "$TARBALL_SHA256" =~ ^[0-9a-f]{64}$ ]]
+
+          case "$TARBALL" in
+            *.tgz) ;;
+            *)
+              echo "::error::unexpected package filename: $TARBALL"
+              exit 1
+              ;;
+          esac
+          if [[ "$TARBALL" = */* || "$TARBALL" = .* || "$TARBALL" = -* ]]; then
+            echo "::error::package filename must be a plain basename: $TARBALL"
+            exit 1
+          fi
+          if ! [[ "$TARBALL_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "::error::package digest is not a SHA-256 value"
+            exit 1
+          fi
+
           echo "$TARBALL_SHA256  $TARBALL" | sha256sum --check --strict
 
       - name: Publish
         env:
           TARBALL: ${{ needs.prepare.outputs.tarball }}
+        # `npm`, not `pnpm`, and deliberately so: npm exchanges the job's OIDC
+        # identity for short-lived publish access and automatically attaches its
+        # provenance attestation. The package was built in the unprivileged job;
+        # this job only verifies its digest and uploads it.
+        #
+        # `--access public` because the package is scoped and scoped packages
+        # default to restricted. The CLI-level registry cannot be overridden by
+        # `publishConfig` inside the tarball. Explicit `--provenance` makes a
+        # missing attestation fatal instead of relying on npm's best-effort OIDC
+        # auto-detection. `--ignore-scripts` prevents any lifecycle script there
+        # from running beside the OIDC permission.
         run: >-
           npm publish "./$TARBALL"
           --registry=https://registry.npmjs.org
@@ -172,16 +300,36 @@ jobs:
           --ignore-scripts
 
   release:
-    name: Create GitHub release
+    name: Create Git tag and GitHub release
     needs: [prepare, publish]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
     steps:
-      - name: Create release
+      - name: Create tag and release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.prepare.outputs.version }}
-        run: gh release create "v$VERSION" --verify-tag --title "v$VERSION" --generate-notes
+        run: |
+          set -euo pipefail
+
+          if ! tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" --jq .object.sha 2>/dev/null); then
+            gh api --method POST "repos/$GH_REPO/git/refs" \
+              -f ref="refs/tags/v$VERSION" \
+              -f sha="$GITHUB_SHA" >/dev/null
+            tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/v$VERSION" --jq .object.sha)
+          fi
+
+          if [ "$tag_sha" != "$GITHUB_SHA" ]; then
+            echo "::error::v$VERSION points to $tag_sha instead of $GITHUB_SHA"
+            exit 1
+          fi
+
+          if ! gh release view "v$VERSION" >/dev/null 2>&1; then
+            gh release create "v$VERSION" \
+              --verify-tag \
+              --title "v$VERSION" \
+              --generate-notes
+          fi

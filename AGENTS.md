@@ -277,27 +277,29 @@ Do not disable either setting to land an update, and treat `minimumReleaseAgeExc
 
 ## Releasing to npm
 
-Dependencies are installed and project scripts run with pnpm. Packing and publishing use npm; `--provenance` is npm's own feature, and `pnpm publish` does not document the flag. GitHub's CLI creates the release.
+Dependencies are installed and project scripts run with pnpm. Registry version lookup, manifest stamping, packing and publishing use npm; `--provenance` is npm's own feature, and `pnpm publish` does not document the flag. Git refs and releases use GitHub's CLI.
 
 `.github/workflows/publish-npm.yml` publishes `@elite-dangerous-almanac/core`. **Nobody publishes from a laptop** — a hand-run `npm publish` produces a tarball with no provenance, built from whatever happened to be in the working tree, and it cannot be undone once the version is taken.
 
-To release, set the complete version in `typescript/package.json`, merge it to the default branch, and push the matching `v<version>` tag. The workflow rejects a tag that does not match the manifest or whose commit is not reachable from the default branch.
+To release, run **Publish npm Package** from the Actions tab with `main` selected. Every dispatch is a real release; the workflow rejects every branch and tag except the repository's default branch. To move to a new release line, change the major and minor components in `typescript/package.json` and merge that change first.
 
 What the workflow does with that:
 
-- **Checks the package manifest.** The pushed tag and checked-in version must agree. After `npm pack`, the workflow reads `package/package.json` from the tarball and checks the same version again.
+- **Chooses the next patch.** The major and minor components come from `typescript/package.json`. npm's published versions are the release ledger: the highest patch already used on that major/minor line, including by a prerelease, is incremented by one. A line with no published versions starts at patch zero. The checked-in full version is therefore not necessarily the next published version, and is usually already published itself: a manifest reading `0.2.0` on a `0.2` line whose highest published patch is `0.2.1` next publishes `0.2.2`.
+- **Stamps and checks the package manifest.** `npm version --no-git-tag-version` writes the calculated stable version into the package assembled in the workflow without changing the checked-in manifest. After `npm pack`, the workflow reads `package/package.json` from the tarball and refuses to continue unless it contains that exact version.
 - **Reruns everything.** `pnpm run audit`, then `pnpm run check && pnpm run build && pnpm run test:package` — lint, formatting, types, documented-example compilation and value checks, the coverage-gated suite, the full build and the built-`dist/` entry-point suite. The release does not trust the earlier CI run on the branch.
-- **Protects the release ref.** The tag is the release request and version ledger. After npm accepts the tarball, the workflow turns that existing tag into a GitHub Release with generated notes.
-- **Publishes under `latest`.** Release tags carry stable SemVer versions; choose a version newer than the current stable release before pushing the tag.
+- **Refuses a version that already exists.** npm versions are immutable, so the check happens before the build rather than as a failed upload at the end. A registry that cannot be reached is not treated as a version that is free — only npm's own "no such package or version" passes.
+- **Protects the release ref.** Before building, the workflow refuses a version whose tag already exists. After npm accepts the tarball, it creates `v<version>` at the workflow commit, verifies the ref and turns it into a GitHub Release with generated notes. A retry accepts the tag only when it points at the same commit.
+- **Publishes under `latest`.** Automatically generated versions are stable SemVer versions. The workflow refuses a release line whose next patch is not newer than every published stable version, so a backport cannot move npm's `latest` tag backward.
 - **Attaches provenance.** `--provenance` needs `id-token: write`, and it is what puts the verified badge on the npm page linking the tarball to this commit and this workflow run. `--access public` is required because the package is scoped, and scoped packages default to restricted.
 
-If npm succeeds but GitHub Release creation fails, use **Re-run failed jobs** on that run.
+If npm succeeds but tag or GitHub Release creation fails, use **Re-run failed jobs** on that run. Starting the whole workflow again would correctly allocate the next patch rather than repair the already-published release.
 
 **The checks and build run in a job with no `id-token` permission, and the publish step passes `--ignore-scripts`.** This is the one place the workflow deliberately departs from the obvious shape. Letting `prepublishOnly` do the work would run ESLint, `tsc`, the whole test suite and esbuild — that is, arbitrary code from every devDependency in the tree — in the job that can request the short-lived OIDC publishing identity. The privileged job instead verifies and uploads the already-built tarball without executing package code. A `prepack` or `prepare` script added to the package later has to be wired into the unprivileged build job, because `--ignore-scripts` will skip it.
 
 Setup this needs once, in repository settings, **before the first release**:
 
-1. Create an environment named `npm` (Settings → Environments), allow the `v*` release tags, and add required reviewers if publishing should need a second human approval.
+1. Create an environment named `npm` (Settings → Environments), restrict its deployment branches to the default branch, and add required reviewers if publishing should need a second human approval.
 2. On npm, configure a GitHub Actions trusted publisher for `@elite-dangerous-almanac/core`: owner `DarkSession`, repository `Elite-Dangerous-Almanac`, workflow `publish-npm.yml`, environment `npm`. The workflow needs no long-lived npm token.
 
 ## How the shared assets flow into TypeScript
