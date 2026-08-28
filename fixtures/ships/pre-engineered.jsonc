@@ -631,7 +631,7 @@
     }
   },
   "identification": {
-    "description": "Representative Frontier Loadout modules whose reported stat signatures identify a fixed variant without relying on its blueprint tuple. `journal-anaconda-slapaconda.jsonc` identifies the Modified Guardian Shard Cannon from its other hand-set values; its damage is the corrected stock base rather than a separate modifier. `journal-federation-corvette-mixed.jsonc` reports the rail gun's derived rate rather than its authored burst interval; `journal-panther-mkii-fat-arse.jsonc` proves both a one-stat signature and an experimental effect added to a V1 FSD. The Spire Ops shard is deliberately negative: Anti-Guardian Zone Resistance alone carries no evidence that it is either fixed Shard variant.",
+    "description": "Representative Frontier Loadout modules whose reported stat signatures identify a fixed variant without relying on its blueprint tuple. `journal-anaconda-slapaconda.jsonc` identifies the Modified Guardian Shard Cannon from its other hand-set values; its damage is the corrected stock base rather than a separate modifier. `journal-federation-corvette-mixed.jsonc` reports the rail gun's derived rate rather than its authored burst interval; `journal-panther-mkii-fat-arse.jsonc` proves both a one-stat signature and an experimental effect added to a V1 FSD. `slef-edsy-anaconda-funny-hull.jsonc` proves the same drive one size down through a producer that stores the multiplier and re-derives every value from the stock stat, so its figures miss Frontier's by more than a float32 does. The Spire Ops shard is deliberately negative: Anti-Guardian Zone Resistance alone carries no evidence that it is either fixed Shard variant.",
     "matches": [
       {
         "source": "journal-anaconda-slapaconda.jsonc",
@@ -662,6 +662,15 @@
         "source": "journal-panther-mkii-fat-arse.jsonc",
         "slot": "FrameShiftDrive",
         "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
+        "blueprintSymbol": "FSD_LongRange",
+        "grade": 5,
+        "appliedExperimental": "special_fsd_heavy",
+        "acquisition": "techBroker"
+      },
+      {
+        "source": "slef-edsy-anaconda-funny-hull.jsonc",
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
         "blueprintSymbol": "FSD_LongRange",
         "grade": 5,
         "appliedExperimental": "special_fsd_heavy",

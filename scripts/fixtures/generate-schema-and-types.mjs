@@ -47,7 +47,9 @@ function nameFromFile(file) {
 function familyName(file) {
   if (/^ships\/builds\/(?!index\.jsonc$)/.test(file)) return "shipsBuild";
   if (/^ships\/journal-/.test(file)) return "shipsJournalLoadout";
-  if (/^ships\/(?:slef-inara-|slef-the-deep-black\.jsonc$)/.test(file)) {
+  if (
+    /^ships\/(?:slef-inara-|slef-edsy-|slef-the-deep-black\.jsonc$)/.test(file)
+  ) {
     return "shipsSlefEnvelope";
   }
   return nameFromFile(file);

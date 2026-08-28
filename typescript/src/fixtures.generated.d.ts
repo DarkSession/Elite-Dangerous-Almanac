@@ -4429,6 +4429,53 @@ declare module '*/fixtures/ships/ship-stats.jsonc' {
     export default value;
 }
 
+type FixtureShipsSlefEdsyAnacondaFunnyHull = {
+    data: {
+        CargoCapacity: number;
+        FuelCapacity: {
+            Main: number;
+            Reserve: number;
+        };
+        HullValue: number;
+        MaxJumpRange: number;
+        Modules: {
+            Engineering?: {
+                BlueprintName: string;
+                ExperimentalEffect?: string;
+                Level: number;
+                Modifiers: {
+                    Label: string;
+                    OriginalValue: number;
+                    Value: number;
+                }[];
+                Quality: number;
+            };
+            Item: string;
+            On: boolean;
+            Priority: number;
+            Slot: string;
+            Value?: number;
+        }[];
+        ModulesValue: number;
+        Rebuy: number;
+        Ship: string;
+        ShipIdent: string;
+        ShipName: string;
+        UnladenMass: number;
+        event: string;
+    };
+    header: {
+        appName: string;
+        appURL: string;
+        appVersion: number;
+    };
+}[];
+
+declare module '*/fixtures/ships/slef-edsy-anaconda-funny-hull.jsonc' {
+    const value: FixtureShipsSlefEdsyAnacondaFunnyHull;
+    export default value;
+}
+
 type FixtureShipsSlefInaraCutterAntixeno = {
     data: {
         HullValue: number;

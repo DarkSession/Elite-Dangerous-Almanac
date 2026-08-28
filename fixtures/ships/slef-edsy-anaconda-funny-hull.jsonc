@@ -1,0 +1,772 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * A real EDSY SLEF export of a hull-tanked Anaconda (22 `Modules` entries).
+ *
+ * Contributed 2026-08-28 UTC by the repository owner from their own commander's fleet. Source text
+ * SHA-256 `0486b2b31c0504f5074a75f6dcfeb935fc38d855c2fb8fcde57b818f9264bdb5`. Stored-form SHA-256
+ * `aead9f6847b8eec1c419a4e9ce66dcf4129aea3a3e9ad170ac205332b2fc5199`. Its `ShipName`, `ShipIdent`
+ * and the `appURL` holding the same build are kept: they describe a ship, not a person.
+ *
+ * Its `FrameShiftDrive` is the tech-broker pre-engineered SCO drive with Mass Manager added after
+ * purchase, and it is the ground truth for a capture whose producer stores the modifier rather than
+ * the modified value: EDSY re-derives every figure from the stock stat, writing the article's 2 s
+ * boot time as `2.000122` and its 3536 t optimal mass as `3536.025391`. Frontier's own float32
+ * precision does not reach that far, so identification is what the file pins — the drive is
+ * unrecognized at journal tolerance, and an editor then refuses every engineering edit on it. The
+ * port reproduces EDSY's own exported `MaxJumpRange` of 42.468335 ly for the fit.
+ *
+ * The capture is Elite Dangerous game output and remains the property of Frontier Developments
+ * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+ *
+ * A stored checksum here is of the payload alone, taken with this header comment removed; a source
+ * checksum is of the upstream file as it was received.
+ */
+[
+  {
+    "header": {
+      "appName": "EDSY",
+      "appVersion": 424009902,
+      "appURL": "https://edsy.org/#/L=J600000H4C0S00,,,9ooG0BK_W0ADIG03K_W0ARMG05I_W0AfRG-bJ0060upD6upD8qpDE_PcGzcQKsPcAtyG03G_W0BBoG03L_W0BRuG05G_W0Bcg00,10iG07I_W0,10iG03I_W010iG07I_W010iG03I_W010iG07I_W010iG03I_W010iG07I_W010iG03I_W010iG07I_W010iG03I_W010iG07I_W010iG03I_W010iG07I_W0,_2Funny_0Hull_2_0Anaconda,XSF"
+    },
+    "data": {
+      "event": "Loadout",
+      "Ship": "anaconda",
+      "ShipName": "\"Funny Hull\" Anaconda",
+      "ShipIdent": "XSF",
+      "HullValue": 142447820,
+      "ModulesValue": 509998540,
+      "UnladenMass": 990.200122,
+      "CargoCapacity": 0,
+      "MaxJumpRange": 42.468335,
+      "FuelCapacity": {
+        "Main": 32,
+        "Reserve": 1.07
+      },
+      "Rebuy": 32622318,
+      "Modules": [
+        {
+          "Slot": "CargoHatch",
+          "Item": "modularcargobaydoor",
+          "On": true,
+          "Priority": 0
+        },
+        {
+          "Slot": "Armour",
+          "Item": "anaconda_armour_mirrored",
+          "On": true,
+          "Priority": 0,
+          "Value": 312604020,
+          "Engineering": {
+            "BlueprintName": "Armour_Thermic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_armour_thermic",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthMultiplier",
+                "Value": 239.5,
+                "OriginalValue": 250
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -96,
+                "OriginalValue": -75
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": 72.4,
+                "OriginalValue": 50
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -68,
+                "OriginalValue": -50
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "PowerPlant",
+          "Item": "int_powerplant_size8_class5",
+          "On": true,
+          "Priority": 0,
+          "Value": 116739870,
+          "Engineering": {
+            "BlueprintName": "PowerPlant_Armoured",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_powerplant_cooled",
+            "Modifiers": [
+              {
+                "Label": "Mass",
+                "Value": 96,
+                "OriginalValue": 80
+              },
+              {
+                "Label": "Integrity",
+                "Value": 363,
+                "OriginalValue": 165
+              },
+              {
+                "Label": "PowerCapacity",
+                "Value": 40.32,
+                "OriginalValue": 36
+              },
+              {
+                "Label": "HeatEfficiency",
+                "Value": 0.3168,
+                "OriginalValue": 0.4
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "MainEngines",
+          "Item": "int_engine_size7_class5",
+          "On": true,
+          "Priority": 0,
+          "Value": 51289110,
+          "Engineering": {
+            "BlueprintName": "Engine_Dirty",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_engine_overloaded",
+            "Modifiers": [
+              {
+                "Label": "Integrity",
+                "Value": 122.4,
+                "OriginalValue": 144
+              },
+              {
+                "Label": "PowerDraw",
+                "Value": 10.2144,
+                "OriginalValue": 9.12
+              },
+              {
+                "Label": "EngineOptimalMass",
+                "Value": 1890,
+                "OriginalValue": 2160
+              },
+              {
+                "Label": "EngineOptPerformance",
+                "Value": 145.6,
+                "OriginalValue": 100
+              },
+              {
+                "Label": "EngineHeatRate",
+                "Value": 2.288,
+                "OriginalValue": 1.3
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "FrameShiftDrive",
+          "Item": "int_hyperdrive_overcharge_size6_class5",
+          "On": true,
+          "Priority": 0,
+          "Value": 0,
+          "Engineering": {
+            "BlueprintName": "FSD_LongRange",
+            "Level": 5,
+            "Quality": 0,
+            "ExperimentalEffect": "special_fsd_heavy",
+            "Modifiers": [
+              {
+                "Label": "Mass",
+                "Value": 52.000122,
+                "OriginalValue": 40
+              },
+              {
+                "Label": "Integrity",
+                "Value": 90.803604,
+                "OriginalValue": 141
+              },
+              {
+                "Label": "PowerDraw",
+                "Value": 0.862501,
+                "OriginalValue": 0.75
+              },
+              {
+                "Label": "BootTime",
+                "Value": 2.000122,
+                "OriginalValue": 10
+              },
+              {
+                "Label": "FSDOptimalMass",
+                "Value": 3536.025391,
+                "OriginalValue": 2000
+              },
+              {
+                "Label": "FSDHeatRate",
+                "Value": 44.399887,
+                "OriginalValue": 37
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "LifeSupport",
+          "Item": "int_lifesupport_size5_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 79440,
+          "Engineering": {
+            "BlueprintName": "Misc_LightWeight",
+            "Level": 5,
+            "Quality": 1,
+            "Modifiers": [
+              {
+                "Label": "Mass",
+                "Value": 1.2,
+                "OriginalValue": 8
+              },
+              {
+                "Label": "Integrity",
+                "Value": 43,
+                "OriginalValue": 86
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "PowerDistributor",
+          "Item": "int_powerdistributor_size8_class5",
+          "On": true,
+          "Priority": 0,
+          "Value": 27249390,
+          "Engineering": {
+            "BlueprintName": "PowerDistributor_HighFrequency",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_powerdistributor_fast",
+            "Modifiers": [
+              {
+                "Label": "WeaponsCapacity",
+                "Value": 65.664,
+                "OriginalValue": 72
+              },
+              {
+                "Label": "WeaponsRecharge",
+                "Value": 10.8576,
+                "OriginalValue": 7.2
+              },
+              {
+                "Label": "EnginesCapacity",
+                "Value": 43.776,
+                "OriginalValue": 48
+              },
+              {
+                "Label": "EnginesRecharge",
+                "Value": 7.2384,
+                "OriginalValue": 4.8
+              },
+              {
+                "Label": "SystemsCapacity",
+                "Value": 43.776,
+                "OriginalValue": 48
+              },
+              {
+                "Label": "SystemsRecharge",
+                "Value": 7.2384,
+                "OriginalValue": 4.8
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Radar",
+          "Item": "int_sensors_size8_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 1743960,
+          "Engineering": {
+            "BlueprintName": "Sensor_LongRange",
+            "Level": 5,
+            "Quality": 1,
+            "Modifiers": [
+              {
+                "Label": "Mass",
+                "Value": 128,
+                "OriginalValue": 64
+              },
+              {
+                "Label": "SensorTargetScanAngle",
+                "Value": 21,
+                "OriginalValue": 30
+              },
+              {
+                "Label": "Range",
+                "Value": 10080,
+                "OriginalValue": 5760
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "FuelTank",
+          "Item": "int_fueltank_size5_class3",
+          "On": true,
+          "Priority": 0,
+          "Value": 97750
+        },
+        {
+          "Slot": "Slot01_Size7",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Explosive",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot02_Size6",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot03_Size6",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Explosive",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot04_Size6",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot05_Size5",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Explosive",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot06_Size5",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot07_Size5",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Explosive",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot08_Size4",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot09_Size4",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Explosive",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot10_Size4",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot13_Size2",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Explosive",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Slot14_Size1",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "Slot": "Military01",
+          "Item": "int_hullreinforcement_size1_class2",
+          "On": true,
+          "Priority": 0,
+          "Value": 15000,
+          "Engineering": {
+            "BlueprintName": "HullReinforcement_Kinetic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_hullreinforcement_chunky",
+            "Modifiers": [
+              {
+                "Label": "DefenceModifierHealthAddition",
+                "Value": 139.15,
+                "OriginalValue": 110
+              },
+              {
+                "Label": "KineticResistance",
+                "Value": 39.106,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ThermicResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              },
+              {
+                "Label": "ExplosiveResistance",
+                "Value": -11.639,
+                "OriginalValue": 0.5
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+]

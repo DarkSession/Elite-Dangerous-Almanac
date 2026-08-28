@@ -153,9 +153,24 @@ export function getPreEngineeredJournalModifiers(
     return journalModifiersWithExperimental(variant);
 }
 
-/** Numeric equality at the precision of Frontier's journal float values. */
-function sameJournalNumber(actual: number, expected: number): boolean {
-    return Math.abs(actual - expected) <= Math.max(1e-5, Math.abs(expected) * 1e-6);
+/**
+ * Numeric equality at the precision the capture's producer wrote.
+ *
+ * Frontier serializes a float32 of the modified value itself. A third-party editor
+ * stores the multiplier and re-derives the value from the stock stat, so its error
+ * scales with that unmodified base rather than with the result: EDSY writes a
+ * pre-engineered drive's 2 s boot time as `2.000122` and its 3536 t optimal mass as
+ * `3536.025391` — each a little over one part in a hundred thousand of the 10 s and
+ * 2000 t stock stats they were derived from. One part in ten thousand of the base leaves that room and
+ * still separates a hand-set article from every other candidate, whose predictions
+ * differ by percent. Frontier's own noise floor is kept alongside it, so no capture
+ * this rule used to accept is refused for having a base value of zero.
+ */
+function sameJournalNumber(actual: number, expected: number, base: number): boolean {
+    return (
+        Math.abs(actual - expected) <=
+        Math.max(1e-5, Math.abs(base) * 1e-4, Math.abs(expected) * 1e-6)
+    );
 }
 
 /** One stable comparison key for recipe and journal spellings of the same stat. */
@@ -169,7 +184,14 @@ function modifierKey(modifier: EngineeringModifier, module: OutfittingModule): s
 /** Whether a captured modifier agrees with the value a candidate article predicts. */
 function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier): boolean {
     if (expected.Value !== undefined) {
-        return actual.Value !== undefined && sameJournalNumber(actual.Value, expected.Value);
+        return (
+            actual.Value !== undefined &&
+            sameJournalNumber(
+                actual.Value,
+                expected.Value,
+                expected.OriginalValue ?? expected.Value,
+            )
+        );
     }
     // Capability values are localized inconsistently (`Active`, a `$...;` token, or both).
     // Their presence is the durable fact; a candidate capability must remain string-valued.
@@ -222,9 +244,11 @@ function matchesModifierSignature(
  * not carry into a consumer's bundle.
  *
  * Frontier journals and captures may omit a derived modifier, so one predicted value may
- * be absent. Every stated predicted value must agree within journal float noise, and all
- * but at most one must be present. Ambiguous or incomplete evidence returns `null` rather
- * than guessing.
+ * be absent. Every stated predicted value must agree to within one part in ten thousand of
+ * the stat's unmodified base — wide enough for a producer that stores the multiplier and
+ * re-derives the value, narrow enough that no other candidate fits — and all but at most
+ * one must be present. Ambiguous or incomplete evidence returns `null` rather than
+ * guessing.
  * Other variants without a published stat block cannot be identified.
  *
  * @param module - A module from a journal `Loadout` event or SLEF export.

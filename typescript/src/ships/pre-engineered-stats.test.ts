@@ -23,6 +23,7 @@ import corvette from '../../../fixtures/ships/journal-federation-corvette-mixed.
 import panther from '../../../fixtures/ships/journal-panther-mkii-fat-arse.jsonc' with { type: 'json' };
 import spireOps from '../../../fixtures/ships/journal-python-mkii-spire-ops.jsonc' with { type: 'json' };
 import krait from '../../../fixtures/ships/journal-krait-phantom.jsonc' with { type: 'json' };
+import edsyAnaconda from '../../../fixtures/ships/slef-edsy-anaconda-funny-hull.jsonc' with { type: 'json' };
 import type { LoadoutEvent, LoadoutModule } from './slef.js';
 
 /** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */
@@ -43,6 +44,7 @@ const captures: Readonly<Record<string, LoadoutEvent>> = {
     'journal-panther-mkii-fat-arse.jsonc': panther as LoadoutEvent,
     'journal-python-mkii-spire-ops.jsonc': spireOps as LoadoutEvent,
     'journal-krait-phantom.jsonc': krait as LoadoutEvent,
+    'slef-edsy-anaconda-funny-hull.jsonc': edsyAnaconda[0]!.data as LoadoutEvent,
 };
 
 const capturedModule = (source: string, slot: string): LoadoutModule => {

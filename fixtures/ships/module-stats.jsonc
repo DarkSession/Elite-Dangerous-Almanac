@@ -2215,6 +2215,14 @@
         "exact": 35,
         "withinFloatNoise": 0,
         "unmapped": []
+      },
+      {
+        "file": "slef-edsy-anaconda-funny-hull.jsonc",
+        "stated": 34,
+        "mapped": 34,
+        "exact": 34,
+        "withinFloatNoise": 0,
+        "unmapped": []
       }
     ],
     "weaponsNote": "The `DamagePerSecond` a capture states for an engineered weapon's unmodified self — Frontier's own arithmetic over damage, rate of fire, rounds per shot and burst structure. These are the only external readings of an unmodified weapon's folded figure: in-game verification reads the stored inputs one at a time, and the one product it does hold, a festive flak launcher's panel DPS in `fixtures/ships/pre-engineered.jsonc`, is a modified weapon read to one decimal. On a beam laser the fold is trivial, its damage being already per second, and `inGameVerifiedValues` pins that figure for six beams — but not for the huge or medium gimballed ones a capture reads, so on those this is the only check `damage` has, since no journal states `Damage` for a beam laser. A burst laser's figure folds the burst; a missile rack's counts the whole salvo. Each must reproduce to the same float-noise tolerance. The Cobra Mk V's externally observed combined total is pinned separately in `fixtures/ships/build-metrics.jsonc`; only sustained build DPS remains tracked by https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12.",

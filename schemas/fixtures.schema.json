@@ -276,6 +276,7 @@
     {
       "definition": "shipsSlefEnvelope",
       "files": [
+        "ships/slef-edsy-anaconda-funny-hull.jsonc",
         "ships/slef-inara-cutter-antixeno.jsonc",
         "ships/slef-inara-lynx-highliner.jsonc",
         "ships/slef-inara-panther-mkii.jsonc",
@@ -6620,7 +6621,7 @@
               "appName": { "type": "string" },
               "appURL": { "type": "string" },
               "appVersion": {
-                "anyOf": [{ "type": "string" }, { "type": "integer" }]
+                "anyOf": [{ "type": "integer" }, { "type": "string" }]
               }
             },
             "required": ["appName", "appVersion"]

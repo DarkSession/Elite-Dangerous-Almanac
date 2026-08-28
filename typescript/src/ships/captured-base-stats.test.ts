@@ -40,6 +40,7 @@ import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.
 import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.jsonc' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.jsonc' with { type: 'json' };
 import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.jsonc' with { type: 'json' };
+import edsyAnacondaSlef from '../../../fixtures/ships/slef-edsy-anaconda-funny-hull.jsonc' with { type: 'json' };
 
 // Every capture the repository holds that could state a base value, named by the file the
 // fixture names, so a new capture is joined here by adding it in both places.
@@ -79,6 +80,10 @@ const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] =
     { file: 'journal-viper-mkiv.jsonc', loadouts: [viperJournal as LoadoutEvent] },
     { file: 'journal-the-deep-black.jsonc', loadouts: [deepBlackJournal as LoadoutEvent] },
     { file: 'slef-the-deep-black.jsonc', loadouts: parseSlef(deepBlackSlef).map((e) => e.data) },
+    {
+        file: 'slef-edsy-anaconda-funny-hull.jsonc',
+        loadouts: parseSlef(edsyAnacondaSlef).map((e) => e.data),
+    },
 ];
 
 const {

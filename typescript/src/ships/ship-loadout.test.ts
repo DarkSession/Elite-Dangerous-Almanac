@@ -34,6 +34,7 @@ import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.jsonc' wi
 import corsairJournal from '../../../fixtures/ships/journal-corsair.jsonc' with { type: 'json' };
 import kestrelMkIIJournal from '../../../fixtures/ships/journal-kestrel-mkii.jsonc' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.jsonc' with { type: 'json' };
+import edsyAnacondaCapture from '../../../fixtures/ships/slef-edsy-anaconda-funny-hull.jsonc' with { type: 'json' };
 import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.jsonc' with { type: 'json' };
 import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.jsonc' with { type: 'json' };
 import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.jsonc' with { type: 'json' };
@@ -4600,6 +4601,30 @@ test('an imported V1 drive is resolved before its added experimental is folded i
     assert.equal(drive.engineering?.ExperimentalEffect, 'special_fsd_heavy');
     assert.equal(drive.stats?.optMass, 5100);
     assert.equal(drive.effectiveStats?.optMass, 5304);
+});
+
+test('a re-derived export resolves its V1 drive, so the editor can still engineer it', () => {
+    // EDSY stores each modifier and recomputes the value from the stock stat, so this
+    // capture's figures miss Frontier's own by more than a float32 does: 2.000122 s of
+    // boot time against 2. Unresolved, the drive reads as an ordinary Long Range roll and
+    // every engineering edit on it is refused.
+    const build = ShipLoadout.fromSlef(edsyAnacondaCapture);
+    const drive = build.fittedModuleAt('FrameShiftDrive')!;
+    assert.equal(drive.preEngineeredVariant?.acquisition, 'techBroker');
+    assert.equal(drive.stats?.optMass, 3400);
+    assert.equal(drive.effectiveStats?.optMass, 3536.025391);
+    assert.ok(
+        near(
+            BuildMetrics.of(build).maxJumpRange(),
+            edsyAnacondaCapture[0]!.data.MaxJumpRange,
+            1e-5,
+        ),
+        `got ${BuildMetrics.of(build).maxJumpRange()}`,
+    );
+    assert.equal(
+        build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_fuelcapacity').kind,
+        'updated',
+    );
 });
 
 test('an identified reward supplies an omitted baked-experimental stat', () => {
