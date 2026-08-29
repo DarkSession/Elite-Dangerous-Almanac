@@ -651,9 +651,17 @@ test('variants that change a burst pattern move the interval their rate comes fr
     // so nothing downstream notices if the modifier behind it goes missing: the weapon
     // simply keeps its stock cadence. Pin the interval and the rate it derives.
     const pinned = fixture.burstIntervalVariants;
-    const carriers = PRE_ENGINEERED_MODULES.filter((v) =>
-        v.modifiers?.some((m) => m.label === 'BurstInterval'),
-    );
+    // Every article whose interval actually moves, however it moves: a hand-set block
+    // names `BurstInterval` outright, while a Merc row publishes no block at all and
+    // moves it entirely through the experimental effect the shop bakes in. Filtering on
+    // the authored block alone would walk past the second kind.
+    const carriers = PRE_ENGINEERED_MODULES.filter((variant) => {
+        const stock = getModuleBySymbol(variant.symbol, ALL_MODULES);
+        const resolved = getPreEngineeredStats(variant);
+        return (
+            resolved?.burstInterval !== undefined && resolved.burstInterval !== stock?.burstInterval
+        );
+    });
     assert.equal(carriers.length, pinned.count);
     // …and the fixture covers every one of them, so dropping a row cannot quietly
     // shrink what this test walks.
@@ -683,8 +691,23 @@ test('variants that change a burst pattern move the interval their rate comes fr
         // The stat a consumer actually reads: the resolver writes `rateOfFire` back
         // because the recipe never names it. Asserting only the recomputation would
         // pass even if the resolver stopped writing the field at all.
-        assert.equal(round6(fitted.rateOfFire ?? 0), expected.rateOfFire, symbol);
-        assert.equal(round6(combinedRateOfFire(fitted) ?? 0), expected.rateOfFire, symbol);
+        assert.equal(fitted.rateOfFire, expected.rateOfFire, symbol);
+        // One article, one rate of fire: the resolved stat is the figure the article's own
+        // engineering block states, down to the last place a journal serializes.
+        const stated = getPreEngineeredJournalModifiers(variant).find(
+            (modifier) => modifier.Label === 'RateOfFire',
+        );
+        assert.equal(stated?.Value, expected.blockRateOfFire, symbol);
+        assert.equal(fitted.rateOfFire, stated?.Value, symbol);
+        // Recomputing from the resolved record agrees with it to the precision a
+        // serialized journal figure carries. It is the same derivation either way; what
+        // differs is the input, because `burstInterval` is read back at the six decimals
+        // it is published at while the article derives its rate from the stored float
+        // behind them. Three of the fifteen land a place apart on that alone.
+        assert.ok(
+            Math.abs(combinedRateOfFire(fitted)! - expected.rateOfFire) < 1e-5,
+            `${symbol}: ${combinedRateOfFire(fitted)} vs ${expected.rateOfFire}`,
+        );
         // The whole point: the variant does not fire at the stock cadence.
         assert.notEqual(fitted.burstInterval, stock.burstInterval, symbol);
         assert.notEqual(fitted.rateOfFire, stock.rateOfFire, symbol);

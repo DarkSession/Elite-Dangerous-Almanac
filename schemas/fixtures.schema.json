@@ -6206,6 +6206,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
+                  "blockRateOfFire": { "type": "number" },
                   "blueprintSymbol": { "type": "string" },
                   "burstInterval": { "type": "number" },
                   "experimentalEffectSymbol": {
@@ -6217,6 +6218,7 @@
                   "symbol": { "type": "string" }
                 },
                 "required": [
+                  "blockRateOfFire",
                   "blueprintSymbol",
                   "burstInterval",
                   "experimentalEffectSymbol",

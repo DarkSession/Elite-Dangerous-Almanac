@@ -59,7 +59,7 @@ import {
     multiplierBaseForLabel,
     scaleForLabel,
 } from './internal/module-stat-labels.js';
-import { withPreciseModifierValue } from './internal/engineering-precision.js';
+import { round6, withPreciseModifierValue } from './internal/engineering-precision.js';
 
 /** How a modifier value is applied to a base stat. */
 export type ModifierMethod = 'multiplicative' | 'additive' | 'overwrite';
@@ -178,12 +178,6 @@ export interface Blueprint {
     /** The blueprint's grades, keyed by grade number as a string (`"1"`–`"5"`). */
     readonly grades: BlueprintGrades;
 }
-
-/** Serialize a stored float to the six decimal places used by journal modifier values. */
-const round6 = (n: number): number => {
-    const rounded = Math.round(n * 1e6) / 1e6;
-    return Object.is(rounded, -0) ? 0 : rounded;
-};
 
 /** Stats whose catalogue ratio is stored as float32 before journal percentage scaling. */
 const FLOAT32_SCALED_BASE_LABELS: ReadonlySet<string> = new Set([

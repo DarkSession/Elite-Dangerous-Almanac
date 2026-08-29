@@ -14,7 +14,9 @@
  * catalogue size and its split by acquisition; `records` pins individual pairings;
  * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable;
  * `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that
- * drives their rate of fire cannot be dropped again; `mercenaryBakedEffects` pins the ten
+ * drives their rate of fire cannot be dropped again, each with the `rateOfFire` the resolved
+ * article carries and the `blockRateOfFire` its published engineering block states — one
+ * article states one rate of fire, so the two are the same figure; `mercenaryBakedEffects` pins the ten
  * Merc-shop rows sold with an experimental effect already applied, each with the stats that
  * effect alone moves on the stock module — the shop rows publish no `modifiers`, so the
  * effect is the whole of what resolves for them, and its `resolved.journalModifiers` pins the
@@ -162,13 +164,13 @@
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
         "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
         "experimentalEffectSymbol": "special_fsd_interrupt",
-        "movedStats": ["burstInterval", "damage"]
+        "movedStats": ["burstInterval", "damage", "rateOfFire"]
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
         "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
         "experimentalEffectSymbol": "special_fsd_interrupt",
-        "movedStats": ["burstInterval", "damage"]
+        "movedStats": ["burstInterval", "damage", "rateOfFire"]
       }
     ],
     "resolved": {
@@ -185,8 +187,28 @@
   },
   "maxModifierDecimalPlaces": 5,
   "burstIntervalVariants": {
-    "count": 13,
+    "count": 15,
     "variants": [
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
+        "grade": 1,
+        "experimentalEffectSymbol": "special_fsd_interrupt",
+        "stockBurstInterval": 3,
+        "burstInterval": 4.5,
+        "rateOfFire": 0.222222,
+        "blockRateOfFire": 0.222222
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+        "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
+        "grade": 1,
+        "experimentalEffectSymbol": "special_fsd_interrupt",
+        "stockBurstInterval": 3,
+        "burstInterval": 4.5,
+        "rateOfFire": 0.222222,
+        "blockRateOfFire": 0.222222
+      },
       {
         "symbol": "Hpt_Slugshot_Gimbal_Small",
         "blueprintSymbol": "Weapon_DoubleShot",
@@ -194,7 +216,8 @@
         "experimentalEffectSymbol": "special_screening_shell",
         "stockBurstInterval": 0.17,
         "burstInterval": 0.1598,
-        "rateOfFire": 1.724435
+        "rateOfFire": 1.724435,
+        "blockRateOfFire": 1.724435
       },
       {
         "symbol": "Hpt_Slugshot_Gimbal_Large",
@@ -203,7 +226,8 @@
         "experimentalEffectSymbol": "special_screening_shell",
         "stockBurstInterval": 0.21,
         "burstInterval": 0.1974,
-        "rateOfFire": 1.670286
+        "rateOfFire": 1.670286,
+        "blockRateOfFire": 1.670286
       },
       {
         "symbol": "Hpt_MultiCannon_Fixed_Medium",
@@ -212,7 +236,8 @@
         "experimentalEffectSymbol": "special_phasing_sequence",
         "stockBurstInterval": 0.14,
         "burstInterval": 0.1,
-        "rateOfFire": 10
+        "rateOfFire": 10,
+        "blockRateOfFire": 10
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -221,7 +246,8 @@
         "experimentalEffectSymbol": "special_feedback_cascade_cooled",
         "stockBurstInterval": 0.83,
         "burstInterval": 0.322496,
-        "rateOfFire": 3.100814
+        "rateOfFire": 3.100809,
+        "blockRateOfFire": 3.100809
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
@@ -230,7 +256,8 @@
         "experimentalEffectSymbol": "special_super_penetrator",
         "stockBurstInterval": 0.4,
         "burstInterval": 0.2946,
-        "rateOfFire": 4.777577
+        "rateOfFire": 4.777577,
+        "blockRateOfFire": 4.777577
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -239,7 +266,8 @@
         "experimentalEffectSymbol": "special_drag_munitions",
         "stockBurstInterval": 3,
         "burstInterval": 2.4,
-        "rateOfFire": 0.416667
+        "rateOfFire": 0.416667,
+        "blockRateOfFire": 0.416667
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -248,7 +276,8 @@
         "experimentalEffectSymbol": "special_fsd_interrupt",
         "stockBurstInterval": 3,
         "burstInterval": 4.05,
-        "rateOfFire": 0.246914
+        "rateOfFire": 0.246914,
+        "blockRateOfFire": 0.246914
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -257,7 +286,8 @@
         "experimentalEffectSymbol": "special_fsd_interrupt",
         "stockBurstInterval": 3,
         "burstInterval": 4.05,
-        "rateOfFire": 0.246914
+        "rateOfFire": 0.246914,
+        "blockRateOfFire": 0.246914
       },
       {
         "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
@@ -266,7 +296,8 @@
         "experimentalEffectSymbol": null,
         "stockBurstInterval": 2,
         "burstInterval": 1.4,
-        "rateOfFire": 0.714286
+        "rateOfFire": 0.714286,
+        "blockRateOfFire": 0.714286
       },
       {
         "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
@@ -275,7 +306,8 @@
         "experimentalEffectSymbol": null,
         "stockBurstInterval": 2,
         "burstInterval": 1.4,
-        "rateOfFire": 0.714286
+        "rateOfFire": 0.714286,
+        "blockRateOfFire": 0.714286
       },
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
@@ -284,7 +316,8 @@
         "experimentalEffectSymbol": null,
         "stockBurstInterval": 0.83,
         "burstInterval": 0.512633,
-        "rateOfFire": 4.922271
+        "rateOfFire": 4.922272,
+        "blockRateOfFire": 4.922272
       },
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
@@ -293,7 +326,8 @@
         "experimentalEffectSymbol": null,
         "stockBurstInterval": 0.83,
         "burstInterval": 0.512633,
-        "rateOfFire": 4.922271
+        "rateOfFire": 4.922272,
+        "blockRateOfFire": 4.922272
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -302,7 +336,8 @@
         "experimentalEffectSymbol": "special_thermal_cascade",
         "stockBurstInterval": 3,
         "burstInterval": 2.7,
-        "rateOfFire": 0.37037
+        "rateOfFire": 0.37037,
+        "blockRateOfFire": 0.37037
       }
     ]
   },

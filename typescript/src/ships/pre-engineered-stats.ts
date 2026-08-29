@@ -38,12 +38,16 @@ import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { getPreEngineeredVariants, type PreEngineeredVariant } from './pre-engineered.js';
 import type { EngineeringModifier, LoadoutModule } from './slef.js';
-import { combinedRateOfFire } from './weapons.js';
 import { scaleDamageComponents } from './internal/damage-components.js';
 import { fixedModifierFeatures } from './internal/fixed-modifier-features.js';
 import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 import { journalModifiersFor } from './internal/loadout-engineering.js';
+import {
+    BURST_PATTERN_LABELS,
+    journalRateOfFire,
+    preciseValueFor,
+} from './internal/engineering-precision.js';
 
 /** Highest engineering grade Frontier reports for any module blueprint. */
 const MAX_ENGINEERING_GRADE = 5;
@@ -409,6 +413,11 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * the effect is published, the grade-1 pre-engineering those arrive with is not, so the
  * catalogue does not guess at it.
  *
+ * `rateOfFire` follows a moved firing cycle even though no recipe names it: an article
+ * whose burst interval, burst size or within-burst rate moves — by its own stat block or
+ * by the experimental effect baked into it — resolves the rate those parts produce, and
+ * it is the same figure {@link getPreEngineeredJournalModifiers} states for the article.
+ *
  * @param variant - A pre-engineered variant.
  * @returns The resolved module record, or `null` when the variant's symbol is not in the
  * module catalogues. It is always a record of your own — never the shared catalogue
@@ -440,12 +449,15 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         // owns, so whether a write to the result succeeds never depends on which of them
         // ran — and the shared catalogue singleton is never handed out at all.
         return { ...module };
-    const modifiers = variant.modifiers ?? [];
+    // Everything the article moves, its baked experimental effect included — a
+    // `mercenary` row publishes no stat block of its own and arrives entirely by that
+    // effect, so reading `variant.modifiers` alone would miss what it changes.
+    const applied = getPreEngineeredModifiers(variant);
     const resolved: { -readonly [K in keyof OutfittingModule]: OutfittingModule[K] } = {
         ...module,
         ...(variant.engineeringLocked ? { engineeringLocked: true } : {}),
     };
-    for (const { Label, Value, ValueStr } of getPreEngineeredModifiers(variant)) {
+    for (const { Label, Value, ValueStr } of applied) {
         const field = fieldForLabel(Label, module);
         // Numeric values return to the catalogue's units (a journal reports a resistance
         // as `40` where the catalogue stores `0.4`). A string-valued capability is stored
@@ -464,18 +476,19 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         delete resolved.damageComponents;
     }
     // A variant that changes the burst pattern changes the rate of fire with it, even
-    // though the recipe never names it — the rate is derived from the firing cycle.
+    // though the recipe never names it — the rate is derived from the firing cycle. It is
+    // derived here exactly as the article's own `Modifiers` block derives it, so the
+    // resolved stat and the published block state one rate of fire rather than two.
     if (
         resolved.rateOfFire !== undefined &&
-        !modifiers.some((m) => m.label === 'RateOfFire') &&
-        modifiers.some(
-            (m) =>
-                m.label === 'BurstSize' ||
-                m.label === 'BurstRateOfFire' ||
-                m.label === 'BurstInterval',
-        )
+        !applied.some((m) => m.Label === 'RateOfFire') &&
+        applied.some((m) => BURST_PATTERN_LABELS.some((label) => label === m.Label))
     ) {
-        const rate = combinedRateOfFire(resolved);
+        const rate = journalRateOfFire(
+            preciseValueFor(applied, 'BurstInterval') ?? resolved.burstInterval,
+            preciseValueFor(applied, 'BurstSize') ?? resolved.burstRounds,
+            preciseValueFor(applied, 'BurstRateOfFire') ?? resolved.burstRateOfFire,
+        );
         if (rate !== undefined) resolved.rateOfFire = rate;
     }
     if (module.damageComponents && !experimentalDamageDistribution) {

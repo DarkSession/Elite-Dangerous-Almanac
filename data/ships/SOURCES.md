@@ -493,7 +493,16 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   every other record remains an omitted sparse field.
   - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
     journal (and this catalogue) report the combined shots per second, so it is
-    computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval)`. Coriolis
+    computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval)` — with a float32
+    stored after every operation and the result written to six decimal places, which is
+    how the game computes and serializes it. The float matters on three records, where
+    exact arithmetic lands one place away: a capture is what settles it, and
+    `journal-cobra-mkv.jsonc` states a stock `RateOfFire` of 8.333334 for the small
+    gimballed multi-cannon, whose 0.12 s interval gives 8.333333 exactly and 8.333334
+    through the float. `Hpt_Slugshot_Fixed_Small` (5.555555) and
+    `Hpt_MkIIPlasmaShockAutocannon_Fixed_Large` (7.844017) follow the same rule; no
+    capture states either, so they are the derivation the multi-cannon vindicates rather
+    than observed readings. Coriolis
     (`Module.getRoF`) and EDSY (`rof = fpc / spc`) also fold `chargeTime` into this
     figure, but Frontier does not: `journal-federation-corvette-mixed.jsonc` states
     `RateOfFire` base values of 1.587302 for the small rail gun and 1.204819 for the
@@ -1913,8 +1922,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
       itself.
   - **Burst interval has to be added to the decoder's output by hand.** EDSY carries no
     journal Label for `bstint` — the journal reports the resulting `RateOfFire`, never the
-    interval it comes from — so a straight decode drops it, leaving the 13 variants that
-    change a burst pattern on the _stock_ cadence, and four of them (the two frag cannons
+    interval it comes from — so a straight decode drops it, leaving the 13 variants whose
+    stat block changes a burst pattern on the _stock_ cadence, and four of them (the two frag cannons
     and the two Guardian gauss cannons) inconsistent as well as slow, carrying the
     engineered `BurstSize` — and, on the gauss cannons, the engineered `BurstRateOfFire` —
     against a stock interval. All 13 are stored under **`BurstInterval`**, the same label

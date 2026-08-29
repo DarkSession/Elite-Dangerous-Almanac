@@ -6076,6 +6076,119 @@ test('a fitted Mercenary article publishes what its baked effect moves', () => {
     assert.equal(withMovedStats, 7);
 });
 
+test('a fitted article resolves the rate of fire its own block states', () => {
+    // `RateOfFire` is the one weapon figure no recipe names: the game derives it from the
+    // firing cycle, and so does this library — once for the block a fitted module
+    // publishes, and once for the stats it resolves. Deriving it twice is how one article
+    // came to state one rate of fire and resolve another, so pin that the two are one
+    // figure for every catalogued article, and that an article whose cycle nothing moved
+    // keeps its catalogue cadence rather than acquiring a recomputed one.
+    let stated = 0;
+    let fittedCount = 0;
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        const build = ShipLoadout.empty('Anaconda');
+        const slot = build
+            .slots()
+            .find((candidate) =>
+                build
+                    .modulesForSlot(candidate.key)
+                    .some((module) => module.symbol.toLowerCase() === variant.symbol.toLowerCase()),
+            )?.key;
+        if (slot === undefined) continue;
+        fittedCount++;
+        const fitted = build.setPreEngineeredVariant(slot, variant).fittedModuleAt(slot)!;
+        const label = `${variant.symbol} ${variant.blueprintSymbol}`;
+        const rate = fitted.engineering?.Modifiers?.find(
+            (modifier) => modifier.Label === 'RateOfFire',
+        );
+
+        if (rate === undefined) {
+            assert.equal(fitted.effectiveStats?.rateOfFire, fitted.stats?.rateOfFire, label);
+            continue;
+        }
+        stated++;
+        assert.equal(fitted.effectiveStats!.rateOfFire, rate.Value, label);
+        // The resolved catalogue record answers the same, so a consumer that fits the
+        // article and one that only asks the catalogue for it read one cadence.
+        assert.equal(fitted.stats!.rateOfFire, rate.Value, label);
+    }
+    // Every catalogued article but one, whose hull class the Anaconda does not carry.
+    assert.equal(fittedCount, PRE_ENGINEERED_MODULES.length - 1);
+    assert.equal(stated, 15);
+});
+
+test('an applied burst recipe resolves the rate of fire its own block states', () => {
+    // The same agreement on the ordinary route: Double Shot moves the burst interval and
+    // never names a rate, so the block states a derived one and the stats beside it have
+    // to land on that exact figure rather than on a second derivation of it.
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('LargeHardpoint1', getModuleBySymbol('Hpt_Slugshot_Gimbal_Large')!)
+        .applyBlueprint('LargeHardpoint1', 'Weapon_DoubleShot', { grade: 5, quality: 1 });
+    const fitted = build.fittedModuleAt('LargeHardpoint1')!;
+    const rate = fitted.engineering!.Modifiers!.find(
+        (modifier) => modifier.Label === 'RateOfFire',
+    )!;
+
+    assert.ok(rate.Value !== undefined);
+    assert.notEqual(rate.Value, fitted.stats!.rateOfFire);
+    assert.equal(fitted.effectiveStats!.rateOfFire, rate.Value);
+    assert.equal(BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics.rateOfFire, rate.Value);
+});
+
+test('a partial capture cannot invent a rate of fire the weapon has no cycle for', () => {
+    // A third-party block that moves a stat the module carries is kept as written, so a
+    // burst label can arrive beside a weapon that has no firing cycle to rebuild. There
+    // is nothing to derive there, and a beam laser fires continuously — so the rate stays
+    // absent rather than becoming a number the capture never claimed.
+    const beam = ShipLoadout.fromLoadout({
+        Ship: 'krait_mkii',
+        Modules: [
+            {
+                Slot: 'LargeHardpoint1',
+                Item: 'Hpt_BeamLaser_Fixed_Large',
+                Engineering: {
+                    BlueprintName: 'Weapon_LightWeight',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: 'Mass', Value: 6.4, OriginalValue: 8 },
+                        { Label: 'BurstSize', Value: 2, OriginalValue: 1 },
+                    ],
+                },
+            },
+        ],
+    }).fittedModuleAt('LargeHardpoint1')!;
+
+    assert.equal(beam.effectiveStats!.rateOfFire, undefined);
+
+    // A within-burst rate of zero is no rate at all, so it falls back to one shot a
+    // second exactly as `combinedRateOfFire` does — the two never disagree about the
+    // same weapon.
+    const rateFor = (burstRateOfFire: number): number | undefined =>
+        ShipLoadout.fromLoadout({
+            Ship: 'krait_mkii',
+            Modules: [
+                {
+                    Slot: 'LargeHardpoint1',
+                    Item: 'Hpt_Slugshot_Gimbal_Large',
+                    Engineering: {
+                        BlueprintName: 'Weapon_LightWeight',
+                        Level: 1,
+                        Quality: 1,
+                        Modifiers: [
+                            { Label: 'BurstInterval', Value: 0.1974, OriginalValue: 0.21 },
+                            { Label: 'BurstSize', Value: 2, OriginalValue: 1 },
+                            { Label: 'BurstRateOfFire', Value: burstRateOfFire, OriginalValue: 1 },
+                        ],
+                    },
+                },
+            ],
+        }).fittedModuleAt('LargeHardpoint1')!.effectiveStats!.rateOfFire;
+
+    assert.equal(rateFor(0), rateFor(1));
+    assert.equal(rateFor(0), 1.670286);
+});
+
 test('completing a Merc article turns on whether it has a block to state', () => {
     // A completed roll that states its modifiers is already whole, and one that states
     // none is rolled from its recipe — but a Merc purchase grade is not in any recipe.

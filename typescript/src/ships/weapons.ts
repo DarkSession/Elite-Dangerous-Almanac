@@ -43,6 +43,7 @@
 
 import type { DamageComponents, DamageDistribution, ProjectileRangeBoundaries } from './modules.js';
 import { requireFiniteNonNegative } from './internal/range-guards.js';
+import { journalRateOfFire } from './internal/engineering-precision.js';
 
 /**
  * The weapon stats a DPS calculation needs — all post-engineering.
@@ -244,32 +245,36 @@ export interface WeaponTotals {
  * `burstInterval` before the next one. `chargeTime` is the delay before a shot lands,
  * not part of the cadence Frontier reports as `RateOfFire`.
  *
+ * The cycle is rebuilt the way the game builds it — a float stored after every operation,
+ * serialized to the six decimal places a journal writes — so the answer is the figure the
+ * game reports rather than one a little beside it. A small gimballed multi-cannon fires
+ * every 0.12 s and Frontier states `8.333334`, which exact arithmetic misses by a place.
+ * That is also why this is the rate a fitted module already carries: a weapon whose
+ * engineering moved the cycle resolves this exact figure into
+ * {@link ships!FittedModule.effectiveStats | effectiveStats}, and states it in the
+ * `Modifiers` block beside it.
+ *
  * @param weapon - The weapon's stats, post-engineering.
  * @returns Shots per second, or `undefined` for a continuous-fire weapon (no
  * `burstInterval`) or a cycle that does not resolve to a positive time.
  * @remarks
- * Use this after engineering has moved a burst stat: a recipe that gives a weapon a
- * two-round burst changes the rate of fire without naming it. `weaponMetrics` takes
- * `rateOfFire` as given, so recompute it first if you have changed the parts.
+ * Use this for parts you have changed by hand: a recipe that gives a weapon a two-round
+ * burst changes the rate of fire without naming it, and `weaponMetrics` takes
+ * `rateOfFire` as given. A weapon read from a build needs no recomputation — its rate is
+ * already this figure.
  * @example
  * ```ts
  * import { combinedRateOfFire } from '@elite-dangerous-almanac/core/ships/weapons';
  *
  * // A small burst laser: three shots at 15/s, then half a second's wait
- * combinedRateOfFire({ burstInterval: 0.5, burstRounds: 3, burstRateOfFire: 15 }); // -> 4.74
+ * combinedRateOfFire({ burstInterval: 0.5, burstRounds: 3, burstRateOfFire: 15 }); // -> 4.736842
  * ```
  */
 export function combinedRateOfFire(weapon: WeaponStats): number | undefined {
-    const interval = weapon.burstInterval;
-    if (interval === undefined || interval <= 0) return undefined;
-    const burst = weapon.burstRounds && weapon.burstRounds > 0 ? weapon.burstRounds : 1;
     // An unspecified burst rate falls back to one shot a second, as both Coriolis
     // (`getRoF`) and EDSY (`bstrof` default 1) do — and as `sustainedFireFactor` below
     // does, so the two never disagree about the same weapon.
-    const burstRate =
-        weapon.burstRateOfFire && weapon.burstRateOfFire > 0 ? weapon.burstRateOfFire : 1;
-    const cycle = (burst > 1 ? (burst - 1) / burstRate : 0) + interval;
-    return cycle > 0 ? burst / cycle : undefined;
+    return journalRateOfFire(weapon.burstInterval, weapon.burstRounds, weapon.burstRateOfFire);
 }
 
 const ZERO_SPLIT: DamageSplit = {
