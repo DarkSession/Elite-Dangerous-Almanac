@@ -2313,8 +2313,12 @@ export class ShipLoadout {
      * Articles carry `Level`, `Quality: 1`, any baked experimental effect and their fixed
      * modifiers. Because the variant names its base module, a decorative identity cannot
      * be applied to an unrelated damage-bearing module.
-     * A Mercenary variant whose fixed modifier block has not been published retains the
-     * stock catalogue stats and omits `Modifiers` rather than claiming it changes none.
+     * The block states exactly what the article moves, so it always agrees with
+     * {@link getPreEngineeredJournalModifiers} for the same variant. A Mercenary variant
+     * publishes no fixed stat block of its own, so it keeps the stock catalogue stats
+     * apart from its baked experimental effect, and states that effect's modifiers and
+     * no others. An article that moves no stat at all carries no `Modifiers` key, rather
+     * than an empty array claiming it changes none.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively.
      * @param variant - The pre-engineered catalogue variant to fit.
@@ -2378,6 +2382,12 @@ export class ShipLoadout {
         }
         this.setModule(slotKey, stats);
         const module = this.#fittedModuleFor(slotKey)!;
+        // Whatever the article moves is what it publishes. A Mercenary row carries no
+        // stat block of its own, but its baked experimental effect still moves stats, and
+        // those belong in the block — a fitted article that states an effect and no
+        // `Modifiers` would disagree with `getPreEngineeredJournalModifiers` about the
+        // same purchase.
+        const journalModifiers = getPreEngineeredJournalModifiers(known);
         const engineering: ModuleEngineering = {
             BlueprintName: known.blueprintSymbol,
             Level: known.grade,
@@ -2385,9 +2395,7 @@ export class ShipLoadout {
             ...(known.experimentalEffectSymbol === undefined
                 ? {}
                 : { ExperimentalEffect: known.experimentalEffectSymbol }),
-            ...(known.modifiers?.length
-                ? { Modifiers: getPreEngineeredJournalModifiers(known) }
-                : {}),
+            ...(journalModifiers.length > 0 ? { Modifiers: journalModifiers } : {}),
         };
         this.#replaceModule(
             module.Slot,

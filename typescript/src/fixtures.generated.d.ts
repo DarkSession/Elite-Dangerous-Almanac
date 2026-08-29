@@ -4354,6 +4354,11 @@ type FixtureShipsPreEngineered = {
                 damage: number;
                 thermalLoad: number;
             };
+            journalModifiers: {
+                Label: string;
+                OriginalValue: number;
+                Value: number;
+            }[];
             stock: {
                 damage: number;
                 thermalLoad: number;

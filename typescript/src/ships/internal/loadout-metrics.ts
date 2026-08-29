@@ -1242,10 +1242,17 @@ function normalizeEffectiveWeapon(module: LoadoutModule, weapon: Record<string, 
     const rate = burstAdjustedRateOfFire(module, weapon);
     if (rate !== undefined) weapon.rateOfFire = rate;
 
-    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
-    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
-    if (statedDamagePerSecond !== null && firingFactor > 0) {
-        weapon.damage = statedDamagePerSecond / firingFactor;
+    // A capture that states `Damage` has already published the figure; dividing its
+    // companion `DamagePerSecond` back out by the firing rate only re-derives the same
+    // number through two more float32 steps, and lands a little beside it. Frontier omits
+    // `Damage` for a continuous weapon, whose per-second figure *is* the damage stat, and
+    // may omit it from a partial capture — those are the readings this derivation is for.
+    if (getLoadoutModifier(module, 'Damage') === null) {
+        const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
+        const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
+        if (statedDamagePerSecond !== null && firingFactor > 0) {
+            weapon.damage = statedDamagePerSecond / firingFactor;
+        }
     }
 
     const { maximumRange, falloffRange } = weapon as WeaponStats;

@@ -135,7 +135,9 @@ function journalModifiersWithExperimental(
  *
  * @param variant - A pre-engineered variant.
  * @returns Its computable fixed modifiers in journal representation, or an empty array
- * when its symbol is unknown or no fixed stat block is published.
+ * when its symbol is unknown or it moves no stat the catalogue carries. A `mercenary` row
+ * publishes no stat block, so what its baked experimental effect moves is the whole of
+ * what it reports — the same block `ShipLoadout.setPreEngineeredVariant` fits.
  *
  * @example
  * ```ts

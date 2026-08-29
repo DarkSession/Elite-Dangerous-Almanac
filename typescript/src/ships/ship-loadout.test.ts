@@ -46,7 +46,7 @@ import { damageFalloff, damagePerSecond } from './weapons.js';
 import type { HeatState } from './heat.js';
 import { powerBudget as calculatePowerBudget } from './power.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
-import { getPreEngineeredVariants } from './pre-engineered.js';
+import { getPreEngineeredVariants, PRE_ENGINEERED_MODULES } from './pre-engineered.js';
 import { getBlueprintCost } from './blueprint-costs.js';
 import { getExperimentalEffectCost } from './experimental-effect-costs.js';
 import { sumMaterials } from './engineering.js';
@@ -6040,6 +6040,110 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
 
     build.clearEngineering('PowerDistributor');
     assert.equal(build.fittedModuleAt('PowerDistributor')!.preEngineeredVariant, null);
+});
+
+test('a fitted Mercenary article publishes what its baked effect moves', () => {
+    // Ten Merc-shop rows are sold carrying an experimental effect. Seven of those effects
+    // move at least one stat, and a fitted article has to say so: reading the purchase
+    // through `setPreEngineeredVariant` and reading the same catalogue row through
+    // `getPreEngineeredJournalModifiers` describe one article, so they must agree.
+    let withMovedStats = 0;
+    for (const variant of PRE_ENGINEERED_MODULES.filter(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )) {
+        const build = ShipLoadout.empty('Anaconda');
+        const slot = build
+            .slots()
+            .find((candidate) =>
+                build
+                    .modulesForSlot(candidate.key)
+                    .some((module) => module.symbol.toLowerCase() === variant.symbol.toLowerCase()),
+            )!.key;
+        const expected = getPreEngineeredJournalModifiers(variant);
+        const fitted = build.setPreEngineeredVariant(slot, variant).fittedModuleAt(slot)!;
+        const label = `${variant.symbol} ${variant.blueprintSymbol}`;
+
+        assert.equal(fitted.preEngineeredVariant, variant, label);
+        if (expected.length === 0) {
+            // No stat block and no effect that moves one: the article carries no
+            // `Modifiers` key at all rather than an empty array claiming it changes none.
+            assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'), label);
+        } else {
+            withMovedStats++;
+            assert.deepEqual(fitted.engineering!.Modifiers, expected, label);
+        }
+    }
+    assert.equal(withMovedStats, 7);
+});
+
+test('a Mercenary article resolves the same through both of its reading paths', () => {
+    // The fitted article and the same article reconstructed from its own exported block
+    // must describe one module — including the published figure itself, which the
+    // capture states and the import must not re-derive a hair away from.
+    const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium').find(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )!;
+    const fixture = preEngineeredFixture.mercenaryBakedEffects.resolved;
+    assert.equal(variant.blueprintSymbol, fixture.blueprintSymbol);
+
+    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'MediumHardpoint1',
+        variant,
+    );
+    const fitted = build.fittedModuleAt('MediumHardpoint1')!;
+    assert.deepEqual(fitted.engineering!.Modifiers, fixture.journalModifiers);
+    assert.equal(fitted.effectiveStats!.damage, fixture.engineered.damage);
+
+    const reimported = ShipLoadout.fromLoadout(build.toLoadoutEvent()).fittedModuleAt(
+        'MediumHardpoint1',
+    )!;
+    assert.equal(reimported.preEngineeredVariant, variant);
+    assert.deepEqual(reimported.engineering!.Modifiers, fixture.journalModifiers);
+    assert.equal(reimported.effectiveStats!.damage, fixture.engineered.damage);
+});
+
+test('a stated Damage wins over the DamagePerSecond derived beside it', () => {
+    // A weapon capture states both figures. `Damage` is the published one; dividing
+    // `DamagePerSecond` back out by the firing rate re-derives it through two more
+    // float32 steps and lands beside it. Frontier omits `Damage` for a continuous
+    // weapon, and that reading still derives from the per-second figure.
+    const railgun = mod('Hpt_Railgun_Fixed_Medium', HARDPOINT_MODULES);
+    const stated = (modifiers: EngineeringModifier[]) =>
+        ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'MediumHardpoint1',
+                    Item: railgun.symbol,
+                    Engineering: {
+                        BlueprintName: 'Weapon_HighCapacity',
+                        Level: 1,
+                        Quality: 1,
+                        Modifiers: modifiers,
+                    },
+                },
+            ],
+        }).fittedModuleAt('MediumHardpoint1')!.effectiveStats!.damage;
+
+    assert.equal(
+        stated([
+            { Label: 'DamagePerSecond', Value: 40.028915, OriginalValue: 50.036144 },
+            { Label: 'Damage', Value: 33.223999, OriginalValue: 41.529999 },
+        ]),
+        33.223999,
+    );
+    // A continuous weapon states no `Damage` at all — its per-second figure *is* the
+    // damage stat — so that reading still comes from `DamagePerSecond`.
+    const beam = ShipLoadout.empty('Anaconda');
+    beam.setModule('MediumHardpoint1', mod('Hpt_BeamLaser_Fixed_Medium', HARDPOINT_MODULES));
+    beam.applyBlueprint('MediumHardpoint1', 'Weapon_Efficient', { grade: 5, quality: 1 });
+    const beamBlock = beam.fittedModuleAt('MediumHardpoint1')!.engineering!;
+    assert.equal(modFor(beamBlock.Modifiers!, 'Damage'), undefined);
+    assert.equal(
+        ShipLoadout.fromLoadout(beam.toLoadoutEvent()).fittedModuleAt('MediumHardpoint1')!
+            .effectiveStats!.damage,
+        modFor(beamBlock.Modifiers!, 'DamagePerSecond'),
+    );
 });
 
 test('setPreEngineeredVariant validates the variant and preserves its module identity', () => {
