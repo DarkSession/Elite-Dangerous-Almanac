@@ -1175,11 +1175,12 @@ const WEAPON_FIELDS = [
  * **damage components** scale by the effective/base damage ratio so ordinary engineering
  * keeps their proportions; a damage-converting experimental replaces them with its fixed
  * distribution. A Plasma Conversion blueprint supplies its grade's converted split, and
- * journal damage-type modifiers can override the catalogue result. A journal's derived
- * `DamagePerSecond` modifier is authoritative for the fitted article; it is divided by
- * the effective rounds and firing rate to recover the per-round `damage` consumed by the
- * data-free weapon functions. This matters especially for engineered beam lasers, whose
- * journal block states no separate `Damage` modifier.
+ * journal damage-type modifiers can override the catalogue result. The **per-round
+ * damage** consumed by the data-free weapon functions is the block's own `Damage`
+ * modifier wherever it states one; where it does not — an engineered beam laser is the
+ * common case, since a continuous weapon's per-second figure *is* its damage stat — the
+ * derived `DamagePerSecond` is divided by the effective rounds and firing rate to
+ * recover it.
  * **Projectile boundary parameters** are copied unchanged because they are not ordinary
  * engineerable range fields.
  */
