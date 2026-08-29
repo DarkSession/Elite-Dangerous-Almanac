@@ -2118,10 +2118,12 @@ export class ShipLoadout {
      * here too, even at quality `1`, so a completed roll cannot stay stock. On an imported
      * build such a block is one {@link ShipLoadout.fromLoadout} did not roll: a catalogued
      * article it fitted instead, whose fixed modifiers this spells out unless the article
-     * is final; a Mercenary article at the grade it was bought at, whose block no registry
-     * publishes and which this refuses; or a recipe nothing answered to, which this
-     * refuses for the reason the import could not roll it. A stated modifier array, empty
-     * or partial, is left alone at quality `1`.
+     * is final; a Mercenary article that moves nothing it can state — the purchase
+     * pre-engineering no registry publishes, with no baked effect over it — which this
+     * refuses; or a recipe nothing answered to, which this refuses for the reason the
+     * import could not roll it. A stated modifier array, empty or partial, is left alone
+     * at quality `1`, so a Mercenary article whose baked effect does move a stat answers
+     * `unchanged`: it arrives at quality `1` already stating everything it moves.
      *
      * @param slotKey - The engineered slot, matched case-insensitively.
      * @returns A frozen result identifying a normalized, unchanged or unsupported state.
@@ -2313,8 +2315,12 @@ export class ShipLoadout {
      * Articles carry `Level`, `Quality: 1`, any baked experimental effect and their fixed
      * modifiers. Because the variant names its base module, a decorative identity cannot
      * be applied to an unrelated damage-bearing module.
-     * A Mercenary variant whose fixed modifier block has not been published retains the
-     * stock catalogue stats and omits `Modifiers` rather than claiming it changes none.
+     * The block states exactly what the article moves, so it always agrees with
+     * {@link getPreEngineeredJournalModifiers} for the same variant. A Mercenary variant
+     * publishes no fixed stat block of its own, so it keeps the stock catalogue stats
+     * apart from its baked experimental effect, and states that effect's modifiers and
+     * no others. An article that moves no stat at all carries no `Modifiers` key, rather
+     * than an empty array claiming it changes none.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively.
      * @param variant - The pre-engineered catalogue variant to fit.
@@ -2378,6 +2384,12 @@ export class ShipLoadout {
         }
         this.setModule(slotKey, stats);
         const module = this.#fittedModuleFor(slotKey)!;
+        // Whatever the article moves is what it publishes. A Mercenary row carries no
+        // stat block of its own, but its baked experimental effect still moves stats, and
+        // those belong in the block — a fitted article that states an effect and no
+        // `Modifiers` would disagree with `getPreEngineeredJournalModifiers` about the
+        // same purchase.
+        const journalModifiers = getPreEngineeredJournalModifiers(known);
         const engineering: ModuleEngineering = {
             BlueprintName: known.blueprintSymbol,
             Level: known.grade,
@@ -2385,9 +2397,7 @@ export class ShipLoadout {
             ...(known.experimentalEffectSymbol === undefined
                 ? {}
                 : { ExperimentalEffect: known.experimentalEffectSymbol }),
-            ...(known.modifiers?.length
-                ? { Modifiers: getPreEngineeredJournalModifiers(known) }
-                : {}),
+            ...(journalModifiers.length > 0 ? { Modifiers: journalModifiers } : {}),
         };
         this.#replaceModule(
             module.Slot,

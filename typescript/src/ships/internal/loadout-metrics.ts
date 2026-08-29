@@ -1175,11 +1175,11 @@ const WEAPON_FIELDS = [
  * **damage components** scale by the effective/base damage ratio so ordinary engineering
  * keeps their proportions; a damage-converting experimental replaces them with its fixed
  * distribution. A Plasma Conversion blueprint supplies its grade's converted split, and
- * journal damage-type modifiers can override the catalogue result. A journal's derived
- * `DamagePerSecond` modifier is authoritative for the fitted article; it is divided by
- * the effective rounds and firing rate to recover the per-round `damage` consumed by the
- * data-free weapon functions. This matters especially for engineered beam lasers, whose
- * journal block states no separate `Damage` modifier.
+ * journal damage-type modifiers can override the catalogue result. The **per-round
+ * damage** consumed by the data-free weapon functions is read from the block's derived
+ * `DamagePerSecond` only where nothing else in the block carries it — an engineered beam
+ * laser is the common case, since a continuous weapon's per-second figure *is* its damage
+ * stat; see {@link readsDamageFromPerSecond} for when that reading applies.
  * **Projectile boundary parameters** are copied unchanged because they are not ordinary
  * engineerable range fields.
  */
@@ -1229,10 +1229,42 @@ function burstAdjustedRateOfFire(
     return combinedRateOfFire(weapon as WeaponStats);
 }
 
+/** Labels whose movement explains a `DamagePerSecond` the block does not attribute to damage. */
+const FIRING_RATE_LABELS = [
+    'RateOfFire',
+    'BurstRateOfFire',
+    'BurstSize',
+    'BurstInterval',
+    'RoundsPerShot',
+    'Rounds',
+] as const;
+
+/**
+ * Whether `DamagePerSecond` is the only figure in a block that can carry the per-round
+ * damage.
+ *
+ * It is not, whenever the block states `Damage` itself: that is the published figure, and
+ * dividing its companion per-second value back out by the firing rate only re-derives it
+ * through two more float32 steps, landing a little beside it. Nor is it whenever the
+ * block states a firing rate, burst pattern or round count instead — that movement is
+ * what the per-second figure reports, and the damage behind it did not move at all.
+ *
+ * What is left is the reading this derivation exists for: a continuous weapon, whose
+ * per-second figure *is* its damage stat and whose block therefore never names `Damage`,
+ * and a partial capture that states the per-second figure and nothing that would account
+ * for it.
+ */
+function readsDamageFromPerSecond(module: LoadoutModule): boolean {
+    return (
+        getLoadoutModifier(module, 'Damage') === null &&
+        FIRING_RATE_LABELS.every((label) => getLoadoutModifier(module, label) === null)
+    );
+}
+
 /**
  * Apply the derived rules shared by every post-engineering view of a fitted weapon.
  *
- * The journal can state damage only as the derived `DamagePerSecond`, burst engineering
+ * A block can carry the damage only as the derived `DamagePerSecond`, burst engineering
  * can change the effective firing cycle without stating a new rate, and short-range
  * engineering can leave the stock falloff beyond the reduced maximum range. Keeping the
  * three corrections together prevents a fitted module snapshot and its metrics from
@@ -1242,10 +1274,12 @@ function normalizeEffectiveWeapon(module: LoadoutModule, weapon: Record<string, 
     const rate = burstAdjustedRateOfFire(module, weapon);
     if (rate !== undefined) weapon.rateOfFire = rate;
 
-    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
-    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
-    if (statedDamagePerSecond !== null && firingFactor > 0) {
-        weapon.damage = statedDamagePerSecond / firingFactor;
+    if (readsDamageFromPerSecond(module)) {
+        const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
+        const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
+        if (statedDamagePerSecond !== null && firingFactor > 0) {
+            weapon.damage = statedDamagePerSecond / firingFactor;
+        }
     }
 
     const { maximumRange, falloffRange } = weapon as WeaponStats;

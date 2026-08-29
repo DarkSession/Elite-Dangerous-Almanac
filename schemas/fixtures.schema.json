@@ -6428,10 +6428,19 @@
               "properties": {
                 "blueprintSymbol": { "type": "string" },
                 "engineered": { "$ref": "#/definitions/shared8b2c766c07ae" },
+                "journalModifiers": {
+                  "$ref": "#/definitions/shared528e5444e605"
+                },
                 "stock": { "$ref": "#/definitions/shared8b2c766c07ae" },
                 "symbol": { "type": "string" }
               },
-              "required": ["blueprintSymbol", "engineered", "stock", "symbol"]
+              "required": [
+                "blueprintSymbol",
+                "engineered",
+                "journalModifiers",
+                "stock",
+                "symbol"
+              ]
             },
             "variants": {
               "type": "array",
