@@ -536,19 +536,73 @@ test('identity fields survive resolution — a variant is the same article', () 
     );
 });
 
-test('a variant with no stat block resolves to a copy of the base record', () => {
-    // Every Merc row: the pre-engineering it arrives with is not published, so the
-    // honest answer is the stock stats rather than an invented set.
+test('a variant with no stat block resolves to the base record and its baked effect', () => {
+    // Every Merc row: the grade-1 pre-engineering it arrives with is not published, so
+    // the honest answer is the stock stats rather than an invented set. The experimental
+    // effect the shop bakes in *is* published, so the rows that carry one resolve with
+    // its contribution applied and nothing else — which makes the fixture's `movedStats`
+    // the complete list of stats that may differ from stock.
+    const baked = fixture.mercenaryBakedEffects;
+    const seen: { symbol: string; blueprintSymbol: string; experimentalEffectSymbol: string }[] =
+        [];
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (variant.acquisition !== 'mercenary') continue;
-        const stock = getModuleBySymbol(variant.symbol, ALL_MODULES);
-        const resolved = getPreEngineeredStats(variant);
-        assert.deepEqual(resolved, stock);
-        // A copy, though: handing back the frozen singleton would make this the one
-        // resolved record a consumer cannot adjust before fitting it.
+        const stock = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
+        const resolved = getPreEngineeredStats(variant)!;
+        // A copy, never the frozen singleton: that would make this the one resolved
+        // record a consumer cannot adjust before fitting it.
         assert.notEqual(resolved, stock);
-        assert.deepEqual(getPreEngineeredModifiers(variant), []);
         assert.deepEqual(unresolvedModifiers(variant), []);
+        const effect = variant.experimentalEffectSymbol;
+        if (effect === undefined) {
+            assert.deepEqual(resolved, stock);
+            assert.deepEqual(getPreEngineeredModifiers(variant), []);
+            continue;
+        }
+        const expected = baked.variants.find(
+            (row) =>
+                row.symbol === variant.symbol && row.blueprintSymbol === variant.blueprintSymbol,
+        );
+        assert.ok(expected, `${variant.symbol}: ${variant.blueprintSymbol} is not a pinned row`);
+        assert.equal(variant.experimentalEffectSymbol, expected.experimentalEffectSymbol);
+        const moved = Object.keys(resolved).filter(
+            (key) =>
+                resolved[key as keyof OutfittingModule] !== stock[key as keyof OutfittingModule],
+        );
+        assert.deepEqual(moved.sort(), [...expected.movedStats].sort(), variant.symbol);
+        seen.push({
+            symbol: variant.symbol,
+            blueprintSymbol: variant.blueprintSymbol,
+            experimentalEffectSymbol: effect,
+        });
+    }
+    // ...and the pinned set is exactly the rows the catalogue carries, so a row that
+    // quietly gains or loses its baked effect fails here rather than passing unnoticed.
+    assert.equal(seen.length, baked.count);
+    assert.deepEqual(
+        seen,
+        baked.variants.map(({ symbol, blueprintSymbol, experimentalEffectSymbol }) => ({
+            symbol,
+            blueprintSymbol,
+            experimentalEffectSymbol,
+        })),
+    );
+});
+
+test('a Merc row resolves the stat values its baked effect alone produces', () => {
+    // The values, not just which stats moved: Feedback Cascade's own contribution over the
+    // stock rail gun, with no grade-1 blueprint transformation invented around it.
+    const pinned = fixture.mercenaryBakedEffects.resolved;
+    const variant = getPreEngineeredVariants(pinned.symbol).find(
+        (candidate) => candidate.blueprintSymbol === pinned.blueprintSymbol,
+    )!;
+    const stock = getModuleBySymbol(pinned.symbol, ALL_MODULES)!;
+    const resolved = getPreEngineeredStats(variant)!;
+    for (const [field, value] of Object.entries(pinned.stock)) {
+        assert.equal(stock[field as keyof OutfittingModule], value, `stock ${field}`);
+    }
+    for (const [field, value] of Object.entries(pinned.engineered)) {
+        assert.equal(resolved[field as keyof OutfittingModule], value, `engineered ${field}`);
     }
 });
 

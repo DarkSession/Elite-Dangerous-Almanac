@@ -5307,7 +5307,9 @@ test('setExperimentalEffect preserves fixed reward modifiers and identity', () =
 
 test('fixed reward effect removal and replacement survive a loadout round trip', () => {
     const variant = getPreEngineeredVariants('Hpt_Slugshot_Gimbal_Large').find(
-        (candidate) => candidate.experimentalEffectSymbol === 'special_screening_shell',
+        (candidate) =>
+            candidate.experimentalEffectSymbol === 'special_screening_shell' &&
+            candidate.acquisition === 'communityGoal',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('LargeHardpoint1', variant);
     assert.equal(build.fittedModuleAt('LargeHardpoint1')!.effectiveStats!.reloadTime, 2.5);
@@ -5345,7 +5347,9 @@ test('a fixed reward effect updates related stats before and after a round trip'
 
 test('a fixed reward effect keeps recipe-only stats through a round trip', () => {
     const variant = getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').find(
-        (candidate) => candidate.experimentalEffectSymbol === 'special_drag_munitions',
+        (candidate) =>
+            candidate.experimentalEffectSymbol === 'special_drag_munitions' &&
+            candidate.acquisition !== 'mercenary',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
         'MediumHardpoint1',
@@ -5364,7 +5368,9 @@ test('a fixed reward effect keeps recipe-only stats through a round trip', () =>
 
 test('a baked effect outside the module menu can be kept and restored', () => {
     const variant = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
-        (candidate) => candidate.experimentalEffectSymbol === 'special_incendiary_rounds',
+        (candidate) =>
+            candidate.experimentalEffectSymbol === 'special_incendiary_rounds' &&
+            candidate.acquisition === 'techBroker',
     )!;
     const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('SmallHardpoint1', variant);
 
@@ -5381,6 +5387,88 @@ test('a baked effect outside the module menu can be kept and restored', () => {
         'updated',
     );
 });
+test('a Merc article at its purchase grade refuses an effect edit losslessly', () => {
+    // The counterpart of the test above: the same Mining Laser effect, on the Merc row
+    // that is sold carrying it rather than the tech-broker article. Grade 1 is what the
+    // purchase contains and the bespoke recipe starts at grade 2, so there is no recipe
+    // to recompute from and the edit is refused — with the baked effect left intact.
+    const merc = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )!;
+    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('SmallHardpoint1', merc);
+    const before = build.fittedModuleAt('SmallHardpoint1')!.effectiveStats!.thermalLoad;
+
+    const removal = build.setExperimentalEffect('SmallHardpoint1', null);
+    assert.equal(removal.kind, 'unsupported');
+    assert.equal(removal.code, 'unsupportedEngineering');
+    assert.equal(
+        build.fittedModuleAt('SmallHardpoint1')!.engineering!.ExperimentalEffect,
+        merc.experimentalEffectSymbol,
+    );
+    assert.equal(build.fittedModuleAt('SmallHardpoint1')!.effectiveStats!.thermalLoad, before);
+    // Re-stating the effect it already carries is still the ordinary no-op.
+    assert.deepEqual(
+        build.setExperimentalEffect('SmallHardpoint1', merc.experimentalEffectSymbol!),
+        { kind: 'unchanged', experimentalEffectSymbol: merc.experimentalEffectSymbol },
+    );
+});
+
+test('a climbed Merc article refuses its out-of-menu baked effect, and does not throw', () => {
+    // The Merc Mining Laser is sold carrying Incendiary Rounds, which its own module menu
+    // does not offer. Above the purchase grade both entry points recompute through
+    // `applyBlueprint`, which refuses an out-of-menu effect by throwing — so the baked
+    // effect must not be waved past the menu gate here. Ordinary captured data reaches
+    // this: a lossless refusal is the contract, an exception is not.
+    const merc = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )!;
+    for (const level of [2, 3, 5]) {
+        const build = ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'SmallHardpoint1',
+                    Item: merc.symbol,
+                    Engineering: {
+                        BlueprintName: merc.blueprintSymbol,
+                        Level: level,
+                        Quality: 0.5,
+                        ExperimentalEffect: merc.experimentalEffectSymbol!,
+                    },
+                },
+            ],
+        });
+        const normalized = build.completeEngineeringGrade('SmallHardpoint1');
+        assert.equal(normalized.kind, 'unsupported', `grade ${level}`);
+        assert.equal(normalized.code, 'unsupportedExperimentalEffect', `grade ${level}`);
+
+        // And the same effect asked for outright rather than reached by normalization.
+        // The module's menu is empty, so there is no effect to step away to first: the
+        // capture that reaches this states the climb without the effect, which is what a
+        // player who dropped it on the way to grade 2 exports.
+        const dropped = ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'SmallHardpoint1',
+                    Item: merc.symbol,
+                    Engineering: {
+                        BlueprintName: merc.blueprintSymbol,
+                        Level: level,
+                        Quality: 0.5,
+                    },
+                },
+            ],
+        });
+        const restated = dropped.setExperimentalEffect(
+            'SmallHardpoint1',
+            merc.experimentalEffectSymbol!,
+        );
+        assert.equal(restated.kind, 'unsupported', `grade ${level}`);
+        assert.equal(restated.code, 'unsupportedExperimentalEffect', `grade ${level}`);
+    }
+});
+
 test('setExperimentalEffect recomputes ordinary and Mercenary engineering in place', () => {
     const ordinary = ShipLoadout.empty('Anaconda')
         .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
@@ -5824,7 +5912,9 @@ test('completeEngineeringGrade returns lossless refusals and leaves the module u
     assert.equal(unidentifiedResult.code, 'unidentifiedPreEngineeredVariant');
 
     const miningLance = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
-        (candidate) => candidate.experimentalEffectSymbol === 'special_incendiary_rounds',
+        (candidate) =>
+            candidate.experimentalEffectSymbol === 'special_incendiary_rounds' &&
+            candidate.acquisition === 'techBroker',
     )!;
     const lanceEvent = ShipLoadout.empty('Anaconda')
         .setPreEngineeredVariant('SmallHardpoint1', miningLance)

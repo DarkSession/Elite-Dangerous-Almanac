@@ -50,9 +50,10 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
 /**
  * Where a pre-engineered variant is obtained.
  *
- * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1.
- * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, and
- *   often carrying an experimental effect the shop rows do not.
+ * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1, ten of them
+ *   with an experimental effect already applied beside that grade-1 blueprint.
+ * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, 8 of
+ *   the 30 carrying an experimental effect.
  * - `techBroker` — unlocked at a tech broker. Records the route stated by the source.
  * - `eventReward` — awarded already transformed by an event; the festive articles are grade 5.
  */

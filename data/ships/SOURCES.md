@@ -1791,6 +1791,31 @@ up straight through with no disambiguation at all. Both paths are evidence that
       against rows already here — the large rack is 3A and its other Merc row is 900 MC, the
       medium is 2B and its Lockdown row is 800 MC — and that corroboration is what carries
       the weight.
+    - **Ten of the 22 carry a default experimental effect** applied beside the grade-1
+      blueprint, recorded as `experimentalEffectSymbol`: Screening Shell on both Double
+      Screaming Fragment Cannons, Incendiary Rounds on the Long Range Mining Laser,
+      Phasing Sequence on the Rapid Phase Multi-Cannon, Feedback Cascade on the Enduring
+      Feedback Rail Gun, Drag Munitions on both Drag Seeker Missile Racks, Thermal Cascade
+      on the Lightweight Thermal Seeker Missile Rack, and FSD Interrupt on both Lockdown
+      Seeker Missile Racks. Source: repository-owner in-game observation, recorded
+      2026-08-29 UTC; no registry publishes them. These rows still carry no `modifiers`:
+      the effect is recorded, the unpublished grade-1 blueprint transformation is not.
+      - **Two independent checks each corroborate nine of the ten, and between them cover
+        all ten.** The first: the effect is one the stock module's own experimental menu
+        offers, so the shop is baking in an effect the module can carry
+        (`engineering-options.jsonc`). That covers every row but the Mining Laser, whose
+        base module offers no experimental effect at all. The second: the same base module
+        already carries the same effect on a catalogued community-goal or tech-broker
+        variant. That covers every row but the large Drag Seeker Missile Rack, whose
+        corroboration is its medium twin rather than a variant of its own symbol.
+      - **The mining laser is the weakest of the ten.** Incendiary Rounds is outside
+        `Hpt_MiningLaser_Fixed_Small`'s experimental menu — it is the only row a shop menu
+        could not have offered — so only the twin check speaks for it, and a twin is
+        consistency more than evidence. It is recorded because it was observed. The
+        blueprint names of the seeker racks and the rail gun do echo their effects
+        (`SeekerMissileRack*_Lockdown`, `_LightWeightThermal`, `_Drag`, "Enduring
+        Feedback"), but a name is weaker evidence than either check above, and no row
+        rests on one.
   - **`communityGoal`** — modules awarded for taking part in a community goal. Source:
     EDSY's stored-module presets, which record each reward as an encoded module state; the
     blueprint, grade and experimental effect were

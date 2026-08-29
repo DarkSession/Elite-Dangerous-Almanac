@@ -25,8 +25,8 @@
  *
  * `acquisition` says where the variant comes from:
  *   - `"mercenary"`     — the Merc-Coin shop rows, all at grade 1.
- *   - `"communityGoal"` — awarded for taking part in a community goal. Mostly grade 5,
- *     and often carrying an experimental effect the shop rows do not.
+ *   - `"communityGoal"` — awarded for taking part in a community goal. Mostly grade 5;
+ *     8 of the 30 carry an experimental effect.
  *   - `"techBroker"`    — unlocked at a tech broker. Human brokers stock the "V1" drives
  *     and seeker racks; the Guardian weapon rows come from the Salvation, Azimuth and
  *     Sirius brokers. Several are recorded elsewhere as having *also* been community-goal
@@ -103,6 +103,7 @@
     "blueprintSymbol": "FragmentCannonSmall_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_screening_shell",
     "mercCoinCost": 800
   },
   {
@@ -111,6 +112,7 @@
     "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_screening_shell",
     "mercCoinCost": 950
   },
   {
@@ -119,6 +121,7 @@
     "blueprintSymbol": "MiningLaser_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_incendiary_rounds",
     "mercCoinCost": 450
   },
   {
@@ -127,6 +130,7 @@
     "blueprintSymbol": "MultiCannon_Rapid",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_phasing_sequence",
     "mercCoinCost": 850
   },
   {
@@ -135,6 +139,7 @@
     "blueprintSymbol": "RailGun_LongShot",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_feedback_cascade_cooled",
     "mercCoinCost": 950
   },
   {
@@ -143,6 +148,7 @@
     "blueprintSymbol": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_drag_munitions",
     "mercCoinCost": 800
   },
   {
@@ -151,6 +157,7 @@
     "blueprintSymbol": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_drag_munitions",
     "mercCoinCost": 900
   },
   {
@@ -159,6 +166,7 @@
     "blueprintSymbol": "SeekerMissileRack_LightWeightThermal",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_thermal_cascade",
     "mercCoinCost": 800
   },
   {
@@ -167,6 +175,7 @@
     "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_fsd_interrupt",
     "mercCoinCost": 800
   },
   {
@@ -175,6 +184,7 @@
     "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_fsd_interrupt",
     "mercCoinCost": 900
   },
   {

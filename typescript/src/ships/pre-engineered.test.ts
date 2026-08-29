@@ -78,8 +78,10 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
     // `applyBlueprint` gates experimental effects on the engineering menu alone, with no
     // pre-engineered leg beside the one it has for blueprints. A fixed reward may arrive
     // carrying an effect outside the stock module's menu, but that identifies the article
-    // rather than making the effect applicable. The two Enhanced AX Multi-Cannons and the
-    // long-range Mining Laser are the three such records in this catalogue.
+    // rather than making the effect applicable, and a Merc-shop row's baked effect says
+    // what was bought rather than what a menu offers. The Merc Mining Laser, the two
+    // Enhanced AX Multi-Cannons and the long-range Mining Laser are the four such records
+    // in this catalogue.
     assert.deepEqual(
         PRE_ENGINEERED_MODULES.filter(
             (variant) =>
@@ -94,6 +96,12 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
             acquisition,
         })),
         [
+            {
+                symbol: 'Hpt_MiningLaser_Fixed_Small',
+                blueprintSymbol: 'MiningLaser_LongRange',
+                experimentalEffectSymbol: 'special_incendiary_rounds',
+                acquisition: 'mercenary',
+            },
             {
                 symbol: 'Hpt_ATMultiCannon_Gimbal_Medium',
                 blueprintSymbol: 'Weapon_Overcharged',

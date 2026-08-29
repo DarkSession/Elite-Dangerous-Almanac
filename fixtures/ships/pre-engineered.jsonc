@@ -14,7 +14,10 @@
  * catalogue size and its split by acquisition; `records` pins individual pairings;
  * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable;
  * `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that
- * drives their rate of fire cannot be dropped again; `resolved` pins whole stat blocks against
+ * drives their rate of fire cannot be dropped again; `mercenaryBakedEffects` pins the ten
+ * Merc-shop rows sold with an experimental effect already applied, each with the stats that
+ * effect alone moves on the stock module — the shop rows publish no `modifiers`, so the
+ * effect is the whole of what resolves for them; `resolved` pins whole stat blocks against
  * known in-game values; `identification.mercenary` pins the Mercenary-only blueprint identity
  * that survives later grade upgrades; `mercCoin` pins shop prices; `joins` pins that every record
  * resolves against the module, blueprint and experimental catalogues.
@@ -102,6 +105,77 @@
     "WeaponsCapacity",
     "WeaponsRecharge"
   ],
+  "mercenaryBakedEffects": {
+    "count": 10,
+    "variants": [
+      {
+        "symbol": "Hpt_Slugshot_Gimbal_Small",
+        "blueprintSymbol": "FragmentCannonSmall_DoubleScreaming",
+        "experimentalEffectSymbol": "special_screening_shell",
+        "movedStats": ["reloadTime"]
+      },
+      {
+        "symbol": "Hpt_Slugshot_Gimbal_Large",
+        "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
+        "experimentalEffectSymbol": "special_screening_shell",
+        "movedStats": ["reloadTime"]
+      },
+      {
+        "symbol": "Hpt_MiningLaser_Fixed_Small",
+        "blueprintSymbol": "MiningLaser_LongRange",
+        "experimentalEffectSymbol": "special_incendiary_rounds",
+        "movedStats": ["thermalLoad"]
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Fixed_Medium",
+        "blueprintSymbol": "MultiCannon_Rapid",
+        "experimentalEffectSymbol": "special_phasing_sequence",
+        "movedStats": ["damage"]
+      },
+      {
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "blueprintSymbol": "RailGun_LongShot",
+        "experimentalEffectSymbol": "special_feedback_cascade_cooled",
+        "movedStats": ["damage", "thermalLoad"]
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprintSymbol": "SeekerMissileRack_Drag",
+        "experimentalEffectSymbol": "special_drag_munitions",
+        "movedStats": []
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+        "blueprintSymbol": "SeekerMissileRack_Drag",
+        "experimentalEffectSymbol": "special_drag_munitions",
+        "movedStats": []
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprintSymbol": "SeekerMissileRack_LightWeightThermal",
+        "experimentalEffectSymbol": "special_thermal_cascade",
+        "movedStats": []
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
+        "experimentalEffectSymbol": "special_fsd_interrupt",
+        "movedStats": ["burstInterval", "damage"]
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+        "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
+        "experimentalEffectSymbol": "special_fsd_interrupt",
+        "movedStats": ["burstInterval", "damage"]
+      }
+    ],
+    "resolved": {
+      "symbol": "Hpt_Railgun_Fixed_Medium",
+      "blueprintSymbol": "RailGun_LongShot",
+      "stock": { "damage": 41.53, "thermalLoad": 20 },
+      "engineered": { "damage": 33.223999, "thermalLoad": 12 }
+    }
+  },
   "maxModifierDecimalPlaces": 5,
   "burstIntervalVariants": {
     "count": 13,
@@ -246,6 +320,7 @@
       "blueprintSymbol": "RailGun_LongShot",
       "grade": 1,
       "acquisition": "mercenary",
+      "experimentalEffectSymbol": "special_feedback_cascade_cooled",
       "mercCoinCost": 950
     },
     {

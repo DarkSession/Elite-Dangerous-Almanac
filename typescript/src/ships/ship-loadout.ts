@@ -1901,6 +1901,15 @@ export class ShipLoadout {
      * purchase identity while the requested effect is composed with them. Refused edits
      * leave the build unchanged and return stable structured data.
      *
+     * A Mercenary article is recomputed rather than composed, and that limits what can be
+     * done to the effect ten of those rows are sold carrying. At its purchase grade there
+     * is no recipe to recompute from — the bespoke recipe starts at grade 2 — so every
+     * edit is refused with `unsupportedEngineering`. Once engineered to grade 2 or above
+     * an edit recomputes normally, but only to an effect the module's own menu offers:
+     * the Merc Mining Laser's Incendiary Rounds is not one, so re-stating it is refused
+     * with `unsupportedExperimentalEffect`. Both refusals are lossless like any other, and
+     * the baked effect stays where it is.
+     *
      * @param slotKey - The engineered slot, matched case-insensitively.
      * @param experimental - Experimental-effect symbol, or `null` to remove the effect.
      * @returns A frozen result identifying an update, no-op or lossless refusal.
@@ -1968,8 +1977,13 @@ export class ShipLoadout {
                     experimental: wanted,
                 });
             }
+            // Only where the fixed-article branch below will handle it. A Mercenary
+            // article is recomputed by `applyBlueprint` instead, which re-checks the menu
+            // and throws — so letting an out-of-menu baked effect past this gate would
+            // turn a lossless refusal into an exception on ordinary captured data.
             const restoresBakedEffect =
                 variant?.experimentalEffectSymbol !== undefined &&
+                variant.acquisition !== 'mercenary' &&
                 variant.experimentalEffectSymbol.trim().toLowerCase() ===
                     wanted.trim().toLowerCase();
             if (!experimentalAvailableFor(module.Item, wanted) && !restoresBakedEffect) {
@@ -2183,8 +2197,11 @@ export class ShipLoadout {
             });
         }
         const variant = preEngineeredVariantFor(module);
+        // Mercenary excluded for the reason given in `setExperimentalEffect`: its recompute
+        // runs through `applyBlueprint`, which refuses an out-of-menu effect by throwing.
         const restoresBakedEffect =
             variant?.experimentalEffectSymbol !== undefined &&
+            variant.acquisition !== 'mercenary' &&
             variant.experimentalEffectSymbol.trim().toLowerCase() ===
                 experimental?.trim().toLowerCase();
         if (

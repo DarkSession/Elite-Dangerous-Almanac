@@ -6417,6 +6417,47 @@
           },
           "required": ["cheapest", "dearest", "total"]
         },
+        "mercenaryBakedEffects": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "count": { "type": "integer" },
+            "resolved": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "engineered": { "$ref": "#/definitions/shared8b2c766c07ae" },
+                "stock": { "$ref": "#/definitions/shared8b2c766c07ae" },
+                "symbol": { "type": "string" }
+              },
+              "required": ["blueprintSymbol", "engineered", "stock", "symbol"]
+            },
+            "variants": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "blueprintSymbol": { "type": "string" },
+                  "experimentalEffectSymbol": { "type": "string" },
+                  "movedStats": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "symbol": { "type": "string" }
+                },
+                "required": [
+                  "blueprintSymbol",
+                  "experimentalEffectSymbol",
+                  "movedStats",
+                  "symbol"
+                ]
+              }
+            }
+          },
+          "required": ["count", "resolved", "variants"]
+        },
         "modifierCounts": {
           "type": "object",
           "additionalProperties": false,
@@ -6754,6 +6795,7 @@
         "joins",
         "maxModifierDecimalPlaces",
         "mercCoin",
+        "mercenaryBakedEffects",
         "modifierCounts",
         "modifierLabels",
         "multiVariant",
@@ -8922,6 +8964,15 @@
         "weapons": { "type": "integer" }
       },
       "required": ["engines", "systems", "weapons"]
+    },
+    "shared8b2c766c07ae": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "damage": { "type": "number" },
+        "thermalLoad": { "type": "integer" }
+      },
+      "required": ["damage", "thermalLoad"]
     },
     "shared8d1c2fa65d38": {
       "type": "object",

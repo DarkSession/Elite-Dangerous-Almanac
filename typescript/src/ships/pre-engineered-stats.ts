@@ -78,7 +78,8 @@ function modifiersWithExperimental(
  *
  * @param variant - A pre-engineered variant.
  * @returns One modifier per computable label, or an empty array when the variant carries
- * no stat block (every `mercenary` row) or its symbol is unknown.
+ * neither a stat block nor a baked effect that moves a stat (a `mercenary` row carries no
+ * stat block, so only its baked effect contributes) or its symbol is unknown.
  *
  * @example
  * ```ts
@@ -228,7 +229,10 @@ function matchesModifierSignature(
  * The module symbol and blueprint therefore identify the purchase at grade 1 and after
  * upgrading it through grades 2–5. The fitted grade and experimental effect remain the
  * loadout's current engineering state; the returned variant carries the original purchase
- * grade and Merc Coin price.
+ * grade, Merc Coin price and — on the ten rows sold with one — the effect the shop bakes
+ * in. So a capture that states a different effect, or none, still identifies the article
+ * it was bought as: read the capture for what is fitted now, the variant for what was
+ * bought.
  *
  * A locked fixed article is also identified by its unique
  * symbol/blueprint/grade/experimental tuple when a SLEF capture omits the `Modifiers` key
@@ -399,8 +403,9 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * and the anti-xeno overlay remain coherent with the resolved scalar.
  *
  * A variant with no stat block (every `mercenary` row) resolves to a copy of the base
- * record with nothing changed, which is the honest answer — the pre-engineering those
- * arrive with is not published anywhere, so the catalogue does not guess at it.
+ * record with only its baked experimental effect applied, which is the honest answer —
+ * the effect is published, the grade-1 pre-engineering those arrive with is not, so the
+ * catalogue does not guess at it.
  *
  * @param variant - A pre-engineered variant.
  * @returns The resolved module record, or `null` when the variant's symbol is not in the

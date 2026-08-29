@@ -4346,6 +4346,27 @@ type FixtureShipsPreEngineered = {
         dearest: number;
         total: number;
     };
+    mercenaryBakedEffects: {
+        count: number;
+        resolved: {
+            blueprintSymbol: string;
+            engineered: {
+                damage: number;
+                thermalLoad: number;
+            };
+            stock: {
+                damage: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
+        variants: {
+            blueprintSymbol: string;
+            experimentalEffectSymbol: string;
+            movedStats: string[];
+            symbol: string;
+        }[];
+    };
     modifierCounts: {
         withMercCoinCost: number;
         withModifiers: number;
