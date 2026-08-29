@@ -6076,6 +6076,40 @@ test('a fitted Mercenary article publishes what its baked effect moves', () => {
     assert.equal(withMovedStats, 7);
 });
 
+test('completing a Merc article turns on whether it has a block to state', () => {
+    // A completed roll that states its modifiers is already whole, and one that states
+    // none is rolled from its recipe — but a Merc purchase grade is not in any recipe.
+    // So the two halves of the shop answer differently, and each answer is the honest
+    // one: the rows whose baked effect moves a stat arrive at quality 1 already stating
+    // everything they move, while the rows that state nothing have nothing to roll.
+    for (const variant of PRE_ENGINEERED_MODULES.filter(
+        (candidate) => candidate.acquisition === 'mercenary',
+    )) {
+        const build = ShipLoadout.empty('Anaconda');
+        const slot = build
+            .slots()
+            .find((candidate) =>
+                build
+                    .modulesForSlot(candidate.key)
+                    .some((module) => module.symbol.toLowerCase() === variant.symbol.toLowerCase()),
+            )!.key;
+        build.setPreEngineeredVariant(slot, variant);
+        const before = build.fittedModuleAt(slot)!.engineering;
+        const result = build.completeEngineeringGrade(slot);
+        const label = `${variant.symbol} ${variant.blueprintSymbol}`;
+
+        if (getPreEngineeredJournalModifiers(variant).length > 0) {
+            assert.deepEqual(result, { kind: 'unchanged' }, label);
+        } else {
+            assert.equal(result.kind, 'unsupported', label);
+            assert.equal(result.code, 'unsupportedEngineering', label);
+        }
+        // Either way the article is left exactly as it was bought.
+        assert.deepEqual(build.fittedModuleAt(slot)!.engineering, before, label);
+        assert.equal(build.fittedModuleAt(slot)!.preEngineeredVariant, variant, label);
+    }
+});
+
 test('a Mercenary article resolves the same through both of its reading paths', () => {
     // The fitted article and the same article reconstructed from its own exported block
     // must describe one module — including the published figure itself, which the

@@ -1229,15 +1229,6 @@ function burstAdjustedRateOfFire(
     return combinedRateOfFire(weapon as WeaponStats);
 }
 
-/**
- * Apply the derived rules shared by every post-engineering view of a fitted weapon.
- *
- * The journal can state damage only as the derived `DamagePerSecond`, burst engineering
- * can change the effective firing cycle without stating a new rate, and short-range
- * engineering can leave the stock falloff beyond the reduced maximum range. Keeping the
- * three corrections together prevents a fitted module snapshot and its metrics from
- * describing different weapons.
- */
 /** Labels whose movement explains a `DamagePerSecond` the block does not attribute to damage. */
 const FIRING_RATE_LABELS = [
     'RateOfFire',
@@ -1270,6 +1261,15 @@ function readsDamageFromPerSecond(module: LoadoutModule): boolean {
     );
 }
 
+/**
+ * Apply the derived rules shared by every post-engineering view of a fitted weapon.
+ *
+ * A block can carry the damage only as the derived `DamagePerSecond`, burst engineering
+ * can change the effective firing cycle without stating a new rate, and short-range
+ * engineering can leave the stock falloff beyond the reduced maximum range. Keeping the
+ * three corrections together prevents a fitted module snapshot and its metrics from
+ * describing different weapons.
+ */
 function normalizeEffectiveWeapon(module: LoadoutModule, weapon: Record<string, unknown>): void {
     const rate = burstAdjustedRateOfFire(module, weapon);
     if (rate !== undefined) weapon.rateOfFire = rate;

@@ -2118,10 +2118,12 @@ export class ShipLoadout {
      * here too, even at quality `1`, so a completed roll cannot stay stock. On an imported
      * build such a block is one {@link ShipLoadout.fromLoadout} did not roll: a catalogued
      * article it fitted instead, whose fixed modifiers this spells out unless the article
-     * is final; a Mercenary article at the grade it was bought at, whose block no registry
-     * publishes and which this refuses; or a recipe nothing answered to, which this
-     * refuses for the reason the import could not roll it. A stated modifier array, empty
-     * or partial, is left alone at quality `1`.
+     * is final; a Mercenary article that moves nothing it can state — the purchase
+     * pre-engineering no registry publishes, with no baked effect over it — which this
+     * refuses; or a recipe nothing answered to, which this refuses for the reason the
+     * import could not roll it. A stated modifier array, empty or partial, is left alone
+     * at quality `1`, so a Mercenary article whose baked effect does move a stat answers
+     * `unchanged`: it arrives at quality `1` already stating everything it moves.
      *
      * @param slotKey - The engineered slot, matched case-insensitively.
      * @returns A frozen result identifying a normalized, unchanged or unsupported state.
