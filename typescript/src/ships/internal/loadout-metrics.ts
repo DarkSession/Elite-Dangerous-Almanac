@@ -1176,11 +1176,10 @@ const WEAPON_FIELDS = [
  * keeps their proportions; a damage-converting experimental replaces them with its fixed
  * distribution. A Plasma Conversion blueprint supplies its grade's converted split, and
  * journal damage-type modifiers can override the catalogue result. The **per-round
- * damage** consumed by the data-free weapon functions is the block's own `Damage`
- * modifier wherever it states one; where it does not — an engineered beam laser is the
- * common case, since a continuous weapon's per-second figure *is* its damage stat — the
- * derived `DamagePerSecond` is divided by the effective rounds and firing rate to
- * recover it.
+ * damage** consumed by the data-free weapon functions is read from the block's derived
+ * `DamagePerSecond` only where nothing else in the block carries it — an engineered beam
+ * laser is the common case, since a continuous weapon's per-second figure *is* its damage
+ * stat; see {@link readsDamageFromPerSecond} for when that reading applies.
  * **Projectile boundary parameters** are copied unchanged because they are not ordinary
  * engineerable range fields.
  */
@@ -1239,16 +1238,43 @@ function burstAdjustedRateOfFire(
  * three corrections together prevents a fitted module snapshot and its metrics from
  * describing different weapons.
  */
+/** Labels whose movement explains a `DamagePerSecond` the block does not attribute to damage. */
+const FIRING_RATE_LABELS = [
+    'RateOfFire',
+    'BurstRateOfFire',
+    'BurstSize',
+    'BurstInterval',
+    'RoundsPerShot',
+    'Rounds',
+] as const;
+
+/**
+ * Whether `DamagePerSecond` is the only figure in a block that can carry the per-round
+ * damage.
+ *
+ * It is not, whenever the block states `Damage` itself: that is the published figure, and
+ * dividing its companion per-second value back out by the firing rate only re-derives it
+ * through two more float32 steps, landing a little beside it. Nor is it whenever the
+ * block states a firing rate, burst pattern or round count instead — that movement is
+ * what the per-second figure reports, and the damage behind it did not move at all.
+ *
+ * What is left is the reading this derivation exists for: a continuous weapon, whose
+ * per-second figure *is* its damage stat and whose block therefore never names `Damage`,
+ * and a partial capture that states the per-second figure and nothing that would account
+ * for it.
+ */
+function readsDamageFromPerSecond(module: LoadoutModule): boolean {
+    return (
+        getLoadoutModifier(module, 'Damage') === null &&
+        FIRING_RATE_LABELS.every((label) => getLoadoutModifier(module, label) === null)
+    );
+}
+
 function normalizeEffectiveWeapon(module: LoadoutModule, weapon: Record<string, unknown>): void {
     const rate = burstAdjustedRateOfFire(module, weapon);
     if (rate !== undefined) weapon.rateOfFire = rate;
 
-    // A capture that states `Damage` has already published the figure; dividing its
-    // companion `DamagePerSecond` back out by the firing rate only re-derives the same
-    // number through two more float32 steps, and lands a little beside it. Frontier omits
-    // `Damage` for a continuous weapon, whose per-second figure *is* the damage stat, and
-    // may omit it from a partial capture — those are the readings this derivation is for.
-    if (getLoadoutModifier(module, 'Damage') === null) {
+    if (readsDamageFromPerSecond(module)) {
         const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
         const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
         if (statedDamagePerSecond !== null && firingFactor > 0) {

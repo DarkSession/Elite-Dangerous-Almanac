@@ -6132,8 +6132,31 @@ test('a stated Damage wins over the DamagePerSecond derived beside it', () => {
         ]),
         33.223999,
     );
+    // Nor does a block whose per-second figure is explained by a stated firing rate:
+    // High Capacity moves the rate and not the damage, so dividing its DPS back out
+    // re-derives the stock figure a float32 step away from 40.
+    const rateOnly = getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').find(
+        (candidate) =>
+            candidate.acquisition === 'communityGoal' &&
+            candidate.blueprintSymbol === 'Weapon_HighCapacity',
+    )!;
+    const rack = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
+        'MediumHardpoint1',
+        rateOnly,
+    );
+    const rackBlock = rack.fittedModuleAt('MediumHardpoint1')!.engineering!;
+    assert.equal(modFor(rackBlock.Modifiers!, 'Damage'), undefined);
+    assert.ok(modFor(rackBlock.Modifiers!, 'RateOfFire'));
+    assert.equal(rack.fittedModuleAt('MediumHardpoint1')!.effectiveStats!.damage, 40);
+    assert.equal(
+        ShipLoadout.fromLoadout(rack.toLoadoutEvent()).fittedModuleAt('MediumHardpoint1')!
+            .effectiveStats!.damage,
+        40,
+    );
+
     // A continuous weapon states no `Damage` at all — its per-second figure *is* the
-    // damage stat — so that reading still comes from `DamagePerSecond`.
+    // damage stat, and nothing else in the block accounts for it — so that reading still
+    // comes from `DamagePerSecond`.
     const beam = ShipLoadout.empty('Anaconda');
     beam.setModule('MediumHardpoint1', mod('Hpt_BeamLaser_Fixed_Medium', HARDPOINT_MODULES));
     beam.applyBlueprint('MediumHardpoint1', 'Weapon_Efficient', { grade: 5, quality: 1 });

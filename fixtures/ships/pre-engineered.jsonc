@@ -19,10 +19,10 @@
  * effect alone moves on the stock module — the shop rows publish no `modifiers`, so the
  * effect is the whole of what resolves for them, and its `resolved.journalModifiers` pins the
  * engineering block a fitted one publishes, which is that same effect in journal spelling;
- * `resolved` pins whole stat blocks against
- * known in-game values; `identification.mercenary` pins the Mercenary-only blueprint identity
- * that survives later grade upgrades; `mercCoin` pins shop prices; `joins` pins that every record
- * resolves against the module, blueprint and experimental catalogues.
+ * `resolved` pins whole stat blocks against known in-game values; `identification.mercenary`
+ * pins the Mercenary-only blueprint identity
+ * that survives later grade upgrades; `mercCoin` pins shop prices; `joins` pins that every
+ * record resolves against the module, blueprint and experimental catalogues.
  */
 {
   "count": 76,
