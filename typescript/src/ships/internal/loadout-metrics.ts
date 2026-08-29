@@ -37,7 +37,8 @@ import type {
     ModuleReinforcementParams,
 } from '../armour.js';
 import type { DamageResistanceParams } from '../resistances.js';
-import { combinedRateOfFire, weaponMetrics, type WeaponStats } from '../weapons.js';
+import { weaponMetrics, type WeaponStats } from '../weapons.js';
+import { journalRateOfFire, preciseValueFor } from './engineering-precision.js';
 import { scaleDamageComponents } from './damage-components.js';
 import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
@@ -1209,6 +1210,9 @@ export function weaponStatsFor(
     return weapon as WeaponStats;
 }
 
+/** The burst parts a recipe moves, which move the firing cycle with them. */
+const BURST_PATTERN_LABELS = ['BurstSize', 'BurstRateOfFire', 'BurstInterval'] as const;
+
 /**
  * The rate of fire once an engineered burst pattern is taken into account, or
  * `undefined` when nothing needs adjusting.
@@ -1216,17 +1220,30 @@ export function weaponStatsFor(
  * An explicit `RateOfFire` modifier is the game's own answer and wins outright. Failing
  * that, if the build has engineered the burst size, the within-burst rate or the
  * interval, the cycle is rebuilt from those parts.
+ *
+ * It is rebuilt the way the game's own derivation does it — a float stored after every
+ * operation, from the stored floats behind the block's own burst values, serialized to
+ * the six decimal places a modifier is written at. That is not a flourish: the same parts
+ * produce the `RateOfFire` this module publishes in its `Modifiers`, so deriving them
+ * differently here would resolve a rate of fire the block beside it does not state.
  */
 function burstAdjustedRateOfFire(
     module: LoadoutModule,
     weapon: Readonly<Record<string, unknown>>,
 ): number | undefined {
     if (getLoadoutModifier(module, 'RateOfFire') !== null) return undefined;
-    const touched = ['BurstSize', 'BurstRateOfFire', 'BurstInterval'].some(
+    const modifiers = module.Engineering?.Modifiers;
+    const touched = BURST_PATTERN_LABELS.some(
         (label) => getLoadoutModifier(module, label) !== null,
     );
     if (!touched) return undefined;
-    return combinedRateOfFire(weapon as WeaponStats);
+    const stated = (label: string, field: keyof WeaponStats): number | undefined =>
+        preciseValueFor(modifiers, label) ?? (weapon[field] as number | undefined);
+    return journalRateOfFire(
+        stated('BurstInterval', 'burstInterval'),
+        stated('BurstSize', 'burstRounds'),
+        stated('BurstRateOfFire', 'burstRateOfFire'),
+    );
 }
 
 /** Labels whose movement explains a `DamagePerSecond` the block does not attribute to damage. */

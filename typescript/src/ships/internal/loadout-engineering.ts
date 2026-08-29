@@ -28,7 +28,12 @@ import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { FITTED_ITEM } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
 import { computeModifiers, type BlueprintGrade, type ExperimentalEffect } from '../engineering.js';
-import { preciseModifierValue } from './engineering-precision.js';
+import {
+    float32FiringCycle,
+    float32RateOfFire,
+    preciseModifierValue,
+    round6,
+} from './engineering-precision.js';
 
 /** Engineering groups whose non-menu recipes identify final bought articles. */
 const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
@@ -484,37 +489,6 @@ export function ordinaryEngineeringProof(
         }
     }
     return matchesCalculatedModifiers(engineering.Modifiers, calculated) ? 'proven' : 'unproven';
-}
-
-/** Round a journal number to Frontier's six serialized decimal places. */
-const round6 = (value: number): number => {
-    const rounded = Math.round(value * 1e6) / 1e6;
-    return Object.is(rounded, -0) ? 0 : rounded;
-};
-
-/** Frontier's firing-cycle duration, with a float stored after every operation. */
-function float32FiringCycle(
-    interval: number,
-    burstRounds: number,
-    burstRateOfFire: number,
-): number | undefined {
-    if (interval <= 0) return undefined;
-    const withinBurst =
-        burstRounds > 1
-            ? Math.fround(Math.fround(burstRounds - 1) / Math.fround(burstRateOfFire))
-            : 0;
-    const cycle = Math.fround(withinBurst + Math.fround(interval));
-    return cycle > 0 ? cycle : undefined;
-}
-
-/** Frontier's firing rate derived from one stored firing cycle. */
-function float32RateOfFire(
-    interval: number,
-    burstRounds: number,
-    burstRateOfFire: number,
-): number | undefined {
-    const cycle = float32FiringCycle(interval, burstRounds, burstRateOfFire);
-    return cycle === undefined ? undefined : Math.fround(Math.fround(burstRounds) / cycle);
 }
 
 /** A discrete weapon's displayed DPS, using a cycle directly when one is available. */

@@ -4252,6 +4252,7 @@ type FixtureShipsPreEngineered = {
     burstIntervalVariants: {
         count: number;
         variants: {
+            blockRateOfFire: number;
             blueprintSymbol: string;
             burstInterval: number;
             experimentalEffectSymbol: string | null;

@@ -2316,7 +2316,10 @@ export class ShipLoadout {
      * modifiers. Because the variant names its base module, a decorative identity cannot
      * be applied to an unrelated damage-bearing module.
      * The block states exactly what the article moves, so it always agrees with
-     * {@link getPreEngineeredJournalModifiers} for the same variant. A Mercenary variant
+     * {@link getPreEngineeredJournalModifiers} for the same variant, and the module's
+     * {@link FittedModule.effectiveStats | effectiveStats} resolve to the figures it
+     * states — including a rate of fire, which no recipe names and both the block and the
+     * stats derive from the article's firing cycle. A Mercenary variant
      * publishes no fixed stat block of its own, so it keeps the stock catalogue stats
      * apart from its baked experimental effect, and states that effect's modifiers and
      * no others. An article that moves no stat at all carries no `Modifiers` key, rather
