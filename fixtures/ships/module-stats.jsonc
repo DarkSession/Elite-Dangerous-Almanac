@@ -1295,7 +1295,7 @@
     },
     {
       "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
-      "rateOfFire": 7.844016,
+      "rateOfFire": 7.844017,
       "burstInterval": 0.4028,
       "thermalLoad": 1.66,
       "damage": 13.94,
@@ -1954,8 +1954,8 @@
         "file": "journal-cobra-mkv.jsonc",
         "stated": 62,
         "mapped": 58,
-        "exact": 51,
-        "withinFloatNoise": 7,
+        "exact": 52,
+        "withinFloatNoise": 6,
         "unmapped": [
           {
             "symbol": "Hpt_BeamLaser_Gimbal_Medium",
@@ -1996,8 +1996,8 @@
         "file": "journal-federation-corvette-beams.jsonc",
         "stated": 86,
         "mapped": 82,
-        "exact": 67,
-        "withinFloatNoise": 15,
+        "exact": 68,
+        "withinFloatNoise": 14,
         "unmapped": [
           {
             "symbol": "Hpt_BeamLaser_Gimbal_Huge",
@@ -2021,8 +2021,8 @@
         "file": "journal-federation-corvette-multirole.jsonc",
         "stated": 79,
         "mapped": 75,
-        "exact": 66,
-        "withinFloatNoise": 9,
+        "exact": 67,
+        "withinFloatNoise": 8,
         "unmapped": [
           {
             "symbol": "Hpt_BeamLaser_Gimbal_Huge",

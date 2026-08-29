@@ -549,7 +549,9 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
                 multiCannon.rateOfFire! / 0.56,
         ) < 1e-5,
     );
-    // ...while a burst weapon keeps the (3 - 1) / 15 s its own burst takes.
+    // ...while a burst weapon keeps the (3 - 1) / 15 s its own burst takes. Compared to
+    // the precision the game reports the figure at: `combinedRateOfFire` answers with
+    // Frontier's stored float serialized to six decimals, not the exact quotient.
     const burstLaser = getModuleBySymbol('Hpt_PulseLaserBurst_Fixed_Small', ALL_MODULES)!;
     const burstInterval = computeModifiers(
         baseStats(burstLaser),
@@ -560,7 +562,7 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
         Math.abs(
             combinedRateOfFire({ ...burstLaser, burstInterval: burstInterval.Value! })! -
                 3 / (2 / 15 + 0.5 * 0.56),
-        ) < 1e-9,
+        ) < 1e-5,
     );
 });
 

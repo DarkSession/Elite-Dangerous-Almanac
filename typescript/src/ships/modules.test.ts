@@ -708,14 +708,19 @@ test('projectile boundary parameters appear on exactly the ten verified hardpoin
 
 test("every weapon's carried rate of fire agrees with its own firing cycle", () => {
     // `rateOfFire` is derived from the interval and burst pattern at acquisition time;
-    // charge time delays impact but is not part of Frontier's reported cadence.
+    // charge time delays impact but is not part of Frontier's reported cadence. Exactly,
+    // not nearly: the catalogue figure and the derivation are the same computation, so a
+    // tolerance here would hide the last-place drift that separates Frontier's stored
+    // float from exact arithmetic — three records differ from exact arithmetic there, and
+    // a capture states the game's answer for one of them (see data/ships/SOURCES.md).
     let checked = 0;
     for (const weapon of ALL_MODULES) {
         if (weapon.rateOfFire === undefined) continue;
         const derived = combinedRateOfFire(weapon);
         assert.ok(derived !== undefined, `${weapon.symbol}: no cycle to derive from`);
-        assert.ok(
-            Math.abs(derived - weapon.rateOfFire) < 1e-5,
+        assert.equal(
+            derived,
+            weapon.rateOfFire,
             `${weapon.symbol}: carried ${weapon.rateOfFire} vs derived ${derived}`,
         );
         checked++;

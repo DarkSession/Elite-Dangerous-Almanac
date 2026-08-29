@@ -699,9 +699,11 @@ test('variants that change a burst pattern move the interval their rate comes fr
         );
         assert.equal(stated?.Value, expected.blockRateOfFire, symbol);
         assert.equal(fitted.rateOfFire, stated?.Value, symbol);
-        // The exact-arithmetic recomputation agrees with it to the precision a serialized
-        // journal figure carries — the two derivations differ only in the places the game
-        // does not report.
+        // Recomputing from the resolved record agrees with it to the precision a
+        // serialized journal figure carries. It is the same derivation either way; what
+        // differs is the input, because `burstInterval` is read back at the six decimals
+        // it is published at while the article derives its rate from the stored float
+        // behind them. Three of the fifteen land a place apart on that alone.
         assert.ok(
             Math.abs(combinedRateOfFire(fitted)! - expected.rateOfFire) < 1e-5,
             `${symbol}: ${combinedRateOfFire(fitted)} vs ${expected.rateOfFire}`,

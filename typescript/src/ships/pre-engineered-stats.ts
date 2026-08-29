@@ -43,13 +43,14 @@ import { fixedModifierFeatures } from './internal/fixed-modifier-features.js';
 import { normalizeKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
 import { journalModifiersFor } from './internal/loadout-engineering.js';
-import { journalRateOfFire, preciseValueFor } from './internal/engineering-precision.js';
+import {
+    BURST_PATTERN_LABELS,
+    journalRateOfFire,
+    preciseValueFor,
+} from './internal/engineering-precision.js';
 
 /** Highest engineering grade Frontier reports for any module blueprint. */
 const MAX_ENGINEERING_GRADE = 5;
-
-/** The burst parts a variant can move, which move the firing cycle with them. */
-const BURST_PATTERN_LABELS: readonly string[] = ['BurstSize', 'BurstRateOfFire', 'BurstInterval'];
 
 /** Compute a variant's fixed block together with an experimental added to the article. */
 function modifiersWithExperimental(
@@ -481,7 +482,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
     if (
         resolved.rateOfFire !== undefined &&
         !applied.some((m) => m.Label === 'RateOfFire') &&
-        applied.some((m) => BURST_PATTERN_LABELS.includes(m.Label))
+        applied.some((m) => BURST_PATTERN_LABELS.some((label) => label === m.Label))
     ) {
         const rate = journalRateOfFire(
             preciseValueFor(applied, 'BurstInterval') ?? resolved.burstInterval,

@@ -1121,7 +1121,7 @@
       "kinetic": 1
     },
     "roundsPerShot": 12,
-    "rateOfFire": 5.555556,
+    "rateOfFire": 5.555555,
     "burstInterval": 0.18,
     "clipSize": 3,
     "ammoMaximum": 180,
@@ -1454,7 +1454,7 @@
     "damageDistribution": {
       "kinetic": 1
     },
-    "rateOfFire": 8.333333,
+    "rateOfFire": 8.333334,
     "burstInterval": 0.12,
     "clipSize": 90,
     "ammoMaximum": 2100,
@@ -4747,7 +4747,7 @@
     "damageDistribution": {
       "unclassified": 1
     },
-    "rateOfFire": 7.844016,
+    "rateOfFire": 7.844017,
     "burstInterval": 0.4028,
     "burstRounds": 4,
     "burstRateOfFire": 28,

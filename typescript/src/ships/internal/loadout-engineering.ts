@@ -29,6 +29,7 @@ import { FITTED_ITEM } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
 import { computeModifiers, type BlueprintGrade, type ExperimentalEffect } from '../engineering.js';
 import {
+    burstPartOrOne,
     float32FiringCycle,
     float32RateOfFire,
     preciseModifierValue,
@@ -636,10 +637,15 @@ export function journalModifiersFor(
                 OriginalValue: round6(baseDamage),
             };
         } else {
-            const burstRounds = valueFor('BurstSize', stats.burstRounds ?? 1);
-            const burstRate = valueFor('BurstRateOfFire', stats.burstRateOfFire ?? 1);
-            const baseBurstRounds = Math.fround(stats.burstRounds ?? 1);
-            const baseBurstRate = Math.fround(stats.burstRateOfFire ?? 1);
+            // Normalized once, so every figure below — the cycle, the rate and the DPS
+            // built on them — reads one burst pattern. `journalRateOfFire` normalizes the
+            // same way, and the stats a fitted module resolves come from it.
+            const burstRounds = burstPartOrOne(valueFor('BurstSize', stats.burstRounds ?? 1));
+            const burstRate = burstPartOrOne(
+                valueFor('BurstRateOfFire', stats.burstRateOfFire ?? 1),
+            );
+            const baseBurstRounds = Math.fround(burstPartOrOne(stats.burstRounds));
+            const baseBurstRate = Math.fround(burstPartOrOne(stats.burstRateOfFire));
             const baseInterval =
                 stats.burstInterval === undefined ? undefined : Math.fround(stats.burstInterval);
             const baseCycle =

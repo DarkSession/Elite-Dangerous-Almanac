@@ -38,7 +38,11 @@ import type {
 } from '../armour.js';
 import type { DamageResistanceParams } from '../resistances.js';
 import { weaponMetrics, type WeaponStats } from '../weapons.js';
-import { journalRateOfFire, preciseValueFor } from './engineering-precision.js';
+import {
+    BURST_PATTERN_LABELS,
+    journalRateOfFire,
+    preciseValueFor,
+} from './engineering-precision.js';
 import { scaleDamageComponents } from './damage-components.js';
 import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
@@ -1209,9 +1213,6 @@ export function weaponStatsFor(
     if (stats.projectileRange) weapon.projectileRange = { ...stats.projectileRange };
     return weapon as WeaponStats;
 }
-
-/** The burst parts a recipe moves, which move the firing cycle with them. */
-const BURST_PATTERN_LABELS = ['BurstSize', 'BurstRateOfFire', 'BurstInterval'] as const;
 
 /**
  * The rate of fire once an engineered burst pattern is taken into account, or
