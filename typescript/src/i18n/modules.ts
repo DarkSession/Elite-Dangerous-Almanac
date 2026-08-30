@@ -21,13 +21,15 @@ const MODULE_NAMES = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
  * hyphens. A regional or script subtag is dropped: every stored locale is a bare
  * language tag.
  * @returns The localized outfitting name; the canonical `OutfittingModule.name` for any
- * English tag; or `null` when the
- * symbol is unknown, the locale is unsupported, or the pinned sources carry no value
- * for that module and locale.
+ * English tag; or `null` when the symbol is unknown or the locale is not one of the six
+ * this catalogue stores.
  * @remarks
- * The table deduplicates modules that share one canonical name. It does not bundle any
- * module stats, so this lookup avoids the 1,199-record `ALL_MODULES` catalogue. Missing
- * translations never silently fall back to English.
+ * All six stored locales are complete for this dataset, so a supported locale always
+ * answers. The table deduplicates modules that share one name in every locale, which is
+ * finer than sharing one canonical English name: the game distinguishes the singular and
+ * plural hull alloys, for instance, where English spells both the same. It does not
+ * bundle any module stats, so this lookup avoids the 1,199-record `ALL_MODULES`
+ * catalogue.
  * @throws {TypeError} If `symbol` is present and not a string, or `locale` is not a
  * string. A nullish `symbol` is a lookup miss and returns `null`.
  * @example
@@ -35,7 +37,8 @@ const MODULE_NAMES = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
  * import { getModuleName } from '@elite-dangerous-almanac/core/i18n/modules';
  *
  * getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> 'Frameshiftantrieb'
- * getModuleName('Int_LargeCargoRack_Size8_class1', 'de'); // -> null
+ * getModuleName('Int_LargeCargoRack_Size8_class1', 'de'); // -> 'Frachtgestell für Mk II'
+ * getModuleName('Int_Hyperdrive_Size6_Class5', 'it'); // -> null
  * ```
  */
 export function getModuleName(symbol: string, locale: string): string | null {

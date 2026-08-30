@@ -23,24 +23,48 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## `module-names.jsonc`
 
-- **Acquired:** 2026-08-14 UTC.
-- **EDDI revision:** commit `fdc1f47933bd930464610111fa11fc9dae264414`.
-- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`.
+- **Acquired:** 2026-08-30 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
 - **Derivation:** all 1,199 current module symbols and English names come from the four
-  `data/ships/modules-*.jsonc` catalogues. EDDI's `ModuleDefinitions.cs` joins a symbol
-  to a resource key; `Properties/Modules.resx` and its localized siblings supply names.
-  An EDDI value is accepted only when its base English resource exactly equals the
-  Almanac's canonical English name. This prevents broad EDDI families such as
-  `CargoRack`, `MissileRack` and `PlanetaryApproachSuite` from erasing the distinct Mk II,
-  seeker and advanced names the Almanac carries. EDSY's module `fdname` and effective
-  `namekey` fill a missing `de`, `es`, `fr` or `ru` value only when EDSY's English
-  module name also exactly equals the canonical name. Values shared by modules with one
-  canonical name are retained only when they agree, then stored once under that name.
-- **Coverage:** English covers all 1,199 symbols. The explicit translations cover 1,120
-  in German, 1,090 in Spanish, 1,088 in French, 1,155 in Brazilian Portuguese and 1,153
-  in Russian. Portuguese comes from the same two joins, reading EDDI's
-  `Modules.pt-BR.resx` and EDSY's `lang-pt.json`.
+  `data/ships/modules-*.jsonc` catalogues, which stay authoritative for canonical
+  English. Each symbol joins case-insensitively to the in-game module localisation
+  identity, which carries a `name`, a `longname` and an `info` string per locale. The
+  join is exact and total: every one of the 1,199 resolves.
+  - **`longname` is the name taken.** It is the outfitting list's full name and equals
+    the canonical English on 1,041 of the 1,199, where `name` — the abbreviated panel
+    form — equals it on 726. `name` is taken only where a longname is a template rather
+    than a name, which is the cargo racks, fuel tanks and corrosion-resistant racks whose
+    longname carries a capacity.
+  - **Aliasing is followed.** A localisation value may be a `$Other_Key;` pointer rather
+    than text; roughly three thousand of the keys are. Each is followed to the entry
+    holding real text before anything is stored, and a value still carrying a `$` token
+    after that is not a name and is rejected.
+  - **The `(Free)` vessel-hangar grants have no name of their own** — theirs is a
+    template wrapping the base hangar's. Their canonical English is already the base
+    module's, so they share its record, exactly as they did before.
+- **This table replaces the EDDI and EDSY joins the catalogue previously used**, and wins
+  where they disagree, as in-game values do everywhere in this repository. It fills the
+  349 values those joins left empty and restyles 3,135 they carried, across 324 distinct
+  record-and-locale pairs: 73 differ only in letter case, 10 only in punctuation or
+  accents, and 241 in wording. Many of the last are the game being specific where the
+  registries were general — Russian `Двигатели` becomes `Маневровые двигатели`, Brazilian
+  Portuguese `Propulsores` becomes `Propulsores de desempenho melhorado`.
+- **Sixteen values are the outfitting panel's own abbreviations**, and are stored as the
+  game renders them: French `Laser à impuls.`, Russian `Сист. жизнеобеспечения`, Spanish
+  `Lanzamisiles g.` and thirteen more, reaching 185 symbols between them. They are the
+  panel's shortened forms rather than different translations. Note that
+  `material-names.jsonc` resolves the same situation the other way, keeping the
+  unabbreviated value; the two catalogues do not currently follow one rule here.
+- **Four names need more than one record.** The catalogue deduplicates modules sharing
+  one name in every locale, which is finer than sharing one canonical English name,
+  because the game distinguishes in other locales what English spells the same way:
+  `Lightweight Alloy` and `Reinforced Alloy` are singular on 25 hulls and plural on the
+  rest, `Hatch Breaker Limpet Controller` is generic on one symbol and specific on
+  twenty, and one Corrosion Resistant Cargo Rack differs from its four siblings. A `#2`
+  suffix separates the second record of such a pair; it is part of the key only, never of
+  a displayed name.
+- **Coverage:** complete. All 1,199 symbols carry all six locales.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`
