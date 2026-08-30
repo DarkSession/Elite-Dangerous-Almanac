@@ -113,9 +113,9 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `locale/material/horizons/{raw,manufactured,encoded}.csv`; only that row's explicit
   localized columns are copied. The source's English column is not copied because the
   owning materials catalogues remain authoritative for canonical names. The canonical
-  English values therefore keep the existing `Segment` spelling and omit the source's
-  parenthetical Guardian and Thargoid category labels where the owning catalogue does;
-  localized columns remain verbatim source values.
+  English values therefore omit the source's parenthetical Guardian and Thargoid
+  category labels where the owning catalogue does; localized columns remain verbatim
+  source values.
 - **Second source, the in-game material localisation tables**, acquired 2026-08-30 UTC;
   the game publishes no immutable identifier for them, so the acquired table is the
   evidence. It covers all 146 materials in all six locales and, as everywhere else in
@@ -132,12 +132,12 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   Guardian`, and likewise for `Guardian_Sentinel_WeaponParts` (French and Brazilian
   Portuguese), `Guardian_TechComponent` (French and Brazilian Portuguese) and
   `HeatConductionWiring` (Spanish). The unabbreviated value is kept in each.
-- **Four records are left on their Odyssey Materials Helper values** pending the English
-  question they raise: the in-game table names the three Guardian blueprint fragments
-  `Fragment` where `materials-encoded.jsonc` names them `Segment`, and drops `Sentinel`
-  from `Guardian_Sentinel_WreckageComponents`. Taking the localized values alone would
-  leave each record disagreeing with its own English, so all six locales stay as they
-  were until the owning catalogue settles the name.
+- **`Guardian_Sentinel_WreckageComponents` is left on its Odyssey Materials Helper
+  values** pending the English question it raises: the in-game table drops `Sentinel`,
+  naming it `Guardian Wreckage Components` where `materials-encoded.jsonc` has
+  `Guardian Sentinel Wreckage Components`. Taking the localized values alone would leave
+  the record disagreeing with its own English, so all six locales stay as they were until
+  the owning catalogue settles the name.
 
 ## `micro-resource-names.jsonc`
 

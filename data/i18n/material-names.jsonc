@@ -964,19 +964,19 @@
     "ru": "Захват адаптивного шифровальщика"
   },
   "Guardian_ModuleBlueprint": {
-    "en": "Guardian Module Blueprint Segment",
-    "de": "Guardian-Modulbauplansegment",
-    "es": "Segmento de plano de módulo de guardián",
+    "en": "Guardian Module Blueprint Fragment",
+    "de": "Guardian-Modulbauplanfragment",
+    "es": "Fragmento de plano de módulo de guardián",
     "fr": "Fragment de plan de module - Guardians",
-    "pt": "Segmento de diagrama de módulo Guardian",
+    "pt": "Fragmento de esquema de módulo Guardian",
     "ru": "Фрагмент чертежа модуля Стражей"
   },
   "Guardian_WeaponBlueprint": {
-    "en": "Guardian Weapon Blueprint Segment",
-    "de": "Guardian-Waffenbauplansegment",
-    "es": "Segmento de plano de armamento de guardián",
-    "fr": "Fragment de plan d’arme - Guardians",
-    "pt": "Segmento de diagrama de arma Guardian",
+    "en": "Guardian Weapon Blueprint Fragment",
+    "de": "Guardian-Waffenbauplanfragment",
+    "es": "Fragmento de plano de armamento de guardián",
+    "fr": "Fragment de plan d'arme - Guardians",
+    "pt": "Fragmento de esquema de arma Guardian",
     "ru": "Фрагмент чертежа оружия Стражей"
   },
   "AncientBiologicalData": {
@@ -1020,11 +1020,11 @@
     "ru": "Данные с обелиска «Гамма»"
   },
   "Guardian_VesselBlueprint": {
-    "en": "Guardian Vessel Blueprint Segment",
-    "de": "Guardian-Schiffsbauplansegment",
-    "es": "Segmento de plano de nave de guardián",
+    "en": "Guardian Vessel Blueprint Fragment",
+    "de": "Guardian-Schiffsbauplanfragment",
+    "es": "Fragmento de plano de nave de guardián",
     "fr": "Fragment de plan de vaisseau - Guardians",
-    "pt": "Segmento de diagrama de nave Guardian",
+    "pt": "Fragmento de diagrama de nave Guardian",
     "ru": "Фрагмент чертежа судна Стражей"
   },
   "ShieldCycleRecordings": {

@@ -26,6 +26,16 @@
     Phosphorus, Sulphur, Iron, Nickel, Rhenium, Lead** — the convention the in-game raw
     grid columns follow.
 
+### Manual correction — the three Guardian blueprint fragments
+
+FDevIDs' `material.csv` names `Guardian_ModuleBlueprint`, `Guardian_WeaponBlueprint` and
+`Guardian_VesselBlueprint` `… Blueprint Segment`. The game calls them **Fragment**, which
+is the name carried here. The in-game localisation table confirmed by repository-owner
+in-game verification (2026-08-30 UTC) says `Fragment` in every locale, and the French and
+Russian columns Odyssey Materials Helper already supplied said `Fragment de plan …` and
+`Фрагмент чертежа …` while its English, German, Spanish and Portuguese said Segment — the
+disagreement was inside one source, not between the game and this repository.
+
 ### Secondary source — Thargoid caustic / Titan materials absent from FDevIDs
 
 Several Thargoid caustic and Titan materials are absent from the pinned FDevIDs
