@@ -116,9 +116,28 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   English values therefore keep the existing `Segment` spelling and omit the source's
   parenthetical Guardian and Thargoid category labels where the owning catalogue does;
   localized columns remain verbatim source values.
-- **Coverage:** English, Spanish and Russian cover all 146 materials. The explicit
-  translations cover 128 in German, and 140 each in French and Brazilian Portuguese.
-- **Manual corrections:** none.
+- **Second source, the in-game material localisation tables**, acquired 2026-08-30 UTC;
+  the game publishes no immutable identifier for them, so the acquired table is the
+  evidence. It covers all 146 materials in all six locales and, as everywhere else in
+  this repository, wins where the two disagree. That fills the 30 values Odyssey
+  Materials Helper did not carry and restyles 30 it did: 23 are the French apostrophe
+  (the in-game tables use `'` throughout, as every other catalogue here does, where
+  Odyssey Materials Helper uses `’`), five are Spanish names the helper title-cased
+  (`Fragmento Caústico` against the game's `Fragmento cáustico`), and the rest are
+  wording.
+- **Coverage:** complete. All 146 materials carry all six locales.
+- **Manual corrections:** six of the in-game values are the outfitting UI's own
+  abbreviations, shortened to fit its widget rather than translated differently —
+  `Comp. de destroços Guardian` against the helper's `Componentes de destroços Sentinela
+  Guardian`, and likewise for `Guardian_Sentinel_WeaponParts` (French and Brazilian
+  Portuguese), `Guardian_TechComponent` (French and Brazilian Portuguese) and
+  `HeatConductionWiring` (Spanish). The unabbreviated value is kept in each.
+- **Four records are left on their Odyssey Materials Helper values** pending the English
+  question they raise: the in-game table names the three Guardian blueprint fragments
+  `Fragment` where `materials-encoded.jsonc` names them `Segment`, and drops `Sentinel`
+  from `Guardian_Sentinel_WreckageComponents`. Taking the localized values alone would
+  leave each record disagreeing with its own English, so all six locales stay as they
+  were until the owning catalogue settles the name.
 
 ## `micro-resource-names.jsonc`
 
@@ -136,12 +155,24 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `SmallCapacityPowerRegulator` do not. All 30 take the explicit in-game `name` values for
   German, Spanish, French and Russian. In both cases the owning catalogue remains
   authoritative for canonical English names.
-- **Coverage:** English, Spanish and Russian cover all 226 micro resources. The explicit
-  translations cover 218 in German, 225 in French and 188 in Brazilian Portuguese. The
-  30 in-game-backed records take Portuguese from Odyssey Materials Helper where it has a
-  row, because the in-game capture supplied no Portuguese; `PowerVirus` and
-  `SmallCapacityPowerRegulator`, which the source does not carry at all, have none.
-- **Manual corrections:** none.
+- **Second source, the in-game micro-resource localisation tables**, acquired
+  2026-08-30 UTC; the game publishes no immutable identifier for them, so the acquired
+  table is the evidence. It covers 225 of the 226 in all six locales and wins where the
+  two disagree, on the same footing as the material tables above. That fills all 47
+  remaining values — including the Brazilian Portuguese for `PowerVirus` and
+  `SmallCapacityPowerRegulator`, which no registry carries — and restyles 46, of which 36
+  are the French apostrophe and seven are the French Powerplay term, which the game
+  lower-cases (`Données classifiées de puissance`).
+  `PowerMegashipData` is absent from the micro-resource table and appears in the material
+  one; its values are taken from there.
+- **Coverage:** complete. All 226 micro resources carry all six locales.
+- **Manual corrections:** five in-game values are layout, not names. Four German
+  consumables carry a `<br>` inside a compound word that the UI wraps —
+  `Energie-<br>zelle`, `Splitter-<br>granate`, `Schild-<br>unterbrecher` and
+  `Schild-<br>generator` — and the French `Amm_Grenade_EMP` is abbreviated to
+  `Neutralisat. de bouclier` to fit its widget. The whole word is kept in each:
+  `Energiezelle`, `Splittergranate`, `Schildunterbrecher`, `Schildgenerator` and
+  `Neutralisateur de bouclier`.
 
 ## `module-family-names.jsonc`
 

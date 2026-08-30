@@ -24,21 +24,24 @@
     "es": "Vanadio",
     "fr": "Vanadium",
     "pt": "Vanádio",
-    "ru": "Ванадий"
+    "ru": "Ванадий",
+    "de": "Vanadium"
   },
   "Niobium": {
     "en": "Niobium",
     "es": "Niobio",
     "fr": "Niobium",
     "pt": "Nióbio",
-    "ru": "Ниобий"
+    "ru": "Ниобий",
+    "de": "Niob"
   },
   "Yttrium": {
     "en": "Yttrium",
     "es": "Ytrio",
     "fr": "Yttrium",
     "pt": "Ítrio",
-    "ru": "Иттрий"
+    "ru": "Иттрий",
+    "de": "Yttrium"
   },
   "Iron": {
     "en": "Iron",
@@ -85,7 +88,8 @@
     "es": "Circonio",
     "fr": "Zirconium",
     "pt": "Zircônio",
-    "ru": "Цирконий"
+    "ru": "Цирконий",
+    "de": "Zirconium"
   },
   "Boron": {
     "en": "Boron",
@@ -108,14 +112,16 @@
     "es": "Níquel",
     "fr": "Nickel",
     "pt": "Níquel",
-    "ru": "Никель"
+    "ru": "Никель",
+    "de": "Nickel"
   },
   "Germanium": {
     "en": "Germanium",
     "es": "Germanio",
     "fr": "Germanium",
     "pt": "Germânio",
-    "ru": "Германий"
+    "ru": "Германий",
+    "de": "Germanium"
   },
   "Tungsten": {
     "en": "Tungsten",
@@ -162,14 +168,16 @@
     "es": "Tecnecio",
     "fr": "Technétium",
     "pt": "Tecnécio",
-    "ru": "Технеций"
+    "ru": "Технеций",
+    "de": "Technetium"
   },
   "Rhenium": {
     "en": "Rhenium",
     "es": "Renio",
     "fr": "Rhénium",
     "pt": "Rênio",
-    "ru": "Рений"
+    "ru": "Рений",
+    "de": "Rhenium"
   },
   "Arsenic": {
     "en": "Arsenic",
@@ -192,7 +200,8 @@
     "es": "Polonio",
     "fr": "Polonium",
     "pt": "Polônio",
-    "ru": "Полоний"
+    "ru": "Полоний",
+    "de": "Polonium"
   },
   "Sulphur": {
     "en": "Sulphur",
@@ -223,7 +232,8 @@
     "es": "Rutenio",
     "fr": "Ruthénium",
     "pt": "Rutênio",
-    "ru": "Рутений"
+    "ru": "Рутений",
+    "de": "Ruthenium"
   },
   "SalvagedAlloys": {
     "en": "Salvaged Alloys",
@@ -469,7 +479,7 @@
     "en": "Guardian Power Cell",
     "de": "Guardian-Energiezelle",
     "es": "Célula de energía de guardián",
-    "fr": "Cellule d’énergie - Guardians",
+    "fr": "Cellule d'énergie - Guardians",
     "pt": "Bateria Guardian",
     "ru": "Энергоячейка Стражей"
   },
@@ -485,7 +495,7 @@
     "en": "Guardian Power Conduit",
     "de": "Guardian-Energieleiter",
     "es": "Conducto de energía de guardián",
-    "fr": "Conduit d’énergie - Guardians",
+    "fr": "Conduit d'énergie - Guardians",
     "pt": "Condutores de potência Guardian",
     "ru": "Энергопроводники Стражей"
   },
@@ -630,18 +640,24 @@
     "es": "Fragmentos de superficie endurecida",
     "fr": "Fragments superficiels durcis",
     "pt": "Fragmentos de superfície endurecida",
-    "ru": "Окаменелые фрагменты поверхности"
+    "ru": "Окаменелые фрагменты поверхности",
+    "de": "Gehärtete Oberflächen-Fragmente"
   },
   "tg_causticshard": {
     "en": "Caustic Shard",
-    "es": "Fragmento Caústico",
-    "ru": "Едкий осколок"
+    "es": "Fragmento cáustico",
+    "ru": "Едкий осколок",
+    "de": "Kaustische Scherbe",
+    "fr": "Éclat caustique",
+    "pt": "Fragmento cáustico"
   },
   "unknowncorechip": {
     "en": "Tactical Core Chip",
     "es": "Chip de núcleo táctico",
     "fr": "Puce tactique principale",
-    "ru": "Чип тактического ядра"
+    "ru": "Чип тактического ядра",
+    "de": "Taktischer Kern-Chip",
+    "pt": "Chip central tático"
   },
   "UnknownCarapace": {
     "en": "Thargoid Carapace",
@@ -661,21 +677,25 @@
   },
   "tg_causticgeneratorparts": {
     "en": "Corrosive Mechanisms",
-    "es": "Mecanismos Corrosivos",
-    "ru": "Разъедающие механизмы"
+    "es": "Mecanismos corrosivos",
+    "ru": "Разъедающие механизмы",
+    "de": "Korrosive Mechanismen",
+    "fr": "Mécanismes corrosifs",
+    "pt": "Mecanismos corrosivos"
   },
   "tg_abrasion02": {
     "en": "Phasing Membrane Residue",
     "de": "Phasenmembranreste",
-    "es": "Residuo de Membrana Fásica",
+    "es": "Residuo de membrana fásica",
     "pt": "Resíduo de membrana faseada",
-    "ru": "Остаток фазирующей мембраны"
+    "ru": "Остаток фазирующей мембраны",
+    "fr": "Résidu de membrane de phase"
   },
   "UnknownEnergyCell": {
     "en": "Thargoid Energy Cell",
     "de": "Thargoiden-Energiezelle",
     "es": "Célula de energía Thargoide",
-    "fr": "Cellule d’énergie thargoid",
+    "fr": "Cellule d'énergie thargoid",
     "pt": "Célula de Energia Thargoid",
     "ru": "Таргоидская энергоячейка"
   },
@@ -683,14 +703,17 @@
     "en": "Wreckage Components",
     "de": "Wrackteilkomponenten",
     "es": "Restos de accidentes",
-    "fr": "Débris d’épave",
+    "fr": "Débris d'épave",
     "pt": "Restos de componentes",
     "ru": "Обломки кораблекрушений"
   },
   "tg_causticcrystal": {
     "en": "Caustic Crystal",
-    "es": "Cristal Caústico",
-    "ru": "Едкий кристалл"
+    "es": "Cristal cáustico",
+    "ru": "Едкий кристалл",
+    "de": "Kaustischer Kristall",
+    "fr": "Cristal caustique",
+    "pt": "Cristal cáustico"
   },
   "UnknownTechnologyComponents": {
     "en": "Thargoid Technological Components",
@@ -704,16 +727,17 @@
     "en": "Weapon Parts",
     "de": "Waffenteile",
     "es": "Piezas de armamento",
-    "fr": "Pièces d’armement",
+    "fr": "Pièces d'armement",
     "pt": "Peças de Arma",
     "ru": "Детали вооружения"
   },
   "tg_abrasion01": {
     "en": "Heat Exposure Specimen",
-    "es": "Especimen de Exposición Térmica",
+    "es": "Espécimen de exposición térmica",
     "fr": "Spécimen exposé à la chaleur",
     "pt": "Espécime de exposição ao calor",
-    "ru": "Образец теплового воздействия"
+    "ru": "Образец теплового воздействия",
+    "de": "Wärmeexpositionsprobe"
   },
   "TG_PropulsionElement": {
     "en": "Propulsion Elements",
@@ -783,7 +807,7 @@
     "en": "Anomalous Bulk Scan Data",
     "de": "Anormale Massen-Scan-Daten",
     "es": "Datos de escáner en bruto anómalos",
-    "fr": "Fichier volumineux de données d’analyse anormal",
+    "fr": "Fichier volumineux de données d'analyse anormal",
     "pt": "Dados brutos de escâner anômalos",
     "ru": "Аномальный массив данных сканирования"
   },
@@ -791,7 +815,7 @@
     "en": "Unidentified Scan Archives",
     "de": "Unidentifizierte Scan-Archive",
     "es": "Archivos de escáner no identificados",
-    "fr": "Données d’analyse archivées non identifiées",
+    "fr": "Données d'analyse archivées non identifiées",
     "pt": "Arquivos de escaneamento não identificados",
     "ru": "Неопознанные архивы сканирования"
   },
@@ -799,7 +823,7 @@
     "en": "Classified Scan Databanks",
     "de": "Scan-Datenbanken unter Verschluss",
     "es": "Datos de escáner clasificados",
-    "fr": "Banques de données d’analyse classifiées",
+    "fr": "Banques de données d'analyse classifiées",
     "pt": "Banco de dados de escaneamento confidenciais",
     "ru": "Засекреченные базы данных сканирования"
   },
@@ -807,7 +831,7 @@
     "en": "Divergent Scan Data",
     "de": "Divergente Scandaten",
     "es": "Datos de escáner divergentes",
-    "fr": "Données d’analyse divergentes",
+    "fr": "Données d'analyse divergentes",
     "pt": "Dados escaneados divergentes",
     "ru": "Неформатные данные сканирования"
   },
@@ -815,7 +839,7 @@
     "en": "Classified Scan Fragment",
     "de": "Geheimes Scan-Fragment",
     "es": "Fragmento de escáner clasificado",
-    "fr": "Données d’analyse classifiées parcellaires",
+    "fr": "Données d'analyse classifiées parcellaires",
     "pt": "Fragmentos de escaneamentos confidenciais",
     "ru": "Засекреченные фрагменты данных сканирования"
   },
@@ -823,7 +847,7 @@
     "en": "Exceptional Scrambled Emission Data",
     "de": "Außergewöhnliche verschlüsselte Emissionsdaten",
     "es": "Datos de transmisiones codificadas excepcionales",
-    "fr": "Données d’émissions brouillées exceptionnelles",
+    "fr": "Données d'émissions brouillées exceptionnelles",
     "pt": "Exceção nos dados de emissão embaralhados",
     "ru": "Исключительные зашифрованные данные об излучении"
   },
@@ -831,7 +855,7 @@
     "en": "Irregular Emission Data",
     "de": "Irreguläre Emissionsdaten",
     "es": "Datos de emisión irregulares",
-    "fr": "Données d’émissions aberrantes",
+    "fr": "Données d'émissions aberrantes",
     "pt": "Dados de emissão irregulares",
     "ru": "Нестандартные данные об излучении"
   },
@@ -839,7 +863,7 @@
     "en": "Unexpected Emission Data",
     "de": "Unerwartete Emissionsdaten",
     "es": "Datos de emisión inesperados",
-    "fr": "Données d’émissions inattendues",
+    "fr": "Données d'émissions inattendues",
     "pt": "Dados de emissão inesperados",
     "ru": "Неожиданные данные об излучении"
   },
@@ -847,7 +871,7 @@
     "en": "Decoded Emission Data",
     "de": "Entschlüsselte Emissionsdaten",
     "es": "Datos de emisión descodificados",
-    "fr": "Données d’émissions décodées",
+    "fr": "Données d'émissions décodées",
     "pt": "Dados de emissão decodificados",
     "ru": "Расшифрованные данные об излучении"
   },
@@ -855,7 +879,7 @@
     "en": "Abnormal Compact Emissions Data",
     "de": "Anormale kompakte Emissionsdaten",
     "es": "Compresión de datos de transmisiones anormal",
-    "fr": "Données d’émissions compactes anormales",
+    "fr": "Données d'émissions compactes anormales",
     "pt": "Dados de emissão compactos anormais",
     "ru": "Аномальные компактные данные об излучении"
   },
@@ -959,7 +983,7 @@
     "en": "Pattern Alpha Obelisk Data",
     "de": "Alpha-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón alfa",
-    "fr": "Données d’obélisque de type alpha",
+    "fr": "Données d'obélisque de type alpha",
     "pt": "Dados de Obelisco de Padrão Alfa",
     "ru": "Данные с обелиска «Альфа»"
   },
@@ -967,7 +991,7 @@
     "en": "Pattern Beta Obelisk Data",
     "de": "Beta-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón beta",
-    "fr": "Données d’obélisque de type bêta",
+    "fr": "Données d'obélisque de type bêta",
     "pt": "Dados de Obelisco de Padrão Beta",
     "ru": "Данные с обелиска «Бета»"
   },
@@ -975,7 +999,7 @@
     "en": "Pattern Delta Obelisk Data",
     "de": "Delta-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón delta",
-    "fr": "Données d’obélisque de type delta",
+    "fr": "Données d'obélisque de type delta",
     "pt": "Dados de Obelisco de Padrão Delta",
     "ru": "Данные с обелиска «Дельта»"
   },
@@ -983,7 +1007,7 @@
     "en": "Pattern Epsilon Obelisk Data",
     "de": "Epsilon-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón epsilon",
-    "fr": "Données d’obélisque de type epsilon",
+    "fr": "Données d'obélisque de type epsilon",
     "pt": "Dados de Obelisco de Padrão Epsilon",
     "ru": "Данные с обелиска «Эпсилон»"
   },
@@ -991,7 +1015,7 @@
     "en": "Pattern Gamma Obelisk Data",
     "de": "Gamma-Muster-Obeliskendaten",
     "es": "Datos de obelisco de patrón gamma",
-    "fr": "Données d’obélisque de type gamma",
+    "fr": "Données d'obélisque de type gamma",
     "pt": "Dados de Obelisco de Padrão Gama",
     "ru": "Данные с обелиска «Гамма»"
   },
@@ -1015,7 +1039,7 @@
     "en": "Inconsistent Shield Soak Analysis",
     "de": "Inkonsistente Schildleistungsanalysen",
     "es": "Análisis de absorción de escudos inconsistente",
-    "fr": "Analyse d’absorption de bouclier incohérente",
+    "fr": "Analyse d'absorption de bouclier incohérente",
     "pt": "Análise inconsistente de escudo atingidos",
     "ru": "Неполный анализ поглощения щита"
   },
@@ -1053,8 +1077,11 @@
   },
   "tg_shutdowndata": {
     "en": "Massive Energy Surge Analytics",
-    "es": "Análisis de Sobrecarga de Energía Masiva(Thargoide)",
-    "ru": "Параметры сильного энергетического импульса"
+    "es": "Análisis de sobrecarga de energía masiva",
+    "ru": "Параметры сильного энергетического импульса",
+    "de": "Analyse einer enormen Energiespitze",
+    "fr": "Analyse de surcharge d'énergie massive",
+    "pt": "Análise de surto massivo de energia"
   },
   "TG_ShipFlightData": {
     "en": "Ship Flight Data",
@@ -1066,8 +1093,11 @@
   },
   "tg_interdictiondata": {
     "en": "Thargoid Interdiction Telemetry",
-    "es": "Telemetría de Interdicción Thargoide",
-    "ru": "Телеметрия перехвата таргоидами"
+    "es": "Telemetría de interdicción Thargoide",
+    "ru": "Телеметрия перехвата таргоидами",
+    "de": "Thargoiden-Abfangmanöver-Telemetrie",
+    "fr": "Télémétrie d'interception thargoid",
+    "pt": "Telemetria de interdição Thargoid"
   },
   "TG_CompositionData": {
     "en": "Thargoid Material Composition Data",
@@ -1099,7 +1129,7 @@
     "es": "Datos residuales Thargoides",
     "fr": "Données de résidu thargoid",
     "pt": "Dados de Resíduos Thargoid",
-    "ru": "Данные об осадке таргоидского происхождения"
+    "ru": "Данных об осадке таргоидского происхождения"
   },
   "UnknownWakeData": {
     "en": "Thargoid Wake Data",
@@ -1137,7 +1167,7 @@
     "en": "Eccentric Hyperspace Trajectories",
     "de": "Exzentrische Hyperraum-Routen",
     "es": "Trayectorias de hiperespacio excéntricas",
-    "fr": "Trajectoires d’hyperespace excentriques",
+    "fr": "Trajectoires d'hyperespace excentriques",
     "pt": "Trajetórias excêntricas de hiperespaço",
     "ru": "Аномальные траектории в гиперпространстве"
   },
