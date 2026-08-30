@@ -191,12 +191,13 @@ These reasons describe build state. A malformed method option still throws its d
 
 **A figure the import already stated wins while its fitted set remains intact.** A build
 read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` and
-`FuelCapacity` directly. If import strips an unrecognised module or stocks a mount it
-keeps filled, it drops the capture's aggregates too: mass, cargo and fuel are recomputed
+`FuelCapacity` directly. If import strips an unrecognised module or stocks a mount from
+the hull defaults, it drops the capture's aggregates too: mass, cargo and fuel are recomputed
 from the normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing
 records what the discarded article cost. A mount stocked from *absence* changes none of
 them: the bulkhead and the cargo hatch are free and weightless, and the planetary approach
-suite is weightless and stands for one the captured ship was flying anyway.
+suite is weightless and costs 500 Cr — the cheapest price in the catalogue, and too little
+to drop a commander's purchase record over.
 
 **Absent is not zero, anywhere in the library** — and it is never a plausible-looking
 constant either. A catalogue field the source did not carry is omitted rather than

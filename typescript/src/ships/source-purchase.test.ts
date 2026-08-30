@@ -456,6 +456,13 @@ test('re-importing a source-record export carries the record forward', () => {
         ...shapeOf(build.sourcePurchase!),
         moduleCount: build.sourcePurchase!.moduleCount + 1,
     });
+
+    // ...and that one module is the whole of the difference: a second hop adds nothing,
+    // because the export it reads already names the mount import stocked.
+    const twice = ShipLoadout.fromLoadout(
+        reimported.toLoadoutEvent({ credits: 'source' }),
+    ).sourcePurchase!;
+    assert.deepEqual(shapeOf(twice), shapeOf(reimported.sourcePurchase!));
 });
 
 test('an edited build re-exports a record whose parts still add up', () => {

@@ -484,10 +484,11 @@ engineered one and the mobility, shield and recovery results report `shed`.
 
 `build.importOutcomes` is the account, and it is the entries that matter, not the length.
 A `sourceSymbol` of `null` marks a mount the capture named nothing for, which import
-stocks from the hull defaults. A stocked bulkhead or approach suite moves no metric at all,
-and a stocked cargo hatch only its own 0.6 MW draw — most third-party exports name neither
-the hatch nor an approach-suite mount, so most produce exactly those two entries. Every other entry means the figures are the normalized
-fit's — except two that mean the opposite. `unresolvedEngineering` says nothing was
+stocks from the hull defaults. A stocked bulkhead or approach suite moves no metric at
+all, and a stocked cargo hatch only its own 0.6 MW draw — most third-party exports name
+neither the hatch nor an approach-suite mount, so most produce exactly those two entries.
+Every other entry means the figures are the normalized fit's — except two that mean the
+opposite. `unresolvedEngineering` says nothing was
 changed and that module's figures are the unengineered ones its source only claimed to
 engineer. `ambiguousEngineering` says the fit is one of two legitimate readings of an
 identity-only block: these figures are the roll, and `preEngineeredVariant` is the

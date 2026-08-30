@@ -342,9 +342,11 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     // core internal invalidates the capture's aggregates: the stock bulkhead and hatch
     // weigh and cost nothing, and the stock approach suite weighs nothing and draws no
     // power, which `default-loadouts.test.ts` pins. The suite's 500 Cr is the one price a
-    // stocked article carries, and the credit figures stand anyway — an absent
-    // approach-suite mount is an exporter that does not model one, not a ship flying
-    // without one, so what the capture stated already describes a ship carrying it.
+    // stocked article carries, and the credit figures stand anyway: at the cheapest price
+    // in the catalogue, dropping a commander's whole purchase record would lose far more
+    // than the figure is off by. Whether the total already covered the mount depends on
+    // the exporter — one Inara export's leaves exactly the suite's discounted price
+    // unaccounted for, and four others' match their listed modules to the credit.
     for (const fallback of defaults) {
         const parsed = parseSlotName(fallback.slot);
         const stocked = parsed === null ? null : stockedMountKind(parsed);

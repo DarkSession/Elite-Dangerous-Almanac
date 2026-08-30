@@ -236,12 +236,12 @@ cargo-hatch mount — some hull families name their own symbol for the one built
 the catalogue carries.
 
 Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
-utilities, optional internals and unrecognised slots are discarded; and a mount import
-keeps filled — armour, a core internal, the cargo hatch, the planetary approach suite — is
+utilities, optional internals and unrecognised slots are discarded; and a **stocked
+mount** — armour, a core internal, the cargo hatch, the planetary approach suite — is
 filled with that hull's stock article whenever the event did not leave a fitting one there
 — one the catalogues cannot resolve, one the mount cannot hold (a cargo rack in `Armour`,
 a size-8 plant in a size-2 mount, anything at all in the cargo hatch), or none at all.
-Only those mounts are corrected this way: every other optional, hardpoint or utility mount
+Only those four are corrected this way: every other optional, hardpoint or utility mount
 may stand empty, so an article the catalogue resolves but the mount refuses is left where
 the event put it, for `validation` to report. A stock replacement carries the source's
 `On`, `Priority` and `Health` across but none of its engineering or captured value.
@@ -259,8 +259,10 @@ cargo and fuel capacity are recomputed from the fit that remains, while `modules
 and `rebuy` read `null`, since nothing records what the discarded module cost;
 `sourcePurchase` still reports the captured figures. A mount stocked from *absence* is the
 exception — the bulkhead and the cargo hatch are weightless and free, and the approach
-suite is weightless and stands for one the captured ship was flying anyway — while an
-absent core internal stocked from the defaults invalidates them like any other change.
+suite is weightless and costs 500 Cr, the cheapest price in the catalogue and no reason to
+drop a commander's whole purchase record — while an absent core internal stocked from the
+defaults invalidates them like any other change. So a capture's credit figures may
+understate an imported fit by the price of one suite, and by no more than that.
 
 `build.validation()` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core

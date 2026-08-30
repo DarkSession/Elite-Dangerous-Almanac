@@ -211,8 +211,8 @@ test('a stated recipe without modifiers is read the same way everywhere', () => 
         for (const [field, value] of Object.entries(shared.expected.stats)) {
             assert.equal(stats[field], value, `${name} ${field}`);
         }
-        // Every other outcome on these builds is a fixed mount stocked from the hull
-        // defaults, which each single-module case reports for the mounts it omits.
+        // Every other outcome on these builds is a mount stocked from the hull defaults,
+        // which each single-module case reports for the mounts it omits.
         assert.deepEqual(
             build.importOutcomes.filter((outcome) => outcome.action !== 'defaulted'),
             shared.expected.outcomes,

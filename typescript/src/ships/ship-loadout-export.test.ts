@@ -350,7 +350,7 @@ test('the classification examples in the fixture come out as the fixture says', 
                 Ship: 'krait_light',
                 Modules: [{ Slot: slot, Item: item, On: false, Priority: 4, Health: 1 }],
             });
-            // Import stocks the eight fixed mounts this one-module event names nothing
+            // Import stocks the nine other mounts this one-module event names nothing
             // for; what matters here is that the hatch itself produced no outcome.
             assert.deepEqual(
                 build.importOutcomes.filter(
@@ -1171,14 +1171,15 @@ test('a capture that omits only its bulkhead keeps every figure it stated', () =
 });
 
 test('a capture that omits only its approach suite keeps every figure it stated', () => {
-    // The stock suite is weightless and draws no power, and its 500 Cr is not an article
-    // the capture failed to pay for: a source silent about the mount is an exporter that
-    // does not model it, not a ship flying without one. So nothing here is invalidated.
+    // The stock suite is weightless and draws no power, and its 500 Cr is the cheapest
+    // price in the catalogue — too little to drop a commander's purchase record over — so
+    // nothing here is invalidated and the figures may understate by that much.
     const build = ShipLoadout.fromLoadout(sidewinderCapture(['PlanetaryApproachSuite']));
-    // The defaults carry the suite under the journal's own lower-cased spelling, which
-    // is what the stocked mount holds.
+    // A stocked article carries the hull default's symbol verbatim, and the defaults spell
+    // the suite the journal's way rather than the catalogue's, so this is compared the way
+    // `slef-export.jsonc` tells a port to compare module symbols.
     assert.equal(
-        build.fittedModuleAt('PlanetaryApproachSuite')?.symbol,
+        build.fittedModuleAt('PlanetaryApproachSuite')?.symbol.toLowerCase(),
         'int_planetapproachsuite_advanced',
     );
     assert.equal(build.unladenMass, 25);
@@ -1383,6 +1384,16 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
     // them: it stands for one the captured ship was carrying all along.
     assert.equal(build.modulesValue, stated.ModulesValue);
     assert.equal(build.rebuy, stated.Rebuy);
+
+    // What the exempted 500 Cr looks like in a real export: this one's stated total is 487
+    // above its priced entries, which is the suite's list price at the same 2.5% discount
+    // its hull was bought at. Other exports' totals match their entries to the credit, so
+    // whether a source already counted the mount it does not model varies by exporter —
+    // the reason the exemption is argued from the size of the figure, not from the claim
+    // that every capture paid for one.
+    const priced = stated.Modules.reduce((sum, module) => sum + (module.Value ?? 0), 0);
+    assert.equal(stated.ModulesValue - priced, 487);
+    assert.equal(Math.trunc(500 * 0.975), 487);
 
     // Inara rounds its rebuy where the game truncates: 5% of its own hull + modules is
     // 5_613_800.75, which it states as ...801. We follow the journal and truncate.

@@ -110,7 +110,7 @@ export type { ImmovableReason, LoadoutSlot } from './loadout-slot.js';
 import type { LoadoutImportOutcome } from './loadout-import-outcome.js';
 export type { LoadoutImportOutcome } from './loadout-import-outcome.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import { fixedSlotReason } from './internal/loadout-slot-rules.js';
+import { fixedSlotReason, stockedMountKind } from './internal/loadout-slot-rules.js';
 import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
@@ -683,8 +683,9 @@ export class ShipLoadout {
      * from the fit that remains, {@link modulesValue} and {@link rebuy} read `null`, and
      * {@link sourcePurchase} still reports what the capture stated. A mount stocked from
      * *absence* is the exception and every figure stands: the bulkhead and the cargo hatch
-     * are free and weightless, and the approach suite is weightless and stands for one the
-     * captured ship was flying anyway, its 500 Cr already paid.
+     * are free and weightless, and the approach suite is weightless and costs 500 Cr — the
+     * cheapest price in the catalogue, and no reason to drop a commander's whole purchase
+     * record, so the credit figures may understate the fit by that much and no more.
      *
      * Use this factory rather than replaying a complete loadout through the incremental
      * {@link setModule} editor.
@@ -2569,13 +2570,15 @@ export class ShipLoadout {
                 // A stocked core internal the capture never listed is an article aboard
                 // that nobody paid for, and comparing the priced slots cannot see it: the
                 // capture has no entry to disagree with. A stock bulkhead or hatch costs
-                // nothing, and a stocked approach suite stands for one the captured ship
-                // was carrying all along, so none of the three moves the totals.
-                sourceTotalsVoided: this.#importOutcomes.some(
-                    (outcome) =>
-                        outcome.sourceSymbol === null &&
-                        parseSlotName(outcome.slot)?.kind === 'core',
-                ),
+                // nothing, and a stocked approach suite 500 Cr — too little to be worth
+                // voiding a purchase record over — so none of the three moves the totals.
+                sourceTotalsVoided: this.#importOutcomes.some((outcome) => {
+                    if (outcome.sourceSymbol !== null) return false;
+                    const parsed = parseSlotName(outcome.slot);
+                    // Asked through the same classifier import stocks by, so the two
+                    // cannot drift apart over which mounts it fills.
+                    return parsed !== null && stockedMountKind(parsed) === 'core';
+                }),
                 statsFor: (module) => this.#statsFor(module),
             },
             options,
