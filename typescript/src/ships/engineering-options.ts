@@ -134,10 +134,16 @@ export type EngineeringGroupId =
     | 'guardianPlasma'
     | 'guardianShard';
 
-/** What one group of modules can be engineered with. */
+/**
+ * What one group of modules can be engineered with.
+ *
+ * @remarks
+ * A group carries no display name, because the game has no engineering-group label to
+ * carry: an engineering menu is headed by the module's own outfitting family. Name a
+ * group by naming that family — `getOutfittingFamilyName(module.familyId, locale)` in
+ * `i18n/module-families`.
+ */
 export interface EngineeringOptionGroup {
-    /** Display name of the module group, e.g. `"Beam Lasers"`. */
-    readonly name: string;
     /** Blueprint ids the group accepts. Join to `BLUEPRINTS`. */
     readonly blueprints: readonly string[];
     /** Experimental-effect ids the group accepts. Join to `EXPERIMENTAL_EFFECTS`. */
@@ -160,8 +166,8 @@ const DATA: EngineeringOptionData = deepFreeze(optionsData as EngineeringOptionD
  * ```ts
  * import { ENGINEERING_OPTION_GROUPS } from '@elite-dangerous-almanac/core/ships/engineering-options';
  *
- * ENGINEERING_OPTION_GROUPS['beamLasers'].name; // -> 'Beam Lasers'
  * ENGINEERING_OPTION_GROUPS['beamLasers'].experimentals.length; // -> 9
+ * ENGINEERING_OPTION_GROUPS['beamLasers'].blueprints.length; // -> 7
  * ```
  */
 export const ENGINEERING_OPTION_GROUPS: Readonly<

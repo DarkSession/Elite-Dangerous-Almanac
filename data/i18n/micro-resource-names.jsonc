@@ -24,7 +24,9 @@
     "en": "Aerogel",
     "es": "Aerogel",
     "fr": "Aérogel",
-    "ru": "Аэрогель"
+    "ru": "Аэрогель",
+    "de": "Aerogel",
+    "pt": "Aerogel"
   },
   "carbonfibreplating": {
     "en": "Carbon Fibre Plating",
@@ -128,7 +130,7 @@
     "es": "Microsupercondensador",
     "fr": "Microsupercondensateur",
     "pt": "Microsupercapacitor",
-    "ru": "Микросуперконденсаторы"
+    "ru": "Микросуперконденсатор"
   },
   "microthrusters": {
     "en": "Micro Thrusters",
@@ -150,7 +152,9 @@
     "en": "Motor",
     "es": "Motor",
     "fr": "Moteur",
-    "ru": "Мотор"
+    "ru": "Мотор",
+    "de": "Motor",
+    "pt": "Motor"
   },
   "opticalfibre": {
     "en": "Optical Fibre",
@@ -213,7 +217,8 @@
     "de": "Hexogen",
     "es": "RDX",
     "fr": "RDX",
-    "ru": "Гексоген"
+    "ru": "Гексоген",
+    "pt": "RDX"
   },
   "electromagnet": {
     "en": "Electromagnet",
@@ -267,7 +272,7 @@
     "en": "Weapon Component",
     "de": "Waffenkomponente",
     "es": "Componente de arma",
-    "fr": "Composant d’arme",
+    "fr": "Composant d'arme",
     "pt": "Componente de armas",
     "ru": "Компонент оружия"
   },
@@ -283,7 +288,7 @@
     "en": "Energy Cell",
     "de": "Energiezelle",
     "es": "Célula de energía",
-    "fr": "Cellule d’énergie",
+    "fr": "Cellule d'énergie",
     "pt": "Célula de energia",
     "ru": "Энергоячейка"
   },
@@ -316,7 +321,8 @@
     "es": "Fisura",
     "fr": "Omnipasse",
     "pt": "Brecha",
-    "ru": "Взломщик"
+    "ru": "Взломщик",
+    "de": "E-Breach"
   },
   "internalcorrespondence": {
     "en": "Internal Correspondence",
@@ -331,7 +337,8 @@
     "de": "Spyware",
     "es": "Software espía",
     "fr": "Programme-espion",
-    "ru": "Шпионские программы"
+    "ru": "Шпионские программы",
+    "pt": "Spyware"
   },
   "biometricdata": {
     "en": "Biometric Data",
@@ -345,7 +352,7 @@
     "en": "NOC Data",
     "de": "Geheimoperation-Daten",
     "es": "Datos del AEE",
-    "fr": "Données d’agent clandestin",
+    "fr": "Données d'agent clandestin",
     "pt": "Dados Operacionais sigilosos",
     "ru": "Данные по тайным агентам"
   },
@@ -361,7 +368,7 @@
     "en": "Accident Logs",
     "de": "Unfall-Logs",
     "es": "Registros de accidentes",
-    "fr": "Journaux d’accidents",
+    "fr": "Journaux d'accidents",
     "pt": "Registros de acidente",
     "ru": "Журнал происшествий"
   },
@@ -369,7 +376,7 @@
     "en": "Air Quality Reports",
     "de": "Berichte zur Luftqualität",
     "es": "Registros de calidad del aire",
-    "fr": "Rapports de qualité de l’air",
+    "fr": "Rapports de qualité de l'air",
     "pt": "Relatórios de qualidade do ar",
     "ru": "Отчеты о качестве воздуха"
   },
@@ -401,7 +408,7 @@
     "en": "Biological Weapon Data",
     "de": "Biowaffen-Daten",
     "es": "Datos de armas biológicas",
-    "fr": "Données d’arme biologique",
+    "fr": "Données d'arme biologique",
     "pt": "Dados de arma biológica",
     "ru": "Данные о биологическом оружии"
   },
@@ -449,7 +456,7 @@
     "en": "Chemical Experiment Data",
     "de": "Chemieexperiment-Daten",
     "es": "Datos de experimentos químicos",
-    "fr": "Données d’expériences chimiques",
+    "fr": "Données d'expériences chimiques",
     "pt": "Dados de experimentos químicos",
     "ru": "Данные о химических экспериментах"
   },
@@ -481,7 +488,7 @@
     "en": "Chemical Weapon Data",
     "de": "Chemiewaffen-Daten",
     "es": "Datos de armas químicas",
-    "fr": "Données d’armes chimiques",
+    "fr": "Données d'armes chimiques",
     "pt": "Dados de armas químicas",
     "ru": "Данные о химическом оружии"
   },
@@ -505,7 +512,7 @@
     "en": "Combat Training Material",
     "de": "Kampftraining-Materialien",
     "es": "Material de entrenamiento de combate",
-    "fr": "Méthodes d’entraînement au combat",
+    "fr": "Méthodes d'entraînement au combat",
     "pt": "Material de treinamento para combate",
     "ru": "Учебные материалы по боевой подготовке"
   },
@@ -577,7 +584,7 @@
     "en": "Employee Genetic Data",
     "de": "Gen-Daten von Mitarbeitern",
     "es": "Datos genéticos de empleados",
-    "fr": "Données génétiques d’employés",
+    "fr": "Données génétiques d'employés",
     "pt": "Dados genéticos dos funcionários",
     "ru": "Генетические данные работников"
   },
@@ -593,7 +600,7 @@
     "en": "Enhanced Interrogation Recordings",
     "de": "Optimierte Vernehmungsaufzeichnungen",
     "es": "Registros de interrogatorios mejorados",
-    "fr": "Enregistrements d’interrogatoires poussés",
+    "fr": "Enregistrements d'interrogatoires poussés",
     "pt": "Gravações de interrogatório avançado",
     "ru": "Расширенный протокол допроса"
   },
@@ -609,7 +616,7 @@
     "en": "Evacuation Protocols",
     "de": "Evakuierungsprotokolle",
     "es": "Protocolos de evacuación",
-    "fr": "Protocoles d’évacuation",
+    "fr": "Protocoles d'évacuation",
     "pt": "Protocolos de evacuação",
     "ru": "Алгоритм эвакуации"
   },
@@ -617,7 +624,7 @@
     "en": "Exploration Journals",
     "de": "Erkundungstagebücher",
     "es": "Diarios de exploración",
-    "fr": "Journaux d’exploration",
+    "fr": "Journaux d'exploration",
     "pt": "Diários de exploração",
     "ru": "Исследовательские дневники"
   },
@@ -633,7 +640,7 @@
     "en": "Faction Associates",
     "de": "Fraktionspartner",
     "es": "Socios de facción",
-    "fr": "Affiliations d’une faction",
+    "fr": "Affiliations d'une faction",
     "pt": "Associados da facção",
     "ru": "Партнеры фракции"
   },
@@ -649,7 +656,7 @@
     "en": "Faction News",
     "de": "Fraktionsnachrichten",
     "es": "Noticias de facción",
-    "fr": "Actualité d’une faction",
+    "fr": "Actualité d'une faction",
     "pt": "Notícias sobre a facção",
     "ru": "Новости фракции"
   },
@@ -689,7 +696,7 @@
     "en": "Incident Logs",
     "de": "Zwischenfall-Logs",
     "es": "Registros de incidentes",
-    "fr": "Journaux d’incidents",
+    "fr": "Journaux d'incidents",
     "pt": "Registros de incidentes",
     "ru": "Журнал событий"
   },
@@ -705,7 +712,7 @@
     "en": "Interrogation Recordings",
     "de": "Vernehmungsaufzeichnungen",
     "es": "Registros de interrogatorios",
-    "fr": "Enregistrements d’interrogatoires",
+    "fr": "Enregistrements d'interrogatoires",
     "pt": "Gravações de interrogatórios",
     "ru": "Протоколы допроса"
   },
@@ -713,7 +720,7 @@
     "en": "Interview Recordings",
     "de": "Aufzeichnungen von Vorstellungsgesprächen",
     "es": "Registros de entrevista",
-    "fr": "Enregistrements d’entretiens",
+    "fr": "Enregistrements d'entretiens",
     "pt": "Gravações de entrevistas",
     "ru": "Результаты собеседования"
   },
@@ -730,7 +737,8 @@
     "de": "Kompromittierendes Material",
     "es": "Material comprometedor",
     "fr": "Kompromat",
-    "ru": "Компромат"
+    "ru": "Компромат",
+    "pt": "Kompromat"
   },
   "literaryfiction": {
     "en": "Literary Fiction",
@@ -832,7 +840,7 @@
     "en": "Operational Manual",
     "de": "Bedienungsanleitung",
     "es": "Manual de operaciones",
-    "fr": "Mode d’emploi",
+    "fr": "Mode d'emploi",
     "pt": "Manual operacional",
     "ru": "Руководство по эксплуатации"
   },
@@ -921,13 +929,14 @@
     "de": "Propaganda",
     "es": "Propaganda",
     "fr": "Propagande",
-    "ru": "Пропаганда"
+    "ru": "Пропаганда",
+    "pt": "Propaganda"
   },
   "purchaserecords": {
     "en": "Purchase Records",
     "de": "Kaufaufzeichnungen",
     "es": "Registros de compra",
-    "fr": "Registre d’acquisitions",
+    "fr": "Registre d'acquisitions",
     "pt": "Registros de compras",
     "ru": "Списки покупок"
   },
@@ -935,7 +944,7 @@
     "en": "Purchase Requests",
     "de": "Kaufanfragen",
     "es": "Solicitudes de compra",
-    "fr": "Demandes d’achats",
+    "fr": "Demandes d'achats",
     "pt": "Pedidos de compra",
     "ru": "Запросы на покупку"
   },
@@ -1007,7 +1016,7 @@
     "en": "Settlement Assault Plans",
     "de": "Siedlungsangriffspläne",
     "es": "Planes de ataque del asentamiento",
-    "fr": "Plans d’assaut d’une installation",
+    "fr": "Plans d'assaut d'une installation",
     "pt": "Planos de ataque a assentamento",
     "ru": "Планы атак на поселение"
   },
@@ -1015,7 +1024,7 @@
     "en": "Settlement Defence Plans",
     "de": "Siedlungsverteidigungspläne",
     "es": "Planes de defensa del asentamiento",
-    "fr": "Plans de défense d’une installation",
+    "fr": "Plans de défense d'une installation",
     "pt": "Planos de defesa do assentamento",
     "ru": "Планы обороны поселения"
   },
@@ -1047,7 +1056,7 @@
     "en": "Spectral Analysis Data",
     "de": "Spektralanalyse-Daten",
     "es": "Datos de análisis de espectro",
-    "fr": "Données d’analyse spectrale",
+    "fr": "Données d'analyse spectrale",
     "pt": "Dados de análise de espectro",
     "ru": "Результаты спектрального анализа"
   },
@@ -1055,7 +1064,7 @@
     "en": "Stellar Activity Logs",
     "de": "Sternenaktivitäts-Logs",
     "es": "Registros de actividad estelar",
-    "fr": "Journaux d’activité stellaire",
+    "fr": "Journaux d'activité stellaire",
     "pt": "Registros de atividade estelar",
     "ru": "Журналы звездной активности"
   },
@@ -1111,7 +1120,7 @@
     "en": "Union Membership",
     "de": "Gewerkschaftsmitgliedschaft",
     "es": "Afiliación sindical",
-    "fr": "Liste d’adhérents",
+    "fr": "Liste d'adhérents",
     "pt": "Pessoal sindicalizado",
     "ru": "Список членов союза"
   },
@@ -1152,7 +1161,8 @@
     "de": "Virus",
     "es": "Virus",
     "pt": "Vírus",
-    "ru": "Вирус"
+    "ru": "Вирус",
+    "fr": "Virus"
   },
   "visitorregister": {
     "en": "Visitor Register",
@@ -1166,7 +1176,7 @@
     "en": "Weapon Inventory",
     "de": "Waffeninventarliste",
     "es": "Inventario de armas",
-    "fr": "Inventaire d’armement",
+    "fr": "Inventaire d'armement",
     "pt": "Estoque de armas",
     "ru": "Опись оружия и боеприпасов"
   },
@@ -1174,7 +1184,7 @@
     "en": "Weapon Test Data",
     "de": "Waffentestdaten",
     "es": "Datos de pruebas armamentísticas",
-    "fr": "Données de test d’armes",
+    "fr": "Données de test d'armes",
     "pt": "Dados de testes de arma",
     "ru": "Сведения об испытаниях вооружения"
   },
@@ -1214,7 +1224,7 @@
     "en": "Faction Donator List",
     "de": "Spenderliste einer Fraktion",
     "es": "Lista de donadores de facción",
-    "fr": "Liste des donateurs d’une faction",
+    "fr": "Liste des donateurs d'une faction",
     "pt": "Lista de doadores da facção",
     "ru": "Список спонсоров фракции"
   },
@@ -1247,7 +1257,8 @@
     "es": "Californio",
     "fr": "Californium",
     "pt": "Califórnio",
-    "ru": "Калифорний"
+    "ru": "Калифорний",
+    "de": "Californium"
   },
   "castfossil": {
     "en": "Cast Fossil",
@@ -1293,13 +1304,15 @@
     "en": "Insight",
     "es": "Insight",
     "fr": "Insight",
-    "ru": "Insight"
+    "ru": "Insight",
+    "de": "Insight",
+    "pt": "Insight"
   },
   "insightdatabank": {
     "en": "Insight Data Bank",
     "de": "Insight-Datenbank",
     "es": "Banco de datos de Insight",
-    "fr": "Banque de données d’Insight",
+    "fr": "Banque de données d'Insight",
     "pt": "Banco de Dados Insight",
     "ru": "Банк данных Insight"
   },
@@ -1324,7 +1337,8 @@
     "es": "Ordenador personal",
     "fr": "Ordinateur personnel",
     "pt": "Computador Pessoal",
-    "ru": "Персональный компьютер"
+    "ru": "Персональный компьютер",
+    "de": "Personal Computer"
   },
   "petrifiedfossil": {
     "en": "Petrified Fossil",
@@ -1388,7 +1402,7 @@
     "es": "Hush",
     "fr": "Chut",
     "pt": "Silêncio",
-    "ru": "Тишина"
+    "ru": "«Тишина»"
   },
   "infinity": {
     "en": "Infinity",
@@ -1411,7 +1425,8 @@
     "es": "Lazarus",
     "fr": "Lazare",
     "pt": "Lázaro",
-    "ru": "Лазарь"
+    "ru": "Лазарь",
+    "de": "Lazarus"
   },
   "microbialinhibitor": {
     "en": "Microbial Inhibitor",
@@ -1441,7 +1456,9 @@
     "en": "Push",
     "es": "Push",
     "fr": "Boost",
-    "ru": "Рывок"
+    "ru": "Рывок",
+    "de": "Push",
+    "pt": "Push"
   },
   "shipschematic": {
     "en": "Ship Schematic",
@@ -1495,7 +1512,7 @@
     "en": "Weapon Schematic",
     "de": "Waffenplan",
     "es": "Esquema de arma",
-    "fr": "Plan d’arme",
+    "fr": "Plan d'arme",
     "pt": "Esquema de Arma",
     "ru": "Чертеж оружия"
   },
@@ -1567,210 +1584,240 @@
     "en": "Installation Intelligence Report",
     "de": "Installation-Informationsbericht",
     "es": "Informe de inteligencia sobre instalaciones",
-    "fr": "Rapport d’espionnage sur une installation",
-    "ru": "Разведывательный отчет об установке"
+    "fr": "Rapport d'espionnage sur une installation",
+    "ru": "Разведывательный отчет об установке",
+    "pt": "Relatório de inteligência de instalação"
   },
   "operationsstrikedata": {
     "en": "Researcher Location Data",
     "de": "Forscher-Standortdaten",
     "es": "Coordenadas de investigadores",
-    "fr": "Données d’emplacement des chercheurs",
-    "ru": "Данные о местонахождении исследовательского персонала"
+    "fr": "Données d'emplacement des chercheurs",
+    "ru": "Данные о местонахождении исследовательского персонала",
+    "pt": "Dados de localização dos pesquisadores"
   },
   "powerclassifieddata": {
     "en": "Power Classified Data",
     "de": "Geheime Daten der Macht",
     "es": "Información clasificada de la potencia",
-    "fr": "Données classifiées de Puissance",
-    "ru": "Секретные данные державы"
+    "fr": "Données classifiées de puissance",
+    "ru": "Секретные данные державы",
+    "pt": "Dados confidenciais da potência"
   },
   "poweremployeedata": {
     "en": "Power Association Data",
     "de": "Zugehörigkeitsdaten der Macht",
     "es": "Información de asociación de potencia",
-    "fr": "Données d’association de Puissance",
-    "ru": "Данные о связях державы"
+    "fr": "Données d'association de puissance",
+    "ru": "Данные о связях державы",
+    "pt": "Dados de associação à potência"
   },
   "powerfinancialrecords": {
     "en": "Power Industrial Data",
     "de": "Industriedaten der Macht",
     "es": "Datos industriales de la potencia",
-    "fr": "Données industrielles de Puissance",
-    "ru": "Данные о промышленности державы"
+    "fr": "Données industrielles de puissance",
+    "ru": "Данные о промышленности державы",
+    "pt": "Dados industriais da potência"
   },
   "powermegashipdata": {
     "en": "Power Megaship Data",
     "de": "Macht-Megaschiff-Daten",
     "es": "Datos de meganave de potencia",
     "fr": "Données de méga-vaisseau de puissance",
-    "ru": "Данные о гигантском корабле державы"
+    "ru": "Данные о гигантском корабле державы",
+    "pt": "Dados da meganave da potência"
   },
   "powerpreparationspyware": {
     "en": "Power Injection Malware",
     "de": "Macht-Einspeisungs-Malware",
     "es": "Malware de inyección de potencia",
-    "fr": "Logiciel malveillant d’injection de Puissance",
-    "ru": "ПО-инъектор"
+    "fr": "Malware d'injection de puissance",
+    "ru": "ПО-инъектор",
+    "pt": "Malware de injeção da potência"
   },
   "powerpropagandadata": {
     "en": "Power Political Data",
     "de": "Politische Daten der Macht",
     "es": "Información política de la potencia",
-    "fr": "Données politiques de Puissance",
-    "ru": "Данные о политической обстановке"
+    "fr": "Données politiques de puissance",
+    "ru": "Данные о политической обстановке",
+    "pt": "Dados políticos da potência"
   },
   "powerresearchdata": {
     "en": "Power Research Data",
     "de": "Forschungsdaten der Macht",
     "es": "Datos de investigación de la potencia",
-    "fr": "Données de recherche de Puissance",
-    "ru": "Данные об исследованиях державы"
+    "fr": "Données de recherche de puissance",
+    "ru": "Данные об исследованиях державы",
+    "pt": "Dados de pesquisa da potência"
   },
   "powerspyware": {
     "en": "Power Tracker Malware",
     "de": "Macht-Tracker-Malware",
     "es": "Malware de seguimiento de potencia",
-    "fr": "Logiciel malveillant de traçage de Puissance",
-    "ru": "Отслеживающее вредоносное ПО"
+    "fr": "Malware de traçage de puissance",
+    "ru": "Отслеживающее вредоносное ПО",
+    "pt": "Malware rastreador de potências"
   },
   "powervirus": {
     "en": "Power Virus",
     "de": "Macht-Virus",
     "es": "Virus de potencia",
     "fr": "Virus de puissance",
-    "ru": "Вирусное ПО"
+    "ru": "Вирусное ПО",
+    "pt": "Vírus da potência"
   },
   "biomechanicalcomponent": {
     "en": "Spire Refinery Compound",
     "de": "Turm-Raffinerieverbindung",
     "es": "Compuesto de refinería de agujas",
     "fr": "Composé de raffinerie de flèche",
-    "ru": "Очищающий компонент шпиля"
+    "ru": "Очищающий компонент шпиля",
+    "pt": "Composto de refino do pináculo"
   },
   "nm_seed": {
     "en": "Unica Seed",
     "de": "Unica-Samen",
     "es": "Semilla de Unica",
-    "fr": "Graine d’unica",
-    "ru": "Семя уники"
+    "fr": "Graine d'unica",
+    "ru": "Семя уники",
+    "pt": "Semente Unica"
   },
   "poweragriculture": {
     "en": "Agricultural Sample",
     "de": "Agrikulturverfahren-Probe",
     "es": "Muestra de proceso agrícola",
     "fr": "Échantillon de production agricole",
-    "ru": "Образец сельхозпроизводства"
+    "ru": "Образец сельхозпроизводства",
+    "pt": "Amostra de Processo Agrícola"
   },
   "powercomputer": {
     "en": "Computer Parts",
     "de": "Computerbauteile",
     "es": "Piezas informáticas",
-    "fr": "Composants d’ordinateur",
-    "ru": "Компьютерные детали"
+    "fr": "Composants d'ordinateur",
+    "ru": "Комьютерные детали",
+    "pt": "Peças de computador"
   },
   "powerelectronics": {
     "en": "Electronics Package",
     "de": "Elektronikpaket",
     "es": "Paquete de componentes electrónicos",
     "fr": "Kit électronique",
-    "ru": "Набор электроники"
+    "ru": "Набор электроники",
+    "pt": "Pacote de eletrônicos"
   },
   "powerequipment": {
     "en": "Personal Protective Equipment",
     "de": "Persönliche Schutzausrüstung",
     "es": "Equipamiento de protección personal",
     "fr": "Équipement de protection personnel",
-    "ru": "Средства индивидуальной защиты"
+    "ru": "Средства индивидуальной защиты",
+    "pt": "Equipamento de proteção individual"
   },
   "powerexperiment": {
     "en": "Experiment Prototype",
     "de": "Experimenteller Prototyp",
     "es": "Prototipo experimental",
     "fr": "Prototype expérimental",
-    "ru": "Экспериментальный прототип"
+    "ru": "Экспериментальный прототип",
+    "pt": "Protótipo de experimento"
   },
   "powerextraction": {
     "en": "Extraction Sample",
     "de": "Extraktionsprobe",
     "es": "Muestra de extracción",
-    "fr": "Échantillon d’extraction",
-    "ru": "Образец добычи"
+    "fr": "Échantillon d'extraction",
+    "ru": "Образец добычи",
+    "pt": "Amostra de extração"
   },
   "powerindustrial": {
     "en": "Industrial Component",
     "de": "Industrielle Komponente",
     "es": "Componente industrial",
     "fr": "Composant industriel",
-    "ru": "Промышленный компонент"
+    "ru": "Промышленный компонент",
+    "pt": "Componente industrial"
   },
   "powerinventory": {
     "en": "Inventory Record",
     "de": "Inventaraufzeichnung",
     "es": "Registro de inventario",
     "fr": "Registre de stock",
-    "ru": "Опись имущества"
+    "ru": "Опись имущества",
+    "pt": "Registro de inventário"
   },
   "powermedical": {
     "en": "Medical Sample",
     "de": "Medizinische Probe",
     "es": "Muestra médica",
     "fr": "Échantillon médical",
-    "ru": "Медицинский образец"
+    "ru": "Медицинский образец",
+    "pt": "Amostra clínica"
   },
   "powermisccomputer": {
     "en": "Data Storage Device",
     "de": "Datenspeichergerät",
     "es": "Dispositivo de almacenamiento de datos",
     "fr": "Dispositif de stockage de données",
-    "ru": "Запоминающее устройство"
+    "ru": "Запоминающее устройство",
+    "pt": "Dispositivo de armazenamento de dados"
   },
   "powermiscindust": {
     "en": "Industrial Machinery",
     "de": "Industrielle Maschinen",
     "es": "Maquinaria industrial",
     "fr": "Machines industrielles",
-    "ru": "Промышленные машины"
+    "ru": "Промышленные машины",
+    "pt": "Maquinário industrial"
   },
   "powerplaymilitary": {
     "en": "Military Schematic",
     "de": "Militärbauplan",
     "es": "Plano militar",
     "fr": "Plan militaire",
-    "ru": "Военный чертеж"
+    "ru": "Военный чертеж",
+    "pt": "Esquema militar"
   },
   "powerpower": {
     "en": "Energy Regulator",
     "de": "Energieregulator",
     "es": "Regulador de energía",
     "fr": "Régulateur énergétique",
-    "ru": "Энергорегулятор"
+    "ru": "Энергорегулятор",
+    "pt": "Regulador de energia"
   },
   "powerresearch": {
     "en": "Research Notes",
     "de": "Forschungsnotizen",
     "es": "Notas de investigación",
     "fr": "Notes de recherche",
-    "ru": "Исследовательские заметки"
+    "ru": "Исследовательские заметки",
+    "pt": "Notas de pesquisa"
   },
   "powersecurity": {
     "en": "Security Logs",
     "de": "Sicherheitsprotokolle",
     "es": "Registros de seguridad",
     "fr": "Registres de sécurité",
-    "ru": "Журнал службы безопасности"
+    "ru": "Журнал службы безопасности",
+    "pt": "Registros de segurança"
   },
   "sabotagedcomponent": {
     "en": "Contaminated Spire Compound",
     "de": "Kontaminierte Turm-Komponente",
     "es": "Compuesto de agujas contaminado",
     "fr": "Composé de flèche contaminé",
-    "ru": "Загрязненный компонент шпиля"
+    "ru": "Загрязненный компонент шпиля",
+    "pt": "Composto contaminado do pináculo"
   },
   "smallcapacitypowerregulator": {
     "en": "Small-Capacity Power Regulator",
     "de": "Kleiner Energieregulator",
     "es": "Regulador de potencia de capacidad reducida",
     "fr": "Régulateur de puissance basse capacité",
-    "ru": "Регулятор мощности малой емкости"
+    "ru": "Регулятор мощности малой емкости",
+    "pt": "Regulador de Energia de Baixa Capacidade"
   }
 }

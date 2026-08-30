@@ -73,7 +73,6 @@ test('every group holds the modules, name and menu the fixture pins', () => {
     );
     for (const expected of fixture.groups) {
         const group = optionGroup(expected.id);
-        assert.equal(group.name, expected.name);
         assert.deepEqual([...group.blueprints], expected.blueprints, expected.id);
         assert.deepEqual([...group.experimentals], expected.experimentals, expected.id);
     }

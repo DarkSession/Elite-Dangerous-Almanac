@@ -158,14 +158,14 @@
   },
   {
     "symbol": "Guardian_ModuleBlueprint",
-    "name": "Guardian Module Blueprint Segment",
+    "name": "Guardian Module Blueprint Fragment",
     "elementSymbol": null,
     "grade": 4,
     "line": "Guardian"
   },
   {
     "symbol": "Guardian_WeaponBlueprint",
-    "name": "Guardian Weapon Blueprint Segment",
+    "name": "Guardian Weapon Blueprint Fragment",
     "elementSymbol": null,
     "grade": 4,
     "line": "Guardian"
@@ -207,7 +207,7 @@
   },
   {
     "symbol": "Guardian_VesselBlueprint",
-    "name": "Guardian Vessel Blueprint Segment",
+    "name": "Guardian Vessel Blueprint Fragment",
     "elementSymbol": null,
     "grade": 5,
     "line": "Guardian"

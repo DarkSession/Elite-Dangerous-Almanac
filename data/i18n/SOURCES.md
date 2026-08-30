@@ -113,12 +113,31 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `locale/material/horizons/{raw,manufactured,encoded}.csv`; only that row's explicit
   localized columns are copied. The source's English column is not copied because the
   owning materials catalogues remain authoritative for canonical names. The canonical
-  English values therefore keep the existing `Segment` spelling and omit the source's
-  parenthetical Guardian and Thargoid category labels where the owning catalogue does;
-  localized columns remain verbatim source values.
-- **Coverage:** English, Spanish and Russian cover all 146 materials. The explicit
-  translations cover 128 in German, and 140 each in French and Brazilian Portuguese.
-- **Manual corrections:** none.
+  English values therefore omit the source's parenthetical Guardian and Thargoid
+  category labels where the owning catalogue does; localized columns remain verbatim
+  source values.
+- **Second source, the in-game material localisation tables**, acquired 2026-08-30 UTC;
+  the game publishes no immutable identifier for them, so the acquired table is the
+  evidence. It covers all 146 materials in all six locales and, as everywhere else in
+  this repository, wins where the two disagree. That fills the 30 values Odyssey
+  Materials Helper did not carry and restyles 30 it did: 23 are the French apostrophe
+  (the in-game tables use `'` throughout, as every other catalogue here does, where
+  Odyssey Materials Helper uses `’`), five are Spanish names the helper title-cased
+  (`Fragmento Caústico` against the game's `Fragmento cáustico`), and the rest are
+  wording.
+- **Coverage:** complete. All 146 materials carry all six locales.
+- **Manual corrections:** six of the in-game values are the outfitting UI's own
+  abbreviations, shortened to fit its widget rather than translated differently —
+  `Comp. de destroços Guardian` against the helper's `Componentes de destroços Sentinela
+  Guardian`, and likewise for `Guardian_Sentinel_WeaponParts` (French and Brazilian
+  Portuguese), `Guardian_TechComponent` (French and Brazilian Portuguese) and
+  `HeatConductionWiring` (Spanish). The unabbreviated value is kept in each.
+- **`Guardian_Sentinel_WreckageComponents` drops `Sentinel` in every locale**, following
+  the owning catalogue's rename (see `data/materials/SOURCES.md`). Its Brazilian
+  Portuguese is the one value here taken from neither source verbatim: the in-game table
+  abbreviates it to `Comp. de destroços Guardian` to fit the widget, so the whole word is
+  kept as it is for the other abbreviated labels above, giving
+  `Componentes de destroços Guardian`.
 
 ## `micro-resource-names.jsonc`
 
@@ -136,66 +155,24 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `SmallCapacityPowerRegulator` do not. All 30 take the explicit in-game `name` values for
   German, Spanish, French and Russian. In both cases the owning catalogue remains
   authoritative for canonical English names.
-- **Coverage:** English, Spanish and Russian cover all 226 micro resources. The explicit
-  translations cover 218 in German, 225 in French and 188 in Brazilian Portuguese. The
-  30 in-game-backed records take Portuguese from Odyssey Materials Helper where it has a
-  row, because the in-game capture supplied no Portuguese; `PowerVirus` and
-  `SmallCapacityPowerRegulator`, which the source does not carry at all, have none.
-- **Manual corrections:** none.
-
-## `ship-names.jsonc`
-
-- **Acquired:** 2026-08-18 UTC.
-- **Odyssey Materials Helper revision:** commit
-  `23343c453938e724f317c56e9eb7db0dbfa71f78`;
-  `application/src/main/resources/locale/ships/ships.csv` has SHA-256
-  `6785f7cea00f36ca0a853091fd88f8ed5481a60f55c269643bff1ab0c3d6993d`.
-- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`.
-- **Derivation:** each of the 48 current ship symbols and canonical English names comes
-  from `data/ships/ships.jsonc`. The symbol is joined to Odyssey Materials
-  Helper's `ships.name.*` key after removing punctuation and folding case. EDSY's
-  `eddb.js` `ship.fdname` supplies the second join, with explicit `ship-<id>` language
-  entries filling locales absent from the CSV. The CSV keys a row by the ship's display
-  name rather than its symbol, which differ for the four hulls whose name carries a mark
-  the symbol omits (`Viper` is `ships.name.viper_mk_iii`), so the name is tried first and
-  the symbol second. The resulting source-backed coverage is 48 ships in Spanish, 44 in
-  French, 38 in Brazilian Portuguese and 48 in Russian; no accepted source carries a
-  German ship-name table.
-- **Standing conclusion:** every source-backed non-English value is byte-for-byte equal
-  to the canonical English ship name. The explicit values remain in the catalogue so a
-  lookup distinguishes a source-backed same spelling from an unavailable translation.
-- **Manual corrections:** none.
-
-## `ship-manufacturer-names.jsonc`
-
-- **Acquired:** 2026-08-18 UTC.
-- **Derivation:** all 48 symbol-to-manufacturer values are projected directly from
-  `data/ships/ships.jsonc`, whose pinned sources and corrections are recorded in
-  `data/ships/SOURCES.md`. Repeated manufacturer strings remain keyed by ship symbol so
-  consumers need no separate manufacturer identity space.
-- **Coverage:** canonical English covers every ship. The accepted sources carry no
-  localized manufacturer labels.
-- **Manual corrections:** none.
-
-## `engineering-group-names.jsonc`
-
-- **Acquired:** 2026-08-18 UTC.
-- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`; `lang-en.json` and
-  `lang-ru.json` have Git blob ids `9b199db635f7b968b75c8e9a14bdce68e37e4120` and
-  `36496372d056754c34da03ca6836e27987c96b6a` respectively.
-- **Derivation:** each of the 48 group ids and its canonical English name is projected
-  from `data/ships/engineering-options.jsonc`. That catalogue derives its group menus
-  from EDSY, with the supplemental sources and corrections recorded in
-  `data/ships/SOURCES.md`. Where a canonical English name matches an EDSY `mtype-*`
-  value in `lang-en.json` byte-for-byte and uniquely, explicit values with the same key
-  are copied from `lang-ru.json`.
-- **Coverage:** canonical English covers every engineering option group; Brazilian
-  Portuguese and Russian each cover 44 of 48. The Guardian power-plant, power-distributor
-  and hull-reinforcement groups have no distinct EDSY label, and EDSY carries no value in
-  either language for `frameShiftDrivesSCO`.
-- **Manual corrections:** none.
+- **Second source, the in-game micro-resource localisation tables**, acquired
+  2026-08-30 UTC; the game publishes no immutable identifier for them, so the acquired
+  table is the evidence. It covers 225 of the 226 in all six locales and wins where the
+  two disagree, on the same footing as the material tables above. That fills all 47
+  remaining values — including the Brazilian Portuguese for `PowerVirus` and
+  `SmallCapacityPowerRegulator`, which no registry carries — and restyles 46, of which 36
+  are the French apostrophe and seven are the French Powerplay term, which the game
+  lower-cases (`Données classifiées de puissance`).
+  `PowerMegashipData` is absent from the micro-resource table and appears in the material
+  one; its values are taken from there.
+- **Coverage:** complete. All 226 micro resources carry all six locales.
+- **Manual corrections:** five in-game values are layout, not names. Four German
+  consumables carry a `<br>` inside a compound word that the UI wraps —
+  `Energie-<br>zelle`, `Splitter-<br>granate`, `Schild-<br>unterbrecher` and
+  `Schild-<br>generator` — and the French `Amm_Grenade_EMP` is abbreviated to
+  `Neutralisat. de bouclier` to fit its widget. The whole word is kept in each:
+  `Energiezelle`, `Splittergranate`, `Schildunterbrecher`, `Schildgenerator` and
+  `Neutralisateur de bouclier`.
 
 ## `module-family-names.jsonc`
 
@@ -258,23 +235,42 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   names such as the three `Decorative_*` festive launchers remain canonical English.
 - **The 22 Merc-shop rows carry the shop's own names**, in 14 distinct records — the shop
   sells a "Far-Reaching Abrasion Blaster", not an Abrasion Blaster — so they do not reuse
-  their base module's record. English and the German, Spanish, French and Russian values
-  are supplied by the repository owner from the in-game shop listing; no registry
-  publishes them.
+  their base module's record. All six locales are supplied by the repository owner from
+  the in-game shop listing; no registry publishes them. The Brazilian Portuguese column
+  was acquired 2026-08-30 UTC and agrees byte-for-byte with the five columns already
+  stored, which it does not change.
 - **Coverage:** English covers every variant. Ordinary names inherit the explicit
-  localized values available for their base module, which now includes Brazilian
-  Portuguese on 51 of the 76 variants; the Merc-shop names carry the five locales the
-  repository owner supplied and no Portuguese; fixed reward names have no accepted
-  translation source.
+  localized values available for their base module, which includes Brazilian Portuguese
+  on 51 of the 76 variants; the Merc-shop names carry all six locales. Only the three
+  `Decorative_*` fixed reward names have no accepted translation source, in any locale.
 - **Manual corrections:** none.
+
+## Names this repository deliberately does not localize
+
+Three catalogues were removed rather than completed, because the game does not translate
+what they held and storing English under five more keys said otherwise.
+
+- **Ship names and manufacturers.** Odyssey Materials Helper and EDSY each publish a
+  per-locale ship column, and every value either one publishes is byte-for-byte the
+  canonical English name: a hull name is a proper noun the game leaves alone, and so is
+  a manufacturer's. No source publishes a localized manufacturer label at all. A lookup
+  that can only ever answer in English is not a translation lookup, so `getShipName` and
+  `getShipManufacturer` are gone; `data/ships/ships.jsonc` carries both strings and stays
+  the one place to read them.
+- **Engineering-group labels.** An engineering group is this repository's own partition
+  of the modules that share one menu; the game heads that menu with the module's
+  outfitting family and publishes no group label of its own. The EDSY `mtype-*` values
+  previously stored here were outfitting labels reached by a name join, which is why they
+  disagreed with `module-family-names.jsonc` in 22 places on wording. A group therefore
+  carries no name at all — see the header of `data/ships/engineering-options.jsonc` — and
+  a consumer names one by joining a module's `familyId` to `module-family-names.jsonc`.
 
 ## Known gaps
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
-stored locale. A language absent from all eleven catalogues is the locale decision
+stored locale. A language absent from all eight catalogues is the locale decision
 recorded above rather than a gap. The accepted sources carry only canonical English for
-ship manufacturers, 19 of the 77 outfitting-family labels, some engineering-group labels,
-slot and restriction labels, fixed reward names, and structured loadout, calculation,
-SLEF and edit messages. Missing source-backed
+19 of the 77 outfitting-family labels, slot and restriction labels, fixed reward names,
+and structured loadout, calculation, SLEF and edit messages. Missing source-backed
 translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).

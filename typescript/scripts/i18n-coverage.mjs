@@ -42,7 +42,6 @@ const LOCALES = ['en', 'de', 'es', 'fr', 'pt', 'ru'];
 
 const DATASETS = {
     'blueprint-names.jsonc': 'getBlueprintName',
-    'engineering-group-names.jsonc': 'getEngineeringGroupName',
     'experimental-effect-descriptions.jsonc': 'getExperimentalEffectDescription',
     'experimental-effect-names.jsonc': 'getExperimentalEffectName',
     'material-names.jsonc': 'getMaterialName',
@@ -50,8 +49,6 @@ const DATASETS = {
     'module-family-names.jsonc': 'getOutfittingFamilyName',
     'module-names.jsonc': 'getModuleName',
     'pre-engineered-variant-names.jsonc': 'getPreEngineeredVariantName',
-    'ship-manufacturer-names.jsonc': 'getShipManufacturer',
-    'ship-names.jsonc': 'getShipName',
 };
 
 /**

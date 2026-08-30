@@ -21,12 +21,12 @@ const MATERIAL_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * hyphens. A regional or script subtag is dropped: every stored locale is a bare
  * language tag.
  * @returns The localized material name; the canonical `Material.name` for any English
- * tag; or `null` when the symbol is unknown, the locale is unsupported, or the pinned
- * source carries no value for that material and locale.
+ * tag; or `null` when the symbol is unknown or the locale is not one of the six this
+ * catalogue stores.
  * @remarks
- * This function bundles names only, not material grades, categories or engineering
- * costs. Missing translations never silently fall back to English. Odyssey micro
- * resources use {@link getMicroResourceName} instead.
+ * All six stored locales are complete for this dataset, so a supported locale always
+ * answers. This function bundles names only, not material grades, categories or
+ * engineering costs. Odyssey micro resources use {@link getMicroResourceName} instead.
  * @throws {TypeError} If `symbol` is present and not a string, or `locale` is not a
  * string. A nullish `symbol` is a lookup miss and returns `null`.
  * @example
@@ -34,7 +34,8 @@ const MATERIAL_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * import { getMaterialName } from '@elite-dangerous-almanac/core/i18n/materials';
  *
  * getMaterialName('GridResistors', 'de-DE'); // -> 'Gitterwiderstände'
- * getMaterialName('vanadium', 'de'); // -> null
+ * getMaterialName('vanadium', 'de'); // -> 'Vanadium'
+ * getMaterialName('vanadium', 'it'); // -> null
  * ```
  */
 export function getMaterialName(symbol: string, locale: string): string | null {

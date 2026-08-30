@@ -13,9 +13,10 @@
  * (`de-DE` → `de`), and any other language is an unsupported locale.
  *
  * **How sparse, dataset by dataset.** Each column below is the percentage of that
- * lookup's keys carrying a stored value for the locale, so a `0` means the dataset holds
- * nothing in that language at all and the lookup returns `null` for every key: German
- * module names are near-complete, and German ship names do not exist. Plan fallback per
+ * lookup's keys carrying a stored value for the locale, so a `0` would mean the dataset
+ * holds nothing in that language at all and the lookup returns `null` for every key:
+ * German module names are near-complete, while a quarter of the outfitting families —
+ * the ones the game does not name separately — have no locale at all. Plan fallback per
  * lookup rather than per application. The table is generated from `data/i18n/`, so it
  * moves when the data does.
  *
@@ -25,14 +26,11 @@
  * | `getBlueprintName` | 107 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getExperimentalEffectDescription` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getExperimentalEffectName` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
- * | `getMicroResourceName` | 226 | 100 | 96 | 100 | 99 | 83 | 100 |
- * | `getMaterialName` | 146 | 100 | 87 | 100 | 95 | 95 | 100 |
+ * | `getMaterialName` | 146 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getMicroResourceName` | 226 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getModuleName` | 1199 | 100 | 93 | 90 | 90 | 96 | 96 |
- * | `getPreEngineeredVariantName` | 76 | 100 | 88 | 85 | 85 | 67 | 96 |
+ * | `getPreEngineeredVariantName` | 76 | 100 | 88 | 85 | 85 | 96 | 96 |
  * | `getOutfittingFamilyName` | 77 | 100 | 75 | 75 | 75 | 75 | 75 |
- * | `getShipName` | 48 | 100 | 0 | 100 | 91 | 79 | 100 |
- * | `getEngineeringGroupName` | 48 | 100 | 0 | 0 | 0 | 91 | 91 |
- * | `getShipManufacturer` | 48 | 100 | 0 | 0 | 0 | 0 | 0 |
  * <!-- end generated -->
  *
  * Each dataset lives in a separate runtime module. Import from this barrel for
@@ -50,16 +48,17 @@
  *   getBlueprintName,
  *   getMaterialName,
  *   getModuleName,
- *   getShipName,
+ *   getOutfittingFamilyName,
  * } from '@elite-dangerous-almanac/core/i18n';
  *
  * getModuleName('Int_Hyperdrive_Size6_Class5', 'de'); // -> 'Frameshiftantrieb'
  * getBlueprintName('FSD_LongRange', 'de-DE'); // -> 'Erhöhte FSA-Reichweite'
  * getMaterialName('GridResistors', 'de'); // -> 'Gitterwiderstände'
  *
- * // Sparseness is per dataset, not per locale: no hull has a German name.
- * getShipName('Empire_Trader', 'fr'); // -> 'Imperial Clipper'
- * getShipName('Empire_Trader', 'de'); // -> null
+ * // Sparseness is per dataset, not per locale: German module names are near-complete,
+ * // while no outfitting family the game does not name separately has any.
+ * getOutfittingFamilyName('shieldGenerators', 'de'); // -> 'Schildgeneratoren'
+ * getOutfittingFamilyName('xenoScanners', 'de'); // -> null
  * ```
  *
  * @packageDocumentation
@@ -70,10 +69,8 @@ export { getOutfittingFamilyName } from './module-families.js';
 export { getBlueprintName } from './blueprints.js';
 export { getExperimentalEffectName } from './experimental-effects.js';
 export { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
-export { getEngineeringGroupName } from './engineering-groups.js';
 export { getMaterialName } from './materials.js';
 export { getMicroResourceName } from './micro-resources.js';
-export { getShipManufacturer, getShipName } from './ships.js';
 export { getLoadoutSlotName, getSlotRestrictionLabel } from './slots.js';
 export {
     getCalculationIssueMessage,

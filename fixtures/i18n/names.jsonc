@@ -112,7 +112,7 @@
       "kind": "material",
       "identifier": "Vanadium",
       "locale": "de",
-      "expected": null
+      "expected": "Vanadium"
     },
     {
       "kind": "material",
@@ -136,13 +136,13 @@
       "kind": "microResource",
       "identifier": "aerogel",
       "locale": "de",
-      "expected": null
+      "expected": "Aerogel"
     },
     {
       "kind": "microResource",
       "identifier": "operationscounterattackdata",
       "locale": "pt-BR",
-      "expected": null
+      "expected": "Relatório de inteligência de instalação"
     },
     {
       "kind": "microResource",
@@ -160,79 +160,79 @@
       "kind": "microResource",
       "identifier": "operationscounterattackdata",
       "locale": "fr",
-      "expected": "Rapport d’espionnage sur une installation"
+      "expected": "Rapport d'espionnage sur une installation"
     },
     {
       "kind": "microResource",
       "identifier": "operationsstrikedata",
       "locale": "fr",
-      "expected": "Données d’emplacement des chercheurs"
+      "expected": "Données d'emplacement des chercheurs"
     },
     {
       "kind": "microResource",
       "identifier": "powerclassifieddata",
       "locale": "fr",
-      "expected": "Données classifiées de Puissance"
+      "expected": "Données classifiées de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "poweremployeedata",
       "locale": "fr",
-      "expected": "Données d’association de Puissance"
+      "expected": "Données d'association de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "powerfinancialrecords",
       "locale": "fr",
-      "expected": "Données industrielles de Puissance"
+      "expected": "Données industrielles de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "powerpreparationspyware",
       "locale": "fr",
-      "expected": "Logiciel malveillant d’injection de Puissance"
+      "expected": "Malware d'injection de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "powerpropagandadata",
       "locale": "fr",
-      "expected": "Données politiques de Puissance"
+      "expected": "Données politiques de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "powerresearchdata",
       "locale": "fr",
-      "expected": "Données de recherche de Puissance"
+      "expected": "Données de recherche de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "powerspyware",
       "locale": "fr",
-      "expected": "Logiciel malveillant de traçage de Puissance"
+      "expected": "Malware de traçage de puissance"
     },
     {
       "kind": "microResource",
       "identifier": "nm_seed",
       "locale": "fr",
-      "expected": "Graine d’unica"
+      "expected": "Graine d'unica"
     },
     {
       "kind": "microResource",
       "identifier": "powercomputer",
       "locale": "fr",
-      "expected": "Composants d’ordinateur"
+      "expected": "Composants d'ordinateur"
     },
     {
       "kind": "microResource",
       "identifier": "powerextraction",
       "locale": "fr",
-      "expected": "Échantillon d’extraction"
+      "expected": "Échantillon d'extraction"
     },
     {
       "kind": "microResource",
       "identifier": "powercomputer",
       "locale": "ru",
-      "expected": "Компьютерные детали"
+      "expected": "Комьютерные детали"
     },
     {
       "kind": "microResource",
@@ -244,42 +244,6 @@
       "kind": "module",
       "identifier": "not_a_module",
       "locale": "en-GB",
-      "expected": null
-    },
-    {
-      "kind": "ship",
-      "identifier": "empire_trader",
-      "locale": "fr-FR",
-      "expected": "Imperial Clipper"
-    },
-    {
-      "kind": "shipManufacturer",
-      "identifier": "SideWinder",
-      "locale": "fr",
-      "expected": null
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "frameShiftDrives",
-      "locale": "en-GB",
-      "expected": "Frame Shift Drives"
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "frameShiftDrives",
-      "locale": "ru-RU",
-      "expected": "Рамочно-сместительные двигатели"
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "guardianGauss",
-      "locale": "ru-RU",
-      "expected": "Экс - Пушки Гаусса Стражей"
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "guardianPowerPlants",
-      "locale": "ru",
       "expected": null
     },
     {

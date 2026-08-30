@@ -21,12 +21,12 @@ const MICRO_RESOURCE_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * hyphens. A regional or script subtag is dropped: every stored locale is a bare
  * language tag.
  * @returns The localized micro-resource name; the canonical `MicroResource.name` for
- * any English tag; or `null` when the symbol is unknown, the locale is unsupported, or
- * the accepted sources carry no value for that micro resource and locale.
+ * any English tag; or `null` when the symbol is unknown or the locale is not one of the
+ * six this catalogue stores.
  * @remarks
- * This function bundles names only, not micro-resource categories or equipment costs.
- * Missing translations never silently fall back to English. Ship engineering materials
- * use {@link getMaterialName} instead.
+ * All six stored locales are complete for this dataset, so a supported locale always
+ * answers. This function bundles names only, not micro-resource categories or equipment
+ * costs. Ship engineering materials use {@link getMaterialName} instead.
  * @throws {TypeError} If `symbol` is present and not a string, or `locale` is not a
  * string. A nullish `symbol` is a lookup miss and returns `null`.
  * @example
@@ -34,7 +34,8 @@ const MICRO_RESOURCE_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  * import { getMicroResourceName } from '@elite-dangerous-almanac/core/i18n/micro-resources';
  *
  * getMicroResourceName('graphene', 'fr-FR'); // -> 'Graphène'
- * getMicroResourceName('aerogel', 'de'); // -> null
+ * getMicroResourceName('aerogel', 'de'); // -> 'Aerogel'
+ * getMicroResourceName('aerogel', 'it'); // -> null
  * ```
  */
 export function getMicroResourceName(symbol: string, locale: string): string | null {

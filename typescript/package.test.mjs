@@ -43,14 +43,11 @@ import {
 import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
 import {
     getBlueprintName,
-    getEngineeringGroupName,
     getExperimentalEffectName,
     getExperimentalEffectDescription,
     getMaterialName,
     getMicroResourceName,
     getModuleName,
-    getShipManufacturer,
-    getShipName,
 } from '@elite-dangerous-almanac/core/i18n';
 
 async function readReachableJs(entry, seen = new Set()) {
@@ -135,6 +132,10 @@ async function consumerBundle(contents) {
         minify: true,
         format: 'esm',
         platform: 'browser',
+        // Without this esbuild escapes every non-ASCII character, so a marker such as
+        // `Gitterwiderstände` could never be found and the checks below would pass
+        // vacuously. A real consumer's bundler emits UTF-8 too.
+        charset: 'utf8',
         logLevel: 'silent',
     });
     assert.deepEqual(result.warnings, []);
@@ -291,9 +292,6 @@ test('fine-grained package subpaths resolve', () => {
     );
     assert.equal(getMaterialName('GridResistors', 'de-DE'), 'Gitterwiderstände');
     assert.equal(getMicroResourceName('graphene', 'fr'), 'Graphène');
-    assert.equal(getShipName('empire_trader', 'fr'), 'Imperial Clipper');
-    assert.equal(getShipManufacturer('SideWinder', 'en-GB'), 'Faulcon DeLacy');
-    assert.equal(getEngineeringGroupName('frameShiftDrives', 'en'), 'Frame Shift Drives');
     assert.equal(
         getExperimentalEffectDescription('special_auto_loader', 'en'),
         'An experimental upgrade that automatically reloads the weapon, even when firing.',
@@ -307,9 +305,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         effects,
         materials,
         microResources,
-        ships,
         preEngineered,
-        engineeringGroups,
         effectDescriptions,
         slots,
         diagnostics,
@@ -330,13 +326,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
             "import { getMicroResourceName as value } from '@elite-dangerous-almanac/core/i18n/micro-resources'; console.log(value);",
         ),
         consumerBundle(
-            "import { getShipName as value } from '@elite-dangerous-almanac/core/i18n/ships'; console.log(value);",
-        ),
-        consumerBundle(
             "import { getPreEngineeredVariantName as value } from '@elite-dangerous-almanac/core/i18n/pre-engineered'; console.log(value);",
-        ),
-        consumerBundle(
-            "import { getEngineeringGroupName as value } from '@elite-dangerous-almanac/core/i18n/engineering-groups'; console.log(value);",
         ),
         consumerBundle(
             "import { getExperimentalEffectDescription as value } from '@elite-dangerous-almanac/core/i18n/experimental-effect-descriptions'; console.log(value);",
@@ -357,14 +347,9 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         microResources.length < 72 * 1024,
         `micro-resource-name bundle is ${microResources.length} bytes`,
     );
-    assert.ok(ships.length < 72 * 1024, `ship-name bundle is ${ships.length} bytes`);
     assert.ok(
         preEngineered.length < 72 * 1024,
         `pre-engineered-name bundle is ${preEngineered.length} bytes`,
-    );
-    assert.ok(
-        engineeringGroups.length < 32 * 1024,
-        `engineering-group-name bundle is ${engineeringGroups.length} bytes`,
     );
     // The largest dataset on this subpath, and deliberately so: it carries six locales
     // of the game's own prose for all 86 effects, where every other one carries short
@@ -380,32 +365,40 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         diagnostics.length < 24 * 1024,
         `diagnostic-message bundle is ${diagnostics.length} bytes`,
     );
-    assert.doesNotMatch(modules, /Erhöhte FSA-Reichweite|Konkordante Sequenz/);
-    assert.doesNotMatch(blueprints, /Frameshiftantrieb|Konkordante Sequenz/);
-    assert.doesNotMatch(effects, /Frameshiftantrieb|Erhöhte FSA-Reichweite/);
-    assert.doesNotMatch(materials, /Graphène|Frameshiftantrieb/);
-    assert.doesNotMatch(microResources, /Gitterwiderstände|Frameshiftantrieb/);
-    assert.doesNotMatch(
-        ships,
-        /Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
-    );
-    assert.doesNotMatch(preEngineered, /Faulcon DeLacy|Frame Shift Drives|Reloads the weapon/);
-    assert.doesNotMatch(
-        engineeringGroups,
-        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Reloads the weapon/,
-    );
-    assert.doesNotMatch(
+    // One value that appears in exactly one dataset. A leaf subpath must carry its own
+    // and nothing else, which is what keeps these datasets on separate bundles; `slots`
+    // and `diagnostics` inline no catalogue, so they carry none of them.
+    //
+    // Each marker has to be checked against every other catalogue, not just eyeballed:
+    // `pre-engineered-variant-names.jsonc` inlines the base-module record a variant
+    // reuses, so a module name like `Frameshiftantrieb` is genuinely in both files and
+    // would report contamination that is not there.
+    const MARKERS = {
+        modules: 'Impulslaser',
+        blueprints: 'Erhöhte FSA-Reichweite',
+        effects: 'Konkordante Sequenz',
+        materials: 'Gitterwiderstände',
+        microResources: 'Graphène',
+        preEngineered: 'Festive Red Remote Release Flak Launcher',
+        effectDescriptions: 'automatically reloads the weapon',
+    };
+    const BUNDLES = {
+        modules,
+        blueprints,
+        effects,
+        materials,
+        microResources,
+        preEngineered,
         effectDescriptions,
-        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives/,
-    );
-    assert.doesNotMatch(
         slots,
-        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
-    );
-    assert.doesNotMatch(
         diagnostics,
-        /Faulcon DeLacy|Festive Red Remote Release Flak Launcher|Frame Shift Drives|Reloads the weapon/,
-    );
+    };
+    for (const [name, bundle] of Object.entries(BUNDLES)) {
+        for (const [owner, marker] of Object.entries(MARKERS)) {
+            if (owner === name) assert.ok(bundle.includes(marker), `${name} lost ${marker}`);
+            else assert.ok(!bundle.includes(marker), `${name} dragged in ${owner}`);
+        }
+    }
 });
 
 test('the ship-loadout subpath exports its facade and structured edit error', async () => {

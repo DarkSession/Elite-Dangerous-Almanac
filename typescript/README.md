@@ -168,19 +168,18 @@ pinned sources carry no translation instead of silently substituting English:
 ```ts
 import {
     getBlueprintName,
-    getEngineeringGroupName,
     getMaterialName,
     getMicroResourceName,
     getModuleName,
-    getShipName,
+    getOutfittingFamilyName,
 } from '@elite-dangerous-almanac/core/i18n';
 
 getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> "Frameshiftantrieb"
 getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
 getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
 getMicroResourceName('graphene', 'fr'); // -> "Graphène"
-getShipName('empire_trader', 'fr'); // -> "Imperial Clipper"
-getEngineeringGroupName('frameShiftDrives', 'de'); // -> null
+getOutfittingFamilyName('shieldGenerators', 'de'); // -> "Schildgeneratoren"
+getOutfittingFamilyName('xenoScanners', 'de'); // -> null
 ```
 
 The functions return an explicit source value verbatim, so a source-backed spelling may
@@ -189,10 +188,17 @@ catalogues carry English, French, German, Portuguese, Russian and Spanish, each 
 under a bare language tag: a regional or script subtag is dropped (`de-DE` → `de`), and
 any other language returns `null`.
 
-The same contract covers ship manufacturers, pre-engineered variant names, engineering
-group names, experimental-effect descriptions, loadout-slot and restriction labels, and
-structured loadout, calculation, SLEF and edit messages. A family whose accepted source
-currently supplies only English returns `null` for every non-English locale.
+The same contract covers pre-engineered variant names, experimental-effect names and
+descriptions, loadout-slot and restriction labels, and structured loadout, calculation,
+SLEF and edit messages. A family whose accepted source currently supplies only English
+returns `null` for every non-English locale.
+
+**Ship names, manufacturers and engineering groups have no lookup**, because the game
+does not translate them. Hull names and manufacturers are proper nouns — every source
+that publishes a localized ship column publishes the English spelling — so read them
+from the ships catalogue (`getShipBySymbol(symbol)?.name` and `?.manufacturer`). An
+engineering group has no in-game label at all: its menu is headed by the module's own
+outfitting family, so name it with `getOutfittingFamilyName(module.familyId, locale)`.
 
 Registry lookups ignore case and surrounding whitespace. The material, commodity and
 module lookups that resolve one record by symbol or name search their complete registry

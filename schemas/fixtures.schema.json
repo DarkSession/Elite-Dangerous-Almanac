@@ -3469,10 +3469,9 @@
                 "type": "array",
                 "items": { "type": "string" }
               },
-              "id": { "type": "string" },
-              "name": { "type": "string" }
+              "id": { "type": "string" }
             },
-            "required": ["blueprints", "experimentals", "id", "name"]
+            "required": ["blueprints", "experimentals", "id"]
           }
         },
         "modules": {
