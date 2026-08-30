@@ -67,7 +67,7 @@ export type ShipGunsightCatalogue = Readonly<Record<string, ShipGunsight>>;
  * import { SHIP_GUNSIGHTS } from '@elite-dangerous-almanac/core/ships/gunsights';
  *
  * SHIP_GUNSIGHTS.SideWinder?.length; // -> 2
- * SHIP_GUNSIGHTS.SideWinder?.[0]; // -> [-2.1956754475, -1.166162014]
+ * SHIP_GUNSIGHTS.SideWinder?.[0]; // -> [-2.1956754, -1.166162]
  * ```
  */
 export const SHIP_GUNSIGHTS: ShipGunsightCatalogue = deepFreeze(
@@ -118,7 +118,7 @@ export function getShipGunsight(shipSymbol: string): ShipGunsight | null {
  *
  * const gunsight = getShipGunsight('SideWinder')!;
  * projectGunsight(gunsight, 1000)[0];
- * // -> { horizontalTangent: -0.0021956754475, verticalTangent: -0.001166162014 }
+ * // -> { horizontalTangent: -0.0021956754, verticalTangent: -0.001166162 }
  * ```
  */
 export function projectGunsight(

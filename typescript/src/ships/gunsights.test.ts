@@ -77,8 +77,8 @@ test('gunsight lookup trims and folds case, returns misses, and guards wrong typ
 test('projection preserves hardpoint order and rejects invalid ranges', () => {
     const sight = SHIP_GUNSIGHTS.SideWinder!;
     assertPointsClose(projectGunsight(sight, 1000), [
-        [-0.0021956754475, -0.001166162014],
-        [0.0021971644611, -0.001166162014],
+        [-0.0021956754, -0.001166162],
+        [0.0021971645, -0.001166162],
     ]);
     for (const range of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
         assert.throws(() => projectGunsight(sight, range), {
