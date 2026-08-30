@@ -57,7 +57,7 @@
     "Int_FighterBayMk2_Size7_Class1_Free"
   ],
   "withoutIntegrity": {
-    "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families with no other mechanical stat either — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
+    "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families whose only other mechanical stat is a capacity, or none at all — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
     "count": 82,
     "symbols": [
       "Int_FuelTank_Size1_Class3",
@@ -931,6 +931,104 @@
       "Int_Hyperdrive_Overcharge_Size8_Class4",
       "Int_Hyperdrive_Overcharge_Size8_Class5",
       "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII"
+    ]
+  },
+  "cabinCapacity": {
+    "note": "Passenger berths, pinned as a whole family: exactly these 23 records carry `cabinCapacity`, and every other record in every catalogue omits it. The 14 Mk I cabins are the figure coriolis-data and EDSY both publish; the 9 Mk II cabins are EDSY's alone, as their masses already are. A cabin's rating does not name the class it serves \u2014 a Mk II cabin runs one rating better than the Mk I cabin of the same class \u2014 so the capacity is stored per record rather than derived from size and rating.",
+    "count": 23,
+    "records": [
+      {
+        "symbol": "Int_PassengerCabin_Size2_Class1",
+        "cabinCapacity": 2
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size3_Class1",
+        "cabinCapacity": 4
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size3_Class2",
+        "cabinCapacity": 3
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size4_Class1",
+        "cabinCapacity": 8
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size4_Class2",
+        "cabinCapacity": 6
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size4_Class3",
+        "cabinCapacity": 3
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size5_Class1",
+        "cabinCapacity": 16
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size5_Class2",
+        "cabinCapacity": 10
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size5_Class3",
+        "cabinCapacity": 6
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size5_Class4",
+        "cabinCapacity": 4
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size6_Class1",
+        "cabinCapacity": 32
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size6_Class2",
+        "cabinCapacity": 16
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size6_Class3",
+        "cabinCapacity": 12
+      },
+      {
+        "symbol": "Int_PassengerCabin_Size6_Class4",
+        "cabinCapacity": 8
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size2_Class1",
+        "cabinCapacity": 3
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size3_Class1",
+        "cabinCapacity": 6
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size3_Class2",
+        "cabinCapacity": 4
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size4_Class1",
+        "cabinCapacity": 12
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size4_Class2",
+        "cabinCapacity": 9
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size5_Class1",
+        "cabinCapacity": 24
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size5_Class2",
+        "cabinCapacity": 15
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size6_Class1",
+        "cabinCapacity": 48
+      },
+      {
+        "symbol": "Int_MkII_PassengerCabin_Size6_Class2",
+        "cabinCapacity": 24
+      }
     ]
   },
   "inGameAudit": {

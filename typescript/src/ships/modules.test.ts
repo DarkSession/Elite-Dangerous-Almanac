@@ -478,6 +478,25 @@ test('the SCO drives state the capability, and only they carry the flag', () => 
     assert.equal(Object.hasOwn(plain!, 'supercruiseOvercharge'), false);
 });
 
+test('the passenger cabins carry their berths, and only they carry the field', () => {
+    // Berths are a datum on the record for the same reason the SCO flag is: a screen
+    // totalling a passenger fit reads the field, and neither the symbol nor the rating
+    // yields it — a Mk II cabin runs one rating better than the Mk I cabin of its class.
+    const expected = statsFixture.cabinCapacity;
+    const carried = ALL_MODULES.filter((module) => module.cabinCapacity !== undefined);
+    assert.equal(carried.length, expected.count);
+    assert.deepEqual(
+        carried.map((module) => module.symbol).sort(),
+        expected.records.map((record) => record.symbol).sort(),
+    );
+    for (const record of expected.records) {
+        const module = getModuleBySymbol(record.symbol, ALL_MODULES);
+        assert.ok(module, `missing ${record.symbol}`);
+        assert.equal(module.cabinCapacity, record.cabinCapacity, record.symbol);
+        assert.equal(module.familyId, 'passengerCabins', record.symbol);
+    }
+});
+
 // ── Prices ───────────────────────────────────────────────────────────────────
 
 for (const [name, expected] of Object.entries(statsFixture.priceCounts)) {

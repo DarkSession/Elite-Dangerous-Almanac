@@ -422,6 +422,33 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     size-determined `fsdHeatRate` above), so no calculation reads the flag; the
     overcharged supercruise behaviour the drives are named for has no published figures
     and none are stored.
+- **`cabinCapacity` — a passenger cabin's berths.** The 23 `passengerCabins` records
+  carry it; every other record in all four catalogues omits it, and no cabin carries a
+  zero. It is the module's own seat count, not the ship's: a build's passenger capacity
+  is the sum over its fitted cabins, the way `cargoCapacity` sums over racks.
+  - **Source:** coriolis-data `modules/internal/{economy,business,first,luxury}_passenger_cabin.json`
+    (`passengers`) and EDSY `eddb.js` (`cabincap`, whose `fdattr` is the journal's
+    `CabinCapacity`), from the snapshots pinned above. The two agree on every one of the
+    14 Mk I cabins, so neither is preferred; the nine Mk II cabins rest on EDSY alone,
+    which is where their masses already come from. FDevIDs publishes no capacity column.
+  - **Values:** Mk I economy 2/4/8/16/32 by size 2–6, business 3/6/10/16 by size 3–6,
+    first 3/6/12 by size 4–6 and luxury 4/8 by size 5–6. Mk II economy 3/6/12/24/48 by
+    size 2–6 and Mk II business 4/9/15/24 by size 3–6 — half again the Mk I cabin of the
+    same class and size, bar the size-3 business cabin, whose 3 berths become 4 rather
+    than 4.5.
+  - **Stored per record rather than derived.** Neither size nor rating yields the figure:
+    a Mk II cabin runs one rating better than the Mk I cabin of the same class (Mk II
+    economy is `D` where Mk I economy is `E`), so a rating-to-class rule that fits one
+    line misreads the other.
+  - **The four passenger classes are not carried.** EDSY publishes one (`cabincls`, with
+    values `E`/`B`/`F`/`L`), and a mission board sorts by it, but it survives here only
+    inside each record's English `name` ("Economy Class Passenger Cabin"). A screen that
+    groups berths by class therefore reads names rather than a datum. Adding it would be
+    a second classification field over the same 23 records, and one registry's spelling
+    of it; what is stored here is the capacity the same two registries agree on.
+  - **EDSY's five `Int_PassengerCabin_Size{2..6}_Class0` "Prisoner Cells" rows are not
+    carried**, capacity or otherwise: EDSY has them commented out with a null `fdid`, and
+    the inclusion rule below excludes an identity no registry offers to players.
 - **`grantOnly` — the articles that arrive granted rather than sold.** Fifteen records
   carry `true`: the nine `*_free` starter fittings (power plant, thrusters, drive, life
   support, distributor, sensors, fuel tank, shield generator, cargo rack) and the six
@@ -965,7 +992,7 @@ and bulkhead name because those records carry no symbol upstream.
   thermal −0.2, explosive 0.5, draw 0.6. The cargo hatch (`ModularCargoBayDoor`) takes
   the 0.6 MW draw Coriolis hard-codes for it (`ModuleUtils.cargoHatch`), since it is
   fitted to every hull and cannot be removed.
-- **Not modelled:** passenger capacity and fighter-bay/rebuild counts. The
+- **Not modelled:** fighter-bay/rebuild counts. The
   **Merc-Coin** price of the pre-engineered variants is carried, but on the variant
   rather than the module — see `mercCoinCost` in the pre-engineered section.
 

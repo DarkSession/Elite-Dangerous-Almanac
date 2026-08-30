@@ -36,6 +36,7 @@ interface CorpusBuild {
     metrics: {
         unladenMass: number | null;
         cargoCapacity: number;
+        passengerCapacity: number;
         fuelCapacity: number;
         maxJumpRange: number | null;
         power: { available: number; retracted: number; deployed: number; withinBudget: boolean };
@@ -286,6 +287,11 @@ test('every build reproduces its pinned metrics', () => {
         assert.notEqual(loadout.unladenMass, null, `${build.id}: mass`);
         close(loadout.unladenMass!, expected.unladenMass!, `${build.id} unladenMass`);
         assert.equal(loadout.cargoCapacity, expected.cargoCapacity, `${build.id} cargoCapacity`);
+        assert.equal(
+            loadout.passengerCapacity,
+            expected.passengerCapacity,
+            `${build.id} passengerCapacity`,
+        );
         close(loadout.fuelCapacity!.main, expected.fuelCapacity, `${build.id} fuelCapacity`);
         close(
             BuildMetrics.of(loadout).maxJumpRange(),

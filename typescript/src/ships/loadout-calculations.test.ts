@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
+    calculatePassengerCapacity,
     calculateUnladenMass,
     type LoadoutCalculationModule,
 } from './loadout-calculations.js';
@@ -15,15 +16,20 @@ test('pure loadout calculations sum only the modules that carry the figure', () 
         drive,
         { mass: 2, cargoCapacity: 16 },
         { mass: 1, fuelCapacity: 8 },
+        { mass: 40, cabinCapacity: 32 },
+        { mass: 10, cabinCapacity: 6 },
     ];
-    assert.equal(calculateUnladenMass(25, modules), 38);
+    assert.equal(calculateUnladenMass(25, modules), 88);
     assert.equal(calculateCargoCapacity(modules), 16);
+    assert.equal(calculatePassengerCapacity(modules), 38);
     assert.deepEqual(calculateFuelCapacity(0.5, modules), { main: 8, reserve: 0.5 });
 });
 
-test('a hull with no rack or tank still reports its genuine zeroes', () => {
+test('a hull with no rack, cabin or tank still reports its genuine zeroes', () => {
     assert.equal(calculateUnladenMass(25, []), 25);
     assert.equal(calculateCargoCapacity([drive]), 0);
+    assert.equal(calculatePassengerCapacity([drive]), 0);
+    assert.equal(calculatePassengerCapacity([]), 0);
     const fuel = calculateFuelCapacity(0.5, [drive]);
     assert.deepEqual(fuel, { main: 0, reserve: 0.5 });
     assert.equal(Object.isFrozen(fuel), true);

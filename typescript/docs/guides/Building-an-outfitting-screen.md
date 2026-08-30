@@ -218,6 +218,24 @@ metrics.thrusters()?.optMass; // rated performance at or below this mass
 metrics.thrusters()?.maxMass; // past this the ship does not move at all
 ```
 
+The three capacity lines sit on the build itself rather than on `BuildMetrics`, because
+each is a sum over what is fitted rather than a calculation over it:
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const liner = ShipLoadout.default('Orca');
+
+liner.cargoCapacity; // -> 24   tonnes, summed over the fitted racks
+liner.passengerCapacity; // -> 40   berths, summed over the fitted cabins
+liner.fuelCapacity.main; // -> 32   tonnes the drive can burn
+```
+
+A passenger panel usually wants the split as well as the total, and the class a cabin
+serves is in its `name` rather than in a field of its own: the Mk II cabins run one
+rating better than the Mk I cabins of the same class, so grouping on `rating` mixes
+business berths in with economy ones.
+
 The game's statistics panel counts the reserve tank in the current mass it displays;
 nothing here does, so add `fuelCapacity.reserve` if you are reproducing that reading.
 [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)

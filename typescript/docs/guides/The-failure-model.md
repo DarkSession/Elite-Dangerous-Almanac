@@ -131,7 +131,7 @@ tryToSystemAddress('not an address'); // -> null, never throws
 
 ## Nullable value, or diagnostic result?
 
-The three aggregate figures always have an answer:
+The four aggregate figures always have an answer:
 
 ```ts
 import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';
@@ -142,15 +142,17 @@ declare const metrics: BuildMetrics;
 
 build.unladenMass; // number
 build.cargoCapacity; // number
+build.passengerCapacity; // number
 build.fuelCapacity; // { main, reserve }
 metrics.buildMass(); // { hull, modules, unladen, fuel, cargo, total }
 ```
 
 Nothing a build can hold is unweighable: import discards an article no catalogue
 identifies, and `setModule` refuses one — as it refuses a record that drops the article's
-`mass`, `cargoCapacity` or `fuelCapacity`, the three figures every build sums from its
-fit. A hull with no rack has a cargo capacity of `0`, and it means `0`. `buildMass` is
-those figures decomposed, so it always answers too.
+`mass`, `cargoCapacity`, `cabinCapacity` or `fuelCapacity`, the four figures every build
+sums from its fit. A hull with no rack has a cargo capacity of `0` and a hull with no
+cabin a passenger capacity of `0`, and both mean `0`. `buildMass` is those figures
+decomposed, so it always answers too.
 
 The metrics that depend on *build state* return a diagnostic result, whose `value` is
 either the completed metric or `null`:

@@ -277,6 +277,7 @@ export type { LoadoutSlot, ImmovableReason } from './loadout-slot.js';
 export {
     calculateCargoCapacity,
     calculateFuelCapacity,
+    calculatePassengerCapacity,
     calculateUnladenMass,
     type CalculationIssue,
     type CalculationIssueReason,

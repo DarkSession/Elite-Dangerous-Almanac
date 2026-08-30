@@ -717,7 +717,7 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
     );
 
     // The aggregates do not read that way, because there is no supplied record they
-    // could read it from: a fit that drops one of the three figures a build sums is
+    // could read it from: a fit that drops one of the four figures a build sums is
     // refused outright rather than counted as 0 or reported as unknown.
     for (const field of ['mass', 'cargoCapacity'] as const) {
         const dropped = { ...mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES) };
@@ -729,6 +729,14 @@ test('a resolved plant without usable capacity is diagnosed by metric results', 
             ),
         );
     }
+    const cabinless = { ...mod('Int_PassengerCabin_Size6_Class1', INTERNAL_MODULES) };
+    delete cabinless.cabinCapacity;
+    assert.throws(
+        () => ShipLoadout.default('BelugaLiner').setModule('Slot01_Size6', cabinless),
+        new TypeError(
+            'ShipLoadout.setModule: the supplied record for "Int_PassengerCabin_Size6_Class1" has no cabinCapacity',
+        ),
+    );
 
     // A figure stated as anything but a finite number is that same defect wearing a
     // value — `null` off a JSON round-trip, a string off a form — and would be summed
@@ -1113,6 +1121,54 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
         BuildMetrics.of(unresolved).mobilityMetricsResult().issues[0]?.reason,
         'unresolved',
     );
+});
+
+test('passenger capacity sums the fitted cabins and follows every edit', () => {
+    // A liner leaves the yard with cabins fitted, so the stock build already carries
+    // berths: two size-6 and two size-4 business class cabins on the Beluga.
+    const beluga = ShipLoadout.default('BelugaLiner');
+    assert.equal(beluga.passengerCapacity, 16 + 16 + 6 + 6);
+
+    // A hull with no cabin reports a genuine zero rather than an unknown.
+    assert.equal(ShipLoadout.default('Anaconda').passengerCapacity, 0);
+    assert.equal(ShipLoadout.empty('BelugaLiner').passengerCapacity, 0);
+
+    // Unlike the mass and the cargo and fuel capacities, no capture states a passenger
+    // figure to prefer, so an import reports the cabins it lists — a Lynx Highliner in
+    // rescue trim, three size-6, two size-5 and one each of size-4, -3 and -2 Mk II
+    // economy cabins.
+    const rescue = ShipLoadout.fromLoadout(lynxRescueJournal as LoadoutEvent);
+    assert.equal(rescue.passengerCapacity, 48 * 3 + 24 * 2 + 12 + 6 + 3);
+
+    // The same hull's later capture, which has traded the small cabins for a second
+    // size-4, reproduces identically from a journal and from the SLEF export of it.
+    const current = ShipLoadout.fromLoadout(lynxJournal as LoadoutEvent);
+    assert.equal(current.passengerCapacity, 48 * 3 + 24 + 12 * 2);
+    assert.equal(
+        ShipLoadout.fromSlef(JSON.stringify(lynxCapture)).passengerCapacity,
+        current.passengerCapacity,
+    );
+
+    // The figure is live, not a snapshot. `ShipLoadout` edits in place, so each step
+    // below reads the build the step before it left.
+    const build = ShipLoadout.empty('Dolphin');
+    assert.equal(build.passengerCapacity, 0);
+
+    build.setModule('Slot01_Size5', mod('Int_PassengerCabin_Size5_Class1', INTERNAL_MODULES));
+    assert.equal(build.passengerCapacity, 16);
+
+    // A Mk II cabin of the same size and class carries half again as many berths.
+    build.setModule('Slot01_Size5', mod('Int_MkII_PassengerCabin_Size5_Class1', INTERNAL_MODULES));
+    assert.equal(build.passengerCapacity, 24);
+
+    // A rack in the mount takes the berths back off, as removing the cabin outright does.
+    build.setModule('Slot01_Size5', mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES));
+    assert.equal(build.passengerCapacity, 0);
+    assert.equal(build.cargoCapacity, 32);
+
+    build.setModule('Slot01_Size5', mod('Int_PassengerCabin_Size5_Class3', INTERNAL_MODULES));
+    assert.equal(build.passengerCapacity, 6);
+    assert.equal(build.removeModule('Slot01_Size5').passengerCapacity, 0);
 });
 
 test('fromSlef reads the ship identity and top-level figures', () => {

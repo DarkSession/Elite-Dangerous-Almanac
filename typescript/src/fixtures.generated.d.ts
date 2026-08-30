@@ -3151,6 +3151,14 @@ declare module '*/fixtures/ships/modules.jsonc' {
 }
 
 type FixtureShipsModuleStats = {
+    cabinCapacity: {
+        count: number;
+        note: string;
+        records: {
+            cabinCapacity: number;
+            symbol: string;
+        }[];
+    };
     capturedBaseStats: {
         captures: {
             exact: number;
