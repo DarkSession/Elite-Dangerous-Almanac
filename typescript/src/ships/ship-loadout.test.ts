@@ -81,8 +81,9 @@ const readCaptureFixtures = (): {
         );
         if (file.startsWith('journal-')) {
             journals.push([file, parsed as LoadoutEvent]);
-        } else if (Array.isArray(parsed)) {
-            for (const [index, entry] of (parsed as { data: LoadoutEvent }[]).entries()) {
+        } else if (file.startsWith('slef-') && Array.isArray(parsed)) {
+            for (const [index, entry] of (parsed as { data?: LoadoutEvent }[]).entries()) {
+                if (entry?.data === undefined) continue;
                 exports.push([`${file}[${index}]`, entry.data]);
             }
         }
@@ -2569,7 +2570,8 @@ test('an approach suite the source did state is the one imported', () => {
     );
     assert.equal(wrong.modulesValue, null);
     assert.equal(wrong.rebuy, null);
-    assert.notEqual(wrong.unladenMass, 25);
+    // The recomputed figure, not merely a moved one: hull plus the stock suite's zero.
+    assert.ok(near(wrong.unladenMass!, 36.4));
 });
 
 test('import stocks the approach suite for exactly the sources that model no such mount', () => {

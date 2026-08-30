@@ -1171,9 +1171,9 @@ test('a capture that omits only its bulkhead keeps every figure it stated', () =
 });
 
 test('a capture that omits only its approach suite keeps every figure it stated', () => {
-    // The stock suite is weightless and draws no power, and its 500 Cr is the cheapest
-    // price in the catalogue — too little to drop a commander's purchase record over — so
-    // nothing here is invalidated and the figures may understate by that much.
+    // The stock suite is weightless and draws no power, and its 500 Cr is too little to
+    // drop a commander's purchase record over, so nothing here is invalidated and the
+    // figures may understate by that much.
     const build = ShipLoadout.fromLoadout(sidewinderCapture(['PlanetaryApproachSuite']));
     // A stocked article carries the hull default's symbol verbatim, and the defaults spell
     // the suite the journal's way rather than the catalogue's, so this is compared the way
@@ -1381,19 +1381,23 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
 
     // The source's own figures are not lost — they are what the getters report. Inara
     // names no approach-suite mount, and the suite import stocks for it does not disturb
-    // them: it stands for one the captured ship was carrying all along.
+    // them: at 500 Cr it is too small to void a purchase record over.
     assert.equal(build.modulesValue, stated.ModulesValue);
     assert.equal(build.rebuy, stated.Rebuy);
 
     // What the exempted 500 Cr looks like in a real export: this one's stated total is 487
-    // above its priced entries, which is the suite's list price at the same 2.5% discount
-    // its hull was bought at. Other exports' totals match their entries to the credit, so
-    // whether a source already counted the mount it does not model varies by exporter —
-    // the reason the exemption is argued from the size of the figure, not from the claim
-    // that every capture paid for one.
+    // above its priced entries, consistent with the suite at the 2.5% ratio most of its
+    // modules were bought at, though this exporter rounds elsewhere and its ratios are not
+    // uniform. Four of the other five exports match their entries to the credit and the
+    // Cutter's per-module figures are documented unreliable, so whether a source already
+    // counted the mount it does not model varies by exporter — which is why the exemption
+    // is argued from the size of the figure, not from a claim that every capture paid for
+    // one.
     const priced = stated.Modules.reduce((sum, module) => sum + (module.Value ?? 0), 0);
-    assert.equal(stated.ModulesValue - priced, 487);
-    assert.equal(Math.trunc(500 * 0.975), 487);
+    assert.equal(
+        stated.ModulesValue - priced,
+        Math.trunc(module('Int_PlanetApproachSuite_Advanced').cost! * 0.975),
+    );
 
     // Inara rounds its rebuy where the game truncates: 5% of its own hull + modules is
     // 5_613_800.75, which it states as ...801. We follow the journal and truncate.

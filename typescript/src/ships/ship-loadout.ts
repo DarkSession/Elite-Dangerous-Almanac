@@ -683,9 +683,9 @@ export class ShipLoadout {
      * from the fit that remains, {@link modulesValue} and {@link rebuy} read `null`, and
      * {@link sourcePurchase} still reports what the capture stated. A mount stocked from
      * *absence* is the exception and every figure stands: the bulkhead and the cargo hatch
-     * are free and weightless, and the approach suite is weightless and costs 500 Cr — the
-     * cheapest price in the catalogue, and no reason to drop a commander's whole purchase
-     * record, so the credit figures may understate the fit by that much and no more.
+     * are free and weightless, and the approach suite is weightless and costs 500 Cr —
+     * too little to drop a commander's whole purchase record over, so the credit figures
+     * may understate the fit by that much and no more.
      *
      * Use this factory rather than replaying a complete loadout through the incremental
      * {@link setModule} editor.

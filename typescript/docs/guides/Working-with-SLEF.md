@@ -139,9 +139,8 @@ from the hull defaults, which leaves that slot unpriced and drops the two totals
 an empty mount yourself leaves them standing because you can see the change; this one you
 did not make. Three stocked-from-absence articles are the exception and leave the totals
 alone: a bulkhead, a cargo hatch the capture left unpriced or priced at zero, and a
-planetary approach suite, whose 500 Cr is the cheapest price in the catalogue and no
-reason to drop a purchase record — so a source total may understate the fit by that much,
-and by no more.
+planetary approach suite, whose 500 Cr is too little to drop a purchase record over — so
+a source total may understate the fit by that much, and by no more.
 `build.importOutcomes` says which — see
 [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 

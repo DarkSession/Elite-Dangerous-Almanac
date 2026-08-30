@@ -241,7 +241,7 @@ mount** — armour, a core internal, the cargo hatch, the planetary approach sui
 filled with that hull's stock article whenever the event did not leave a fitting one there
 — one the catalogues cannot resolve, one the mount cannot hold (a cargo rack in `Armour`,
 a size-8 plant in a size-2 mount, anything at all in the cargo hatch), or none at all.
-Only those four are corrected this way: every other optional, hardpoint or utility mount
+Only those four kinds are corrected this way: every other optional, hardpoint or utility mount
 may stand empty, so an article the catalogue resolves but the mount refuses is left where
 the event put it, for `validation` to report. A stock replacement carries the source's
 `On`, `Priority` and `Health` across but none of its engineering or captured value.
@@ -259,10 +259,11 @@ cargo and fuel capacity are recomputed from the fit that remains, while `modules
 and `rebuy` read `null`, since nothing records what the discarded module cost;
 `sourcePurchase` still reports the captured figures. A mount stocked from *absence* is the
 exception — the bulkhead and the cargo hatch are weightless and free, and the approach
-suite is weightless and costs 500 Cr, the cheapest price in the catalogue and no reason to
-drop a commander's whole purchase record — while an absent core internal stocked from the
-defaults invalidates them like any other change. So a capture's credit figures may
-understate an imported fit by the price of one suite, and by no more than that.
+suite is weightless and costs 500 Cr, too little to drop a commander's whole purchase
+record over — while an absent core internal stocked from the defaults invalidates them
+like any other change. So on this account a capture's credit figures may understate an
+imported fit by the price of one suite and no more; what a capture's own totals are worth
+in the first place is its own business, and `sourcePurchase` reports them as stated.
 
 `build.validation()` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core

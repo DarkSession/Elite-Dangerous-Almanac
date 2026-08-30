@@ -36,9 +36,9 @@ test('every hull carries a free, weightless stock bulkhead and cargo hatch', () 
 test('every hull carries a weightless, powerless stock approach suite', () => {
     // What lets import stock the approach-suite mount from absence without touching a
     // capture's mass or its power budget — see `normalizeLoadoutEvent`. Its 500 Cr is the
-    // one price a stocked article carries, and the credit figures stand anyway because
-    // that is the cheapest price in the catalogue: dropping a commander's whole purchase
-    // record would lose far more than the figure is off by.
+    // one price a stocked article carries, and the credit figures stand anyway: at 500 Cr,
+    // dropping a commander's whole purchase record would lose far more than the figure is
+    // off by.
     for (const loadout of DEFAULT_LOADOUTS) {
         const fitted = loadout.modules.find(
             (module) => parseSlotName(module.slot)?.restriction === 'planetaryApproachSuite',
@@ -59,8 +59,10 @@ test('every hull carries a weightless, powerless stock approach suite', () => {
         assert.ok(stats, `${loadout.symbol}: unknown ${fitted.symbol}`);
         assert.equal(stats.mass, 0, `${loadout.symbol} approach suite mass`);
         assert.equal(stats.powerDraw, 0, `${loadout.symbol} approach suite power draw`);
-        // The figure the credit decision is argued from, so a data revision that made the
-        // suite expensive fails here rather than silently widening what an import hides.
+        // The figure the credit decision is argued from — 500 Cr is small enough that
+        // leaving it in a capture's totals beats dropping them — so a data revision that
+        // made the suite expensive fails here rather than silently widening what an
+        // import hides.
         assert.equal(stats.cost, 500, `${loadout.symbol} approach suite cost`);
     }
 });
