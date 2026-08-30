@@ -28,7 +28,7 @@
  * | `getExperimentalEffectName` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getMaterialName` | 146 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getMicroResourceName` | 226 | 100 | 100 | 100 | 100 | 100 | 100 |
- * | `getModuleName` | 1199 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getModuleName` | 1194 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getPreEngineeredVariantName` | 76 | 100 | 92 | 89 | 89 | 100 | 100 |
  * | `getOutfittingFamilyName` | 77 | 100 | 75 | 75 | 75 | 75 | 75 |
  * <!-- end generated -->

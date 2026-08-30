@@ -4,7 +4,7 @@
  *
  * @remarks
  * **This module pulls in every module catalogue** — it exists for consumers that
- * really do want to search all 1199 modules (a "resolve any module id" lookup, say).
+ * really do want to search all 1194 modules (a "resolve any module id" lookup, say).
  * If you only need one category, import that catalogue's module
  * (`./modules-core`, `./modules-internal`, `./modules-hardpoint`,
  * `./modules-utility`) and nothing else gets bundled.
@@ -36,7 +36,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
  * ```ts
  * import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
  *
- * ALL_MODULES.length;                                          // -> 1199
+ * ALL_MODULES.length;                                          // -> 1194
  * ALL_MODULES.filter((m) => m.category === 'utility').length;  // -> 35
  * ```
  */

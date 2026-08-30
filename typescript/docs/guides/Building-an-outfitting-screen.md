@@ -67,7 +67,7 @@ const optional = build.modulesForSlot('Slot01_Size7');
 const cargoRacks = optional.filter((module) => module.familyId === 'cargoRacks');
 ```
 
-The method searches all 1199 modules because some mounts accept modules from more than
+The method searches all 1194 modules because some mounts accept modules from more than
 one outfitting category: a fuel tank is a core module that also fits optional mounts.
 `ShipLoadout` already carries the complete catalogue for whole-build operations.
 
@@ -119,7 +119,7 @@ belongs to is a field on it rather than something to recover from its symbol:
 import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
 
 const drives = CORE_MODULES.filter((module) => module.slot === 'frameShiftDrive');
-drives.length; // -> 72
+drives.length; // -> 67
 drives.filter((module) => module.supercruiseOvercharge).length; // -> 36, the SCO line
 ```
 

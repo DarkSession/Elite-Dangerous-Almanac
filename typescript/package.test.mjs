@@ -453,7 +453,7 @@ test('heavy catalogues stay on explicit subpaths', async () => {
 
     assert.equal(planetary.PLANETARY_NEBULAE.length, 5489);
     assert.equal(nebulae.ALL_NEBULAE.length, 5835);
-    assert.equal(modules.ALL_MODULES.length, 1199);
+    assert.equal(modules.ALL_MODULES.length, 1194);
 });
 
 test('codex-region geometry stays on its explicit lookup subpath', async () => {

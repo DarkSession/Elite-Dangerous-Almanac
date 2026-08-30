@@ -4528,6 +4528,34 @@
             "required": ["cost", "symbol"]
           }
         },
+        "purchaseCapture": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "discountDenominator": { "type": "integer" },
+            "discountNumerator": { "type": "integer" },
+            "note": { "type": "string" },
+            "readings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "cost": { "type": "integer" },
+                  "paid": { "type": "integer" },
+                  "symbol": { "type": "string" }
+                },
+                "required": ["cost", "paid", "symbol"]
+              }
+            }
+          },
+          "required": [
+            "discountDenominator",
+            "discountNumerator",
+            "note",
+            "readings"
+          ]
+        },
         "spot": {
           "type": "array",
           "items": {
@@ -4676,6 +4704,7 @@
         "inGameVerifiedValues",
         "priceCounts",
         "prices",
+        "purchaseCapture",
         "spot",
         "statCounts",
         "supercruiseOvercharge",

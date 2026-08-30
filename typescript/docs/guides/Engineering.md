@@ -34,8 +34,8 @@ would reject is not a state this library can reach.
 `ShipLoadout` includes the menu catalogue whether or not a consumer calls these methods.
 Using one catalogue keeps the editor and menu consistent.
 
-**Not every stock module has an ordinary engineering menu.** The catalogue groups 1005 of
-the 1199 modules; the rest include whole families like fuel tanks, passenger cabins and
+**Not every stock module has an ordinary engineering menu.** The catalogue groups 1000 of
+the 1194 modules; the rest include whole families like fuel tanks, passenger cabins and
 limpet controllers, plus individual modules denied every ordinary recipe. Six module
 symbols retain Mercenary upgrade routes despite no stock menu: the Enzyme Missile Rack,
 fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement Package,

@@ -3434,91 +3434,6 @@
     "cost": 51289112
   },
   {
-    "symbol": "Int_Hyperdrive_Size8_Class1",
-    "kind": "frameShiftDrives",
-    "slot": "frameShiftDrive",
-    "name": "Frame Shift Drive",
-    "class": 8,
-    "rating": "E",
-    "mass": 160,
-    "integrity": 135,
-    "powerDraw": 0.56,
-    "bootTime": 10,
-    "optMass": 2240,
-    "maxFuel": 13.6,
-    "fuelMul": 0.011,
-    "fuelPower": 2.9,
-    "fsdHeatRate": 50
-  },
-  {
-    "symbol": "Int_Hyperdrive_Size8_Class2",
-    "kind": "frameShiftDrives",
-    "slot": "frameShiftDrive",
-    "name": "Frame Shift Drive",
-    "class": 8,
-    "rating": "D",
-    "mass": 64,
-    "integrity": 120,
-    "powerDraw": 0.63,
-    "bootTime": 10,
-    "optMass": 2520,
-    "maxFuel": 13.6,
-    "fuelMul": 0.01,
-    "fuelPower": 2.9,
-    "fsdHeatRate": 50
-  },
-  {
-    "symbol": "Int_Hyperdrive_Size8_Class3",
-    "kind": "frameShiftDrives",
-    "slot": "frameShiftDrive",
-    "name": "Frame Shift Drive",
-    "class": 8,
-    "rating": "C",
-    "mass": 160,
-    "integrity": 150,
-    "powerDraw": 0.7,
-    "bootTime": 10,
-    "optMass": 2800,
-    "maxFuel": 13.6,
-    "fuelMul": 0.008,
-    "fuelPower": 2.9,
-    "fsdHeatRate": 50
-  },
-  {
-    "symbol": "Int_Hyperdrive_Size8_Class4",
-    "kind": "frameShiftDrives",
-    "slot": "frameShiftDrive",
-    "name": "Frame Shift Drive",
-    "class": 8,
-    "rating": "B",
-    "mass": 256,
-    "integrity": 225,
-    "powerDraw": 0.88,
-    "bootTime": 10,
-    "optMass": 3500,
-    "maxFuel": 17,
-    "fuelMul": 0.01,
-    "fuelPower": 2.9,
-    "fsdHeatRate": 50
-  },
-  {
-    "symbol": "Int_Hyperdrive_Size8_Class5",
-    "kind": "frameShiftDrives",
-    "slot": "frameShiftDrive",
-    "name": "Frame Shift Drive",
-    "class": 8,
-    "rating": "A",
-    "mass": 160,
-    "integrity": 188,
-    "powerDraw": 1.05,
-    "bootTime": 10,
-    "optMass": 4200,
-    "maxFuel": 20.4,
-    "fuelMul": 0.012,
-    "fuelPower": 2.9,
-    "fsdHeatRate": 50
-  },
-  {
     "symbol": "Int_LifeSupport_Size1_Class1",
     "kind": "lifeSupports",
     "slot": "lifeSupport",
@@ -8319,7 +8234,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 20515650
+    "cost": 20515646
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3",
@@ -8338,7 +8253,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 20515650
+    "cost": 20515646
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4",
@@ -8357,7 +8272,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 20515650
+    "cost": 20515646
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
@@ -8376,7 +8291,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 61546940
+    "cost": 61546936
   },
   {
     "symbol": "Explorer_NX_Armour_Grade1_Default",

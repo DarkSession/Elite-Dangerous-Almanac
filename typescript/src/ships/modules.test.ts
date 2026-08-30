@@ -132,7 +132,7 @@ test('engineeringGroup exposes the stable family carried by the shared data', ()
         assert.equal(module.engineeringGroup, getEngineeringGroup(module.symbol), module.symbol);
         assert.equal(Object.hasOwn(module, 'kind'), false, module.symbol);
     }
-    assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1005);
+    assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1000);
 });
 
 test('familyId groups every module, core modules included', () => {
@@ -491,6 +491,36 @@ test('price spot checks: each record carries its standard purchase price', () =>
         const record = getModuleBySymbol(expected.symbol, ALL_MODULES);
         assert.ok(record, `missing ${expected.symbol}`);
         assert.equal(record.cost, expected.cost);
+    }
+});
+
+test('prices read from the in-game purchase capture reproduce what was paid', () => {
+    // Every `cost` derived from the capture must truncate back to the observed BuyPrice
+    // under the stated discount, and must be the ONLY integer that does — a reading that
+    // admitted two candidates would not have pinned a price.
+    const { discountNumerator, discountDenominator, readings } = statsFixture.purchaseCapture;
+    const paidFor = (cost: bigint): bigint =>
+        (cost * BigInt(discountNumerator)) / BigInt(discountDenominator);
+
+    for (const { symbol, paid, cost } of readings) {
+        const record = getModuleBySymbol(symbol, ALL_MODULES);
+        assert.ok(record, `missing ${symbol}`);
+        assert.equal(record.cost, cost, symbol);
+        assert.equal(
+            paidFor(BigInt(cost)),
+            BigInt(paid),
+            `${symbol} does not reproduce what was paid`,
+        );
+        assert.notEqual(
+            paidFor(BigInt(cost) - 1n),
+            BigInt(paid),
+            `${symbol} is not the only candidate`,
+        );
+        assert.notEqual(
+            paidFor(BigInt(cost) + 1n),
+            BigInt(paid),
+            `${symbol} is not the only candidate`,
+        );
     }
 });
 

@@ -6,7 +6,7 @@
  * together — and the functions that find one ({@link getModuleBySymbol},
  * {@link getModulesByName}, {@link getBulkheadsForShip}).
  *
- * **Every lookup searches all 1199 modules by default.** A journal `Item` string does
+ * **Every lookup searches all 1194 modules by default.** A journal `Item` string does
  * not identify its outfitting category, so callers need no category for lookup:
  *
  * ```ts
@@ -23,7 +23,7 @@
  * | `./modules-internal` | `INTERNAL_MODULES` | 484 |
  * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1199 (the default) |
+ * | `./modules-all` | `ALL_MODULES` | 1194 (the default) |
  *
  * Those four are for **listing** a category — an outfitting screen's hardpoint tab.
  * They make poor narrowing arguments: no module symbol or display name is shared
@@ -868,7 +868,7 @@ export interface OutfittingModule extends OutfittingModuleIdentity, OutfittingMo
  * @param symbol - The internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`.
  * Leading/trailing whitespace and case are ignored, so the journal's lower-cased
  * form resolves too.
- * @param modules - Optional subset to search instead of all 1199 modules —
+ * @param modules - Optional subset to search instead of all 1194 modules —
  * `CORE_MODULES`, `INTERNAL_MODULES`, `HARDPOINT_MODULES`, `UTILITY_MODULES`, or any
  * array you have filtered yourself. Omit it unless you specifically want to exclude
  * the other categories; a symbol is unique across all four.

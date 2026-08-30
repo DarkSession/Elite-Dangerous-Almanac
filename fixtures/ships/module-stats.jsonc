@@ -12,18 +12,18 @@
 {
   "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the in-game value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
   "counts": {
-    "core": 521,
+    "core": 516,
     "internal": 484,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1199
+    "all": 1194
   },
   "priceCounts": {
     "core": 509,
-    "internal": 470,
+    "internal": 473,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1173
+    "all": 1176
   },
   "prices": [
     {
@@ -43,10 +43,25 @@
       "cost": 12560
     }
   ],
+  "purchaseCapture": {
+    "note": "Nine module prices read from `ModuleBuyAndStore` journal entries, all from market 128666762 within four minutes on 2026-08-30 UTC, supplied by the repository owner. The capture was taken at a 10% and a 2.5% outfitting discount applied in that order, so `paid` is the list price times 0.9 x 0.975 = 351/400, truncated. Truncation rather than rounding is settled by the two readings whose list price both registries state exactly: `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 reads 3071 where the product is 3071.25, excluding rounding up, and `Int_CorrosionProofCargoRack_Size4_Class1` 94 330 reads 82 774 where the product is 82 774.575, excluding rounding to nearest. A one-credit band of paid prices spans 400/351 = 1.14 credits of list price, so at most two integers can map into one and here exactly one does in every row — each `cost` is pinned by its reading, not chosen within a range. The three Mk II Vessel Hangars are the prices this capture added; the other six rows were already priced and are its controls. Data/ships/SOURCES.md carries the full derivation.",
+    "discountNumerator": 351,
+    "discountDenominator": 400,
+    "readings": [
+      { "symbol": "Int_FighterBayMk2_Size5_Class1", "paid": 697076, "cost": 794389 },
+      { "symbol": "Int_FighterBayMk2_Size6_Class1", "paid": 2263678, "cost": 2579691 },
+      { "symbol": "Int_FighterBayMk2_Size7_Class1", "paid": 2869128, "cost": 3269662 },
+      { "symbol": "Int_FighterBay_Size7_Class1", "paid": 2079079, "cost": 2369321 },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1", "paid": 6000827, "cost": 6838550 },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2", "paid": 18002479, "cost": 20515646 },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3", "paid": 18002479, "cost": 20515646 },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4", "paid": 18002479, "cost": 20515646 },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5", "paid": 54007436, "cost": 61546936 }
+    ]
+  },
   "unpricedNote": "The two Corrosion Resistant Cargo Racks listed here were Community Goal rewards and cannot be bought: both are obtainable no other way — Frontier's announcement of the Rhea Disaster CG awards the size 6, and the Elite Dangerous Wiki records both as held only by commanders who earned them, so there is no list price to publish rather than a price this catalogue failed to copy. No registry states one either — FDevIDs `outfitting.csv` lists neither, EDSY carries `cost: 0 // TODO: cost // CG reward`, and coriolis-data carries 0. A `Value` reported for one in a journal or SLEF export is not that price: `Value` is net of the station discount, and a reward module was never bought at a station. `Size1_Class2` is priced at 12 560; `Size2_Class1` is not a real in-game variant.",
   "unpriced": [
     "Int_ShieldGenerator_Size1_Class4",
-    "Int_Hyperdrive_Size8_Class1",
     "Int_CorrosionProofCargoRack_Size5_Class1",
     "Int_CorrosionProofCargoRack_Size6_Class1",
     "Int_FighterBay_Size5_Class1_Free",
@@ -286,18 +301,6 @@
       "shieldBrokenRegenRate": 1.6
     },
     {
-      "symbol": "Int_Hyperdrive_Size8_Class5",
-      "name": "Frame Shift Drive",
-      "mass": 160,
-      "integrity": 188,
-      "powerDraw": 1.05,
-      "bootTime": 10,
-      "optMass": 4200,
-      "maxFuel": 20.4,
-      "fuelMul": 0.012,
-      "fuelPower": 2.9
-    },
-    {
       "symbol": "Int_PowerDistributor_Size1_Class1_free",
       "name": "Power Distributor",
       "mass": 1.3,
@@ -471,42 +474,6 @@
       "chargeTime": 1.2,
       "clipSize": 1,
       "reloadTime": 1
-    },
-    {
-      "symbol": "Int_Hyperdrive_Size8_Class1",
-      "name": "Frame Shift Drive",
-      "mass": 160,
-      "integrity": 135,
-      "powerDraw": 0.56,
-      "optMass": 2240,
-      "maxFuel": 13.6
-    },
-    {
-      "symbol": "Int_Hyperdrive_Size8_Class2",
-      "name": "Frame Shift Drive",
-      "mass": 64,
-      "integrity": 120,
-      "powerDraw": 0.63,
-      "optMass": 2520,
-      "maxFuel": 13.6
-    },
-    {
-      "symbol": "Int_Hyperdrive_Size8_Class3",
-      "name": "Frame Shift Drive",
-      "mass": 160,
-      "integrity": 150,
-      "powerDraw": 0.7,
-      "optMass": 2800,
-      "maxFuel": 13.6
-    },
-    {
-      "symbol": "Int_Hyperdrive_Size8_Class4",
-      "name": "Frame Shift Drive",
-      "mass": 256,
-      "integrity": 225,
-      "powerDraw": 0.88,
-      "optMass": 3500,
-      "maxFuel": 17
     },
     {
       "symbol": "Int_PowerPlant_Size2_Class1_free",
@@ -803,11 +770,6 @@
       "fsdHeatRate": 50
     },
     {
-      "symbol": "Int_Hyperdrive_Size8_Class5",
-      "name": "Frame Shift Drive",
-      "fsdHeatRate": 50
-    },
-    {
       "symbol": "Int_Sensors_Size8_Class2",
       "name": "Sensors",
       "scannerRange": 5760,
@@ -877,7 +839,7 @@
     "note": "How many records carry each base stat scaled by a blueprint recipe. A count covers a whole family: every thruster has a heat rate, every drive (plain and SCO) has one, every shield cell bank has all four cell stats, and every sensor suite and utility scanner has a range and scan cone. A drop means a record lost a value required to compute its recipe.",
     "counts": {
       "engineHeatRate": 40,
-      "fsdHeatRate": 72,
+      "fsdHeatRate": 67,
       "refuelRate": 40,
       "shieldBankReinforcement": 40,
       "shieldBankHeat": 40,
@@ -934,18 +896,18 @@
     ]
   },
   "inGameAudit": {
-    "catalogueIdentities": 1199,
-    "identityMatches": 1193,
+    "catalogueIdentities": 1194,
+    "identityMatches": 1188,
     "registryOnlyIdentities": 6,
-    "numericModulesVerified": 952,
+    "numericModulesVerified": 947,
     "armourModulesOutsideNumericVerification": 241,
     "verifiedRecords": 135,
     "verifiedFields": 300,
     "catalogueFieldCounts": {
-      "powerDraw": 837,
-      "bootTime": 833
+      "powerDraw": 832,
+      "bootTime": 828
     },
-    "note": "In-game verification covers 1193 catalogue identities: 952 non-armour modules numerically and 241 ship-armour identities whose numeric values retain their separate provenance. Six bundle-granted Vessel Hangar variants rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
+    "note": "In-game verification covers 1188 catalogue identities: 947 non-armour modules numerically and 241 ship-armour identities whose numeric values retain their separate provenance. Six bundle-granted Vessel Hangar variants rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
     "verifiedValueFields": 284,
     "verifiedAbsentFields": 16
   },
