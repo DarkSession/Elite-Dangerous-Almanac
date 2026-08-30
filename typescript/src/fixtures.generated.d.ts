@@ -3311,6 +3311,22 @@ type FixtureShipsModuleStats = {
         cost: number;
         symbol: string;
     }[];
+    purchaseCapture: {
+        crossChecks: {
+            discount: string;
+            source: string;
+            symbol: string;
+            value: number;
+        }[];
+        model: string;
+        note: string;
+        readings: {
+            cost: number;
+            paid: number;
+            symbol: string;
+            unique: boolean;
+        }[];
+    };
     spot: {
         alwaysPowered?: boolean;
         ammoMaximum?: number;

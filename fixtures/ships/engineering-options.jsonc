@@ -20,7 +20,7 @@
 {
   "counts": {
     "groups": 48,
-    "modules": 1005,
+    "modules": 1000,
     "exclusions": 23,
     "modulesWithoutExperimental": 368,
     "blueprintsOffered": 85
@@ -29,7 +29,7 @@
     "powerPlants": 36,
     "guardianPowerPlants": 7,
     "thrusters": 40,
-    "frameShiftDrives": 36,
+    "frameShiftDrives": 31,
     "powerDistributors": 41,
     "guardianPowerDistributors": 8,
     "frameShiftDrivesSCO": 36,
@@ -918,7 +918,7 @@
       "group": "guardianShard"
     },
     {
-      "symbol": "Int_Hyperdrive_Size8_Class5",
+      "symbol": "Int_Hyperdrive_Size2_Class1_free",
       "group": "frameShiftDrives"
     }
   ],

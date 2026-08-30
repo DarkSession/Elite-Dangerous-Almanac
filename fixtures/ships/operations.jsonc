@@ -606,7 +606,7 @@
       }
     },
     "facade": {
-      "note": "Import stocks every fixed mount this event leaves unnamed, so four of the five stocked core internals and the hatch draw power here too -- the stock armour and fuel tank draw none: 8.81 MW retracted, 16.28 MW deployed. The size-3 class-3 plant's 10 MW sits between them, which is what keeps the distributor's own band lit with the hardpoints stowed and dark with them run out.",
+      "note": "Import stocks every mount this event leaves unnamed, so four of the five stocked core internals and the hatch draw power here too -- the stock armour, fuel tank and planetary approach suite draw none: 8.81 MW retracted, 16.28 MW deployed. The size-3 class-3 plant's 10 MW sits between them, which is what keeps the distributor's own band lit with the hardpoints stowed and dark with them run out.",
       "loadout": {
         "Ship": "Anaconda",
         "Modules": [
@@ -1089,13 +1089,13 @@
     "incompatibleModule": {
       "ship": "Anaconda",
       "slot": "FrameShiftDrive",
-      "module": "Int_Hyperdrive_Size8_Class5",
+      "module": "Int_Hyperdrive_Overcharge_Size8_Class5",
       "expected": {
         "code": "incompatibleModule",
         "constraint": "oversized",
         "params": {
           "slot": "FrameShiftDrive",
-          "symbol": "Int_Hyperdrive_Size8_Class5",
+          "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
           "constraint": "oversized",
           "moduleClass": 8,
           "slotSize": 6

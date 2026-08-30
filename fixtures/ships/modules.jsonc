@@ -16,18 +16,18 @@
  */
 {
   "counts": {
-    "core": 521,
+    "core": 516,
     "internal": 484,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1199
+    "all": 1194
   },
   "familyCounts": {
-    "core": 521,
+    "core": 516,
     "internal": 484,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1199
+    "all": 1194
   },
   "familyGroupCounts": {
     "core": 8,
@@ -78,7 +78,7 @@
     "armour": 241,
     "powerPlant": 43,
     "thrusters": 40,
-    "frameShiftDrive": 72,
+    "frameShiftDrive": 67,
     "lifeSupport": 41,
     "powerDistributor": 49,
     "sensors": 41,

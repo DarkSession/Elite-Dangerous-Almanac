@@ -473,8 +473,9 @@ Do not assume a nullable figure is load-bearing:
   heat efficiency it can read, and its issue names which condition caused it.
 
 **On an imported build, every figure here describes the fit that remains.** Import
-discards a module in a removable mount and stocks a fixed one from the hull defaults, and
-neither the figures nor `validation` say so —
+discards a module in a removable mount and stocks armour, a core internal, the cargo hatch
+and the planetary approach suite from the hull defaults, and neither the figures nor
+`validation` say so —
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 says why. What normalization can still do is leave a result incomplete for an ordinary
 reason: discard the only shield generator and `shieldMetricsResult` reports
@@ -482,11 +483,12 @@ reason: discard the only shield generator and `shieldMetricsResult` reports
 engineered one and the mobility, shield and recovery results report `shed`.
 
 `build.importOutcomes` is the account, and it is the entries that matter, not the length.
-A `sourceSymbol` of `null` marks a fixed mount the capture named nothing for, which import
-stocks from the hull defaults. A stocked bulkhead moves no metric at all, and a stocked
-cargo hatch only its own 0.6 MW draw — most third-party exports omit the hatch, so most
-produce exactly that one entry. Every other entry means the figures are the normalized
-fit's — except two that mean the opposite. `unresolvedEngineering` says nothing was
+A `sourceSymbol` of `null` marks a mount the capture named nothing for, which import
+stocks from the hull defaults. A stocked bulkhead or approach suite moves no metric at
+all, and a stocked cargo hatch only its own 0.6 MW draw — most third-party exports name
+neither the hatch nor an approach-suite mount, so most produce exactly those two entries.
+Every other entry means the figures are the normalized fit's — except two that mean the
+opposite. `unresolvedEngineering` says nothing was
 changed and that module's figures are the unengineered ones its source only claimed to
 engineer. `ambiguousEngineering` says the fit is one of two legitimate readings of an
 identity-only block: these figures are the roll, and `preEngineeredVariant` is the

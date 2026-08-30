@@ -615,7 +615,7 @@
       }
     },
     "partsDoNotAddUp": {
-      "note": "A journal omits Value on a module that was nonetheless paid for. Earlier Loadout events in the Viper Mk IV log declare ModulesValue 4940956 while their per-module figures sum to 3942898 -- the FSD interdictor was bought minutes before and is not yet priced. Both figures are reported, so the disagreement stays visible instead of being averaged away. The eight remaining fixed mounts are spelled out at their stock articles, unpriced, so the case isolates the unpriced module it is about: a fixed mount a capture leaves unnamed is stocked at import, which voids the captured totals on its own.",
+      "note": "A journal omits Value on a module that was nonetheless paid for. Earlier Loadout events in the Viper Mk IV log declare ModulesValue 4940956 while their per-module figures sum to 3942898 -- the FSD interdictor was bought minutes before and is not yet priced. Both figures are reported, so the disagreement stays visible instead of being averaged away. The eight remaining fixed mounts are spelled out at their stock articles, unpriced, so the case isolates the unpriced module it is about: a core internal, bulkhead or hatch a capture leaves unnamed is stocked at import, and a stocked core internal voids the captured totals on its own. The approach suite this event leaves unnamed is stocked too and deliberately voids nothing, which is what lets the export under `editedExports.groups.partsDoNotAddUp` still carry this total; the record below is read off the raw event and stands either way.",
       "event": {
         "Ship": "viper_mkiv",
         "ModulesValue": 4940956,

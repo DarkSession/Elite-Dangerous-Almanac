@@ -236,22 +236,35 @@ cargo-hatch mount — some hull families name their own symbol for the one built
 the catalogue carries.
 
 Everything else is normalized: an unknown hull is refused; unknown modules in hardpoints,
-utilities, optional internals and unrecognised slots are discarded; and a fixed mount is
-filled with that hull's stock armour, core internal or cargo hatch whenever the event did
-not leave a fitting article there — one the catalogues cannot resolve, one the mount
-cannot hold (a cargo rack in `Armour`, a size-8 plant in a size-2 mount, anything at all
-in the cargo hatch), or none at all. Only fixed mounts are corrected this way: an
-optional, hardpoint or utility mount may stand empty, so an article the catalogue resolves
-but the mount refuses is left where the event put it, for `validation` to report. A stock
-replacement carries the source's `On`, `Priority` and `Health` across but none of its
-engineering or captured value.
+utilities, optional internals and unrecognised slots are discarded; and a **stocked
+mount** — armour, a core internal, the cargo hatch, the planetary approach suite — is
+filled with that hull's stock article whenever the event did not leave a fitting one there
+— one the catalogues cannot resolve, one the mount cannot hold (a cargo rack in `Armour`,
+a size-8 plant in a size-2 mount, anything at all in the cargo hatch), or none at all.
+Only those four kinds are corrected this way: every other optional, hardpoint or utility
+mount may stand empty, so an article the catalogue resolves but the mount refuses is left
+where
+the event put it, for `validation` to report. A stock replacement carries the source's
+`On`, `Priority` and `Health` across but none of its engineering or captured value.
+
+The approach suite is on that list because a source silent about it is not a build that
+sold one. Every hull leaves the shipyard carrying the advanced suite, which is weightless
+and draws no power, so no build gains by shedding it — and an exporter that models no such
+mount, as Inara does not, writes no entry for it either. So an event that names none
+imports carrying the hull's own `Int_PlanetApproachSuite_Advanced`, reported as
+`defaulted` like any other stocked mount. Unlike armour and the core internals it stays
+removable, so a build that really does fly without one is a `removeModule` away.
 
 When normalization changes the fitted set, the capture's aggregates are dropped: mass,
 cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
 and `rebuy` read `null`, since nothing records what the discarded module cost;
-`sourcePurchase` still reports the captured figures. Stocking an absent bulkhead or cargo
-hatch is the exception — both stock articles are weightless and free — while an absent
-core internal stocked from the defaults invalidates them like any other change.
+`sourcePurchase` still reports the captured figures. A mount stocked from *absence* is the
+exception — the bulkhead and the cargo hatch are weightless and free, and the approach
+suite is weightless and costs 500 Cr, too little to drop a commander's whole purchase
+record over — while an absent core internal stocked from the defaults invalidates them
+like any other change. So on this account a capture's credit figures may understate an
+imported fit by the price of one suite and no more; what a capture's own totals are worth
+in the first place is its own business, and `sourcePurchase` reports them as stated.
 
 `build.validation()` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core

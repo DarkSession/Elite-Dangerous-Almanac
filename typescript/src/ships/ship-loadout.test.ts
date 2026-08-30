@@ -1,5 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
 import { BuildMetrics } from './build-metrics.js';
 import { ShipLoadout } from './ship-loadout.js';
@@ -53,6 +58,38 @@ import { sumMaterials } from './engineering.js';
 import { getPreEngineeredJournalModifiers, getPreEngineeredStats } from './pre-engineered-stats.js';
 
 const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
+
+/**
+ * Every capture in `fixtures/ships/`, split by who wrote it.
+ *
+ * Read from disk rather than imported so a capture added later joins the corpus without
+ * a new `import` line, exactly as `builds.test.ts` reads the build corpus. A `journal-`
+ * file is a bare `Loadout` event; a SLEF file is an array of entries, which is what
+ * separates the captures from the expectation fixtures sharing the directory.
+ */
+const readCaptureFixtures = (): {
+    journals: [string, LoadoutEvent][];
+    exports: [string, LoadoutEvent][];
+} => {
+    const dir = fileURLToPath(new URL('../../../fixtures/ships/', import.meta.url));
+    const journals: [string, LoadoutEvent][] = [];
+    const exports: [string, LoadoutEvent][] = [];
+    for (const file of readdirSync(dir).sort()) {
+        if (!file.endsWith('.jsonc')) continue;
+        const parsed: unknown = JSON.parse(
+            stripJsonComments(readFileSync(join(dir, file), 'utf8')),
+        );
+        if (file.startsWith('journal-')) {
+            journals.push([file, parsed as LoadoutEvent]);
+        } else if (file.startsWith('slef-') && Array.isArray(parsed)) {
+            for (const [index, entry] of (parsed as { data?: LoadoutEvent }[]).entries()) {
+                if (entry?.data === undefined) continue;
+                exports.push([`${file}[${index}]`, entry.data]);
+            }
+        }
+    }
+    return { journals, exports };
+};
 
 const slefString = JSON.stringify(slefFixture);
 const near = (a: number, b: number, eps = 1e-3) => Math.abs(a - b) < eps;
@@ -1216,7 +1253,9 @@ test('fromSlef reads the ship identity and top-level figures', () => {
     assert.deepEqual(build.fuelCapacity, { main: 128, reserve: 1.14 });
     assert.equal(build.cargoCapacity, 16);
     assert.equal(build.hullValue, 189326510);
-    assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length);
+    // One more than the export listed: it names no approach-suite mount, so import
+    // stocks the hull's own advanced suite there.
+    assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length + 1);
 });
 
 test('loadout validation makes empty builds explicit', () => {
@@ -2045,7 +2084,8 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
         Ship: 'anaconda',
         Modules: [{ Slot: 'Armour', Item: 'anaconda_armour_reactive' }],
     };
-    // The named bulkhead plus the seven cores and the hatch import stocks it for.
+    // The named bulkhead plus the seven cores, the hatch and the approach suite import
+    // stocks it for; the last two are weightless, so the figure is the cores'.
     assert.equal(ShipLoadout.fromLoadout(reactive).unladenMass, 1080);
 
     // An unresolved optional internal is stripped, so the hull and what remains still
@@ -2065,7 +2105,7 @@ test('fallback mass resolves bulkheads, stock fixed mounts and stripped modules'
     });
     assert.equal(unresolvedCore.unladenMass, 1020);
     // A mount the capture never named is stocked on the same terms as an unresolved one,
-    // and every hull carries a default for all nine, so an import is never short one.
+    // and every hull carries a default for all ten, so an import is never short one.
     assert.equal(unresolvedCore.fittedModuleAt('MainEngines')?.symbol, 'Int_Engine_Size7_Class1');
     assert.equal(unresolvedCore.validation().complete, true);
 
@@ -2172,7 +2212,7 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
     );
     // Too large for the slot (size-8 drive into a size-6 slot)
     assert.throws(
-        () => conda.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size8_Class5')),
+        () => conda.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Overcharge_Size8_Class5')),
         /exceeds slot size/,
     );
     // Unknown slot key
@@ -2530,6 +2570,159 @@ test('the planetary approach suite states its own mount instead of being special
             mod(captured.Item, INTERNAL_MODULES),
         ),
     );
+});
+
+test('an import with no approach-suite mount is stocked with the advanced suite', () => {
+    // Exporters that do not model the mount write no entry for it, and every hull leaves
+    // the shipyard carrying the advanced suite, so an absent mount is filled rather than
+    // read as a suite the commander sold.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' }],
+    });
+    const fitted = build.fittedModuleAt('PlanetaryApproachSuite');
+    assert.equal(fitted?.symbol.toLowerCase(), 'int_planetapproachsuite_advanced');
+    assert.equal(fitted?.effectiveStats?.mass, 0);
+    assert.deepEqual(
+        build.importOutcomes.find((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
+        {
+            action: 'defaulted',
+            slot: 'PlanetaryApproachSuite',
+            sourceSymbol: null,
+            replacementSymbol: 'int_planetapproachsuite_advanced',
+        },
+    );
+
+    // The mount is stocked, not fixed: what the import put there can be sold or swapped.
+    assert.equal(
+        build.slots().find((slot) => slot.restriction === 'planetaryApproachSuite')?.removable,
+        true,
+    );
+    build.removeModule('PlanetaryApproachSuite');
+    assert.equal(build.fittedModuleAt('PlanetaryApproachSuite'), null);
+    assert.equal(build.validation().complete, true);
+
+    // `empty` is the bare hull and leaves every optional mount open, the suite's included,
+    // while `default` is the shipyard fit and carries one. So a build from `empty` gains a
+    // suite on its way through the importer: the asymmetry is deliberate, and pinned here
+    // because `empty` is the factory most likely to be round-tripped in a consumer test.
+    const bare = ShipLoadout.empty('sidewinder');
+    assert.equal(bare.fittedModuleAt('PlanetaryApproachSuite'), null);
+    assert.equal(
+        ShipLoadout.default('sidewinder')
+            .fittedModuleAt('PlanetaryApproachSuite')
+            ?.symbol.toLowerCase(),
+        'int_planetapproachsuite_advanced',
+    );
+    assert.equal(
+        ShipLoadout.fromLoadout(bare.toLoadoutEvent())
+            .fittedModuleAt('PlanetaryApproachSuite')
+            ?.symbol.toLowerCase(),
+        'int_planetapproachsuite_advanced',
+    );
+});
+
+test('an approach suite the source did state is the one imported', () => {
+    // Stocking fills silence; it never overrides a suite the source named. The basic
+    // suite is a legitimate fit, and a capture that spells it out keeps it.
+    const stated = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [
+            { Slot: 'PlanetaryApproachSuite', Item: 'int_planetapproachsuite' },
+            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' },
+        ],
+    });
+    assert.equal(
+        stated.fittedModuleAt('PlanetaryApproachSuite')?.symbol.toLowerCase(),
+        'int_planetapproachsuite',
+    );
+    assert.equal(
+        stated.importOutcomes.some((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
+        false,
+    );
+
+    // An article the mount cannot hold is the hull's to correct, as in any stocked mount —
+    // and unlike a mount stocked from silence, that substitution does void the capture's
+    // own figures: it swapped out an article whose mass and price nothing records.
+    //
+    // The two events differ in that one entry alone. Every other mount is named, so
+    // nothing else is stocked and nothing else can be what voids the figures — which is
+    // the whole of the asymmetry this change turns on, and it is invisible on a capture
+    // thin enough for the stocked core internals to void them anyway.
+    const capture = (suite: string): LoadoutEvent => ({
+        Ship: 'sidewinder',
+        ModulesValue: 5000,
+        Rebuy: 1000,
+        UnladenMass: 25,
+        Modules: [
+            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' },
+            { Slot: 'MainEngines', Item: 'int_engine_size2_class1' },
+            { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size2_class1' },
+            { Slot: 'LifeSupport', Item: 'int_lifesupport_size1_class1' },
+            { Slot: 'PowerDistributor', Item: 'int_powerdistributor_size1_class1' },
+            { Slot: 'Radar', Item: 'int_sensors_size1_class1' },
+            { Slot: 'FuelTank', Item: 'int_fueltank_size1_class3' },
+            { Slot: 'Armour', Item: 'sidewinder_armour_grade1' },
+            { Slot: 'PlanetaryApproachSuite', Item: suite },
+        ],
+    });
+    const wrong = ShipLoadout.fromLoadout(capture('int_cargorack_size1_class1'));
+    assert.deepEqual(
+        wrong.importOutcomes.find((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
+        {
+            action: 'defaulted',
+            slot: 'PlanetaryApproachSuite',
+            sourceSymbol: 'int_cargorack_size1_class1',
+            replacementSymbol: 'int_planetapproachsuite_advanced',
+        },
+    );
+    assert.equal(wrong.modulesValue, null);
+    assert.equal(wrong.rebuy, null);
+    // The recomputed figure, not merely a moved one: the 25 t hull plus 11.4 t of core
+    // internals, the bulkhead, tank, hatch and suite each adding nothing.
+    assert.ok(near(wrong.unladenMass!, 36.4));
+
+    // The same fit with a suite the mount accepts keeps every figure the capture stated,
+    // so it is the refusal that voids them and not the import.
+    const accepted = ShipLoadout.fromLoadout(capture('int_planetapproachsuite'));
+    assert.equal(accepted.modulesValue, 5000);
+    assert.equal(accepted.rebuy, 1000);
+    assert.equal(accepted.unladenMass, 25);
+});
+
+test('import stocks the approach suite for exactly the sources that model no such mount', () => {
+    // The evidence the rule rests on, read off the captures themselves: Frontier's own
+    // journals always name the mount, so import never overrides a real one, while every
+    // third-party export in the corpus names none, so what it fills is silence rather
+    // than a suite anybody sold.
+    const captures = readCaptureFixtures();
+    assert.ok(captures.journals.length >= 19, 'journal captures');
+    assert.ok(captures.exports.length >= 6, 'third-party exports');
+    for (const [name, event] of captures.journals) {
+        assert.ok(
+            event.Modules.some((module) => module.Slot.toLowerCase() === 'planetaryapproachsuite'),
+            `${name}: a Frontier journal names the approach-suite mount`,
+        );
+        assert.equal(
+            ShipLoadout.fromLoadout(event).importOutcomes.some(
+                (outcome) => outcome.slot.toLowerCase() === 'planetaryapproachsuite',
+            ),
+            false,
+            `${name}: nothing is stocked over it`,
+        );
+    }
+    for (const [name, event] of captures.exports) {
+        assert.equal(
+            event.Modules.some((module) => module.Slot.toLowerCase() === 'planetaryapproachsuite'),
+            false,
+            `${name}: a third-party export names no approach-suite mount`,
+        );
+        const outcome = ShipLoadout.fromLoadout(event).importOutcomes.find(
+            (entry) => entry.slot.toLowerCase() === 'planetaryapproachsuite',
+        );
+        assert.equal(outcome?.action, 'defaulted', `${name}: the mount is stocked`);
+        assert.equal(outcome?.sourceSymbol, null, `${name}: stocked from silence`);
+    }
 });
 
 test('the restrictions accept what the game itself fitted in a real capture', () => {
@@ -6623,10 +6816,12 @@ test('a slot key is matched with surrounding whitespace ignored, everywhere', ()
 
 test('a build imported from Inara binds every one of its lower-cased slots', () => {
     // Inara lower-cases every slot key, as the SLEF specification's own example does.
-    // The build is otherwise ordinary, so every mount it names must bind.
+    // The build is otherwise ordinary, so every mount it names must bind. Its 27 entries
+    // reach 29 fitted mounts: Inara writes neither the cargo hatch nor an approach-suite
+    // mount, and import stocks both.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.fittedModules().length, 28);
-    assert.equal(build.slots().filter((s) => s.module !== null).length, 28);
+    assert.equal(build.fittedModules().length, 29);
+    assert.equal(build.slots().filter((s) => s.module !== null).length, 29);
 
     // ...reached by the journal's own spelling, which is not the one it wrote.
     assert.equal(
@@ -6742,7 +6937,7 @@ test('a lower-cased build exports in slot order', () => {
         .map((s) => s.key.toLowerCase())
         .filter((key) => ordered.includes(key));
     assert.deepEqual(ordered, layoutOrder);
-    assert.equal(ordered.length, 28);
+    assert.equal(ordered.length, 29);
 });
 
 test("a core mount's function name reaches its slot only where casing is the difference", () => {

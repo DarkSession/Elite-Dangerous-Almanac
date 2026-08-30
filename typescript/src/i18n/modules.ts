@@ -28,7 +28,7 @@ const MODULE_NAMES = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
  * answers. The table deduplicates modules that share one name in every locale, which is
  * finer than sharing one canonical English name: the game distinguishes the singular and
  * plural hull alloys, for instance, where English spells both the same. It does not
- * bundle any module stats, so this lookup avoids the 1,199-record `ALL_MODULES`
+ * bundle any module stats, so this lookup avoids the 1,194-record `ALL_MODULES`
  * catalogue.
  * @throws {TypeError} If `symbol` is present and not a string, or `locale` is not a
  * string. A nullish `symbol` is a lookup miss and returns `null`.

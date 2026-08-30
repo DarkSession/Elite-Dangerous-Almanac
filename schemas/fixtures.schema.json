@@ -4551,6 +4551,43 @@
             "required": ["cost", "symbol"]
           }
         },
+        "purchaseCapture": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "crossChecks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "discount": { "type": "string" },
+                  "source": { "type": "string" },
+                  "symbol": { "type": "string" },
+                  "value": { "type": "integer" }
+                },
+                "required": ["discount", "source", "symbol", "value"]
+              }
+            },
+            "model": { "type": "string" },
+            "note": { "type": "string" },
+            "readings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "cost": { "type": "integer" },
+                  "paid": { "type": "integer" },
+                  "symbol": { "type": "string" },
+                  "unique": { "type": "boolean" }
+                },
+                "required": ["cost", "paid", "symbol", "unique"]
+              }
+            }
+          },
+          "required": ["crossChecks", "model", "note", "readings"]
+        },
         "spot": {
           "type": "array",
           "items": {
@@ -4700,6 +4737,7 @@
         "inGameVerifiedValues",
         "priceCounts",
         "prices",
+        "purchaseCapture",
         "spot",
         "statCounts",
         "supercruiseOvercharge",
