@@ -1359,7 +1359,7 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
-    "name": "AX Missile Rack",
+    "name": "Sirius AX Missile Rack",
     "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
@@ -1414,7 +1414,7 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
-    "name": "AX Missile Rack",
+    "name": "Sirius AX Missile Rack",
     "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
@@ -1469,7 +1469,7 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
-    "name": "Enhanced AX Multi-Cannon",
+    "name": "Azimuth Enhanced AX Multi-Cannon",
     "blueprintSymbol": "Weapon_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
@@ -1495,7 +1495,7 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
-    "name": "Enhanced AX Multi-Cannon",
+    "name": "Azimuth Enhanced AX Multi-Cannon",
     "blueprintSymbol": "Weapon_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
@@ -1521,7 +1521,7 @@
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
-    "name": "Guardian Gauss Cannon",
+    "name": "Modified Guardian Gauss Cannon",
     "blueprintSymbol": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1576,7 +1576,7 @@
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
-    "name": "Guardian Gauss Cannon",
+    "name": "Modified Guardian Gauss Cannon",
     "blueprintSymbol": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1631,7 +1631,7 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
-    "name": "Guardian Plasma Charger",
+    "name": "Modified Guardian Plasma Charger",
     "blueprintSymbol": "Weapon_Overcharged",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1671,7 +1671,7 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
-    "name": "Guardian Plasma Charger",
+    "name": "Modified Guardian Plasma Charger",
     "blueprintSymbol": "Weapon_Overcharged",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1711,7 +1711,7 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Small",
-    "name": "Guardian Shard Cannon",
+    "name": "Modified Guardian Shard Cannon",
     "blueprintSymbol": "Weapon_LongRange",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1766,7 +1766,7 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-    "name": "Guardian Shard Cannon",
+    "name": "Modified Guardian Shard Cannon",
     "blueprintSymbol": "Weapon_LongRange",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1866,7 +1866,7 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-    "name": "Seeker Missile Rack",
+    "name": "Seeker Missile Rack V1",
     "blueprintSymbol": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "techBroker",
@@ -1911,7 +1911,7 @@
   },
   {
     "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
-    "name": "Heat Sink Launcher",
+    "name": "Sirius Heat Sink Launcher",
     "blueprintSymbol": "Misc_HeatSinkCapacity",
     "grade": 1,
     "acquisition": "techBroker",
@@ -1969,7 +1969,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class5",
-    "name": "Frame Shift Drive (SCO)",
+    "name": "Frame Shift Drive (SCO) V1",
     "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2008,7 +2008,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class5",
-    "name": "Frame Shift Drive (SCO)",
+    "name": "Frame Shift Drive (SCO) V1",
     "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2047,7 +2047,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class5",
-    "name": "Frame Shift Drive (SCO)",
+    "name": "Frame Shift Drive (SCO) V1",
     "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2086,7 +2086,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
-    "name": "Frame Shift Drive (SCO)",
+    "name": "Frame Shift Drive (SCO) V1",
     "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2125,7 +2125,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
-    "name": "Frame Shift Drive (SCO)",
+    "name": "Frame Shift Drive (SCO) V1",
     "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2164,7 +2164,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
-    "name": "Frame Shift Drive (SCO)",
+    "name": "Frame Shift Drive (SCO) V1",
     "blueprintSymbol": "FSD_LongRange",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2203,7 +2203,7 @@
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
-    "name": "Detailed Surface Scanner",
+    "name": "Detailed Surface Scanner V1",
     "blueprintSymbol": "Sensor_Expanded",
     "grade": 5,
     "acquisition": "techBroker",
@@ -2222,7 +2222,11 @@
     "grade": 5,
     "acquisition": "eventReward",
     "modifiers": [
-      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.99
+      }
     ]
   },
   {
@@ -2232,7 +2236,11 @@
     "grade": 5,
     "acquisition": "eventReward",
     "modifiers": [
-      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.99
+      }
     ]
   },
   {
@@ -2242,7 +2250,11 @@
     "grade": 5,
     "acquisition": "eventReward",
     "modifiers": [
-      { "label": "Damage", "method": "multiplicative", "value": -0.99 }
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.99
+      }
     ]
   }
 ]

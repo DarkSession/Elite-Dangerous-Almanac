@@ -239,10 +239,21 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   the in-game shop listing; no registry publishes them. The Brazilian Portuguese column
   was acquired 2026-08-30 UTC and agrees byte-for-byte with the five columns already
   stored, which it does not change.
+- **A tech-broker unlock may carry an unlock marker**, and 19 of them do — see
+  `data/ships/SOURCES.md`. Those names are not their base module's, so they do not reuse
+  its record. Where the marker is a manufacturer (`Sirius`, `Azimuth`) or a version
+  (`V1`) it is not a translatable word, so the localized value is that marker composed
+  with the base module's own localized name: German `Suchraketenrampe V1`, Spanish
+  `Sirius Lanzamisiles AX`. Composition can only reach as far as the base module does,
+  which is why `Frame Shift Drive (SCO) V1` has Brazilian Portuguese and Russian only and
+  `Azimuth Enhanced AX Multi-Cannon` lacks Spanish and French: those are the base
+  modules' own gaps, not new ones.
+- **`Modified` is a translatable word and is not composed.** The three Guardian weapons
+  it marks carry English only until a source supplies the other five locales.
 - **Coverage:** English covers every variant. Ordinary names inherit the explicit
-  localized values available for their base module, which includes Brazilian Portuguese
-  on 51 of the 76 variants; the Merc-shop names carry all six locales. Only the three
-  `Decorative_*` fixed reward names have no accepted translation source, in any locale.
+  localized values available for their base module. The Merc-shop names carry all six
+  locales. Without a translation in any locale are the three `Decorative_*` festive
+  launchers and the three `Modified` Guardian weapons.
 - **Manual corrections:** none.
 
 ## Names this repository deliberately does not localize

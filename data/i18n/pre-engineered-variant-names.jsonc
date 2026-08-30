@@ -61,27 +61,27 @@
     "Int_CargoRack_Size5_Class1|CargoRack_IncreasedCapacity||communityGoal": "Cargo Rack",
     "Int_CargoRack_Size6_Class1|CargoRack_IncreasedCapacity||communityGoal": "Cargo Rack",
     "Int_ShieldGenerator_Size3_Class5|ShieldGenerator_Kinetic||communityGoal": "Shield Generator",
-    "Hpt_ATDumbfireMissile_Fixed_Medium|Weapon_HighCapacity||techBroker": "AX Missile Rack",
-    "Hpt_ATDumbfireMissile_Fixed_Large|Weapon_HighCapacity||techBroker": "AX Missile Rack",
-    "Hpt_ATMultiCannon_Gimbal_Medium|Weapon_Overcharged|special_auto_loader|techBroker": "Enhanced AX Multi-Cannon",
-    "Hpt_ATMultiCannon_Gimbal_Large|Weapon_Overcharged|special_auto_loader|techBroker": "Enhanced AX Multi-Cannon",
-    "Hpt_Guardian_GaussCannon_Fixed_Small|Weapon_RapidFire||techBroker": "Guardian Gauss Cannon",
-    "Hpt_Guardian_GaussCannon_Fixed_Medium|Weapon_RapidFire||techBroker": "Guardian Gauss Cannon",
-    "Hpt_Guardian_PlasmaLauncher_Fixed_Small|Weapon_Overcharged||techBroker": "Guardian Plasma Charger",
-    "Hpt_Guardian_PlasmaLauncher_Fixed_Medium|Weapon_Overcharged||techBroker": "Guardian Plasma Charger",
-    "Hpt_Guardian_ShardCannon_Fixed_Small|Weapon_LongRange||techBroker": "Guardian Shard Cannon",
-    "Hpt_Guardian_ShardCannon_Fixed_Medium|Weapon_LongRange||techBroker": "Guardian Shard Cannon",
+    "Hpt_ATDumbfireMissile_Fixed_Medium|Weapon_HighCapacity||techBroker": "Sirius AX Missile Rack",
+    "Hpt_ATDumbfireMissile_Fixed_Large|Weapon_HighCapacity||techBroker": "Sirius AX Missile Rack",
+    "Hpt_ATMultiCannon_Gimbal_Medium|Weapon_Overcharged|special_auto_loader|techBroker": "Azimuth Enhanced AX Multi-Cannon",
+    "Hpt_ATMultiCannon_Gimbal_Large|Weapon_Overcharged|special_auto_loader|techBroker": "Azimuth Enhanced AX Multi-Cannon",
+    "Hpt_Guardian_GaussCannon_Fixed_Small|Weapon_RapidFire||techBroker": "Modified Guardian Gauss Cannon",
+    "Hpt_Guardian_GaussCannon_Fixed_Medium|Weapon_RapidFire||techBroker": "Modified Guardian Gauss Cannon",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Small|Weapon_Overcharged||techBroker": "Modified Guardian Plasma Charger",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Medium|Weapon_Overcharged||techBroker": "Modified Guardian Plasma Charger",
+    "Hpt_Guardian_ShardCannon_Fixed_Small|Weapon_LongRange||techBroker": "Modified Guardian Shard Cannon",
+    "Hpt_Guardian_ShardCannon_Fixed_Medium|Weapon_LongRange||techBroker": "Modified Guardian Shard Cannon",
     "Hpt_MiningLaser_Fixed_Small|Weapon_LongRange|special_incendiary_rounds|techBroker": "Mining Laser",
-    "Hpt_BasicMissileRack_Fixed_Medium|Weapon_HighCapacity|special_thermal_cascade|techBroker": "Seeker Missile Rack",
-    "Hpt_HeatSinkLauncher_Turret_Tiny|Misc_HeatSinkCapacity||techBroker": "Heat Sink Launcher",
+    "Hpt_BasicMissileRack_Fixed_Medium|Weapon_HighCapacity|special_thermal_cascade|techBroker": "Seeker Missile Rack V1",
+    "Hpt_HeatSinkLauncher_Turret_Tiny|Misc_HeatSinkCapacity||techBroker": "Sirius Heat Sink Launcher",
     "Int_Hyperdrive_Size5_Class5|FSD_LongRange||techBroker": "Frame Shift Drive",
-    "Int_Hyperdrive_Overcharge_Size2_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
-    "Int_Hyperdrive_Overcharge_Size3_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
-    "Int_Hyperdrive_Overcharge_Size4_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
-    "Int_Hyperdrive_Overcharge_Size5_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
-    "Int_Hyperdrive_Overcharge_Size6_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
-    "Int_Hyperdrive_Overcharge_Size7_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO)",
-    "Int_DetailedSurfaceScanner_Tiny|Sensor_Expanded||techBroker": "Detailed Surface Scanner",
+    "Int_Hyperdrive_Overcharge_Size2_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO) V1",
+    "Int_Hyperdrive_Overcharge_Size3_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO) V1",
+    "Int_Hyperdrive_Overcharge_Size4_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO) V1",
+    "Int_Hyperdrive_Overcharge_Size5_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO) V1",
+    "Int_Hyperdrive_Overcharge_Size6_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO) V1",
+    "Int_Hyperdrive_Overcharge_Size7_Class5|FSD_LongRange||techBroker": "Frame Shift Drive (SCO) V1",
+    "Int_DetailedSurfaceScanner_Tiny|Sensor_Expanded||techBroker": "Detailed Surface Scanner V1",
     "Hpt_FlakMortar_Turret_Medium|Decorative_Green||eventReward": "Festive Green Remote Release Flak Launcher",
     "Hpt_FlakMortar_Turret_Medium|Decorative_Red||eventReward": "Festive Red Remote Release Flak Launcher",
     "Hpt_FlakMortar_Turret_Medium|Decorative_Yellow||eventReward": "Festive Yellow Remote Release Flak Launcher"
@@ -223,13 +223,13 @@
       "pt": "Canhão de Fragmentação",
       "ru": "Залповое орудие"
     },
-    "Mining Laser": {
-      "en": "Mining Laser",
-      "de": "Abbaulaser",
-      "es": "Láser de minería",
-      "fr": "Laser Minier",
-      "pt": "Laser de Mineração",
-      "ru": "Проходочный лазер"
+    "Guardian Shard Cannon": {
+      "en": "Guardian Shard Cannon",
+      "de": "Fragmentkanone",
+      "es": "Cañón de esquirlas",
+      "fr": "Canon à éclats",
+      "pt": "Canhão de fragmentos",
+      "ru": "Осколочное орудие"
     },
     "Multi-Cannon": {
       "en": "Multi-Cannon",
@@ -247,46 +247,6 @@
       "pt": "Canhão Elétrico",
       "ru": "Электромагнитная пушка"
     },
-    "Seeker Missile Rack": {
-      "en": "Seeker Missile Rack",
-      "de": "Suchraketenrampe",
-      "es": "Lanzamisiles guiados",
-      "fr": "Missiles TC",
-      "pt": "Estante de Míssil Guiado",
-      "ru": "Блок ракет с самонаведением"
-    },
-    "Cargo Rack": {
-      "en": "Cargo Rack",
-      "de": "Frachtgestell",
-      "es": "Bodega de carga",
-      "fr": "Compartiment de soute",
-      "pt": "Estante de Carga",
-      "ru": "Грузовой стеллаж"
-    },
-    "Detailed Surface Scanner": {
-      "en": "Detailed Surface Scanner",
-      "de": "Detail-Oberflächenscanner",
-      "es": "Escáner de superficie detallado",
-      "fr": "Détecteur de surface détaillé",
-      "pt": "Scanner de Superfície",
-      "ru": "Сканер поверхностей"
-    },
-    "Power Distributor": {
-      "en": "Power Distributor",
-      "de": "Energieverteiler",
-      "es": "Distribuidor de energía",
-      "fr": "Répartiteur de puissance",
-      "pt": "Distribuidor de Energia",
-      "ru": "Распределитель питания"
-    },
-    "Guardian Shard Cannon": {
-      "en": "Guardian Shard Cannon",
-      "de": "Fragmentkanone",
-      "es": "Cañón de esquirlas",
-      "fr": "Canon à éclats",
-      "pt": "Canhão de fragmentos",
-      "ru": "Осколочное орудие"
-    },
     "Imperial Hammer Rail Gun": {
       "en": "Imperial Hammer Rail Gun",
       "de": "Hammer",
@@ -294,6 +254,14 @@
       "fr": "Marteleur",
       "pt": "Martelo",
       "ru": "«Молот»"
+    },
+    "Seeker Missile Rack": {
+      "en": "Seeker Missile Rack",
+      "de": "Suchraketenrampe",
+      "es": "Lanzamisiles guiados",
+      "fr": "Missiles TC",
+      "pt": "Estante de Míssil Guiado",
+      "ru": "Блок ракет с самонаведением"
     },
     "Electronic Countermeasure": {
       "en": "Electronic Countermeasure",
@@ -319,6 +287,14 @@
       "pt": "Defesa de Ponto",
       "ru": "Точечная оборона"
     },
+    "Power Distributor": {
+      "en": "Power Distributor",
+      "de": "Energieverteiler",
+      "es": "Distribuidor de energía",
+      "fr": "Répartiteur de puissance",
+      "pt": "Distribuidor de Energia",
+      "ru": "Распределитель питания"
+    },
     "Power Plant": {
       "en": "Power Plant",
       "de": "Kraftwerk",
@@ -335,6 +311,14 @@
       "pt": "Motor de Distorção de Fase",
       "ru": "Рамочно Сместительный двигатель"
     },
+    "Cargo Rack": {
+      "en": "Cargo Rack",
+      "de": "Frachtgestell",
+      "es": "Bodega de carga",
+      "fr": "Compartiment de soute",
+      "pt": "Estante de Carga",
+      "ru": "Грузовой стеллаж"
+    },
     "Shield Generator": {
       "en": "Shield Generator",
       "de": "Schildgenerator",
@@ -343,48 +327,65 @@
       "pt": "Gerador de Escudo",
       "ru": "Щитогенератор"
     },
-    "AX Missile Rack": {
-      "en": "AX Missile Rack",
-      "de": "AX-Raketenrampe",
-      "es": "Lanzamisiles AX",
-      "fr": "Batterie de missiles AX",
-      "pt": "Estante de Mísseis AX",
-      "ru": "Блок ракет АИ"
+    "Sirius AX Missile Rack": {
+      "en": "Sirius AX Missile Rack",
+      "de": "Sirius AX-Raketenrampe",
+      "es": "Sirius Lanzamisiles AX",
+      "fr": "Sirius Batterie de missiles AX",
+      "pt": "Sirius Estante de Mísseis AX",
+      "ru": "Sirius Блок ракет АИ"
     },
-    "Enhanced AX Multi-Cannon": {
-      "en": "Enhanced AX Multi-Cannon",
-      "de": "Fortschrittliches AX Mehrfachgeschütz",
-      "pt": "Canhão de Repetição AX Melhorado",
-      "ru": "Улучш. многоствольное орудие АИ"
+    "Azimuth Enhanced AX Multi-Cannon": {
+      "en": "Azimuth Enhanced AX Multi-Cannon",
+      "de": "Azimuth Fortschrittliches AX Mehrfachgeschütz",
+      "pt": "Azimuth Canhão de Repetição AX Melhorado",
+      "ru": "Azimuth Улучш. многоствольное орудие АИ"
     },
-    "Guardian Gauss Cannon": {
-      "en": "Guardian Gauss Cannon",
-      "de": "Guardian-Gausskanone",
-      "es": "Cañón Gauss Guardián",
-      "fr": "Canon de Gauss - Guardians",
-      "pt": "Canhão Gauss Guardian",
-      "ru": "Пушка Гаусса"
+    "Modified Guardian Gauss Cannon": {
+      "en": "Modified Guardian Gauss Cannon"
     },
-    "Guardian Plasma Charger": {
-      "en": "Guardian Plasma Charger",
-      "de": "Guardian-Plasmalader",
-      "es": "Cargador de Plasma Guardián",
-      "fr": "Chargeur à Plasma - Guardians",
-      "pt": "Carregador de Plasma Guardian",
-      "ru": "Плазменная пушка"
+    "Modified Guardian Plasma Charger": {
+      "en": "Modified Guardian Plasma Charger"
     },
-    "Heat Sink Launcher": {
-      "en": "Heat Sink Launcher",
-      "de": "Kühlkörperabwurf",
-      "es": "Eyector térmico",
-      "fr": "Éjecteur de dissipateur thermique",
-      "pt": "Lançador de Dissipador Térmico",
-      "ru": "Теплоотводная катапульта"
+    "Modified Guardian Shard Cannon": {
+      "en": "Modified Guardian Shard Cannon"
     },
-    "Frame Shift Drive (SCO)": {
-      "en": "Frame Shift Drive (SCO)",
-      "pt": "Motor de Distorção de Fase (SSV)",
-      "ru": "Двигатель FSD (ПГР)"
+    "Mining Laser": {
+      "en": "Mining Laser",
+      "de": "Abbaulaser",
+      "es": "Láser de minería",
+      "fr": "Laser Minier",
+      "pt": "Laser de Mineração",
+      "ru": "Проходочный лазер"
+    },
+    "Seeker Missile Rack V1": {
+      "en": "Seeker Missile Rack V1",
+      "de": "Suchraketenrampe V1",
+      "es": "Lanzamisiles guiados V1",
+      "fr": "Missiles TC V1",
+      "pt": "Estante de Míssil Guiado V1",
+      "ru": "Блок ракет с самонаведением V1"
+    },
+    "Sirius Heat Sink Launcher": {
+      "en": "Sirius Heat Sink Launcher",
+      "de": "Sirius Kühlkörperabwurf",
+      "es": "Sirius Eyector térmico",
+      "fr": "Sirius Éjecteur de dissipateur thermique",
+      "pt": "Sirius Lançador de Dissipador Térmico",
+      "ru": "Sirius Теплоотводная катапульта"
+    },
+    "Frame Shift Drive (SCO) V1": {
+      "en": "Frame Shift Drive (SCO) V1",
+      "pt": "Motor de Distorção de Fase (SSV) V1",
+      "ru": "Двигатель FSD (ПГР) V1"
+    },
+    "Detailed Surface Scanner V1": {
+      "en": "Detailed Surface Scanner V1",
+      "de": "Detail-Oberflächenscanner V1",
+      "es": "Escáner de superficie detallado V1",
+      "fr": "Détecteur de surface détaillé V1",
+      "pt": "Scanner de Superfície V1",
+      "ru": "Сканер поверхностей V1"
     },
     "Festive Green Remote Release Flak Launcher": {
       "en": "Festive Green Remote Release Flak Launcher"

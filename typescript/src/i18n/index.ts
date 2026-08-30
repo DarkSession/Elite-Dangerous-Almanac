@@ -29,7 +29,7 @@
  * | `getMaterialName` | 146 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getMicroResourceName` | 226 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getModuleName` | 1199 | 100 | 93 | 90 | 90 | 96 | 96 |
- * | `getPreEngineeredVariantName` | 76 | 100 | 88 | 85 | 85 | 96 | 96 |
+ * | `getPreEngineeredVariantName` | 76 | 100 | 80 | 77 | 77 | 88 | 88 |
  * | `getOutfittingFamilyName` | 77 | 100 | 75 | 75 | 75 | 75 | 75 |
  * <!-- end generated -->
  *
