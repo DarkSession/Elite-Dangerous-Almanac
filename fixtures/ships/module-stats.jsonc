@@ -44,19 +44,24 @@
     }
   ],
   "purchaseCapture": {
-    "note": "Nine module prices read from `ModuleBuyAndStore` journal entries, all from market 128666762 within four minutes on 2026-08-30 UTC, supplied by the repository owner. The capture was taken at a 10% and a 2.5% outfitting discount applied in that order, so `paid` is the list price times 0.9 x 0.975 = 351/400, truncated. Truncation rather than rounding is settled by the two readings whose list price both registries state exactly: `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 reads 3071 where the product is 3071.25, excluding rounding up, and `Int_CorrosionProofCargoRack_Size4_Class1` 94 330 reads 82 774 where the product is 82 774.575, excluding rounding to nearest. A one-credit band of paid prices spans 400/351 = 1.14 credits of list price, so at most two integers can map into one and here exactly one does in every row — each `cost` is pinned by its reading, not chosen within a range. The three Mk II Vessel Hangars are the prices this capture added; the other six rows were already priced and are its controls. Data/ships/SOURCES.md carries the full derivation.",
-    "discountNumerator": 351,
-    "discountDenominator": 400,
+    "note": "Nine module prices read from `ModuleBuyAndStore` journal entries, all from market 128666762 within four minutes on 2026-08-30 UTC, supplied by the repository owner, at a 10% and a 2.5% outfitting discount. The game subtracts a truncated discount at each step rather than truncating the product: paid = ceil(ceil(list * 9/10) * 39/40), and both discount orders agree on every row here. That rule is measured, not assumed — scored against every journal `Loadout` `Value` in fixtures/ships/journal-*.jsonc that a catalogue price and a standard discount reproduce, it matches 304 readings against 275 for a single ceil, 230 for round and 92 for truncating the product. `Hpt_HeatSinkLauncher_Turret_Tiny` is the decisive control: list 3500, product 3071.25, and the journals read 3072, which excludes truncation and round-to-nearest alike. The 3071 that appears in slef-the-deep-black.jsonc is an EDSY export's own arithmetic, not a game reading. Seven rows pin a single integer; `Int_FighterBayMk2_Size6_Class1` admits two and takes floor(MkI * 1.38) from the family rule, and `Int_FighterBay_Size7_Class1` admits two and keeps coriolis's published figure. `crossChecks` lists readings held elsewhere in these fixtures that independently confirm a derived price at a different discount. data/ships/SOURCES.md carries the full derivation.",
+    "model": "ceil(ceil(list * 9/10) * 39/40)",
     "readings": [
-      { "symbol": "Int_FighterBayMk2_Size5_Class1", "paid": 697076, "cost": 794389 },
-      { "symbol": "Int_FighterBayMk2_Size6_Class1", "paid": 2263678, "cost": 2579691 },
-      { "symbol": "Int_FighterBayMk2_Size7_Class1", "paid": 2869128, "cost": 3269662 },
-      { "symbol": "Int_FighterBay_Size7_Class1", "paid": 2079079, "cost": 2369321 },
-      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1", "paid": 6000827, "cost": 6838550 },
-      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2", "paid": 18002479, "cost": 20515646 },
-      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3", "paid": 18002479, "cost": 20515646 },
-      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4", "paid": 18002479, "cost": 20515646 },
-      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5", "paid": 54007436, "cost": 61546936 }
+      { "symbol": "Int_FighterBayMk2_Size5_Class1", "paid": 697076, "cost": 794387, "unique": true },
+      { "symbol": "Int_FighterBayMk2_Size6_Class1", "paid": 2263678, "cost": 2579689, "unique": false },
+      { "symbol": "Int_FighterBayMk2_Size7_Class1", "paid": 2869128, "cost": 3269661, "unique": true },
+      { "symbol": "Int_FighterBay_Size7_Class1", "paid": 2079079, "cost": 2369320, "unique": false },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1", "paid": 6000827, "cost": 6838548, "unique": true },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2", "paid": 18002479, "cost": 20515645, "unique": true },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3", "paid": 18002479, "cost": 20515645, "unique": true },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4", "paid": 18002479, "cost": 20515645, "unique": true },
+      { "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5", "paid": 54007436, "cost": 61546935, "unique": true }
+    ],
+    "crossChecks": [
+      { "symbol": "Int_FighterBayMk2_Size5_Class1", "value": 774528, "discount": "2.5", "source": "journal-the-deep-black.jsonc, journal-caspian-explorer.jsonc" },
+      { "symbol": "Int_FighterBay_Size6_Class1", "value": 1822607, "discount": "2.5", "source": "journal-federation-corvette-multirole.jsonc" },
+      { "symbol": "Int_FighterBay_Size6_Class1", "value": 1640346, "discount": "12.25", "source": "journal-federation-corvette.jsonc" },
+      { "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny", "value": 3072, "discount": "12.25", "source": "journal-the-deep-black.jsonc, journal-caspian-explorer.jsonc" }
     ]
   },
   "unpricedNote": "The two Corrosion Resistant Cargo Racks listed here were Community Goal rewards and cannot be bought: both are obtainable no other way — Frontier's announcement of the Rhea Disaster CG awards the size 6, and the Elite Dangerous Wiki records both as held only by commanders who earned them, so there is no list price to publish rather than a price this catalogue failed to copy. No registry states one either — FDevIDs `outfitting.csv` lists neither, EDSY carries `cost: 0 // TODO: cost // CG reward`, and coriolis-data carries 0. A `Value` reported for one in a journal or SLEF export is not that price: `Value` is net of the station discount, and a reward module was never bought at a station. `Size1_Class2` is priced at 12 560; `Size2_Class1` is not a real in-game variant.",
@@ -854,7 +859,7 @@
     }
   },
   "supercruiseOvercharge": {
-    "note": "The Supercruise Overcharge drive line, published as a capability flag so it never has to be recovered from a symbol. Exactly these 36 records carry `supercruiseOvercharge: true`; every other record in every catalogue omits the field entirely, including the 36 plain drives of the same sizes and ratings. Absence is the answer for a drive without the capability — the flag is never stored as false.",
+    "note": "The Supercruise Overcharge drive line, published as a capability flag so it never has to be recovered from a symbol. Exactly these 36 records carry `supercruiseOvercharge: true`; every other record in every catalogue omits the field entirely, including the 31 plain drives of the same sizes and ratings. Absence is the answer for a drive without the capability — the flag is never stored as false.",
     "count": 36,
     "symbols": [
       "Int_Hyperdrive_Overcharge_Size2_Class1",

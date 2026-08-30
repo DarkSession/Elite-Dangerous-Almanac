@@ -495,14 +495,14 @@ test('price spot checks: each record carries its standard purchase price', () =>
 });
 
 test('prices read from the in-game purchase capture reproduce what was paid', () => {
-    // Every `cost` derived from the capture must truncate back to the observed BuyPrice
-    // under the stated discount, and must be the ONLY integer that does — a reading that
-    // admitted two candidates would not have pinned a price.
-    const { discountNumerator, discountDenominator, readings } = statsFixture.purchaseCapture;
-    const paidFor = (cost: bigint): bigint =>
-        (cost * BigInt(discountNumerator)) / BigInt(discountDenominator);
+    // The game takes floor(price * rate) off at each discount step, so a 10% then a 2.5%
+    // discount is ceil(ceil(L * 9/10) * 39/40). Integer arithmetic throughout: 0.9 * 0.975
+    // is not exactly 0.8775 in IEEE-754 and the error crosses the rounding boundary.
+    const ceilDiv = (n: bigint, d: bigint): bigint => (n % d === 0n ? n / d : n / d + 1n);
+    const paidFor = (cost: bigint): bigint => ceilDiv(ceilDiv(cost * 9n, 10n) * 39n, 40n);
+    const at = (cost: bigint, num: bigint, den: bigint): bigint => ceilDiv(cost * num, den);
 
-    for (const { symbol, paid, cost } of readings) {
+    for (const { symbol, paid, cost, unique } of statsFixture.purchaseCapture.readings) {
         const record = getModuleBySymbol(symbol, ALL_MODULES);
         assert.ok(record, `missing ${symbol}`);
         assert.equal(record.cost, cost, symbol);
@@ -511,16 +511,27 @@ test('prices read from the in-game purchase capture reproduce what was paid', ()
             BigInt(paid),
             `${symbol} does not reproduce what was paid`,
         );
-        assert.notEqual(
-            paidFor(BigInt(cost) - 1n),
-            BigInt(paid),
-            `${symbol} is not the only candidate`,
+        // `unique` records whether the reading pins one integer on its own. Where it does
+        // not, the price is settled by other evidence and the neighbour must still differ
+        // from the value we chose, so the fixture cannot silently drift onto it.
+        const neighbours = [paidFor(BigInt(cost) - 1n), paidFor(BigInt(cost) + 1n)];
+        assert.equal(
+            neighbours.every((p) => p !== BigInt(paid)),
+            unique,
+            `${symbol}: fixture claims unique=${unique}`,
         );
-        assert.notEqual(
-            paidFor(BigInt(cost) + 1n),
-            BigInt(paid),
-            `${symbol} is not the only candidate`,
-        );
+    }
+
+    // The check that matters: prices derived from the capture must also reproduce the
+    // readings this repository already held, at their own discounts. This is what catches
+    // a wrong rounding rule — the capture alone cannot, since it was fitted to it.
+    for (const { symbol, value, discount } of statsFixture.purchaseCapture.crossChecks) {
+        const record = getModuleBySymbol(symbol, ALL_MODULES);
+        assert.ok(record, `missing ${symbol}`);
+        assert.ok(record.cost !== undefined, `${symbol} has no price to cross-check`);
+        const expected =
+            discount === '2.5' ? at(BigInt(record.cost), 39n, 40n) : paidFor(BigInt(record.cost));
+        assert.equal(expected, BigInt(value), `${symbol} contradicts a reading at ${discount}%`);
     }
 });
 

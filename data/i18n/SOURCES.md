@@ -26,16 +26,20 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-08-30 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** all 1,199 current module symbols and English names come from the four
+- **Derivation:** all 1,194 current module symbols and English names come from the four
   `data/ships/modules-*.jsonc` catalogues, which stay authoritative for canonical
   English. Each symbol joins case-insensitively to the in-game module localisation
   identity, which carries a `name`, a `longname` and an `info` string per locale. The
-  join is exact and total: every one of the 1,199 resolves.
+  join is exact and total: every one of the 1,194 resolves.
   - **`longname` is the name taken.** It is the outfitting list's full name and equals
-    the canonical English on 1,041 of the 1,199, where `name` — the abbreviated panel
-    form — equals it on 726. `name` is taken only where a longname is a template rather
-    than a name, which is the cargo racks, fuel tanks and corrosion-resistant racks whose
-    longname carries a capacity.
+    the canonical English on 1,041 of the symbols, where `name` — the abbreviated panel
+    form — equals it on 726. **Both totals were counted over the 1,199-symbol set that
+    preceded the removal of the five plain size-8 drives (§`data/ships/SOURCES.md`), and
+    are not re-derived here:** the in-game localisation table is not vendored, so whether
+    those five sat inside either total cannot be checked from this repository. Read them
+    as upper bounds over 1,194 symbols until the table is re-acquired. `name` is taken
+    only where a longname is a template rather than a name, which is the cargo racks,
+    fuel tanks and corrosion-resistant racks whose longname carries a capacity.
   - **Aliasing is followed.** A localisation value may be a `$Other_Key;` pointer rather
     than text; roughly three thousand of the keys are. Each is followed to the entry
     holding real text before anything is stored, and a value still carrying a `$` token
@@ -73,7 +77,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   rest, and the singular is kept, which is also the number the English carries.
   `Hatch Breaker Limpet Controller` is specific on twenty symbols and generic on one, and
   the specific is kept.
-- **Coverage:** complete. All 1,199 symbols carry all six locales.
+- **Coverage:** complete. All 1,194 symbols carry all six locales.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`

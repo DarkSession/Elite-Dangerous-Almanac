@@ -5690,7 +5690,7 @@
     "integrity": 120,
     "powerDraw": 0.35,
     "bootTime": 5,
-    "cost": 2369321
+    "cost": 2369320
   },
   {
     "symbol": "Int_FighterBay_Size5_Class1_Free",
@@ -5750,7 +5750,7 @@
       "LakonMiner"
     ],
     "bootTime": 5,
-    "cost": 794389
+    "cost": 794387
   },
   {
     "symbol": "Int_FighterBayMk2_Size6_Class1",
@@ -5768,7 +5768,7 @@
       "LakonMiner"
     ],
     "bootTime": 5,
-    "cost": 2579691
+    "cost": 2579689
   },
   {
     "symbol": "Int_FighterBayMk2_Size7_Class1",
@@ -5786,7 +5786,7 @@
       "LakonMiner"
     ],
     "bootTime": 5,
-    "cost": 3269662
+    "cost": 3269661
   },
   {
     "symbol": "Int_FighterBayMk2_Size5_Class1_Free",

@@ -15,7 +15,7 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `core` module, so a loader adds
- * `category: "core"` from the file it read rather than repeating it 521 times.
+ * `category: "core"` from the file it read rather than repeating it 516 times.
  * `slot` says which of the eight core mounts the record fills — `armour`, or one of
  * the seven core functions (`powerPlant`, `thrusters`, `frameShiftDrive`,
  * `lifeSupport`, `powerDistributor`, `sensors`, `fuelTank`). It is on every record
@@ -8215,7 +8215,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 6838550
+    "cost": 6838548
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2",
@@ -8234,7 +8234,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 20515646
+    "cost": 20515645
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3",
@@ -8253,7 +8253,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 20515646
+    "cost": 20515645
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4",
@@ -8272,7 +8272,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 20515646
+    "cost": 20515645
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
@@ -8291,7 +8291,7 @@
     "fuelPower": 2.9,
     "fsdHeatRate": 50,
     "supercruiseOvercharge": true,
-    "cost": 61546936
+    "cost": 61546935
   },
   {
     "symbol": "Explorer_NX_Armour_Grade1_Default",

@@ -493,7 +493,7 @@
           ]
         },
         "familyId": {
-          "description": "Stable id of the outfitting family this module is listed under. Closely related variants share one id. Required in modules-{internal,hardpoint,utility}.jsonc and absent from modules-core.jsonc, where the family follows from the mount in `slot` and a loader adds it rather than 521 records repeating it. The id's canonical English display name is in module-families.jsonc.",
+          "description": "Stable id of the outfitting family this module is listed under. Closely related variants share one id. Required in modules-{internal,hardpoint,utility}.jsonc and absent from modules-core.jsonc, where the family follows from the mount in `slot` and a loader adds it rather than 516 records repeating it. The id's canonical English display name is in module-families.jsonc.",
           "$ref": "#/definitions/nonEmptyString"
         },
         "slot": {
