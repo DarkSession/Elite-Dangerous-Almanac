@@ -480,8 +480,9 @@ test('the SCO drives state the capability, and only they carry the flag', () => 
 
 test('the passenger cabins carry their berths, and only they carry the field', () => {
     // Berths are a datum on the record for the same reason the SCO flag is: a screen
-    // totalling a passenger fit reads the field, and neither the symbol nor the rating
-    // yields it — a Mk II cabin runs one rating better than the Mk I cabin of its class.
+    // totalling a passenger fit reads the field, and no size-and-rating rule produces it
+    // — a Mk II cabin runs one rating better than the Mk I cabin of its class, so the
+    // two lines would need two rules.
     const expected = statsFixture.cabinCapacity;
     const carried = ALL_MODULES.filter((module) => module.cabinCapacity !== undefined);
     assert.equal(carried.length, expected.count);
@@ -494,6 +495,9 @@ test('the passenger cabins carry their berths, and only they carry the field', (
         assert.ok(module, `missing ${record.symbol}`);
         assert.equal(module.cabinCapacity, record.cabinCapacity, record.symbol);
         assert.equal(module.familyId, 'passengerCabins', record.symbol);
+        // A cabin nobody can sit in is not a cabin: zero would be a dropped value
+        // wearing a figure, so the family carries none.
+        assert.ok(record.cabinCapacity > 0, record.symbol);
     }
 });
 

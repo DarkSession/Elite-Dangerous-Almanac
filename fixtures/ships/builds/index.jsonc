@@ -39,11 +39,11 @@
  *
  * An implementation passes by fitting the same modules into the same slots and reproducing every
  * figure to within 1e-5 (figures are rounded to 6 decimal places; `cargoCapacity`,
- * `passengerCapacity` and `weapons.count` are integers and must match exactly). `role` is derived from what is fitted and
- * is only a label. `declaredEngineering` counts the declared entries: eighteen describe final
- * pre-engineered Guardian weapons rather than recipes a player may apply, two put Efficient on
- * the Mk II Plasma Shock Accelerator, which cannot be engineered, and one identifies the
- * community-goal Long Range Abrasion Blaster rather than ordinary engineering;
+ * `passengerCapacity` and `weapons.count` are integers and must match exactly). `role` is derived
+ * from what is fitted and is only a label. `declaredEngineering` counts the declared entries:
+ * eighteen describe final pre-engineered Guardian weapons rather than recipes a player may apply,
+ * two put Efficient on the Mk II Plasma Shock Accelerator, which cannot be engineered, and one
+ * identifies the community-goal Long Range Abrasion Blaster rather than ordinary engineering;
  * `engineering-options.jsonc` pins all three sets. Every other entry survives `applyBlueprint`.
  *
  * Layout: one file per build, `<id>.jsonc`, named by the `id` it carries. One file per build keeps

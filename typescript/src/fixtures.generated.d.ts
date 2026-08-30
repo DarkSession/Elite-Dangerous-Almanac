@@ -5042,6 +5042,7 @@ type FixtureShipsSlefExport = {
                 slot: string;
                 sourceSymbol: string | null;
             }[];
+            passengerCapacity: number;
             rebuy: null;
             unladenMass: number;
         };

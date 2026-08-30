@@ -1140,8 +1140,9 @@ test('passenger capacity sums the fitted cabins and follows every edit', () => {
     const rescue = ShipLoadout.fromLoadout(lynxRescueJournal as LoadoutEvent);
     assert.equal(rescue.passengerCapacity, 48 * 3 + 24 * 2 + 12 + 6 + 3);
 
-    // The same hull's later capture, which has traded the small cabins for a second
-    // size-4, reproduces identically from a journal and from the SLEF export of it.
+    // The same hull's later capture, which has traded a size-5 and the two smallest
+    // cabins for a second size-4, reproduces identically from a journal and from the
+    // SLEF export of it.
     const current = ShipLoadout.fromLoadout(lynxJournal as LoadoutEvent);
     assert.equal(current.passengerCapacity, 48 * 3 + 24 + 12 * 2);
     assert.equal(
@@ -1169,6 +1170,40 @@ test('passenger capacity sums the fitted cabins and follows every edit', () => {
     build.setModule('Slot01_Size5', mod('Int_PassengerCabin_Size5_Class3', INTERNAL_MODULES));
     assert.equal(build.passengerCapacity, 6);
     assert.equal(build.removeModule('Slot01_Size5').passengerCapacity, 0);
+});
+
+test('a stated CabinCapacity modifier is what the berths are counted from', () => {
+    // No blueprint in the game moves this stat today, so nothing in the catalogues
+    // exercises the label. The mapping still has to hold: a capture that states a
+    // `CabinCapacity` modifier is stating the cabin's real capacity, and a build that
+    // ignored it would total the catalogue's figure and read as measured. This is the
+    // same rule `CargoCapacity` follows, and the only test that pins it for berths.
+    const modified = ShipLoadout.fromLoadout({
+        Ship: 'Dolphin',
+        Modules: [
+            {
+                Slot: 'Slot01_Size5',
+                Item: 'Int_PassengerCabin_Size5_Class1',
+                Engineering: {
+                    BlueprintName: 'Misc_LightWeight',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: 'CabinCapacity', Value: 20, OriginalValue: 16, LessIsGood: 0 },
+                    ],
+                },
+            },
+        ],
+    } as LoadoutEvent);
+    assert.equal(modified.fittedModuleAt('Slot01_Size5')?.effectiveStats?.cabinCapacity, 20);
+    // The hull's stock cabins come back with the import, so the modified mount is read
+    // against the same build without it rather than against a bare 20.
+    const stock = ShipLoadout.fromLoadout({
+        Ship: 'Dolphin',
+        Modules: [{ Slot: 'Slot01_Size5', Item: 'Int_PassengerCabin_Size5_Class1' }],
+    } as LoadoutEvent);
+    assert.equal(stock.fittedModuleAt('Slot01_Size5')?.effectiveStats?.cabinCapacity, 16);
+    assert.equal(modified.passengerCapacity, stock.passengerCapacity + 4);
 });
 
 test('fromSlef reads the ship identity and top-level figures', () => {

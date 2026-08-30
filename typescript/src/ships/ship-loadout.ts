@@ -994,11 +994,12 @@ export class ShipLoadout {
      * a passenger is massless, so filling them changes nothing
      * {@link ships!BuildMetrics | BuildMetrics} calculates.
      *
-     * A cabin serves one class of passenger, which no field states on its own: every
-     * cabin is in the `passengerCabins` family, and the Mk II cabins run one rating
-     * better than the Mk I cabins of the same class, so a screen that splits berths into
-     * economy, business, first and luxury reads the fitted cabins' `name` rather than
-     * their `rating`.
+     * A cabin serves one class of passenger, and no stat field states which: every cabin
+     * is in the `passengerCabins` family, and `rating` disagrees between the two lines,
+     * the Mk II cabins running one rating better than the Mk I cabins of the same class.
+     * A screen that splits berths into economy, business, first and luxury reads the
+     * `_Class1`–`_Class4` suffix of each fitted cabin's `symbol`, which is that order on
+     * both lines and does not change with the display locale.
      *
      * @example
      * ```ts

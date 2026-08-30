@@ -7461,6 +7461,7 @@
                     "required": ["action", "slot", "sourceSymbol"]
                   }
                 },
+                "passengerCapacity": { "type": "integer" },
                 "rebuy": { "type": "null" },
                 "unladenMass": { "type": "number" }
               },
@@ -7471,6 +7472,7 @@
                 "modules",
                 "modulesValue",
                 "outcomes",
+                "passengerCapacity",
                 "rebuy",
                 "unladenMass"
               ]

@@ -57,7 +57,7 @@
     "Int_FighterBayMk2_Size7_Class1_Free"
   ],
   "withoutIntegrity": {
-    "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families whose only other mechanical stat is a capacity, or none at all — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
+    "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. The families are passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
     "count": 82,
     "symbols": [
       "Int_FuelTank_Size1_Class3",
@@ -934,7 +934,7 @@
     ]
   },
   "cabinCapacity": {
-    "note": "Passenger berths, pinned as a whole family: exactly these 23 records carry `cabinCapacity`, and every other record in every catalogue omits it. The 14 Mk I cabins are the figure coriolis-data and EDSY both publish; the 9 Mk II cabins are EDSY's alone, as their masses already are. A cabin's rating does not name the class it serves \u2014 a Mk II cabin runs one rating better than the Mk I cabin of the same class \u2014 so the capacity is stored per record rather than derived from size and rating.",
+    "note": "Passenger berths, pinned as a whole family: exactly these 23 records carry `cabinCapacity`, and every other record in every catalogue omits it. The 14 Mk I cabins are the figure coriolis-data and EDSY both publish; the 9 Mk II cabins are EDSY's alone, as their masses already are. A cabin's rating does not name the class it serves — a Mk II cabin runs one rating better than the Mk I cabin of the same class — so the capacity is stored per record rather than derived from size and rating.",
     "count": 23,
     "records": [
       {

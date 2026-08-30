@@ -202,6 +202,7 @@
       ],
       "unladenMass": 36.4,
       "cargoCapacity": 0,
+      "passengerCapacity": 0,
       "fuelCapacity": { "main": 2, "reserve": 0.3 },
       "modulesValue": null,
       "rebuy": null,
