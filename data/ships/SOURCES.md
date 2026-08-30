@@ -140,9 +140,16 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   are omitted. Hull identity is already the map key; display names, slot keys and
   hardpoint counts are recoverable from `ships.jsonc`; all other acquisition and
   presentation metadata is unnecessary for projection and is dropped.
-- **Precision:** offsets remain at their observed numeric precision. Exact zero and tiny
-  near-zero values both describe centerline mounts; the residuals are numeric precision,
-  not meaningful sub-millimetre displacements to interpret or normalize.
+- **Precision:** the offsets come from 32-bit-float model geometry, so decimal digits
+  below that grid describe nothing the source resolves. 196 of the 458 non-zero recorded
+  numbers are plainly a 32-bit float printed to ten decimals (`1.3350000381` is 1.335,
+  `-4.1649999619` is -4.165) and the rest sit within half a 32-bit-float step of one, so
+  each number is stored as the shortest rounding of its recorded decimal that still
+  lands on the same 32-bit float. 436 of the 468 shorten under that rule and none moves
+  by a full 32-bit-float step; the largest movement is 1.6 µm, the Cutter's
+  `48.7663916349` written `48.76639`. Exact zero and tiny near-zero values both describe
+  centerline mounts; the residuals are numeric precision, not meaningful sub-millimetre
+  displacements to interpret or normalize.
 - **Manual corrections:** none. All 48 hulls and all 234 of their hardpoint slot keys join
   one-to-one without correction.
 
