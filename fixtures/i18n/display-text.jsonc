@@ -20,7 +20,25 @@
         "acquisition": "eventReward"
       },
       "locale": "fr",
+      "expected": "Lanceur antiaérien déclenché à distance festif rouge"
+    },
+    {
+      "variant": {
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
+        "blueprintSymbol": "FSD_LongRange",
+        "acquisition": "techBroker"
+      },
+      "locale": "fr",
       "expected": null
+    },
+    {
+      "variant": {
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
+        "blueprintSymbol": "FSD_LongRange",
+        "acquisition": "techBroker"
+      },
+      "locale": "pt-BR",
+      "expected": "Motor de Distorção de Fase (SSV) V1"
     },
     {
       "variant": {

@@ -342,13 +342,28 @@
       "ru": "Azimuth Улучш. многоствольное орудие АИ"
     },
     "Modified Guardian Gauss Cannon": {
-      "en": "Modified Guardian Gauss Cannon"
+      "en": "Modified Guardian Gauss Cannon",
+      "de": "Modifizierte Guardian-Gausskanone",
+      "es": "Cañón Gauss Guardián modificado",
+      "fr": "Canon de Gauss - Guardians modifié",
+      "pt": "Canhão Gauss Guardian modificado",
+      "ru": "Модифицированная пушка Гаусса"
     },
     "Modified Guardian Plasma Charger": {
-      "en": "Modified Guardian Plasma Charger"
+      "en": "Modified Guardian Plasma Charger",
+      "de": "Modifizierter Guardian-Plasmalader",
+      "es": "Cargador de Plasma Guardián modificado",
+      "fr": "Chargeur à Plasma - Guardians modifié",
+      "pt": "Carregador de Plasma Guardian modificado",
+      "ru": "Модифицированная плазменная пушка"
     },
     "Modified Guardian Shard Cannon": {
-      "en": "Modified Guardian Shard Cannon"
+      "en": "Modified Guardian Shard Cannon",
+      "de": "Modifizierte Fragmentkanone",
+      "es": "Cañón de esquirlas modificado",
+      "fr": "Canon à éclats modifié",
+      "pt": "Canhão de fragmentos modificado",
+      "ru": "Модифицированное осколочное орудие"
     },
     "Mining Laser": {
       "en": "Mining Laser",
@@ -388,13 +403,28 @@
       "ru": "Сканер поверхностей V1"
     },
     "Festive Green Remote Release Flak Launcher": {
-      "en": "Festive Green Remote Release Flak Launcher"
+      "en": "Festive Green Remote Release Flak Launcher",
+      "de": "Festlicher grüner Flakwerfer mit Fernzündung",
+      "es": "Lanzamisiles antiaéreo remoto festivo verde",
+      "fr": "Lanceur antiaérien déclenché à distance festif vert",
+      "pt": "Lançador de Flak Remoto festivo verde",
+      "ru": "Праздничный зелёный зенитный снаряд с дистанционным подрывом"
     },
     "Festive Red Remote Release Flak Launcher": {
-      "en": "Festive Red Remote Release Flak Launcher"
+      "en": "Festive Red Remote Release Flak Launcher",
+      "de": "Festlicher roter Flakwerfer mit Fernzündung",
+      "es": "Lanzamisiles antiaéreo remoto festivo rojo",
+      "fr": "Lanceur antiaérien déclenché à distance festif rouge",
+      "pt": "Lançador de Flak Remoto festivo vermelho",
+      "ru": "Праздничный красный зенитный снаряд с дистанционным подрывом"
     },
     "Festive Yellow Remote Release Flak Launcher": {
-      "en": "Festive Yellow Remote Release Flak Launcher"
+      "en": "Festive Yellow Remote Release Flak Launcher",
+      "de": "Festlicher gelber Flakwerfer mit Fernzündung",
+      "es": "Lanzamisiles antiaéreo remoto festivo amarillo",
+      "fr": "Lanceur antiaérien déclenché à distance festif jaune",
+      "pt": "Lançador de Flak Remoto festivo amarelo",
+      "ru": "Праздничный жёлтый зенитный снаряд с дистанционным подрывом"
     }
   }
 }

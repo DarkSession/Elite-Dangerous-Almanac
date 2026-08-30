@@ -248,12 +248,26 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   which is why `Frame Shift Drive (SCO) V1` has Brazilian Portuguese and Russian only and
   `Azimuth Enhanced AX Multi-Cannon` lacks Spanish and French: those are the base
   modules' own gaps, not new ones.
-- **`Modified` is a translatable word and is not composed.** The three Guardian weapons
-  it marks carry English only until a source supplies the other five locales.
-- **Coverage:** English covers every variant. Ordinary names inherit the explicit
-  localized values available for their base module. The Merc-shop names carry all six
-  locales. Without a translation in any locale are the three `Decorative_*` festive
-  launchers and the three `Modified` Guardian weapons.
+- **Six records carry a translation composed in this repository rather than taken from a
+  source, and are the only values in `data/i18n/` that are.** They are marked here
+  because the rest of this directory is explicit source values, and a reader is entitled
+  to know which is which. The game does not publish either phrase in a form this
+  repository can join to:
+  - The three `Modified` Guardian weapons. Unlike `Sirius`, `Azimuth` and `V1`, `Modified`
+    is a translatable word, so it cannot simply be composed with the base module's
+    localized name. Each locale's adjective agrees with the base noun it qualifies —
+    German `Modifizierter Guardian-Plasmalader` against `Modifizierte Guardian-Gausskanone`,
+    Russian `Модифицированная пушка Гаусса` against `Модифицированное осколочное орудие`.
+  - The three `Decorative_*` festive launchers. The game does not translate their names,
+    so `Festive` and the colour are rendered in each locale and qualify the base module's
+    own localized name.
+
+  Replace any of the twelve with a source-backed value the moment one is published.
+- **Coverage:** English covers every variant, and Brazilian Portuguese and Russian now do
+  too. Ordinary names inherit the explicit localized values available for their base
+  module; the Merc-shop names carry all six locales. The German, Spanish and French gaps
+  that remain are their base modules' own — the SCO drive and the Enhanced AX
+  Multi-Cannon carry no value in those locales for composition to build on.
 - **Manual corrections:** none.
 
 ## Names this repository deliberately does not localize
