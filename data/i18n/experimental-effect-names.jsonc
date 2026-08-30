@@ -1,14 +1,13 @@
 /*
  * Localized display names for ship engineering experimental effects.
  *
- * Sources: EDSY.
+ * Source: the in-game experimental-effect localisation tables.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * known gaps: data/i18n/SOURCES.md.
  *
- * Each Frontier symbol maps directly to the canonical English display name and only the
- * translations the pinned source explicitly carries; a missing locale makes the public
- * lookup return null.
+ * Each Frontier symbol maps directly to the canonical English display name and the
+ * five other locales the source publishes.
  */
 {
   "special_armour_chunky": {
@@ -280,7 +279,7 @@
     "de": "Zielvisierbrecher",
     "es": "Interruptor de selección",
     "fr": "Interrupteur de verrouillage de cible",
-    "pt": "Quebra de Trava de Alvo",
+    "pt": "Quebra da Trava do Alvo",
     "ru": "Генератор помех для системы захвата цели"
   },
   "special_mass_lock": {
@@ -413,7 +412,7 @@
   },
   "special_regeneration_sequence": {
     "en": "Regeneration Sequence",
-    "de": "Regenerierungssequenz",
+    "de": "Regenerationssequenz",
     "es": "Secuencia de regeneración",
     "fr": "Séquence de régénération",
     "pt": "Sequência de Regeneração",
@@ -612,7 +611,12 @@
     "ru": "Умные боеприпасы"
   },
   "special_super_penetrator": {
-    "en": "Super Penetrator"
+    "en": "Super Penetrator",
+    "de": "Super-Durchdringer",
+    "es": "Súper penetrador",
+    "fr": "Munitions ultra perforantes",
+    "pt": "Super Penetrador",
+    "ru": "Модуль сверхпробития"
   },
   "special_super_penetrator_cooled": {
     "en": "Super Penetrator",
@@ -680,6 +684,7 @@
   },
   "special_weapon_rateoffire": {
     "en": "Multi-servos",
+    "de": "Multi-Servos",
     "es": "Multiservos",
     "fr": "Servomécanismes multiples",
     "pt": "Servos múltiplos",

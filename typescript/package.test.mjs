@@ -296,7 +296,7 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getEngineeringGroupName('frameShiftDrives', 'en'), 'Frame Shift Drives');
     assert.equal(
         getExperimentalEffectDescription('special_auto_loader', 'en'),
-        'Reloads the weapon while it continues firing.',
+        'An experimental upgrade that automatically reloads the weapon, even when firing.',
     );
 });
 
@@ -366,8 +366,13 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         engineeringGroups.length < 32 * 1024,
         `engineering-group-name bundle is ${engineeringGroups.length} bytes`,
     );
+    // The largest dataset on this subpath, and deliberately so: it carries six locales
+    // of the game's own prose for all 86 effects, where every other one carries short
+    // display names. 129 KiB minified, 25 KiB gzipped — more than module names. It is on
+    // its own subpath precisely so an application that shows no effect descriptions
+    // never pays for it.
     assert.ok(
-        effectDescriptions.length < 32 * 1024,
+        effectDescriptions.length < 160 * 1024,
         `effect-description bundle is ${effectDescriptions.length} bytes`,
     );
     assert.ok(slots.length < 32 * 1024, `slot-name bundle is ${slots.length} bytes`);

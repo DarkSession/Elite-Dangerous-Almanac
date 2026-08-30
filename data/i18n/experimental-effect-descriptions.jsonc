@@ -1,97 +1,702 @@
 /*
- * Display descriptions for experimental effects.
+ * Localized display descriptions for ship engineering experimental effects.
  *
- * Source: the Elite Dangerous Almanac experimental-effects catalogue, derived from EDSY.
+ * Source: the in-game experimental-effect localisation tables.
  *
- * Credit and licence terms: ATTRIBUTIONS.md. Derivation and known gaps:
- * data/i18n/SOURCES.md.
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * known gaps: data/i18n/SOURCES.md.
+ *
+ * These are the descriptions the game shows a player. The terse mechanical note on an
+ * effect in data/ships/experimental-effects.jsonc answers a different question and is
+ * not projected here.
  */
 {
+  "special_concordant_sequence": {
+    "en": "A modification that causes weapon strikes to temporarily enhance the regeneration rate of a teammate's shield, at the cost of increased heat generation.",
+    "de": "Durch diese Modifikation erhöhen Waffentreffer vorübergehend die Regenerationsrate des Schildes eines Teammitglieds. Dabei wird allerdings die Hitzegeneration erhöht.",
+    "es": "Una modificación que causa que los impactos del arma mejoren temporalmente la tasa de regeneración de escudo de un compañero de equipo, a costa de una mayor generación de calor.",
+    "fr": "Modification permettant aux tirs qui touchent des coéquipiers d'augmenter la vitesse de régénération de leur bouclier, mais au prix d'une forte accumulation de chaleur.",
+    "pt": "Uma modificação que faz os acertos da arma melhorarem a taxa de regeneração do escudo de um membro da equipe temporariamente, ao custo de geração de calor aumentada.",
+    "ru": "При попадании по члену команды из оружия с этой модификацией скорость восстановления его щита временно увеличивается. Однако из-за этого изменения орудие вырабатывает больше тепла."
+  },
+  "special_weapon_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_emissive_munitions": {
+    "en": "Experimental upgrade that causes strikes to envelope the target in energetic particles, significantly amplifying its signature, at the cost of increasing heat generation for the attacker.",
+    "de": "Bei Treffern mithilfe dieses experimentellen Upgrades wird das Ziel in energetische Partikel eingehüllt und damit seine Signatur deutlich erhöht. Allerdings tritt hier beim Angreifer eine erhöhte Hitzegeneration auf.",
+    "es": "Mejora experimental que provoca que los impactos envuelvan al objetivo con partículas energéticas, lo que amplifica significativamente su señal en los sensores, a costa de aumentar la generación de calor en el atacante.",
+    "fr": "Modification expérimentale permettant aux tirs qui touchent la cible de provoquer un nuage de particules d'énergie qui augmente considérablement sa signature, mais au prix d'une forte génération de chaleur au sein du navire ayant ouvert le feu.",
+    "pt": "Melhoria experimental que faz com que acertos envolvam o alvo em partículas energéticas, significativamente ampliando sua assinatura, ao custo de geração de calor aumentada para o agressor.",
+    "ru": "Снаряды, выпущенные из орудия с этим экспериментальным улучшением, при попадании покрывают цель энергетическими частицами, увеличивающими ее сигнатуру. Однако из-за этого изменения орудие вырабатывает больше тепла."
+  },
+  "special_feedback_cascade_cooled": {
+    "en": "Rail slug energy charging mechanism, designed to interfere with shield cell operation. Strikes to a target deploying a shield cell will damage the shield cell bank and reduce shield restoration, at the cost of reduced damage from smaller rounds.",
+    "de": "Die selbst aufladenden Projektile der Schienenkanone wurden zur Störung von Schildzellenfunktionen konzipiert. Beim Treffer einer aktiven Schildzelle wird die Schildzellenbank beschädigt und dadurch die Schildregeneration eingeschränkt. Kleinere Salven erzielen dafür allerdings weniger Schaden.",
+    "es": "Mecanismo de carga de energía de proyectiles de riel, diseñado para interferir con el funcionamiento de las células de escudo. Los ataques a un objetivo que esté desplegando una célula de escudo dañarán el banco de células de escudo y reducirán la recarga del escudo, a costa de un menor daño de los proyectiles, que son más pequeños.",
+    "fr": "Mécanisme d'imprégnation énergétique de munitions électriques, qui les rend capables de perturber le bon fonctionnement des cellules d'énergie d'une cible et de retarder la restauration de son bouclier, mais au prix d'une réduction des dégâts.",
+    "pt": "Mecanismo de carregamento de energia de bala de canhão elétrico, desenvolvido para interferir com a operação da célula de escudo. Ataques a um alvo utilizando uma célula de escudo vai danificar o banco de célula de escudo e reduzir a restauração do escudo, ao custo de dano reduzido de projéteis menores.",
+    "ru": "Механизм зарядки рельсовых снарядов, позволяющий влиять на работу щитовых ячеек. При попадании по цели, использующей щитовую ячейку, повреждает ее и снижает скорость восстановления щита за счет уменьшения наносимого снарядами малого калибра урона."
+  },
+  "special_weapon_efficient": {
+    "en": "Advanced software and internal sensors regulate energy flow more efficiently, reducing module power draw.",
+    "de": "Eine fortschrittliche Software und interne Sensoren regeln den Energiefluss effizienter, die Module ziehen also weniger Energie.",
+    "es": "Software avanzado y sensores internos que regulan el flujo de energía de manera más eficiente, lo que reduce el módulo de consumo de energía.",
+    "fr": "L'ajout de logiciels et de capteurs internes sophistiqués permet d'améliorer la circulation de l'énergie et, en conséquence, de réduire la consommation du module.",
+    "pt": "O software avançado e os sensores internos regulam o fluxo de energia de forma mais eficiente, reduzindo o consumo de energia do módulo.",
+    "ru": "Усовершенствованное программное обеспечение и внутренние датчики управляют интенсивностью подачи энергии, снижая ее расход в модуле."
+  },
+  "special_incendiary_rounds": {
+    "en": "Modified ammo system capable of delivering superheated rounds, increasing damage and converting a large portion to thermal.",
+    "de": "Dieses modifizierte Munitionssystem kann ultra-heiße Salven abfeuern und damit den Schaden erhöhen und einen großen Teil der Schadenswirkung in thermale Energie umwandeln.",
+    "es": "Sistema de munición modificada capaz de proporcionar proyectiles sobrecalentados, aumentando el daño y convirtiendo una gran parte del mismo a térmico.",
+    "fr": "Munitions modifiées à libération thermique infligeant des dégâts plus élevés, qui deviennent, pour la plupart, des dégâts thermiques.",
+    "pt": "Sistema de munição modificado capaz de entregar projéteis superaquecidos, aumentando o dano e convertendo uma grande porção para térmico.",
+    "ru": "Система, подающая модифицированные боеприпасы – нагретые снаряды, обладающие большей мощностью и наносящие в основном тепловой урон."
+  },
+  "special_weapon_rateoffire": {
+    "en": "Additional servomechanisms and controller software allow the weapon to safely fire at an increased rate, at the cost of increased power draw.",
+    "de": "Zusätzliche Servomechanismen und eine bessere Controller-Software lassen die Waffe sicher mit einer höheren Feuerrate schießen, allerdings auf Kosten eines höheren Energiebedarfs.",
+    "es": "Servomecanismos y software de control adicionales permiten que el arma dispare de manera segura a una tasa superior a costa de un incremento del consumo de energía.",
+    "fr": "L'introduction de servomécanismes supplémentaires et d'un logiciel de contrôle spécifique permet d'augmenter la cadence de tir en toute sécurité, au prix d'une consommation plus élevée.",
+    "pt": "Os servomecanismos adicionais e o software do controlador permitem que a arma dispare mais frequentemente com segurança, em troca do maior consumo de energia.",
+    "ru": "Дополнительные сервомеханизмы и программное обеспечение позволяют повысить скорострельность орудия. При этом возрастает энергопотребление."
+  },
+  "special_weapon_damage": {
+    "en": "Scaled up components and reinforced munitions housing allows the weapon to pack more of a punch, increasing damage at the cost of increased power draw.",
+    "de": "Hochskalierte Komponenten im Verbund mit verstärktem Munitionsmagazin. So hat die Waffe mehr Durchschlagskraft, allerdings auf Kosten eines höheren Energiebedarfs.",
+    "es": "Componentes aumentados y armazón reforzado de la munición que permiten que el arma sea más efectiva, lo que aumenta el daño a costa de un incremento del consumo de energía.",
+    "fr": "Les composants surdimensionnés et le chargeur de munitions renforcé permettent d'augmenter la puissance de l'arme, et donc ses dégâts, au prix d'une consommation plus élevée.",
+    "pt": "Os componentes maiores e o compartimento de munições reforçado permitem que a arma cause mais dano em troca do maior consumo de energia.",
+    "ru": "Увеличенные компоненты и укрепленные гнезда для боеприпасов повышают убойную силу орудия, но расход энергии также растет."
+  },
+  "special_plasma_slug_cooled": {
+    "en": "Experimental upgrade allowing plasma slug ammo to be generated directly from ship fuel, at the cost of reduced damage.",
+    "de": "Dieses experimentelle Upgrade kann direkt aus dem Schiffstreibstoff hergestellte Plasmaprojektile verschießen, bietet aber etwas weniger Schadenswirkung.",
+    "es": "Mejora experimental que permite tener munición de plasma generada directamente del combustible de la nave, a costa de un menor daño.",
+    "fr": "Modification expérimentale permettant de générer des munitions à plasma en utilisant le carburant du vaisseau, mais au prix d'une réduction des dégâts infligés.",
+    "pt": "Melhoria experimental permitindo que projéteis de plasma sejam gerados diretamente do combustível da nave, ao custo de dano reduzido.",
+    "ru": "Экспериментальное улучшение, позволяющее преобразовывать топливо корабля в плазменные снаряды, но снижающее урон от орудия."
+  },
+  "special_weapon_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_super_penetrator_cooled": {
+    "en": "Experimental munitions that are capable of penetrating and damaging all modules along its trajectory, at the cost of increased reload times.",
+    "de": "Diese experimentelle Munition bedingt zwar höhere Nachladezeiten, kann dafür aber alle Module auf der Flugbahn durchdringen und beschädigen.",
+    "es": "Munición experimental que es capaz de penetrar y dañar todos los módulos a lo largo de su trayectoria, a costa de un mayor tiempo de recarga.",
+    "fr": "Munitions expérimentales capables de transpercer la cible et d'endommager tous les modules présents sur sa trajectoire. Entraîne néanmoins une augmentation du temps de rechargement.",
+    "pt": "Munições experimentais que são capazes de penetrar e danificar todos os módulos ao longo de sua trajetória, ao custo de tempo recarga aumentado.",
+    "ru": "Экспериментальные боеприпасы, пробивающие корабль насквозь и поражающие все модули, оказавшиеся у них на пути. Данная модификация замедляет процесс перезарядки орудия."
+  },
+  "special_shieldbooster_explosive": {
+    "en": "Advanced field resonation patterns increase resistance to explosive damage, at the cost of overall shield strength.",
+    "de": "Fortschrittliche Feldresonatoren mit besserem Widerstand gegen Explosivs, auf Kosten der Schildstärke insgesamt.",
+    "es": "Patrones de resonancia de campo avanzados que incrementan la resistencia al daño explosivo a costa de la fuerza general del escudo.",
+    "fr": "L'introduction de champs de modulation sophistiqués confère une résistance plus élevée aux dégâts explosifs, au prix d'une réduction de la puissance générale du bouclier.",
+    "pt": "Padrões de ressonância de campo avançados aumentam a resistência ao dano explosivo, em troca da resistência geral do escudo.",
+    "ru": "Улучшенные резонирующие механизмы щита повышают сопротивление урону от взрывов за счет снижения общей мощности щита."
+  },
+  "special_shieldbooster_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_shieldbooster_efficient": {
+    "en": "Advanced software and internal sensors regulate energy flow more efficiently, reducing module power draw.",
+    "de": "Eine fortschrittliche Software und interne Sensoren regeln den Energiefluss effizienter, die Module ziehen also weniger Energie.",
+    "es": "Software avanzado y sensores internos que regulan el flujo de energía de manera más eficiente, lo que reduce el módulo de consumo de energía.",
+    "fr": "L'ajout de logiciels et de capteurs internes sophistiqués permet d'améliorer la circulation de l'énergie et, en conséquence, de réduire la consommation du module.",
+    "pt": "O software avançado e os sensores internos regulam o fluxo de energia de forma mais eficiente, reduzindo o consumo de energia do módulo.",
+    "ru": "Усовершенствованное программное обеспечение и внутренние датчики управляют интенсивностью подачи энергии, снижая ее расход в модуле."
+  },
+  "special_shieldbooster_kinetic": {
+    "en": "Enlarged projection nodes increase resistance to kinetic damage, at the cost of overall shield strength.",
+    "de": "Vergrößerte Projektionsknoten mit besserem Widerstand gegen kinetische Energie, auf Kosten der Schildstärke insgesamt.",
+    "es": "Nodos de proyección aumentados que incrementan la resistencia al daño cinético a costa de la fuerza general del escudo.",
+    "fr": "L'agrandissement des nœuds de projection confère une résistance plus élevée aux dégâts cinétiques, au prix d'une réduction de la puissance générale du bouclier.",
+    "pt": "Os nós de projeção reforçados aumentam a resistência ao dano cinético, em troca da resistência geral do escudo.",
+    "ru": "Усиленная защита от ответной реакции и укрепленные проекционные узлы повышают сопротивление кинетическому урону за счет снижения общей мощности щита."
+  },
+  "special_shieldbooster_chunky": {
+    "en": "Additional, advanced capacitors increases overall shield strength at the cost of damage resistance.",
+    "de": "Zusätzliche, fortschrittliche Kondensatoren erhöhen die allgemeine Schildstärke, auf Kosten des Schadenswiderstands.",
+    "es": "Capacitadores avanzados adicionales que incrementan la fuerza general del escudo a costa de la resistencia al daño.",
+    "fr": "L'ajout de condensateurs sophistiqués supplémentaires permet d'augmenter la puissance générale du bouclier, au prix d'une réduction de la résistance aux dégâts.",
+    "pt": "Capacitores avançados adicionais aumentam a força geral do escudo em troca da resistência ao dano.",
+    "ru": "Дополнительные улучшенные конденсаторы повышают общую мощность щита, но снижают сопротивление урону."
+  },
+  "special_shieldbooster_thermic": {
+    "en": "Improved feedback protection and reinforced projection nodes increase resistance to thermal damage, at the cost of overall shield strength.",
+    "de": "Verbesserter Feedback-Schutz und verstärkte Projektionsknoten mit besserem Widerstand gegen thermische Energie, auf Kosten der Schildstärke insgesamt.",
+    "es": "Protección de retroalimentación mejorada y nodos de proyección reforzados que incrementan la resistencia al daño térmico a costa de la fuerza general del escudo.",
+    "fr": "L'amélioration des mesures de sécurité et le renforcement des nœuds de projection confèrent une résistance plus élevée aux dégâts thermiques, au prix d'une réduction de la puissance générale du bouclier.",
+    "pt": "A proteção de retorno aprimorada e os nós de projeção reforçados aumentam a resistência ao dano térmico, em troca da resistência geral do escudo.",
+    "ru": "Усиленная защита от ответной реакции и укрепленные проекционные узлы повышают сопротивление тепловому урону за счет снижения общей мощности щита."
+  },
+  "special_armour_kinetic": {
+    "en": "Custom angling of plates at critical points along the ship's hull make projectile strikes more likely to glance, reducing the impact of kinetic damage at the cost of structural integrity.",
+    "de": "Eine Art 3D-Überzug, der einen Schiffsrumpf vor Projektilen schützen kann. Der Schaden durch kinetische Energie wird auf Kosten der strukturellen Intaktheit verringert.",
+    "es": "Chapas en ángulo a medida en puntos clave del casco de la nave que hacen que los impactos de los proyectiles sean más propensos a ser desviados, lo que reduce el impacto del daño cinético a costa de la integridad estructural.",
+    "fr": "Des plaques de blindage sont posées sur la coque afin de créer des angles et de faciliter le rebond des projectiles ennemis. Les dégâts cinétiques sont ainsi réduits, au prix d'un affaiblissement de l'intégrité structurelle.",
+    "pt": "A inclinação personalizada das placas em pontos essenciais do casco da nave faz com que o projétil tenha maiores chances de ser defletido, reduzindo o impacto do dano cinético em troca da integridade estrutural.",
+    "ru": "Благодаря расположению пластин обшивки под разными углами снаряды при попадании идут по касательной. При этом сопротивление кинетическому урону повышается, а структурная целостность снижается."
+  },
+  "special_armour_chunky": {
+    "en": "Increased depth of plating increases the ship's overall structural integrity, at the cost of resistance against all types of damage.",
+    "de": "Besonders tiefer und dichter Überzug, der die strukturelle Intaktheit eines Schiffs erhöht, auf Kosten des Widerstands gegen alle Arten von Schaden.",
+    "es": "Aumento de la profundidad del enchapado que incrementa la integridad estructural general de la nave a costa de la resistencia contra todo tipo de daño.",
+    "fr": "L'augmentation de l'épaisseur du blindage renforce l'intégrité structurelle générale du vaisseau, au prix d'une diminution de la résistance contre tous les types de dégâts.",
+    "pt": "O aumento da profundidade do revestimento aumenta a integridade estrutural geral da nave, em troca da resistência contra todos os tipos de danos.",
+    "ru": "Более толстая броня повышает общую структурную целостность корабля за счет снижения сопротивления всем типам урона."
+  },
+  "special_armour_explosive": {
+    "en": "Layers of advanced inert lining material within the ship's plating absorb and redistribute the force from explosive attacks, reducing damage of this type at the cost of overall structural integrity.",
+    "de": "Schichten eines fortschrittlichen Leinenmaterials zerstreuen die Stärke durch Angriffe mit Explosiva. Schaden dieses Typs wird reduziert, auf Kosten der strukturellen Intaktheit.",
+    "es": "Capas de material de revestimiento inerte y avanzado en el enchapado de la nave que absorben y redistribuyen el impacto de los ataques explosivos, lo que reduce el daño de este tipo a costa de la integridad estructural general.",
+    "fr": "L'introduction de couches de matériaux inertes et sophistiqués dans le blindage permet d'absorber et dissiper la puissance dégagée par les attaques explosives. Les dégâts de ce type sont donc réduits, au prix d'un affaiblissement de l'intégrité structurelle générale.",
+    "pt": "As camadas de material de revestimento inerte avançado dentro das placas da nave absorvem e redistribuem a força de ataques explosivos, reduzindo os danos desse tipo em troca da integridade estrutural geral.",
+    "ru": "Несколько слоев обшивки из инертного материала в корпусе корабля поглощают и рассеивают силу взрывов, снижая урон этого типа за счет общей структурной целостности."
+  },
+  "special_armour_thermic": {
+    "en": "Surface coating of advanced formulas designed to reflect and dissipate thermal energy, at the cost of structural integrity.",
+    "de": "Ein Oberflächenüberzug, der durch eine fortschrittliche Formel thermische Energie reflektieren und zerstreuen kann, auf Kosten der strukturellen Intaktheit.",
+    "es": "Revestimiento de la superficie con fórmulas avanzadas diseñadas para reflejar y disipar la energía térmica a costa de la integridad estructural.",
+    "fr": "L'application d'un revêtement chimique sophistiqué permet de réfléchir et dissiper l'énergie thermique, au prix d'un affaiblissement de l'intégrité structurelle.",
+    "pt": "Revestimento superficial com fórmulas avançadas projetadas para refletir e dissipar energia térmica, em troca da integridade estrutural.",
+    "ru": "После особой обработки обшивка отражает и рассеивает тепловую энергию, но структурная целостность нарушается."
+  },
+  "special_powerplant_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_powerplant_highcharge": {
+    "en": "Oversized, reinforced components increase power output at the cost of increased mass.",
+    "de": "Verstärkte Komponenten in Übergröße erhöhen die Energieabgabe auf Kosten einer höheren Masse.",
+    "es": "Componentes reforzados y de mayor tamaño aumentan la capacidad de energía a costa del incremento de la masa.",
+    "fr": "Les composants renforcés et surdimensionnés augmentent la production d'énergie, au prix d'une masse plus élevée.",
+    "pt": "Componentes reforçados e de maior tamanho aumentam a potência em troca do aumento de massa.",
+    "ru": "Компоненты усилены и увеличены сверх меры, благодаря чему повышается выработка энергии, но растет и масса."
+  },
+  "special_powerplant_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_powerplant_cooled": {
+    "en": "Additional thermal conduits and radiator solutions integrated across the module help balance thermal load increase cooling potential.",
+    "de": "Zusätzliche thermische Verstärker und Wärmestrahler sorgen für eine ausgewogene Wärmeverteilung und verbessern das Kühlpotential.",
+    "es": "Conductores térmicos y soluciones del radiador adicionales integradas por el módulo que contribuyen a equilibrar la carga térmica e incrementan el potencial de enfriado.",
+    "fr": "L'ajout de nombreux décupleurs thermiques et radiateurs aide à équilibrer la charge thermique et à augmenter la capacité de refroidissement.",
+    "pt": "Condutores térmicos adicionais e soluções de radiadores integradas ao módulo ajudam a equilibrar o aumento do potencial de resfriamento da carga térmica.",
+    "ru": "Благодаря встроенным в модуль дополнительным проводникам тепла и системам радиаторов, тепловая нагрузка распределяется более равномерно и эффективность охлаждения возрастает."
+  },
+  "special_engine_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_engine_overloaded": {
+    "en": "Removal of safety protocols in controller software to increase drive thrust output at the cost of additional heat generation.",
+    "de": "Die Sicherheitsprotokolle in der Controller-Software wurden entfernt, um den Schub-Output des Antriebs zu erhöhen, allerdings auf Kosten der Hitzegenerierung.",
+    "es": "Eliminación de los protocolos de seguridad en el software de control para incrementar la capacidad de impulso del motor a costa de generación de calor adicional.",
+    "fr": "La suppression de l'intégralité des protocoles de sécurité au niveau du logiciel de contrôle permet d'augmenter les performances de propulsion, au prix d'une forte accumulation de chaleur.",
+    "pt": "Remoção de protocolos de segurança no software do controlador para aumentar o impulso de saída em troca de geração de calor adicional.",
+    "ru": "Протоколы безопасности в программном обеспечении контроллера отключаются. Повышается выработка тепла."
+  },
+  "special_engine_haulage": {
+    "en": "Enhanced fuel and thrust balancing across the drives to improve mass curve efficiency.",
+    "de": "Verbesserte Balance zwischen Treibstoffverbrauch und Schub in allen Antriebskomponenten, zur Verbesserung der Massenkurveeffizienz.",
+    "es": "Combustible e impulsores mejorados equilibrados por los motores para mejorar la eficiencia de curva de masa.",
+    "fr": "L'équilibrage de la répartition du carburant et de la propulsion entre les réacteurs permet d'améliorer les performances à masse égale.",
+    "pt": "Aumento do combustível e do equilíbrio de impulso nas unidades para melhorar a eficiência da curva de massa.",
+    "ru": "Улучшается распределение топлива и тяги в двигателях, и эффективность гравитационной кривой повышается."
+  },
+  "special_engine_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_engine_cooled": {
+    "en": "Additional thermal conduits and radiator solutions integrated across the module help balance thermal load increase cooling potential at the cost of slight mass increase.",
+    "de": "Zusätzliche thermische Verstärker und Wärmestrahler sorgen für eine ausgewogene Wärmeverteilung und verbessern das Kühlpotential auf Kosten eines leicht erhöhten Gewichts.",
+    "es": "Conductores térmicos y soluciones del radiador adicionales integradas por el módulo que contribuyen a equilibrar la carga térmica e incrementan el potencial de enfriado a costa de un ligero incremento de la masa.",
+    "fr": "L'ajout de décupleurs thermiques et radiateurs permet d'équilibrer la charge thermique. Augmente la capacité de refroidissement, au prix d'une légère augmentation de la masse.",
+    "pt": "Os condutores térmicos adicionais e as soluções de radiadores integradas no módulo ajudam a equilibrar o aumento do potencial de resfriamento da carga térmica em troca de um pequeno aumento de massa.",
+    "ru": "Благодаря встроенным в модуль дополнительным проводникам тепла и системам радиаторов тепловая нагрузка распределяется более равномерно и за счет небольшого увеличения массы возрастает эффективность охлаждения."
+  },
+  "special_fsd_fuelcapacity": {
+    "en": "Toughened FSD power conduits and a reinforced charging field increase the amount of fuel injected when charging, allowing larger jumps at the cost of increased power draw.",
+    "de": "Stärkere FSA-Energieleiter und ein verstärktes Ladefeld erhöhen die eingespeiste Treibstoffmenge beim Laden. So werden weitere Sprünge auf Kosten erhöhten Energiebedarfs möglich.",
+    "es": "Conductos de energía MDD endurecidos y un campo de carga reforzado incrementan la cantidad de combustible que se inyecta al cargar, lo que permite saltos más largos a costa de un incremento del consumo de energía.",
+    "fr": "Le renforcement des conduits d'énergie FSD et du réservoir permet d'augmenter la quantité de carburant injectée lors du chargement et, en conséquence, la portée de saut, au prix d'une consommation plus élevée.",
+    "pt": "Os condutores de energia MDD mais resistentes e um campo de carga reforçado aumentam a quantidade de combustível injetado ao carregar, permitindo saltos maiores em troca do aumento do consumo de energia.",
+    "ru": "Укрепленные энергопроводники FSD и усиленное заряжающее поле повышают затраты топлива на зарядку. При этом растет как дальность прыжка, так и энергопотребление."
+  },
+  "special_fsd_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_fsd_heavy": {
+    "en": "Complex software upgrade and internal sensor suite able to optimise frame shift operation by analysing and accounting for ship loadout. Increases optimised mass at the cost of module health.",
+    "de": "Ein komplexes Software-Upgrade und eine interne Sensorensuite sorgen für eine optimierte Frameshift-Funktionalität. Entscheidend dabei: die Analyse der Schiffkonfiguration. Erhöht die optimierte Masse auf Kosten der Modulhaltbarkeit.",
+    "es": "Mejora de software compleja y equipo de sensores internos que permiten optimizar la operación de distorsión al analizar y considerar el equipamiento de la nave. Aumenta la masa optimizada a costa del estado del módulo.",
+    "fr": "L'installation de mises à jour logicielles complexes et d'une série de capteurs internes permet d'optimiser les opérations FSD en intégrant dans les calculs l'analyse minutieuse de la configuration du vaisseau. Permet d'augmenter la masse optimale, au prix de la solidité du module.",
+    "pt": "Atualização complexa de software e conjunto de sensores internos capazes de otimizar a operação de distorção de fase, analisando e levando em conta os equipamentos da nave. Aumenta a massa otimizada em troca do estado do módulo.",
+    "ru": "Комплексное улучшение программного обеспечения и набора внутренних датчиков способствует оптимизации работы рамочно-сместительных двигателей (FSD) путем анализа и учета снаряжения корабля. Оптимизация массы выполняется за счет снижения прочности модуля."
+  },
+  "special_fsd_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_fsd_cooled": {
+    "en": "Additional thermal conduits and radiator solutions integrated across the module help balance thermal load increase cooling potential.",
+    "de": "Zusätzliche thermische Verstärker und Wärmestrahler sorgen für eine ausgewogene Wärmeverteilung und verbessern das Kühlpotential.",
+    "es": "Conductores térmicos y soluciones del radiador adicionales integradas por el módulo que contribuyen a equilibrar la carga térmica e incrementan el potencial de enfriado.",
+    "fr": "L'ajout de nombreux décupleurs thermiques et radiateurs aide à équilibrer la charge thermique et à augmenter la capacité de refroidissement.",
+    "pt": "Condutores térmicos adicionais e soluções de radiadores integradas ao módulo ajudam a equilibrar o aumento do potencial de resfriamento da carga térmica.",
+    "ru": "Благодаря встроенным в модуль дополнительным проводникам тепла и системам радиаторов, тепловая нагрузка распределяется более равномерно и эффективность охлаждения возрастает."
+  },
+  "special_powerdistributor_capacity": {
+    "en": "Additional capacitor arrays allow the power distributor to store more energy at the cost of a slower charging rate.",
+    "de": "Zusätzliche Kondensatorensysteme lassen den Energieverteiler mehr Energie speichern, aber auf Kosten einer langsameren Laderate.",
+    "es": "Sistema de capacitadores adicional que permite que el distribuidor de energía almacene más energía a costa de una tasa de carga más lenta.",
+    "fr": "L'ajout d'une batterie de condensateurs supplémentaires augmente la capacité de stockage d'énergie du répartiteur de puissance, au prix d'une diminution de la vitesse de chargement.",
+    "pt": "Matrizes de capacitores adicionais permitem que o distribuidor de energia armazene mais energia ao custo de uma taxa de carga mais lenta.",
+    "ru": "Дополнительные системы конденсаторов повышают энергоемкость распределителя питания за счет замедления зарядки."
+  },
+  "special_powerdistributor_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_powerdistributor_efficient": {
+    "en": "Advanced software and internal sensors regulate energy flow more efficiently, reducing module power draw.",
+    "de": "Eine fortschrittliche Software und interne Sensoren regeln den Energiefluss effizienter, die Module ziehen also weniger Energie.",
+    "es": "Software avanzado y sensores internos que regulan el flujo de energía de manera más eficiente, lo que reduce el módulo de consumo de energía.",
+    "fr": "L'ajout de logiciels et de capteurs internes sophistiqués permet d'améliorer la circulation de l'énergie et, en conséquence, de réduire la consommation du module.",
+    "pt": "O software avançado e os sensores internos regulam o fluxo de energia de forma mais eficiente, reduzindo o consumo de energia do módulo.",
+    "ru": "Усовершенствованное программное обеспечение и внутренние датчики управляют интенсивностью подачи энергии, снижая ее расход в модуле."
+  },
+  "special_powerdistributor_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_powerdistributor_fast": {
+    "en": "Advanced, oversized energy conduits increase the power distributor's charge rate at the cost of reduced maximum charge potential.",
+    "de": "Fortschrittliche Energieleiter in Übergröße. Erhöhen die Laderate des Energieverteilers auf Kosten eines geringeren Maximumladepotenzials.",
+    "es": "Conductos de energía avanzados y de mayor tamaño que incrementan la tasa de carga del distribuidor de energía a costa de una reducción del potencial de carga máximo.",
+    "fr": "Des conduits à énergie sophistiqués et surdimensionnés augmentent la vitesse de chargement du répartiteur de puissance, au prix d'une réduction de la capacité de chargement totale.",
+    "pt": "Condutores de energia avançados e maiores aumentam a taxa de carga do distribuidor de energia em troca da redução no potencial de carga máximo.",
+    "ru": "Улучшенные и увеличенные энергетические проводники повышают скорость зарядки распределителя питания за счет снижения максимальной энергоемкости."
+  },
+  "special_hullreinforcement_kinetic": {
+    "en": "Custom angling of plates at critical points along the ship's hull make projectile strikes more likely to glance, reducing the impact of kinetic damage at the cost of reducing structural integrity benefits.",
+    "de": "Eine Art 3D-Überzug, der einen Schiffsrumpf vor Projektilen schützen kann. Der Schaden durch kinetische Energie wird auf Kosten der strukturellen Intaktheit verringert.",
+    "es": "Chapas en ángulo a medida en puntos clave del casco de la nave que hacen que los impactos de los proyectiles sean más propensos a ser desviados, lo que reduce el impacto del daño cinético a costa de reducir los beneficios de la integridad estructural.",
+    "fr": "Des plaques de blindage sont posées sur la coque afin de créer des angles et de faciliter le rebond des projectiles ennemis. Les dégâts cinétiques sont ainsi réduits, au prix d'un affaiblissement de l'intégrité structurelle générale.",
+    "pt": "A inclinação personalizada das placas em pontos essenciais do casco da nave faz com que o projétil tenha maiores chances de ser defletido, reduzindo o impacto do dano cinético em troca da redução dos benefícios de integridade estrutural.",
+    "ru": "Благодаря расположению пластин обшивки под разными углами снаряды при попадании идут по касательной. При этом сопротивление кинетическому урону повышается, а структурная целостность снижается."
+  },
+  "special_hullreinforcement_chunky": {
+    "en": "Increased depth of plating increases the ship's overall structural integrity, at the cost of resistance against all types of damage.",
+    "de": "Besonders tiefer und dichter Überzug, der die strukturelle Intaktheit eines Schiffs erhöht, auf Kosten des Widerstands gegen alle Arten von Schaden.",
+    "es": "Aumento de la profundidad del enchapado que incrementa la integridad estructural general de la nave a costa de la resistencia contra todo tipo de daño.",
+    "fr": "L'augmentation de l'épaisseur du blindage renforce l'intégrité structurelle générale du vaisseau, au prix d'une diminution de la résistance contre tous les types de dégâts.",
+    "pt": "O aumento da profundidade do revestimento aumenta a integridade estrutural geral da nave, em troca da resistência contra todos os tipos de danos.",
+    "ru": "Более толстая броня повышает общую структурную целостность корабля за счет снижения сопротивления всем типам урона."
+  },
+  "special_hullreinforcement_explosive": {
+    "en": "Layers of advanced inert lining material within the ship's plating absorb and redistribute the force from explosive attacks, reducing damage of this type at the cost of reducing structural integrity benefits.",
+    "de": "Schichten eines fortschrittlichen Leinenmaterials zerstreuen die Stärke durch Angriffe mit Explosiva. Schaden dieses Typs wird reduziert, auf Kosten der strukturellen Intaktheit.",
+    "es": "Capas de material de revestimiento inerte y avanzado en el enchapado de la nave que absorben y redistribuyen el impacto de los ataques explosivos, lo que reduce el daño de este tipo a costa de reducir los beneficios de la integridad estructural.",
+    "fr": "L'introduction de couches de matériaux inertes et sophistiqués dans le blindage permet d'absorber et dissiper la puissance dégagée par les attaques explosives. Les dégâts de ce type sont donc réduits, au prix d'un affaiblissement de l'intégrité structurelle générale.",
+    "pt": "As camadas de material de revestimento inerte avançado dentro das placas da nave absorvem e redistribuem a força de ataques explosivos, reduzindo os danos desse tipo em troca da redução dos benefícios de integridade estrutural.",
+    "ru": "Несколько слоев обшивки из инертного материала в корпусе корабля поглощают и рассеивают силу взрывов, снижая урон этого типа за счет снижения общей структурной целостности."
+  },
+  "special_hullreinforcement_thermic": {
+    "en": "Surface coating of advanced formulas designed to reflect and dissipate thermal energy, at the cost of reducing structural integrity benefits.",
+    "de": "Ein Oberflächenüberzug, der durch eine fortschrittliche Formel thermische Energie reflektieren und zerstreuen kann, auf Kosten der strukturellen Intaktheit.",
+    "es": "Revestimiento de la superficie con fórmulas avanzadas diseñadas para reflejar y disipar la energía térmica a costa de reducir los beneficios de la integridad estructural.",
+    "fr": "L'application d'un revêtement chimique sophistiqué permet de réfléchir et dissiper l'énergie thermique, au prix d'un affaiblissement de l'intégrité structurelle.",
+    "pt": "Revestimento superficial com fórmulas avançadas projetadas para refletir e dissipar energia térmica, em troca da redução dos benefícios de integridade estrutural.",
+    "ru": "После особой обработки обшивка отражает и рассеивает тепловую энергию, но структурная целостность снижается."
+  },
+  "special_shieldcell_oversized": {
+    "en": "Oversized cells offer increased cell strength at cost of an increased spin up time.",
+    "de": "Übergroße Zellen, die eine erhöhte Zellenstärke auf Kosten einer längeren Hochdrehzeit bieten.",
+    "es": "Células de mayor tamaño que ofrecen una potencia de célula mayor a costa de un incremento del tiempo de giro.",
+    "fr": "Des cellules surdimensionnées confèrent une puissance plus élevée, au prix de l'allongement du temps de chargement.",
+    "pt": "As células de maior tamanho proporcionam o aumento da resistência da célula em troca de um aumento no tempo de rotação.",
+    "ru": "Увеличение размера дает ячейкам повышенную мощность, но время раскрутки возрастает."
+  },
+  "special_shieldcell_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_shieldcell_efficient": {
+    "en": "Advanced software and internal sensors regulate energy flow more efficiently, reducing module power draw.",
+    "de": "Eine fortschrittliche Software und interne Sensoren regeln den Energiefluss effizienter, die Module ziehen also weniger Energie.",
+    "es": "Software avanzado y sensores internos que regulan el flujo de energía de manera más eficiente, lo que reduce el módulo de consumo de energía.",
+    "fr": "L'ajout de logiciels et de capteurs internes sophistiqués permet d'améliorer la circulation de l'énergie et, en conséquence, de réduire la consommation du module.",
+    "pt": "O software avançado e os sensores internos regulam o fluxo de energia de forma mais eficiente, reduzindo o consumo de energia do módulo.",
+    "ru": "Усовершенствованное программное обеспечение и внутренние датчики управляют интенсивностью подачи энергии, снижая ее расход в модуле."
+  },
+  "special_shieldcell_gradual": {
+    "en": "Uprated resonating coils maximise the amount of time the shield cell can remain active before depleting, at the cost of overall strength of the cell charge.",
+    "de": "Verbesserte Resonanzspulen maximieren die Dauer, in der die Schildzelle aktiv bleiben kann, bevor sie verbraucht ist. Dies auf Kosten der Gesamtstärke der Zellenladung.",
+    "es": "Bobinas de resonancia modernizadas que maximizan el tiempo por el que la célula de escudo puede mantenerse activa antes de agotarse a costa de la potencia general de la carga de la célula.",
+    "fr": "L'amélioration des bobines de résonnance permet d'allonger la durée d'activité des cellules de bouclier, au prix d'une réduction de la puissance générale du bouclier.",
+    "pt": "As bobinas de ressonância maiores maximizam a quantidade de tempo que a célula de escudo pode permanecer ativa antes de se esgotar, em troca da resistência total da célula de carga.",
+    "ru": "Резонирующие спирали повышенной мощности увеличивают до максимума время работы щита до перезарядки за счет общей мощности заряда ячейки."
+  },
+  "special_shieldcell_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_shield_toughened": {
+    "en": "Additional, hardened supports and bracing further improve module survivability.",
+    "de": "Verbessert die Haltbarkeit von Modulen durch zusätzliche Härtung und Versteifung.",
+    "es": "Soportes y puntales adicionales y reforzados mejoran la supervivencia de los módulos.",
+    "fr": "Le renforcement de l'armature rend le module plus résistant.",
+    "pt": "Suportes e braçadeiras reforçados adicionais melhoram ainda mais a capacidade de sobrevivência do módulo.",
+    "ru": "Дополнительные опоры и крепеж повышают прочность модуля."
+  },
+  "special_shield_regenerative": {
+    "en": "High speed charging units increase shield regeneration rate when active and reforming, at the cost of slightly weaker resistance versus all forms of damage.",
+    "de": "Hochgeschwindigkeits-Ladeeinheiten erhöhen die Schild-Regenerationsrate und das Reformieren, aber auf Kosten eines leicht verschlechterten Widerstand gegen alle Formen von Schaden.",
+    "es": "Unidades de carga de alta velocidad incrementan la tasa de regeneración de escudo cuando está activa y reformándose a costa de una resistencia ligeramente más débil contra todo tipo de daño.",
+    "fr": "La vitesse de régénération du bouclier, actif et en cours de régénération, est augmentée, au prix d'une légère diminution de la résistance contre tous les types de dégâts.",
+    "pt": "As unidades de carga de alta velocidade aumentam a taxa de regeneração do escudo ativo e em recuperação, em troca de uma resistência ligeiramente mais fraca contra todas as formas de danos.",
+    "ru": "Быстрозаряжающиеся модули повышают скорость восполнения щита в состоянии активности и восстановления. При этом сопротивление всем видам урона незначительно снижается."
+  },
+  "special_shield_kinetic": {
+    "en": "Enlarged projection nodes increase resistance to kinetic damage, at the cost of overall shield strength.",
+    "de": "Vergrößerte Projektionsknoten mit besserem Widerstand gegen kinetische Energie, auf Kosten der Schildstärke insgesamt.",
+    "es": "Nodos de proyección aumentados que incrementan la resistencia al daño cinético a costa de la fuerza general del escudo.",
+    "fr": "L'agrandissement des nœuds de projection confère une résistance plus élevée aux dégâts cinétiques, au prix d'une réduction de la puissance générale du bouclier.",
+    "pt": "Os nós de projeção reforçados aumentam a resistência ao dano cinético, em troca da resistência geral do escudo.",
+    "ru": "Увеличенные проекционные узлы повышают сопротивление кинетическому урону за счет снижения общей мощности щита."
+  },
+  "special_shield_health": {
+    "en": "Additional capacitors and projection nodes increase maximum shield strength, at the cost of increased power draw and SYS drain.",
+    "de": "Zusätzliche Kondensatoren und Projektionsknoten erhöhen die maximale Schildstärke, auf Kosten eines erhöhten Energie- und SYS-Bedarfs.",
+    "es": "Capacitadores y nodos de proyección adicionales que incrementan la fuerza del escudo máxima a costa de un incremento de consumo de energía y drenaje del SIS.",
+    "fr": "L'intégration de condensateurs et de nœuds de projection supplémentaires permet d'augmenter la puissance maximale du bouclier, au prix d'une augmentation de la consommation et de l'impact sur le condensateur SYS.",
+    "pt": "Capacitores e nós de projeção adicionais aumentam a força máxima do escudo, em troca do aumento do consumo de energia e drenagem do SYS.",
+    "ru": "Дополнительные конденсаторы и проекционные узлы повышают максимальную мощность щита, но при этом также повышают расход энергии и СИС."
+  },
+  "special_shield_efficient": {
+    "en": "Lightweight component swaps and smaller charging units reduce power draw and SYS drain, at the cost of overall shield effectiveness.",
+    "de": "Der Austausch gegen leichtere Komponenten und kleiner Ladeeinheiten verringert den Energie- und SYS-Bedarf, auf Kosten der allgemeinen Schildeffizienz.",
+    "es": "Intercambio de componentes ligeros y unidades de carga más pequeñas que reducen el consumo de energía y drenaje del SIS a costa de la efectividad general del escudo.",
+    "fr": "Le remplacement des composants par des pièces ultralégères et l'intégration d'unités de chargement plus petites permettent de réduire la consommation et l'impact sur le condensateur SYS, au prix d'une diminution de l'efficacité générale du bouclier.",
+    "pt": "Trocas por componentes leves e unidades de carga menores reduzem o consumo de energia e a drenagem do SYS, em troca da eficiência geral do escudo.",
+    "ru": "Облегченные детали и уменьшенные модули зарядки снижают энергопотребление и расход СИС, но общая эффективность щита снижается."
+  },
+  "special_shield_resistive": {
+    "en": "Reinforced shield weave structures increase resistance versus all types of damage, at the cost of increased power draw and SYS drain.",
+    "de": "Verstärkte Schildgewebe-Strukturen erhöhen den Widerstand gegen alle Arten von Schaden, auf Kosten eines erhöhten Energie- und SYS-Bedarfs.",
+    "es": "Estructuras reforzadas con tejido de escudo que incrementan la resistencia contra todo tipo de daño a costa de un incremento de consumo de energía y drenaje de SIS.",
+    "fr": "La structure renforcée des filaments du bouclier confère une résistance améliorée contre tous les types de dégâts, au prix d'une augmentation de la consommation et de l'impact sur le condensateur SYS.",
+    "pt": "As estruturas reforçadas da rede do escudo aumentam a resistência em relação a todos os tipos de danos, em troca do aumento do consumo de energia e drenagem do SYS.",
+    "ru": "Усиленные механизмы генерации щита повышают сопротивление всем видам урона, но при этом также повышают расход энергии и СИС."
+  },
+  "special_shield_lightweight": {
+    "en": "Key components replaced with versions crafted from lightweight materials and all extraneous parts removed entirely to reduce mass.",
+    "de": "Schlüsselkomponenten wurden durch Leichtmaterialien ersetzt, alle unwesentlichen Teile wurden zur Gewichtsverringerung entfernt.",
+    "es": "Los componentes clave han sido reemplazados con versiones de materiales más ligeros y las partes superfluas han sido eliminadas por completo para reducir la masa.",
+    "fr": "Afin de réduire la masse, les composants clés sont remplacés par des versions en matériaux ultralégers, et les pièces non essentielles sont purement et simplement supprimées.",
+    "pt": "Componentes essenciais substituídos por versões criadas com materiais leves e todas as peças não essenciais removidas para reduzir a massa.",
+    "ru": "Для снижения массы основные компоненты заменяются на облегченные версии, а дополнительные убираются полностью."
+  },
+  "special_shield_thermic": {
+    "en": "Improved feedback protection and reinforced projection nodes increase resistance to thermal damage, at the cost of overall shield strength.",
+    "de": "Verbesserter Feedback-Schutz und verstärkte Projektionsknoten mit besserem Widerstand gegen thermische Energie, auf Kosten der Schildstärke insgesamt.",
+    "es": "Protección de retroalimentación mejorada y nodos de proyección reforzados que incrementan la resistencia al daño térmico a costa de la fuerza general del escudo.",
+    "fr": "L'amélioration des mesures de sécurité et le renforcement des nœuds de projection confèrent une résistance plus élevée aux dégâts thermiques, au prix d'une réduction de la puissance générale du bouclier.",
+    "pt": "A proteção de retorno aprimorada e os nós de projeção reforçados aumentam a resistência ao dano térmico, em troca da resistência geral do escudo.",
+    "ru": "Усиленная защита от ответной реакции и укрепленные проекционные узлы повышают сопротивление тепловому урону за счет снижения общей мощности щита."
+  },
   "special_auto_loader": {
-    "en": "Reloads the weapon while it continues firing."
+    "en": "An experimental upgrade that automatically reloads the weapon, even when firing.",
+    "de": "Durch dieses experimentelle Upgrade wird die Waffe noch während des Abfeuerns nachgeladen.",
+    "es": "Una mejora experimental que recarga automáticamente el arma, incluso cuando está disparando.",
+    "fr": "Grâce à cette amélioration expérimentale, l'arme se recharge automatiquement, même en cours d'utilisation.",
+    "pt": "Uma melhoria experimental que automaticamente recarrega a arma, mesmo enquanto atira.",
+    "ru": "Экспериментальное улучшение, автоматически перезаряжающее оружие. Работает даже во время стрельбы."
   },
   "special_corrosive_shell": {
-    "en": "Reduces the target armour hardness; costs 20% maximum ammo."
+    "en": "Experimental rounds that temporarily weaken hull hardness and increase all damage taken, at the cost of reduced ammo capacity.",
+    "de": "Diese experimentelle Munition kann vorübergehend den Rumpfwiderstand schwächen und damit sämtlichen Schaden erhöhen, bietet aber geringere Munitionskapazitäten.",
+    "es": "Proyectiles experimentales que debilitan temporalmente la dureza del casco y aumentan todo el daño recibido, a costa de una reducción de la capacidad de munición.",
+    "fr": "Munitions expérimentales provoquant l'affaiblissement du blindage de la coque touchée, et donc l'augmentation des dégâts qu'elle subit, mais au prix d'une réduction de la capacité du chargeur.",
+    "pt": "Projéteis experimentais que temporariamente enfraquecem a dureza do casco e aumenta todo o dano tomado, ao custo de capacidade de munição reduzida.",
+    "ru": "Экспериментальные снаряды, снижающие плотность корпуса цели и увеличивающие получаемый ей урон. Установка этой модификации снижает общий боезапас орудия."
   },
   "special_blinding_shell": {
-    "en": "Reduces the target's sensor acuity."
+    "en": "Experimental shells that temporarily reduce a target's sensor acuity upon impact.",
+    "de": "Diese experimentelle Munition reduziert bei Einschlag vorübergehend die Präzision des Zielsensors.",
+    "es": "Proyectiles experimentales que al impactar reducen la precisión de los sensores del objetivo.",
+    "fr": "Munitions expérimentales provoquant à l'impact une réduction temporaire de l'efficacité des capteurs de la cible.",
+    "pt": "Projéteis experimentais que temporariamente reduzem a sensibilidade do sensor no alvo no momento do impacto.",
+    "ru": "Экспериментальные снаряды, снижающие эффективность работы сенсоров при попадании."
   },
   "special_dispersal_field": {
-    "en": "Reduces the target's gimbal and turret tracking."
+    "en": "Experimental upgrade that causes successful strikes to temporarily confuse all gimbal and turret hardpoints on the target, at the cost of direct damage potential.",
+    "de": "Bei erfolgreichen Treffern mit diesem experimentellen Upgrade können vorübergehend alle kardanischen und festen Geschützsysteme des Ziels gestört werden. Die Chance auf direkten Schaden wird dabei allerdings eingeschränkt.",
+    "es": "Mejora experimental que provoca que los impactos confundan temporalmente todos anclajes asistidos y de torreta del objetivo, a costa de perder potencial de daño directo.",
+    "fr": "Modification expérimentale permettant aux tirs qui touchent la cible de provoquer des défaillances de ses tourelles et points d'emport rotatifs, mais au prix d'une réduction des dégâts infligés.",
+    "pt": "Melhoria experimental que faz com que acertos temporariamente confundam todos os encaixes de mira guiada e torreta do alvo, ao custo de potencial de dano direto.",
+    "ru": "Экспериментальное улучшение, снижающее потенциальный прямой урон, но позволяющее временно сбить с наводки орудия на карданной подвеске и турельной установке цели."
   },
   "special_drag_munitions": {
-    "en": "Reduces the target's speed and prevents it from boosting engine thrust."
+    "en": "Experimental munitions that disrupt engine exhaust flow on the target, temporarily preventing ENG power distribution from increasing thrust.",
+    "de": "Diese experimentelle Munition stört die Abgasableitung des Zielantriebs und verhindert damit vorübergehend die Schubkraftsteuerung über die ANT-Verteilungsfunktionen.",
+    "es": "Munición experimental que interrumpe el flujo de escape del motor en el objetivo, impidiendo temporalmente la distribución de energía de MOT para aumento de la impulsión.",
+    "fr": "Munitions expérimentales provoquant le dysfonctionnement temporaire du moteur de la cible. Son répartiteur de puissance MOT ne permet alors plus d'augmenter la poussée.",
+    "pt": "Munições experimentais que perturbam o fluxo de exaustão do motor do alvo, temporariamente prevenindo a distribuição de energia MTR de aumentar a propulsão.",
+    "ru": "Экспериментальные боеприпасы, нарушающие работу системы выхлопных газов двигателя цели и временно не дающие ей увеличить тягу."
   },
   "special_force_shell": {
-    "en": "Pushes the target off course."
+    "en": "A modification to allow firing of low explosive shells, designed to generate a propelling blast. Strikes to a target are capable of forcing ships off course, at the cost of shot accuracy.",
+    "de": "Diese Modifikation ermöglicht das Abfeuern von Granaten, die zwar einzeln eine nur geringe Sprengkraft bieten, zusammen aber ein Schiff vom Kurs abbringen können. Dies funktioniert allerdings nur zu Lasten der Schussgenauigkeit.",
+    "es": "Una modificación que permite disparar proyectiles explosivos, diseñados para generar un estallido de propulsión. Los impactos son capaces de sacar de su curso a las naves, a costa de perder precisión en el tiro.",
+    "fr": "Munitions explosives déflagrantes, conçues pour provoquer un souffle puissant. Les tirs touchant la cible sont capables de modifier le cap du vaisseau. Cette modification entraîne néanmoins une réduction de la précision de tir.",
+    "pt": "Uma modificação que permite atirar projéteis de baixa explosão, desenvolvidos para gerar uma explosão propulsante. Ataques a um alvo são capazes de forçar naves fora do curso, ao custo da precisão do tiro.",
+    "ru": "Модификация, позволяющая выпускать небольшие разрывные снаряды, которые мощно взрываются, сбивая цель с курса. При установке снижает точность орудия."
   },
   "special_fsd_interrupt": {
-    "en": "Reboots the target's frame shift drive."
+    "en": "Experimental munitions that cause the frame shift drive on the impacted ship to reboot, at the cost of reduced damage.",
+    "de": "Diese experimentelle Munition bewirkt zwar weniger Schaden, dafür aber zwingt sie den Frameshiftantrieb des getroffenen Schiffs zum Neustart.",
+    "es": "Municiones experimentales que causan un reinicio del motor de distorsión de la nave en la que impactan, a costa de una reducción del daño.",
+    "fr": "Munitions expérimentales provoquant la réinitialisation du réacteur FSD de la cible. Entraîne néanmoins une réduction des dégâts.",
+    "pt": "Munições experimentais que causam com que o motor de distorção de fase da nave impactada reinicie, ao custo de uma redução no dano desferido a mesma.",
+    "ru": "Экспериментальные боеприпасы, перезагружающие FSD корабля, оказавшегося в зоне взрыва, но наносящие пониженный урон."
   },
   "special_high_yield_shell": {
-    "en": "Deals 50/50 kinetic/explosive damage with module splash damage."
+    "en": "Modified munitions that convert a portion of damage to explosive, capable of hitting multiple internal modules if the attack breaches the hull, at the cost of a reduced fire rate.",
+    "de": "Diese modifizierte Munition verwandelt einen Teil der Schadenswirkung in explosive Energie, sodass gleich mehrere interne Module getroffen werden können, wenn der Rumpf aufbricht. Der Nachteil hierbei ist allerdings die verringerte Feuerrate.",
+    "es": "Munición modificada que convierte una parte del daño a explosivo, capaz de impactar múltiples módulos internos si el ataque penetra el casco, a costa de una cadencia de tiro reducida.",
+    "fr": "Certains des dégâts provoqués par ces munitions modifiées deviennent des dégâts explosifs. Les tirs touchant la cible peuvent endommager plusieurs modules internes, si l'attaque transperce la coque. Cette modification entraîne néanmoins une réduction de la cadence de tir.",
+    "pt": "Munições modificadas que convertem uma porção do dano para explosivo, capazes de acertar múltiplos módulos internos se o ataque penetrar o casco, ao custo de cadência de tiro reduzida.",
+    "ru": "Модификация преобразует часть урона во взрывной, благодаря чему снаряды могут повредить сразу несколько внутренних модулей в случае пробития корпуса. Однако при этом приходится жертвовать скоростью атаки."
   },
   "special_distortion_field": {
-    "en": "Deals 50/50 kinetic/thermal damage."
+    "en": "Experimental upgrade that increases damage and converts half of it to kinetic, at the cost of introducing aiming jitter.",
+    "de": "Bei diesem experimentellen Upgrade wird die Hälfte der Schadenswirkung in kinetische Energie verwandelt, wobei dann allerdings auch \"Zittereffekte\" auftreten.",
+    "es": "Mejora experimental que aumenta el daño y convierte la mitad del mismo a cinético, a costa introducir cierta pérdida de puntería.",
+    "fr": "Modification expérimentale augmentant les dégâts infligés, dont la moitié deviennent des dégâts cinétiques, mais il devient alors difficile de maintenir la cible en joue.",
+    "pt": "Melhoria experimental que aumenta o dano e converte metade dele para cinético, ao custo de introduzir nervosismo na mira.",
+    "ru": "Экспериментальное улучшение, усиливающее урон и преобразующее его половину в кинетический за счет увеличения колебаний при прицеливании."
   },
   "special_choke_canister": {
-    "en": "Reboots the target's thrusters."
+    "en": "Experimental munitions capable of disrupting a target's drives, causing them to reboot.",
+    "de": "Mithilfe dieser experimentellen Munition kann der Antrieb eines Ziels ausgesetzt und zum Neustart gezwungen werden.",
+    "es": "Munición experimental capaz de interferir los motores del objetivo, causando que se reinicien.",
+    "fr": "Munitions expérimentales capables de provoquer le dysfonctionnement du moteur de la cible, qui est alors obligée de procéder à son redémarrage.",
+    "pt": "Munições experimentais capazes de perturbar os motores do alvo, causando uma reinicialização.",
+    "ru": "Экспериментальные боеприпасы, вызывающие сбой в двигателе цели и перезапускающие его."
   },
   "special_mass_lock": {
-    "en": "Inhibits the target's frame shift drive."
+    "en": "Experimental warheads incorporating frame shift technology. Successful detonation significantly inhibits charging for supercruise.",
+    "de": "Diese experimentellen Gefechtsköpfe basieren auf der FSA-Technologie. Bei erfolgreichen Treffern werden die Aufladefunktionen für den Supercruise außer Gefecht gesetzt.",
+    "es": "Ojivas experimentales que incorporan la tecnología de distorsión. Una detonación exitosa inhibe significativamente la carga del motor hacia supercrucero.",
+    "fr": "Missiles expérimentaux incorporant des éléments empruntés à la technologie FSD. Les tirs réussis augmentent nettement le temps nécessaire au passage en mode Super-navigation du vaisseau ciblé.",
+    "pt": "Ogivas experimentais incorporando tecnologia de distorção de fase. Detonação com sucesso inibe significativamente o carregamento para supervelocidade.",
+    "ru": "Экспериментальные боеголовки с рамочно-смесительной технологией. При попадании по цели значительно замедляют зарядку гиперкрейсерского режима."
   },
   "special_overload_munitions": {
-    "en": "Converts damage to 50/50 explosive/thermal."
+    "en": "Experimental munitions that convert a portion of explosive damage to thermal.",
+    "de": "Bei dieser experimentellen Munition wird ein Teil der explosiven Schadenswirkung in thermische Energie umgewandelt.",
+    "es": "Munición experimental que convierte una parte del daño explosivo a térmico.",
+    "fr": "Certains des dégâts infligés par ces munitions expérimentales deviennent des dégâts thermiques.",
+    "pt": "Munições experimentais que convertem uma porção de dano explosivo para térmico.",
+    "ru": "Экспериментальные боеприпасы, преобразующие часть урона от взрывов в тепловой."
   },
   "special_penetrator_munitions": {
-    "en": "Deals damage to the target's modules."
+    "en": "Experimental munitions capable of penetrating hull to damage internal modules.",
+    "de": "Diese experimentelle Munition kann den Schiffsrumpf durchdringen und die internen Module beschädigen.",
+    "es": "Munición experimental capaz de penetrar el casco para dañar los módulos internos.",
+    "fr": "Munitions expérimentales capables de transpercer la coque de la cible et d'endommager ses modules internes.",
+    "pt": "Munições experimentais capaz de penetrar o casco para danificar módulos internos.",
+    "ru": "Экспериментальные боеприпасы, способные пробить корпус и повредить внутренние модули."
   },
   "special_deep_cut_payload": {
-    "en": "Deals damage to the target's modules."
+    "en": "Deep cut munitions are guaranteed to penetrate upon impact with hull and are capable of damaging multiple internal modules.",
+    "de": "Diese Durchdringungsprojektile dringen immer in den Schiffsrumpf ein und können gleich mehrere interne Module beschädigen.",
+    "es": "La munición penetradora garantiza la perforación del casco y es capaz de dañar múltiples módulos internos.",
+    "fr": "Munitions conçues pour transpercer la coque de la cible et endommager plusieurs modules internes.",
+    "pt": "Munições de corte profundo garantem a penetração no impacto com o casco e são capazes de danificar múltiplos módulos internos.",
+    "ru": "Эти пробивающие корпус цели снаряды могут повредить сразу несколько внутренних модулей при попадании."
   },
   "special_phasing_sequence": {
-    "en": "10% of damage bypasses shields."
+    "en": "Modulating burst fire system designed to defeat shielding. A small amount of damage is able to bleed through shields and attack the target's hull directly, at the cost of minor damage reduction.",
+    "de": "Dieses modifizierte Salvenschuss-System wurde entwickelt, um Schilde zu überwinden. Ein kleiner Anteil des Schadens durchdringt die Schilde und greift direkt den Rumpf des Ziels an. Dies hat allerdings eine geringe Schadensverringerung zur Folge.",
+    "es": "Sistema de modulación de ráfagas diseñado para superar escudos. Una pequeña cantidad de daño es capaz de \"filtrarse\" a través de los escudos y atacar el casco del objetivo directamente, a costa de una pequeña reducción del daño.",
+    "fr": "Système de tir en rafale modulé, conçu pour surpasser un bouclier. Une petite portion des dégâts ignore ainsi tout bouclier éventuel et vient endommager la coque du navire visé. Cette modification entraîne une légère réduction des dégâts.",
+    "pt": "Sistema de rajada de tiro modulado desenvolvido para derrotar escudos. Uma pequena porção do dano é capaz de \"sangrar\" através dos escudos e atacar o casco do alvo diretamente, ao custo de uma pequena redução no dano.",
+    "ru": "Система модуляции стрельбы очередями, направленная на уничтожение щитов. При попадании из орудия часть урона будет нанесена непосредственно корпусу, а не щитам. При этом незначительно снижается весь наносимый орудием урон."
   },
   "special_plasma_slug": {
-    "en": "Reloads from ship fuel instead of ammunition."
+    "en": "Experimental upgrade allowing plasma slug ammo to be generated directly from ship fuel, at the cost of reduced damage.",
+    "de": "Dieses experimentelle Upgrade kann direkt aus dem Schiffstreibstoff hergestellte Plasmaprojektile verschießen, bietet aber etwas weniger Schadenswirkung.",
+    "es": "Mejora experimental que permite tener munición de plasma generada directamente del combustible de la nave, a costa de un menor daño.",
+    "fr": "Modification expérimentale permettant de générer des munitions à plasma en utilisant le carburant du vaisseau, mais au prix d'une réduction des dégâts infligés.",
+    "pt": "Melhoria experimental permitindo que projéteis de plasma sejam gerados diretamente do combustível da nave, ao custo de dano reduzido.",
+    "ru": "Экспериментальное улучшение, позволяющее преобразовывать топливо корабля в плазменные снаряды, но снижающее урон от орудия."
   },
   "special_radiant_canister": {
-    "en": "Emits an area of heat and sensor disruption."
+    "en": "Experimental munitions that apply significant heat to all targets caught in the blast radius. In addition, targets' sensors are temporarily disrupted, at the cost of ammo capacity.",
+    "de": "Diese experimentelle Munition setzt alle Ziele im Trefferradius einer enormen Hitzebelastung aus. Zusätzlich werden dabei die Sensoren des Ziels gestört. Die Kehrseite sind die verringerten Munitionskapazitäten.",
+    "es": "Munición experimental que aplica una cantidad significativa de calor a todos los objetivos alcanzados por el radio de la explosión, a costa de capacidad de munición. Además, los sensores de los objetivos se interfieren temporalmente.",
+    "fr": "Munitions expérimentales provoquant une importante accumulation de chaleur pour toutes les cibles se trouvant dans la zone d'effet, qui voient aussi leurs capteurs s'affoler pendant quelque temps. Cette modification entraîne néanmoins une réduction de la capacité du chargeur.",
+    "pt": "Munições experimentais que aplicam calor significativamente em todos os alvos pegos no raio de explosão. Além disso, os sensores dos alvos são temporariamente interrompidos, ao custo de capacidade de munição.",
+    "ru": "Экспериментальные боеприпасы, значительно нагревающие все цели, попавшие в зону поражения. Кроме того, на некоторое время вызывают сбой в работе сенсоров, однако снижают общий боезапас орудия."
   },
   "special_regeneration_sequence": {
-    "en": "Regenerates wingmates’ shields on hits."
+    "en": "Friend or Foe Beam modulation upgrade. When the beam strikes a teammate's shields its energy is regulated, regenerating the shield instead of damaging it.",
+    "de": "Modulationsupgrade für den Freund-Feind-Strahl. Wenn der Strahl den Schild eines Teammitglieds trifft, wird dieser nicht beschädigt, sondern regeneriert.",
+    "es": "Mejora de modulación de rayo amigo o enemigo. Cuando el rayo impacta en los escudos de un compañero de equipo, su energía es regulada, regenerando el escudo en lugar de dañarlo.",
+    "fr": "Modification intégrant un système de modulation d'énergie alliés/ennemis. Les tirs touchant les boucliers des coéquipiers ne leur infligent pas de dégâts, mais les renforcent.",
+    "pt": "Melhoria de modulação Amigo ou Inimigo. Quando o raio atinge o escudo de um membro da equipe sua energia é regulada, regenerando o escudo, em vez de danificá-lo.",
+    "ru": "Модулирующее улучшение для луча «Друг или враг». При попадании по члену команды перенаправляет энергию на его щит и восстанавливает его."
   },
   "special_reverberating_cascade": {
-    "en": "Damages the target's shield generator."
+    "en": "Experimental munitions that overload shields on impact, directly damaging the shield generator.",
+    "de": "Mit dieser experimentellen Munition werden Schilde bei Treffern überladen, sodass der Schildgenerator direkten Schaden nimmt.",
+    "es": "Munición experimental que sobrecarga los escudos al impactar, dañando directamente el generador de escudo.",
+    "fr": "Munitions expérimentales provoquant une surcharge du bouclier à l'impact, ce qui endommage directement le générateur du bouclier.",
+    "pt": "Munições experimentais que sobrecarregam os escudos no impacto, diretamente danificado o gerado de escudo.",
+    "ru": "Экспериментальные боеприпасы, перегружающие щиты при попадании и напрямую поражающие щитогенератор."
   },
   "special_scramble_spectrum": {
-    "en": "Causes the target's modules to malfunction."
+    "en": "Experimental upgrade that allows hull strikes to potentially trigger random malfunctions on the target.",
+    "de": "Durch dieses experimentelle Upgrade werden durch Treffer am Schiffsrumpf des Ziels zufällige Funktionsstörungen ausgelöst.",
+    "es": "Mejora experimental que permite que los impactos en el casco puedan desencadenar potencialmente mal funcionamientos al azar en los módulos del objetivo.",
+    "fr": "Modification expérimentale donnant aux tirs touchant la coque d'un navire ennemi une chance de provoquer le dysfonctionnement d'un module aléatoire.",
+    "pt": "Melhoria experimental que permite ataques ao casco ocasionar potenciais mau funcionamentos aleatórios no alvo.",
+    "ru": "Экспериментальное улучшение, благодаря которому снаряды, попавшие в корпус цели, иногда будут вызывать сбой в работе ее случайного модуля."
   },
   "special_screening_shell": {
-    "en": "Effective against munitions (e.g. missiles)."
+    "en": "Modified firing and targeting mechanism, decreasing reload times and increasing effectiveness against munitions.",
+    "de": "Bei dieser Modifikation des Feuer- und Zielmechanismus werden die Nachladezeiten verringert und die Effektivität gegen Fremdbeschuss vergrößert.",
+    "es": "Modificación del mecanismo de disparo y selección de blanco, que disminuye el tiempo de recarga y aumenta la eficacia contra los proyectiles atacantes.",
+    "fr": "Modification du système de visée et de tir facilitant la destruction des projectiles ennemis et réduisant le temps de rechargement.",
+    "pt": "Mecanismo de tiro e seleção de alvos modificado, diminuindo o tempo de recarga e aumentando a eficiência contra munições.",
+    "ru": "Модифицированный механизм стрельбы и прицеливания, снижающий время перезарядки и увеличивающий эффективность боеприпасов."
   },
   "special_shiftlock_canister": {
-    "en": "Reboots the frame shift drives of ships in the area."
+    "en": "Experimental munitions that cause all frame shift drives caught in the blast radius to reboot, at the cost of reduced damage.",
+    "de": "Diese experimentelle Munition bewirkt zwar weniger Schaden, dafür aber zwingt sie alle Frameshiftantriebe im Explosionsradius zum Neustart.",
+    "es": "Munición experimental que causa el reinicio de todos los motores de distorsión alcanzados por el radio de la explosión, a costa de una reducción del daño.",
+    "fr": "Munitions expérimentales provoquant le dysfonctionnement et le redémarrage du réacteur FSD des cibles dans la zone d'effet de l'explosion. Entraîne néanmoins une réduction des dégâts.",
+    "pt": "Munições experimentais que causam reinicialização em todos os motores de distorção pegos no raio da explosão, ao custo de dano reduzido.",
+    "ru": "Экспериментальные боеприпасы, перезагружающие FSD всех целей, оказавшихся в зоне взрыва, но наносящие пониженный урон."
   },
   "special_smart_rounds": {
-    "en": "Deals no damage to ships that are not the current target."
+    "en": "Friend or foe targeting upgrade that causes rounds to self-destruct before damaging ships that are not currently targeted.",
+    "de": "Dieses Freund-Feind-Zielupgrade zwingt die Projektile zur Selbstzerstörung, bevor andere, nicht anvisierte Schiffe Schaden nehmen.",
+    "es": "Mejora del sistema de selección de objetivos con identificación amigo o enemigo, que hace que los proyectiles se autodestruyan antes de alcanzar las naves que no están actualmente seleccionadas.",
+    "fr": "Modification dotée d'un système d'identification alliés/ennemis. Les projectiles sont conçus de façon à s'autodétruire avant de percuter tout objet qui n'est pas leur cible.",
+    "pt": "Seleção de alvo amigo ou inimigo que causa com que os projéteis seu autodestruírem antes de danificar naves que não estão atualmente selecionadas.",
+    "ru": "Улучшение системы прицеливания «Друг или враг», благодаря которому снаряды будут самоуничтожаться в случае приближения к кораблям, не являющимся целью."
   },
   "special_super_penetrator": {
-    "en": "Deals damage to the target's modules."
+    "en": "Experimental munitions that are capable of penetrating and damaging all modules along its trajectory, at the cost of increased reload times.",
+    "de": "Diese experimentelle Munition bedingt zwar höhere Nachladezeiten, kann dafür aber alle Module auf der Flugbahn durchdringen und beschädigen.",
+    "es": "Munición experimental que es capaz de penetrar y dañar todos los módulos a lo largo de su trayectoria, a costa de un mayor tiempo de recarga.",
+    "fr": "Munitions expérimentales capables de transpercer la cible et d'endommager tous les modules présents sur sa trajectoire. Entraîne néanmoins une augmentation du temps de rechargement.",
+    "pt": "Munições experimentais que são capazes de penetrar e danificar todos os módulos ao longo de sua trajetória, ao custo de tempo recarga aumentado.",
+    "ru": "Экспериментальные боеприпасы, пробивающие корабль насквозь и поражающие все модули, оказавшиеся у них на пути. Данная модификация замедляет процесс перезарядки орудия."
   },
   "special_lock_breaker": {
-    "en": "Causes the target to lose its lock."
+    "en": "Experimental upgrade that breaks target lock on successful strikes.",
+    "de": "Dieses experimentelle Upgrade setzt bei erfolgreichen Treffern die Zielvisierfunktion des Gegners außer Gefecht.",
+    "es": "Mejora experimental que cancela la selección de blanco cuando impacta.",
+    "fr": "Modification expérimentale permettant aux tirs réussis de provoquer la perte de toute cible verrouillée dans l'ordinateur de visée du vaisseau touché.",
+    "pt": "Melhoria experimental que quebra a trava de alvo ao acertar.",
+    "ru": "Экспериментальное улучшение, позволяющее сбивать захват цели при попадании."
   },
   "special_thermal_cascade": {
-    "en": "Increases heat on a shielded target."
+    "en": "Experimental munitions that interact with shields upon detonation, generating significant heat on the target.",
+    "de": "Bei dieser experimentellen Munition wird bei der Explosion auf einem Schild eine enorme Hitzebelastung freigesetzt.",
+    "es": "Munición experimental que interactúa con los escudos tras la detonación, generando un aumento de calor significativo en el objetivo.",
+    "fr": "Munitions expérimentales interagissant avec un bouclier à l'impact afin de provoquer une accumulation de chaleur importante dans le vaisseau ciblé.",
+    "pt": "Munições experimentais que interagem com escudos na detonação, gerando calor significativamente no alvo.",
+    "ru": "Экспериментальные боеприпасы, взаимодействующие с щитами при взрыве и значительно нагревающие цель."
   },
   "special_thermal_conduit": {
-    "en": "Damage scales with the attacker's heat level."
+    "en": "Experimental upgrade that increases damage output based on heat level of the firing ship.",
+    "de": "Bei dieser experimentellen Munition vergrößert sich der Schaden je nach Hitzelevel des abfeuernden Schiffes.",
+    "es": "Mejora experimental que aumenta la cantidad de daño en función del nivel de calor de la nave que dispara.",
+    "fr": "Munitions expérimentales dont les dégâts augmentent en fonction de la température du vaisseau ouvrant le feu.",
+    "pt": "Melhoria experimental que aumenta o dano com base no nível de calor da nave que atira.",
+    "ru": "Экспериментальное улучшение, позволяющее наносить увеличенный урон в случае, когда уровень тепла вашего корабля повышен."
   },
   "special_thermalshock": {
-    "en": "Increases the target's heat."
+    "en": "Articulated focus array designed to spread heat effectively. Strikes to shields and hull impart additional heat into the target.",
+    "de": "Durch die intelligente Struktur wird die Hitze effektiver weitergeleitet. Treffer an Schilden und Rumpf des Ziels generieren zusätzliche Hitzebelastung.",
+    "es": "Enfoque articulado diseñado para dispersar el calor de manera efectiva. Impactos en escudos y casco proporcionan calor adicional en el blanco.",
+    "fr": "Batterie de lentilles articulée, conçue pour répandre la chaleur efficacement. Les tirs touchant un bouclier ou une coque provoquent une accumulation de la chaleur du vaisseau ennemi.",
+    "pt": "Conjunto de foco articulado desenvolvido para espalhar calor efetivamente. Acertos nos escudos e casco causam calor adicional no alvo.",
+    "ru": "Шарнирная направленная система, позволяющая эффективнее распределять тепло. Попадания по щитам и корпусу дополнительно нагревают цель."
   },
   "special_thermal_vent": {
-    "en": "Reduces the attacker's heat when hitting a target."
+    "en": "Experimental upgrade that increases heat dissipation when successfully striking a target, at the cost of increased heat generation when missing.",
+    "de": "Dieses experimentelle Upgrade verbessert bei einem erfolgreichen Treffer die Hitzeableitung, führt aber bei einem Fehlschuss zu erhöhter Hitzegeneration.",
+    "es": "Mejora experimental que aumenta la disipación de calor al impactar con éxito en un objetivo, a costa de una mayor generación de calor cuando se falla.",
+    "fr": "Munitions expérimentales provoquant une réduction de la chaleur du vaisseau ouvrant le feu en cas de tir réussi. Entraîne néanmoins une accumulation de chaleur en cas de tir raté.",
+    "pt": "Melhoria experimental que aumenta a dissipação de calor ao acertar um alvo, ao custo de calor aumentado ao errar.",
+    "ru": "Экспериментальное улучшение, охлаждающее ваш корабль при попадании по противнику, но нагревающее его при промахе."
   }
 }
