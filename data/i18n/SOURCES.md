@@ -78,16 +78,29 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## `experimental-effect-names.jsonc`
 
-- **Acquired:** 2026-08-14 UTC.
-- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`.
+- **Acquired:** 2026-08-30 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
 - **Derivation:** each of the 86 current keys and its English name comes from
-  `data/ships/experimental-effects.jsonc`. The Frontier symbol joins directly to
-  EDSY's `expeffect.fdname`; that record's id selects an explicit `expeffect-<id>` entry
-  from each language file.
-- **Coverage:** English covers all 86 effects; EDSY covers 84 in German and 85 each in
-  Spanish, French, Brazilian Portuguese and Russian.
-- **Manual corrections:** none.
+  `data/ships/experimental-effects.jsonc`, which stays authoritative for canonical
+  English. The Frontier symbol joins to the in-game experimental-effect name table,
+  which supplies every locale for all 86. The table replaces the EDSY join this
+  catalogue previously used: where the two disagree the in-game value is kept, as
+  everywhere else in this repository. It supplies six values EDSY did not carry — all
+  five non-English `special_super_penetrator` names and the German
+  `special_weapon_rateoffire` — and changes two EDSY already carried: German
+  `special_regeneration_sequence` is "Regenerationssequenz" (EDSY
+  "Regenerierungssequenz") and Brazilian Portuguese `special_lock_breaker` is "Quebra da
+  Trava do Alvo" (EDSY "Quebra de Trava de Alvo"). Every other value agrees.
+- **The three `_cooled` variants take their base effect's names.**
+  `special_feedback_cascade_cooled`, `special_plasma_slug_cooled` and
+  `special_super_penetrator_cooled` are pre-engineered rail-gun variants the game does
+  not name separately, so the source marks them as carrying the base effect's entry.
+  Each takes those values, exactly as a shadowing blueprint id takes its generic's.
+- **Coverage:** complete. All 86 effects carry all six locales.
+- **Manual corrections:** the source appends a `†` to every marked cell of the three
+  `_cooled` variants above; it is the acquisition's own shadow marker rather than part of
+  a name, and is removed here.
 
 ## `material-names.jsonc`
 
@@ -209,15 +222,30 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## `experimental-effect-descriptions.jsonc`
 
-- **Acquired:** 2026-08-18 UTC.
-- **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
-  database version `424009901`, last-modified marker `20260810`.
-- **Derivation:** the 29 effects with a `description` project that canonical English
-  value from `data/ships/experimental-effects.jsonc`. Effects without a source-backed
-  description remain absent rather than receiving generated prose.
-- **Coverage:** canonical English covers 29 of 86 effects. The accepted sources carry no
-  localized description table.
-- **Manual corrections:** none.
+- **Acquired:** 2026-08-30 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
+- **Derivation:** each of the 86 current keys comes from
+  `data/ships/experimental-effects.jsonc`; the Frontier symbol joins to the in-game
+  experimental-effect description table, which supplies every locale for all 86. All six
+  values, English included, are the source's verbatim.
+- **This catalogue no longer projects the ships catalogue's `description`.** The two
+  answer different questions and are deliberately different strings. An effect's
+  `description` in `data/ships/experimental-effects.jsonc` is a mechanical note that
+  states what the `modifiers` list cannot — that High Yield Shell deals 50/50
+  kinetic/explosive damage with module splash, say — and 57 of the 86 effects need no
+  such note and carry none. What the game shows a player is display prose that names no
+  magnitudes ("Modified munitions that convert a portion of damage to explosive …"), and
+  it exists for every effect. Projecting one onto the other would have cost the
+  mechanical notes their numbers; storing the display prose here keeps each field doing
+  its own job, and the ships catalogue is unchanged.
+- **Coverage:** complete. All 86 effects carry all six locales.
+- **Manual corrections:** 26 of the source's descriptions begin with one or more
+  bracketed tokens — `[ShieldRegen]`, and `[SnsrBlinding][Heat]` on
+  `special_radiant_canister`. A token is byte-identical across all six locales and is
+  left untranslated in each, so it is an identifier the game's client consumes rather
+  than text meant for a player; the tokens are removed here. The `†` shadow marker
+  described under `experimental-effect-names.jsonc` is removed from descriptions too.
 
 ## `pre-engineered-variant-names.jsonc`
 
@@ -245,8 +273,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 Localized coverage follows the accepted sources and is not complete for every catalogue or
 stored locale. A language absent from all eleven catalogues is the locale decision
 recorded above rather than a gap. The accepted sources carry only canonical English for
-ship manufacturers, experimental-effect descriptions, 19 of the 77 outfitting-family
-labels, some engineering-group labels, slot and restriction labels, fixed reward names,
-and structured loadout, calculation, SLEF and edit messages. Missing source-backed
+ship manufacturers, 19 of the 77 outfitting-family labels, some engineering-group labels,
+slot and restriction labels, fixed reward names, and structured loadout, calculation,
+SLEF and edit messages. Missing source-backed
 translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).

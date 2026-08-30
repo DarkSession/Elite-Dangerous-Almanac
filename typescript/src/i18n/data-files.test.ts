@@ -35,6 +35,7 @@ import utilityModulesData from '../../../data/ships/modules-utility.jsonc' with 
 import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { registerCatalogueDataTests } from '../internal/catalogue-data-tests.js';
+import type { CatalogueLocale } from './locale.js';
 import type { LocalizedNameCatalogue, LocalizedNameMap } from './internal/localized-name.js';
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
@@ -75,7 +76,6 @@ interface NamedSymbol {
 
 interface NamedValue {
     readonly name: string;
-    readonly description?: string;
 }
 
 interface ShipValue extends NamedSymbol {
@@ -140,7 +140,6 @@ test('English names and identifiers stay aligned with every owning ships catalog
 
 test('new display text stays aligned with its owning ships catalogues', () => {
     const ships = shipsData as readonly ShipValue[];
-    const effects = effectsData as Readonly<Record<string, NamedValue>>;
     const groups = (engineeringOptionsData as EngineeringOptionsData).groups;
     const variants = preEngineeredData as readonly PreEngineeredValue[];
 
@@ -160,20 +159,6 @@ test('new display text stays aligned with its owning ships catalogues', () => {
         moduleFamilyNamesData as LocalizedNameMap,
         moduleFamiliesData as Readonly<Record<string, string>>,
     );
-    assertDirectEnglishNames(
-        effectDescriptionsData as LocalizedNameMap,
-        Object.fromEntries(
-            Object.entries(effects)
-                .filter(
-                    (entry): entry is [string, NamedValue & { readonly description: string }] =>
-                        entry[1].description !== undefined,
-                )
-                .map(([experimentalEffectSymbol, effect]) => [
-                    experimentalEffectSymbol,
-                    effect.description,
-                ]),
-        ),
-    );
     assertEnglishNames(
         preEngineeredNamesData as LocalizedNameCatalogue,
         Object.fromEntries(
@@ -188,6 +173,27 @@ test('new display text stays aligned with its owning ships catalogues', () => {
             ]),
         ),
     );
+});
+
+const STORED_LOCALES: readonly CatalogueLocale[] = ['en', 'de', 'es', 'fr', 'pt', 'ru'];
+
+test('experimental-effect descriptions cover the effect registry in every locale', () => {
+    const effects = effectsData as Readonly<Record<string, NamedValue>>;
+    const descriptions = effectDescriptionsData as LocalizedNameMap;
+
+    // The descriptions are the game's own display prose, not a projection of the
+    // mechanical `description` the ships catalogue carries, so this asserts the key set
+    // and the locale coverage rather than string equality with that field.
+    assert.deepEqual(Object.keys(descriptions).sort(), Object.keys(effects).sort());
+    for (const [experimentalEffectSymbol, record] of Object.entries(descriptions)) {
+        for (const locale of STORED_LOCALES) {
+            assert.equal(
+                typeof record[locale],
+                'string',
+                `${experimentalEffectSymbol} has no ${locale} description`,
+            );
+        }
+    }
 });
 
 test('English names and symbols stay aligned with every owning materials catalogue', () => {

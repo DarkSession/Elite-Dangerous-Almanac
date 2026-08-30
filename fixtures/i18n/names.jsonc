@@ -286,7 +286,31 @@
       "kind": "experimentalEffectDescription",
       "identifier": "special_auto_loader",
       "locale": "en",
-      "expected": "Reloads the weapon while it continues firing."
+      "expected": "An experimental upgrade that automatically reloads the weapon, even when firing."
+    },
+    {
+      "kind": "experimentalEffectDescription",
+      "identifier": "special_auto_loader",
+      "locale": "de-DE",
+      "expected": "Durch dieses experimentelle Upgrade wird die Waffe noch während des Abfeuerns nachgeladen."
+    },
+    {
+      "kind": "experimentalEffectDescription",
+      "identifier": "special_auto_loader",
+      "locale": "it",
+      "expected": null
+    },
+    {
+      "kind": "experimentalEffect",
+      "identifier": "special_super_penetrator",
+      "locale": "ru",
+      "expected": "Модуль сверхпробития"
+    },
+    {
+      "kind": "experimentalEffect",
+      "identifier": " SPECIAL_WEAPON_RATEOFFIRE ",
+      "locale": "de",
+      "expected": "Multi-Servos"
     }
   ]
 }
