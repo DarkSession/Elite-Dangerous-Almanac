@@ -9,6 +9,7 @@ import { stripJsonComments } from '../../scripts/jsonc.mjs';
 import { BuildMetrics } from './build-metrics.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { getModuleBySymbol } from './modules.js';
+import { parseSlotName } from './slots.js';
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import { getBlueprintGrade } from './blueprints.js';
@@ -89,9 +90,9 @@ function assemble(build: CorpusBuild): ShipLoadout {
         };
     });
     // A corpus record is an outfitting build that omits the hull's built-in cargo hatch,
-    // which `fromLoadout` restores from the default loadout while importing the stated
-    // modules atomically. `setModule` is the invariant-preserving editor API and
-    // intentionally makes fitting order observable.
+    // and usually its planetary approach suite too; `fromLoadout` restores both from the
+    // default loadout while importing the stated modules atomically. `setModule` is the
+    // invariant-preserving editor API and intentionally makes fitting order observable.
     return ShipLoadout.fromLoadout({ Ship: build.ship, Modules: modules });
 }
 
@@ -143,7 +144,7 @@ test('the corpus covers every hull with 2-5 builds and unique ids', () => {
     assert.equal(perHull.size, SHIPS.length, 'every hull in the shipyard has builds');
 });
 
-test('every corpus module fits and import restores the omitted cargo hatch', () => {
+test('every corpus module fits and import restores the mounts it omits', () => {
     for (const build of builds) {
         const loadout = assemble(build);
         const validation = loadout.validation();
@@ -153,10 +154,15 @@ test('every corpus module fits and import restores the omitted cargo hatch', () 
         assert.equal(validation.valid, true, `${build.id}: invalid fit (${diagnostics})`);
         assert.equal(validation.complete, true, `${build.id}: incomplete fit (${diagnostics})`);
         const occupied = loadout.slots().filter((slot) => slot.module !== null);
+        // No corpus record states the built-in cargo hatch and most state no approach
+        // suite either; import stocks whichever of the two the build left out.
+        const statedSuite = build.modules.some(
+            (entry) => parseSlotName(entry.slot)?.restriction === 'planetaryApproachSuite',
+        );
         assert.equal(
             occupied.length,
-            build.modules.length + 1,
-            `${build.id}: fitted modules plus built-in cargo hatch`,
+            build.modules.length + (statedSuite ? 1 : 2),
+            `${build.id}: fitted modules plus the mounts import stocks`,
         );
         // A build always fills its seven core internals; that is what makes it flyable.
         assert.equal(

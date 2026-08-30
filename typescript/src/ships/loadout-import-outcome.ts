@@ -5,12 +5,13 @@ import type { PreEngineeredVariant } from './pre-engineered.js';
  *
  * @remarks
  * `ShipLoadout.fromLoadout` states the rules these outcomes report: a removable mount is
- * `emptied` of an article the catalogue cannot resolve, and a fixed mount is `defaulted`
- * to the hull's stock article whenever the source left none it can hold — with a `null`
- * `sourceSymbol` when the source named nothing there at all. A module whose source stated
- * a recipe and no `Modifiers` reports `unresolvedEngineering` when neither a craftable
- * recipe nor a catalogued article answers to what it named, because that module alone
- * keeps the figures of an unengineered one. Two further entries report a *reading* the
+ * `emptied` of an article the catalogue cannot resolve, while armour, a core internal,
+ * the cargo hatch and the planetary approach suite are `defaulted` to the hull's stock
+ * article whenever the source left none they can hold — with a `null` `sourceSymbol` when
+ * the source named nothing there at all. A module whose source stated a recipe and no
+ * `Modifiers` reports `unresolvedEngineering` when neither a craftable recipe nor a
+ * catalogued article answers to what it named, because that module alone keeps the
+ * figures of an unengineered one. Two further entries report a *reading* the
  * import chose rather than a change it made: `ambiguousEngineering` where an identity-only
  * block was rolled while a catalogued article answers to it just as well, and
  * `rerolledEngineering` where a stated modifier block moved nothing the module has and the
@@ -39,7 +40,7 @@ export type LoadoutImportOutcome =
           readonly sourceSymbol: string;
       }
     | {
-          /** The hull's stock module was installed in a fixed mount. */
+          /** The hull's stock module was installed in a mount import keeps filled. */
           readonly action: 'defaulted';
           /** Exact slot spelling used by the normalized build. */
           readonly slot: string;
