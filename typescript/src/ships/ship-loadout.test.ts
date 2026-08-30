@@ -2552,13 +2552,29 @@ test('an approach suite the source did state is the one imported', () => {
     // An article the mount cannot hold is the hull's to correct, as in any stocked mount —
     // and unlike a mount stocked from silence, that substitution does void the capture's
     // own figures: it swapped out an article whose mass and price nothing records.
-    const wrong = ShipLoadout.fromLoadout({
+    //
+    // The two events differ in that one entry alone. Every other mount is named, so
+    // nothing else is stocked and nothing else can be what voids the figures — which is
+    // the whole of the asymmetry this change turns on, and it is invisible on a capture
+    // thin enough for the stocked core internals to void them anyway.
+    const capture = (suite: string): LoadoutEvent => ({
         Ship: 'sidewinder',
         ModulesValue: 5000,
         Rebuy: 1000,
         UnladenMass: 25,
-        Modules: [{ Slot: 'PlanetaryApproachSuite', Item: 'int_cargorack_size1_class1' }],
+        Modules: [
+            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' },
+            { Slot: 'MainEngines', Item: 'int_engine_size2_class1' },
+            { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size2_class1' },
+            { Slot: 'LifeSupport', Item: 'int_lifesupport_size1_class1' },
+            { Slot: 'PowerDistributor', Item: 'int_powerdistributor_size1_class1' },
+            { Slot: 'Radar', Item: 'int_sensors_size1_class1' },
+            { Slot: 'FuelTank', Item: 'int_fueltank_size1_class3' },
+            { Slot: 'Armour', Item: 'sidewinder_armour_grade1' },
+            { Slot: 'PlanetaryApproachSuite', Item: suite },
+        ],
     });
+    const wrong = ShipLoadout.fromLoadout(capture('int_cargorack_size1_class1'));
     assert.deepEqual(
         wrong.importOutcomes.find((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
         {
@@ -2570,8 +2586,16 @@ test('an approach suite the source did state is the one imported', () => {
     );
     assert.equal(wrong.modulesValue, null);
     assert.equal(wrong.rebuy, null);
-    // The recomputed figure, not merely a moved one: hull plus the stock suite's zero.
+    // The recomputed figure, not merely a moved one: the 25 t hull plus 11.4 t of core
+    // internals, the bulkhead, tank, hatch and suite each adding nothing.
     assert.ok(near(wrong.unladenMass!, 36.4));
+
+    // The same fit with a suite the mount accepts keeps every figure the capture stated,
+    // so it is the refusal that voids them and not the import.
+    const accepted = ShipLoadout.fromLoadout(capture('int_planetapproachsuite'));
+    assert.equal(accepted.modulesValue, 5000);
+    assert.equal(accepted.rebuy, 1000);
+    assert.equal(accepted.unladenMass, 25);
 });
 
 test('import stocks the approach suite for exactly the sources that model no such mount', () => {

@@ -344,10 +344,10 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     // power, which `default-loadouts.test.ts` pins. The suite's 500 Cr is the one price a
     // stocked article carries, and the credit figures stand anyway: at 500 Cr, dropping a
     // commander's whole purchase record would lose far more than the figure is off by.
-    // Whether the total already covered the mount depends on
-    // the exporter — one Inara export's leaves exactly the suite's discounted price
-    // unaccounted for, four others' match their listed modules to the credit, and the
-    // Cutter capture's own per-module figures are unreliable either way.
+    // Whether the total already covered the mount depends on the exporter — one Inara
+    // export's leaves exactly the suite's discounted price unaccounted for, four others'
+    // match their listed modules to the credit, and the Cutter capture's own per-module
+    // figures are unreliable either way.
     for (const fallback of defaults) {
         const parsed = parseSlotName(fallback.slot);
         const stocked = parsed === null ? null : stockedMountKind(parsed);

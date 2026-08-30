@@ -195,9 +195,9 @@ read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` an
 the hull defaults, it drops the capture's aggregates too: mass, cargo and fuel are recomputed
 from the normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing
 records what the discarded article cost. A mount stocked from *absence* changes none of
-them: the bulkhead and the cargo hatch are free and weightless, and the planetary approach
-suite is weightless and costs 500 Cr — too little to drop a commander's purchase record
-over.
+them: the bulkhead and the cargo hatch are free and weightless, and the planetary
+approach suite is weightless and costs 500 Cr — too little to drop a commander's
+purchase record over.
 
 **Absent is not zero, anywhere in the library** — and it is never a plausible-looking
 constant either. A catalogue field the source did not carry is omitted rather than

@@ -241,8 +241,9 @@ mount** — armour, a core internal, the cargo hatch, the planetary approach sui
 filled with that hull's stock article whenever the event did not leave a fitting one there
 — one the catalogues cannot resolve, one the mount cannot hold (a cargo rack in `Armour`,
 a size-8 plant in a size-2 mount, anything at all in the cargo hatch), or none at all.
-Only those four kinds are corrected this way: every other optional, hardpoint or utility mount
-may stand empty, so an article the catalogue resolves but the mount refuses is left where
+Only those four kinds are corrected this way: every other optional, hardpoint or utility
+mount may stand empty, so an article the catalogue resolves but the mount refuses is left
+where
 the event put it, for `validation` to report. A stock replacement carries the source's
 `On`, `Priority` and `Health` across but none of its engineering or captured value.
 
