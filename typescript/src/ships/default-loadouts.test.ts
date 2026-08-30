@@ -33,6 +33,25 @@ test('every hull carries a free, weightless stock bulkhead and cargo hatch', () 
     }
 });
 
+test('every hull carries a weightless, powerless stock approach suite', () => {
+    // What lets import stock the approach-suite mount from absence without touching a
+    // capture's mass or its power budget — see `normalizeLoadoutEvent`. Its 500 Cr is the
+    // one price a stocked article carries, and the credit figures stand anyway: a source
+    // that names no such mount is an exporter that does not model one, not a ship that
+    // sold its suite.
+    for (const loadout of DEFAULT_LOADOUTS) {
+        const fitted = loadout.modules.find(
+            (module) => parseSlotName(module.slot)?.restriction === 'planetaryApproachSuite',
+        );
+        assert.ok(fitted, `${loadout.symbol}: no stock approach suite`);
+        assert.equal(fitted.symbol.toLowerCase(), 'int_planetapproachsuite_advanced');
+        const stats = getModuleBySymbol(fitted.symbol, ALL_MODULES);
+        assert.ok(stats, `${loadout.symbol}: unknown ${fitted.symbol}`);
+        assert.equal(stats.mass, 0, `${loadout.symbol} approach suite mass`);
+        assert.equal(stats.powerDraw, 0, `${loadout.symbol} approach suite power draw`);
+    }
+});
+
 test('every ship has one default loadout and every fitted symbol resolves', () => {
     assert.equal(DEFAULT_LOADOUTS.length, fixture.shipCount);
     assert.deepEqual(

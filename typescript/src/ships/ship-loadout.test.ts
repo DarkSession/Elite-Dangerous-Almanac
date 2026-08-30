@@ -1124,7 +1124,9 @@ test('fromSlef reads the ship identity and top-level figures', () => {
     assert.deepEqual(build.fuelCapacity, { main: 128, reserve: 1.14 });
     assert.equal(build.cargoCapacity, 16);
     assert.equal(build.hullValue, 189326510);
-    assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length);
+    // One more than the export listed: it names no approach-suite mount, so import
+    // stocks the hull's own advanced suite there.
+    assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length + 1);
 });
 
 test('loadout validation makes empty builds explicit', () => {
@@ -2437,6 +2439,72 @@ test('the planetary approach suite states its own mount instead of being special
             captured.Slot,
             mod(captured.Item, INTERNAL_MODULES),
         ),
+    );
+});
+
+test('an import with no approach-suite mount is stocked with the advanced suite', () => {
+    // Exporters that do not model the mount write no entry for it, and every hull leaves
+    // the shipyard carrying the advanced suite, so an absent mount is filled rather than
+    // read as a suite the commander sold.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' }],
+    });
+    const fitted = build.fittedModuleAt('PlanetaryApproachSuite');
+    assert.equal(fitted?.symbol.toLowerCase(), 'int_planetapproachsuite_advanced');
+    assert.equal(fitted?.effectiveStats?.mass, 0);
+    assert.deepEqual(
+        build.importOutcomes.find((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
+        {
+            action: 'defaulted',
+            slot: 'PlanetaryApproachSuite',
+            sourceSymbol: null,
+            replacementSymbol: 'int_planetapproachsuite_advanced',
+        },
+    );
+
+    // The mount is stocked, not fixed: what the import put there can be sold or swapped.
+    assert.equal(
+        build.slots().find((slot) => slot.restriction === 'planetaryApproachSuite')?.removable,
+        true,
+    );
+    build.removeModule('PlanetaryApproachSuite');
+    assert.equal(build.fittedModuleAt('PlanetaryApproachSuite'), null);
+    assert.equal(build.validation().complete, true);
+});
+
+test('an approach suite the source did state is the one imported', () => {
+    // Stocking fills silence; it never overrides a suite the source named. The basic
+    // suite is a legitimate fit, and a capture that spells it out keeps it.
+    const stated = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [
+            { Slot: 'PlanetaryApproachSuite', Item: 'int_planetapproachsuite' },
+            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1' },
+        ],
+    });
+    assert.equal(
+        stated.fittedModuleAt('PlanetaryApproachSuite')?.symbol.toLowerCase(),
+        'int_planetapproachsuite',
+    );
+    assert.equal(
+        stated.importOutcomes.some((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
+        false,
+    );
+
+    // An article the mount cannot hold is the hull's to correct, as in any stocked mount.
+    const wrong = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'PlanetaryApproachSuite', Item: 'int_cargorack_size1_class1' }],
+    });
+    assert.deepEqual(
+        wrong.importOutcomes.find((outcome) => outcome.slot === 'PlanetaryApproachSuite'),
+        {
+            action: 'defaulted',
+            slot: 'PlanetaryApproachSuite',
+            sourceSymbol: 'int_cargorack_size1_class1',
+            replacementSymbol: 'int_planetapproachsuite_advanced',
+        },
     );
 });
 
@@ -6531,10 +6599,12 @@ test('a slot key is matched with surrounding whitespace ignored, everywhere', ()
 
 test('a build imported from Inara binds every one of its lower-cased slots', () => {
     // Inara lower-cases every slot key, as the SLEF specification's own example does.
-    // The build is otherwise ordinary, so every mount it names must bind.
+    // The build is otherwise ordinary, so every mount it names must bind. Its 27 entries
+    // reach 29 fitted mounts: Inara writes neither the cargo hatch nor an approach-suite
+    // mount, and import stocks both.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.fittedModules().length, 28);
-    assert.equal(build.slots().filter((s) => s.module !== null).length, 28);
+    assert.equal(build.fittedModules().length, 29);
+    assert.equal(build.slots().filter((s) => s.module !== null).length, 29);
 
     // ...reached by the journal's own spelling, which is not the one it wrote.
     assert.equal(
@@ -6650,7 +6720,7 @@ test('a lower-cased build exports in slot order', () => {
         .map((s) => s.key.toLowerCase())
         .filter((key) => ordered.includes(key));
     assert.deepEqual(ordered, layoutOrder);
-    assert.equal(ordered.length, 28);
+    assert.equal(ordered.length, 29);
 });
 
 test("a core mount's function name reaches its slot only where casing is the difference", () => {

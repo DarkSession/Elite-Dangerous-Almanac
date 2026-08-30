@@ -446,10 +446,16 @@ test('a source-record SLEF string carries the captured figures', () => {
 
 test('re-importing a source-record export carries the record forward', () => {
     // The export is a capture in its own right, so reading it back records the same
-    // purchase — which is what makes the round trip a way to hand the provenance on.
+    // purchase — which is what makes the round trip a way to hand the provenance on. It
+    // lists one module more than the capture did, the approach suite import stocked for a
+    // mount the capture never named, and the record prices that one no more than the
+    // capture did.
     const build = ShipLoadout.fromLoadout(deepBlackEvent);
     const reimported = ShipLoadout.fromLoadout(build.toLoadoutEvent({ credits: 'source' }));
-    assert.deepEqual(shapeOf(reimported.sourcePurchase!), shapeOf(build.sourcePurchase!));
+    assert.deepEqual(shapeOf(reimported.sourcePurchase!), {
+        ...shapeOf(build.sourcePurchase!),
+        moduleCount: build.sourcePurchase!.moduleCount + 1,
+    });
 });
 
 test('an edited build re-exports a record whose parts still add up', () => {

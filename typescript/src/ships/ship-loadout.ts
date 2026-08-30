@@ -663,19 +663,28 @@ export class ShipLoadout {
      * hull-geometry key (`PaintJob`, `ShipCockpit`, a numbered decal, …), or when it is
      * the built-in cargo hatch. Everything else is normalized, and every change is
      * recorded by {@link importOutcomes}: an unresolved module in a removable mount is
-     * discarded, while armour, the seven core internals and the cargo hatch are filled
-     * from the hull defaults whenever the event left no article that mount can hold — an
-     * unresolved symbol, a resolved one the mount refuses, and no entry at all are
-     * corrected alike, each keeping the source's `On`, `Priority` and `Health`. A
-     * removable mount may stand empty, so an article *it* refuses stays where the event
-     * put it and is reported by {@link validation | validation()} instead.
+     * discarded, while armour, the seven core internals, the cargo hatch and the
+     * planetary approach suite are filled from the hull defaults whenever the event left
+     * no article that mount can hold — an unresolved symbol, a resolved one the mount
+     * refuses, and no entry at all are corrected alike, each keeping the source's `On`,
+     * `Priority` and `Health`. Every other removable mount may stand empty, so an article
+     * *it* refuses stays where the event put it and is reported by
+     * {@link validation | validation()} instead.
+     *
+     * **The approach suite is stocked because silence about it is not a decision.** Every
+     * hull is supplied with the advanced suite, which is weightless and draws no power, so
+     * no build gains by shedding one — while an exporter that carries no such mount, as
+     * Inara does not, writes no entry for it either. The suite therefore joins the mounts
+     * an absent entry fills rather than empties. It stays removable afterwards, so a build
+     * that really does fly without one is one {@link removeModule} away.
      *
      * Normalization makes the captured aggregates untrustworthy, so they are dropped:
      * {@link unladenMass}, {@link cargoCapacity} and {@link fuelCapacity} are recomputed
      * from the fit that remains, {@link modulesValue} and {@link rebuy} read `null`, and
      * {@link sourcePurchase} still reports what the capture stated. A mount stocked from
-     * *absence* is the exception where its stock article is free and weightless — the
-     * bulkhead and the cargo hatch both are — and every figure stands.
+     * *absence* is the exception and every figure stands: the bulkhead and the cargo hatch
+     * are free and weightless, and the approach suite is weightless and stands for one the
+     * captured ship was flying anyway, its 500 Cr already paid.
      *
      * Use this factory rather than replaying a complete loadout through the incremental
      * {@link setModule} editor.
@@ -860,8 +869,9 @@ export class ShipLoadout {
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
         }
-        // The same mounts import stocks, from the same hull defaults: a build without
-        // them is a ship that cannot fly.
+        // The mounts a build cannot fly without, from the same hull defaults import
+        // stocks them from. Import stocks the approach suite too; this factory leaves it
+        // open along with every other optional mount.
         const fitted = (getDefaultLoadout(ship.symbol)?.modules ?? []).filter((module) => {
             const parsed = parseSlotName(module.slot);
             return parsed !== null && fixedSlotReason(parsed) !== null;
@@ -1063,8 +1073,8 @@ export class ShipLoadout {
 
     /**
      * What the import made of this build: the changes it applied, in source order,
-     * followed by the fixed mounts stocked from the hull defaults because the source
-     * named none, in the defaults' own order, followed by what it made of each module's
+     * followed by the mounts stocked from the hull defaults because the source named
+     * none, in the defaults' own order, followed by what it made of each module's
      * stated engineering.
      *
      * @returns A deeply frozen list. It is empty for builds created with
@@ -1073,8 +1083,9 @@ export class ShipLoadout {
      * @remarks
      * Each entry names the exact slot, and the source identity where the source gave one.
      * `emptied` means an unknown module was removed from a removable mount; `defaulted`
-     * names the stock article fitted to armour, a core internal or the cargo hatch, with
-     * a `null` `sourceSymbol` when the source named nothing there at all.
+     * names the stock article fitted to armour, a core internal, the cargo hatch or the
+     * planetary approach suite, with a `null` `sourceSymbol` when the source named
+     * nothing there at all.
      * `rerolledEngineering` names a module whose stated `Modifiers` moved no stat it
      * carries, so the recipe beside them was rolled in their place.
      *
@@ -2558,7 +2569,8 @@ export class ShipLoadout {
                 // A stocked core internal the capture never listed is an article aboard
                 // that nobody paid for, and comparing the priced slots cannot see it: the
                 // capture has no entry to disagree with. A stock bulkhead or hatch costs
-                // nothing, so neither moves the totals.
+                // nothing, and a stocked approach suite stands for one the captured ship
+                // was carrying all along, so none of the three moves the totals.
                 sourceTotalsVoided: this.#importOutcomes.some(
                     (outcome) =>
                         outcome.sourceSymbol === null &&

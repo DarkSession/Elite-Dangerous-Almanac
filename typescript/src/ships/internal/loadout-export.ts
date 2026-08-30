@@ -42,7 +42,8 @@ interface LoadoutExportInput {
      * against the priced slots can see an addition, only a swap or a removal, and
      * filling an empty mount by an edit deliberately leaves the totals standing: the
      * caller made that change and can see it. This one nobody asked for. A stocked
-     * bulkhead or cargo hatch is free, so it does not set this.
+     * bulkhead or cargo hatch is free, and a stocked planetary approach suite stands for
+     * one the captured ship was flying anyway, so neither sets this.
      */
     readonly sourceTotalsVoided?: boolean;
 }

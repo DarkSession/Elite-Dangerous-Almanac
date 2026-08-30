@@ -133,12 +133,14 @@ empty mount and both still stand. `HullValue` always stands, because it names no
 narrow.
 
 Import normalization narrows it the same way before you have edited anything, and on one
-more ground than an edit: a module the catalogue cannot resolve, one a fixed mount cannot
+more ground than an edit: a module the catalogue cannot resolve, one a stocked mount cannot
 hold, and a core internal the capture named *no* module for are all discarded or stocked
 from the hull defaults, which leaves that slot unpriced and drops the two totals. Filling
 an empty mount yourself leaves them standing because you can see the change; this one you
-did not make. Free articles are the exception: a bulkhead stocked from absence, and a
-cargo hatch the capture left unpriced or priced at zero, leave the totals alone.
+did not make. Three stocked-from-absence articles are the exception and leave the totals
+alone: a bulkhead, a cargo hatch the capture left unpriced or priced at zero, and a
+planetary approach suite, whose 500 Cr the captured ship had already paid — a source that
+names no such mount is an exporter that does not model one.
 `build.importOutcomes` says which — see
 [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 

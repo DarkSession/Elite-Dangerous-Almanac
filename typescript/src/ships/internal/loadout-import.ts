@@ -20,6 +20,7 @@ import type {
 import type { LoadoutImportOutcome } from '../loadout-import-outcome.js';
 import { isFinalGuardianWeaponEngineering, unrollableFixedArticle } from './loadout-engineering.js';
 import { moduleFitProblem } from './loadout-fitting.js';
+import { stockedMountKind } from './loadout-slot-rules.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import {
     cloneLoadoutModule,
@@ -173,19 +174,19 @@ function captureEngineering(engineering: ModuleEngineering): ModuleEngineering {
     };
 }
 
-/** The hull's mounts, expanded only when a fixed mount has to be judged. */
+/** The hull's mounts, expanded only when a stocked mount has to be judged. */
 function hullLayout(shipSymbol: string): readonly BuildSlot[] {
     const slots = getShipSlots(shipSymbol);
     return slots ? enumerateSlots(slots) : [];
 }
 
 /**
- * Whether this fixed mount refuses the article the capture put in it.
+ * Whether this stocked mount refuses the article the capture put in it.
  *
  * An unrecognised hull answers no: without its layout there is nothing to judge against,
  * and the capture is the only account of the ship there is.
  */
-function fixedMountRejects(
+function stockedMountRejects(
     shipSymbol: string,
     layout: readonly BuildSlot[],
     slot: string,
@@ -291,25 +292,26 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
         if (isNonOutfittingSlot(slot) || isBuiltInHullModule(module)) continue;
 
         const stats = builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
-        const slotKind = parseSlotName(slot)?.kind;
+        const parsed = parseSlotName(slot);
+        const stocked = parsed === null ? null : stockedMountKind(parsed);
         const fallback =
-            slotKind === 'core' || slotKind === 'armour' || slotKind === 'cargoHatch'
-                ? defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase())
-                : undefined;
-        // A fixed mount is the hull's, not the capture's: resolving the symbol only says
+            stocked === null
+                ? undefined
+                : defaults.find((candidate) => candidate.slot.toLowerCase() === slot.toLowerCase());
+        // A stocked mount is the hull's, not the capture's: resolving the symbol only says
         // it names some module, not one this mount can hold. A capture that puts a cargo
         // rack in `Armour`, a size-8 plant in a Sidewinder's size-2 mount, or anything at
         // all in the hatch describes a ship that cannot exist, so the hull's own article
         // goes there — the same substitution an unresolvable symbol already gets. Only a
-        // fixed mount is corrected this way: an optional or hardpoint mount can legally
-        // stand empty, so a bad article there is the caller's to see and remove.
+        // stocked mount is corrected this way: any other optional or hardpoint mount can
+        // legally stand empty, so a bad article there is the caller's to see and remove.
         const rejected =
             fallback !== undefined &&
             (stats === null ||
                 // Every legitimate hatch left this loop above; `moduleFitProblem` refuses
                 // that mount to every article, so it cannot tell the rest apart.
-                slotKind === 'cargoHatch' ||
-                fixedMountRejects(event.Ship, (layout ??= hullLayout(event.Ship)), slot, stats));
+                stocked === 'cargoHatch' ||
+                stockedMountRejects(event.Ship, (layout ??= hullLayout(event.Ship)), slot, stats));
         if (stats !== null && !rejected) continue;
 
         if (fallback) {
@@ -338,15 +340,15 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
     // A mount the source named nothing for leaves the same hole as one it named an
     // unresolvable article for, so both are filled from the hull defaults. Only a stocked
     // core internal invalidates the capture's aggregates: the stock bulkhead and hatch
-    // weigh and cost nothing, which `default-loadouts.test.ts` pins.
+    // weigh and cost nothing, and the stock approach suite weighs nothing and draws no
+    // power, which `default-loadouts.test.ts` pins. The suite's 500 Cr is the one price a
+    // stocked article carries, and the credit figures stand anyway — an absent
+    // approach-suite mount is an exporter that does not model one, not a ship flying
+    // without one, so what the capture stated already describes a ship carrying it.
     for (const fallback of defaults) {
-        const slotKind = parseSlotName(fallback.slot)?.kind;
-        if (
-            (slotKind !== 'core' && slotKind !== 'armour' && slotKind !== 'cargoHatch') ||
-            matchingKeyIn(modules, fallback.slot) !== null
-        ) {
-            continue;
-        }
+        const parsed = parseSlotName(fallback.slot);
+        const stocked = parsed === null ? null : stockedMountKind(parsed);
+        if (stocked === null || matchingKeyIn(modules, fallback.slot) !== null) continue;
         const slot = ownKeyIn(modules, fallback.slot);
         modules.set(slot, { Slot: slot, Item: fallback.symbol });
         outcomes.push({
@@ -355,7 +357,7 @@ export function normalizeLoadoutEvent(rawEvent: LoadoutEvent): ImportedLoadoutSt
             sourceSymbol: null,
             replacementSymbol: fallback.symbol,
         });
-        if (slotKind === 'core') invalidatesAggregates = true;
+        if (stocked === 'core') invalidatesAggregates = true;
     }
     if (invalidatesAggregates) {
         delete top.ModulesValue;

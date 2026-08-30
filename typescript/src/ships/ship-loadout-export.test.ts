@@ -49,15 +49,18 @@ test('a SLEF export survives a round trip through toSlef', () => {
     const event = ShipLoadout.fromSlef(slefString).toLoadoutEvent();
     const parsed = parseSlef(ShipLoadout.fromSlef(slefString).toSlefString(TEST_SLEF_OPTIONS));
 
+    // The export names no approach-suite mount, so import stocks the hull's own and the
+    // round trip carries it after everything the source did state.
+    const suite = 'int_planetapproachsuite_advanced';
     assert.equal(parsed.length, 1);
     assert.equal(parsed[0]!.data.Ship, source.Ship);
     assert.deepEqual(
         parsed[0]!.data.Modules.map((m) => m.Slot),
-        source.Modules.map((m) => m.Slot),
+        [...source.Modules.map((m) => m.Slot), 'PlanetaryApproachSuite'],
     );
     assert.deepEqual(
         event.Modules.map((m) => m.Item),
-        source.Modules.map((m) => m.Item),
+        [...source.Modules.map((m) => m.Item), suite],
     );
 });
 
@@ -409,9 +412,9 @@ test('shared import normalization strips unknown modules and defaults named moun
             rebuy: expected.rebuy,
         },
     );
-    // Every hull carries a default for all nine fixed mounts, and import fills them
-    // whether the source named an unresolvable article or named nothing, so a capture
-    // this thin still imports as a flyable build.
+    // Every hull carries a default for all ten mounts import keeps filled, and it fills
+    // them whether the source named an unresolvable article or named nothing, so a
+    // capture this thin still imports as a flyable build.
     assert.equal(build.validation().complete, expected.complete);
 });
 
@@ -1044,7 +1047,8 @@ test('moduleOrder "slots" drops no module, even in a slot the layout omits', () 
     const event = ShipLoadout.fromLoadout(withStrayHardpoint).toLoadoutEvent({
         moduleOrder: 'slots',
     });
-    assert.equal(event.Modules.length, withStrayHardpoint.Modules.length);
+    // One more than the source stated: the approach suite import stocks for it.
+    assert.equal(event.Modules.length, withStrayHardpoint.Modules.length + 1);
     assert.equal(event.Modules.at(-1)!.Slot, 'HugeHardpoint9');
 });
 
@@ -1133,29 +1137,53 @@ test('a capture that omits a core mount pays for the article import stocks there
     assert.ok(!Object.hasOwn(sourceEvent, 'Rebuy'));
 });
 
+/** A complete Sidewinder capture, less the mounts a test wants import to stock. */
+const sidewinderCapture = (omitted: readonly string[]): LoadoutEvent => ({
+    Ship: 'sidewinder',
+    ModulesValue: 5000,
+    Rebuy: 1000,
+    UnladenMass: 25,
+    Modules: [
+        { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1', Value: 5000 },
+        { Slot: 'MainEngines', Item: 'int_engine_size2_class1' },
+        { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size2_class1' },
+        { Slot: 'LifeSupport', Item: 'int_lifesupport_size1_class1' },
+        { Slot: 'PowerDistributor', Item: 'int_powerdistributor_size1_class1' },
+        { Slot: 'Radar', Item: 'int_sensors_size1_class1' },
+        { Slot: 'FuelTank', Item: 'int_fueltank_size1_class3' },
+        { Slot: 'Armour', Item: 'sidewinder_armour_grade1' },
+        { Slot: 'PlanetaryApproachSuite', Item: 'int_planetapproachsuite_advanced' },
+    ].filter((fitted) => !omitted.includes(fitted.Slot)),
+});
+
 test('a capture that omits only its bulkhead keeps every figure it stated', () => {
     // The stock bulkhead is free and weightless on every hull, as the cargo hatch is, so
     // stocking one costs the capture's own aggregates nothing.
-    const build = ShipLoadout.fromLoadout({
-        Ship: 'sidewinder',
-        ModulesValue: 5000,
-        Rebuy: 1000,
-        UnladenMass: 25,
-        Modules: [
-            { Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1', Value: 5000 },
-            { Slot: 'MainEngines', Item: 'int_engine_size2_class1' },
-            { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size2_class1' },
-            { Slot: 'LifeSupport', Item: 'int_lifesupport_size1_class1' },
-            { Slot: 'PowerDistributor', Item: 'int_powerdistributor_size1_class1' },
-            { Slot: 'Radar', Item: 'int_sensors_size1_class1' },
-            { Slot: 'FuelTank', Item: 'int_fueltank_size1_class3' },
-        ],
-    });
+    const build = ShipLoadout.fromLoadout(sidewinderCapture(['Armour']));
     assert.equal(build.fittedModuleAt('Armour')?.symbol, 'SideWinder_Armour_Grade1');
     assert.equal(build.fittedModuleAt('CargoHatch')?.symbol, 'ModularCargoBayDoor');
     assert.equal(build.modulesValue, 5000);
     assert.equal(build.rebuy, 1000);
     assert.equal(build.unladenMass, 25);
+    const sourceEvent = build.toLoadoutEvent({ credits: 'source' });
+    assert.equal(sourceEvent.ModulesValue, 5000);
+    assert.equal(sourceEvent.Rebuy, 1000);
+});
+
+test('a capture that omits only its approach suite keeps every figure it stated', () => {
+    // The stock suite is weightless and draws no power, and its 500 Cr is not an article
+    // the capture failed to pay for: a source silent about the mount is an exporter that
+    // does not model it, not a ship flying without one. So nothing here is invalidated.
+    const build = ShipLoadout.fromLoadout(sidewinderCapture(['PlanetaryApproachSuite']));
+    // The defaults carry the suite under the journal's own lower-cased spelling, which
+    // is what the stocked mount holds.
+    assert.equal(
+        build.fittedModuleAt('PlanetaryApproachSuite')?.symbol,
+        'int_planetapproachsuite_advanced',
+    );
+    assert.equal(build.unladenMass, 25);
+    assert.equal(build.modulesValue, 5000);
+    assert.equal(build.rebuy, 1000);
     const sourceEvent = build.toLoadoutEvent({ credits: 'source' });
     assert.equal(sourceEvent.ModulesValue, 5000);
     assert.equal(sourceEvent.Rebuy, 1000);
@@ -1350,7 +1378,9 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
     }
     assert.ok(Math.abs(stated.HullValue / ours.HullValue! - 0.975) < 1e-4, 'hull discount');
 
-    // The source's own figures are not lost — they are what the getters report.
+    // The source's own figures are not lost — they are what the getters report. Inara
+    // names no approach-suite mount, and the suite import stocks for it does not disturb
+    // them: it stands for one the captured ship was carrying all along.
     assert.equal(build.modulesValue, stated.ModulesValue);
     assert.equal(build.rebuy, stated.Rebuy);
 
@@ -1365,10 +1395,11 @@ test("the Type-11 export's credits are a purchase record, and ours are retail", 
 });
 
 test('every figure the Type-11 export needs is computable from it', () => {
-    // A build carrying an unpriced module exports no credits at all, so this doubles as
-    // a check that all 27 captured modules and the restored hatch resolve and are priced.
+    // A build carrying an unpriced module exports no credits at all, so this doubles as a
+    // check that all 27 captured modules, the restored hatch and the stocked approach
+    // suite resolve and are priced.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.fittedModules().length, 28);
+    assert.equal(build.fittedModules().length, 29);
     const ours = build.toLoadoutEvent();
     for (const key of [
         'UnladenMass',

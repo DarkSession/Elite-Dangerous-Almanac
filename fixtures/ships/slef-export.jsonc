@@ -14,7 +14,7 @@
 {
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except unknown fixed mounts — armour, core internals and the cargo hatch — which are replaced by that hull's stock modules. A stock replacement carries the source's power state, priority and health — facts about the mount rather than about the article that failed to resolve — and none of its engineering or captured value. A fixed mount the source never named at all is filled from the same defaults, and every hull carries one for all nine, so an imported build is never short a fixed mount. Stocking an absent core internal invalidates the capture's aggregates; an absent bulkhead or cargo hatch does not, both stock articles being free and weightless. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
+    "note": "How an entry in `Modules` is imported. The catalogue has the FIRST say: an article it can identify is retained whatever its slot is called, and so is a `ModularCargoBayDoor*` hatch, which the catalogue carries once for every hull family that names its own. Known cosmetic/hull families are explicitly non-outfitting and are also retained. Every other entry is stripped, except the mounts import keeps filled — armour, the seven core internals, the cargo hatch and the planetary approach suite — which are replaced by that hull's stock modules. A stock replacement carries the source's power state, priority and health — facts about the mount rather than about the article that failed to resolve — and none of its engineering or captured value. Such a mount the source never named at all is filled from the same defaults, and every hull carries one for all ten, so an imported build is never short one. The approach suite is stocked because silence about it is not a decision: every hull is supplied with the advanced suite, it is weightless and draws no power so no build gains by shedding it, and an exporter that carries no such mount (Inara) writes no entry for it either. It stays removable afterwards. Stocking an absent core internal invalidates the capture's aggregates, that article being priced and massed; an absent bulkhead or cargo hatch does not, both stock articles being free and weightless; and an absent approach suite does not either, it being weightless and standing for one the captured ship was flying anyway, its 500 Cr already paid. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -122,6 +122,7 @@
         { "slot": "PowerDistributor", "symbol": "Int_PowerDistributor_Size1_Class1" },
         { "slot": "Radar", "symbol": "Int_Sensors_Size1_Class1" },
         { "slot": "FuelTank", "symbol": "Int_FuelTank_Size1_Class3" },
+        { "slot": "PlanetaryApproachSuite", "symbol": "int_planetapproachsuite_advanced" },
         { "slot": "CargoHatch", "symbol": "ModularCargoBayDoor" }
       ],
       "outcomes": [
@@ -195,6 +196,12 @@
         },
         {
           "action": "defaulted",
+          "slot": "PlanetaryApproachSuite",
+          "sourceSymbol": null,
+          "replacementSymbol": "int_planetapproachsuite_advanced"
+        },
+        {
+          "action": "defaulted",
           "slot": "CargoHatch",
           "sourceSymbol": null,
           "replacementSymbol": "ModularCargoBayDoor"
@@ -222,7 +229,7 @@
   },
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.jsonc",
-    "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount.",
+    "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount, and the export names no planetary approach suite, so import stocks the hull's own advanced suite and its 500 Cr joins the module total. That suite is the 22nd module and the last in `fittedOrder`, the export having listed the other 21.",
     "topLevelKeys": [
       "Ship",
       "ShipName",
@@ -236,11 +243,11 @@
       "Rebuy",
       "Modules"
     ],
-    "moduleCount": 21,
+    "moduleCount": 22,
     "recomputed": {
       "Ship": "explorer_nx",
       "HullValue": 189326510,
-      "ModulesValue": 219515904,
+      "ModulesValue": 219516404,
       "UnladenMass": 1237.3,
       "CargoCapacity": 16,
       "MaxJumpRange": 89.414678,
@@ -248,7 +255,7 @@
         "Main": 128,
         "Reserve": 1.14
       },
-      "Rebuy": 20442120
+      "Rebuy": 20442145
     },
     "physicalFiguresMatchSource": [
       "UnladenMass",
@@ -284,7 +291,8 @@
       "Slot09_Size4",
       "Slot10_Size3",
       "Slot13_Size1",
-      "Slot14_Size1"
+      "Slot14_Size1",
+      "PlanetaryApproachSuite"
     ],
     "slotOrder": [
       "TinyHardpoint5",
@@ -307,6 +315,7 @@
       "Slot10_Size3",
       "Slot13_Size1",
       "Slot14_Size1",
+      "PlanetaryApproachSuite",
       "CargoHatch"
     ],
     "afterEdit": {
@@ -327,7 +336,7 @@
         "Modules"
       ],
       "recomputed": {
-        "ModulesValue": 219424623,
+        "ModulesValue": 219425123,
         "UnladenMass": 1233.7,
         "CargoCapacity": 16,
         "MaxJumpRange": 89.643693,
@@ -335,7 +344,7 @@
           "Main": 160,
           "Reserve": 1.14
         },
-        "Rebuy": 20437556
+        "Rebuy": 20437581
       }
     }
   },

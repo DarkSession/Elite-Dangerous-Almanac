@@ -25,8 +25,10 @@
  * What a build file records: what is fitted where (journal slot key + module symbol), the module's
  * power priority when it is not 0, `on: false` when the author left a module unpowered, and the
  * engineering the author declared (blueprint + grade, and the experimental effect where one is
- * fitted). The fixed cargo hatch is omitted from `modules` and restored from the hull's default
- * loadout before `metrics` is derived. Declared engineering is NOT applied — every figure comes
+ * fitted). The fixed cargo hatch is omitted from `modules`, and 154 of the builds omit the
+ * planetary approach suite as well; import restores both from the hull's default loadout before
+ * `metrics` is derived. Each is weightless and draws no power, so neither moves a pinned figure.
+ * Declared engineering is NOT applied — every figure comes
  * from stock module stats, so a build designed around an engineered power plant reads
  * `withinBudget: false`. That is the contract, not a defect: it keeps the pinned numbers a pure
  * function of the catalogues, and one that is cheap for a port to reach.
