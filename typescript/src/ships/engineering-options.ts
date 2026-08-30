@@ -8,7 +8,7 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1005 of the 1199 modules — every stock module with an ordinary
+ * The catalogue groups 1000 of the 1194 modules — every stock module with an ordinary
  * engineering menu. The other 194 have no ordinary menu: whole families (fuel tanks,
  * cargo racks, passenger cabins, the repair, recon, research, decontamination and
  * multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
@@ -275,7 +275,7 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * here, so the result is the exact set for this module.
  *
  * **An empty array is the common answer, and it usually means "blueprints only".** 368
- * of the 1005 grouped modules have no experimental slot; all sit in the 27 of 48 groups
+ * of the 1000 grouped modules have no experimental slot; all sit in the 27 of 48 groups
  * that offer none — life support, sensors, the limpet controllers, the utility scanners,
  * and every Guardian group, weapons and modules alike. An ungrouped module answers empty
  * too; {@link getEngineeringGroup} tells the two apart.

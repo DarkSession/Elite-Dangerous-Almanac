@@ -1089,13 +1089,13 @@
     "incompatibleModule": {
       "ship": "Anaconda",
       "slot": "FrameShiftDrive",
-      "module": "Int_Hyperdrive_Size8_Class5",
+      "module": "Int_Hyperdrive_Overcharge_Size8_Class5",
       "expected": {
         "code": "incompatibleModule",
         "constraint": "oversized",
         "params": {
           "slot": "FrameShiftDrive",
-          "symbol": "Int_Hyperdrive_Size8_Class5",
+          "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
           "constraint": "oversized",
           "moduleClass": 8,
           "slotSize": 6

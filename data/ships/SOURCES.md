@@ -16,6 +16,8 @@ Referred to throughout by source name; the pin is here, once.
 | EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
 | msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
 | Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                          | 2026-08-14 UTC |
+| Elite Dangerous in-game purchase capture                                                        | no game version recorded; nine `ModuleBuyAndStore` journal entries from market `128666762`, 17:34-17:37, at a 10% and a 2.5% outfitting discount                            | 2026-08-30 UTC |
+| Elite Dangerous in-game outfitting observation                                                  | no game version recorded; direct in-game observation that outfitting offers no non-SCO size-8 frame shift drive                                                             | 2026-08-30 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -351,7 +353,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`, supplemented
   for the six bundle-granted Vessel Hangars by the pinned CAPI response below.
 - **Identity derivation:** the acquired FDevIDs module records are kept in CSV order
-  within each category file. The catalogue contains 484 internal records and **1199**
+  within each category file. The catalogue contains 484 internal records and **1194**
   records across all four categories. The CSV's numeric `id`
   column is dropped — modules are keyed by `symbol` — and rows marked `removed` are
   excluded because they are not current outfitting modules. `class` is FDevIDs' `class` — the
@@ -384,7 +386,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     II's `Int_MkIIAgileBoost_Engine_*` thrusters.
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
-- **`kind` is the ordinary engineering-menu family.** The 1005 records mapped by
+- **`kind` is the ordinary engineering-menu family.** The 1000 records mapped by
   `engineering-options.jsonc` repeat that map's group key in the compact on-disk `kind`
   field. The remaining 194 records carry no `kind` because they have no ordinary
   engineering menu; this includes the five Enzyme/AX weapons, the fixed Mining Laser and
@@ -393,7 +395,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   Guardian families and coverage are documented under Engineering options below; this
   field is a projection of that map, not a separate classification source.
 - **`familyId` groups every outfitting list.** Every record in all four catalogues
-  carries the id of the family its outfitting list shows it under: 521 core modules in
+  carries the id of the family its outfitting list shows it under: 516 core modules in
   8 families, 484 internal modules in 32, 159 hardpoints in 25, and 35 utility fittings
   in 12. No family crosses an outfitting category. The ids and their canonical English
   names are `module-families.jsonc`, below; localized labels are
@@ -405,7 +407,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   family where their function differs. A core record's family follows from its `slot`,
   which is on every one of them, so the two never disagree.
 - **`supercruiseOvercharge` — the SCO drive line.** The 36
-  `Int_Hyperdrive_Overcharge_*` records carry `true`; the 36 plain drives of the same
+  `Int_Hyperdrive_Overcharge_*` records carry `true`; the 31 plain drives of the same
   sizes and ratings, and every other record in all four catalogues, omit it.
   - **Source:** FDevIDs `outfitting.csv`, which sells the two drive lines under distinct
     symbol families and names the Overcharge one `Frame Shift Drive (SCO)`. No registry
@@ -415,11 +417,13 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     above, and it is applied once here so that consumers read a datum instead of
     matching `Int_Hyperdrive_Overcharge` themselves — which a pre-engineered or fitted
     article's symbol does not always let them do. Stored as a sparse flag rather than a
-    `true`/`false` pair on all 72 drives, following `alwaysPowered` and
+    `true`/`false` pair on all 67 drives, following `alwaysPowered` and
     `guardianZoneResistance`.
   - **Nothing else is derived from it.** The two lines share every jump constant this
     catalogue carries (`optMass`, `maxFuel`, `fuelMul`, `fuelPower`, and the
-    size-determined `fsdHeatRate` above), so no calculation reads the flag; the
+    `fsdHeatRate`, which is a function of a drive's size alone — 10, 14, 18, 27, 37, 43
+    and 50 for sizes 2 to 8, identical on the plain and SCO lines at every size), so no
+    calculation reads the flag; the
     overcharged supercruise behaviour the drives are named for has no published figures
     and none are stored.
 - **`grantOnly` — the articles that arrive granted rather than sold.** Fifteen records
@@ -439,12 +443,11 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     twin bar the price (§Prices), so a screen offering both would show one article twice,
     once unpriced.
   - **It is not a statement about price, and the flag is not extended on a missing one.**
-    Eleven further records carry no `cost` — the five size-8 drives, the three Mk II
-    Vessel Hangars, the two unsold Corrosion Resistant Cargo Racks and the 1B shield
-    generator — and none is flagged. The two racks are the closest case and still fail
-    the rule: no source states them as a hull or bundle grant, and each is its own
-    identity at a capacity no other rack carries, not a second identity for something a
-    station already sells.
+    Three further records carry no `cost` — the two unsold Corrosion Resistant Cargo
+    Racks and the 1B shield generator — and none is flagged. The two racks are the
+    closest case and still fail the rule: no source states them as a hull or bundle
+    grant, and each is its own identity at a capacity no other rack carries, not a second
+    identity for something a station already sells.
 
 ### `module-families.jsonc` — the family ids and their English names
 
@@ -598,14 +601,11 @@ Thirteen stored fields supply the base values referenced by engineering recipes:
 - **`EnergyPerRegen` needs no stored value.** All 57 shield generators carry
   `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
   same stat under the journal's other name.
-- **Nine figures no third-party registry lists, derived from the family rule.** Eight
-  records: the three `*_free` starter fittings (thrusters, drive, sensors — the sensors
-  contribute both a `scannerRange` and a `scanAngle`) and the five plain size-8 drives.
+- **Four figures no third-party registry lists, derived from the family rule.** Three
+  records: the `*_free` starter fittings (thrusters, drive, sensors — the sensors
+  contribute both a `scannerRange` and a `scanAngle`).
   Each `*_free` record is byte-identical to its priced twin apart from the missing
-  `cost`, so it takes that twin's value. A drive's heat rate is a function of its **size
-  alone** across all 66 records EDSY does carry — 10, 14, 18, 27, 37, 43 for sizes 2 to
-  7, identical between the plain and SCO lines at every size — and the size-8 SCO drives
-  are 50, so the size-8 plain drives take 50. Stated as derivation, not as a reading.
+  `cost`, so it takes that twin's value. Stated as derivation, not as a reading.
   The Mk II supercharge-optimised size-8 SCO drive is **not** among them: EDSY publishes
   its `fsdheat: 50` outright, spelling the symbol
   `Int_Hyperdrive_Overcharge_Size8_Class5_Overchargebooster_MkII` where the outfitting
@@ -656,8 +656,8 @@ Two starter capacities are derived rather than read:
 2^size across all eight sizes of both families, with no exception.
 
 **In-game coverage, stated separately from registry coverage.** In-game verification
-covers **1193/1199** catalogue identities. Numeric verification covers **952/1199**
-non-armour modules, and the other **241/1199** verified identities are the ship-specific
+covers **1188/1194** catalogue identities. Numeric verification covers **947/1194**
+non-armour modules, and the other **241/1194** verified identities are the ship-specific
 armour modules; their class, mass, hull boost and resistances retain their registry
 provenance rather than being described as game-verified. The six bundle-granted Vessel
 Hangars rely on the public registry and CAPI evidence below. Their stats match their
@@ -665,8 +665,8 @@ ordinary twins, but they have not been independently checked in the module panel
 
 Every numeric field available through in-game verification was compared. Exact
 full-field coverage includes `powerDraw`
-831/837, `bootTime` 827/833, power-plant output and efficiency 43/43 each, every FSD
-field 72/72, every thruster heat-rate record 40/40, all six distributor fields 49/49,
+826/832, `bootTime` 822/828, power-plant output and efficiency 43/43 each, every FSD
+field 67/67, every thruster heat-rate record 40/40, all six distributor fields 49/49,
 sensor range and angle 41/41, shield mass/strength curves 57/57, shield regeneration
 57/57, shield-cell timing/reinforcement/heat 40/40, fuel-scoop rate 40/40,
 interdictor range/facing 20/20, cargo capacity 16/16, fuel capacity 9/9, hull
@@ -674,7 +674,7 @@ reinforcement 30/30, module protection 20/20, shield addition 10/10, Guardian ju
 boost 5/5, weapon armour piercing 157/157, burst rounds 18/18, burst rate 16/16 and
 rounds per shot 19/19. `powerDraw` and `bootTime` have no discrepancies at all.
 
-In-game verification did not yield the 1173 store prices, hardpoint reserve ammo (120),
+In-game verification did not yield the 1176 store prices, hardpoint reserve ammo (120),
 projectile speed (111), rail-gun charge time (3), or the 23 hardpoint scanners'
 range/angle/time fields. Twenty-one hardpoint maximum-range values, ECM heat and reload,
 the 241 armour modules, blueprint grade rolls and crafting costs remain unverified too.
@@ -731,8 +731,8 @@ external readings of an unmodified weapon's folded figure. On a beam laser the f
 trivial because `damage` is already per second; the huge and medium gimballed beams have
 no separate journal `Damage` reading.
 
-**Every module in every catalogue carries at least one stat** (1199/1199), and no
-record holds only a lone `mass`. 244 of the 833 `bootTime` values are `0` (every hardpoint
+**Every module in every catalogue carries at least one stat** (1194/1194), and no
+record holds only a lone `mass`. 244 of the 828 `bootTime` values are `0` (every hardpoint
 among them); they are stored rather than omitted, because an absent field means
 absent.
 
@@ -842,7 +842,7 @@ heuristic does not keep rediscovering them:
   distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
   put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
 - **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
-  non-integer boot time in all 1199 records, where its three family siblings are exactly 10.
+  non-integer boot time in all 1194 records, where its three family siblings are exactly 10.
   EDSY gives `boottime:9.85`.
 
 ### Prices — `cost` on modules, `hullCost` / `retailCost` on hulls
@@ -857,18 +857,22 @@ the Lynx Highliner, which has no coriolis entry.
 Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined on hull
 and bulkhead name because those records carry no symbol upstream.
 
-- **All 48 hulls are priced. 1173 of 1199 modules are.** The 26 without a price are the
-  fifteen grant/starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
-  Vessel Hangars, the two unsold Corrosion Resistant Cargo Racks (both Community Goal
-  rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure for
-  them. **`cost` is omitted, never set to 0**: `0` is a real price (the starter
+- **All 48 hulls are priced. 1176 of 1194 modules are.** The 18 without a price are the
+  fifteen grant/starter `*_free` variants, the two unsold Corrosion Resistant Cargo Racks
+  (both Community Goal rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry
+  publishes a figure for them. The three Mk II Vessel Hangars are no longer among them:
+  they are priced from an in-game purchase capture, below.
+  **`cost` is omitted, never set to 0**: `0` is a real price (the starter
   Lightweight Alloy bulkhead costs nothing), while omission means unknown.
 - **Sixteen duplicated symbols take the first occurrence's price.** Where coriolis-data
   holds a symbol twice, the "first occurrence wins" rule that governs `mass` governs
   `cost` too; taking the _second_, unpriced record would leave them at `0`. The sixteen:
-  `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 — confirmed independently against a real
-  journal, which prices the fitted module at 3071 = 3500 less the 12.25% outfitting
-  discount that export was taken at; `Int_Hyperdrive_Size5_Class5` 5 103 953;
+  `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 — confirmed independently against Frontier's
+  own journals, which price the fitted module at 3072 at a 12.25% discount
+  (`journal-the-deep-black.jsonc` and `journal-caspian-explorer.jsonc`, twice each). The
+  **3071** in `slef-the-deep-black.jsonc` is an EDSY export's own arithmetic over its own
+  cost table, not a game reading, and the two disagree by a credit here; §Prices read from
+  an in-game purchase capture turns on the difference; `Int_Hyperdrive_Size5_Class5` 5 103 953;
   `Int_CargoRack_Size5_Class1` 111 566 and `_Size6_Class1` 362 591;
   `Int_DetailedSurfaceScanner_Tiny` 250 000; `Hpt_MultiCannon_Fixed_Medium` 38 000;
   `Hpt_Railgun_Fixed_Medium` 412 800; `Hpt_BasicMissileRack_Fixed_Medium` 512 400;
@@ -884,8 +888,11 @@ and bulkhead name because those records carry no symbol upstream.
   registries price they agree exactly (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and
   the only corrosion racks FDevIDs `outfitting.csv` lists at all are those two plus
   `_Size1_Class2` itself — so it is the last of the purchasable ones. It is certainly not
-  free: the Deep Black's journal buys the size-4 at 82 775 = 94 330 less that export's
-  12.25% discount.
+  free: `journal-the-deep-black.jsonc` carries the size-4 at `Value: 82 774` under a
+  12.25% discount. (That reading sits a credit below what 94 330 predicts under the
+  step-wise discount rule in §Prices read from an in-game purchase capture, and is
+  recorded there as a known residual. Earlier revisions of this file quoted **82 775**
+  here as a journal reading; it is the arithmetic, not the capture.)
   - **Read that 12 560 as a 10-granular figure, not a to-the-credit one.** EDSY publishes
     module costs at **10-credit granularity**, which is measured rather than assumed. Two
     observations, both scoped to `eddb.module` — EDSY's outfitting table, where module
@@ -915,9 +922,13 @@ and bulkhead name because those records carry no symbol upstream.
     where both registries publish a multiple of 10 still differ by 10
     (`Int_FighterBay_Size{6,7}_Class1`, `Int_PassengerCabin_Size6_Class1`), which no
     rounding explains: whatever the real price is, at least one of the two registries is
-    wrong about it by five credits or more, and neither says which. So treat 12 560 as the
-    best published figure at 10-credit resolution, not as an accuracy guarantee; only an
-    in-game reading settles the last digits. Every EDSY-sourced price in this catalogue
+    wrong about it by five credits or more, and neither says which. Two of the three are
+    now settled by in-game readings, and coriolis is exactly right in both:
+    `Int_FighterBay_Size7_Class1` is 2 369 320 and `Int_FighterBay_Size6_Class1` is
+    1 869 340, so EDSY's 2 369 330 is the wrong member of that pair (see "Prices read from
+    an in-game purchase capture" below). So treat 12 560 as
+    the best published figure at 10-credit resolution, not as an accuracy guarantee; only
+    an in-game reading settles the last digits. Every EDSY-sourced price in this catalogue
     carries the same granularity, so this record is no less exact than the rest of them.
 - **The size-5 and size-6 Corrosion Resistant Cargo Racks have no list price to
   publish**, and their absent `cost` means _no list price exists_, not _none has been
@@ -968,6 +979,81 @@ and bulkhead name because those records carry no symbol upstream.
 - **Not modelled:** passenger capacity and fighter-bay/rebuild counts. The
   **Merc-Coin** price of the pre-engineered variants is carried, but on the variant
   rather than the module — see `mercCoinCost` in the pre-engineered section.
+
+### Prices read from an in-game purchase capture
+
+Nine `ModuleBuyAndStore` journal entries, all from market `128666762` within four minutes
+on **2026-08-30 UTC** and supplied by the repository owner, price three module records no
+registry carries and confirm or correct six that were already priced. The capture was
+taken at a **10% and a 2.5% discount**, so each `BuyPrice` is the list price with both
+discounts applied. A journal `BuyPrice` is what the commander was actually charged, which
+is the objection that disqualifies a `Loadout` `Value` of unknown provenance (§the size-5
+and size-6 racks): here the discount is stated rather than solved for.
+
+- **The game subtracts a truncated discount at each step; it does not truncate the
+  product.** Each discount takes `floor(price x rate)` off the running price, so
+  `paid = ceil(ceil(list x 0.9) x 0.975)`, and the two orders give the same answer for
+  every row here. This is measured, not assumed: scored against **every** `Loadout`
+  `Value` in `fixtures/ships/journal-*.jsonc` that a catalogue price and a standard
+  discount can reproduce (455 readings), the step-wise rule matches 304, a single
+  `ceil(list x 0.8775)` 275, `round` 230 and `floor` 92. Restricting to 2.5%-only
+  readings gives the same ordering. **Do not derive a price from a single control**: two
+  readings were originally used here and both were unrepresentative, which is how an
+  earlier revision of this section published a truncation rule and eight wrong figures.
+- **`Hpt_HeatSinkLauncher_Turret_Tiny` is the reading that settles the last credit.** Its
+  list price is 3500, both registries agree, and `3500 x 0.8775 = 3071.25`. Frontier's own
+  journals read **3072** — `fixtures/ships/journal-the-deep-black.jsonc` and
+  `journal-caspian-explorer.jsonc`, twice each — which excludes truncation and
+  round-to-nearest alike. The **3071** quoted elsewhere in this file is not a game reading:
+  it comes from `fixtures/ships/slef-the-deep-black.jsonc`, an EDSY SLEF export whose
+  `Value`s are EDSY's own arithmetic. The two documents disagree wherever they overlap
+  (3071/3072, 82 775/82 774, 195 191/195 195), so a third-party export is not admissible
+  as evidence of what the game charged.
+
+| Symbol                                   | Paid       | List price | Was                   |
+| ---------------------------------------- | ---------- | ---------- | --------------------- |
+| `Int_FighterBayMk2_Size5_Class1`         | 697 076    | 794 387    | unpriced              |
+| `Int_FighterBayMk2_Size6_Class1`         | 2 263 678  | 2 579 689  | unpriced              |
+| `Int_FighterBayMk2_Size7_Class1`         | 2 869 128  | 3 269 661  | unpriced              |
+| `Int_FighterBay_Size7_Class1`            | 2 079 079  | 2 369 320  | 2 369 320 (confirmed) |
+| `Int_Hyperdrive_Overcharge_Size8_Class1` | 6 000 827  | 6 838 548  | 6 838 550 (EDSY)      |
+| `Int_Hyperdrive_Overcharge_Size8_Class2` | 18 002 479 | 20 515 645 | 20 515 650 (EDSY)     |
+| `Int_Hyperdrive_Overcharge_Size8_Class3` | 18 002 479 | 20 515 645 | 20 515 650 (EDSY)     |
+| `Int_Hyperdrive_Overcharge_Size8_Class4` | 18 002 479 | 20 515 645 | 20 515 650 (EDSY)     |
+| `Int_Hyperdrive_Overcharge_Size8_Class5` | 54 007 436 | 61 546 935 | 61 546 940 (EDSY)     |
+
+- **Seven of the nine readings pin one integer; two do not, and are settled by other
+  evidence.** A one-credit band of paid price spans `400/351 = 1.14` credits of list price,
+  so a reading admits one or two candidates.
+  - `Int_FighterBayMk2_Size5_Class1` is pinned at 794 387 by the capture **and**
+    independently by a second reading this repository already held: `Value: 774 528` at
+    2.5%, in both `journal-the-deep-black.jsonc` and `journal-caspian-explorer.jsonc`. Two
+    captures at different discounts, one answer.
+  - `Int_FighterBayMk2_Size6_Class1` admits 2 579 689 and 2 579 690. It takes **2 579 689**
+    from the family rule below, which is a derivation and not a reading.
+  - `Int_FighterBay_Size7_Class1` admits 2 369 319 and 2 369 320, and **keeps coriolis's
+    2 369 320** — the reading confirms the published figure rather than moving it, and
+    settles one of the three registry pairs §Prices flags as differing by 10. Its sibling
+    `Int_FighterBay_Size6_Class1` (1 869 340) is confirmed outright by four corvette
+    readings at two different discounts.
+- **The Mk II bays are `floor(Mk I x 1.38)` at every size.** The rule reproduces both
+  independently pinned values exactly — `floor(575 643 x 1.38) = 794 387` and
+  `floor(2 369 320 x 1.38) = 3 269 661` — which is what licenses it to choose 2 579 689 for
+  the size-6 bay. Stated as derivation for that one record, and as an observation for the
+  other two.
+- **The size-8 SCO drives are priced identically to their size-7 siblings.** All four
+  distinct readings land exactly on coriolis's size-7 figures (6 838 548, 20 515 645,
+  61 546 935), and EDSY's size-8 numbers are those same figures rounded to 10. The
+  catalogue previously carried the EDSY rounding; it now carries the readings.
+- **A known residual.** `Int_CorrosionProofCargoRack_Size4_Class1` at 94 330 predicts
+  82 775 under this rule where `journal-the-deep-black.jsonc` reads **82 774**. It is one
+  of a minority of records whose catalogue list price appears to sit a credit or two above
+  the game's, and it is recorded here rather than explained away — it is not evidence for
+  truncation, which the corpus rejects 304 to 92.
+- **What would supersede these figures:** a purchase or outfitting reading at 0% discount,
+  which needs no model at all. Until then they are readings through one measured
+  arithmetic rule, which is a weaker claim than a direct quote and a stronger one than a
+  registry's rounded figure.
 
 ### Armour, and the fields kept deliberately
 
@@ -1057,7 +1143,11 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
   bays at half the mass (10/20/30 t, integrity 60/80/120, power
   0.25/0.35/0.35 MW). The three Mk I **Fighter Hangar** records are named **Mk I Vessel
   Hangar** (same symbols and stats; the Operations update renamed them and let them
-  deploy the Nomad).
+  deploy the Nomad). Their prices — which no registry carries, EDSY having no record of
+  the Mk II bays at all — are read from the in-game purchase capture in §Prices: 794 387,
+  2 579 689 and 3 269 661. Each Mk II bay is `floor(Mk I x 1.38)`; that is an observation
+  about the size-5 and size-7 figures, whose readings pin them outright, and the
+  derivation that settles the size-6 figure, whose reading admits two candidates.
   - **Six bundle-granted variants are separate identities.** The pinned CAPI response
     lists `Int_FighterBay{,Mk2}_Size{5,6,7}_Class1_Free` as modules with `bundle: true`
     and the grant tokens `ELITE_V_MKIFIGHTERBAY_FREE` / `ELITE_V_MKIIFIGHTERBAY_FREE`.
@@ -1087,6 +1177,35 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     carries it `cost: NaN` annotated "never released". A variant that never reached
     players is not a player-facing outfitting record, so it goes the way of the other
     non-purchasable internal variants that rule excludes.
+- **Plain size-8 Frame Shift Drives are not carried: outfitting does not sell them.**
+  `Int_Hyperdrive_Size8_Class{1..5}` are excluded on direct in-game observation
+  (2026-08-30 UTC, §the pinned sources) that no non-SCO size-8 drive is offered. The five
+  `Int_Hyperdrive_Overcharge_Size8_Class{1..5}` records are the size-8 drives the game
+  does sell. Only one hull in the catalogue carries a size-8 frame-shift mount at all —
+  the Caspian Explorer (`Explorer_NX`), every other size-8-capable hull including the
+  Panther Clipper Mk II mounting a size 7 — and `default-loadouts.jsonc` ships that hull
+  with `Int_Hyperdrive_Overcharge_Size8_Class1`, so the one stock size-8 drive in the
+  data is an SCO drive.
+  - **The case rests on the observation, not on the registries, and is weaker than the
+    precedent it follows.** FDevIDs `outfitting.csv` does carry these five rows — which is
+    why they were in the catalogue, and it means the Inclusion rule below, read literally,
+    admits them. What overrides it is this catalogue's own rule that in-game verification
+    governs where a registry disagrees. The other two registries are consistent but not
+    probative: coriolis-data has no record, which is also true of the Mk II Vessel Hangars
+    and the size-5/6 Corrosion Resistant Cargo Racks that _are_ carried; EDSY carries the
+    five commented out, which is also true of `Int_ShieldGenerator_Size1_Class4` below,
+    carried as real. `Int_CorrosionProofCargoRack_Size2_Class1` is the stronger case — no
+    FDevIDs row at all and an explicit EDSY "never released" — so this exclusion is the
+    same _kind_ of judgement on thinner evidence, and a contrary in-game reading should
+    reverse it.
+  - **The 2026-08-14 in-game audit's totals counted these five as verified, and are
+    restated.** That audit reported `identityMatches` 1193 of 1199 with 952 non-armour
+    modules checked numerically, and "every FSD field 72/72" — figures that could not have
+    been true of five records the game does not offer. The corrected accounting is 1188
+    identity matches, 947 non-armour modules and 67/67 FSD fields, with
+    `registryOnlyIdentities` unchanged at 6; `fixtures/ships/module-stats.jsonc` carries
+    the same numbers. This is a manual correction to previously published provenance, not
+    a re-derivation from a new capture.
 - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
   in the game: every other shield-generator size carries all five ratings, and size 1
   ran E/D/C/A with **B missing**. The module is real, so the record is carried with the
@@ -1484,7 +1603,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (48 groups covering 1005 ordinary engineering menus) and each group lists the
+  grouped (48 groups covering 1000 ordinary engineering menus) and each group lists the
   `blueprints` and `experimentals` it offers.
 - **A group carries no display name.** The grouping is this repository's own partition of
   the modules sharing one menu; the game publishes no engineering-group label, heading
@@ -1504,7 +1623,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `modifications/modules.json`, which carries the same per-group lists keyed by the
   journal `BlueprintName`s this catalogue joins on.
 - **Coverage: every retained group EDSY's `mtype` table gives a `blueprints:` key.** After
-  the corrections below, that is 48 groups over 1005
+  the corrections below, that is 48 groups over 1000
   modules, including
   bulkheads (the 241 ship armour records), life
   support, sensors, the Detailed Surface Scanner, refineries, AFMUs, fuel
@@ -1597,13 +1716,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     fixed Expanded Cargo Rack reward identity. Four Operations keys _are_ named by a
     group, because they are recipes a player applies — see "Four Operations recipes are
     listed by a menu" below.
-  - **14 modules are bound by the family rule, not by a source row.** EDSY has no live
-    entry for `Int_Hyperdrive_Size8_Class{1..5}` or `Int_ShieldGenerator_Size1_Class4`
-    (both present but commented out, and both naming their `mtype` — `cfsd` and `isg`),
-    nor for eight of the `*_free` starter fittings. Each takes its family's group, on the
-    same rule the stats above use: a `*_free` variant is its priced twin bar the price,
-    and a size-8 drive is a drive. `Int_FuelTank_Size1_Class3_free` is not bound because
-    fuel tanks are not engineerable.
+  - **9 modules are bound by the family rule, not by a source row.** EDSY has no live
+    entry for `Int_ShieldGenerator_Size1_Class4` (present but commented out, and naming
+    its `mtype` — `isg`), nor for eight of the `*_free` starter fittings. Each takes its
+    family's group, on the same rule the stats above use: a `*_free` variant is its priced
+    twin bar the price. `Int_FuelTank_Size1_Class3_free` is not bound because fuel tanks
+    are not engineerable.
 - **Corpus evidence does not override `noblueprints`.** Two corpus builds declare
   `Weapon_Efficient` on the Mk II Plasma Shock Accelerator, while EDSY denies that module
   every blueprint (`noblueprints: {'*'}`). Coriolis publishes only the group-level menu
@@ -1660,7 +1778,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   five module mappings and the corresponding projected `kind` fields in
   `modules-hardpoint.jsonc`.
 - **An empty experimental menu is still distinct from no menu.** 27 of the 48 groups offer
-  no experimental at all, so 368 of the 1005 grouped modules have an empty experimental
+  no experimental at all, so 368 of the 1000 grouped modules have an empty experimental
   list while retaining blueprints.
 - **Key form:** the Anti-Guardian blueprint is listed under `GuardianModule_Sturdy`, the id
   a Loadout writes and the one EDSY uses — the same and only spelling `blueprints.jsonc`

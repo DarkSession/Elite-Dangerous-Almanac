@@ -2080,7 +2080,7 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
     );
     // Too large for the slot (size-8 drive into a size-6 slot)
     assert.throws(
-        () => conda.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size8_Class5')),
+        () => conda.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Overcharge_Size8_Class5')),
         /exceeds slot size/,
     );
     // Unknown slot key

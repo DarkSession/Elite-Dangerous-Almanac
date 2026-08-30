@@ -38,7 +38,7 @@ stat record whose symbol no identity carries, is an error rather than a silent d
   `data/ships/SOURCES.md`, not an FDevIDs column. **No `category`** — the CSV column of
   that name is what chooses the `--<category>-identities` argument a record is passed
   under, and the output file is what states it, so carrying it on every record would
-  inline the same string 1199 times into consumers' bundles. `slot` names the one fixed
+  inline the same string 1194 times into consumers' bundles. `slot` names the one fixed
   mount a module fills; it is on every core record and on the Guardian Hybrid power
   plants and distributors, and nowhere else. See `data/ships/SOURCES.md` §Modules
   (outfitting);

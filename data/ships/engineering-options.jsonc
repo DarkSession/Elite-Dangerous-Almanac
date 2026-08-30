@@ -44,7 +44,7 @@
  * expanded — subtract it from the group's `experimentals` to get the exact set. Modules
  * absent from `exclusions` take their whole group's list.
  *
- * Only modules with an ordinary engineering menu appear at all, 1005 of the 1199; the
+ * Only modules with an ordinary engineering menu appear at all, 1000 of the 1194; the
  * other 194 are the families no ordinary blueprint reaches, plus the individual modules
  * upstream denies every blueprint. A purchased Mercenary module may still take the bespoke
  * grades 2–5 it is sold with; that purchase-specific route is not an ordinary menu and is
@@ -778,11 +778,6 @@
     "Int_Hyperdrive_Size7_Class3": "frameShiftDrives",
     "Int_Hyperdrive_Size7_Class4": "frameShiftDrives",
     "Int_Hyperdrive_Size7_Class5": "frameShiftDrives",
-    "Int_Hyperdrive_Size8_Class1": "frameShiftDrives",
-    "Int_Hyperdrive_Size8_Class2": "frameShiftDrives",
-    "Int_Hyperdrive_Size8_Class3": "frameShiftDrives",
-    "Int_Hyperdrive_Size8_Class4": "frameShiftDrives",
-    "Int_Hyperdrive_Size8_Class5": "frameShiftDrives",
     "Int_Hyperdrive_Size2_Class1_free": "frameShiftDrives",
     "Int_PowerDistributor_Size1_Class1": "powerDistributors",
     "Int_PowerDistributor_Size1_Class2": "powerDistributors",

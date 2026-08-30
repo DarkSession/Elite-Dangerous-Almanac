@@ -6,7 +6,7 @@
  * together — and the functions that find one ({@link getModuleBySymbol},
  * {@link getModulesByName}, {@link getBulkheadsForShip}).
  *
- * **Every lookup searches all 1199 modules by default.** A journal `Item` string does
+ * **Every lookup searches all 1194 modules by default.** A journal `Item` string does
  * not identify its outfitting category, so callers need no category for lookup:
  *
  * ```ts
@@ -19,11 +19,11 @@
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
- * | `./modules-core` | `CORE_MODULES` | 521 |
+ * | `./modules-core` | `CORE_MODULES` | 516 |
  * | `./modules-internal` | `INTERNAL_MODULES` | 484 |
  * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1199 (the default) |
+ * | `./modules-all` | `ALL_MODULES` | 1194 (the default) |
  *
  * Those four are for **listing** a category — an outfitting screen's hardpoint tab.
  * They make poor narrowing arguments: no module symbol or display name is shared
@@ -466,7 +466,8 @@ export interface OutfittingModuleIdentity {
      *
      * @remarks
      * Absent on the handful of records no registry prices: the starter `*_free`
-     * variants, the size-8 frame shift drives, and a few internals no outfitting
+     * variants, the two Community Goal Corrosion Resistant Cargo Racks, and the 1B
+     * shield generator — records no outfitting
      * registry carries a figure for — among them the two Corrosion Resistant Cargo
      * Racks no station sells, which are not free. Treat `undefined` as "unknown", never
      * as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
@@ -563,7 +564,7 @@ export interface OutfittingModuleStats {
      *
      * @remarks
      * A sparse capability flag on the 36 Overcharge drives and absent everywhere else,
-     * including on the 36 ordinary drives of the same sizes and ratings. Read it rather
+     * including on the 31 ordinary drives of the same sizes and ratings. Read it rather
      * than matching `Int_Hyperdrive_Overcharge` on the symbol: the capability is the
      * record's to state, and a pre-engineered or fitted article carries the flag
      * through while its symbol is not always the one you looked up.
@@ -868,7 +869,7 @@ export interface OutfittingModule extends OutfittingModuleIdentity, OutfittingMo
  * @param symbol - The internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`.
  * Leading/trailing whitespace and case are ignored, so the journal's lower-cased
  * form resolves too.
- * @param modules - Optional subset to search instead of all 1199 modules —
+ * @param modules - Optional subset to search instead of all 1194 modules —
  * `CORE_MODULES`, `INTERNAL_MODULES`, `HARDPOINT_MODULES`, `UTILITY_MODULES`, or any
  * array you have filtered yourself. Omit it unless you specifically want to exclude
  * the other categories; a symbol is unique across all four.

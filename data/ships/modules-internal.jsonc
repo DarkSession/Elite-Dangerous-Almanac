@@ -5749,7 +5749,8 @@
       "PantherMkII",
       "LakonMiner"
     ],
-    "bootTime": 5
+    "bootTime": 5,
+    "cost": 794387
   },
   {
     "symbol": "Int_FighterBayMk2_Size6_Class1",
@@ -5766,7 +5767,8 @@
       "PantherMkII",
       "LakonMiner"
     ],
-    "bootTime": 5
+    "bootTime": 5,
+    "cost": 2579689
   },
   {
     "symbol": "Int_FighterBayMk2_Size7_Class1",
@@ -5783,7 +5785,8 @@
       "PantherMkII",
       "LakonMiner"
     ],
-    "bootTime": 5
+    "bootTime": 5,
+    "cost": 3269661
   },
   {
     "symbol": "Int_FighterBayMk2_Size5_Class1_Free",

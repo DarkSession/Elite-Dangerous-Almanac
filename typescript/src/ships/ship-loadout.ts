@@ -194,7 +194,7 @@ export type LoadoutEditErrorCode =
  * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
  *
  * const build = ShipLoadout.empty('SideWinder');
- * const drive = getModuleBySymbol('Int_Hyperdrive_Size8_Class5', CORE_MODULES)!;
+ * const drive = getModuleBySymbol('Int_Hyperdrive_Overcharge_Size8_Class5', CORE_MODULES)!;
  * try {
  *   build.setModule('FrameShiftDrive', drive);
  * } catch (error) {
