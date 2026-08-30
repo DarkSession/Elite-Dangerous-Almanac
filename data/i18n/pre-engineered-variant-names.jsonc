@@ -92,6 +92,7 @@
       "de": "Abrasionsblaster mit großer Reichweite",
       "es": "Destructor de abrasión de largo alcance",
       "fr": "Surfaceur abrasif longue portée",
+      "pt": "Detonador de abrasão de longo alcance",
       "ru": "Абразивный бластер с увеличенной дальностью"
     },
     "High-Yield Enzyme Missile Rack": {
@@ -99,6 +100,7 @@
       "de": "Enzymraketenrampe mit hohen Erträgen",
       "es": "Lanzamisiles de enzimas de alto rendimiento",
       "fr": "Batterie de missiles enzymatiques à hauts rendements",
+      "pt": "Estante de mísseis enzimáticos de alta potência",
       "ru": "Блок энзимных ракет высокой мощности"
     },
     "Double Screaming Fragment Cannon": {
@@ -106,6 +108,7 @@
       "de": "Doppelschrei-Splitterkanone",
       "es": "Cañón de fragmentación doble con proyectil de pantalla",
       "fr": "Double canon à fragmentation Screaming",
+      "pt": "Canhão de fragmentos duplo de barragem",
       "ru": "Залповое орудие «Двойной вой»"
     },
     "Long Range Mining Laser": {
@@ -113,6 +116,7 @@
       "de": "Ferndistanz-Abbaulaser",
       "es": "Láser de minería de largo alcance",
       "fr": "Laser minier longue portée",
+      "pt": "Laser de mineração de longo alcance",
       "ru": "Проходочный лазер с увеличенной дальностью"
     },
     "Rapid Phase Multi-Cannon": {
@@ -120,6 +124,7 @@
       "de": "Schnellfeuer-Mehrfachgeschütz",
       "es": "Multicañón de fase con disparo rápido",
       "fr": "Multi-canon à phase rapide",
+      "pt": "Canhão de repetição de tiro rápido",
       "ru": "Скорострельное фазовое многоствольное орудие"
     },
     "Enduring Feedback Rail Gun": {
@@ -127,6 +132,7 @@
       "de": "Robuste Feedback-Schienenkanone",
       "es": "Cañón de riel Retroalimentación Soportable",
       "fr": "Canon électrique énergétique résistant",
+      "pt": "Canhão elétrico de feedback duradouro",
       "ru": "Электромагнитная пушка с постоянным откликом"
     },
     "Drag Seeker Missile Rack": {
@@ -134,6 +140,7 @@
       "de": "Suchraketenrampe ziehen",
       "es": "Lanzamisiles guiado con lastre",
       "fr": "Batterie de missiles TC à inertie",
+      "pt": "Estante de míssil guiado de arrasto",
       "ru": "Блок ракет с самонаведением и замедляющими боеприпасами"
     },
     "Lightweight Thermal Seeker Missile Rack": {
@@ -141,6 +148,7 @@
       "de": "Leichte thermische Suchraketenrampe",
       "es": "Lanzamisiles guiado térmico ligero",
       "fr": "Batterie de missiles TC thermiques légers",
+      "pt": "Estante de míssil guiado leve",
       "ru": "Легкий блок тепловых ракет с самонаведением"
     },
     "Lockdown Seeker Missile Rack": {
@@ -148,6 +156,7 @@
       "de": "Abriegelung-Suchraketenrampe",
       "es": "Lanzamisiles guiado con bloqueo",
       "fr": "Batterie de missiles TC à verrouillage",
+      "pt": "Estante de míssil guiado de precisão",
       "ru": "Блок ракет с самонаведением и блокировкой"
     },
     "Extended Cargo Rack": {
@@ -155,6 +164,7 @@
       "de": "Erweitertes Frachtgestell",
       "es": "Bodega de carga extendida",
       "fr": "Compartiment soute agrandi",
+      "pt": "Estante de carga estendido",
       "ru": "Увеличенный грузовой стеллаж"
     },
     "Long Range Detailed Surface Scanner": {
@@ -162,6 +172,7 @@
       "de": "Ferndistanz-Detail-Oberflächenscanner",
       "es": "Escáner de análisis de superficie detallado de largo alcance",
       "fr": "Détecteur de surface détaillé longue portée",
+      "pt": "Scanner de superfície detalhada de Longo Alcance",
       "ru": "Подробный сканер поверхностей с увеличенной дальностью"
     },
     "Heavy Duty Module Reinforcement Package": {
@@ -169,6 +180,7 @@
       "de": "Schwere Modulverstärkung (Paket)",
       "es": "Paquete de refuerzo de módulo de alta resistencia",
       "fr": "Pack de renforcement de modules lourds",
+      "pt": "Pacote de Reforço de módulo Pesado",
       "ru": "Укрепленный набор для усиления модуля"
     },
     "Support Focused Power Distributor": {
@@ -176,6 +188,7 @@
       "de": "Unterstützungsfokussierter Energieverteiler",
       "es": "Distribuidor de energía orientado al apoyo",
       "fr": "Répartiteur de puissance optimisé Survie",
+      "pt": "Distribuidor de energia com foco no suporte",
       "ru": "Вспомогательный распределитель питания"
     },
     "Balanced Power Distributor": {
@@ -183,6 +196,7 @@
       "de": "Abgeglichener Energieverteiler",
       "es": "Distribuidor de energía equilibrado",
       "fr": "Répartiteur de puissance équilibré",
+      "pt": "Distribuidor de energia equilibrado",
       "ru": "Сбалансированный распределитель энергии"
     },
     "Abrasion Blaster": {

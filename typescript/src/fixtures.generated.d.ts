@@ -1878,7 +1878,6 @@ type FixtureShipsEngineeringOptions = {
         blueprints: string[];
         experimentals: string[];
         id: string;
-        name: string;
     }[];
     modules: {
         group: string;

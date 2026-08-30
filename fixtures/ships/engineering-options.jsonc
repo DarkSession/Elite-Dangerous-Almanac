@@ -78,7 +78,6 @@
   "groups": [
     {
       "id": "powerPlants",
-      "name": "Power Plants",
       "blueprints": [
         "PowerPlant_Armoured",
         "PowerPlant_Boosted",
@@ -93,14 +92,18 @@
     },
     {
       "id": "guardianPowerPlants",
-      "name": "Guardian Power Plants",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "thrusters",
-      "name": "Thrusters",
-      "blueprints": ["Engine_Dirty", "Engine_Reinforced", "Engine_Tuned"],
+      "blueprints": [
+        "Engine_Dirty",
+        "Engine_Reinforced",
+        "Engine_Tuned"
+      ],
       "experimentals": [
         "special_engine_cooled",
         "special_engine_haulage",
@@ -111,8 +114,11 @@
     },
     {
       "id": "frameShiftDrives",
-      "name": "Frame Shift Drives",
-      "blueprints": ["FSD_FastBoot", "FSD_LongRange", "FSD_Shielded"],
+      "blueprints": [
+        "FSD_FastBoot",
+        "FSD_LongRange",
+        "FSD_Shielded"
+      ],
       "experimentals": [
         "special_fsd_cooled",
         "special_fsd_fuelcapacity",
@@ -123,7 +129,6 @@
     },
     {
       "id": "powerDistributors",
-      "name": "Power Distributors",
       "blueprints": [
         "PowerDistributor_HighCapacity",
         "PowerDistributor_HighFrequency",
@@ -142,14 +147,18 @@
     },
     {
       "id": "guardianPowerDistributors",
-      "name": "Guardian Power Distributors",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "frameShiftDrivesSCO",
-      "name": "Frame Shift Drives (SCO)",
-      "blueprints": ["FSD_FastBoot", "FSD_LongRange", "FSD_Shielded"],
+      "blueprints": [
+        "FSD_FastBoot",
+        "FSD_LongRange",
+        "FSD_Shielded"
+      ],
       "experimentals": [
         "special_fsd_cooled",
         "special_fsd_fuelcapacity",
@@ -160,7 +169,6 @@
     },
     {
       "id": "shieldGenerators",
-      "name": "Shield Generators",
       "blueprints": [
         "ShieldGenerator_Kinetic",
         "ShieldGenerator_Optimised",
@@ -180,8 +188,10 @@
     },
     {
       "id": "shieldCellBanks",
-      "name": "Shield Cell Banks",
-      "blueprints": ["ShieldCellBank_Rapid", "ShieldCellBank_Specialised"],
+      "blueprints": [
+        "ShieldCellBank_Rapid",
+        "ShieldCellBank_Specialised"
+      ],
       "experimentals": [
         "special_shieldcell_efficient",
         "special_shieldcell_gradual",
@@ -192,7 +202,6 @@
     },
     {
       "id": "hullReinforcements",
-      "name": "Hull Reinforcements",
       "blueprints": [
         "HullReinforcement_Advanced",
         "HullReinforcement_Explosive",
@@ -209,13 +218,13 @@
     },
     {
       "id": "guardianHullReinforcements",
-      "name": "Guardian Hull Reinforcements",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "pulseLasers",
-      "name": "Pulse Lasers",
       "blueprints": [
         "PulseLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
@@ -242,7 +251,6 @@
     },
     {
       "id": "burstLasers",
-      "name": "Burst Lasers",
       "blueprints": [
         "BurstLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
@@ -269,7 +277,6 @@
     },
     {
       "id": "beamLasers",
-      "name": "Beam Lasers",
       "blueprints": [
         "BeamLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
@@ -293,7 +300,6 @@
     },
     {
       "id": "cannons",
-      "name": "Cannons",
       "blueprints": [
         "Weapon_Efficient",
         "Weapon_HighCapacity",
@@ -320,7 +326,6 @@
     },
     {
       "id": "fragmentCannons",
-      "name": "Fragment Cannons",
       "blueprints": [
         "Weapon_DoubleShot",
         "Weapon_Efficient",
@@ -345,7 +350,6 @@
     },
     {
       "id": "multiCannons",
-      "name": "Multi-Cannons",
       "blueprints": [
         "MC_Overcharged",
         "Weapon_Efficient",
@@ -373,7 +377,6 @@
     },
     {
       "id": "plasmaAccelerators",
-      "name": "Plasma Accelerators",
       "blueprints": [
         "Weapon_Efficient",
         "Weapon_Focused",
@@ -400,7 +403,6 @@
     },
     {
       "id": "railGuns",
-      "name": "Rail Guns",
       "blueprints": [
         "Weapon_HighCapacity",
         "Weapon_LightWeight",
@@ -422,7 +424,6 @@
     },
     {
       "id": "missiles",
-      "name": "Missiles",
       "blueprints": [
         "Weapon_HighCapacity",
         "Weapon_LightWeight",
@@ -445,7 +446,6 @@
     },
     {
       "id": "mines",
-      "name": "Mines",
       "blueprints": [
         "Weapon_HighCapacity",
         "Weapon_LightWeight",
@@ -467,8 +467,10 @@
     },
     {
       "id": "torpedoes",
-      "name": "Torpedoes",
-      "blueprints": ["Weapon_LightWeight", "Weapon_Sturdy"],
+      "blueprints": [
+        "Weapon_LightWeight",
+        "Weapon_Sturdy"
+      ],
       "experimentals": [
         "special_deep_cut_payload",
         "special_mass_lock",
@@ -481,7 +483,6 @@
     },
     {
       "id": "shieldBoosters",
-      "name": "Shield Boosters",
       "blueprints": [
         "ShieldBooster_Explosive",
         "ShieldBooster_HeavyDuty",
@@ -500,7 +501,6 @@
     },
     {
       "id": "bulkheads",
-      "name": "Bulkheads",
       "blueprints": [
         "Armour_Advanced",
         "Armour_Explosive",
@@ -517,7 +517,6 @@
     },
     {
       "id": "lifeSupports",
-      "name": "Life Supports",
       "blueprints": [
         "LifeSupport_LightWeight",
         "LifeSupport_Reinforced",
@@ -527,7 +526,6 @@
     },
     {
       "id": "sensors",
-      "name": "Sensors",
       "blueprints": [
         "Sensor_LightWeight",
         "Sensor_LongRange",
@@ -537,13 +535,13 @@
     },
     {
       "id": "autoFieldMaintenanceUnits",
-      "name": "Auto Field-Maintenance Units",
-      "blueprints": ["AFM_Shielded"],
+      "blueprints": [
+        "AFM_Shielded"
+      ],
       "experimentals": []
     },
     {
       "id": "collectionLimpets",
-      "name": "Collection Limpets",
       "blueprints": [
         "CollectionLimpet_LightWeight",
         "CollectionLimpet_Reinforced",
@@ -553,25 +551,29 @@
     },
     {
       "id": "fsdBoosters",
-      "name": "FSD Boosters",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "fsdInterdictors",
-      "name": "FSD Interdictors",
-      "blueprints": ["FSDinterdictor_Expanded", "FSDinterdictor_LongRange"],
+      "blueprints": [
+        "FSDinterdictor_Expanded",
+        "FSDinterdictor_LongRange"
+      ],
       "experimentals": []
     },
     {
       "id": "fuelScoops",
-      "name": "Fuel Scoops",
-      "blueprints": ["FuelScoop_Efficiency", "FuelScoop_Shielded"],
+      "blueprints": [
+        "FuelScoop_Efficiency",
+        "FuelScoop_Shielded"
+      ],
       "experimentals": []
     },
     {
       "id": "fuelTransferLimpets",
-      "name": "Fuel Transfer Limpets",
       "blueprints": [
         "FuelTransferLimpet_LightWeight",
         "FuelTransferLimpet_Reinforced",
@@ -581,7 +583,6 @@
     },
     {
       "id": "hatchBreakerLimpets",
-      "name": "Hatch Breaker Limpets",
       "blueprints": [
         "HatchBreakerLimpet_LightWeight",
         "HatchBreakerLimpet_Reinforced",
@@ -591,13 +592,13 @@
     },
     {
       "id": "moduleReinforcements",
-      "name": "Module Reinforcements",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "prospectingLimpets",
-      "name": "Prospecting Limpets",
       "blueprints": [
         "ProspectingLimpet_LightWeight",
         "ProspectingLimpet_Reinforced",
@@ -607,25 +608,27 @@
     },
     {
       "id": "refineries",
-      "name": "Refineries",
-      "blueprints": ["Refineries_Shielded"],
+      "blueprints": [
+        "Refineries_Shielded"
+      ],
       "experimentals": []
     },
     {
       "id": "shieldReinforcements",
-      "name": "Shield Reinforcements",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "surfaceScanners",
-      "name": "Surface Scanners",
-      "blueprints": ["Sensor_Expanded"],
+      "blueprints": [
+        "Sensor_Expanded"
+      ],
       "experimentals": []
     },
     {
       "id": "chaffLaunchers",
-      "name": "Chaff Launchers",
       "blueprints": [
         "Misc_ChaffCapacity",
         "Misc_LightWeight",
@@ -636,13 +639,15 @@
     },
     {
       "id": "ecms",
-      "name": "ECMs",
-      "blueprints": ["Misc_LightWeight", "Misc_Reinforced", "Misc_Shielded"],
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
       "experimentals": []
     },
     {
       "id": "heatSinkLaunchers",
-      "name": "Heat Sink Launchers",
       "blueprints": [
         "Misc_HeatSinkCapacity",
         "Misc_LightWeight",
@@ -653,7 +658,6 @@
     },
     {
       "id": "killWarrantScanners",
-      "name": "Kill Warrant Scanners",
       "blueprints": [
         "Misc_LightWeight",
         "Misc_Reinforced",
@@ -666,7 +670,6 @@
     },
     {
       "id": "manifestScanners",
-      "name": "Manifest Scanners",
       "blueprints": [
         "Misc_LightWeight",
         "Misc_Reinforced",
@@ -679,7 +682,6 @@
     },
     {
       "id": "pointDefence",
-      "name": "Point Defence",
       "blueprints": [
         "Misc_LightWeight",
         "Misc_PointDefenseCapacity",
@@ -690,7 +692,6 @@
     },
     {
       "id": "wakeScanners",
-      "name": "Wake Scanners",
       "blueprints": [
         "Misc_LightWeight",
         "Misc_Reinforced",
@@ -703,20 +704,23 @@
     },
     {
       "id": "guardianGauss",
-      "name": "Exp - Guardian Gauss",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "guardianPlasma",
-      "name": "Exp - Guardian Plasma",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     {
       "id": "guardianShard",
-      "name": "Exp - Guardian Shard",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     }
   ],
@@ -959,7 +963,9 @@
       "guardian": {
         "group": "guardianPowerPlants",
         "symbol": "Int_GuardianPowerplant_Size5",
-        "blueprints": ["GuardianModule_Sturdy"],
+        "blueprints": [
+          "GuardianModule_Sturdy"
+        ],
         "experimentals": []
       }
     },
@@ -986,7 +992,9 @@
       "guardian": {
         "group": "guardianPowerDistributors",
         "symbol": "Int_GuardianPowerDistributor_Size5",
-        "blueprints": ["GuardianModule_Sturdy"],
+        "blueprints": [
+          "GuardianModule_Sturdy"
+        ],
         "experimentals": []
       }
     },
@@ -1011,7 +1019,9 @@
       "guardian": {
         "group": "guardianHullReinforcements",
         "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
-        "blueprints": ["GuardianModule_Sturdy"],
+        "blueprints": [
+          "GuardianModule_Sturdy"
+        ],
         "experimentals": []
       }
     }
@@ -1019,7 +1029,9 @@
   "exclusions": [
     {
       "symbol": "Hpt_MultiCannon_Fixed_Small",
-      "excluded": ["special_phasing_sequence"]
+      "excluded": [
+        "special_phasing_sequence"
+      ]
     }
   ],
   "blueprintUnion": {
