@@ -1747,6 +1747,34 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
 ## Pre-engineered modules
 
+### A tech-broker unlock may be sold under its own name
+
+Nineteen of the tech-broker variants are not sold as the plain base module. Each carries
+one of three markers, supplied by repository-owner in-game verification (2026-08-30 UTC);
+no registry publishes them, and the game exposes no immutable identifier for its
+outfitting strings.
+
+| Marker | Variants | Name |
+| --- | ---: | --- |
+| `Sirius` | 1 + 2 | Sirius Heat Sink Launcher, Sirius AX Missile Rack |
+| `Azimuth` | 2 | Azimuth Enhanced AX Multi-Cannon |
+| `Modified` | 2 + 2 + 2 | Modified Guardian Plasma Charger / Gauss Cannon / Shard Cannon |
+| `V1` | 6 + 1 + 1 | Frame Shift Drive (SCO) V1, Detailed Surface Scanner V1, Seeker Missile Rack V1 |
+
+`Sirius` and `Azimuth` are the manufacturers that sell the unlock; `V1` marks a first
+fixed revision. The marker is a property of the **tech-broker** route, not of the module:
+`Hpt_Guardian_ShardCannon_Fixed_Medium` is a Modified Guardian Shard Cannon bought from a
+broker and a plain Guardian Shard Cannon earned from a community goal, and the two rows
+differ only by `acquisition`. The same holds for `Hpt_BasicMissileRack_Fixed_Medium`,
+whose thermal-cascade tech-broker row is a Seeker Missile Rack V1 while its three
+community-goal rows are plain. Two tech-broker rows carry no marker at all and keep their
+base module's name: the Mining Laser and the size-5 Frame Shift Drive.
+
+This repository's own fixtures already described several of these under the corrected
+names — `pre-engineered.jsonc` calls one row "the tech-broker 'Modified Guardian Shard
+Cannon'" and another "a V1 FSD" — while `name` carried the plain module's. The data now
+agrees with the prose.
+
 ### Festive variants
 
 - **File:** `pre-engineered.jsonc`. Three grade-5 records pair

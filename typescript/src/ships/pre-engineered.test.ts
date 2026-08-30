@@ -231,17 +231,34 @@ test('the pinned final pre-engineered weapons are locked', () => {
     }
 });
 
-test('a reward variant carries the same display name as the module it fits as', () => {
+test('a community-goal variant carries the same display name as the module it fits as', () => {
     // `name` is denormalised so a shop list can render without pulling in ALL_MODULES.
     // That is a drift risk, so it is pinned: the two catalogues must always agree.
-    // The Merc-shop rows are excluded: the shop sells them under their own names.
+    // Only the community-goal rewards are plain base modules. The Merc shop sells its
+    // rows under its own names, the festive launchers are named for the event, and a
+    // tech-broker unlock is covered by the next test.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition === 'eventReward' || variant.acquisition === 'mercenary') continue;
+        if (variant.acquisition !== 'communityGoal') continue;
         const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
         assert.equal(
             variant.name,
             module.name,
             `${variant.symbol}: pre-engineered name "${variant.name}" != catalogue "${module.name}"`,
+        );
+    }
+});
+
+test('a tech-broker variant names its base module, with or without an unlock marker', () => {
+    // Some tech-broker unlocks are sold plain, and the rest add a manufacturer prefix
+    // (Sirius, Azimuth), the word Modified, or a version suffix (V1). Either way the
+    // base module's name is carried whole, which is what keeps the two catalogues from
+    // drifting apart while still allowing the marker.
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        if (variant.acquisition !== 'techBroker') continue;
+        const module = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
+        assert.ok(
+            variant.name.includes(module.name),
+            `${variant.symbol}: pre-engineered name "${variant.name}" does not carry catalogue "${module.name}"`,
         );
     }
 });

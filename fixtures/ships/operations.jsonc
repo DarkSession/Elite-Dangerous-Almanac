@@ -87,8 +87,20 @@
         "massCurveMultiplier": 1,
         "rotationMassCurveMultiplier": 1
       },
-      "speedSequence": [210, 228.75, 247.5, 266.25, 285],
-      "pitchSequence": [23, 23.75, 24.5, 25.25, 26]
+      "speedSequence": [
+        210,
+        228.75,
+        247.5,
+        266.25,
+        285
+      ],
+      "pitchSequence": [
+        23,
+        23.75,
+        24.5,
+        25.25,
+        26
+      ]
     },
     "pipAllocation": {
       "input": {
@@ -123,28 +135,51 @@
       }
     },
     "facadeFuelOverride": {
-      // A Hauler rather than a Sidewinder: the size-2 tank this fixture needs, so that
-      // `fuel: 2` is a genuine partial load, only fits a hull whose fuel mount is size 2.
-      // A Sidewinder's is size 1, and import stocks a fixed mount the capture overfills.
       "loadout": {
         "Ship": "Hauler",
         "UnladenMass": 26,
         "Modules": [
-          { "Slot": "PowerPlant", "Item": "Int_PowerPlant_Size2_Class5" },
-          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
-          { "Slot": "Armour", "Item": "Hauler_Armour_Grade1" },
-          { "Slot": "FrameShiftDrive", "Item": "Int_Hyperdrive_Size2_Class1" },
-          { "Slot": "LifeSupport", "Item": "Int_LifeSupport_Size1_Class1" },
+          {
+            "Slot": "PowerPlant",
+            "Item": "Int_PowerPlant_Size2_Class5"
+          },
+          {
+            "Slot": "MainEngines",
+            "Item": "Int_Engine_Size2_Class2"
+          },
+          {
+            "Slot": "Armour",
+            "Item": "Hauler_Armour_Grade1"
+          },
+          {
+            "Slot": "FrameShiftDrive",
+            "Item": "Int_Hyperdrive_Size2_Class1"
+          },
+          {
+            "Slot": "LifeSupport",
+            "Item": "Int_LifeSupport_Size1_Class1"
+          },
           {
             "Slot": "PowerDistributor",
             "Item": "Int_PowerDistributor_Size1_Class1"
           },
-          { "Slot": "Radar", "Item": "Int_Sensors_Size1_Class1" },
-          { "Slot": "FuelTank", "Item": "Int_FuelTank_Size2_Class3" },
-          { "Slot": "CargoHatch", "Item": "ModularCargoBayDoor" }
+          {
+            "Slot": "Radar",
+            "Item": "Int_Sensors_Size1_Class1"
+          },
+          {
+            "Slot": "FuelTank",
+            "Item": "Int_FuelTank_Size2_Class3"
+          },
+          {
+            "Slot": "CargoHatch",
+            "Item": "ModularCargoBayDoor"
+          }
         ]
       },
-      "options": { "fuel": 2 },
+      "options": {
+        "fuel": 2
+      },
       "expected": {
         "speed": 211.61710557362338,
         "boost": 317.4256583604351,
@@ -155,8 +190,18 @@
         "rotationMassCurveMultiplier": 1.058085527868117
       },
       "invalidLoads": [
-        { "options": { "fuel": -1 }, "expectedError": "RangeError" },
-        { "options": { "cargo": -1 }, "expectedError": "RangeError" }
+        {
+          "options": {
+            "fuel": -1
+          },
+          "expectedError": "RangeError"
+        },
+        {
+          "options": {
+            "cargo": -1
+          },
+          "expectedError": "RangeError"
+        }
       ]
     },
     "invalidSpeedEndpoints": {
@@ -250,27 +295,33 @@
         "powered": false
       }
     ],
-    "expected": { "totalRestorable": 48, "totalCells": 4, "powered": [true, false] }
+    "expected": {
+      "totalRestorable": 48,
+      "totalCells": 4,
+      "powered": [
+        true,
+        false
+      ]
+    }
   },
   "exclusivity": {
     "group": "shieldGenerator",
     "expectedCode": "duplicateExclusiveModule"
   },
-  // A 2E thruster rated to 72 t, weighed at the three loads an outfitting tool shows a
-  // speed for. `dry` is the fit alone, `unladen` adds a full main tank, `laden` adds a
-  // full hold; the lightest load past the rating is the one reported, and only a
-  // laden-only overload is a warning rather than an error.
   "thrusterMass": {
     "input": {
       "slot": "MainEngines",
       "symbol": "Int_Engine_Size2_Class1",
       "thrusterMaxMass": 72
     },
-    // Each case states a mass the rule can weigh and the single issue it should draw.
     "cases": [
       {
         "name": "too heavy before it is even fuelled",
-        "mass": { "dry": 85.6, "fuel": 8, "cargo": 16 },
+        "mass": {
+          "dry": 85.6,
+          "fuel": 8,
+          "cargo": 16
+        },
         "expectedIssue": {
           "code": "thrusterMassExceeded",
           "severity": "error",
@@ -286,7 +337,11 @@
       },
       {
         "name": "flies dry, but never leaves a pad with a full tank",
-        "mass": { "dry": 68, "fuel": 8, "cargo": 16 },
+        "mass": {
+          "dry": 68,
+          "fuel": 8,
+          "cargo": 16
+        },
         "expectedIssue": {
           "code": "thrusterMassExceeded",
           "severity": "error",
@@ -302,7 +357,11 @@
       },
       {
         "name": "flies fuelled, and only a full hold sinks it",
-        "mass": { "dry": 60, "fuel": 8, "cargo": 16 },
+        "mass": {
+          "dry": 60,
+          "fuel": 8,
+          "cargo": 16
+        },
         "expectedIssue": {
           "code": "thrusterMassExceeded",
           "severity": "warning",
@@ -317,25 +376,48 @@
         }
       }
     ],
-    // Masses that draw nothing: a build landing exactly on the rating once laden, and a
-    // capacity the build never stated, which ends the list of loads rather than being
-    // guessed at zero — an unstated tank is one of unknown size, not an empty one.
     "quiet": [
-      { "dry": 56, "fuel": 8, "cargo": 8 },
-      { "dry": 68 },
-      { "dry": 68, "cargo": 400 }
+      {
+        "dry": 56,
+        "fuel": 8,
+        "cargo": 8
+      },
+      {
+        "dry": 68
+      },
+      {
+        "dry": 68,
+        "cargo": 400
+      }
     ]
   },
   "moduleLimits": {
     "group": "experimentalWeapon",
     "input": [
-      { "limitGroup": "experimentalWeapon" },
-      { "limitGroup": "experimentalWeapon" },
-      { "limitGroup": "experimentalWeapon" },
-      { "limitGroup": "experimentalWeapon" },
-      { "limitGroup": "experimentalWeapon" },
-      { "limitGroup": "experimentalWeapon" },
-      { "limitIncrease": { "group": "experimentalWeapon", "amount": 1 } }
+      {
+        "limitGroup": "experimentalWeapon"
+      },
+      {
+        "limitGroup": "experimentalWeapon"
+      },
+      {
+        "limitGroup": "experimentalWeapon"
+      },
+      {
+        "limitGroup": "experimentalWeapon"
+      },
+      {
+        "limitGroup": "experimentalWeapon"
+      },
+      {
+        "limitGroup": "experimentalWeapon"
+      },
+      {
+        "limitIncrease": {
+          "group": "experimentalWeapon",
+          "amount": 1
+        }
+      }
     ],
     "expectedUsage": {
       "group": "experimentalWeapon",
@@ -347,14 +429,24 @@
     },
     "expectedIssue": {
       "code": "moduleLimitExceeded",
-      "params": { "group": "experimentalWeapon", "count": 6, "limit": 5 }
+      "params": {
+        "group": "experimentalWeapon",
+        "count": 6,
+        "limit": 5
+      }
     },
     "catalogue": {
       "limitedCount": 33,
       "weapon": "Hpt_Guardian_GaussCannon_Fixed_Small",
       "increases": [
-        { "symbol": "Int_ExpModuleStabiliser_Size3_Class3", "amount": 1 },
-        { "symbol": "Int_ExpModuleStabiliser_Size5_Class3", "amount": 2 }
+        {
+          "symbol": "Int_ExpModuleStabiliser_Size3_Class3",
+          "amount": 1
+        },
+        {
+          "symbol": "Int_ExpModuleStabiliser_Size5_Class3",
+          "amount": 2
+        }
       ]
     },
     "removal": {
@@ -414,22 +506,69 @@
         "grade": 5,
         "mercCoins": 2215,
         "materials": [
-          { "symbol": "MechanicalScrap", "name": "Mechanical Scrap", "count": 2 },
-          { "symbol": "Sulphur", "name": "Sulphur", "count": 5 },
-          { "symbol": "ConsumerFirmware", "name": "Modified Consumer Firmware", "count": 9 },
-          { "symbol": "Niobium", "name": "Niobium", "count": 7 },
-          { "symbol": "ConductivePolymers", "name": "Conductive Polymers", "count": 4 },
-          { "symbol": "Tin", "name": "Tin", "count": 4 },
-          { "symbol": "MechanicalComponents", "name": "Mechanical Components", "count": 5 },
-          { "symbol": "ThermicAlloys", "name": "Thermic Alloys", "count": 5 },
-          { "symbol": "MilitarySupercapacitors", "name": "Military Supercapacitors", "count": 5 },
-          { "symbol": "BiotechConductors", "name": "Biotech Conductors", "count": 5 }
+          {
+            "symbol": "MechanicalScrap",
+            "name": "Mechanical Scrap",
+            "count": 2
+          },
+          {
+            "symbol": "Sulphur",
+            "name": "Sulphur",
+            "count": 5
+          },
+          {
+            "symbol": "ConsumerFirmware",
+            "name": "Modified Consumer Firmware",
+            "count": 9
+          },
+          {
+            "symbol": "Niobium",
+            "name": "Niobium",
+            "count": 7
+          },
+          {
+            "symbol": "ConductivePolymers",
+            "name": "Conductive Polymers",
+            "count": 4
+          },
+          {
+            "symbol": "Tin",
+            "name": "Tin",
+            "count": 4
+          },
+          {
+            "symbol": "MechanicalComponents",
+            "name": "Mechanical Components",
+            "count": 5
+          },
+          {
+            "symbol": "ThermicAlloys",
+            "name": "Thermic Alloys",
+            "count": 5
+          },
+          {
+            "symbol": "MilitarySupercapacitors",
+            "name": "Military Supercapacitors",
+            "count": 5
+          },
+          {
+            "symbol": "BiotechConductors",
+            "name": "Biotech Conductors",
+            "count": 5
+          }
         ]
       }
     }
   },
   "weapons": {
-    "input": [{ "thermalLoad": 8 }, { "thermalLoad": 90 }],
+    "input": [
+      {
+        "thermalLoad": 8
+      },
+      {
+        "thermalLoad": 90
+      }
+    ],
     "expectedThermalLoad": 98
   },
   "distributor": {
@@ -460,14 +599,21 @@
         "ratedRecharge": 3.3,
         "rechargeRate": 2.4048131032111066
       },
-      "pips": { "systems": 1, "engines": 2, "weapons": 3 }
+      "pips": {
+        "systems": 1,
+        "engines": 2,
+        "weapons": 3
+      }
     },
     "facade": {
       "note": "Import stocks every fixed mount this event leaves unnamed, so four of the five stocked core internals and the hatch draw power here too -- the stock armour and fuel tank draw none: 8.81 MW retracted, 16.28 MW deployed. The size-3 class-3 plant's 10 MW sits between them, which is what keeps the distributor's own band lit with the hardpoints stowed and dark with them run out.",
       "loadout": {
         "Ship": "Anaconda",
         "Modules": [
-          { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size3_Class3" },
+          {
+            "Slot": "PowerPlant",
+            "Item": "Int_Powerplant_Size3_Class3"
+          },
           {
             "Slot": "PowerDistributor",
             "Item": "Int_PowerDistributor_Size6_Class2",
@@ -477,12 +623,30 @@
               "Level": 5,
               "Quality": 1,
               "Modifiers": [
-                { "Label": "WeaponsCapacity", "Value": 32.299999 },
-                { "Label": "WeaponsRecharge", "Value": 3.705 },
-                { "Label": "EnginesCapacity", "Value": 41.600002 },
-                { "Label": "EnginesRecharge", "Value": 3.456 },
-                { "Label": "SystemsCapacity", "Value": 22.1 },
-                { "Label": "SystemsRecharge", "Value": 2.04 }
+                {
+                  "Label": "WeaponsCapacity",
+                  "Value": 32.299999
+                },
+                {
+                  "Label": "WeaponsRecharge",
+                  "Value": 3.705
+                },
+                {
+                  "Label": "EnginesCapacity",
+                  "Value": 41.600002
+                },
+                {
+                  "Label": "EnginesRecharge",
+                  "Value": 3.456
+                },
+                {
+                  "Label": "SystemsCapacity",
+                  "Value": 22.1
+                },
+                {
+                  "Label": "SystemsRecharge",
+                  "Value": 2.04
+                }
               ]
             }
           },
@@ -508,7 +672,11 @@
           }
         ]
       },
-      "options": { "systemsPips": 1, "enginesPips": 3, "weaponsPips": 2 },
+      "options": {
+        "systemsPips": 1,
+        "enginesPips": 3,
+        "weaponsPips": 2
+      },
       "expected": {
         "systems": {
           "capacity": 22.1,
@@ -525,7 +693,11 @@
           "ratedRecharge": 3.705,
           "rechargeRate": 1.7284436168219357
         },
-        "pips": { "systems": 1, "engines": 3, "weapons": 2 }
+        "pips": {
+          "systems": 1,
+          "engines": 3,
+          "weapons": 2
+        }
       },
       "nullLoadoutsNote": "An imported build always has a distributor — import stocks the mount from the hull defaults whether the event named an unresolvable article there or named none at all — so the metrics go null only when that distributor has no power: switched off at the mount, or fitted to a plant that cannot carry the load.",
       "nullLoadouts": [
@@ -542,8 +714,14 @@
         {
           "Ship": "Anaconda",
           "Modules": [
-            { "Slot": "PowerPlant", "Item": "Int_Powerplant_Size2_Class1" },
-            { "Slot": "PowerDistributor", "Item": "Int_PowerDistributor_Size8_Class1" }
+            {
+              "Slot": "PowerPlant",
+              "Item": "Int_Powerplant_Size2_Class1"
+            },
+            {
+              "Slot": "PowerDistributor",
+              "Item": "Int_PowerDistributor_Size8_Class1"
+            }
           ]
         }
       ]
@@ -567,20 +745,17 @@
   },
   "importRejections": {
     "unknownHull": {
-      "input": { "Ship": "FutureHull", "Modules": [] },
-      "expected": { "accepted": false, "reason": "unknownHull" }
+      "input": {
+        "Ship": "FutureHull",
+        "Modules": []
+      },
+      "expected": {
+        "accepted": false,
+        "reason": "unknownHull"
+      }
     }
   },
-  // An `Engineering` block may name a recipe and state no `Modifiers` at all; SLEF
-  // permits it and Inara writes it. Each case pins how the stated identity is read, and
-  // the last pins the one modifier block that is not read at all because it moves
-  // nothing.
   "statedRecipes": {
-    // The module's own menu offers the recipe, so the block is an ordinary roll of it —
-    // even though a fixed article of the same module carries the same blueprint at the
-    // same grade. Rolling at the stated grade and quality is what nearly every such block
-    // means; the article it passed over rides along on an `ambiguousEngineering` outcome,
-    // so a caller who knows that reading was meant can fit it deliberately.
     "craftableRecipe": {
       "input": {
         "Ship": "Anaconda",
@@ -599,11 +774,26 @@
       "expected": {
         "slot": "TinyHardpoint4",
         "modifiers": [
-          { "Label": "Mass", "Value": 2.6, "OriginalValue": 1.3 },
-          { "Label": "AmmoMaximum", "Value": 3, "OriginalValue": 2 },
-          { "Label": "ReloadTime", "Value": 15, "OriginalValue": 10 }
+          {
+            "Label": "Mass",
+            "Value": 2.6,
+            "OriginalValue": 1.3
+          },
+          {
+            "Label": "AmmoMaximum",
+            "Value": 3,
+            "OriginalValue": 2
+          },
+          {
+            "Label": "ReloadTime",
+            "Value": 15,
+            "OriginalValue": 10
+          }
         ],
-        "stats": { "ammoMaximum": 3, "reloadTime": 15 },
+        "stats": {
+          "ammoMaximum": 3,
+          "reloadTime": 15
+        },
         "outcomes": [
           {
             "action": "ambiguousEngineering",
@@ -612,22 +802,27 @@
             "blueprintSymbol": "misc_heatsinkcapacity",
             "preEngineeredVariant": {
               "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
-              "name": "Heat Sink Launcher",
+              "name": "Sirius Heat Sink Launcher",
               "blueprintSymbol": "Misc_HeatSinkCapacity",
               "grade": 1,
               "acquisition": "techBroker",
               "modifiers": [
-                { "label": "AmmoMaximum", "method": "multiplicative", "value": 1 },
-                { "label": "ReloadTime", "method": "multiplicative", "value": 0.75 }
+                {
+                  "label": "AmmoMaximum",
+                  "method": "multiplicative",
+                  "value": 1
+                },
+                {
+                  "label": "ReloadTime",
+                  "method": "multiplicative",
+                  "value": 0.75
+                }
               ]
             }
           }
         ]
       }
     },
-    // The menu does not offer the recipe, so no ordinary roll could have written the
-    // block and the one catalogued article answering to it is what was meant. Its fixed
-    // stats stand in place of modifiers: 64 t of stock capacity becomes 86 t.
     "fixedArticle": {
       "input": {
         "Ship": "PantherMkII",
@@ -646,13 +841,12 @@
       "expected": {
         "slot": "Slot04_Size6",
         "modifiers": null,
-        "stats": { "cargoCapacity": 86 },
+        "stats": {
+          "cargoCapacity": 86
+        },
         "outcomes": []
       }
     },
-    // Neither answers to what the source named — this module has no engineering menu, and
-    // the one article carrying the blueprint is identified by an experimental effect the
-    // block does not state. The module keeps unengineered figures, and says so.
     "unresolvedRecipe": {
       "input": {
         "Ship": "Cutter",
@@ -671,7 +865,10 @@
       "expected": {
         "slot": "LargeHardpoint1",
         "modifiers": null,
-        "stats": { "damage": 2.19, "maximumRange": 4000 },
+        "stats": {
+          "damage": 2.19,
+          "maximumRange": 4000
+        },
         "outcomes": [
           {
             "action": "unresolvedEngineering",
@@ -682,10 +879,6 @@
         ]
       }
     },
-    // A Mercenary article is bought at its own grade carrying a modifier block nobody has
-    // published, and climbs from there on a bespoke recipe its module's menu does offer.
-    // A block stating a grade above the purchase is that climb, and is rolled from the
-    // stock module; one stating the purchase grade has nothing to roll and stands.
     "mercenaryClimb": {
       "input": {
         "Ship": "Anaconda",
@@ -704,20 +897,49 @@
       "expected": {
         "slot": "SmallHardpoint1",
         "modifiers": [
-          { "Label": "Integrity", "Value": 20, "OriginalValue": 40 },
-          { "Label": "PowerDraw", "Value": 0.17, "OriginalValue": 0.34 },
-          { "Label": "DistributorDraw", "Value": 1, "OriginalValue": 2 },
-          { "Label": "ThermalLoad", "Value": 1, "OriginalValue": 2 },
-          { "Label": "MaximumRange", "Value": 5000, "OriginalValue": 1000 },
-          { "Label": "ShotSpeed", "Value": 3335, "OriginalValue": 667 },
-          { "Label": "DamageFalloffRange", "Value": 5000, "OriginalValue": 1000 }
+          {
+            "Label": "Integrity",
+            "Value": 20,
+            "OriginalValue": 40
+          },
+          {
+            "Label": "PowerDraw",
+            "Value": 0.17,
+            "OriginalValue": 0.34
+          },
+          {
+            "Label": "DistributorDraw",
+            "Value": 1,
+            "OriginalValue": 2
+          },
+          {
+            "Label": "ThermalLoad",
+            "Value": 1,
+            "OriginalValue": 2
+          },
+          {
+            "Label": "MaximumRange",
+            "Value": 5000,
+            "OriginalValue": 1000
+          },
+          {
+            "Label": "ShotSpeed",
+            "Value": 3335,
+            "OriginalValue": 667
+          },
+          {
+            "Label": "DamageFalloffRange",
+            "Value": 5000,
+            "OriginalValue": 1000
+          }
         ],
-        "stats": { "maximumRange": 5000, "shotSpeed": 3335 },
+        "stats": {
+          "maximumRange": 5000,
+          "shotSpeed": 3335
+        },
         "outcomes": []
       }
     },
-    // The same article at the grade it was bought at: the purchase block is unpublished,
-    // so the stock stats stand and nothing is rolled over them.
     "mercenaryPurchase": {
       "input": {
         "Ship": "Anaconda",
@@ -736,15 +958,13 @@
       "expected": {
         "slot": "SmallHardpoint1",
         "modifiers": null,
-        "stats": { "maximumRange": 1000, "shotSpeed": 667 },
+        "stats": {
+          "maximumRange": 1000,
+          "shotSpeed": 667
+        },
         "outcomes": []
       }
     },
-    // A block that does state `Modifiers` describes its own article and is left alone —
-    // unless none of them moves a stat this module has, as here, where the labels name a
-    // frame shift drive's stats on a heat sink launcher. Kept, the module would publish
-    // unengineered figures under an engineered block, so the recipe beside them is rolled
-    // in their place and the import says which slot it re-rolled.
     "inertModifiers": {
       "input": {
         "Ship": "Anaconda",
@@ -756,7 +976,13 @@
               "BlueprintName": "misc_heatsinkcapacity",
               "Level": 1,
               "Quality": 1,
-              "Modifiers": [{ "Label": "FSDOptimalMass", "Value": 1, "OriginalValue": 1 }]
+              "Modifiers": [
+                {
+                  "Label": "FSDOptimalMass",
+                  "Value": 1,
+                  "OriginalValue": 1
+                }
+              ]
             }
           }
         ]
@@ -764,11 +990,26 @@
       "expected": {
         "slot": "TinyHardpoint4",
         "modifiers": [
-          { "Label": "Mass", "Value": 2.6, "OriginalValue": 1.3 },
-          { "Label": "AmmoMaximum", "Value": 3, "OriginalValue": 2 },
-          { "Label": "ReloadTime", "Value": 15, "OriginalValue": 10 }
+          {
+            "Label": "Mass",
+            "Value": 2.6,
+            "OriginalValue": 1.3
+          },
+          {
+            "Label": "AmmoMaximum",
+            "Value": 3,
+            "OriginalValue": 2
+          },
+          {
+            "Label": "ReloadTime",
+            "Value": 15,
+            "OriginalValue": 10
+          }
         ],
-        "stats": { "ammoMaximum": 3, "reloadTime": 15 },
+        "stats": {
+          "ammoMaximum": 3,
+          "reloadTime": 15
+        },
         "outcomes": [
           {
             "action": "rerolledEngineering",
@@ -782,23 +1023,28 @@
   },
   "diagnostics": {
     "slef": {
-      "input": { "Ship": "sidewinder", "Modules": [{ "Slot": "PowerPlant" }] },
+      "input": {
+        "Ship": "sidewinder",
+        "Modules": [
+          {
+            "Slot": "PowerPlant"
+          }
+        ]
+      },
       "expected": {
         "code": "invalidModule",
         "path": "entries[0].Modules[0].Item",
         "constraint": "stringRequired"
       }
     },
-    // Both cases sit in removable mounts. A fixed mount cannot report a fitting failure
-    // from an import any more: it is filled from the hull defaults whenever the capture
-    // did not leave an article it can hold, so the diagnostic never reaches a caller.
-    // `wrongHullArmour` therefore has no import case at all — armour fits nowhere but
-    // the armour mount — and is pinned under `editorErrors` instead.
     "loadout": {
       "input": {
         "Ship": "Anaconda",
         "Modules": [
-          { "Slot": "Slot02_Size6", "Item": "Int_CargoRack_Size8_Class1" }
+          {
+            "Slot": "Slot02_Size6",
+            "Item": "Int_CargoRack_Size8_Class1"
+          }
         ]
       },
       "expected": {
@@ -828,8 +1074,12 @@
           "slot": "Slot03_Size6",
           "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
           "constraint": "restrictedHull",
-          "allowedShipNames": ["Caspian Explorer"],
-          "allowedShipSymbols": ["Explorer_NX"],
+          "allowedShipNames": [
+            "Caspian Explorer"
+          ],
+          "allowedShipSymbols": [
+            "Explorer_NX"
+          ],
           "shipSymbol": "Anaconda"
         }
       }
@@ -912,18 +1162,27 @@
       "slot": "CargoHatch",
       "expected": {
         "code": "immutableSlot",
-        "params": { "slot": "CargoHatch" }
+        "params": {
+          "slot": "CargoHatch"
+        }
       }
     },
     "requiredSlot": {
       "input": {
         "Ship": "SideWinder",
-        "Modules": [{ "Slot": "powerplant", "Item": "FuturePowerPlant" }]
+        "Modules": [
+          {
+            "Slot": "powerplant",
+            "Item": "FuturePowerPlant"
+          }
+        ]
       },
       "slot": "PowerPlant",
       "expected": {
         "code": "requiredSlot",
-        "params": { "slot": "PowerPlant" }
+        "params": {
+          "slot": "PowerPlant"
+        }
       }
     },
     "immutableSlotReplacement": {
@@ -932,7 +1191,9 @@
       "module": "Int_Hyperdrive_Size2_Class5",
       "expected": {
         "code": "immutableSlot",
-        "params": { "slot": "CargoHatch" }
+        "params": {
+          "slot": "CargoHatch"
+        }
       }
     }
   },

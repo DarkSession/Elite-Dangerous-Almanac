@@ -34,7 +34,7 @@
       "kind": "module",
       "identifier": "Int_Hyperdrive_Size6_Class5",
       "locale": "pt",
-      "expected": "Motor de Distorção de Fase"
+      "expected": "Motor de distorção de fase"
     },
     {
       "kind": "material",
@@ -64,7 +64,7 @@
       "kind": "module",
       "identifier": "Int_LargeCargoRack_Size8_class1",
       "locale": "de",
-      "expected": null
+      "expected": "Frachtgestell für Mk II"
     },
     {
       "kind": "blueprint",

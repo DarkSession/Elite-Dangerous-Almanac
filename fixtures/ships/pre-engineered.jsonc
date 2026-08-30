@@ -58,7 +58,11 @@
   "festive": {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "grade": 5,
-    "blueprints": ["Decorative_Green", "Decorative_Red", "Decorative_Yellow"],
+    "blueprints": [
+      "Decorative_Green",
+      "Decorative_Red",
+      "Decorative_Yellow"
+    ],
     "modifier": {
       "label": "Damage",
       "method": "multiplicative",
@@ -68,7 +72,11 @@
       "baseDamage": 34,
       "damage": 0.34,
       "damagePerSecond": 0.17,
-      "panel": { "percent": -99, "damage": 0.3, "damagePerSecond": 0.2 }
+      "panel": {
+        "percent": -99,
+        "damage": 0.3,
+        "damagePerSecond": 0.2
+      }
     }
   },
   "modifierLabels": [
@@ -116,31 +124,42 @@
         "symbol": "Hpt_Slugshot_Gimbal_Small",
         "blueprintSymbol": "FragmentCannonSmall_DoubleScreaming",
         "experimentalEffectSymbol": "special_screening_shell",
-        "movedStats": ["reloadTime"]
+        "movedStats": [
+          "reloadTime"
+        ]
       },
       {
         "symbol": "Hpt_Slugshot_Gimbal_Large",
         "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
         "experimentalEffectSymbol": "special_screening_shell",
-        "movedStats": ["reloadTime"]
+        "movedStats": [
+          "reloadTime"
+        ]
       },
       {
         "symbol": "Hpt_MiningLaser_Fixed_Small",
         "blueprintSymbol": "MiningLaser_LongRange",
         "experimentalEffectSymbol": "special_incendiary_rounds",
-        "movedStats": ["thermalLoad"]
+        "movedStats": [
+          "thermalLoad"
+        ]
       },
       {
         "symbol": "Hpt_MultiCannon_Fixed_Medium",
         "blueprintSymbol": "MultiCannon_Rapid",
         "experimentalEffectSymbol": "special_phasing_sequence",
-        "movedStats": ["damage"]
+        "movedStats": [
+          "damage"
+        ]
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium",
         "blueprintSymbol": "RailGun_LongShot",
         "experimentalEffectSymbol": "special_feedback_cascade_cooled",
-        "movedStats": ["damage", "thermalLoad"]
+        "movedStats": [
+          "damage",
+          "thermalLoad"
+        ]
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -164,24 +183,50 @@
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
         "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
         "experimentalEffectSymbol": "special_fsd_interrupt",
-        "movedStats": ["burstInterval", "damage", "rateOfFire"]
+        "movedStats": [
+          "burstInterval",
+          "damage",
+          "rateOfFire"
+        ]
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
         "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
         "experimentalEffectSymbol": "special_fsd_interrupt",
-        "movedStats": ["burstInterval", "damage", "rateOfFire"]
+        "movedStats": [
+          "burstInterval",
+          "damage",
+          "rateOfFire"
+        ]
       }
     ],
     "resolved": {
       "symbol": "Hpt_Railgun_Fixed_Medium",
       "blueprintSymbol": "RailGun_LongShot",
-      "stock": { "damage": 41.53, "thermalLoad": 20 },
-      "engineered": { "damage": 33.223999, "thermalLoad": 12 },
+      "stock": {
+        "damage": 41.53,
+        "thermalLoad": 20
+      },
+      "engineered": {
+        "damage": 33.223999,
+        "thermalLoad": 12
+      },
       "journalModifiers": [
-        { "Label": "DamagePerSecond", "Value": 40.028915, "OriginalValue": 50.036144 },
-        { "Label": "Damage", "Value": 33.223999, "OriginalValue": 41.529999 },
-        { "Label": "ThermalLoad", "Value": 12, "OriginalValue": 20 }
+        {
+          "Label": "DamagePerSecond",
+          "Value": 40.028915,
+          "OriginalValue": 50.036144
+        },
+        {
+          "Label": "Damage",
+          "Value": 33.223999,
+          "OriginalValue": 41.529999
+        },
+        {
+          "Label": "ThermalLoad",
+          "Value": 12,
+          "OriginalValue": 20
+        }
       ]
     }
   },
@@ -465,7 +510,7 @@
     },
     {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-      "name": "Guardian Shard Cannon",
+      "name": "Modified Guardian Shard Cannon",
       "blueprintSymbol": "Weapon_LongRange",
       "grade": 1,
       "acquisition": "techBroker",
@@ -520,7 +565,7 @@
     },
     {
       "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
-      "name": "Frame Shift Drive (SCO)",
+      "name": "Frame Shift Drive (SCO) V1",
       "blueprintSymbol": "FSD_LongRange",
       "grade": 5,
       "acquisition": "techBroker",
@@ -559,7 +604,7 @@
     },
     {
       "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
-      "name": "Enhanced AX Multi-Cannon",
+      "name": "Azimuth Enhanced AX Multi-Cannon",
       "blueprintSymbol": "Weapon_Overcharged",
       "grade": 5,
       "acquisition": "techBroker",
@@ -585,7 +630,7 @@
     },
     {
       "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
-      "name": "Enhanced AX Multi-Cannon",
+      "name": "Azimuth Enhanced AX Multi-Cannon",
       "blueprintSymbol": "Weapon_Overcharged",
       "grade": 5,
       "acquisition": "techBroker",
@@ -633,8 +678,14 @@
   "sameTripleDifferentGrade": {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
     "blueprintSymbol": "Weapon_LongRange",
-    "grades": [5, 1],
-    "acquisitions": ["communityGoal", "techBroker"]
+    "grades": [
+      5,
+      1
+    ],
+    "acquisitions": [
+      "communityGoal",
+      "techBroker"
+    ]
   },
   "resolved": {
     "fsdV1Size5": {
