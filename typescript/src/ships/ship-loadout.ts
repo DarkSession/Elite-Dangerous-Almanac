@@ -999,7 +999,8 @@ export class ShipLoadout {
      * the Mk II cabins running one rating better than the Mk I cabins of the same class.
      * A screen that splits berths into economy, business, first and luxury reads the
      * `_Class1`–`_Class4` suffix of each fitted cabin's `symbol`, which is that order on
-     * both lines and does not change with the display locale.
+     * both lines — the Mk II line stopping at business — and does not change with the
+     * display locale.
      *
      * @example
      * ```ts

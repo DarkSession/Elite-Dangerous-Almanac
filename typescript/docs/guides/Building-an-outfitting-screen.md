@@ -219,7 +219,7 @@ metrics.thrusters()?.maxMass; // past this the ship does not move at all
 ```
 
 The three capacity lines sit on the build itself rather than on `BuildMetrics`, because
-each is what is fitted rather than a calculation over it:
+each is a property of what is fitted, not a calculation over it:
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -236,9 +236,10 @@ liner.fuelCapacity.main; // -> 32   tonnes the drive can burn
 
 A passenger panel usually wants the split by class as well as the total, and no stat
 field carries the class: group on the `_Class1`–`_Class4` suffix of each cabin's
-`symbol`, which is economy, business, first and luxury on both cabin lines. Do not group
-on `rating` — the Mk II cabins run one rating better than the Mk I cabins of the same
-class, so `D` is economy on one line and business on the other.
+`symbol`, which is economy, business, first and luxury on both cabin lines (the Mk II
+line stops at business). Do not group on `rating` — the Mk II cabins run one rating
+better than the Mk I cabins of the same class, so `D` is economy on one line and
+business on the other.
 
 The game's statistics panel counts the reserve tank in the current mass it displays;
 nothing here does, so add `fuelCapacity.reserve` if you are reproducing that reading.

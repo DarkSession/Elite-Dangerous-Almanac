@@ -442,10 +442,12 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     size-and-rating rule cannot produce both lines.
   - **The four passenger classes are not carried as a field, and are not lost.** EDSY
     publishes one (`cabincls`, values `E`/`B`/`F`/`L`), which this catalogue does not
-    copy: the symbol already states the class, uniformly across both lines. The `_ClassN`
-    suffix is 1/2/3/4 for economy/business/first/luxury on all 23 records, which is what
-    the English `name` and EDSY's `cabincls` both agree with; the `rating` field is what
-    does not state it, for the reason above.
+    copy: the symbol already states the class, uniformly across both lines. The symbol's
+    `_ClassN` suffix — not the `class` field, which is the slot size — is 1/2/3/4 for
+    economy/business/first/luxury on all 23 records, which is what the English `name` and
+    EDSY's `cabincls` both agree with; the `rating` field is what does not state it, for
+    the reason above. The Mk I line runs all four, the Mk II line economy and business
+    only.
   - **EDSY's five `Int_PassengerCabin_Size{2..6}_Class0` "Prisoner Cells" rows are not
     carried**, capacity or otherwise: EDSY has them commented out with a null `fdid`, and
     the inclusion rule below excludes an identity no registry offers to players.
@@ -1098,9 +1100,9 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     module.
 - **Mk II passenger cabins** (`Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}`) — identity
   records from FDevIDs, with mass (2.5/5/10/20/40 t by size) and `cabinCapacity` added
-  from EDSY, which is the only registry carrying these nine records at all, and the two
-  size-6 records' `class` corrected from 5 to 6. The capacities and how they relate to the
-  Mk I cabins' are under `cabinCapacity` above.
+  from EDSY, the only registry that publishes stats for them — coriolis-data carries no
+  record at all — and the two size-6 records' `class` corrected from 5 to 6. The
+  capacities and how they relate to the Mk I cabins' are under `cabinCapacity` above.
 - **Corrosion Resistant Cargo Racks** `Int_CorrosionProofCargoRack_Size{5,6}_Class1`
   (capacity 32/64) and the built-in **Cargo Hatch** `ModularCargoBayDoor` (power 0.6 MW)
   — live EDSY records (not commented out, unlike the 1B shield generator below) that the

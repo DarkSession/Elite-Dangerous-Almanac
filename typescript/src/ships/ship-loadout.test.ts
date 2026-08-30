@@ -1196,8 +1196,9 @@ test('a stated CabinCapacity modifier is what the berths are counted from', () =
         ],
     } as LoadoutEvent);
     assert.equal(modified.fittedModuleAt('Slot01_Size5')?.effectiveStats?.cabinCapacity, 20);
-    // The hull's stock cabins come back with the import, so the modified mount is read
-    // against the same build without it rather than against a bare 20.
+    // The same import without the modifier is the baseline: the articles `fromLoadout`
+    // restores — bulkhead, core internals, cargo hatch — carry no berths, so both builds
+    // hold exactly the one stated cabin.
     const stock = ShipLoadout.fromLoadout({
         Ship: 'Dolphin',
         Modules: [{ Slot: 'Slot01_Size5', Item: 'Int_PassengerCabin_Size5_Class1' }],
