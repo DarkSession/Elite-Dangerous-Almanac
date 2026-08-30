@@ -19,6 +19,13 @@ const DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(descriptionsData a
  * question — it names the damage split or behaviour the `modifiers` list cannot
  * express — and the two are deliberately not the same string.
  *
+ * **This is the heaviest `i18n` dataset**: six locales of prose for all 86 effects is
+ * ~129 KiB minified (~25 KiB gzipped), more than module names cost. Every other lookup
+ * on this subpath carries short display names. It has its own module so an application
+ * that never shows an effect description does not pay for it — import it from
+ * `core/i18n/experimental-effect-descriptions` rather than the `core/i18n` barrel if
+ * you want that boundary to be explicit.
+ *
  * @param experimentalEffectSymbol - Frontier's experimental-effect id. Matching ignores case and
  * surrounding whitespace.
  * @param locale - A BCP 47 locale. All six stored locales are complete for this dataset.
