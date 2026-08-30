@@ -36,6 +36,18 @@ Russian columns Odyssey Materials Helper already supplied said `Fragment de plan
 `Фрагмент чертежа …` while its English, German, Spanish and Portuguese said Segment — the
 disagreement was inside one source, not between the game and this repository.
 
+### Manual correction — Guardian Wreckage Components has no Sentinel
+
+FDevIDs names `Guardian_Sentinel_WreckageComponents` `Guardian Sentinel Wreckage
+Components`; the game calls it **Guardian Wreckage Components**, which is the name
+carried here. The symbol keeps Frontier's own `_Sentinel_` spelling, because that is what
+the journal writes. Repository-owner in-game verification, 2026-08-30 UTC; the in-game
+localisation table drops the word in German, Spanish, French and Brazilian Portuguese
+too, and the Russian column Odyssey Materials Helper already supplied had no equivalent
+of it either — `Обломки кораблекрушения Стражей`, against the `часовых Стражей` it uses
+for `Guardian_Sentinel_WeaponParts`. That sibling **keeps** its Sentinel: the game names
+it `Guardian Sentinel Weapon Parts`, so only the wreckage components are renamed.
+
 ### Secondary source — Thargoid caustic / Titan materials absent from FDevIDs
 
 Several Thargoid caustic and Titan materials are absent from the pinned FDevIDs

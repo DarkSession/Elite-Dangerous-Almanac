@@ -484,11 +484,11 @@
     "ru": "Энергоячейка Стражей"
   },
   "Guardian_Sentinel_WreckageComponents": {
-    "en": "Guardian Sentinel Wreckage Components",
-    "de": "Guardian-Wache-Wrackteilkomponenten",
-    "es": "Restos de accidentes de centinela guardián",
-    "fr": "Débris de sentinelle - Guardians",
-    "pt": "Componentes de destroços Sentinela Guardian",
+    "en": "Guardian Wreckage Components",
+    "de": "Guardian-Wrackteilkomponenten",
+    "es": "Restos de accidentes de guardián",
+    "fr": "Débris d'épave - Guardians",
+    "pt": "Componentes de destroços Guardian",
     "ru": "Обломки кораблекрушения Стражей"
   },
   "Guardian_PowerConduit": {

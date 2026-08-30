@@ -132,12 +132,12 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   Guardian`, and likewise for `Guardian_Sentinel_WeaponParts` (French and Brazilian
   Portuguese), `Guardian_TechComponent` (French and Brazilian Portuguese) and
   `HeatConductionWiring` (Spanish). The unabbreviated value is kept in each.
-- **`Guardian_Sentinel_WreckageComponents` is left on its Odyssey Materials Helper
-  values** pending the English question it raises: the in-game table drops `Sentinel`,
-  naming it `Guardian Wreckage Components` where `materials-encoded.jsonc` has
-  `Guardian Sentinel Wreckage Components`. Taking the localized values alone would leave
-  the record disagreeing with its own English, so all six locales stay as they were until
-  the owning catalogue settles the name.
+- **`Guardian_Sentinel_WreckageComponents` drops `Sentinel` in every locale**, following
+  the owning catalogue's rename (see `data/materials/SOURCES.md`). Its Brazilian
+  Portuguese is the one value here taken from neither source verbatim: the in-game table
+  abbreviates it to `Comp. de destroços Guardian` to fit the widget, so the whole word is
+  kept as it is for the other abbreviated labels above, giving
+  `Componentes de destroços Guardian`.
 
 ## `micro-resource-names.jsonc`
 
