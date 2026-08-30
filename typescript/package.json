@@ -215,10 +215,6 @@
             "types": "./dist/i18n/experimental-effect-descriptions.d.ts",
             "import": "./dist/i18n/experimental-effect-descriptions.js"
         },
-        "./i18n/engineering-groups": {
-            "types": "./dist/i18n/engineering-groups.d.ts",
-            "import": "./dist/i18n/engineering-groups.js"
-        },
         "./i18n/diagnostics": {
             "types": "./dist/i18n/diagnostics.d.ts",
             "import": "./dist/i18n/diagnostics.js"
@@ -243,10 +239,6 @@
         "./i18n/pre-engineered": {
             "types": "./dist/i18n/pre-engineered.d.ts",
             "import": "./dist/i18n/pre-engineered.js"
-        },
-        "./i18n/ships": {
-            "types": "./dist/i18n/ships.d.ts",
-            "import": "./dist/i18n/ships.js"
         },
         "./i18n/slots": {
             "types": "./dist/i18n/slots.d.ts",

@@ -1486,6 +1486,17 @@ up straight through with no disambiguation at all. Both paths are evidence that
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
   grouped (48 groups covering 1005 ordinary engineering menus) and each group lists the
   `blueprints` and `experimentals` it offers.
+- **A group carries no display name.** The grouping is this repository's own partition of
+  the modules sharing one menu; the game publishes no engineering-group label, heading
+  each menu with the module's outfitting family instead. EDSY's `mtype-*` strings, which
+  this file previously stored as group names, are outfitting labels reached by a name
+  join — which is why they disagreed with `module-families.jsonc` in 22 places on wording
+  (`cannons` Russian "Пушки" against the family's "Орудия", `moduleReinforcements`
+  Brazilian Portuguese title case against the family's sentence case). Consumers name a
+  group by joining a module's `familyId` to `module-families.jsonc`. The two partitions
+  do not coincide exactly: 47 of the 48 groups sit wholly inside one family, while
+  `heatSinkLaunchers` covers both `heatsinkLaunchers` and `causticSinkLaunchers`, and the
+  `fsd` and `hullReinforcements` families are each split across two groups.
 - **Source:** EDSY `eddb.js`, whose module-group tables carry each group's `blueprints`
   and `expeffects` lists and which modules belong to each group, and whose module records
   carry the per-module `noblueprints` / `noexpeffects`

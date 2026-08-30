@@ -21,13 +21,41 @@
         "fuelTank"
       ],
       "properties": {
-        "powerPlant": { "type": "integer", "minimum": 1, "maximum": 8 },
-        "thrusters": { "type": "integer", "minimum": 1, "maximum": 8 },
-        "frameShiftDrive": { "type": "integer", "minimum": 1, "maximum": 8 },
-        "lifeSupport": { "type": "integer", "minimum": 1, "maximum": 8 },
-        "powerDistributor": { "type": "integer", "minimum": 1, "maximum": 8 },
-        "sensors": { "type": "integer", "minimum": 1, "maximum": 8 },
-        "fuelTank": { "type": "integer", "minimum": 1, "maximum": 8 }
+        "powerPlant": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "thrusters": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "frameShiftDrive": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "lifeSupport": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "powerDistributor": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "sensors": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "fuelTank": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
       }
     },
     "hardpointSlot": {
@@ -36,7 +64,11 @@
       "additionalProperties": false,
       "required": ["size"],
       "properties": {
-        "size": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
         "restriction": {
           "enum": ["mining"]
         },
@@ -53,7 +85,11 @@
       "additionalProperties": false,
       "required": ["size"],
       "properties": {
-        "size": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
         "restriction": {
           "enum": [
             "military",
@@ -83,12 +119,35 @@
       "additionalProperties": false,
       "minProperties": 1,
       "properties": {
-        "kinetic": { "type": "number", "minimum": 0, "maximum": 1 },
-        "thermal": { "type": "number", "minimum": 0, "maximum": 1 },
-        "explosive": { "type": "number", "minimum": 0, "maximum": 1 },
-        "absolute": { "type": "number", "minimum": 0, "maximum": 1 },
-        "unclassified": { "type": "number", "minimum": 0, "maximum": 1 },
-        "antiXeno": { "type": "number", "minimum": 0 }
+        "kinetic": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "thermal": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "explosive": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "absolute": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "unclassified": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "antiXeno": {
+          "type": "number",
+          "minimum": 0
+        }
       }
     },
     "damageComponents": {
@@ -97,15 +156,33 @@
       "additionalProperties": false,
       "minProperties": 1,
       "properties": {
-        "kinetic": { "type": "number", "minimum": 0 },
-        "thermal": { "type": "number", "minimum": 0 },
-        "explosive": { "type": "number", "minimum": 0 },
-        "absolute": { "type": "number", "minimum": 0 },
-        "antiXeno": { "type": "number", "minimum": 0 },
+        "kinetic": {
+          "type": "number",
+          "minimum": 0
+        },
+        "thermal": {
+          "type": "number",
+          "minimum": 0
+        },
+        "explosive": {
+          "type": "number",
+          "minimum": 0
+        },
+        "absolute": {
+          "type": "number",
+          "minimum": 0
+        },
+        "antiXeno": {
+          "type": "number",
+          "minimum": 0
+        },
         "unclassified": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "number", "minimum": 0 }
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
         }
       }
     },
@@ -115,8 +192,14 @@
       "additionalProperties": false,
       "required": ["falloffBoundary"],
       "properties": {
-        "maximumBoundary": { "type": "number", "minimum": 0 },
-        "falloffBoundary": { "type": "number", "minimum": 0 }
+        "maximumBoundary": {
+          "type": "number",
+          "minimum": 0
+        },
+        "falloffBoundary": {
+          "type": "number",
+          "minimum": 0
+        }
       }
     },
     "ship": {
@@ -154,77 +237,165 @@
         "optional"
       ],
       "properties": {
-        "symbol": { "$ref": "#/definitions/nonEmptyString" },
-        "name": { "$ref": "#/definitions/nonEmptyString" },
-        "manufacturer": { "$ref": "#/definitions/nonEmptyString" },
-        "size": { "enum": ["small", "medium", "large"] },
-        "entitlement": { "$ref": "#/definitions/nonEmptyString" },
-
-        "hullCost": { "type": "integer", "minimum": 0 },
-        "retailCost": { "type": "integer", "minimum": 0 },
-
-        "hullMass": { "type": "number", "minimum": 0 },
-        "minimumSpeed": { "type": "number", "minimum": 0 },
-        "maximumSpeed": { "type": "number", "minimum": 0 },
-        "boost": { "type": "number", "minimum": 0 },
-        "baseShieldStrength": { "type": "number", "minimum": 0 },
-        "baseArmour": { "type": "number", "minimum": 0 },
-        "hardness": { "type": "number", "minimum": 0 },
-        "masslock": { "type": "number", "exclusiveMinimum": 0 },
-        "crew": { "type": "integer", "minimum": 1 },
-        "heatCapacity": { "type": "number", "exclusiveMinimum": 0 },
-        "heatDissipation": { "type": "number", "exclusiveMinimum": 0 },
-        "reserveFuelCapacity": { "type": "number", "minimum": 0 },
-        "pitch": { "type": "number", "minimum": 0 },
-        "minPitch": { "type": "number", "minimum": 0 },
-        "roll": { "type": "number", "minimum": 0 },
-        "minRoll": { "type": "number", "minimum": 0 },
-        "yaw": { "type": "number", "minimum": 0 },
-        "minYaw": { "type": "number", "minimum": 0 },
-
-        "core": { "$ref": "#/definitions/coreSlots" },
+        "symbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "name": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "manufacturer": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "size": {
+          "enum": ["small", "medium", "large"]
+        },
+        "entitlement": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "hullCost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retailCost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hullMass": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minimumSpeed": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maximumSpeed": {
+          "type": "number",
+          "minimum": 0
+        },
+        "boost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "baseShieldStrength": {
+          "type": "number",
+          "minimum": 0
+        },
+        "baseArmour": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hardness": {
+          "type": "number",
+          "minimum": 0
+        },
+        "masslock": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "crew": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "heatCapacity": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "heatDissipation": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "reserveFuelCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pitch": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minPitch": {
+          "type": "number",
+          "minimum": 0
+        },
+        "roll": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minRoll": {
+          "type": "number",
+          "minimum": 0
+        },
+        "yaw": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minYaw": {
+          "type": "number",
+          "minimum": 0
+        },
+        "core": {
+          "$ref": "#/definitions/coreSlots"
+        },
         "hardpoints": {
           "type": "array",
-          "items": { "$ref": "#/definitions/hardpointSlot" }
+          "items": {
+            "$ref": "#/definitions/hardpointSlot"
+          }
         },
-        "utility": { "type": "integer", "minimum": 0 },
+        "utility": {
+          "type": "integer",
+          "minimum": 0
+        },
         "optional": {
           "type": "array",
-          "items": { "$ref": "#/definitions/optionalSlot" }
+          "items": {
+            "$ref": "#/definitions/optionalSlot"
+          }
         }
       }
     },
     "shipCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/definitions/ship" }
+      "items": {
+        "$ref": "#/definitions/ship"
+      }
     },
     "gunsightOffset": {
       "description": "Camera-relative [horizontal, vertical] fixed-weapon offsets in metres.",
       "type": "array",
       "minItems": 2,
       "maxItems": 2,
-      "items": { "type": "number" }
+      "items": {
+        "type": "number"
+      }
     },
     "shipGunsight": {
       "description": "One hull's fixed-weapon offsets, ordered like that hull's hardpoints array.",
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/definitions/gunsightOffset" }
+      "items": {
+        "$ref": "#/definitions/gunsightOffset"
+      }
     },
     "shipGunsightCatalogue": {
       "description": "Fixed-weapon offsets keyed by hull symbol.",
       "type": "object",
       "minProperties": 1,
-      "additionalProperties": { "$ref": "#/definitions/shipGunsight" }
+      "additionalProperties": {
+        "$ref": "#/definitions/shipGunsight"
+      }
     },
     "defaultLoadoutModule": {
       "type": "object",
       "additionalProperties": false,
       "required": ["slot", "symbol"],
       "properties": {
-        "slot": { "$ref": "#/definitions/nonEmptyString" },
-        "symbol": { "$ref": "#/definitions/nonEmptyString" }
+        "slot": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "symbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        }
       }
     },
     "defaultLoadout": {
@@ -232,24 +403,32 @@
       "additionalProperties": false,
       "required": ["symbol", "modules"],
       "properties": {
-        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "symbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "modules": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/definitions/defaultLoadoutModule" }
+          "items": {
+            "$ref": "#/definitions/defaultLoadoutModule"
+          }
         }
       }
     },
     "defaultLoadoutCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/definitions/defaultLoadout" }
+      "items": {
+        "$ref": "#/definitions/defaultLoadout"
+      }
     },
     "moduleFamilyCatalogue": {
       "description": "module-families.jsonc — every outfitting family id mapped to its canonical English display name. The keys are the `familyId` every module record carries.",
       "type": "object",
       "minProperties": 1,
-      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+      "additionalProperties": {
+        "$ref": "#/definitions/nonEmptyString"
+      }
     },
     "module": {
       "description": "One outfitting module. The record carries no `category`: which of the four it is, is which modules-*.jsonc file it was read from, so a loader adds the category from the file rather than every record repeating it. The four `*ModuleCatalogue` definitions below say what each file additionally requires.",
@@ -257,7 +436,9 @@
       "additionalProperties": false,
       "required": ["symbol", "name", "class", "rating"],
       "properties": {
-        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "symbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "kind": {
           "description": "On-disk stable ordinary engineering-menu family copied from the engineering-options module map. Public library records expose this as `engineeringGroup`. Absent when the stock module has no ordinary engineering menu; loaders normalize that deliberate absence to null.",
           "enum": [
@@ -328,7 +509,9 @@
             "fuelTank"
           ]
         },
-        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "name": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "class": {
           "type": "integer",
           "minimum": 0,
@@ -343,18 +526,23 @@
         "guidance": {
           "enum": ["Dumbfire", "Seeker", "Swarm"]
         },
-        "ship": { "$ref": "#/definitions/nonEmptyString" },
-        "entitlement": { "$ref": "#/definitions/nonEmptyString" },
+        "ship": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "entitlement": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "grantOnly": {
           "description": "Present, and always `true`, on the articles no outfitting screen sells: they arrive granted with a hull or a bundle. Never `false` — an absent flag is the ordinary sold module.",
           "const": true
         },
-
         "restrictedToShips": {
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
+          "items": {
+            "$ref": "#/definitions/nonEmptyString"
+          }
         },
         "restrictedToSlot": {
           "description": "The slot restriction this module requires: it fits only mounts carrying it, and no unrestricted mount. The mirror of a mount's `restriction`, for the modules the game sells for one kind of mount alone — the planetary approach suites, the Mk II Cargo Racks and the Mk II Mining Multi-Limpet Controller.",
@@ -399,105 +587,312 @@
           "additionalProperties": false,
           "required": ["group", "amount"],
           "properties": {
-            "group": { "enum": ["experimentalWeapon"] },
-            "amount": { "type": "integer", "minimum": 1 }
+            "group": {
+              "enum": ["experimentalWeapon"]
+            },
+            "amount": {
+              "type": "integer",
+              "minimum": 1
+            }
           }
         },
-        "mass": { "type": "number", "minimum": 0 },
-        "integrity": { "type": "number", "minimum": 0 },
-        "powerDraw": { "type": "number", "minimum": 0 },
-        "bootTime": { "type": "number", "minimum": 0 },
-        "optMass": { "type": "number", "minimum": 0 },
-        "minMass": { "type": "number", "minimum": 0 },
-        "maxMass": { "type": "number", "minimum": 0 },
-        "optMultiplier": { "type": "number" },
-        "minMultiplier": { "type": "number" },
-        "maxMultiplier": { "type": "number" },
-        "optSpeedMultiplier": { "type": "number" },
-        "minSpeedMultiplier": { "type": "number" },
-        "maxSpeedMultiplier": { "type": "number" },
-        "optRotationMultiplier": { "type": "number" },
-        "minRotationMultiplier": { "type": "number" },
-        "maxRotationMultiplier": { "type": "number" },
-        "engineHeatRate": { "type": "number", "minimum": 0 },
-        "maxFuel": { "type": "number", "minimum": 0 },
-        "fuelMul": { "type": "number", "exclusiveMinimum": 0 },
-        "fuelPower": { "type": "number", "exclusiveMinimum": 0 },
-        "fsdHeatRate": { "type": "number", "minimum": 0 },
+        "mass": {
+          "type": "number",
+          "minimum": 0
+        },
+        "integrity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "powerDraw": {
+          "type": "number",
+          "minimum": 0
+        },
+        "bootTime": {
+          "type": "number",
+          "minimum": 0
+        },
+        "optMass": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minMass": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxMass": {
+          "type": "number",
+          "minimum": 0
+        },
+        "optMultiplier": {
+          "type": "number"
+        },
+        "minMultiplier": {
+          "type": "number"
+        },
+        "maxMultiplier": {
+          "type": "number"
+        },
+        "optSpeedMultiplier": {
+          "type": "number"
+        },
+        "minSpeedMultiplier": {
+          "type": "number"
+        },
+        "maxSpeedMultiplier": {
+          "type": "number"
+        },
+        "optRotationMultiplier": {
+          "type": "number"
+        },
+        "minRotationMultiplier": {
+          "type": "number"
+        },
+        "maxRotationMultiplier": {
+          "type": "number"
+        },
+        "engineHeatRate": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxFuel": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fuelMul": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "fuelPower": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "fsdHeatRate": {
+          "type": "number",
+          "minimum": 0
+        },
         "supercruiseOvercharge": {
           "description": "True on a Supercruise Overcharge drive, the capability the outfitting screen calls SCO; absent on a drive without it and on every other module.",
           "const": true
         },
-        "jumpBoost": { "type": "number", "minimum": 0 },
-        "powerCapacity": { "type": "number", "minimum": 0 },
-        "heatEfficiency": { "type": "number", "minimum": 0 },
-        "weaponsCapacity": { "type": "number", "minimum": 0 },
-        "weaponsRecharge": { "type": "number", "minimum": 0 },
-        "enginesCapacity": { "type": "number", "minimum": 0 },
-        "enginesRecharge": { "type": "number", "minimum": 0 },
-        "systemsCapacity": { "type": "number", "minimum": 0 },
-        "systemsRecharge": { "type": "number", "minimum": 0 },
-        "refuelRate": { "type": "number", "minimum": 0 },
-        "fuelCapacity": { "type": "number", "minimum": 0 },
-        "cargoCapacity": { "type": "number", "minimum": 0 },
-        "shieldRegenRate": { "type": "number", "minimum": 0 },
-        "shieldBrokenRegenRate": { "type": "number", "minimum": 0 },
-        "shieldBoost": { "type": "number" },
-
-        "shieldBankReinforcement": { "type": "number", "minimum": 0 },
-        "shieldBankHeat": { "type": "number", "minimum": 0 },
-        "shieldBankSpinUp": { "type": "number", "minimum": 0 },
-        "shieldBankDuration": { "type": "number", "minimum": 0 },
-
-        "kineticResistance": { "$ref": "#/definitions/resistance" },
-        "thermalResistance": { "$ref": "#/definitions/resistance" },
-        "explosiveResistance": { "$ref": "#/definitions/resistance" },
-        "causticResistance": { "$ref": "#/definitions/resistance" },
+        "jumpBoost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "powerCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "heatEfficiency": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weaponsCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weaponsRecharge": {
+          "type": "number",
+          "minimum": 0
+        },
+        "enginesCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "enginesRecharge": {
+          "type": "number",
+          "minimum": 0
+        },
+        "systemsCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "systemsRecharge": {
+          "type": "number",
+          "minimum": 0
+        },
+        "refuelRate": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fuelCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cargoCapacity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldRegenRate": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldBrokenRegenRate": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldBoost": {
+          "type": "number"
+        },
+        "shieldBankReinforcement": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldBankHeat": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldBankSpinUp": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldBankDuration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "kineticResistance": {
+          "$ref": "#/definitions/resistance"
+        },
+        "thermalResistance": {
+          "$ref": "#/definitions/resistance"
+        },
+        "explosiveResistance": {
+          "$ref": "#/definitions/resistance"
+        },
+        "causticResistance": {
+          "$ref": "#/definitions/resistance"
+        },
         "guardianZoneResistance": {
           "description": "True when Anti-Guardian Zone Resistance grants protection from Thargoid anti-Guardian fields; absent when not granted.",
           "type": "boolean"
         },
-        "hullBoost": { "type": "number", "minimum": 0 },
-        "hullReinforcement": { "type": "number", "minimum": 0 },
-        "shieldAddition": { "type": "number", "minimum": 0 },
-        "moduleProtection": { "type": "number", "minimum": 0, "maximum": 1 },
-
-        "scannerRange": { "type": "number", "minimum": 0 },
-        "scanAngle": { "type": "number", "minimum": 0, "maximum": 360 },
-        "scanTime": { "type": "number", "minimum": 0 },
-        "probeRadius": { "type": "number", "minimum": 0 },
-
+        "hullBoost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hullReinforcement": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shieldAddition": {
+          "type": "number",
+          "minimum": 0
+        },
+        "moduleProtection": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "scannerRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "scanAngle": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 360
+        },
+        "scanTime": {
+          "type": "number",
+          "minimum": 0
+        },
+        "probeRadius": {
+          "type": "number",
+          "minimum": 0
+        },
         "interdictorFacingLimit": {
           "type": "number",
           "minimum": 0,
           "maximum": 360
         },
-        "interdictorRange": { "type": "number", "minimum": 0 },
-
-        "alwaysPowered": { "type": "boolean" },
-
-        "damage": { "type": "number", "minimum": 0 },
-        "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
-        "damageComponents": { "$ref": "#/definitions/damageComponents" },
-        "roundsPerShot": { "type": "number", "minimum": 1 },
-        "rateOfFire": { "type": "number", "exclusiveMinimum": 0 },
-        "burstInterval": { "type": "number", "exclusiveMinimum": 0 },
-        "burstRounds": { "type": "number", "minimum": 1 },
-        "burstRateOfFire": { "type": "number", "exclusiveMinimum": 0 },
-        "chargeTime": { "type": "number", "minimum": 0 },
-        "clipSize": { "type": "number", "minimum": 0 },
-        "ammoMaximum": { "type": "number", "minimum": 0 },
-        "reloadTime": { "type": "number", "minimum": 0 },
-        "distributorDraw": { "type": "number", "minimum": 0 },
-        "thermalLoad": { "type": "number", "minimum": 0 },
-        "armourPiercing": { "type": "number", "minimum": 0 },
-        "maximumRange": { "type": "number", "minimum": 0 },
-        "falloffRange": { "type": "number", "minimum": 0 },
-        "projectileRange": { "$ref": "#/definitions/projectileRange" },
-        "shotSpeed": { "type": "number", "minimum": 0 },
-        "jitter": { "type": "number", "minimum": 0 },
-
-        "cost": { "type": "integer", "minimum": 0 }
+        "interdictorRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "alwaysPowered": {
+          "type": "boolean"
+        },
+        "damage": {
+          "type": "number",
+          "minimum": 0
+        },
+        "damageDistribution": {
+          "$ref": "#/definitions/damageDistribution"
+        },
+        "damageComponents": {
+          "$ref": "#/definitions/damageComponents"
+        },
+        "roundsPerShot": {
+          "type": "number",
+          "minimum": 1
+        },
+        "rateOfFire": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "burstInterval": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "burstRounds": {
+          "type": "number",
+          "minimum": 1
+        },
+        "burstRateOfFire": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "chargeTime": {
+          "type": "number",
+          "minimum": 0
+        },
+        "clipSize": {
+          "type": "number",
+          "minimum": 0
+        },
+        "ammoMaximum": {
+          "type": "number",
+          "minimum": 0
+        },
+        "reloadTime": {
+          "type": "number",
+          "minimum": 0
+        },
+        "distributorDraw": {
+          "type": "number",
+          "minimum": 0
+        },
+        "thermalLoad": {
+          "type": "number",
+          "minimum": 0
+        },
+        "armourPiercing": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maximumRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "falloffRange": {
+          "type": "number",
+          "minimum": 0
+        },
+        "projectileRange": {
+          "$ref": "#/definitions/projectileRange"
+        },
+        "shotSpeed": {
+          "type": "number",
+          "minimum": 0
+        },
+        "jitter": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cost": {
+          "type": "integer",
+          "minimum": 0
+        }
       },
       "allOf": [
         {
@@ -505,11 +900,19 @@
           "if": {
             "required": ["symbol"],
             "properties": {
-              "symbol": { "pattern": "^Int_Hyperdrive_Overcharge_" }
+              "symbol": {
+                "pattern": "^Int_Hyperdrive_Overcharge_"
+              }
             }
           },
-          "then": { "required": ["supercruiseOvercharge"] },
-          "else": { "not": { "required": ["supercruiseOvercharge"] } }
+          "then": {
+            "required": ["supercruiseOvercharge"]
+          },
+          "else": {
+            "not": {
+              "required": ["supercruiseOvercharge"]
+            }
+          }
         }
       ]
     },
@@ -519,24 +922,36 @@
       "minItems": 1,
       "items": {
         "allOf": [
-          { "$ref": "#/definitions/module" },
+          {
+            "$ref": "#/definitions/module"
+          },
           {
             "required": ["slot"],
-            "not": { "required": ["familyId"] }
+            "not": {
+              "required": ["familyId"]
+            }
           },
           {
             "description": "And `slot` names the mount that module actually fills. Requiring the field only would let an FSD claim `sensors`; pairing each symbol family with its mount is what makes this file the contract rather than the code that reads it.",
             "oneOf": [
               {
                 "properties": {
-                  "symbol": { "pattern": "_Armour_" },
-                  "slot": { "const": "armour" }
+                  "symbol": {
+                    "pattern": "_Armour_"
+                  },
+                  "slot": {
+                    "const": "armour"
+                  }
                 }
               },
               {
                 "properties": {
-                  "symbol": { "pattern": "^Int_Power[Pp]lant_" },
-                  "slot": { "const": "powerPlant" }
+                  "symbol": {
+                    "pattern": "^Int_Power[Pp]lant_"
+                  },
+                  "slot": {
+                    "const": "powerPlant"
+                  }
                 }
               },
               {
@@ -544,37 +959,59 @@
                   "symbol": {
                     "pattern": "^Int_(?:Engine|MkIIAgileBoost_Engine)_"
                   },
-                  "slot": { "const": "thrusters" }
+                  "slot": {
+                    "const": "thrusters"
+                  }
                 }
               },
               {
                 "properties": {
-                  "symbol": { "pattern": "^Int_Hyperdrive_" },
-                  "slot": { "const": "frameShiftDrive" }
+                  "symbol": {
+                    "pattern": "^Int_Hyperdrive_"
+                  },
+                  "slot": {
+                    "const": "frameShiftDrive"
+                  }
                 }
               },
               {
                 "properties": {
-                  "symbol": { "pattern": "^Int_LifeSupport_" },
-                  "slot": { "const": "lifeSupport" }
+                  "symbol": {
+                    "pattern": "^Int_LifeSupport_"
+                  },
+                  "slot": {
+                    "const": "lifeSupport"
+                  }
                 }
               },
               {
                 "properties": {
-                  "symbol": { "pattern": "^Int_PowerDistributor_" },
-                  "slot": { "const": "powerDistributor" }
+                  "symbol": {
+                    "pattern": "^Int_PowerDistributor_"
+                  },
+                  "slot": {
+                    "const": "powerDistributor"
+                  }
                 }
               },
               {
                 "properties": {
-                  "symbol": { "pattern": "^Int_Sensors_" },
-                  "slot": { "const": "sensors" }
+                  "symbol": {
+                    "pattern": "^Int_Sensors_"
+                  },
+                  "slot": {
+                    "const": "sensors"
+                  }
                 }
               },
               {
                 "properties": {
-                  "symbol": { "pattern": "^Int_FuelTank_" },
-                  "slot": { "const": "fuelTank" }
+                  "symbol": {
+                    "pattern": "^Int_FuelTank_"
+                  },
+                  "slot": {
+                    "const": "fuelTank"
+                  }
                 }
               }
             ]
@@ -588,23 +1025,35 @@
       "minItems": 1,
       "items": {
         "allOf": [
-          { "$ref": "#/definitions/module" },
+          {
+            "$ref": "#/definitions/module"
+          },
           {
             "required": ["familyId"],
-            "if": { "required": ["slot"] },
+            "if": {
+              "required": ["slot"]
+            },
             "then": {
               "description": "A `slot` here belongs to a Guardian Hybrid, and names the mount that hybrid actually fills — matching the symbol alone would let one claim any of the eight.",
               "oneOf": [
                 {
                   "properties": {
-                    "symbol": { "pattern": "^Int_GuardianPower[Pp]lant_" },
-                    "slot": { "const": "powerPlant" }
+                    "symbol": {
+                      "pattern": "^Int_GuardianPower[Pp]lant_"
+                    },
+                    "slot": {
+                      "const": "powerPlant"
+                    }
                   }
                 },
                 {
                   "properties": {
-                    "symbol": { "pattern": "^Int_GuardianPowerDistributor_" },
-                    "slot": { "const": "powerDistributor" }
+                    "symbol": {
+                      "pattern": "^Int_GuardianPowerDistributor_"
+                    },
+                    "slot": {
+                      "const": "powerDistributor"
+                    }
                   }
                 }
               ]
@@ -619,10 +1068,14 @@
       "minItems": 1,
       "items": {
         "allOf": [
-          { "$ref": "#/definitions/module" },
+          {
+            "$ref": "#/definitions/module"
+          },
           {
             "required": ["familyId"],
-            "not": { "required": ["slot"] }
+            "not": {
+              "required": ["slot"]
+            }
           }
         ]
       }
@@ -633,10 +1086,14 @@
       "minItems": 1,
       "items": {
         "allOf": [
-          { "$ref": "#/definitions/module" },
+          {
+            "$ref": "#/definitions/module"
+          },
           {
             "required": ["familyId"],
-            "not": { "required": ["slot"] }
+            "not": {
+              "required": ["slot"]
+            }
           }
         ]
       }
@@ -646,12 +1103,18 @@
       "additionalProperties": false,
       "required": ["label", "method", "min", "max"],
       "properties": {
-        "label": { "$ref": "#/definitions/nonEmptyString" },
+        "label": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "method": {
           "enum": ["multiplicative", "additive", "overwrite"]
         },
-        "min": { "type": "number" },
-        "max": { "type": "number" }
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
       }
     },
     "engineeringMaterial": {
@@ -659,9 +1122,16 @@
       "additionalProperties": false,
       "required": ["symbol", "name", "count"],
       "properties": {
-        "symbol": { "$ref": "#/definitions/nonEmptyString" },
-        "name": { "$ref": "#/definitions/nonEmptyString" },
-        "count": { "type": "integer", "minimum": 1 }
+        "symbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "name": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "blueprintGrade": {
@@ -672,9 +1142,13 @@
         "features": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/definitions/blueprintFeature" }
+          "items": {
+            "$ref": "#/definitions/blueprintFeature"
+          }
         },
-        "damageDistribution": { "$ref": "#/definitions/damageDistribution" }
+        "damageDistribution": {
+          "$ref": "#/definitions/damageDistribution"
+        }
       }
     },
     "blueprintGrades": {
@@ -682,7 +1156,9 @@
       "minProperties": 1,
       "additionalProperties": false,
       "patternProperties": {
-        "^[1-5]$": { "$ref": "#/definitions/blueprintGrade" }
+        "^[1-5]$": {
+          "$ref": "#/definitions/blueprintGrade"
+        }
       }
     },
     "blueprint": {
@@ -690,8 +1166,12 @@
       "additionalProperties": false,
       "required": ["name", "grades"],
       "properties": {
-        "name": { "$ref": "#/definitions/nonEmptyString" },
-        "grades": { "$ref": "#/definitions/blueprintGrades" }
+        "name": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "grades": {
+          "$ref": "#/definitions/blueprintGrades"
+        }
       }
     },
     "blueprintCatalogue": {
@@ -708,7 +1188,9 @@
       "patternProperties": {
         "^[1-5]$": {
           "type": "array",
-          "items": { "$ref": "#/definitions/engineeringMaterial" }
+          "items": {
+            "$ref": "#/definitions/engineeringMaterial"
+          }
         }
       }
     },
@@ -725,7 +1207,10 @@
       "minProperties": 1,
       "additionalProperties": false,
       "patternProperties": {
-        "^[1-5]$": { "type": "integer", "minimum": 1 }
+        "^[1-5]$": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "blueprintMercCoinCostCatalogue": {
@@ -740,18 +1225,24 @@
       "description": "Recipe ids keyed to the colliding `BlueprintName` a journal writes for them.",
       "type": "object",
       "minProperties": 1,
-      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+      "additionalProperties": {
+        "$ref": "#/definitions/nonEmptyString"
+      }
     },
     "experimentalContribution": {
       "type": "object",
       "additionalProperties": false,
       "required": ["label", "method", "value"],
       "properties": {
-        "label": { "$ref": "#/definitions/nonEmptyString" },
+        "label": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "method": {
           "enum": ["multiplicative", "additive", "overwrite"]
         },
-        "value": { "type": "number" }
+        "value": {
+          "type": "number"
+        }
       }
     },
     "experimentalEffect": {
@@ -759,13 +1250,21 @@
       "additionalProperties": false,
       "required": ["name", "modifiers"],
       "properties": {
-        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "name": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "modifiers": {
           "type": "array",
-          "items": { "$ref": "#/definitions/experimentalContribution" }
+          "items": {
+            "$ref": "#/definitions/experimentalContribution"
+          }
         },
-        "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
-        "description": { "$ref": "#/definitions/nonEmptyString" }
+        "damageDistribution": {
+          "$ref": "#/definitions/damageDistribution"
+        },
+        "description": {
+          "$ref": "#/definitions/nonEmptyString"
+        }
       }
     },
     "experimentalCatalogue": {
@@ -781,7 +1280,9 @@
       "additionalProperties": {
         "type": "array",
         "minItems": 1,
-        "items": { "$ref": "#/definitions/engineeringMaterial" }
+        "items": {
+          "$ref": "#/definitions/engineeringMaterial"
+        }
       }
     },
     "preEngineeredModifier": {
@@ -789,9 +1290,15 @@
       "additionalProperties": false,
       "required": ["label", "method", "value"],
       "properties": {
-        "label": { "$ref": "#/definitions/nonEmptyString" },
-        "method": { "enum": ["multiplicative", "additive", "overwrite"] },
-        "value": { "type": "number" }
+        "label": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "method": {
+          "enum": ["multiplicative", "additive", "overwrite"]
+        },
+        "value": {
+          "type": "number"
+        }
       }
     },
     "preEngineeredVariant": {
@@ -799,11 +1306,23 @@
       "additionalProperties": false,
       "required": ["symbol", "name", "blueprintSymbol", "grade", "acquisition"],
       "properties": {
-        "symbol": { "$ref": "#/definitions/nonEmptyString" },
-        "name": { "$ref": "#/definitions/nonEmptyString" },
-        "blueprintSymbol": { "$ref": "#/definitions/nonEmptyString" },
-        "grade": { "type": "integer", "minimum": 1, "maximum": 5 },
-        "experimentalEffectSymbol": { "$ref": "#/definitions/nonEmptyString" },
+        "symbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "name": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "blueprintSymbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "grade": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "experimentalEffectSymbol": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "acquisition": {
           "enum": ["mercenary", "communityGoal", "techBroker", "eventReward"]
         },
@@ -811,11 +1330,16 @@
           "description": "True when this final pre-engineered article accepts no further engineering; absent otherwise.",
           "const": true
         },
-        "mercCoinCost": { "type": "integer", "exclusiveMinimum": 0 },
+        "mercCoinCost": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
         "modifiers": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/definitions/preEngineeredModifier" }
+          "items": {
+            "$ref": "#/definitions/preEngineeredModifier"
+          }
         }
       },
       "oneOf": [
@@ -828,12 +1352,22 @@
         },
         {
           "required": ["modifiers"],
-          "properties": { "acquisition": { "const": "eventReward" } },
+          "properties": {
+            "acquisition": {
+              "const": "eventReward"
+            }
+          },
           "not": {
             "anyOf": [
-              { "required": ["experimentalEffectSymbol"] },
-              { "required": ["engineeringLocked"] },
-              { "required": ["mercCoinCost"] }
+              {
+                "required": ["experimentalEffectSymbol"]
+              },
+              {
+                "required": ["engineeringLocked"]
+              },
+              {
+                "required": ["mercCoinCost"]
+              }
             ]
           }
         }
@@ -842,24 +1376,29 @@
     "preEngineeredCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/definitions/preEngineeredVariant" }
+      "items": {
+        "$ref": "#/definitions/preEngineeredVariant"
+      }
     },
     "engineeringOptionGroup": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "blueprints", "experimentals"],
+      "required": ["blueprints", "experimentals"],
       "properties": {
-        "name": { "$ref": "#/definitions/nonEmptyString" },
         "blueprints": {
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
+          "items": {
+            "$ref": "#/definitions/nonEmptyString"
+          }
         },
         "experimentals": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
+          "items": {
+            "$ref": "#/definitions/nonEmptyString"
+          }
         }
       }
     },
@@ -878,7 +1417,9 @@
         "modules": {
           "type": "object",
           "minProperties": 1,
-          "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+          "additionalProperties": {
+            "$ref": "#/definitions/nonEmptyString"
+          }
         },
         "exclusions": {
           "type": "object",
@@ -886,7 +1427,9 @@
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
-            "items": { "$ref": "#/definitions/nonEmptyString" }
+            "items": {
+              "$ref": "#/definitions/nonEmptyString"
+            }
           }
         }
       }

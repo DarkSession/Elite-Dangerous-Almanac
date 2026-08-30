@@ -247,42 +247,6 @@
       "expected": null
     },
     {
-      "kind": "ship",
-      "identifier": "empire_trader",
-      "locale": "fr-FR",
-      "expected": "Imperial Clipper"
-    },
-    {
-      "kind": "shipManufacturer",
-      "identifier": "SideWinder",
-      "locale": "fr",
-      "expected": null
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "frameShiftDrives",
-      "locale": "en-GB",
-      "expected": "Frame Shift Drives"
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "frameShiftDrives",
-      "locale": "ru-RU",
-      "expected": "Рамочно-сместительные двигатели"
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "guardianGauss",
-      "locale": "ru-RU",
-      "expected": "Экс - Пушки Гаусса Стражей"
-    },
-    {
-      "kind": "engineeringGroup",
-      "identifier": "guardianPowerPlants",
-      "locale": "ru",
-      "expected": null
-    },
-    {
       "kind": "experimentalEffectDescription",
       "identifier": "special_auto_loader",
       "locale": "en",
