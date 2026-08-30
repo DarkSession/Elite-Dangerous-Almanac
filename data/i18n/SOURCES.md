@@ -50,20 +50,29 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   accents, and 241 in wording. Many of the last are the game being specific where the
   registries were general — Russian `Двигатели` becomes `Маневровые двигатели`, Brazilian
   Portuguese `Propulsores` becomes `Propulsores de desempenho melhorado`.
-- **Sixteen values are the outfitting panel's own abbreviations**, and are stored as the
-  game renders them: French `Laser à impuls.`, Russian `Сист. жизнеобеспечения`, Spanish
-  `Lanzamisiles g.` and thirteen more, reaching 185 symbols between them. They are the
-  panel's shortened forms rather than different translations. Note that
-  `material-names.jsonc` resolves the same situation the other way, keeping the
-  unabbreviated value; the two catalogues do not currently follow one rule here.
-- **Four names need more than one record.** The catalogue deduplicates modules sharing
-  one name in every locale, which is finer than sharing one canonical English name,
-  because the game distinguishes in other locales what English spells the same way:
+- **The least abbreviated spelling is the one stored**, as it is in
+  `material-names.jsonc`. The outfitting panel shortens a label that will not fit, and
+  that is a rendering rather than a different translation, so where the panel abbreviates
+  the longest unabbreviated spelling available for that module and locale is taken
+  instead — the catalogue's own previous value where it had one, otherwise the source's
+  other field. French `Laser à impuls.` is stored as `Laser à impulsion`, Russian
+  `Разбрас-ль дип. отражателей` as `Разбрасыватель дипольных отражателей`. An
+  unabbreviated candidate is rejected when it is so much shorter that it is plainly a
+  different label rather than the same one spelled out: German `EGM` does not replace
+  `Elektr. Gegenmaßnahmen`. **Ten values remain abbreviated** because no source spells
+  them out — the Mk II gravity-optimised thrusters in four locales, the Advanced
+  Planetary Approach Suite in three, and three others — and there the alternative is a
+  bare `Schubdüsen` or `Propulseurs` that loses what distinguishes the module.
+- **A rendered capacity or grant marker is not a name.** A longname may carry a module's
+  own capacity or a `(Free)` marker — `Anti-Korrosions-Frachtgestell (KAP.: 1)` — which
+  describes one module rather than naming the family, so it is rejected and the source's
+  other field is read instead.
+- **One record per canonical English name.** Where the source distinguishes in another
+  locale what English spells the same way, the reading most symbols share is stored:
   `Lightweight Alloy` and `Reinforced Alloy` are singular on 25 hulls and plural on the
-  rest, `Hatch Breaker Limpet Controller` is generic on one symbol and specific on
-  twenty, and one Corrosion Resistant Cargo Rack differs from its four siblings. A `#2`
-  suffix separates the second record of such a pair; it is part of the key only, never of
-  a displayed name.
+  rest, and the singular is kept, which is also the number the English carries.
+  `Hatch Breaker Limpet Controller` is specific on twenty symbols and generic on one, and
+  the specific is kept.
 - **Coverage:** complete. All 1,199 symbols carry all six locales.
 - **Manual corrections:** none.
 
