@@ -1418,6 +1418,7 @@
             "cargoCapacity": { "type": "integer" },
             "fuelCapacity": { "type": "integer" },
             "maxJumpRange": { "type": "number" },
+            "passengerCapacity": { "type": "integer" },
             "power": {
               "type": "object",
               "additionalProperties": false,
@@ -1467,6 +1468,7 @@
             "cargoCapacity",
             "fuelCapacity",
             "maxJumpRange",
+            "passengerCapacity",
             "power",
             "shields",
             "unladenMass",
@@ -4219,6 +4221,27 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "cabinCapacity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "count": { "type": "integer" },
+            "note": { "type": "string" },
+            "records": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "cabinCapacity": { "type": "integer" },
+                  "symbol": { "type": "string" }
+                },
+                "required": ["cabinCapacity", "symbol"]
+              }
+            }
+          },
+          "required": ["count", "note", "records"]
+        },
         "capturedBaseStats": {
           "type": "object",
           "additionalProperties": false,
@@ -4702,6 +4725,7 @@
         "withoutIntegrity": { "$ref": "#/definitions/sharedcf717f008f4a" }
       },
       "required": [
+        "cabinCapacity",
         "capturedBaseStats",
         "continuousFire",
         "counts",
@@ -7475,6 +7499,7 @@
                     "required": ["action", "slot", "sourceSymbol"]
                   }
                 },
+                "passengerCapacity": { "type": "integer" },
                 "rebuy": { "type": "null" },
                 "unladenMass": { "type": "number" }
               },
@@ -7485,6 +7510,7 @@
                 "modules",
                 "modulesValue",
                 "outcomes",
+                "passengerCapacity",
                 "rebuy",
                 "unladenMass"
               ]

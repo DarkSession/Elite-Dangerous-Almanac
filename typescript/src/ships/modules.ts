@@ -611,6 +611,8 @@ export interface OutfittingModuleStats {
     readonly fuelCapacity?: number;
     /** Cargo rack: capacity, in tonnes. */
     readonly cargoCapacity?: number;
+    /** Passenger cabin: capacity, in passenger berths. */
+    readonly cabinCapacity?: number;
 
     /** Shield generator: regeneration rate, MJ per second. */
     readonly shieldRegenRate?: number;

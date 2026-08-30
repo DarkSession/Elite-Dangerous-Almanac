@@ -110,6 +110,7 @@ const STAT_LABELS: readonly StatLabel[] = [
     { label: 'FuelScoopRate', field: 'refuelRate' },
     { label: 'FuelCapacity', field: 'fuelCapacity' },
     { label: 'CargoCapacity', field: 'cargoCapacity' },
+    { label: 'CabinCapacity', field: 'cabinCapacity' },
     { label: 'RegenRate', field: 'shieldRegenRate' },
     { label: 'BrokenRegenRate', field: 'shieldBrokenRegenRate' },
     // A shield generator's distributor draw is the systems-capacitor cost of one MJ per

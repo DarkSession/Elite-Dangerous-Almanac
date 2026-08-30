@@ -140,9 +140,9 @@ data-free leaf modules under `ships/jump-range`, `ships/power`, `ships/shields`,
 `ships/resistances`.
 
 `build.validation()` reports validity and operational completeness. `cargoCapacity`,
-`fuelCapacity` and `unladenMass` always have an answer, because no article the
-catalogue cannot weigh reaches a build; the eight metrics that depend on build state
-(`mobilityMetrics`, `mobilityCapacitorMetrics`, `shieldMetrics`,
+`passengerCapacity`, `fuelCapacity` and `unladenMass` always have an answer, because no
+article the catalogue cannot weigh reaches a build; the eight metrics that depend on
+build state (`mobilityMetrics`, `mobilityCapacitorMetrics`, `shieldMetrics`,
 `shieldCapacitorMetrics`, `shieldRecovery`, `heatMetrics`, `distributorMetrics` and
 `standardLoad`) are nullable and each has a `…Result` counterpart naming what is
 missing, switched off, shed or unpowered. `parseSlef`

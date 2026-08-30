@@ -453,9 +453,9 @@ Do not assume a nullable figure is load-bearing:
   what was missing, switched off or shed. Each issue's typed `reason` is
   `missing`, `unresolved`, `disabled`, `shed` or `invalid`; use it instead of parsing the
   diagnostic message.
-- `unladenMass`, `fuelCapacity`, `cargoCapacity` and `buildMass()` are not nullable and
-  have no diagnostic result: no article a build can hold is unweighable, so they always
-  answer. `thrusters` is nullable — it reports the
+- `unladenMass`, `fuelCapacity`, `cargoCapacity`, `passengerCapacity` and `buildMass()`
+  are not nullable and have no diagnostic result: no article a build can hold is
+  unweighable, so they always answer. `thrusters` is nullable — it reports the
   fitted article's curve, and `mobilityMetricsResult()` is what explains an unusable one.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.

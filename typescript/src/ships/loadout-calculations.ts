@@ -2,7 +2,7 @@
  * Pure aggregate calculations for ship loadouts.
  *
  * @remarks
- * The three sums here consume already-resolved module contributions, so they import no
+ * The four sums here consume already-resolved module contributions, so they import no
  * catalogue and know nothing of {@link ShipLoadout}. Every contribution is a known number
  * — a record missing one is refused long before it reaches a build — so each returns its
  * figure outright. The {@link CalculationResult} types below belong to the
@@ -74,6 +74,8 @@ export interface LoadoutCalculationModule {
     readonly mass: number;
     /** Cargo tonnes; `undefined` for anything but a cargo rack. */
     readonly cargoCapacity?: number;
+    /** Berths; `undefined` for anything but a passenger cabin. */
+    readonly cabinCapacity?: number;
     /** Fuel tonnes; `undefined` for anything but a fuel tank. */
     readonly fuelCapacity?: number;
 }
@@ -111,6 +113,18 @@ export function calculateUnladenMass(
 export function calculateCargoCapacity(modules: readonly LoadoutCalculationModule[]): number {
     let value = 0;
     for (const module of modules) value += module.cargoCapacity ?? 0;
+    return value;
+}
+
+/**
+ * Sum fitted passenger cabins.
+ *
+ * @param modules - Resolved fitted-module contributions.
+ * @returns Passenger capacity, in berths. A build with no cabin carries `0`.
+ */
+export function calculatePassengerCapacity(modules: readonly LoadoutCalculationModule[]): number {
+    let value = 0;
+    for (const module of modules) value += module.cabinCapacity ?? 0;
     return value;
 }
 

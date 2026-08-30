@@ -36,6 +36,7 @@
   "metrics": {
     "unladenMass": 374.1,
     "cargoCapacity": 0,
+    "passengerCapacity": 0,
     "fuelCapacity": 32,
     "maxJumpRange": 35.737184,
     "power": { "available": 15.6, "retracted": 18.46, "deployed": 22.32, "withinBudget": false },

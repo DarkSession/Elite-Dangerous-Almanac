@@ -89,6 +89,8 @@ test("rolling a stated recipe leaves the capture's own aggregates alone", () => 
     assert.equal(imported.unladenMass, stated.UnladenMass);
     assert.equal(imported.cargoCapacity, stated.CargoCapacity);
     assert.equal(imported.fuelCapacity.main, stated.FuelCapacity?.Main);
+    // Berths have no exported figure to compare against, so the re-import re-sums them.
+    assert.equal(imported.passengerCapacity, built.passengerCapacity);
     // Re-fitting nothing leaves the purchase record alone too.
     assert.equal(imported.modulesValue, stated.ModulesValue);
     assert.equal(imported.rebuy, stated.Rebuy);
@@ -400,6 +402,7 @@ test('shared import normalization strips unknown modules and defaults named moun
         {
             unladenMass: round6(build.unladenMass!),
             cargoCapacity: build.cargoCapacity,
+            passengerCapacity: build.passengerCapacity,
             fuelCapacity: build.fuelCapacity,
             modulesValue: build.modulesValue,
             rebuy: build.rebuy,
@@ -407,6 +410,7 @@ test('shared import normalization strips unknown modules and defaults named moun
         {
             unladenMass: expected.unladenMass,
             cargoCapacity: expected.cargoCapacity,
+            passengerCapacity: expected.passengerCapacity,
             fuelCapacity: expected.fuelCapacity,
             modulesValue: expected.modulesValue,
             rebuy: expected.rebuy,

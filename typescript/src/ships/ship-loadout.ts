@@ -131,6 +131,7 @@ import {
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
+    calculatePassengerCapacity,
     calculateUnladenMass,
     type FuelCapacity,
     type LoadoutCalculationModule,
@@ -467,7 +468,7 @@ export interface SlefExportOptions extends LoadoutExportOptions {
 }
 
 /** The stats every build sums from its fit, so a supplied record may not drop one. */
-const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'fuelCapacity'] as const;
+const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'cabinCapacity', 'fuelCapacity'] as const;
 
 /**
  * A fitted ship — read a SLEF export, or assemble a hull from scratch.
@@ -477,7 +478,8 @@ const AGGREGATE_STATS = ['mass', 'cargoCapacity', 'fuelCapacity'] as const;
  * - **Construct** — {@link fromSlef}, {@link fromLoadout}, {@link empty},
  *   {@link default}. The constructor is private; every build starts at one of these four.
  * - **Inspect** — {@link shipSymbol}, {@link shipName}, {@link shipIdent},
- *   {@link unladenMass}, {@link cargoCapacity}, {@link fuelCapacity}, {@link hullValue},
+ *   {@link unladenMass}, {@link cargoCapacity}, {@link passengerCapacity},
+ *   {@link fuelCapacity}, {@link hullValue},
  *   {@link modulesValue}, {@link rebuy}, {@link sourcePurchase}, {@link importOutcomes},
  *   {@link slots}, {@link fittedModuleAt}, {@link fittedModules},
  *   {@link modulesForSlot}, {@link availableBlueprints},
@@ -992,6 +994,38 @@ export class ShipLoadout {
         return this.#top.CargoCapacity ?? this.#computedCargoCapacity();
     }
 
+    /**
+     * Passenger capacity, in berths — the sum of the fitted cabins' `cabinCapacity`, and
+     * `0` for a build carrying no cabin.
+     *
+     * @remarks
+     * Always computed from the fit, unlike {@link cargoCapacity} and
+     * {@link fuelCapacity}: a journal `Loadout` states no passenger figure to prefer, so
+     * an imported build reports the cabins it lists. Berths are seats, not occupants, and
+     * a passenger is massless, so filling them changes nothing
+     * {@link ships!BuildMetrics | BuildMetrics} calculates.
+     *
+     * A cabin serves one class of passenger, and no stat field states which: every cabin
+     * is in the `passengerCabins` family, and `rating` disagrees between the two lines,
+     * the Mk II cabins running one rating better than the Mk I cabins of the same class.
+     * A screen that splits berths into economy, business, first and luxury reads the
+     * `_Class1`–`_Class4` suffix of each fitted cabin's `symbol`, which is that order on
+     * both lines — the Mk II line stopping at business — and does not change with the
+     * display locale.
+     *
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * // The stock Beluga Liner leaves the yard with two size-6 and two size-4 business
+     * // class cabins.
+     * ShipLoadout.default('BelugaLiner').passengerCapacity; // -> 44
+     * ```
+     */
+    get passengerCapacity(): number {
+        return calculatePassengerCapacity(this.#calculationModules());
+    }
+
     /** Cargo capacity summed from the fitted racks, ignoring any imported figure. */
     #computedCargoCapacity(): number {
         return calculateCargoCapacity(this.#calculationModules());
@@ -1485,8 +1519,8 @@ export class ShipLoadout {
      * {@link getModuleBySymbol}). The complete record is snapshotted, so a result from
      * `getPreEngineeredStats` or a record you adjusted yourself keeps its stats — but it
      * must name an article the built-in catalogue carries, and it may not drop that
-     * article's `mass`, `cargoCapacity` or `fuelCapacity`, which every build sums, nor
-     * state one as anything but a finite number.
+     * article's `mass`, `cargoCapacity`, `cabinCapacity` or `fuelCapacity`, which every
+     * build sums, nor state one as anything but a finite number.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `slotKey` is not a string, or `module` fails any of the
@@ -2669,6 +2703,7 @@ export class ShipLoadout {
         return [...this.#modules.values()].map((module) => ({
             mass: this.#moduleMass(module),
             cargoCapacity: this.#moduleCapacity(module, 'CargoCapacity', 'cargoCapacity'),
+            cabinCapacity: this.#moduleCapacity(module, 'CabinCapacity', 'cabinCapacity'),
             fuelCapacity: this.#moduleCapacity(module, 'FuelCapacity', 'fuelCapacity'),
         }));
     }
@@ -2838,13 +2873,14 @@ export class ShipLoadout {
     }
 
     /**
-     * A fitted module's post-engineering cargo/fuel capacity, `0` for anything that
-     * carries neither — the cargo hatch and every module that is not a rack or a tank.
+     * A fitted module's post-engineering cargo, cabin or fuel capacity, `0` for anything
+     * that carries none — the cargo hatch and every module that is not a rack, a cabin or
+     * a tank.
      */
     #moduleCapacity(
         module: LoadoutModule | null,
-        modifierLabel: 'CargoCapacity' | 'FuelCapacity',
-        field: 'cargoCapacity' | 'fuelCapacity',
+        modifierLabel: 'CargoCapacity' | 'CabinCapacity' | 'FuelCapacity',
+        field: 'cargoCapacity' | 'cabinCapacity' | 'fuelCapacity',
         statsOverride?: OutfittingModule,
     ): number {
         if (module === null) return 0;

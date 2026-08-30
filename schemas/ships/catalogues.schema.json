@@ -723,6 +723,10 @@
           "type": "number",
           "minimum": 0
         },
+        "cabinCapacity": {
+          "type": "integer",
+          "minimum": 0
+        },
         "shieldRegenRate": {
           "type": "number",
           "minimum": 0
