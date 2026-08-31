@@ -1102,13 +1102,33 @@
             "laserRecipeSymbol"
           ]
         },
+        "modificationsWithoutModifiers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "modifiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "base": { "type": "number" },
+              "modified": { "type": "number" },
+              "recipeSymbol": { "type": "string" },
+              "stat": { "type": "string" }
+            },
+            "required": ["base", "modified", "recipeSymbol", "stat"]
+          }
+        },
         "suits": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "batteryCapacity": { "type": "number" },
               "family": { "type": "string" },
+              "goodsCapacity": { "type": "integer" },
               "grade": { "type": "integer" },
               "kineticResistance": { "type": "number" },
               "modificationSlots": { "type": "integer" },
@@ -1119,7 +1139,9 @@
               "symbol": { "type": "string" }
             },
             "required": [
+              "batteryCapacity",
               "family",
+              "goodsCapacity",
               "grade",
               "modificationSlots",
               "name",
@@ -1160,6 +1182,7 @@
               "modificationSlots": { "type": "integer" },
               "name": { "type": "string" },
               "rateOfFire": { "type": "number" },
+              "scopeMagnification": { "type": "number" },
               "symbol": { "type": "string" }
             },
             "required": [
@@ -1170,12 +1193,21 @@
               "modificationSlots",
               "name",
               "rateOfFire",
+              "scopeMagnification",
               "symbol"
             ]
           }
         }
       },
-      "required": ["counts", "modification", "suits", "upgradeCosts", "weapons"]
+      "required": [
+        "counts",
+        "modification",
+        "modificationsWithoutModifiers",
+        "modifiers",
+        "suits",
+        "upgradeCosts",
+        "weapons"
+      ]
     },
     "i18nDisplayText": {
       "type": "object",

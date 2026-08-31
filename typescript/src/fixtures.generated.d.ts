@@ -380,8 +380,17 @@ type FixtureEquipmentEquipment = {
         };
         laserRecipeSymbol: string;
     };
+    modificationsWithoutModifiers: string[];
+    modifiers: {
+        base: number;
+        modified: number;
+        recipeSymbol: string;
+        stat: string;
+    }[];
     suits: {
+        batteryCapacity: number;
         family: string;
+        goodsCapacity: number;
         grade: number;
         kineticResistance?: number;
         modificationSlots: number;
@@ -407,6 +416,7 @@ type FixtureEquipmentEquipment = {
         modificationSlots: number;
         name: string;
         rateOfFire: number;
+        scopeMagnification: number;
         symbol: string;
     }[];
 };

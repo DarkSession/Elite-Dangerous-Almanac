@@ -1,8 +1,10 @@
 /*
- * Personal suit catalogue: journal symbols, slot counts and grade-dependent defensive stats.
+ * Personal suit catalogue: journal symbols, slot counts, suit-wide component stats and
+ * grade-dependent defensive stats.
  *
- * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
- * for the pinned revision, derivation and units.
+ * Sources: Odyssey Materials Helper and direct in-game observation. See
+ * ../../ATTRIBUTIONS.md for credit and SOURCES.md for the pinned revision, derivation
+ * and units.
  */
 [
   {
@@ -10,6 +12,17 @@
     "name": "Maverick Suit",
     "primarySlots": 1,
     "secondarySlots": 1,
+    "health": 30,
+    "mass": 100,
+    "batteryCapacity": 13.5,
+    "oxygenTime": 60,
+    "boostAcceleration": 25,
+    "goodsCapacity": 40,
+    "assetsCapacity": 60,
+    "dataCapacity": 20,
+    "footstepAudibleRange": 1,
+    "losAnalysisRange": 50,
+    "losAnalysisTime": 1,
     "grades": {
       "1": {
         "symbol": "utilitysuit_class1",
@@ -28,7 +41,7 @@
         "shieldRegeneration": 1.21,
         "kineticResistance": -0.34,
         "thermalResistance": 0.58,
-        "plasmaResistance": 0.07,
+        "plasmaResistance": 0.08,
         "explosiveResistance": 0.16
       },
       "3": {
@@ -36,7 +49,7 @@
         "modificationSlots": 2,
         "shieldStrength": 20.3,
         "shieldRegeneration": 1.49,
-        "kineticResistance": -0.13,
+        "kineticResistance": -0.14,
         "thermalResistance": 0.64,
         "plasmaResistance": 0.22,
         "explosiveResistance": 0.29
@@ -56,7 +69,7 @@
         "modificationSlots": 4,
         "shieldStrength": 30.4,
         "shieldRegeneration": 2.23,
-        "kineticResistance": 0.19,
+        "kineticResistance": 0.2,
         "thermalResistance": 0.75,
         "plasmaResistance": 0.45,
         "explosiveResistance": 0.5
@@ -68,6 +81,17 @@
     "name": "Dominator Suit",
     "primarySlots": 2,
     "secondarySlots": 1,
+    "health": 30,
+    "mass": 100,
+    "batteryCapacity": 10,
+    "oxygenTime": 60,
+    "boostAcceleration": 50,
+    "goodsCapacity": 10,
+    "assetsCapacity": 20,
+    "dataCapacity": 10,
+    "footstepAudibleRange": 1,
+    "losAnalysisRange": 50,
+    "losAnalysisTime": 1,
     "grades": {
       "1": {
         "symbol": "tacticalsuit_class1",
@@ -104,10 +128,10 @@
         "modificationSlots": 3,
         "shieldStrength": 27.6,
         "shieldRegeneration": 2.02,
-        "kineticResistance": 0.19,
-        "thermalResistance": 0.78,
-        "plasmaResistance": 0.46,
-        "explosiveResistance": 0.46
+        "kineticResistance": 0.11,
+        "thermalResistance": 0.76,
+        "plasmaResistance": 0.41,
+        "explosiveResistance": 0.41
       },
       "5": {
         "symbol": "tacticalsuit_class5",
@@ -126,6 +150,17 @@
     "name": "Artemis Suit",
     "primarySlots": 1,
     "secondarySlots": 1,
+    "health": 30,
+    "mass": 100,
+    "batteryCapacity": 17,
+    "oxygenTime": 60,
+    "boostAcceleration": 12.5,
+    "goodsCapacity": 20,
+    "assetsCapacity": 40,
+    "dataCapacity": 10,
+    "footstepAudibleRange": 1,
+    "losAnalysisRange": 50,
+    "losAnalysisTime": 1,
     "grades": {
       "1": {
         "symbol": "explorationsuit_class1",
@@ -133,7 +168,7 @@
         "shieldStrength": 12,
         "shieldRegeneration": 0.88,
         "kineticResistance": -0.7,
-        "thermalResistance": 0.39,
+        "thermalResistance": 0.4,
         "plasmaResistance": -0.2,
         "explosiveResistance": 0
       },
@@ -142,9 +177,9 @@
         "modificationSlots": 1,
         "shieldStrength": 14.7,
         "shieldRegeneration": 1.07,
-        "kineticResistance": -0.42,
+        "kineticResistance": -0.43,
         "thermalResistance": 0.5,
-        "plasmaResistance": 0,
+        "plasmaResistance": -0.01,
         "explosiveResistance": 0.16
       },
       "3": {
@@ -154,7 +189,7 @@
         "shieldRegeneration": 1.32,
         "kineticResistance": -0.21,
         "thermalResistance": 0.57,
-        "plasmaResistance": 0.14,
+        "plasmaResistance": 0.15,
         "explosiveResistance": 0.29
       },
       "4": {
@@ -172,9 +207,9 @@
         "modificationSlots": 4,
         "shieldStrength": 27,
         "shieldRegeneration": 1.98,
-        "kineticResistance": 0.14,
+        "kineticResistance": 0.15,
         "thermalResistance": 0.7,
-        "plasmaResistance": 0.39,
+        "plasmaResistance": 0.4,
         "explosiveResistance": 0.5
       }
     }
@@ -184,6 +219,17 @@
     "name": "Flight Suit",
     "primarySlots": 0,
     "secondarySlots": 1,
+    "health": 30,
+    "mass": 100,
+    "batteryCapacity": 7,
+    "oxygenTime": 60,
+    "boostAcceleration": 30,
+    "goodsCapacity": 5,
+    "assetsCapacity": 10,
+    "dataCapacity": 10,
+    "footstepAudibleRange": 1,
+    "losAnalysisRange": 50,
+    "losAnalysisTime": 1,
     "grades": {
       "1": {
         "symbol": "flightsuit",
@@ -191,7 +237,7 @@
         "shieldStrength": 7.5,
         "shieldRegeneration": 0.55,
         "kineticResistance": -0.7,
-        "thermalResistance": 0.39,
+        "thermalResistance": 0.4,
         "plasmaResistance": -0.2,
         "explosiveResistance": 0
       }

@@ -3,9 +3,9 @@
  *
  * The catalogue is keyed by recipe symbol, following the same pattern as ship
  * blueprints and experimental effects. Most keys are the exact symbol written by a
- * journal loadout. Greater Range, Headshot Damage and Higher Accuracy each have three
- * technology-specific recipes; use `equipment/modification-journal` to resolve those
- * journal symbols against a weapon.
+ * journal loadout. Greater Range, Headshot Damage and Improved Hip Fire Accuracy
+ * each have three technology-specific recipes; use `equipment/modification-journal`
+ * to resolve those journal symbols against a weapon.
  *
  * Material shopping lists live separately in `equipment/modification-costs`, so reading
  * names and engineer availability does not bundle every recipe ingredient.
@@ -16,6 +16,7 @@
 import modificationsData from '../../../data/equipment/modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { findByRawKey } from '../internal/registry-index.js';
+import type { PersonalModifier } from './engineering.js';
 
 /** Equipment kind a personal modification can be installed on. */
 export type PersonalModificationTarget = 'suit' | 'weapon';
@@ -28,22 +29,42 @@ export interface PersonalModification {
     readonly target: PersonalModificationTarget;
     /** English names of the on-foot engineers who offer the modification. */
     readonly engineers: readonly string[];
+    /**
+     * The stat multipliers the modification applies, in the order the game applies
+     * them. Fold one onto a base value with `applyPersonalModifiers` from
+     * `equipment/engineering`.
+     *
+     * A modifier names a stat of whatever it modifies, which is usually the equipment
+     * the recipe is installed on. Extra Ammo Capacity is the exception a consumer has
+     * to know about: it is a suit modification and it multiplies a *weapon's*
+     * `reserveAmmo`.
+     *
+     * @remarks
+     * **Empty** where the recipe changes nothing this catalogue names. Night Vision,
+     * Scope, Stowed reloading and Combat Movement Speed have no numeric magnitude at
+     * all — Scope swaps the sight, and each weapon's two magnifications are on its own
+     * `scopeMagnification`. Faster Handling, Improved Hip Fire
+     * Accuracy, Stability and Improved Jump Assist do change stats, ones the personal
+     * stats panel does not put a number on; see
+     * [`data/equipment/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/equipment/SOURCES.md).
+     */
+    readonly modifiers: readonly PersonalModifier[];
 }
 
 /**
  * All 31 suit and weapon engineering recipes, keyed by recipe symbol.
  *
  * @remarks
- * There are 25 distinct display names. Greater Range, Headshot Damage and Higher
- * Accuracy each have separate Kinetic, Laser and Plasma recipes because their material
- * costs differ. Their keys end in `_kinetic`, `_laser` or `_plasma`; the journal omits
- * that suffix, so resolve its value with `resolvePersonalModificationForWeapon` from
- * `equipment/modification-journal`.
+ * There are 25 distinct display names. Greater Range, Headshot Damage and Improved
+ * Hip Fire Accuracy each have separate Kinetic, Laser and Plasma recipes because their
+ * material costs differ. Their keys end in `_kinetic`, `_laser` or `_plasma`; the
+ * journal omits that suffix, so resolve its value with
+ * `resolvePersonalModificationForWeapon` from `equipment/modification-journal`.
  *
  * @example
  * ```ts
  * import { PERSONAL_MODIFICATIONS } from '@elite-dangerous-almanac/core/equipment/modifications';
- * PERSONAL_MODIFICATIONS['suit_nightvision']?.name; // -> 'Night Vision'
+ * PERSONAL_MODIFICATIONS['suit_increasedo2capacity']?.modifiers[0]?.multiplier; // -> 5
  * ```
  */
 export const PERSONAL_MODIFICATIONS: Readonly<Record<string, PersonalModification>> = deepFreeze(

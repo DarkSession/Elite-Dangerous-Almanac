@@ -88,6 +88,7 @@ symbols you are most likely to reach for first:
 | `getSuitUpgradeCost`, `getPersonalWeaponUpgradeCost` | `core/equipment/upgrade-costs` |
 | `getPersonalModification`, `PERSONAL_MODIFICATIONS` | `core/equipment/modifications` |
 | `getPersonalModificationCost` | `core/equipment/modification-costs` |
+| `applyPersonalModifiers`, `sumPersonalEngineeringIngredients` | `core/equipment/engineering` |
 | `resolvePersonalModificationForWeapon` | `core/equipment/modification-journal` |
 | `getModuleName` | `core/i18n/modules` |
 | `getBlueprintName` | `core/i18n/blueprints` |

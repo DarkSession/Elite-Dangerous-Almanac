@@ -1,5 +1,6 @@
 /**
- * Odyssey personal suits, their journal identifiers and grade-dependent defensive stats.
+ * Odyssey personal suits: their journal identifiers, the suit-wide component stats every
+ * grade shares, and the grade-dependent defensive stats.
  *
  * @packageDocumentation
  */
@@ -42,7 +43,36 @@ export interface Suit {
     readonly primarySlots: number;
     /** Number of secondary-weapon slots. */
     readonly secondarySlots: number;
-    /** Available grade records, keyed by `"1"` through `"5"`. */
+    /** Suit health in health points, the pool the shield protects. */
+    readonly health: number;
+    /** Suit mass in kilograms. */
+    readonly mass: number;
+    /** Battery capacity in energy units, the pool the suit's tools draw from. */
+    readonly batteryCapacity: number;
+    /** Emergency air, in seconds of life support. */
+    readonly oxygenTime: number;
+    /** Jump-assist boost acceleration, the bare figure the panel shows, which has no unit. */
+    readonly boostAcceleration: number;
+    /** Backpack goods capacity in items. */
+    readonly goodsCapacity: number;
+    /** Backpack assets capacity in components. */
+    readonly assetsCapacity: number;
+    /** Backpack data capacity in items. */
+    readonly dataCapacity: number;
+    /** How far footsteps carry, as a multiplier of the base audible range. */
+    readonly footstepAudibleRange: number;
+    /** Line-of-sight analysis range in metres. */
+    readonly losAnalysisRange: number;
+    /** Seconds of line of sight the suit needs to complete an analysis. */
+    readonly losAnalysisTime: number;
+    /**
+     * Available grade records, keyed by `"1"` through `"5"`.
+     *
+     * @remarks
+     * A grade changes exactly what {@link SuitGrade} carries — the four resistances,
+     * shield strength, shield regeneration, the modification slots and the item symbol.
+     * Every stat above is a property of the suit family and is the same at all five.
+     */
     readonly grades: Readonly<Partial<Record<`${EquipmentGrade}`, SuitGrade>>>;
 }
 

@@ -1,5 +1,6 @@
 /*
- * Pins representative personal-equipment identities, grade stats and engineering costs.
+ * Pins representative personal-equipment identities, grade stats, engineering costs and
+ * the stat multipliers an engineer-applied modification puts on a suit or a weapon.
  * Values are selected from the shared equipment catalogues whose source snapshot and
  * weapon-name corrections are documented in their own headers; no player capture is used.
  */
@@ -19,8 +20,10 @@
       "primarySlots": 1,
       "secondarySlots": 1,
       "shieldStrength": 20.3,
-      "kineticResistance": -0.13,
-      "modificationSlots": 2
+      "kineticResistance": -0.14,
+      "modificationSlots": 2,
+      "batteryCapacity": 13.5,
+      "goodsCapacity": 40
     },
     {
       "family": "flightsuit",
@@ -30,7 +33,9 @@
       "primarySlots": 0,
       "secondarySlots": 1,
       "shieldStrength": 7.5,
-      "modificationSlots": 0
+      "modificationSlots": 0,
+      "batteryCapacity": 7,
+      "goodsCapacity": 5
     }
   ],
   "weapons": [
@@ -38,21 +43,23 @@
       "symbol": "wpn_m_assaultrifle_kinetic_fauto",
       "name": "Karma AR-50",
       "grade": 5,
-      "damage": 2.8,
-      "rateOfFire": 9.5,
+      "damage": 2.831,
+      "rateOfFire": 9.52,
       "magazineSize": 50,
       "effectiveRange": 50,
-      "modificationSlots": 4
+      "modificationSlots": 4,
+      "scopeMagnification": 1.17
     },
     {
       "symbol": "wpn_m_sniper_plasma_charged",
       "name": "Manticore Executioner",
       "grade": 1,
       "damage": 15,
-      "rateOfFire": 0.8,
+      "rateOfFire": 0.833,
       "magazineSize": 3,
       "effectiveRange": 100,
-      "modificationSlots": 0
+      "modificationSlots": 0,
+      "scopeMagnification": 1.61
     }
   ],
   "upgradeCosts": {
@@ -66,6 +73,74 @@
     "maverickGrade1To3Graphene": 7,
     "ar50Grade5WeaponComponents": 12
   },
+  "modifiers": [
+    {
+      "recipeSymbol": "weapon_clipsize",
+      "stat": "magazineSize",
+      "base": 45,
+      "modified": 68
+    },
+    {
+      "recipeSymbol": "weapon_range_laser",
+      "stat": "effectiveRange",
+      "base": 70,
+      "modified": 105
+    },
+    {
+      "recipeSymbol": "weapon_headshotdamage_kinetic",
+      "stat": "headshotMultiplier",
+      "base": 2,
+      "modified": 3
+    },
+    {
+      "recipeSymbol": "suit_improvedarmourrating",
+      "stat": "kineticResistance",
+      "base": -0.6,
+      "modified": -0.44
+    },
+    {
+      "recipeSymbol": "suit_improvedarmourrating",
+      "stat": "thermalResistance",
+      "base": 0.5,
+      "modified": 0.55
+    },
+    {
+      "recipeSymbol": "suit_increasedo2capacity",
+      "stat": "oxygenTime",
+      "base": 60,
+      "modified": 300
+    },
+    {
+      "recipeSymbol": "suit_backpackcapacity",
+      "stat": "goodsCapacity",
+      "base": 40,
+      "modified": 80
+    },
+    {
+      "recipeSymbol": "suit_improvedradar",
+      "stat": "losAnalysisRange",
+      "base": 50,
+      "modified": 100
+    },
+    {
+      "recipeSymbol": "suit_increasedbatterycapacity",
+      "stat": "batteryCapacity",
+      "base": 13.5,
+      "modified": 20.25
+    }
+  ],
+  "modificationsWithoutModifiers": [
+    "suit_adsmovementspeed",
+    "suit_improvedjumpassist",
+    "suit_nightvision",
+    "weapon_accuracy_kinetic",
+    "weapon_accuracy_laser",
+    "weapon_accuracy_plasma",
+    "weapon_backpackreloading",
+    "weapon_handling",
+    "weapon_scope",
+    "weapon_stability"
+  ],
   "modification": {
     "journalSymbol": "weapon_range",
     "kineticRecipeSymbol": "weapon_range_kinetic",

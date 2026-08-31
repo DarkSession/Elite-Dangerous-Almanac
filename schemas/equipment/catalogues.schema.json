@@ -69,6 +69,17 @@
         "name",
         "primarySlots",
         "secondarySlots",
+        "health",
+        "mass",
+        "batteryCapacity",
+        "oxygenTime",
+        "boostAcceleration",
+        "goodsCapacity",
+        "assetsCapacity",
+        "dataCapacity",
+        "footstepAudibleRange",
+        "losAnalysisRange",
+        "losAnalysisTime",
         "grades"
       ],
       "properties": {
@@ -76,6 +87,17 @@
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "primarySlots": { "$ref": "#/definitions/nonNegativeInteger" },
         "secondarySlots": { "$ref": "#/definitions/nonNegativeInteger" },
+        "health": { "$ref": "#/definitions/positiveNumber" },
+        "mass": { "$ref": "#/definitions/positiveNumber" },
+        "batteryCapacity": { "$ref": "#/definitions/positiveNumber" },
+        "oxygenTime": { "$ref": "#/definitions/positiveNumber" },
+        "boostAcceleration": { "$ref": "#/definitions/positiveNumber" },
+        "goodsCapacity": { "$ref": "#/definitions/nonNegativeInteger" },
+        "assetsCapacity": { "$ref": "#/definitions/nonNegativeInteger" },
+        "dataCapacity": { "$ref": "#/definitions/nonNegativeInteger" },
+        "footstepAudibleRange": { "$ref": "#/definitions/positiveNumber" },
+        "losAnalysisRange": { "$ref": "#/definitions/positiveNumber" },
+        "losAnalysisTime": { "$ref": "#/definitions/positiveNumber" },
         "grades": {
           "type": "object",
           "minProperties": 1,
@@ -117,6 +139,7 @@
         "reserveAmmo",
         "headshotMultiplier",
         "effectiveRange",
+        "scopeMagnification",
         "grades"
       ],
       "properties": {
@@ -142,6 +165,15 @@
         "reserveAmmo": { "type": "integer", "minimum": 1 },
         "headshotMultiplier": { "$ref": "#/definitions/positiveNumber" },
         "effectiveRange": { "$ref": "#/definitions/positiveNumber" },
+        "scopeMagnification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["default", "upgraded"],
+          "properties": {
+            "default": { "$ref": "#/definitions/positiveNumber" },
+            "upgraded": { "$ref": "#/definitions/positiveNumber" }
+          }
+        },
         "grades": {
           "type": "object",
           "required": ["1", "2", "3", "4", "5"],
@@ -192,10 +224,20 @@
         }
       }
     },
+    "modifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stat", "multiplier"],
+      "properties": {
+        "stat": { "$ref": "#/definitions/nonEmptyString" },
+        "multiplier": { "$ref": "#/definitions/positiveNumber" },
+        "roundUp": { "type": "boolean" }
+      }
+    },
     "modification": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "target", "engineers"],
+      "required": ["name", "target", "engineers", "modifiers"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "target": { "enum": ["suit", "weapon"] },
@@ -203,6 +245,10 @@
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/definitions/nonEmptyString" }
+        },
+        "modifiers": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/modifier" }
         }
       }
     },
