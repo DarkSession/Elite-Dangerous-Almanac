@@ -1382,6 +1382,12 @@ export class ShipLoadout {
      * the same article on the screen twice, once with no price. A build that already
      * carries one keeps it; only the choices are filtered.
      *
+     * The Cargo Hatch is absent for the same reason it cannot be removed: it is part of
+     * the hull. The source registry files it under the `internal` category — which is
+     * why {@link ships/modules-internal!INTERNAL_MODULES | INTERNAL_MODULES} carries it
+     * — but the hull is built with one and the fixed `CargoHatch` mount is the only
+     * place it goes, so no mount this method describes accepts it.
+     *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
      * @throws {RangeError} If the hull has no slot with that key.

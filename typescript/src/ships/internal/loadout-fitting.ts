@@ -65,6 +65,16 @@ const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
     planetaryApproachSuite: ['int_planetapproachsuite'],
 };
 
+/**
+ * The outfitting family that is hull furniture rather than a fitting: the cargo hatch
+ * every hull is built with.
+ *
+ * The source registry files it under the `internal` category, so an unrestricted
+ * optional mount — which takes any internal article small enough — would otherwise
+ * offer and accept it.
+ */
+const HULL_FURNITURE_FAMILY = 'cargoHatches';
+
 /** A fitting failure's stable code and English fallback. */
 interface ModuleFitProblem {
     readonly constraint: ModuleFitConstraint;
@@ -113,6 +123,15 @@ export function moduleFitProblem(
 ): ModuleFitProblem | null {
     if (slot.kind === 'cargoHatch') {
         return problem('immutableSlot', 'the cargoHatch slot cannot be changed');
+    }
+    // The hatch arrives with the hull, no station sells it, and the only mount that
+    // holds it is the fixed one refused just above. So it fits nowhere a caller can
+    // fit it, and an outfitting list must never offer it.
+    if (module.familyId === HULL_FURNITURE_FAMILY) {
+        return problem(
+            'builtInHullModule',
+            'the cargo hatch is part of the hull, not an outfitting module',
+        );
     }
     if (slot.kind === 'armour') {
         const hull = getShipBySymbol(shipSymbol);

@@ -322,6 +322,19 @@ test('shared editor failures expose stable codes and localization params', () =>
         incompatible.expected,
     );
 
+    const hullFurniture = fixture.editorErrors.builtInHullModule;
+    assert.deepEqual(
+        project(
+            capture(() =>
+                ShipLoadout.empty(hullFurniture.ship).setModule(
+                    hullFurniture.slot,
+                    getModuleBySymbol(hullFurniture.module)!,
+                ),
+            ),
+        ),
+        hullFurniture.expected,
+    );
+
     const wrongArmour = fixture.editorErrors.wrongHullArmour;
     assert.deepEqual(
         project(

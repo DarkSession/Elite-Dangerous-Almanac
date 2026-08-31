@@ -1103,7 +1103,8 @@
         "Int_FighterBay_Size6_Class1"
       ],
       "rejects": [
-        "Int_PlanetApproachSuite"
+        "Int_PlanetApproachSuite",
+        "ModularCargoBayDoor"
       ]
     },
     {
@@ -1116,7 +1117,8 @@
       ],
       "rejects": [
         "Int_LargeCargoRack_Size8_class1",
-        "Int_PlanetApproachSuite"
+        "Int_PlanetApproachSuite",
+        "ModularCargoBayDoor"
       ]
     },
     {

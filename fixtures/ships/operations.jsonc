@@ -1102,6 +1102,20 @@
         }
       }
     },
+    "builtInHullModule": {
+      "ship": "SideWinder",
+      "slot": "Slot01_Size2",
+      "module": "ModularCargoBayDoor",
+      "expected": {
+        "code": "incompatibleModule",
+        "constraint": "builtInHullModule",
+        "params": {
+          "slot": "Slot01_Size2",
+          "symbol": "ModularCargoBayDoor",
+          "constraint": "builtInHullModule"
+        }
+      }
+    },
     "wrongHullArmour": {
       "ship": "Anaconda",
       "slot": "Armour",

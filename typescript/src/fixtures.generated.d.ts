@@ -3639,6 +3639,20 @@ type FixtureShipsOperations = {
         };
     };
     editorErrors: {
+        builtInHullModule: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    constraint: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
         duplicateExclusiveModule: {
             expected: {
                 code: string;

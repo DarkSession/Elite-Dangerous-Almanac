@@ -5142,6 +5142,35 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "builtInHullModule": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "constraint": { "type": "string" },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "constraint": { "type": "string" },
+                        "slot": { "type": "string" },
+                        "symbol": { "type": "string" }
+                      },
+                      "required": ["constraint", "slot", "symbol"]
+                    }
+                  },
+                  "required": ["code", "constraint", "params"]
+                },
+                "module": { "type": "string" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "module", "ship", "slot"]
+            },
             "duplicateExclusiveModule": {
               "type": "object",
               "additionalProperties": false,
@@ -5319,6 +5348,7 @@
             }
           },
           "required": [
+            "builtInHullModule",
             "duplicateExclusiveModule",
             "immutableSlot",
             "immutableSlotReplacement",

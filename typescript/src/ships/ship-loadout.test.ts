@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
 import { BuildMetrics } from './build-metrics.js';
-import { ShipLoadout } from './ship-loadout.js';
+import { LoadoutEditError, ShipLoadout } from './ship-loadout.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { heatInputResultFor } from './internal/loadout-metrics.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
@@ -3000,6 +3000,43 @@ test('modulesForSlot lists only fitting modules', () => {
     assert.ok(drives.every((m) => m.symbol.toLowerCase().startsWith('int_hyperdrive')));
     assert.ok(drives.every((m) => m.class <= 6));
     assert.throws(() => conda.modulesForSlot('NoSuchSlot'), RangeError);
+});
+
+test('the cargo hatch is hull furniture, never an optional-internal choice', () => {
+    // The registry files the hatch under the `internal` category, which is what once put
+    // it in every unrestricted optional mount's outfitting list. It arrives with the
+    // hull, no station sells it, and the fixed `CargoHatch` mount is the only one that
+    // holds it — so no mount an editor can set accepts it.
+    const hatch = mod('ModularCargoBayDoor', INTERNAL_MODULES);
+    assert.equal(hatch.familyId, 'cargoHatches');
+    for (const ship of ['SideWinder', 'Anaconda', 'PantherMkII']) {
+        const build = ShipLoadout.empty(ship);
+        for (const slot of build.slots()) {
+            assert.ok(
+                !build.modulesForSlot(slot.key).some((m) => m.symbol === hatch.symbol),
+                `${ship} ${slot.key} offers the cargo hatch`,
+            );
+            assert.throws(
+                () => build.setModule(slot.key, hatch),
+                LoadoutEditError,
+                `${ship} ${slot.key} accepts the cargo hatch`,
+            );
+        }
+    }
+    // The refusal names the article rather than the mount, so an editor can say why.
+    try {
+        ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', hatch);
+        assert.fail('expected the cargo hatch to be refused');
+    } catch (error) {
+        assert.ok(error instanceof LoadoutEditError);
+        assert.equal(error.code, 'incompatibleModule');
+        assert.equal(error.constraint, 'builtInHullModule');
+        assert.match(error.message, /part of the hull, not an outfitting module/);
+    }
+    // The hull's own hatch is untouched by the rule that refuses the article elsewhere.
+    const stock = ShipLoadout.default('Anaconda');
+    assert.equal(stock.fittedModuleAt('CargoHatch')?.symbol, 'ModularCargoBayDoor');
+    assert.equal(stock.validation().valid, true);
 });
 
 test('fit checks use restrictions carried by caller-supplied module records', () => {
