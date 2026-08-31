@@ -141,11 +141,12 @@ data-free leaf modules under `ships/jump-range`, `ships/power`, `ships/shields`,
 
 `build.validation()` reports validity and operational completeness. `cargoCapacity`,
 `passengerCapacity`, `fuelCapacity` and `unladenMass` always have an answer, because no
-article the catalogue cannot weigh reaches a build; the eight metrics that depend on
-build state (`mobilityMetrics`, `mobilityCapacitorMetrics`, `shieldMetrics`,
-`shieldCapacitorMetrics`, `shieldRecovery`, `heatMetrics`, `distributorMetrics` and
-`standardLoad`) are nullable and each has a `…Result` counterpart naming what is
-missing, switched off, shed or unpowered. `parseSlef`
+article the catalogue cannot weigh reaches a build. The eight build-state methods
+(`mobilityMetricsResult`, `mobilityCapacitorMetricsResult`, `shieldMetricsResult`,
+`shieldCapacitorMetricsResult`, `shieldRecoveryResult`, `heatMetricsResult`,
+`distributorMetricsResult` and `standardLoadResult`) return a diagnostic result whose
+value is either complete or `null`, with issues naming what is missing, unresolved,
+switched off, shed or invalid. `parseSlef`
 is strict; `inspectSlef` is the tolerant importer for mixed files and returns indexed
 diagnostics instead of silently dropping entries.
 

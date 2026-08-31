@@ -489,8 +489,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   `Manifest Scanners`, `Torpedo Pylons` is `Torpedoes` and `Mine Launchers` is `Mines`.
   The remaining 19 keep the Almanac's own descriptive name, because the outfitting
   screen does not name them separately. Each id is the camelCase form of its English
-  name with punctuation removed, which `modules.test.ts` asserts, so an id and its
-  label cannot drift apart.
+  name with punctuation removed.
 - **Merged families.** Where the game lists several Almanac families under one category,
   they are one family here: the operations, rescue, universal and xeno multi-limpet
   controllers are `multiLimpetControllers`; mining volley repeaters and seismic charge
@@ -856,8 +855,7 @@ damage for the small 1D cannon and **38.5** for the medium 2B cannon. Those read
 settle the registry disagreement in favour of coriolis-data's 22 / 38.5 rather than
 EDSY's 40 / 70. The catalogue stores the displayed values without further derivation and
 applies the same correction to their exact thermal and anti-xeno components. The two
-records are pinned in `fixtures/ships/module-stats.jsonc`. A panel reading has no upstream
-immutable revision.
+panel readings have no upstream immutable revision.
 
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"
@@ -951,8 +949,8 @@ and bulkhead name because those records carry no symbol upstream.
     where both registries publish a multiple of 10 still differ by 10
     (`Int_FighterBay_Size{6,7}_Class1`, `Int_PassengerCabin_Size6_Class1`), which no
     rounding explains: whatever the real price is, at least one of the two registries is
-    wrong about it by five credits or more, and neither says which. Two of the three are
-    now settled by in-game readings, and coriolis is exactly right in both:
+    wrong about it by five credits or more, and neither says which. In-game readings
+    settle two of the three, with coriolis exactly right in both:
     `Int_FighterBay_Size7_Class1` is 2 369 320 and `Int_FighterBay_Size6_Class1` is
     1 869 340, so EDSY's 2 369 330 is the wrong member of that pair (see "Prices read from
     an in-game purchase capture" below). So treat 12 560 as
@@ -1073,7 +1071,7 @@ and size-6 racks): here the discount is stated rather than solved for.
 - **The size-8 SCO drives are priced identically to their size-7 siblings.** All four
   distinct readings land exactly on coriolis's size-7 figures (6 838 548, 20 515 645,
   61 546 935), and EDSY's size-8 numbers are those same figures rounded to 10. The
-  catalogue previously carried the EDSY rounding; it now carries the readings.
+  catalogue carries the exact readings rather than EDSY's rounded figures.
 - **A known residual.** `Int_CorrosionProofCargoRack_Size4_Class1` at 94 330 predicts
   82 775 under this rule where `journal-the-deep-black.jsonc` reads **82 774**. It is one
   of a minority of records whose catalogue list price appears to sit a credit or two above
@@ -1234,9 +1232,8 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     modules checked numerically, and "every FSD field 72/72" — figures that could not have
     been true of five records the game does not offer. The corrected accounting is 1188
     identity matches, 947 non-armour modules and 67/67 FSD fields, with
-    `registryOnlyIdentities` unchanged at 6; `fixtures/ships/module-stats.jsonc` carries
-    the same numbers. This is a manual correction to previously published provenance, not
-    a re-derivation from a new capture.
+    `registryOnlyIdentities` at 6. Those are the standing audit figures; the source
+    capture itself has not changed.
 - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
   in the game: every other shield-generator size carries all five ratings, and size 1
   ran E/D/C/A with **B missing**. The module is real, so the record is carried with the
@@ -1638,9 +1635,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `blueprints` and `experimentals` it offers.
 - **A group carries no display name.** The grouping is this repository's own partition of
   the modules sharing one menu; the game publishes no engineering-group label, heading
-  each menu with the module's outfitting family instead. EDSY's `mtype-*` strings, which
-  this file previously stored as group names, are outfitting labels reached by a name
-  join — which is why they disagreed with `module-families.jsonc` in 22 places on wording
+  each menu with the module's outfitting family instead. EDSY's `mtype-*` strings are
+  outfitting labels reached by a name join and disagree with `module-families.jsonc` in
+  22 places on wording
   (`cannons` Russian "Пушки" against the family's "Орудия", `moduleReinforcements`
   Brazilian Portuguese title case against the family's sentence case). Consumers name a
   group by joining a module's `familyId` to `module-families.jsonc`. The two partitions
@@ -1918,11 +1915,6 @@ differ only by `acquisition`. The same holds for `Hpt_BasicMissileRack_Fixed_Med
 whose thermal-cascade tech-broker row is a Seeker Missile Rack V1 while its three
 community-goal rows are plain. Two tech-broker rows carry no marker at all and keep their
 base module's name: the Mining Laser and the size-5 Frame Shift Drive.
-
-This repository's own fixtures already described several of these under the corrected
-names — `pre-engineered.jsonc` calls one row "the tech-broker 'Modified Guardian Shard
-Cannon'" and another "a V1 FSD" — while `name` carried the plain module's. The data now
-agrees with the prose.
 
 ### Festive variants
 

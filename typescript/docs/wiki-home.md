@@ -6,7 +6,8 @@ title: Home
 
 Static Elite Dangerous data and calculations for community applications and research —
 procedural system names and `id64` addresses, galactic regions and nebulae, ships and
-outfitting with build metrics, personal equipment and engineering materials, and market commodities.
+outfitting with build metrics, personal equipment and engineering materials, localized
+display text, and market commodities.
 
 ```bash
 npm install @elite-dangerous-almanac/core
@@ -46,7 +47,7 @@ function jumpRangeOf(journalLine: string) {
 - **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions)**
   — the `id64` round trip, both coordinate spaces, and the four meanings of "region".
 - **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)**
-  — `null` against the three errors, and the diagnostic-result pairs.
+  — `null` against the three errors, and diagnostic results for unavailable metrics.
 
 ## The six feature areas
 

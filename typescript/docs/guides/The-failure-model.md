@@ -154,10 +154,8 @@ sums from its fit. A hull with no rack has a cargo capacity of `0` and a hull wi
 cabin a passenger capacity of `0`, and both mean `0`. `buildMass` is those figures
 decomposed, so it always answers too.
 
-The metrics that depend on *build state* return a diagnostic result, whose `value` is
-either the completed metric or `null`:
-
-Eight build metrics can be unavailable, and each follows the same rule:
+Eight build-state metrics return a diagnostic result whose `value` is either the
+completed metric or `null`:
 
 ```ts
 import type { BuildMetrics } from '@elite-dangerous-almanac/core/ships/build-metrics';

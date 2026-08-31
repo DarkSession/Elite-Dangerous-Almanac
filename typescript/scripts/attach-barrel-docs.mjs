@@ -27,7 +27,12 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 /** Barrels whose `@packageDocumentation` must reach the published declarations. */
-const BARRELS = ['astro/index', 'ships/index', 'materials/index', 'commodities/index'];
+const manifest = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+const BARRELS = Object.entries(manifest.exports)
+    .filter(
+        ([subpath, target]) => /^\.\/[^/]+$/.test(subpath) && target?.types.endsWith('/index.d.ts'),
+    )
+    .map(([subpath]) => `${subpath.slice(2)}/index`);
 
 /** Read a source file's leading block comment. */
 function leadingBlockComment(source) {

@@ -447,7 +447,7 @@ An FSD has no thruster-style three-point mass curve: its mass term is the direct
 ## When a metric cannot be computed
 
 The shield generator may be absent, and any fitted record may omit a stat a metric needs.
-Do not assume a nullable figure is load-bearing:
+Do not treat an unavailable metric as zero:
 
 - Eight `…Result` methods can be unavailable. Their `value` is `null` and `issues` names
   what was missing, switched off or shed. Each issue's typed `reason` is

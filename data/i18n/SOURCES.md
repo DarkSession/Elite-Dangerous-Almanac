@@ -46,13 +46,12 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
     after that is not a name and is rejected.
   - **The `(Free)` vessel-hangar grants have no name of their own** — theirs is a
     template wrapping the base hangar's. Their canonical English is already the base
-    module's, so they share its record, exactly as they did before.
-- **This table replaces the EDDI and EDSY joins the catalogue previously used**, and wins
-  where they disagree, as in-game values do everywhere in this repository. It fills the
-  349 values those joins left empty and restyles 3,135 they carried, across 324 distinct
-  record-and-locale pairs: 73 differ only in letter case, 10 only in punctuation or
-  accents, and 241 in wording. Many of the last are the game being specific where the
-  registries were general — Russian `Двигатели` becomes `Маневровые двигатели`, Brazilian
+    module's, so they share its record.
+- **The in-game table is authoritative over the EDDI and EDSY joins.** It carries 349
+  values absent from those registries and differs from them in 3,135 cells across 324
+  distinct record-and-locale pairs: 73 differ only in letter case, 10 only in punctuation
+  or accents, and 241 in wording. Many of the last are the game being specific where the
+  registries are general — Russian `Двигатели` is `Маневровые двигатели`, Brazilian
   Portuguese `Propulsores` becomes `Propulsores de desempenho melhorado`.
 - **The least abbreviated spelling is the one stored**, as it is in
   `material-names.jsonc`. The outfitting panel shortens a label that will not fit, and
@@ -121,10 +120,9 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Derivation:** each of the 86 current keys and its English name comes from
   `data/ships/experimental-effects.jsonc`, which stays authoritative for canonical
   English. The Frontier symbol joins to the in-game experimental-effect name table,
-  which supplies every locale for all 86. The table replaces the EDSY join this
-  catalogue previously used: where the two disagree the in-game value is kept, as
-  everywhere else in this repository. It supplies six values EDSY did not carry — all
-  five non-English `special_super_penetrator` names and the German
+  which supplies every locale for all 86. Where it and EDSY disagree, the in-game value
+  is kept, as everywhere else in this repository. It supplies six values EDSY does not
+  carry — all five non-English `special_super_penetrator` names and the German
   `special_weapon_rateoffire` — and changes two EDSY already carried: German
   `special_regeneration_sequence` is "Regenerationssequenz" (EDSY
   "Regenerierungssequenz") and Brazilian Portuguese `special_lock_breaker` is "Quebra da
@@ -300,8 +298,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
     own localized name.
 
   Replace any of the twelve with a source-backed value the moment one is published.
-- **Coverage:** English covers every variant, and Brazilian Portuguese and Russian now do
-  too. Ordinary names inherit the explicit localized values available for their base
+- **Coverage:** English, Brazilian Portuguese and Russian cover every variant. Ordinary
+  names inherit the explicit localized values available for their base
   module; the Merc-shop names carry all six locales. The German, Spanish and French gaps
   that remain are their base modules' own — the SCO drive and the Enhanced AX
   Multi-Cannon carry no value in those locales for composition to build on.
@@ -309,21 +307,19 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## Names this repository deliberately does not localize
 
-Three catalogues were removed rather than completed, because the game does not translate
-what they held and storing English under five more keys said otherwise.
+No catalogues are stored for the following names because the game does not translate
+them, and storing English under five more keys would say otherwise.
 
 - **Ship names and manufacturers.** Odyssey Materials Helper and EDSY each publish a
   per-locale ship column, and every value either one publishes is byte-for-byte the
   canonical English name: a hull name is a proper noun the game leaves alone, and so is
-  a manufacturer's. No source publishes a localized manufacturer label at all. A lookup
-  that can only ever answer in English is not a translation lookup, so `getShipName` and
-  `getShipManufacturer` are gone; `data/ships/ships.jsonc` carries both strings and stays
-  the one place to read them.
+  a manufacturer's. No source publishes a localized manufacturer label at all.
+  `data/ships/ships.jsonc` is the one place to read both strings.
 - **Engineering-group labels.** An engineering group is this repository's own partition
   of the modules that share one menu; the game heads that menu with the module's
-  outfitting family and publishes no group label of its own. The EDSY `mtype-*` values
-  previously stored here were outfitting labels reached by a name join, which is why they
-  disagreed with `module-family-names.jsonc` in 22 places on wording. A group therefore
+  outfitting family and publishes no group label of its own. EDSY's `mtype-*` values are
+  outfitting labels reached by a name join and disagree with
+  `module-family-names.jsonc` in 22 places on wording. A group therefore
   carries no name at all — see the header of `data/ships/engineering-options.jsonc` — and
   a consumer names one by joining a module's `familyId` to `module-family-names.jsonc`.
 
