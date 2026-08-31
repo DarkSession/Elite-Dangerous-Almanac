@@ -837,12 +837,13 @@ test('the data-free build calculations are importable on their own', async () =>
 });
 
 test('each barrel ships its orientation documentation in the declarations', async () => {
-    const barrels = [
-        'astro/index.d.ts',
-        'ships/index.d.ts',
-        'materials/index.d.ts',
-        'commodities/index.d.ts',
-    ];
+    const manifest = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
+    const barrels = Object.entries(manifest.exports)
+        .filter(
+            ([subpath, target]) =>
+                /^\.\/[^/]+$/.test(subpath) && target?.types.endsWith('/index.d.ts'),
+        )
+        .map(([, target]) => target.types.slice('./dist/'.length));
     for (const file of barrels) {
         const text = await readFile(new URL(`./dist/${file}`, import.meta.url), 'utf8');
         assert.ok(

@@ -24,7 +24,7 @@ const entries = Object.entries(manifest.exports).flatMap(([subpath, target]) => 
  * Builds the library to `dist/` as tree-shakeable ESM with type declarations.
  *
  * **One entry per public runtime subpath**, not just per feature-area barrel. This is what makes
- * the tree-shaking promise real: if the four feature-area barrels were the only entries,
+ * the tree-shaking promise real: if the feature-area barrels were the only entries,
  * `splitting` would fuse every module and its inlined JSON into
  * one shared chunk, so a consumer importing a single leaf function (e.g.
  * `massCodeToSizeClass`) would still pull the whole galaxy. Emitting each module as its
