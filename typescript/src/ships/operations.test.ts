@@ -284,6 +284,23 @@ test('shared diagnostic cases expose stable localization keys', () => {
     assert.ok(loadoutIssue);
     assert.deepEqual(loadoutIssue.params, fixture.diagnostics.loadout.expected.params);
 
+    // The hatch is the hull's own article, so a capture that names it in an optional
+    // mount describes a ship that cannot exist. Import keeps it — an optional mount is
+    // not a stocked one, so the article is the caller's to see and remove — and
+    // validation is what reports it.
+    const hullModule = fixture.diagnostics.builtInHullModuleLoadout;
+    const hullModuleBuild = ShipLoadout.fromLoadout(hullModule.input);
+    const hullModuleIssue = hullModuleBuild
+        .validation()
+        .issues.find((candidate) => candidate.code === hullModule.expected.code);
+    assert.ok(hullModuleIssue);
+    assert.deepEqual(hullModuleIssue.params, hullModule.expected.params);
+    assert.equal(hullModuleBuild.validation().valid, false);
+    assert.equal(
+        hullModuleBuild.fittedModuleAt(hullModule.keptSlot)?.symbol,
+        'ModularCargoBayDoor',
+    );
+
     const restricted = fixture.diagnostics.restrictedLoadout;
     const restrictedIssue = ShipLoadout.fromLoadout(restricted.input)
         .validation()

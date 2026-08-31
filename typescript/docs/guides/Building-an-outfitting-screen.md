@@ -77,10 +77,11 @@ the game already sells. Offer them and the thruster list shows "2E Thrusters" tw
 second one unpriced. A build that arrived carrying one keeps it, and `getModuleBySymbol`
 still resolves it; only the choices are filtered.
 
-The Cargo Hatch is left out for a different reason: it is hull furniture. The source
-registry files it with the optional internals, which is where `INTERNAL_MODULES` carries
-it, but the hull is built with one and the fixed `CargoHatch` mount is the only place it
-goes — so no mount your screen can edit offers or accepts it.
+The Cargo Hatch is left out for a different reason: it is a built-in hull module. The
+source registry files it with the optional internals, which is where `INTERNAL_MODULES`
+carries it, but the hull is built with one and the fixed `CargoHatch` mount is the only
+place it goes — so no mount your screen can edit offers or accepts it. Fitting one
+anywhere else is refused with the `builtInHullModule` constraint.
 
 ## Group the offer into collapsible families
 

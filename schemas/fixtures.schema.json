@@ -4889,6 +4889,24 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "builtInHullModuleLoadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": { "$ref": "#/definitions/shared0eab9521b1c6" }
+                  },
+                  "required": ["code", "params"]
+                },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" },
+                "keptSlot": { "type": "string" }
+              },
+              "required": ["expected", "input", "keptSlot"]
+            },
             "loadout": {
               "type": "object",
               "additionalProperties": false,
@@ -4983,7 +5001,12 @@
               "required": ["expected", "input"]
             }
           },
-          "required": ["loadout", "restrictedLoadout", "slef"]
+          "required": [
+            "builtInHullModuleLoadout",
+            "loadout",
+            "restrictedLoadout",
+            "slef"
+          ]
         },
         "distributor": {
           "type": "object",
@@ -5152,16 +5175,7 @@
                   "properties": {
                     "code": { "type": "string" },
                     "constraint": { "type": "string" },
-                    "params": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "constraint": { "type": "string" },
-                        "slot": { "type": "string" },
-                        "symbol": { "type": "string" }
-                      },
-                      "required": ["constraint", "slot", "symbol"]
-                    }
+                    "params": { "$ref": "#/definitions/shared0eab9521b1c6" }
                   },
                   "required": ["code", "constraint", "params"]
                 },
@@ -8629,6 +8643,16 @@
         "yaw": { "type": "number" }
       },
       "required": ["boost", "pitch", "roll", "top", "yaw"]
+    },
+    "shared0eab9521b1c6": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "constraint": { "type": "string" },
+        "slot": { "type": "string" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["constraint", "slot", "symbol"]
     },
     "shared0ff8838421c7": {
       "type": "object",

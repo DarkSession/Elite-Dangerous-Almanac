@@ -2,8 +2,9 @@
  * The **optional internal** modules — the `internal` outfitting category:
  * everything that fills an optional internal slot (cargo racks, shield generators,
  * fuel scoops, refineries, passenger cabins, limpet and planetary controllers,
- * hull/module reinforcement, …), plus the one article the registry files here that
- * no optional slot takes: the Cargo Hatch, which belongs to the hull.
+ * hull/module reinforcement, …), plus the articles the registry files here that an
+ * optional slot does not take: the hull's own Cargo Hatch and the Guardian hybrid
+ * power plants and distributors, which go in a core mount.
  *
  * The other categories live in `./modules-core`, `./modules-hardpoint` and
  * `./modules-utility`, so importing this module never bundles them.
@@ -24,11 +25,14 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  *
  * @remarks
  * Every record has `category: 'internal'`, added from the file it was read from
- * rather than repeated on every record. The category is the registry's filing rather
- * than a fitting rule: `ModularCargoBayDoor` (family `cargoHatches`) is the hull's
- * built-in Cargo Hatch, it goes in the fixed `CargoHatch` mount alone, and
- * {@link ships!ShipLoadout.modulesForSlot | ShipLoadout.modulesForSlot} never offers it.
- * Everything else here fits an optional internal slot of its size.
+ * rather than repeated on every record. **The category is the registry's filing, not a
+ * fitting rule**, so do not read a fit off it: `ModularCargoBayDoor` (family
+ * `cargoHatches`) is the hull's built-in Cargo Hatch and goes in the fixed `CargoHatch`
+ * mount alone; the fifteen Guardian hybrid power plants and distributors carry a core
+ * {@link ships!OutfittingModule.slot | slot} and fit only that core mount; and others
+ * here reserve a restricted mount or a named hull. Ask
+ * {@link ships!ShipLoadout.modulesForSlot | ShipLoadout.modulesForSlot} what a mount
+ * takes rather than filtering this array by size.
  *
  * To keep the other three categories out of your bundle, search this array directly —
  * `INTERNAL_MODULES.find((m) => m.symbol.toLowerCase() === wanted)`, lower-cased because

@@ -52,8 +52,8 @@ export type ThrusterLoad = 'dry' | 'unladen' | 'laden';
 /**
  * Stable machine-readable constraint behind an `incompatibleModule` issue.
  *
- * `builtInHullModule` is the one that names the *article* rather than the mount: the
- * cargo hatch comes with the hull and goes in no mount an editor can set.
+ * `builtInHullModule` is the only one that does not depend on the mount: the cargo hatch
+ * comes with the hull and goes in no mount an editor can set.
  */
 export type ModuleFitConstraint =
     | 'immutableSlot'

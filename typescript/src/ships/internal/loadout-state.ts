@@ -25,11 +25,21 @@ export function isCargoHatchSlot(slotKey: string): boolean {
     return slotKey.toLowerCase() === 'cargohatch';
 }
 
+/**
+ * Whether a symbol names the cargo hatch built into every hull.
+ *
+ * A prefix rather than an equality test: some hull families name their own hatch —
+ * `ModularCargoBayDoorFDL` — for the one article the catalogue carries as
+ * `ModularCargoBayDoor`. This is the article's identity, so the fit rules and the
+ * import path read the same answer from it.
+ */
+export function isBuiltInHullSymbol(symbol: string): boolean {
+    return symbol.toLowerCase().startsWith('modularcargobaydoor');
+}
+
 /** Whether a module is the zero-mass, zero-price cargo hatch built into every hull. */
 export function isBuiltInHullModule(module: LoadoutModule): boolean {
-    return (
-        isCargoHatchSlot(module.Slot) && module.Item.toLowerCase().startsWith('modularcargobaydoor')
-    );
+    return isCargoHatchSlot(module.Slot) && isBuiltInHullSymbol(module.Item);
 }
 
 /** Detach a journal module from caller-owned or returned mutable objects. */

@@ -3494,6 +3494,24 @@ type FixtureShipsOperations = {
         }[];
     };
     diagnostics: {
+        builtInHullModuleLoadout: {
+            expected: {
+                code: string;
+                params: {
+                    constraint: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+            keptSlot: string;
+        };
         loadout: {
             expected: {
                 code: string;

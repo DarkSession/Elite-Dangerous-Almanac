@@ -1058,6 +1058,30 @@
         }
       }
     },
+    "builtInHullModuleLoadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "CargoHatch",
+            "Item": "ModularCargoBayDoor"
+          },
+          {
+            "Slot": "Slot01_Size7",
+            "Item": "ModularCargoBayDoor"
+          }
+        ]
+      },
+      "keptSlot": "Slot01_Size7",
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "Slot01_Size7",
+          "symbol": "ModularCargoBayDoor",
+          "constraint": "builtInHullModule"
+        }
+      }
+    },
     "restrictedLoadout": {
       "input": {
         "Ship": "Anaconda",

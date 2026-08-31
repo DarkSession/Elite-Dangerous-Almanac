@@ -76,9 +76,11 @@ import type { ModuleSlot, SlotRestriction } from './slots.js';
  *   which are the same seven {@link CoreSlotType}s plus armour. A fuel tank is a `core`
  *   module that also fits an optional slot.
  * - `internal` — optional internals (cargo racks, shield generators, fuel scoops,
- *   passenger cabins, limpet and planetary controllers, …), and the built-in Cargo
- *   Hatch, which the registry files here although it fits only the hull's own fixed
- *   `CargoHatch` mount.
+ *   passenger cabins, limpet and planetary controllers, …). The registry also files two
+ *   kinds of article here that no optional slot takes: the built-in Cargo Hatch, which
+ *   fits the hull's own fixed `CargoHatch` mount, and the Guardian hybrid power plants
+ *   and distributors, which carry a core {@link OutfittingModule.slot | slot} and fit
+ *   only that core mount.
  * - `hardpoint` — the weapons and tools mounted on a hardpoint.
  * - `utility` — the small utility-mount fittings (chaff, heat sinks, point defence,
  *   shield boosters, scanners).
