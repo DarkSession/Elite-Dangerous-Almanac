@@ -1,5 +1,6 @@
 /**
- * Odyssey handheld weapons, their journal identifiers and grade-dependent damage.
+ * Odyssey handheld weapons: their journal identifiers, combat stats, sight
+ * magnification and grade-dependent damage.
  *
  * @packageDocumentation
  */
@@ -23,6 +24,14 @@ export type PersonalWeaponSlot = 'primary' | 'secondary';
 export type PersonalDamageType = 'kinetic' | 'thermal' | 'plasma' | 'explosive';
 /** A handheld weapon firing cycle. */
 export type PersonalFireMode = 'automatic' | 'semi-automatic' | 'burst';
+
+/** A weapon's aim-down-sights magnification, before and after the Scope modification. */
+export interface ScopeMagnification {
+    /** Magnification of the sight the weapon ships with, e.g. `1.12` for 1.12x. */
+    readonly default: number;
+    /** Magnification of the sight the Scope modification fits, e.g. `1.41` for 1.41x. */
+    readonly upgraded: number;
+}
 
 /** Grade-dependent stats for one handheld weapon. */
 export interface PersonalWeaponGrade {
@@ -60,6 +69,12 @@ export interface PersonalWeapon {
     readonly headshotMultiplier: number;
     /** Nominal effective range in metres. */
     readonly effectiveRange: number;
+    /**
+     * Aim-down-sights magnification with the stock sight and with the one the Scope
+     * modification fits. Scope carries no modifier of its own: this pair is its whole
+     * numeric effect, and it differs per weapon.
+     */
+    readonly scopeMagnification: ScopeMagnification;
     /**
      * Grade records keyed by `"1"` through `"5"` — every weapon carries all five,
      * unlike {@link Suit.grades}, and `equipment.test.ts` pins that. Read one through

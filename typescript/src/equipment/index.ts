@@ -33,12 +33,15 @@ export {
     type PersonalWeaponEngineeringType,
     type PersonalWeaponGrade,
     type PersonalWeaponSlot,
+    type ScopeMagnification,
     type WeaponUpgradeGroup,
 } from './weapons.js';
 
 export {
+    applyPersonalModifiers,
     sumPersonalEngineeringIngredients,
     type PersonalEngineeringIngredient,
+    type PersonalModifier,
 } from './engineering.js';
 
 export {

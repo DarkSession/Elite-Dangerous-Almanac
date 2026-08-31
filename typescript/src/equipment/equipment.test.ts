@@ -22,7 +22,7 @@ import {
 import { PERSONAL_MODIFICATIONS, getPersonalModification } from './modifications.js';
 import { PERSONAL_MODIFICATION_COSTS, getPersonalModificationCost } from './modification-costs.js';
 import { resolvePersonalModificationForWeapon } from './modification-journal.js';
-import { sumPersonalEngineeringIngredients } from './engineering.js';
+import { applyPersonalModifiers, sumPersonalEngineeringIngredients } from './engineering.js';
 
 test('catalogue counts are pinned by the shared fixture', () => {
     assert.equal(SUITS.length, equipmentFixture.counts.suits);
@@ -44,6 +44,8 @@ test('representative suits resolve by family, name and grade-specific Frontier s
         assert.equal(suit.name, expected.name);
         assert.equal(suit.primarySlots, expected.primarySlots);
         assert.equal(suit.secondarySlots, expected.secondarySlots);
+        assert.equal(suit.batteryCapacity, expected.batteryCapacity);
+        assert.equal(suit.goodsCapacity, expected.goodsCapacity);
         assert.equal(getSuitByName(expected.name), suit);
 
         const journal = getSuitBySymbol(expected.symbol);
@@ -126,6 +128,7 @@ test('representative handheld weapons resolve with their pinned grade stats', ()
         assert.equal(weapon.rateOfFire, expected.rateOfFire);
         assert.equal(weapon.magazineSize, expected.magazineSize);
         assert.equal(weapon.effectiveRange, expected.effectiveRange);
+        assert.equal(weapon.scopeMagnification.default, expected.scopeMagnification);
         const grade = getPersonalWeaponGrade(weapon, expected.grade);
         assert.ok(grade);
         assert.equal(grade.damage, expected.damage);
@@ -329,6 +332,69 @@ test('catalogue identities are unique and modification recipe targets are comple
     );
 });
 
+test('modification modifiers scale the stat the shared fixture pins', () => {
+    for (const expected of equipmentFixture.modifiers) {
+        const modification = getPersonalModification(expected.recipeSymbol);
+        assert.ok(modification, expected.recipeSymbol);
+        assert.equal(
+            applyPersonalModifiers(expected.stat, expected.base, modification.modifiers),
+            expected.modified,
+            `${expected.recipeSymbol} ${expected.stat}`,
+        );
+    }
+});
+
+test('the recipes with no catalogued magnitude are the only ones with an empty modifier list', () => {
+    const empty = Object.entries(PERSONAL_MODIFICATIONS)
+        .filter(([, { modifiers }]) => modifiers.length === 0)
+        .map(([symbol]) => symbol)
+        .sort();
+    assert.deepEqual(empty, [...equipmentFixture.modificationsWithoutModifiers]);
+});
+
+test('every modifier names a catalogue field or one of the six documented panel stats', () => {
+    // A modifier whose stat matches nothing is skipped, so a typo here would pass the
+    // schema, the types and every other test while quietly doing nothing.
+    const panelOnly = new Set([
+        'meleeDamage',
+        'sprintDuration',
+        'toolEnergyDrain',
+        'reloadSpeed',
+        'pressurisedFiringAudibleRange',
+        'unpressurisedFiringAudibleRange',
+    ]);
+    const catalogued = new Set([
+        ...Object.keys(SUITS[0]!),
+        ...Object.keys(getSuitGrade(SUITS[0]!, 1)!),
+        ...Object.keys(PERSONAL_WEAPONS[0]!),
+    ]);
+    const named = new Set<string>();
+    for (const [symbol, { modifiers }] of Object.entries(PERSONAL_MODIFICATIONS)) {
+        for (const { stat } of modifiers) {
+            named.add(stat);
+            assert.ok(
+                catalogued.has(stat) || panelOnly.has(stat),
+                `${symbol} modifies unknown stat ${stat}`,
+            );
+        }
+    }
+    for (const stat of panelOnly) {
+        assert.ok(named.has(stat), `no recipe modifies documented stat ${stat}`);
+    }
+});
+
+test('applyPersonalModifiers ignores other stats, rounds a magazine up and guards its arguments', () => {
+    const clipSize = getPersonalModification('weapon_clipsize')!.modifiers;
+    assert.equal(applyPersonalModifiers('effectiveRange', 25, clipSize), 25);
+    assert.equal(applyPersonalModifiers('magazineSize', 3, clipSize), 5);
+    assert.equal(applyPersonalModifiers('magazineSize', 2, clipSize), 3);
+    assert.equal(applyPersonalModifiers('kineticResistance', 0, []), 0);
+    assert.throws(() => applyPersonalModifiers(42 as unknown as string, 1, []), TypeError);
+    for (const invalid of [Number.NaN, Number.POSITIVE_INFINITY, '3' as unknown as number]) {
+        assert.throws(() => applyPersonalModifiers('magazineSize', invalid, clipSize), TypeError);
+    }
+});
+
 test('sumPersonalEngineeringIngredients merges case-insensitively in first-seen order', () => {
     assert.deepEqual(
         sumPersonalEngineeringIngredients(
@@ -358,5 +424,9 @@ test('all personal-equipment catalogues and nested records are frozen', () => {
     assert.equal(Object.isFrozen(SUITS[0]!.grades['1']), true);
     assert.equal(Object.isFrozen(PERSONAL_WEAPONS[0]!.grades['1']), true);
     assert.equal(Object.isFrozen(PERSONAL_MODIFICATIONS.suit_nightvision?.engineers), true);
+    assert.equal(
+        Object.isFrozen(PERSONAL_MODIFICATIONS.suit_increasedo2capacity?.modifiers[0]),
+        true,
+    );
     assert.equal(Object.isFrozen(PERSONAL_MODIFICATION_COSTS.suit_nightvision), true);
 });

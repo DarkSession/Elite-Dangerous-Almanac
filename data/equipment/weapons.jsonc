@@ -1,9 +1,10 @@
 /*
- * Personal weapon catalogue: journal symbols, weapon families and grade-dependent damage.
+ * Personal weapon catalogue: journal symbols, weapon families, combat stats and
+ * grade-dependent damage.
  *
- * Sources: Odyssey Materials Helper and Frontier Elite Dangerous Gamestore. See
- * ../../ATTRIBUTIONS.md for credit and SOURCES.md
- * for the pinned revision, derivation and units.
+ * Sources: Odyssey Materials Helper, direct in-game observation and the Frontier Elite
+ * Dangerous Gamestore. See ../../ATTRIBUTIONS.md for credit and SOURCES.md for the
+ * pinned revision, derivation and units.
  */
 [
   {
@@ -16,28 +17,32 @@
     "fireMode": "semi-automatic",
     "rateOfFire": 10,
     "magazineSize": 24,
-    "reserveAmmo": 120,
+    "reserveAmmo": 240,
     "headshotMultiplier": 2,
     "effectiveRange": 25,
+    "scopeMagnification": {
+      "default": 1.08,
+      "upgraded": 1.34
+    },
     "grades": {
       "1": {
-        "damage": 1.4,
+        "damage": 1.38,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 1.8,
+        "damage": 1.808,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 2.4,
+        "damage": 2.387,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 3.8,
+        "damage": 3.133,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 4.1,
+        "damage": 4.112,
         "modificationSlots": 4
       }
     },
@@ -51,30 +56,34 @@
     "slot": "primary",
     "damageType": "kinetic",
     "fireMode": "automatic",
-    "rateOfFire": 9.5,
+    "rateOfFire": 9.52,
     "magazineSize": 50,
-    "reserveAmmo": 200,
+    "reserveAmmo": 250,
     "headshotMultiplier": 2,
     "effectiveRange": 50,
+    "scopeMagnification": {
+      "default": 1.17,
+      "upgraded": 1.52
+    },
     "grades": {
       "1": {
-        "damage": 1,
+        "damage": 0.95,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 1.2,
+        "damage": 1.244,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 1.6,
+        "damage": 1.643,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 2.2,
+        "damage": 2.156,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 2.8,
+        "damage": 2.831,
         "modificationSlots": 4
       }
     },
@@ -93,25 +102,29 @@
     "reserveAmmo": 360,
     "headshotMultiplier": 2,
     "effectiveRange": 25,
+    "scopeMagnification": {
+      "default": 1.12,
+      "upgraded": 1.41
+    },
     "grades": {
       "1": {
-        "damage": 0.6,
+        "damage": 0.65,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 0.9,
+        "damage": 0.852,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 1.1,
+        "damage": 1.125,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 1.5,
+        "damage": 1.476,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 1.9,
+        "damage": 1.937,
         "modificationSlots": 4
       }
     },
@@ -130,6 +143,10 @@
     "reserveAmmo": 8,
     "headshotMultiplier": 1,
     "effectiveRange": 300,
+    "scopeMagnification": {
+      "default": 1.08,
+      "upgraded": 1.52
+    },
     "grades": {
       "1": {
         "damage": 40,
@@ -144,7 +161,7 @@
         "modificationSlots": 2
       },
       "4": {
-        "damage": 90,
+        "damage": 90.8,
         "modificationSlots": 3
       },
       "5": {
@@ -162,30 +179,34 @@
     "slot": "primary",
     "damageType": "thermal",
     "fireMode": "automatic",
-    "rateOfFire": 5.7,
+    "rateOfFire": 5.71,
     "magazineSize": 25,
     "reserveAmmo": 150,
     "headshotMultiplier": 1,
     "effectiveRange": 70,
+    "scopeMagnification": {
+      "default": 1.17,
+      "upgraded": 1.52
+    },
     "grades": {
       "1": {
-        "damage": 1.6,
+        "damage": 1.572,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 2.1,
+        "damage": 2.059,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 2.7,
+        "damage": 2.72,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 3.6,
+        "damage": 3.568,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 4.7,
+        "damage": 4.685,
         "modificationSlots": 4
       }
     },
@@ -201,28 +222,32 @@
     "fireMode": "automatic",
     "rateOfFire": 10,
     "magazineSize": 45,
-    "reserveAmmo": 280,
+    "reserveAmmo": 315,
     "headshotMultiplier": 1,
     "effectiveRange": 25,
+    "scopeMagnification": {
+      "default": 1.12,
+      "upgraded": 1.41
+    },
     "grades": {
       "1": {
-        "damage": 0.9,
+        "damage": 0.85,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 1.1,
+        "damage": 1.113,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 1.5,
+        "damage": 1.47,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 1.9,
+        "damage": 1.929,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 2.5,
+        "damage": 2.533,
         "modificationSlots": 4
       }
     },
@@ -236,30 +261,34 @@
     "slot": "secondary",
     "damageType": "thermal",
     "fireMode": "burst",
-    "rateOfFire": 5.7,
+    "rateOfFire": 2.78,
     "magazineSize": 18,
-    "reserveAmmo": 90,
+    "reserveAmmo": 180,
     "headshotMultiplier": 1,
     "effectiveRange": 35,
+    "scopeMagnification": {
+      "default": 1.08,
+      "upgraded": 1.34
+    },
     "grades": {
       "1": {
-        "damage": 1.7,
+        "damage": 1.668,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 2.2,
+        "damage": 2.185,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 2.9,
+        "damage": 2.886,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 3.8,
+        "damage": 3.786,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 5,
+        "damage": 4.971,
         "modificationSlots": 4
       }
     },
@@ -273,26 +302,30 @@
     "slot": "primary",
     "damageType": "plasma",
     "fireMode": "semi-automatic",
-    "rateOfFire": 0.8,
+    "rateOfFire": 0.833,
     "magazineSize": 3,
     "reserveAmmo": 30,
     "headshotMultiplier": 3,
     "effectiveRange": 100,
+    "scopeMagnification": {
+      "default": 1.61,
+      "upgraded": 3.75
+    },
     "grades": {
       "1": {
         "damage": 15,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 19.6,
+        "damage": 19.65,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 26,
+        "damage": 25.95,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 34,
+        "damage": 34.05,
         "modificationSlots": 3
       },
       "5": {
@@ -310,30 +343,34 @@
     "slot": "secondary",
     "damageType": "plasma",
     "fireMode": "semi-automatic",
-    "rateOfFire": 1.7,
+    "rateOfFire": 1.67,
     "magazineSize": 6,
     "reserveAmmo": 72,
     "headshotMultiplier": 2,
     "effectiveRange": 15,
+    "scopeMagnification": {
+      "default": 1.08,
+      "upgraded": 1.61
+    },
     "grades": {
       "1": {
         "damage": 7.5,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 9.8,
+        "damage": 9.825,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 13,
+        "damage": 12.975,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 17,
+        "damage": 17.025,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 22.4,
+        "damage": 22.35,
         "modificationSlots": 4
       }
     },
@@ -347,30 +384,34 @@
     "slot": "primary",
     "damageType": "plasma",
     "fireMode": "semi-automatic",
-    "rateOfFire": 1.3,
+    "rateOfFire": 1.25,
     "magazineSize": 2,
     "reserveAmmo": 24,
     "headshotMultiplier": 1.5,
     "effectiveRange": 7,
+    "scopeMagnification": {
+      "default": 1.08,
+      "upgraded": 1.25
+    },
     "grades": {
       "1": {
-        "damage": 1.8,
+        "damage": 1.75,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 2.3,
+        "damage": 2.292,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 3,
+        "damage": 3.027,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 4,
+        "damage": 3.973,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 5.2,
+        "damage": 5.215,
         "modificationSlots": 4
       }
     },
@@ -384,30 +425,34 @@
     "slot": "primary",
     "damageType": "plasma",
     "fireMode": "automatic",
-    "rateOfFire": 6.7,
+    "rateOfFire": 6.67,
     "magazineSize": 50,
     "reserveAmmo": 300,
     "headshotMultiplier": 1.5,
     "effectiveRange": 35,
+    "scopeMagnification": {
+      "default": 1.17,
+      "upgraded": 1.52
+    },
     "grades": {
       "1": {
         "damage": 1.1,
         "modificationSlots": 0
       },
       "2": {
-        "damage": 1.4,
+        "damage": 1.441,
         "modificationSlots": 1
       },
       "3": {
-        "damage": 1.9,
+        "damage": 1.903,
         "modificationSlots": 2
       },
       "4": {
-        "damage": 2.5,
+        "damage": 2.497,
         "modificationSlots": 3
       },
       "5": {
-        "damage": 3.275,
+        "damage": 3.278,
         "modificationSlots": 4
       }
     },

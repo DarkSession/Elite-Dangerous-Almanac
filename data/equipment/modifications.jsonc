@@ -1,10 +1,19 @@
 /*
- * Engineer-applied personal-equipment recipes, keyed by recipe symbol.
+ * Engineer-applied personal-equipment recipes, keyed by recipe symbol: display name,
+ * target, the engineers who offer it, and the stat multipliers it applies.
  *
- * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
- * for the pinned revision and derivation. Most keys are the exact journal symbol. The
- * nine technology-specific weapon recipes use the source's disambiguated recipe symbol;
+ * Sources: Odyssey Materials Helper and direct in-game observation. See
+ * ../../ATTRIBUTIONS.md for credit and SOURCES.md for the pinned revision and
+ * derivation. Most keys are the exact journal symbol. The nine technology-specific
+ * weapon recipes use the source's disambiguated recipe symbol;
  * modification-journal-names.jsonc maps those back to the three symbols the journal writes.
+ *
+ * A modifier is { stat, multiplier } and multiplies that stat of the modified suit or
+ * weapon; `roundUp` marks the one result the game rounds up to a whole number. A
+ * resistance multiplier applies to the damage taken, not to the stored resistance
+ * fraction. An empty list means the recipe changes nothing this catalogue names — see
+ * SOURCES.md for which recipe is qualitative and which changes an unlisted stat.
+ *
  * Material shopping lists live separately in modification-costs.jsonc.
  */
 {
@@ -15,6 +24,12 @@
       "Jude Navarro",
       "Kit Fowler",
       "Eleanor Bresa"
+    ],
+    "modifiers": [
+      {
+        "stat": "meleeDamage",
+        "multiplier": 2.5
+      }
     ]
   },
   "suit_adsmovementspeed": {
@@ -24,7 +39,8 @@
       "Terra Velasquez",
       "Yarden Bond",
       "Baltanos"
-    ]
+    ],
+    "modifiers": []
   },
   "suit_improvedarmourrating": {
     "name": "Damage Resistance",
@@ -33,6 +49,24 @@
       "Jude Navarro",
       "Uma Laszlo",
       "Eleanor Bresa"
+    ],
+    "modifiers": [
+      {
+        "stat": "kineticResistance",
+        "multiplier": 0.9
+      },
+      {
+        "stat": "thermalResistance",
+        "multiplier": 0.9
+      },
+      {
+        "stat": "plasmaResistance",
+        "multiplier": 0.9
+      },
+      {
+        "stat": "explosiveResistance",
+        "multiplier": 0.9
+      }
     ]
   },
   "suit_improvedradar": {
@@ -42,6 +76,16 @@
       "Domino Green",
       "Oden Geiger",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "losAnalysisRange",
+        "multiplier": 2
+      },
+      {
+        "stat": "losAnalysisTime",
+        "multiplier": 0.001
+      }
     ]
   },
   "suit_increasedammoreserves": {
@@ -51,6 +95,12 @@
       "Jude Navarro",
       "Kit Fowler",
       "Eleanor Bresa"
+    ],
+    "modifiers": [
+      {
+        "stat": "reserveAmmo",
+        "multiplier": 1.5
+      }
     ]
   },
   "suit_backpackcapacity": {
@@ -60,15 +110,35 @@
       "Domino Green",
       "Wellington Beck",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "goodsCapacity",
+        "multiplier": 2
+      },
+      {
+        "stat": "assetsCapacity",
+        "multiplier": 2
+      },
+      {
+        "stat": "dataCapacity",
+        "multiplier": 2
+      }
     ]
   },
   "suit_increasedshieldregen": {
-    "name": "Faster Shield Regeneration",
+    "name": "Faster Shield Regen",
     "target": "suit",
     "engineers": [
       "Kit Fowler",
       "Uma Laszlo",
       "Eleanor Bresa"
+    ],
+    "modifiers": [
+      {
+        "stat": "shieldRegeneration",
+        "multiplier": 1.25
+      }
     ]
   },
   "suit_increasedbatterycapacity": {
@@ -78,6 +148,12 @@
       "Oden Geiger",
       "Wellington Beck",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "batteryCapacity",
+        "multiplier": 1.5
+      }
     ]
   },
   "suit_improvedjumpassist": {
@@ -87,7 +163,8 @@
       "Hero Ferrari",
       "Yarden Bond",
       "Baltanos"
-    ]
+    ],
+    "modifiers": []
   },
   "suit_increasedo2capacity": {
     "name": "Increased Air Reserves",
@@ -96,6 +173,12 @@
       "Hero Ferrari",
       "Terra Velasquez",
       "Baltanos"
+    ],
+    "modifiers": [
+      {
+        "stat": "oxygenTime",
+        "multiplier": 5
+      }
     ]
   },
   "suit_increasedsprintduration": {
@@ -105,6 +188,12 @@
       "Hero Ferrari",
       "Terra Velasquez",
       "Baltanos"
+    ],
+    "modifiers": [
+      {
+        "stat": "sprintDuration",
+        "multiplier": 2
+      }
     ]
   },
   "suit_nightvision": {
@@ -113,7 +202,8 @@
     "engineers": [
       "Oden Geiger",
       "Yi Shen"
-    ]
+    ],
+    "modifiers": []
   },
   "suit_quieterfootsteps": {
     "name": "Quieter Footsteps",
@@ -121,6 +211,12 @@
     "engineers": [
       "Yarden Bond",
       "Yi Shen"
+    ],
+    "modifiers": [
+      {
+        "stat": "footstepAudibleRange",
+        "multiplier": 0.5
+      }
     ]
   },
   "suit_reducedtoolbatteryconsumption": {
@@ -130,6 +226,12 @@
       "Domino Green",
       "Wellington Beck",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "toolEnergyDrain",
+        "multiplier": 0.5
+      }
     ]
   },
   "weapon_suppression_unpressurised": {
@@ -138,6 +240,12 @@
     "engineers": [
       "Yarden Bond",
       "Yi Shen"
+    ],
+    "modifiers": [
+      {
+        "stat": "unpressurisedFiringAudibleRange",
+        "multiplier": 0.05
+      }
     ]
   },
   "weapon_handling": {
@@ -147,7 +255,8 @@
       "Hero Ferrari",
       "Yarden Bond",
       "Baltanos"
-    ]
+    ],
+    "modifiers": []
   },
   "weapon_range_kinetic": {
     "name": "Greater Range",
@@ -156,6 +265,12 @@
       "Domino Green",
       "Wellington Beck",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "effectiveRange",
+        "multiplier": 1.5
+      }
     ]
   },
   "weapon_range_laser": {
@@ -165,6 +280,12 @@
       "Domino Green",
       "Wellington Beck",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "effectiveRange",
+        "multiplier": 1.5
+      }
     ]
   },
   "weapon_range_plasma": {
@@ -174,6 +295,12 @@
       "Domino Green",
       "Wellington Beck",
       "Rosa Dayette"
+    ],
+    "modifiers": [
+      {
+        "stat": "effectiveRange",
+        "multiplier": 1.5
+      }
     ]
   },
   "weapon_headshotdamage_kinetic": {
@@ -182,6 +309,12 @@
     "engineers": [
       "Uma Laszlo",
       "Yi Shen"
+    ],
+    "modifiers": [
+      {
+        "stat": "headshotMultiplier",
+        "multiplier": 1.5
+      }
     ]
   },
   "weapon_headshotdamage_laser": {
@@ -190,6 +323,12 @@
     "engineers": [
       "Uma Laszlo",
       "Yi Shen"
+    ],
+    "modifiers": [
+      {
+        "stat": "headshotMultiplier",
+        "multiplier": 1.5
+      }
     ]
   },
   "weapon_headshotdamage_plasma": {
@@ -198,34 +337,43 @@
     "engineers": [
       "Uma Laszlo",
       "Yi Shen"
+    ],
+    "modifiers": [
+      {
+        "stat": "headshotMultiplier",
+        "multiplier": 1.5
+      }
     ]
   },
   "weapon_accuracy_kinetic": {
-    "name": "Higher Accuracy",
+    "name": "Improved Hip Fire Accuracy",
     "target": "weapon",
     "engineers": [
       "Yarden Bond",
       "Terra Velasquez",
       "Baltanos"
-    ]
+    ],
+    "modifiers": []
   },
   "weapon_accuracy_laser": {
-    "name": "Higher Accuracy",
+    "name": "Improved Hip Fire Accuracy",
     "target": "weapon",
     "engineers": [
       "Yarden Bond",
       "Terra Velasquez",
       "Baltanos"
-    ]
+    ],
+    "modifiers": []
   },
   "weapon_accuracy_plasma": {
-    "name": "Higher Accuracy",
+    "name": "Improved Hip Fire Accuracy",
     "target": "weapon",
     "engineers": [
       "Yarden Bond",
       "Terra Velasquez",
       "Baltanos"
-    ]
+    ],
+    "modifiers": []
   },
   "weapon_clipsize": {
     "name": "Magazine Size",
@@ -234,6 +382,13 @@
       "Jude Navarro",
       "Kit Fowler",
       "Eleanor Bresa"
+    ],
+    "modifiers": [
+      {
+        "stat": "magazineSize",
+        "multiplier": 1.5,
+        "roundUp": true
+      }
     ]
   },
   "weapon_suppression_pressurised": {
@@ -243,6 +398,12 @@
       "Hero Ferrari",
       "Terra Velasquez",
       "Baltanos"
+    ],
+    "modifiers": [
+      {
+        "stat": "pressurisedFiringAudibleRange",
+        "multiplier": 0.05
+      }
     ]
   },
   "weapon_reloadspeed": {
@@ -252,6 +413,12 @@
       "Jude Navarro",
       "Uma Laszlo",
       "Eleanor Bresa"
+    ],
+    "modifiers": [
+      {
+        "stat": "reloadSpeed",
+        "multiplier": 1.25
+      }
     ]
   },
   "weapon_scope": {
@@ -261,7 +428,8 @@
       "Oden Geiger",
       "Wellington Beck",
       "Rosa Dayette"
-    ]
+    ],
+    "modifiers": []
   },
   "weapon_stability": {
     "name": "Stability",
@@ -270,15 +438,17 @@
       "Domino Green",
       "Oden Geiger",
       "Rosa Dayette"
-    ]
+    ],
+    "modifiers": []
   },
   "weapon_backpackreloading": {
-    "name": "Stowed Reloading",
+    "name": "Stowed reloading",
     "target": "weapon",
     "engineers": [
       "Kit Fowler",
       "Uma Laszlo",
       "Eleanor Bresa"
-    ]
+    ],
+    "modifiers": []
   }
 }
