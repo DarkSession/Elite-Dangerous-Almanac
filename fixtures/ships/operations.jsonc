@@ -1058,6 +1058,61 @@
         }
       }
     },
+    "builtInHullModuleLoadout": {
+      "input": {
+        "Ship": "Anaconda",
+        "Modules": [
+          {
+            "Slot": "CargoHatch",
+            "Item": "ModularCargoBayDoor"
+          },
+          {
+            "Slot": "Slot01_Size7",
+            "Item": "ModularCargoBayDoor"
+          }
+        ]
+      },
+      "kept": {
+        "slot": "Slot01_Size7",
+        "symbol": "ModularCargoBayDoor",
+        "importOutcomes": []
+      },
+      "expected": {
+        "code": "incompatibleModule",
+        "params": {
+          "slot": "Slot01_Size7",
+          "symbol": "ModularCargoBayDoor",
+          "constraint": "builtInHullModule"
+        }
+      }
+    },
+    "hullSpecificHullModuleLoadout": {
+      "input": {
+        "Ship": "FerDeLance",
+        "Modules": [
+          {
+            "Slot": "CargoHatch",
+            "Item": "ModularCargoBayDoorFDL"
+          },
+          {
+            "Slot": "Slot01_Size5",
+            "Item": "ModularCargoBayDoorFDL"
+          }
+        ]
+      },
+      "emptied": {
+        "slot": "Slot01_Size5",
+        "importOutcomes": [
+          {
+            "action": "emptied",
+            "slot": "Slot01_Size5",
+            "sourceSymbol": "ModularCargoBayDoorFDL"
+          }
+        ]
+      },
+      "hatchSymbol": "ModularCargoBayDoorFDL",
+      "valid": true
+    },
     "restrictedLoadout": {
       "input": {
         "Ship": "Anaconda",
@@ -1099,6 +1154,20 @@
           "constraint": "oversized",
           "moduleClass": 8,
           "slotSize": 6
+        }
+      }
+    },
+    "builtInHullModule": {
+      "ship": "SideWinder",
+      "slot": "Slot01_Size2",
+      "module": "ModularCargoBayDoor",
+      "expected": {
+        "code": "incompatibleModule",
+        "constraint": "builtInHullModule",
+        "params": {
+          "slot": "Slot01_Size2",
+          "symbol": "ModularCargoBayDoor",
+          "constraint": "builtInHullModule"
         }
       }
     },

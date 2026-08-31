@@ -4,6 +4,7 @@ import type { OutfittingModule } from '../modules.js';
 import { getShipByName, getShipBySymbol } from '../ships.js';
 import { SLOT_RESTRICTION_LABELS, type BuildSlot, type SlotRestriction } from '../slots.js';
 import { truncate } from '../../internal/argument-guards.js';
+import { isBuiltInHullSymbol } from './loadout-state.js';
 import type { LoadoutIssueParams, ModuleFitConstraint } from '../loadout-validation.js';
 
 /** Optional-internal groups a military slot accepts (symbol prefixes). */
@@ -102,9 +103,9 @@ function moduleSlotProblem(slot: BuildSlot, module: OutfittingModule): ModuleFit
 /**
  * Explain why `module` cannot fit `slot`, or return `null` when it fits.
  *
- * The checks intentionally proceed from fixed hull constraints to module-specific
- * mount constraints, slot kind and finally size so callers receive the most specific
- * useful failure.
+ * The checks intentionally proceed from the fixed hull mount, through the articles that
+ * belong to the hull, to module-specific mount constraints, slot kind and finally size,
+ * so callers receive the most specific useful failure.
  */
 export function moduleFitProblem(
     shipSymbol: string,
@@ -113,6 +114,18 @@ export function moduleFitProblem(
 ): ModuleFitProblem | null {
     if (slot.kind === 'cargoHatch') {
         return problem('immutableSlot', 'the cargoHatch slot cannot be changed');
+    }
+    // The hatch arrives with the hull, no station sells it, and the only mount that
+    // holds it is the fixed one refused just above. So it fits nowhere a caller can
+    // fit it, and an outfitting list must never offer it. The source registry files it
+    // under the `internal` category, which an unrestricted optional mount would
+    // otherwise accept. Read off the symbol, which `setModule` has already checked
+    // against the catalogue, rather than off a `familyId` nothing validates.
+    if (isBuiltInHullSymbol(module.symbol)) {
+        return problem(
+            'builtInHullModule',
+            'the cargo hatch is part of the hull, not an outfitting module',
+        );
     }
     if (slot.kind === 'armour') {
         const hull = getShipBySymbol(shipSymbol);

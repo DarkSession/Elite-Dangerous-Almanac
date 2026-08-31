@@ -4889,6 +4889,68 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "builtInHullModuleLoadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "params": { "$ref": "#/definitions/shared0eab9521b1c6" }
+                  },
+                  "required": ["code", "params"]
+                },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" },
+                "kept": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "importOutcomes": {
+                      "type": "array",
+                      "maxItems": 0,
+                      "items": false
+                    },
+                    "slot": { "type": "string" },
+                    "symbol": { "type": "string" }
+                  },
+                  "required": ["importOutcomes", "slot", "symbol"]
+                }
+              },
+              "required": ["expected", "input", "kept"]
+            },
+            "hullSpecificHullModuleLoadout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "emptied": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "importOutcomes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "action": { "type": "string" },
+                          "slot": { "type": "string" },
+                          "sourceSymbol": { "type": "string" }
+                        },
+                        "required": ["action", "slot", "sourceSymbol"]
+                      }
+                    },
+                    "slot": { "type": "string" }
+                  },
+                  "required": ["importOutcomes", "slot"]
+                },
+                "hatchSymbol": { "type": "string" },
+                "input": { "$ref": "#/definitions/shared7481e15ca29a" },
+                "valid": { "type": "boolean" }
+              },
+              "required": ["emptied", "hatchSymbol", "input", "valid"]
+            },
             "loadout": {
               "type": "object",
               "additionalProperties": false,
@@ -4983,7 +5045,13 @@
               "required": ["expected", "input"]
             }
           },
-          "required": ["loadout", "restrictedLoadout", "slef"]
+          "required": [
+            "builtInHullModuleLoadout",
+            "hullSpecificHullModuleLoadout",
+            "loadout",
+            "restrictedLoadout",
+            "slef"
+          ]
         },
         "distributor": {
           "type": "object",
@@ -5142,6 +5210,26 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "builtInHullModule": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "expected": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": { "type": "string" },
+                    "constraint": { "type": "string" },
+                    "params": { "$ref": "#/definitions/shared0eab9521b1c6" }
+                  },
+                  "required": ["code", "constraint", "params"]
+                },
+                "module": { "type": "string" },
+                "ship": { "type": "string" },
+                "slot": { "type": "string" }
+              },
+              "required": ["expected", "module", "ship", "slot"]
+            },
             "duplicateExclusiveModule": {
               "type": "object",
               "additionalProperties": false,
@@ -5319,6 +5407,7 @@
             }
           },
           "required": [
+            "builtInHullModule",
             "duplicateExclusiveModule",
             "immutableSlot",
             "immutableSlotReplacement",
@@ -8599,6 +8688,16 @@
         "yaw": { "type": "number" }
       },
       "required": ["boost", "pitch", "roll", "top", "yaw"]
+    },
+    "shared0eab9521b1c6": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "constraint": { "type": "string" },
+        "slot": { "type": "string" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["constraint", "slot", "symbol"]
     },
     "shared0ff8838421c7": {
       "type": "object",

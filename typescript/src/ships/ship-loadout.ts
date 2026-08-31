@@ -69,6 +69,7 @@ import type { OutfittingModule } from './modules.js';
 import { calculateModuleLimits, type ModuleLimitUsage } from './module-limits.js';
 import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
+    BUILT_IN_HULL_SYMBOL,
     cloneLoadoutModule,
     cloneModuleStats,
     FITTED_ITEM,
@@ -1382,6 +1383,12 @@ export class ShipLoadout {
      * the same article on the screen twice, once with no price. A build that already
      * carries one keeps it; only the choices are filtered.
      *
+     * The Cargo Hatch is absent for the same reason it cannot be removed: it is part of
+     * the hull. The source registry files it under the `internal` category — which is
+     * why {@link ships/modules-internal!INTERNAL_MODULES | INTERNAL_MODULES} carries it
+     * — but the hull is built with one and the fixed `CargoHatch` mount is the only
+     * place it goes, so no mount this method describes accepts it.
+     *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
      * @throws {RangeError} If the hull has no slot with that key.
@@ -1482,7 +1489,7 @@ export class ShipLoadout {
         const replacementStats =
             builtInModuleBySymbol(defaultModule.symbol, 'ShipLoadout.repairFixedMount') ??
             (isBuiltInHullModule(replacement)
-                ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout.repairFixedMount')
+                ? builtInModuleBySymbol(BUILT_IN_HULL_SYMBOL, 'ShipLoadout.repairFixedMount')
                 : null);
         if (!replacementStats) {
             return deepFreeze({
@@ -2970,7 +2977,7 @@ export class ShipLoadout {
         // fitted article has the standard hatch's stats. Resolve that family here so its
         // power draw is available as well as its already-known zero mass and price.
         return isBuiltInHullModule(module)
-            ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout: built-in module')
+            ? builtInModuleBySymbol(BUILT_IN_HULL_SYMBOL, 'ShipLoadout: built-in module')
             : null;
     }
 }

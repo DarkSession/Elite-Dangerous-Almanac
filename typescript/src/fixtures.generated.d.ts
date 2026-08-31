@@ -3494,6 +3494,47 @@ type FixtureShipsOperations = {
         }[];
     };
     diagnostics: {
+        builtInHullModuleLoadout: {
+            expected: {
+                code: string;
+                params: {
+                    constraint: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+            kept: {
+                importOutcomes: never[];
+                slot: string;
+                symbol: string;
+            };
+        };
+        hullSpecificHullModuleLoadout: {
+            emptied: {
+                importOutcomes: {
+                    action: string;
+                    slot: string;
+                    sourceSymbol: string;
+                }[];
+                slot: string;
+            };
+            hatchSymbol: string;
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+            valid: boolean;
+        };
         loadout: {
             expected: {
                 code: string;
@@ -3639,6 +3680,20 @@ type FixtureShipsOperations = {
         };
     };
     editorErrors: {
+        builtInHullModule: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    constraint: string;
+                    slot: string;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
         duplicateExclusiveModule: {
             expected: {
                 code: string;

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
 import { BuildMetrics } from './build-metrics.js';
-import { ShipLoadout } from './ship-loadout.js';
+import { LoadoutEditError, ShipLoadout } from './ship-loadout.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { heatInputResultFor } from './internal/loadout-metrics.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
@@ -3000,6 +3000,100 @@ test('modulesForSlot lists only fitting modules', () => {
     assert.ok(drives.every((m) => m.symbol.toLowerCase().startsWith('int_hyperdrive')));
     assert.ok(drives.every((m) => m.class <= 6));
     assert.throws(() => conda.modulesForSlot('NoSuchSlot'), RangeError);
+});
+
+test('the cargo hatch is a built-in hull module, never an optional-internal choice', () => {
+    // The registry files the hatch under the `internal` category, which an unrestricted
+    // optional mount would otherwise accept. It arrives with the hull, no station sells
+    // it, and the fixed `CargoHatch` mount is the only one that holds it — so no mount
+    // an editor can set accepts it.
+    const hatch = mod('ModularCargoBayDoor', INTERNAL_MODULES);
+    assert.equal(hatch.familyId, 'cargoHatches');
+    for (const ship of ['SideWinder', 'Anaconda', 'PantherMkII']) {
+        const build = ShipLoadout.empty(ship);
+        for (const slot of build.slots()) {
+            assert.ok(
+                !build.modulesForSlot(slot.key).some((m) => m.symbol === hatch.symbol),
+                `${ship} ${slot.key} offers the cargo hatch`,
+            );
+            assert.throws(
+                () => build.setModule(slot.key, hatch),
+                LoadoutEditError,
+                `${ship} ${slot.key} accepts the cargo hatch`,
+            );
+        }
+    }
+    // A mount that offers nothing would satisfy the loop above, so pin that the offer it
+    // was filtered out of is still a full one.
+    assert.ok(ShipLoadout.empty('Anaconda').modulesForSlot('Slot01_Size7').length > 100);
+    // The rule is the article's identity, not a field a caller can restate: `setModule`
+    // checks the symbol against the catalogue, so reading the symbol is what makes the
+    // refusal hold for an adjusted record too.
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', {
+                ...hatch,
+                familyId: 'cargoRacks',
+            }),
+        LoadoutEditError,
+    );
+    assert.doesNotThrow(() =>
+        ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', {
+            ...mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES),
+            familyId: 'cargoHatches',
+        }),
+    );
+    // The refusal names the article rather than the mount, so an editor can say why.
+    try {
+        ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', hatch);
+        assert.fail('expected the cargo hatch to be refused');
+    } catch (error) {
+        assert.ok(error instanceof LoadoutEditError);
+        assert.equal(error.code, 'incompatibleModule');
+        assert.equal(error.constraint, 'builtInHullModule');
+        assert.match(error.message, /part of the hull, not an outfitting module/);
+    }
+    // The hull's own hatch is untouched by the rule that refuses the article elsewhere,
+    // hull-specific hatch symbols included: `isBuiltInHullModule` short-circuits the
+    // whole import walk for the hatch mount, and the fit rules never see it.
+    for (const ship of ['Anaconda', 'FerDeLance']) {
+        const stock = ShipLoadout.default(ship);
+        assert.equal(stock.validation().valid, true, ship);
+        assert.ok(stock.fittedModuleAt('CargoHatch')?.symbol.startsWith('ModularCargoBayDoor'));
+        assert.equal(stock.repairFixedMount('CargoHatch').status, 'unchanged', ship);
+    }
+});
+
+test('a capture that puts the cargo hatch in an optional mount is reported, not silently kept', () => {
+    // The hatch resolves, so import leaves it where the capture put it: an optional mount
+    // can legally stand empty, which makes a bad article there the caller's to see and
+    // remove. Validation is what says the ship cannot exist.
+    const build = ShipLoadout.fromLoadout({
+        event: 'Loadout',
+        Ship: 'Anaconda',
+        Modules: [
+            { Slot: 'CargoHatch', Item: 'ModularCargoBayDoor' },
+            { Slot: 'Slot01_Size7', Item: 'ModularCargoBayDoor' },
+        ],
+    } as unknown as LoadoutEvent);
+    // The capture names two mounts, so every other stocked mount is defaulted; what
+    // matters here is that the optional mount is left exactly as the capture had it.
+    assert.deepEqual(
+        build.importOutcomes.filter((outcome) => outcome.slot === 'Slot01_Size7'),
+        [],
+    );
+    assert.equal(build.fittedModuleAt('Slot01_Size7')?.symbol, 'ModularCargoBayDoor');
+    const validation = build.validation();
+    assert.equal(validation.valid, false);
+    const issue = validation.issues.find((candidate) => candidate.code === 'incompatibleModule');
+    assert.equal(issue?.params?.constraint, 'builtInHullModule');
+    assert.equal(issue?.slot, 'Slot01_Size7');
+    // The mount is ordinary, so the article comes out and the build is valid again.
+    assert.equal(build.removeModule('Slot01_Size7').validation().valid, true);
+
+    // The same capture under a hull family's own hatch symbol is emptied on import
+    // instead, as an uncatalogued symbol rather than as a hatch; `operations.jsonc` pins
+    // both halves language-neutrally.
 });
 
 test('fit checks use restrictions carried by caller-supplied module records', () => {

@@ -3,9 +3,10 @@
  *
  * Ground truth for a hull's outfitting mounts: `keys` pins every hull's full enumerated journal
  * slot-key list, the `spot` layouts carry their mount names and sizes, and `restrictions` pins one
- * entry per restricted mount naming modules it must accept and modules it must refuse, plus an
- * unrestricted mount for contrast. Which module families a restriction accepts is a fact about the
- * game rather than about any implementation, which is why it lives here.
+ * entry per restricted mount naming modules it must accept and modules it must refuse, plus
+ * unrestricted mounts, which carry rules of their own: an article can reserve a mount, a hull, or
+ * belong to the hull outright. Which modules a mount takes is a fact about the game rather than
+ * about any implementation, which is why it lives here.
  */
 {
   "count": 48,
@@ -1103,7 +1104,8 @@
         "Int_FighterBay_Size6_Class1"
       ],
       "rejects": [
-        "Int_PlanetApproachSuite"
+        "Int_PlanetApproachSuite",
+        "ModularCargoBayDoor"
       ]
     },
     {
@@ -1116,7 +1118,8 @@
       ],
       "rejects": [
         "Int_LargeCargoRack_Size8_class1",
-        "Int_PlanetApproachSuite"
+        "Int_PlanetApproachSuite",
+        "ModularCargoBayDoor"
       ]
     },
     {
