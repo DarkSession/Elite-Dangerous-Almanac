@@ -13,17 +13,17 @@
   "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the in-game value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
   "counts": {
     "core": 516,
-    "internal": 484,
+    "internal": 490,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1194
+    "all": 1200
   },
   "priceCounts": {
     "core": 509,
-    "internal": 473,
+    "internal": 479,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1176
+    "all": 1182
   },
   "prices": [
     {
@@ -41,6 +41,18 @@
     {
       "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
       "cost": 12560
+    },
+    {
+      "symbol": "Int_BuggyBayMk2_Size2_Class3",
+      "cost": 32400
+    },
+    {
+      "symbol": "Int_BuggyBayMk2_Size4_Class3",
+      "cost": 129600
+    },
+    {
+      "symbol": "Int_BuggyBay_Size6_Class3",
+      "cost": 1036800
     }
   ],
   "purchaseCapture": {
@@ -234,6 +246,22 @@
     ]
   },
   "spot": [
+    {
+      "symbol": "Int_BuggyBay_Size6_Class3",
+      "name": "Large Planetary Vehicle Hangar",
+      "mass": 34,
+      "integrity": 30,
+      "powerDraw": 1.8,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_BuggyBayMk2_Size6_Class3",
+      "name": "Mk II Large Planetary Vehicle Hangar",
+      "mass": 25.5,
+      "integrity": 30,
+      "powerDraw": 1.2,
+      "bootTime": 5
+    },
     {
       "symbol": "Int_Hyperdrive_Size5_Class5",
       "name": "Frame Shift Drive",
@@ -999,18 +1027,18 @@
     ]
   },
   "inGameAudit": {
-    "catalogueIdentities": 1194,
+    "catalogueIdentities": 1200,
     "identityMatches": 1188,
-    "registryOnlyIdentities": 6,
+    "registryOnlyIdentities": 12,
     "numericModulesVerified": 947,
     "armourModulesOutsideNumericVerification": 241,
     "verifiedRecords": 135,
     "verifiedFields": 300,
     "catalogueFieldCounts": {
-      "powerDraw": 832,
-      "bootTime": 828
+      "powerDraw": 838,
+      "bootTime": 834
     },
-    "note": "In-game verification covers every catalogue identity bar the bundle-granted Vessel Hangars: the non-armour modules numerically, and the ship-armour identities whose numeric values retain their separate provenance. Those hangars rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
+    "note": "In-game verification covers every catalogue identity bar two sets: the non-armour modules numerically, and the ship-armour identities whose numeric values retain their separate provenance. The bundle-granted Vessel Hangars rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. The unreleased Large Planetary Vehicle Hangars (Int_BuggyBay{,Mk2}_Size{2,4,6}_Class3) carry values reported ahead of release that no registry publishes and that the game cannot yet be asked for. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
     "verifiedValueFields": 284,
     "verifiedAbsentFields": 16
   },

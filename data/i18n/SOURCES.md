@@ -32,7 +32,10 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `data/ships/modules-*.jsonc` catalogues, which stay authoritative for canonical
   English. Each symbol joins case-insensitively to the in-game module localisation
   identity, which carries a `name`, a `longname` and an `info` string per locale. The
-  join is exact and total: every symbol resolves.
+  join is exact and total over the symbols the acquired table covers: every one of them
+  resolves. The six **unreleased** Large Planetary Vehicle Hangar symbols
+  (`Int_BuggyBay{,Mk2}_Size{2,4,6}_Class3`, §`data/ships/SOURCES.md`) postdate the
+  acquired table, are absent from it, and carry English alone.
   - **`longname` is the name taken.** It is the outfitting list's full name and equals
     the canonical English on 1,041 of the symbols, where `name` — the abbreviated panel
     form — equals it on 726. **Both totals were counted over the 1,199-symbol set that
@@ -78,7 +81,11 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   rest, and the singular is kept, which is also the number the English carries.
   `Hatch Breaker Limpet Controller` is specific on most symbols and generic on one, and
   the specific is kept.
-- **Coverage:** complete. Every symbol carries all six locales.
+- **Coverage:** every symbol carries all six locales bar the unreleased Large Planetary
+  Vehicle Hangars, whose two shared name records hold English alone. No translation is
+  invented for them: the five other locales stay absent until a
+  localisation table that names the modules is acquired, and the lookups return `null`
+  rather than an English fallback in the meantime.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`

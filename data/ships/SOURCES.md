@@ -18,6 +18,7 @@ Referred to throughout by source name; the pin is here, once.
 | Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                          | 2026-08-14 UTC |
 | Elite Dangerous in-game purchase capture                                                        | no game version recorded; nine `ModuleBuyAndStore` journal entries from market `128666762`, 17:34-17:37, at a 10% and a 2.5% outfitting discount                            | 2026-08-30 UTC |
 | Elite Dangerous in-game outfitting observation                                                  | no game version recorded; direct in-game observation that outfitting offers no non-SCO size-8 frame shift drive                                                             | 2026-08-30 UTC |
+| Large Planetary Vehicle Hangar pre-release report                                               | **unreleased and unverified** — a pre-release stat report from the repository owner; the live game does not offer these modules yet                                         | 2026-08-31 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -351,7 +352,8 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   outfitting categories.
 - **Identity source:** FDevIDs `outfitting.csv`, columns
   `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`, supplemented
-  for the six bundle-granted Vessel Hangars by the pinned CAPI response below.
+  for the six bundle-granted Vessel Hangars by the pinned CAPI response below and for
+  the six unreleased Large Planetary Vehicle Hangars by the pre-release report below.
 - **Identity derivation:** the acquired FDevIDs module records are kept in CSV order
   within each category file. The CSV's numeric `id`
   column is dropped — modules are keyed by `symbol` — and rows marked `removed` are
@@ -682,16 +684,18 @@ Two starter capacities are derived rather than read:
 2^size across all eight sizes of both families, with no exception.
 
 **In-game coverage, stated separately from registry coverage.** In-game verification
-covers every catalogue identity except the six bundle-granted Vessel Hangars, which rely
-on the public registry and CAPI evidence below — their stats match their ordinary twins,
-but they have not been independently checked in the module panel. Numeric verification
-covers the non-armour modules; the ship-specific armour modules' class, mass, hull boost
-and resistances retain their registry provenance rather than being described as
-game-verified.
+covers every catalogue identity except two sets. The six bundle-granted Vessel Hangars
+rely on the public registry and CAPI evidence below — their stats match their ordinary
+twins, but they have not been independently checked in the module panel. The six
+**unreleased** Large Planetary Vehicle Hangars sit outside it altogether: the game does
+not offer them yet, so nothing about them can be read from a panel until the update
+ships. Numeric verification covers the non-armour modules; the ship-specific armour
+modules' class, mass, hull boost and resistances retain their registry provenance rather
+than being described as game-verified.
 
 Every numeric field available through in-game verification was compared, and the
-comparison reached every record carrying the field, apart from the bundle-granted Vessel
-Hangars named above, which sit outside in-game verification of `powerDraw` and
+comparison reached every record carrying the field, apart from the two sets named above,
+which sit outside in-game verification of `powerDraw` and
 `bootTime`. The fields compared are `powerDraw`, `bootTime`, power-plant output and
 efficiency, every FSD field, thruster heat rate, all six distributor fields, sensor
 range and angle, shield mass/strength curves, shield regeneration, shield-cell
@@ -1100,7 +1104,9 @@ and size-6 racks): here the discount is stated rather than solved for.
     Clipper Mk II, and coriolis-data describes them as a "Panther Clipper storage rack")
     and the three Mk II Vessel Hangars → `["Explorer_NX", "PantherMkII", "LakonMiner"]`
     (EDSY has no record for the Mk II bays at all, so their restriction rests on
-    Frontier's update notes and Inara). Armour records use the `ship` field instead.
+    Frontier's update notes and Inara), plus the three **unreleased** Mk II Large
+    Planetary Vehicle Hangars → the thirteen hulls listed under "Records sourced outside
+    the baseline registries" below. Armour records use the `ship` field instead.
   - **`restrictedToSlot`** is the same idea one axis over: the slot restriction a module
     requires, so it fits only mounts carrying it — the mirror of a mount's `restriction`,
     and the half `restrictedToShips` cannot express. Five records have one: the two
@@ -1163,6 +1169,79 @@ and size-6 racks): here the discount is stated rather than solved for.
 
 Records not in coriolis-data / FDevIDs at the acquired revisions:
 
+- **Large Planetary Vehicle Hangars — six records that are UNRELEASED and UNVERIFIED.**
+  `Int_BuggyBay_Size{2,4,6}_Class3` ("Large Planetary Vehicle Hangar") and
+  `Int_BuggyBayMk2_Size{2,4,6}_Class3` ("Mk II Large Planetary Vehicle Hangar") are
+  carried ahead of the update that adds them, from the pre-release report pinned above.
+  **Nothing here is confirmed against a registry, a journal or the game's own panel**,
+  because none of the three can answer for a module the live game does not offer. Every
+  claim below is provisional and is to be re-derived from a real source on release; a
+  reading that disagrees wins outright, symbols included.
+  - **The symbols are the weakest part and are a guess.** The report names the modules,
+    not their internal ids. `Class3` follows the family's own rating ladder — the shipped
+    hangars are `Class1` rating H and `Class2` rating G, and the report puts the new ones
+    at rating F. `Int_BuggyBayMk2_` follows `Int_FighterBay_` → `Int_FighterBayMk2_`,
+    which is how Frontier spelled the one directly comparable Mk II hangar line, and
+    whose Mk II records keep their Mk I siblings' class and rating. The competing
+    reading is a `Int_LargeBuggyBay_` prefix, on the precedent of
+    `Int_LargeCargoRack_Size{7,8}_Class1` — records whose *display* name is "Mk II Cargo
+    Rack" while the symbol says `Large`. Both readings are defensible from the shipped
+    data, so the symbols are the first thing to check on release, and correcting them
+    also moves the `nameKeys` in `data/i18n/module-names.jsonc`.
+  - **Reported stats.** Integrity 30 and boot time 5 s throughout, matching every
+    shipped hangar. Mass and power draw by size — Large 12/20/34 t at
+    0.75/1.2/1.8 MW, Mk II Large 9/15/25.5 t at 0.5/0.8/1.2 MW.
+  - **The size-2 Large record's mass and power are derived, not reported.** The report
+    gives the Large hangar at sizes 4 and 6 only. Across both of those sizes the Large
+    hangar carries exactly the shipped `Class1` mass (20 t, 34 t) and exactly the shipped
+    `Class2` power draw (1.2 MW, 1.8 MW), and the Mk II Large is exactly 0.75x the Large
+    mass and 2/3 its power draw at every size the report does give. Both relations also
+    reproduce the reported size-2 Mk II figures (9 t = 0.75 x 12, 0.5 MW = 2/3 x 0.75)
+    from the shipped size-2 hangars, which is what makes 12 t / 0.75 MW the derivation
+    rather than a guess. It is still a derivation, and the record it produces is the
+    second thing to check on release.
+  - **Prices are stored at list, recovered from three discounted readings.** The report
+    quotes 28 431, 113 724 and 909 792 credits. Run each through the discount model
+    §Prices measures — `paid = ceil(ceil(list * 9/10) * 39/40)`, the same 10% and 2.5%
+    the purchase capture was taken at — and all three come back exactly from a round list
+    figure that is 1.5x the shipped `Class2` hangar of the same size: 32 400, 129 600 and
+    1 036 800 against 21 600, 86 400 and 691 200. `cost` stores that recovered list price,
+    as it does everywhere else. This overrides the report's own note that the size-2
+    figure carries no 2.5% discount: undiscounted, 28 431 would be 1.316x its `Class2`
+    sibling, against a 1.5x that lands on a round number and holds for all three sizes at
+    once.
+    - **None of the three readings pins its list price on its own.** Under a ceiling at
+      each step, `list - 1` reproduces the same paid figure for all three (32 399, 129 599
+      and 1 036 799 do), exactly as `unique: false` marks two rows of the purchase
+      capture. What settles them is the 1.5x relation landing on a round number three
+      times over, and that is weaker than a reading.
+    - **The two size-6 records share one price, which is what the report says and is
+      unlikely to survive.** The Mk I and Mk II Vessel Hangars differ in price at every
+      size, so a Mk II hangar costing exactly its Mk I sibling would be new behaviour.
+      The size-2 and size-4 Large prices have no reading at all and take the same
+      recovered list price as their Mk II siblings on the same 1.5x relation; that is the
+      third thing to check on release.
+  - **Only the Mk II records are ship-restricted**, to the thirteen hulls the report
+    names: `TypeX_2`, `Anaconda`, `BelugaLiner`, `Explorer_NX`, `Federation_Corvette`,
+    `Federation_Gunship`, `Cutter`, `Independant_Trader`, `Krait_MkII`, `PantherMkII`,
+    `Type9`, `Type9_Military` and `LakonMiner` — stored in the report's own order. The
+    three plain Large records carry no restriction, which the report does not state
+    either way and is the reading its silence supports.
+  - **Vehicle capacity is reported but not stored.** The report gives 1, 2 and 4 vehicle
+    slots at sizes 2, 4 and 6, for both lines. No module record in this catalogue carries
+    a vehicle-slot field — the six shipped hangars do not either — so adding one is a
+    schema change for its own change, not something to smuggle in beside unreleased data.
+    The figures are kept here so they are not lost, and they match the shipped hangars of
+    the same sizes.
+  - **`entitlement` is omitted.** The six shipped hangars carry
+    `ELITE_HORIZONS_V_PLANETARY_LANDINGS`; the Mk II Vessel Hangars, the closest recent
+    addition of the same shape, carry no token at all. The report says nothing, and an
+    invented token would be worse than an absent one. Also to check on release.
+  - **They are exempt from nothing else.** They carry a price, so they are among the
+    priced records; they carry stats, so they are among those carrying at least one; and
+    they are outside in-game verification, which the `registryOnlyIdentities` count in
+    `fixtures/ships/module-stats.jsonc` pins alongside the bundle-granted Vessel Hangars.
+    `data/i18n/module-names.jsonc` holds their two display names in English alone.
 - **Vessel Hangars** — the three Mk II records
   (`Int_FighterBayMk2_Size{5,6,7}_Class1`) have the same operational stats as the Mk I
   bays at half the mass (10/20/30 t, integrity 60/80/120, power
@@ -1263,6 +1342,15 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     the three unknown fields are omitted.
   - The built-in **Cargo Hatch** is stored once as `ModularCargoBayDoor`; per-hull
     duplicates of the same fitting are not carried separately.
+  - **The six Large Planetary Vehicle Hangars are a standing exception, and the only
+    one.** No registry lists them and no capture establishes them, because the update
+    that adds them has not shipped — so the rule, read as written, excludes them. They
+    are carried anyway, from the pre-release report, so that the work of adding them is
+    reviewable before release rather than after; §"Records sourced outside the baseline
+    registries" says what is reported, what is derived and what is guessed. The exception
+    closes the moment the update ships: either a real source confirms them, and they
+    become ordinary records, or it does not, and they come out. It is not a precedent for
+    carrying any other unreleased identity.
 
 ## Engineering (blueprints and experimental effects)
 

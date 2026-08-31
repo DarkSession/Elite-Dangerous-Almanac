@@ -8,7 +8,9 @@
  *
  * `nameKeys` maps each Frontier symbol to a shared localized-name record. Each `names`
  * record carries the canonical English display name, which the owning module catalogue
- * remains authoritative for, and the five other locales the source publishes.
+ * remains authoritative for, and the five other locales the source publishes. Two
+ * records hold English alone — the unreleased Large Planetary Vehicle Hangars, which no
+ * acquired localisation table names yet; see data/i18n/SOURCES.md.
  *
  * A record key is the English name it holds. A few names need more than one record,
  * because the game distinguishes in other locales what English spells the same way: a
@@ -860,6 +862,12 @@
     "Int_BuggyBay_Size4_Class2": "Planetary Vehicle Hangar",
     "Int_BuggyBay_Size6_Class1": "Planetary Vehicle Hangar",
     "Int_BuggyBay_Size6_Class2": "Planetary Vehicle Hangar",
+    "Int_BuggyBay_Size2_Class3": "Large Planetary Vehicle Hangar",
+    "Int_BuggyBay_Size4_Class3": "Large Planetary Vehicle Hangar",
+    "Int_BuggyBay_Size6_Class3": "Large Planetary Vehicle Hangar",
+    "Int_BuggyBayMk2_Size2_Class3": "Mk II Large Planetary Vehicle Hangar",
+    "Int_BuggyBayMk2_Size4_Class3": "Mk II Large Planetary Vehicle Hangar",
+    "Int_BuggyBayMk2_Size6_Class3": "Mk II Large Planetary Vehicle Hangar",
     "Int_PlanetApproachSuite": "Planetary Approach Suite",
     "Int_CorrosionProofCargoRack_Size1_Class1": "Corrosion Resistant Cargo Rack",
     "Int_CorrosionProofCargoRack_Size1_Class2": "Corrosion Resistant Cargo Rack",
@@ -1526,6 +1534,12 @@
       "fr": "Hangar des véhicules planétaires",
       "pt": "Hangar de veículo planetário",
       "ru": "Гараж для планетарного транспорта"
+    },
+    "Large Planetary Vehicle Hangar": {
+      "en": "Large Planetary Vehicle Hangar"
+    },
+    "Mk II Large Planetary Vehicle Hangar": {
+      "en": "Mk II Large Planetary Vehicle Hangar"
     },
     "Planetary Approach Suite": {
       "en": "Planetary Approach Suite",
