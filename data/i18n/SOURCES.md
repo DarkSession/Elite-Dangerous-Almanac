@@ -85,7 +85,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   Vehicle Hangars, whose two shared name records hold English alone. No translation is
   invented for them: the five other locales stay absent until a
   localisation table that names the modules is acquired, and the lookups return `null`
-  rather than an English fallback in the meantime.
+  rather than an English fallback in the meantime. #16 tracks it with the records
+  themselves.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`

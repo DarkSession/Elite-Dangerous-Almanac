@@ -1176,7 +1176,8 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
   **Nothing here is confirmed against a registry, a journal or the game's own panel**,
   because none of the three can answer for a module the live game does not offer. Every
   claim below is provisional and is to be re-derived from a real source on release; a
-  reading that disagrees wins outright, symbols included.
+  reading that disagrees wins outright, symbols included. #16 tracks that verification
+  and lists what closes it.
   - **The symbols are the weakest part and are a guess.** The report names the modules,
     not their internal ids. `Class3` follows the family's own rating ladder — the shipped
     hangars are `Class1` rating H and `Class2` rating G, and the report puts the new ones
@@ -1349,8 +1350,8 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     reviewable before release rather than after; §"Records sourced outside the baseline
     registries" says what is reported, what is derived and what is guessed. The exception
     closes the moment the update ships: either a real source confirms them, and they
-    become ordinary records, or it does not, and they come out. It is not a precedent for
-    carrying any other unreleased identity.
+    become ordinary records, or it does not, and they come out — #16. It is not a
+    precedent for carrying any other unreleased identity.
 
 ## Engineering (blueprints and experimental effects)
 
