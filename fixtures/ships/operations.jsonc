@@ -1072,7 +1072,11 @@
           }
         ]
       },
-      "keptSlot": "Slot01_Size7",
+      "kept": {
+        "slot": "Slot01_Size7",
+        "symbol": "ModularCargoBayDoor",
+        "importOutcomes": []
+      },
       "expected": {
         "code": "incompatibleModule",
         "params": {
@@ -1081,6 +1085,33 @@
           "constraint": "builtInHullModule"
         }
       }
+    },
+    "hullSpecificHullModuleLoadout": {
+      "input": {
+        "Ship": "FerDeLance",
+        "Modules": [
+          {
+            "Slot": "CargoHatch",
+            "Item": "ModularCargoBayDoorFDL"
+          },
+          {
+            "Slot": "Slot01_Size5",
+            "Item": "ModularCargoBayDoorFDL"
+          }
+        ]
+      },
+      "emptied": {
+        "slot": "Slot01_Size5",
+        "importOutcomes": [
+          {
+            "action": "emptied",
+            "slot": "Slot01_Size5",
+            "sourceSymbol": "ModularCargoBayDoorFDL"
+          }
+        ]
+      },
+      "hatchSymbol": "ModularCargoBayDoorFDL",
+      "valid": true
     },
     "restrictedLoadout": {
       "input": {

@@ -3002,7 +3002,7 @@ test('modulesForSlot lists only fitting modules', () => {
     assert.throws(() => conda.modulesForSlot('NoSuchSlot'), RangeError);
 });
 
-test('the cargo hatch is hull furniture, never an optional-internal choice', () => {
+test('the cargo hatch is a built-in hull module, never an optional-internal choice', () => {
     // The registry files the hatch under the `internal` category, which an unrestricted
     // optional mount would otherwise accept. It arrives with the hull, no station sells
     // it, and the fixed `CargoHatch` mount is the only one that holds it — so no mount
@@ -3091,23 +3091,9 @@ test('a capture that puts the cargo hatch in an optional mount is reported, not 
     // The mount is ordinary, so the article comes out and the build is valid again.
     assert.equal(build.removeModule('Slot01_Size7').validation().valid, true);
 
-    // A hull-specific hatch symbol is not catalogued, so the same capture reaches the
-    // rule for unresolvable symbols instead and the mount is emptied on import. That is
-    // the general rule for a symbol no catalogue carries, not one about hatches.
-    const hullSpecific = ShipLoadout.fromLoadout({
-        event: 'Loadout',
-        Ship: 'FerDeLance',
-        Modules: [
-            { Slot: 'CargoHatch', Item: 'ModularCargoBayDoorFDL' },
-            { Slot: 'Slot01_Size5', Item: 'ModularCargoBayDoorFDL' },
-        ],
-    } as unknown as LoadoutEvent);
-    assert.deepEqual(
-        hullSpecific.importOutcomes.filter((outcome) => outcome.slot === 'Slot01_Size5'),
-        [{ action: 'emptied', slot: 'Slot01_Size5', sourceSymbol: 'ModularCargoBayDoorFDL' }],
-    );
-    assert.equal(hullSpecific.fittedModuleAt('CargoHatch')?.symbol, 'ModularCargoBayDoorFDL');
-    assert.equal(hullSpecific.validation().valid, true);
+    // The same capture under a hull family's own hatch symbol is emptied on import
+    // instead, as an uncatalogued symbol rather than as a hatch; `operations.jsonc` pins
+    // both halves language-neutrally.
 });
 
 test('fit checks use restrictions carried by caller-supplied module records', () => {

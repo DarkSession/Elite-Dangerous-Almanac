@@ -3510,7 +3510,30 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             };
-            keptSlot: string;
+            kept: {
+                importOutcomes: never[];
+                slot: string;
+                symbol: string;
+            };
+        };
+        hullSpecificHullModuleLoadout: {
+            emptied: {
+                importOutcomes: {
+                    action: string;
+                    slot: string;
+                    sourceSymbol: string;
+                }[];
+                slot: string;
+            };
+            hatchSymbol: string;
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+            valid: boolean;
         };
         loadout: {
             expected: {

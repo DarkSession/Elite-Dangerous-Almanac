@@ -21,7 +21,7 @@ import internalModulesData from '../../../data/ships/modules-internal.jsonc' wit
 import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
- * All 484 optional internal modules, in registry order.
+ * All 484 modules in the `internal` outfitting category, in registry order.
  *
  * @remarks
  * Every record has `category: 'internal'`, added from the file it was read from

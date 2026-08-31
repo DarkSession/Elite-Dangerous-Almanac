@@ -69,6 +69,7 @@ import type { OutfittingModule } from './modules.js';
 import { calculateModuleLimits, type ModuleLimitUsage } from './module-limits.js';
 import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
+    BUILT_IN_HULL_SYMBOL,
     cloneLoadoutModule,
     cloneModuleStats,
     FITTED_ITEM,
@@ -1488,7 +1489,7 @@ export class ShipLoadout {
         const replacementStats =
             builtInModuleBySymbol(defaultModule.symbol, 'ShipLoadout.repairFixedMount') ??
             (isBuiltInHullModule(replacement)
-                ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout.repairFixedMount')
+                ? builtInModuleBySymbol(BUILT_IN_HULL_SYMBOL, 'ShipLoadout.repairFixedMount')
                 : null);
         if (!replacementStats) {
             return deepFreeze({
@@ -2976,7 +2977,7 @@ export class ShipLoadout {
         // fitted article has the standard hatch's stats. Resolve that family here so its
         // power draw is available as well as its already-known zero mass and price.
         return isBuiltInHullModule(module)
-            ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout: built-in module')
+            ? builtInModuleBySymbol(BUILT_IN_HULL_SYMBOL, 'ShipLoadout: built-in module')
             : null;
     }
 }

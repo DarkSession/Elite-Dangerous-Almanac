@@ -297,9 +297,28 @@ test('shared diagnostic cases expose stable localization keys', () => {
     assert.deepEqual(hullModuleIssue.params, hullModule.expected.params);
     assert.equal(hullModuleBuild.validation().valid, false);
     assert.equal(
-        hullModuleBuild.fittedModuleAt(hullModule.keptSlot)?.symbol,
-        'ModularCargoBayDoor',
+        hullModuleBuild.fittedModuleAt(hullModule.kept.slot)?.symbol,
+        hullModule.kept.symbol,
     );
+    assert.deepEqual(
+        hullModuleBuild.importOutcomes.filter((outcome) => outcome.slot === hullModule.kept.slot),
+        hullModule.kept.importOutcomes,
+    );
+
+    // The same article under a hull family's own symbol is catalogued nowhere, so it
+    // reaches the rule for unresolvable symbols instead and the mount is emptied. The
+    // hull's own hatch mount keeps it either way.
+    const hullSpecific = fixture.diagnostics.hullSpecificHullModuleLoadout;
+    const hullSpecificBuild = ShipLoadout.fromLoadout(hullSpecific.input);
+    assert.deepEqual(
+        hullSpecificBuild.importOutcomes.filter(
+            (outcome) => outcome.slot === hullSpecific.emptied.slot,
+        ),
+        hullSpecific.emptied.importOutcomes,
+    );
+    assert.equal(hullSpecificBuild.fittedModuleAt(hullSpecific.emptied.slot), null);
+    assert.equal(hullSpecificBuild.fittedModuleAt('CargoHatch')?.symbol, hullSpecific.hatchSymbol);
+    assert.equal(hullSpecificBuild.validation().valid, hullSpecific.valid);
 
     const restricted = fixture.diagnostics.restrictedLoadout;
     const restrictedIssue = ShipLoadout.fromLoadout(restricted.input)
@@ -339,17 +358,17 @@ test('shared editor failures expose stable codes and localization params', () =>
         incompatible.expected,
     );
 
-    const hullFurniture = fixture.editorErrors.builtInHullModule;
+    const builtInHull = fixture.editorErrors.builtInHullModule;
     assert.deepEqual(
         project(
             capture(() =>
-                ShipLoadout.empty(hullFurniture.ship).setModule(
-                    hullFurniture.slot,
-                    getModuleBySymbol(hullFurniture.module)!,
+                ShipLoadout.empty(builtInHull.ship).setModule(
+                    builtInHull.slot,
+                    getModuleBySymbol(builtInHull.module)!,
                 ),
             ),
         ),
-        hullFurniture.expected,
+        builtInHull.expected,
     );
 
     const wrongArmour = fixture.editorErrors.wrongHullArmour;
