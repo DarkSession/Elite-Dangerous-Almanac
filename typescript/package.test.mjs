@@ -380,8 +380,8 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         effectDescriptions.length < 160 * 1024,
         `effect-description bundle is ${effectDescriptions.length} bytes`,
     );
-    // The two suit datasets share a module, so importing either name lookup drops the
-    // other dataset: a suit name is a handful of records, the descriptions are prose.
+    // The two suit datasets share a module, so importing either lookup drops the other
+    // dataset: a suit name is a handful of records, the descriptions are prose.
     assert.ok(suitNames.length < 16 * 1024, `suit-name bundle is ${suitNames.length} bytes`);
     assert.ok(
         suitDescriptions.length < 24 * 1024,
@@ -398,7 +398,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         `personal-modification-name bundle is ${personalModificationNames.length} bytes`,
     );
     assert.ok(
-        personalModificationDescriptions.length < 24 * 1024,
+        personalModificationDescriptions.length < 18 * 1024,
         `personal-modification-description bundle is ${personalModificationDescriptions.length} bytes`,
     );
     assert.ok(slots.length < 32 * 1024, `slot-name bundle is ${slots.length} bytes`);
