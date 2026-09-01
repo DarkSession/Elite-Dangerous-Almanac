@@ -56,7 +56,7 @@ function jumpRangeOf(journalLine: string) {
 | [astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/astro) | `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
 | [ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/ships) | `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
 | [equipment](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/equipment) | `@elite-dangerous-almanac/core/equipment` | Odyssey suits, handheld weapons, grade upgrades and engineer modifications |
-| [i18n](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/i18n) | `@elite-dangerous-almanac/core/i18n` | Sparse localized module, blueprint, effect, material and micro-resource names |
+| [i18n](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/i18n) | `@elite-dangerous-almanac/core/i18n` | Sparse localized module, blueprint, effect, material, micro-resource and personal-equipment display text |
 | [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
 | [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
 

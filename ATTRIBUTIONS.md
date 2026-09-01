@@ -161,7 +161,10 @@ a verbatim copy produced at build time — edit this file, never the copy.
   with its [announcement](https://x.com/EliteDangerous/status/1812792503776489745).
   Frontier's own **in-game localisation** supplies the outfitting category labels behind
   the module families and their German, Spanish, French, Brazilian Portuguese and Russian
-  display text, and the engineering modification names in the six stored locales.
+  display text, the engineering modification names in the six stored locales, and the
+  personal-equipment display text in `data/i18n/`: the suit names and descriptions, the
+  handheld-weapon descriptions, and the names and descriptions of the engineer-applied
+  suit and weapon modifications.
   Values read directly from the running game are Frontier's too — see the notice below.
 - **A [community description](https://www.reddit.com/r/EliteDangerous/comments/1uk2zhp/plasma_laser_theorycrafting_following_new/)
   by u/Techno3020** — linked only as corroboration that the Operations Plasma conversion's

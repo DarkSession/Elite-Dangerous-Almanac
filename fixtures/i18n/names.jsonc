@@ -1,8 +1,8 @@
 /*
  * Pins locale normalization, sparse misses and representative module, blueprint,
  * experimental-effect, material, micro-resource, ship, manufacturer, engineering-group,
- * outfitting-family and experimental-description lookups for every language
- * implementation.
+ * outfitting-family, experimental-description, personal-suit, handheld-weapon and
+ * personal-modification lookups for every language implementation.
  */
 {
   "lookups": [
@@ -275,6 +275,114 @@
       "identifier": " SPECIAL_WEAPON_RATEOFFIRE ",
       "locale": "de",
       "expected": "Multi-Servos"
+    },
+    {
+      "kind": "suit",
+      "identifier": "utilitysuit",
+      "locale": "de-DE",
+      "expected": "Maverick-Anzug"
+    },
+    {
+      "kind": "suit",
+      "identifier": "  EXPLORATIONSUIT_CLASS3  ",
+      "locale": "fr",
+      "expected": "Combinaison Artemis"
+    },
+    {
+      "kind": "suit",
+      "identifier": "flightsuit",
+      "locale": "ru",
+      "expected": "Летный комбинезон"
+    },
+    {
+      "kind": "suit",
+      "identifier": "specialistsuit_class1",
+      "locale": "en",
+      "expected": null
+    },
+    {
+      "kind": "suit",
+      "identifier": "tacticalsuit",
+      "locale": "it",
+      "expected": null
+    },
+    {
+      "kind": "suitDescription",
+      "identifier": "utilitysuit_class5",
+      "locale": "pt-BR",
+      "expected": "O traje Maverick foi projetado para quem prefere manter suas opções abertas, com maior capacidade de carga. É equipado com um arc cutter para alcançar componentes de difícil acesso."
+    },
+    {
+      "kind": "suitDescription",
+      "identifier": "tacticalsuit",
+      "locale": "en",
+      "expected": "Manticore's first entry into the tactical suit market, the Dominator enhances a user’s combat effectiveness with superior weapon capacity and increased shield performance at the expense of some utility options."
+    },
+    {
+      "kind": "suitDescription",
+      "identifier": "tacticalsuit",
+      "locale": "zh",
+      "expected": null
+    },
+    {
+      "kind": "personalWeaponDescription",
+      "identifier": "wpn_s_pistol_kinetic_sauto",
+      "locale": "es",
+      "expected": "Una pistola semiautomática con un retroceso reducido, una cadencia de disparo elevada y una capacidad de daño relativamente baja."
+    },
+    {
+      "kind": "personalWeaponDescription",
+      "identifier": "WPN_M_ASSAULTRIFLE_LASER_FAUTO",
+      "locale": "de_AT",
+      "expected": "Dieses automatische Lasergewehr bietet durchschnittliche Schadenswirkung, aber exzellente Präzision."
+    },
+    {
+      "kind": "personalWeaponDescription",
+      "identifier": "wpn_m_submachinegun_kinetic_burst",
+      "locale": "en",
+      "expected": null
+    },
+    {
+      "kind": "personalModification",
+      "identifier": "suit_increasedmeleedamage",
+      "locale": "de",
+      "expected": "Zusätzlicher Nahkampfschaden"
+    },
+    {
+      "kind": "personalModification",
+      "identifier": "weapon_headshotdamage_plasma",
+      "locale": "pt",
+      "expected": "Dano de tiros na cabeça"
+    },
+    {
+      "kind": "personalModification",
+      "identifier": "weapon_range_kinetic",
+      "locale": "en",
+      "expected": "Greater Range"
+    },
+    {
+      "kind": "personalModification",
+      "identifier": "weapon_range",
+      "locale": "en",
+      "expected": null
+    },
+    {
+      "kind": "personalModificationDescription",
+      "identifier": "weapon_scope",
+      "locale": "ru",
+      "expected": "Добавляет к оружию прицел или улучшает уже имеющийся."
+    },
+    {
+      "kind": "personalModificationDescription",
+      "identifier": "suit_adsmovementspeed",
+      "locale": "fr",
+      "expected": "Supprime la pénalité de déplacement pendant la visée avec une arme."
+    },
+    {
+      "kind": "personalModificationDescription",
+      "identifier": "suit_adsmovementspeed",
+      "locale": "hu",
+      "expected": null
     }
   ]
 }

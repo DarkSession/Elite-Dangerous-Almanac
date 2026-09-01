@@ -1,0 +1,74 @@
+/*
+ * Localized display descriptions for the Odyssey personal suits.
+ *
+ * Source: the in-game suit localisation tables.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * known gaps: data/i18n/SOURCES.md.
+ *
+ * `nameKeys` maps every identifier a consumer holds — the grade-independent family and
+ * each grade's Frontier symbol — to a shared description record, because the game
+ * describes a suit per family and not per grade. A record key is the family it
+ * describes.
+ *
+ * These are the descriptions the game shows a player, English included. The suit stats
+ * in data/equipment/suits.jsonc answer what a suit does; this prose answers what it is
+ * for, and neither is projected onto the other.
+ */
+{
+  "nameKeys": {
+    "utilitysuit": "utilitysuit",
+    "utilitysuit_class1": "utilitysuit",
+    "utilitysuit_class2": "utilitysuit",
+    "utilitysuit_class3": "utilitysuit",
+    "utilitysuit_class4": "utilitysuit",
+    "utilitysuit_class5": "utilitysuit",
+    "tacticalsuit": "tacticalsuit",
+    "tacticalsuit_class1": "tacticalsuit",
+    "tacticalsuit_class2": "tacticalsuit",
+    "tacticalsuit_class3": "tacticalsuit",
+    "tacticalsuit_class4": "tacticalsuit",
+    "tacticalsuit_class5": "tacticalsuit",
+    "explorationsuit": "explorationsuit",
+    "explorationsuit_class1": "explorationsuit",
+    "explorationsuit_class2": "explorationsuit",
+    "explorationsuit_class3": "explorationsuit",
+    "explorationsuit_class4": "explorationsuit",
+    "explorationsuit_class5": "explorationsuit",
+    "flightsuit": "flightsuit"
+  },
+  "names": {
+    "utilitysuit": {
+      "en": "The Maverick suit is designed for those who prefer to keep their options open with a greater carrying capacity. It comes equipped with an arc cutter for accessing hard-to-reach components.",
+      "de": "Der Maverick-Anzug wurde für diejenigen entwickelt, die sich mit einer größeren Tragkapazität ihre Optionen offen halten wollen. Er ist mit einem Arc Cutter ausgestattet, der Zugang zu schwer zugänglichen Komponenten ermöglicht.",
+      "es": "El traje Maverick, con su mayor capacidad de carga, está diseñado para quienes prefieren no descartar ninguna posibilidad. Viene equipado con un Arc Cutter para conseguir componentes poco accesibles.",
+      "fr": "La combinaison Maverick a été conçue pour ceux qui font primer la polyvalence et la capacité de transport offerte par ses nombreux rangements sur toute autre considération. Elle est également équipée d'un arc cutter pour atteindre les composants difficiles d'accès.",
+      "pt": "O traje Maverick foi projetado para quem prefere manter suas opções abertas, com maior capacidade de carga. É equipado com um arc cutter para alcançar componentes de difícil acesso.",
+      "ru": "Комбинезон Maverick разработан для тех, кто предпочитает иметь свободу выбора благодаря повышенной грузоподъемности. В комплект входит плазменный резак для добычи труднодоступных материалов."
+    },
+    "tacticalsuit": {
+      "en": "Manticore's first entry into the tactical suit market, the Dominator enhances a user’s combat effectiveness with superior weapon capacity and increased shield performance at the expense of some utility options.",
+      "de": "Der Dominator ist Manticores Einstieg in den Markt der Taktik-Anzüge. Er verbessert die Kampfeffektivität des Trägers durch seine überlegene Waffenkapazität und erhöhte Schildleistung auf Kosten einiger Mehrzweck-Optionen.",
+      "es": "El Dominator, con el que Manticore se estrena en el mercado de los trajes tácticos, mejora la eficacia en combate del usuario gracias a su insuperable capacidad de armas y mayor rendimiento del escudo pese a sacrificar algunas opciones de apoyo.",
+      "fr": "Première incursion de Manticore sur le marché des combinaisons tactiques, la Dominator décuple l'efficacité au combat de son porteur grâce à sa grande capacité d'emport d'armes et la robustesse de son bouclier, aux dépens de certaines options utilitaires.",
+      "pt": "A primeira criação da Manticore no mercado de trajes táticos, o Dominator melhora a eficácia do usuário em combate com sua capacidade bélica superior e desempenho aumentado dos escudos, ao custo de algumas opções utilitárias.",
+      "ru": "Первый продукт корпорации Manticore на рынке тактических комбинезонов, Dominator, повышает боевую эффективность своего владельца благодаря дополнительному месту для оружия и увеличенной производительности щитов в ущерб некоторым функциям общего назначения."
+    },
+    "explorationsuit": {
+      "en": "Perfect for extended field operations in remote areas, the Artemis suit offers greater energy efficiency in exchange for reduced shield health. It also comes with a genetic sampler for cataloguing organic discoveries.",
+      "de": "Der Artemis-Anzug ist perfekt für ausgedehnte Außeneinsätze in abgelegenen Gebieten geeignet und bietet eine höhere Energieeffizienz auf Kosten einer reduzierten Schildstärke. Außerdem ist er mit einem Genetic Sampler zur Katalogisierung von organischem Material ausgestattet.",
+      "es": "El traje Artemis, perfecto para prolongadas operaciones de campo en zonas remotas, ofrece un mayor rendimiento energético a cambio de reducir el estado del escudo. También incluye un muestreador genético para catalogar hallazgos orgánicos.",
+      "fr": "Parfaite pour les longues sorties dans les régions les plus reculées, la combinaison Artemis offre une efficacité énergétique optimale, au prix cependant d'un bouclier à la résistance limitée. Elle est également équipée d'un échantillonneur génétique permettant de cataloguer les découvertes organiques.",
+      "pt": "Perfeito para operações prolongadas em áreas remotas, o traje Artemis oferece um aumento na eficiência energética em troca de redução em seus escudos. Também é acompanhado de um amostrador genético para catálogo de descobertas orgânicas.",
+      "ru": "Комбинезон Artemis идеально подходит для длительных полевых операций в отдаленных регионах и обладает повышенной энергоэффективностью из-за пониженного запаса энергии щита. К нему также прилагается сборщик генетических образцов для внесения органических открытий в базы данных."
+    },
+    "flightsuit": {
+      "en": "Remlok’s iconic flight suit has become the staple uniform for countless pilots of all professions. Such is its success that even the Pilots’ Federation supply new Commanders with the suit as standard.",
+      "de": "Der Kult-Fluganzug von Remlok ist zur Standarduniform für unzählige Piloten geworden. Sein Erfolg ist so groß, dass sogar die Pilotenvereinigung neue Kommandanten standardmäßig mit ihm ausstattet.",
+      "es": "El emblemático traje de vuelo de Remlok se ha convertido en el uniforme por excelencia de incontables pilotos de todas las profesiones. Su éxito es tan notable que incluso la Federación de Pilotos lo ofrece de serie a los nuevos comandantes.",
+      "fr": "La combinaison de vol emblématique de Remlok est devenue de facto l'uniforme d'un nombre incalculable de pilotes de toutes professions. Son succès est tel que le Cercle des pilotes en fournit une à chaque nouveau commandant.",
+      "pt": "O traje icônico da Remlok se tornou o uniforme padrão para inúmeros pilotos em todas as profissões. Seu sucesso é tanto que até mesmo a Federação de Pilotos fornece um traje por padrão aos novos comandantes.",
+      "ru": "Знаменитый летный комбинезон Remlok стал основной униформой для бесчисленного множества пилотов. Комбинезон оказался настолько успешным, что Федерация пилотов стала выдавать его новым командирам в качестве стандартного."
+    }
+  }
+}

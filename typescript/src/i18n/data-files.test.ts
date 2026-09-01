@@ -6,6 +6,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
+import modificationsData from '../../../data/equipment/modifications.jsonc' with { type: 'json' };
+import suitsData from '../../../data/equipment/suits.jsonc' with { type: 'json' };
+import personalWeaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'json' };
 import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with { type: 'json' };
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
 import effectDescriptionsData from '../../../data/i18n/experimental-effect-descriptions.jsonc' with { type: 'json' };
@@ -13,7 +16,12 @@ import moduleFamilyNamesData from '../../../data/i18n/module-family-names.jsonc'
 import materialNamesData from '../../../data/i18n/material-names.jsonc' with { type: 'json' };
 import microResourceNamesData from '../../../data/i18n/micro-resource-names.jsonc' with { type: 'json' };
 import moduleNamesData from '../../../data/i18n/module-names.jsonc' with { type: 'json' };
+import personalModificationDescriptionsData from '../../../data/i18n/personal-modification-descriptions.jsonc' with { type: 'json' };
+import personalModificationNamesData from '../../../data/i18n/personal-modification-names.jsonc' with { type: 'json' };
+import personalWeaponDescriptionsData from '../../../data/i18n/personal-weapon-descriptions.jsonc' with { type: 'json' };
 import preEngineeredNamesData from '../../../data/i18n/pre-engineered-variant-names.jsonc' with { type: 'json' };
+import suitDescriptionsData from '../../../data/i18n/suit-descriptions.jsonc' with { type: 'json' };
+import suitNamesData from '../../../data/i18n/suit-names.jsonc' with { type: 'json' };
 import materialsEncodedData from '../../../data/materials/materials-encoded.jsonc' with { type: 'json' };
 import materialsManufacturedData from '../../../data/materials/materials-manufactured.jsonc' with { type: 'json' };
 import materialsRawData from '../../../data/materials/materials-raw.jsonc' with { type: 'json' };
@@ -41,7 +49,12 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'micro-resource-names.jsonc': 'localizedNameMap',
     'module-family-names.jsonc': 'localizedNameMap',
     'module-names.jsonc': 'localizedNameCatalogue',
+    'personal-modification-descriptions.jsonc': 'localizedNameMap',
+    'personal-modification-names.jsonc': 'localizedNameMap',
+    'personal-weapon-descriptions.jsonc': 'localizedNameMap',
     'pre-engineered-variant-names.jsonc': 'localizedNameCatalogue',
+    'suit-descriptions.jsonc': 'localizedNameCatalogue',
+    'suit-names.jsonc': 'localizedNameCatalogue',
 };
 
 registerCatalogueDataTests({
@@ -187,4 +200,100 @@ test('English names and symbols stay aligned with every owning materials catalog
         microResourceNamesData as LocalizedNameMap,
         Object.fromEntries(microResources.map(({ symbol, name }) => [symbol, name])),
     );
+});
+
+interface SuitValue {
+    readonly family: string;
+    readonly name: string;
+    readonly grades: Readonly<Record<string, { readonly symbol: string }>>;
+}
+
+/** Every identifier a personal-suit catalogue is keyed by: the family and each grade symbol. */
+function suitIdentifiers(suit: SuitValue): readonly string[] {
+    const symbols = Object.values(suit.grades).map((grade) => grade.symbol);
+    return [suit.family, ...symbols.filter((symbol) => symbol !== suit.family)];
+}
+
+/** Assert that every record of a deduplicated catalogue carries all six stored locales. */
+function assertCompleteLocales(catalogue: LocalizedNameCatalogue, file: string): void {
+    for (const [key, record] of Object.entries(catalogue.names)) {
+        for (const locale of STORED_LOCALES) {
+            assert.equal(typeof record[locale], 'string', `${file}: ${key} has no ${locale} value`);
+        }
+    }
+}
+
+/** Assert that every record of a directly keyed catalogue carries all six stored locales. */
+function assertCompleteDirectLocales(catalogue: LocalizedNameMap, file: string): void {
+    for (const [key, record] of Object.entries(catalogue)) {
+        for (const locale of STORED_LOCALES) {
+            assert.equal(typeof record[locale], 'string', `${file}: ${key} has no ${locale} value`);
+        }
+    }
+}
+
+test('English names and identifiers stay aligned with every owning equipment catalogue', () => {
+    const suits = suitsData as readonly SuitValue[];
+    const modifications = modificationsData as Readonly<Record<string, NamedValue>>;
+
+    assertEnglishNames(
+        suitNamesData as LocalizedNameCatalogue,
+        Object.fromEntries(
+            suits.flatMap((suit) =>
+                suitIdentifiers(suit).map((identifier) => [identifier, suit.name]),
+            ),
+        ),
+    );
+    assertDirectEnglishNames(
+        personalModificationNamesData as LocalizedNameMap,
+        Object.fromEntries(Object.entries(modifications).map(([key, value]) => [key, value.name])),
+    );
+});
+
+test('personal-equipment display text covers its owning catalogues in every locale', () => {
+    const suits = suitsData as readonly SuitValue[];
+    const weapons = personalWeaponsData as readonly NamedSymbol[];
+    const modifications = modificationsData as Readonly<Record<string, NamedValue>>;
+    const suitDescriptions = suitDescriptionsData as LocalizedNameCatalogue;
+
+    // The descriptions are the game's own display prose rather than a projection of any
+    // field the equipment catalogues carry, so this asserts the key set and the locale
+    // coverage rather than string equality with one of them.
+    assert.deepEqual(
+        Object.keys(suitDescriptions.nameKeys).sort(),
+        suits.flatMap(suitIdentifiers).sort(),
+    );
+    assert.deepEqual(
+        Object.keys(personalWeaponDescriptionsData as LocalizedNameMap).sort(),
+        weapons.map(({ symbol }) => symbol).sort(),
+    );
+    assert.deepEqual(
+        Object.keys(personalModificationDescriptionsData as LocalizedNameMap).sort(),
+        Object.keys(modifications).sort(),
+    );
+
+    assertCompleteLocales(suitNamesData as LocalizedNameCatalogue, 'suit-names.jsonc');
+    assertCompleteLocales(suitDescriptions, 'suit-descriptions.jsonc');
+    assertCompleteDirectLocales(
+        personalWeaponDescriptionsData as LocalizedNameMap,
+        'personal-weapon-descriptions.jsonc',
+    );
+    assertCompleteDirectLocales(
+        personalModificationNamesData as LocalizedNameMap,
+        'personal-modification-names.jsonc',
+    );
+    assertCompleteDirectLocales(
+        personalModificationDescriptionsData as LocalizedNameMap,
+        'personal-modification-descriptions.jsonc',
+    );
+});
+
+test('every deduplicated suit identifier resolves to one used record', () => {
+    for (const [file, catalogue] of Object.entries({
+        'suit-names.jsonc': suitNamesData as LocalizedNameCatalogue,
+        'suit-descriptions.jsonc': suitDescriptionsData as LocalizedNameCatalogue,
+    })) {
+        const usedKeys = new Set(Object.values(catalogue.nameKeys));
+        assert.deepEqual([...usedKeys].sort(), Object.keys(catalogue.names).sort(), file);
+    }
 });

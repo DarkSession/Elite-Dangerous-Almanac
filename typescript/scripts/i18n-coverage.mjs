@@ -48,7 +48,12 @@ const DATASETS = {
     'micro-resource-names.jsonc': 'getMicroResourceName',
     'module-family-names.jsonc': 'getOutfittingFamilyName',
     'module-names.jsonc': 'getModuleName',
+    'personal-modification-descriptions.jsonc': 'getPersonalModificationDescription',
+    'personal-modification-names.jsonc': 'getPersonalModificationName',
+    'personal-weapon-descriptions.jsonc': 'getPersonalWeaponDescription',
     'pre-engineered-variant-names.jsonc': 'getPreEngineeredVariantName',
+    'suit-descriptions.jsonc': 'getSuitDescription',
+    'suit-names.jsonc': 'getSuitName',
 };
 
 /**

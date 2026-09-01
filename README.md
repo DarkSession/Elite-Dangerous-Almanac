@@ -20,14 +20,14 @@ npm install @elite-dangerous-almanac/core
 The package supports Node.js 22+ and modern browser bundlers. It is ESM-only and marks
 every module as side-effect free.
 
-| Area          | Provides                                                                                                  |
-| ------------- | --------------------------------------------------------------------------------------------------------- |
-| `astro`       | Procedural system names, id64 addresses, sectors, regions, nebulae, permit locks and scanned-body physics |
-| `ships`       | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics        |
-| `equipment`   | Odyssey personal suits, handheld weapons, grade upgrades and engineer modifications                       |
-| `i18n`        | Sparse localized names for modules, blueprints, effects, materials and micro resources                    |
-| `materials`   | Ship engineering materials and Odyssey micro resources                                                    |
-| `commodities` | Standard and rare market commodities                                                                      |
+| Area          | Provides                                                                                                                    |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `astro`       | Procedural system names, id64 addresses, sectors, regions, nebulae, permit locks and scanned-body physics                   |
+| `ships`       | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics                          |
+| `equipment`   | Odyssey personal suits, handheld weapons, grade upgrades and engineer modifications                                         |
+| `i18n`        | Sparse localized names and descriptions for modules, blueprints, effects, materials, micro resources and personal equipment |
+| `materials`   | Ship engineering materials and Odyssey micro resources                                                                      |
+| `commodities` | Standard and rare market commodities                                                                                        |
 
 See the [package README](typescript/README.md) for installation and import guidance,
 the [Getting started guide](typescript/docs/guides/Getting-started.md) for first-use
