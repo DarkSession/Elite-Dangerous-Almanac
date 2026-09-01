@@ -188,8 +188,8 @@ getOutfittingFamilyName('xenoScanners', 'de'); // -> null
 ```
 
 Display prose the game shows a player — a suit's or a handheld weapon's blurb, what an
-experimental effect or an engineer's modification does — has its own lookups on the same
-subpath, complete in all six locales:
+experimental effect or an engineer's modification does — has its own lookups in the same
+`i18n` area, each on its own subpath, complete in all six locales:
 
 ```ts
 import { getSuitDescription } from '@elite-dangerous-almanac/core/i18n/suits';

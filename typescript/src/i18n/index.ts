@@ -3,7 +3,9 @@
  * outfitting, personal-equipment and engineering catalogues.
  *
  * Each lookup takes the same Frontier symbol as its owning catalogue and a BCP 47
- * locale. English is complete and exactly matches the owning record's `name`.
+ * locale. English is complete: for a name catalogue it is exactly the owning record's
+ * `name`, and for a description catalogue it is the game's own display prose, which no
+ * catalogue otherwise publishes.
  * Other locales are intentionally sparse: the function returns `null` when its pinned
  * sources carry no translation, leaving the application in control of fallback policy.
  * A source-backed localized spelling can be identical to English; the lookup returns

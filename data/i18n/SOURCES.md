@@ -325,17 +325,18 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
     rendered capacity is in `module-names.jsonc`. The brand is a proper noun the game
     leaves in English in every locale, so composing it back on costs nothing but the
     name it would displace.
-- **A suit is named per family, not per grade.** All five grades of a family carry
+- **A suit is named per family, not per grade.** Every grade of a family carries
   byte-identical values in all six locales, so one record is stored per family and
   `nameKeys` maps the family id and every grade symbol onto it. Both forms a consumer
   holds therefore resolve: `Suit.family` and the `utilitysuit_class3` a journal line
-  writes.
+  writes. The flight suit has a single grade whose symbol *is* the family id, so the four
+  families and 16 grade symbols make 19 distinct identifiers rather than 20.
 - **Coverage:** complete. All 19 identifiers carry all six locales.
-- **Two suits the game names are not stored**, because `data/equipment/suits.jsonc` does
-  not carry them: the five `specialistsuit_class{1..5}` grades (`Specialist Suit`, listed
-  as `Remlok Paragon Specialist Suit`) and `hyperspacesuit`, which the table lists with
-  no text at all. Storing a name for equipment no catalogue owns would leave a lookup
-  answering for something the library cannot otherwise describe.
+- **Two suits are not stored**, because `data/equipment/suits.jsonc` does not carry them:
+  the five `specialistsuit_class{1..5}` grades, which the source does name
+  (`Specialist Suit`, listed as `Remlok Paragon Specialist Suit`), and `hyperspacesuit`,
+  which carries no text at all. Storing a name for equipment no catalogue owns would
+  leave a lookup answering for something the library cannot otherwise describe.
 - **Manual corrections:** none.
 
 ## `suit-descriptions.jsonc`
@@ -354,8 +355,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   the other.
 - **Coverage:** complete. All 19 identifiers carry all six locales, and every grade of a
   family shares its record exactly as in `suit-names.jsonc`.
-- **The five Specialist Suit grades carry no description in the source at all**, which is
-  a second reason they are absent here beyond the owning catalogue not carrying them.
+- **The Specialist Suit grades carry no description at all**, which is a second reason
+  they are absent here beyond the owning catalogue not carrying them.
 - **Manual corrections:** none. The English keeps the source's own mixed apostrophes
   (`Manticore's`, `a user’s`); they are the game's prose and are stored as published.
 
@@ -391,10 +392,17 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   their material costs differ (§`data/equipment/SOURCES.md`). The `_kinetic`, `_laser`
   and `_plasma` suffix is dropped before the join, so each of the three takes its generic
   entry's locales — exactly as a shadowing blueprint id takes its generic's in
-  `blueprint-names.jsonc`. 25 distinct source entries therefore cover all 31 recipes.
+  `blueprint-names.jsonc`. 25 distinct source entries therefore cover all 31 recipes, and
+  the catalogue stores them once each: `nameKeys` maps a recipe symbol onto the entry the
+  game publishes, as `module-names.jsonc` maps a module symbol onto a shared name.
+- **That shape is about visibility, not bytes.** Storing each shared entry three times
+  instead costs about the same, because the six duplicate name records weigh roughly what
+  the 31-entry `nameKeys` map does; the descriptions save about a fifteenth. What the
+  deduplicated form buys is that the sharing is stated in the data and checked by a test,
+  rather than sitting in six duplicate records a later edit could silently pull apart.
 - **`Headshot Damage` is the one English value the game spells differently.** The in-game
   menu reads `Headshot damage`; the owning catalogue's canonical `Headshot Damage` is
-  kept, as the canonical English is everywhere in this directory. The lower-case
+  kept, as canonical English is kept everywhere in this directory. The lower-case
   `Stowed reloading` the owning catalogue already carries *is* the game's own spelling
   and agrees with it.
 - **Coverage:** complete. All 31 recipes carry all six locales.
@@ -403,8 +411,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   carry as a recipe.
 - **Manual corrections:** two German names are the engineering panel's own layout rather
   than translations. `Kampf-Bewegungs-geschwindigkeit` and `Geräusch-unterdrückung` break
-  a compound word mid-noun, leaving a lower-case second half no German spelling has, so
-  the whole word is kept as it is for the wrapped consumables in
+  a compound word mid-noun, leaving a lower-case second half no German spelling has. The
+  whole word is kept in each, as it is for the wrapped consumables in
   `micro-resource-names.jsonc`: `Kampfbewegungsgeschwindigkeit` and
   `Geräuschunterdrückung`.
 
@@ -420,9 +428,9 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **This is display prose, not the recipe's magnitudes.** The game says a modification
   "allows more ammo to be carried for each weapon" and never how much more; the
   `modifiers` list in `data/equipment/modifications.jsonc` is what states the multiplier,
-  and the two are deliberately different strings. It is also the only description the
-  five recipes with an empty `modifiers` list have, because what they change is
-  qualitative.
+  and the two are deliberately different strings. It is also the only account of the ten
+  recipes whose `modifiers` list is empty — some switch a capability on, the rest move a
+  stat the panel puts no number on (§`data/equipment/SOURCES.md`).
 - **Coverage:** complete. All 31 recipes carry all six locales.
 - **Manual corrections:** none. The French
   `weapon_backpackreloading` description keeps the non-breaking space the source sets
@@ -431,8 +439,9 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## Names this repository deliberately does not localize
 
-No catalogues are stored for the following names because the game does not translate
-them, and storing English under five more keys would say otherwise.
+No catalogues are stored for the following names, either because the game does not
+translate them — storing English under five more keys would say otherwise — or because no
+record in this repository is keyed by them.
 
 - **Ship names and manufacturers.** Odyssey Materials Helper and EDSY each publish a
   per-locale ship column, and every value either one publishes is byte-for-byte the
@@ -456,12 +465,15 @@ them, and storing English under five more keys would say otherwise.
   `Kinematic Armaments` are byte-for-byte identical in all six locales wherever the game
   names them, which is why `suit-names.jsonc` stores a suit's own name and not the
   outfitting list's manufacturer-prefixed listing.
-- **Suit and weapon stat labels, loadout-panel labels and engineer dialogue.** The game
-  publishes all six locales for each, and none of them names a record in any catalogue
-  here: a stat label names a field of `Suit` or `PersonalWeapon`, a loadout label names a
-  panel row, and an engineer's line is spoken flavour attached to an offer. Storing them
-  would mean inventing keys this repository does not otherwise own, so a consumer that
-  needs a field label supplies its own.
+- **Suit and weapon stat labels, the on-foot loadout panel's row labels, and engineer
+  dialogue.** These are the second reason rather than the first: the game does publish all
+  six locales for each, and none of them names a record in any catalogue here. A stat
+  label names a field of `Suit` or `PersonalWeapon`, a row label names a line of the
+  on-foot loadout panel, and an engineer's line is spoken flavour attached to an offer.
+  Storing them would mean inventing keys this repository does not otherwise own, so a
+  consumer that needs a field label supplies its own. **This is not the ship slot and
+  restriction gap of [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320)**,
+  which is about labels no source translates at all.
 
 ## Known gaps
 

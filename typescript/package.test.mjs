@@ -307,6 +307,10 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         microResources,
         preEngineered,
         effectDescriptions,
+        suitNames,
+        suitDescriptions,
+        weaponDescriptions,
+        personalModifications,
         slots,
         diagnostics,
     ] = await Promise.all([
@@ -330,6 +334,18 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         ),
         consumerBundle(
             "import { getExperimentalEffectDescription as value } from '@elite-dangerous-almanac/core/i18n/experimental-effect-descriptions'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getSuitName as value } from '@elite-dangerous-almanac/core/i18n/suits'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getSuitDescription as value } from '@elite-dangerous-almanac/core/i18n/suits'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getPersonalWeaponDescription as value } from '@elite-dangerous-almanac/core/i18n/personal-weapons'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getPersonalModificationName as value } from '@elite-dangerous-almanac/core/i18n/personal-modifications'; console.log(value);",
         ),
         consumerBundle(
             "import { getLoadoutSlotName as value } from '@elite-dangerous-almanac/core/i18n/slots'; console.log(value);",
@@ -360,6 +376,21 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         effectDescriptions.length < 160 * 1024,
         `effect-description bundle is ${effectDescriptions.length} bytes`,
     );
+    // The two suit datasets share a module, so importing either name lookup drops the
+    // other dataset: a suit name is a handful of records, the descriptions are prose.
+    assert.ok(suitNames.length < 16 * 1024, `suit-name bundle is ${suitNames.length} bytes`);
+    assert.ok(
+        suitDescriptions.length < 24 * 1024,
+        `suit-description bundle is ${suitDescriptions.length} bytes`,
+    );
+    assert.ok(
+        weaponDescriptions.length < 24 * 1024,
+        `personal-weapon-description bundle is ${weaponDescriptions.length} bytes`,
+    );
+    assert.ok(
+        personalModifications.length < 32 * 1024,
+        `personal-modification bundle is ${personalModifications.length} bytes`,
+    );
     assert.ok(slots.length < 32 * 1024, `slot-name bundle is ${slots.length} bytes`);
     assert.ok(
         diagnostics.length < 24 * 1024,
@@ -381,6 +412,13 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         microResources: 'Graphène',
         preEngineered: 'Festive Red Remote Release Flak Launcher',
         effectDescriptions: 'automatically reloads the weapon',
+        // A suit's own name is quoted inside its description, so the name marker has to
+        // be one the prose does not repeat: `Combinaison Dominator` against the
+        // description's opening clause.
+        suitNames: 'Combinaison Dominator',
+        suitDescriptions: 'Der Maverick-Anzug',
+        weaponDescriptions: 'semiautomática',
+        personalModifications: 'Vision nocturne',
     };
     const BUNDLES = {
         modules,
@@ -390,6 +428,10 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         microResources,
         preEngineered,
         effectDescriptions,
+        suitNames,
+        suitDescriptions,
+        weaponDescriptions,
+        personalModifications,
         slots,
         diagnostics,
     };

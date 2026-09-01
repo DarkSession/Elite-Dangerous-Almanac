@@ -49,8 +49,8 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'micro-resource-names.jsonc': 'localizedNameMap',
     'module-family-names.jsonc': 'localizedNameMap',
     'module-names.jsonc': 'localizedNameCatalogue',
-    'personal-modification-descriptions.jsonc': 'localizedNameMap',
-    'personal-modification-names.jsonc': 'localizedNameMap',
+    'personal-modification-descriptions.jsonc': 'localizedNameCatalogue',
+    'personal-modification-names.jsonc': 'localizedNameCatalogue',
     'personal-weapon-descriptions.jsonc': 'localizedNameMap',
     'pre-engineered-variant-names.jsonc': 'localizedNameCatalogue',
     'suit-descriptions.jsonc': 'localizedNameCatalogue',
@@ -244,8 +244,8 @@ test('English names and identifiers stay aligned with every owning equipment cat
             ),
         ),
     );
-    assertDirectEnglishNames(
-        personalModificationNamesData as LocalizedNameMap,
+    assertEnglishNames(
+        personalModificationNamesData as LocalizedNameCatalogue,
         Object.fromEntries(Object.entries(modifications).map(([key, value]) => [key, value.name])),
     );
 });
@@ -268,7 +268,9 @@ test('personal-equipment display text covers its owning catalogues in every loca
         weapons.map(({ symbol }) => symbol).sort(),
     );
     assert.deepEqual(
-        Object.keys(personalModificationDescriptionsData as LocalizedNameMap).sort(),
+        Object.keys(
+            (personalModificationDescriptionsData as LocalizedNameCatalogue).nameKeys,
+        ).sort(),
         Object.keys(modifications).sort(),
     );
 
@@ -278,20 +280,24 @@ test('personal-equipment display text covers its owning catalogues in every loca
         personalWeaponDescriptionsData as LocalizedNameMap,
         'personal-weapon-descriptions.jsonc',
     );
-    assertCompleteDirectLocales(
-        personalModificationNamesData as LocalizedNameMap,
+    assertCompleteLocales(
+        personalModificationNamesData as LocalizedNameCatalogue,
         'personal-modification-names.jsonc',
     );
-    assertCompleteDirectLocales(
-        personalModificationDescriptionsData as LocalizedNameMap,
+    assertCompleteLocales(
+        personalModificationDescriptionsData as LocalizedNameCatalogue,
         'personal-modification-descriptions.jsonc',
     );
 });
 
-test('every deduplicated suit identifier resolves to one used record', () => {
+test('every deduplicated personal-equipment identifier resolves to one used record', () => {
     for (const [file, catalogue] of Object.entries({
         'suit-names.jsonc': suitNamesData as LocalizedNameCatalogue,
         'suit-descriptions.jsonc': suitDescriptionsData as LocalizedNameCatalogue,
+        'personal-modification-names.jsonc':
+            personalModificationNamesData as LocalizedNameCatalogue,
+        'personal-modification-descriptions.jsonc':
+            personalModificationDescriptionsData as LocalizedNameCatalogue,
     })) {
         const usedKeys = new Set(Object.values(catalogue.nameKeys));
         assert.deepEqual([...usedKeys].sort(), Object.keys(catalogue.names).sort(), file);

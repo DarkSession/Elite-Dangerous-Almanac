@@ -7,258 +7,248 @@
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * known gaps: data/i18n/SOURCES.md.
  *
- * Keyed by the recipe symbol data/equipment/modifications.jsonc carries, and sharing the
- * generic entry across the nine technology-specific recipes exactly as the name
- * catalogue does. These are the descriptions the game shows a player, English included;
- * the `modifiers` list in that catalogue states the magnitudes this prose does not.
+ * `nameKeys` maps every recipe symbol data/equipment/modifications.jsonc carries to a
+ * shared description record, keyed exactly as personal-modification-names.jsonc is: a
+ * record key is the modification entry the game publishes, so the nine
+ * technology-specific recipes resolve to three records rather than nine.
+ *
+ * These are the descriptions the game shows a player, English included; the `modifiers`
+ * list in the owning catalogue states the magnitudes this prose does not.
  */
 {
-  "suit_increasedmeleedamage": {
-    "en": "Improves the damage dealt by fists and weapon strikes.",
-    "de": "Erhöht den durch Schläge mit Fäusten und Waffen zugefügten Schaden.",
-    "es": "Aumenta el daño que infligen los golpes cuerpo a cuerpo de las armas y de los puños.",
-    "fr": "Augmente les dégâts infligés par les poings et les coups portés avec une arme.",
-    "pt": "Melhora o dano causado pelos punhos e golpes com armas.",
-    "ru": "Повышает урон от кулаков и оружия ближнего боя."
+  "nameKeys": {
+    "suit_increasedmeleedamage": "suit_increasedmeleedamage",
+    "suit_adsmovementspeed": "suit_adsmovementspeed",
+    "suit_improvedarmourrating": "suit_improvedarmourrating",
+    "suit_improvedradar": "suit_improvedradar",
+    "suit_increasedammoreserves": "suit_increasedammoreserves",
+    "suit_backpackcapacity": "suit_backpackcapacity",
+    "suit_increasedshieldregen": "suit_increasedshieldregen",
+    "suit_increasedbatterycapacity": "suit_increasedbatterycapacity",
+    "suit_improvedjumpassist": "suit_improvedjumpassist",
+    "suit_increasedo2capacity": "suit_increasedo2capacity",
+    "suit_increasedsprintduration": "suit_increasedsprintduration",
+    "suit_nightvision": "suit_nightvision",
+    "suit_quieterfootsteps": "suit_quieterfootsteps",
+    "suit_reducedtoolbatteryconsumption": "suit_reducedtoolbatteryconsumption",
+    "weapon_suppression_unpressurised": "weapon_suppression_unpressurised",
+    "weapon_handling": "weapon_handling",
+    "weapon_range_kinetic": "weapon_range",
+    "weapon_range_laser": "weapon_range",
+    "weapon_range_plasma": "weapon_range",
+    "weapon_headshotdamage_kinetic": "weapon_headshotdamage",
+    "weapon_headshotdamage_laser": "weapon_headshotdamage",
+    "weapon_headshotdamage_plasma": "weapon_headshotdamage",
+    "weapon_accuracy_kinetic": "weapon_accuracy",
+    "weapon_accuracy_laser": "weapon_accuracy",
+    "weapon_accuracy_plasma": "weapon_accuracy",
+    "weapon_clipsize": "weapon_clipsize",
+    "weapon_suppression_pressurised": "weapon_suppression_pressurised",
+    "weapon_reloadspeed": "weapon_reloadspeed",
+    "weapon_scope": "weapon_scope",
+    "weapon_stability": "weapon_stability",
+    "weapon_backpackreloading": "weapon_backpackreloading"
   },
-  "suit_adsmovementspeed": {
-    "en": "Removes the movement penalty while aiming down sights.",
-    "de": "Entfernt die Bewegungseinschränkung bei Nutzung einer Zielvorrichtung.",
-    "es": "Elimina la penalización de movimiento al apuntar con mira.",
-    "fr": "Supprime la pénalité de déplacement pendant la visée avec une arme.",
-    "pt": "Remove a penalidade de movimento ao usar a mira.",
-    "ru": "Убирает штраф на передвижение во время прицеливания."
-  },
-  "suit_improvedarmourrating": {
-    "en": "Increases protection against certain damage types.",
-    "de": "Erhöht Schutz gegen bestimmte Schadensarten.",
-    "es": "Aumenta la protección contra determinados tipos de daño.",
-    "fr": "Améliore la protection contre certains types de dégâts.",
-    "pt": "Aumenta a proteção contra certos tipos de dano.",
-    "ru": "Увеличивает сопротивление определенным типам урона."
-  },
-  "suit_improvedradar": {
-    "en": "Increases range and speed of the suit's basic scan function.",
-    "de": "Erhöht Reichweite und Geschwindigkeit der Basis-Scanfunktion des Anzugs.",
-    "es": "Aumenta el alcance y la velocidad de la función de escaneo básico del traje.",
-    "fr": "Augmente la portée et la vitesse des analyses simples de la combinaison.",
-    "pt": "Aumenta o alcance e a velocidade da função básica do scanner do traje.",
-    "ru": "Увеличивает скорость и радиус базового сканирования комбинезона."
-  },
-  "suit_increasedammoreserves": {
-    "en": "Allows more ammo to be carried for each weapon.",
-    "de": "Erlaubt das Mitführen von mehr Munition für jede Waffe.",
-    "es": "Permite que las armas lleven más munición.",
-    "fr": "Permet à chaque arme de disposer de plus de munitions.",
-    "pt": "Permite que mais munição seja carregada para cada arma.",
-    "ru": "Увеличивает боезапас всех видов оружия."
-  },
-  "suit_backpackcapacity": {
-    "en": "Increases the inventory capacity of the suit backpack.",
-    "de": "Erhöht die Inventarkapazität des Anzugrucksacks.",
-    "es": "Aumenta la capacidad que tiene el inventario de la mochila del traje.",
-    "fr": "Augmente la capacité du sac à dos de la combinaison.",
-    "pt": "Aumenta a capacidade de inventário da mochila do traje.",
-    "ru": "Увеличивает вместимость рюкзака комбинезона."
-  },
-  "suit_increasedshieldregen": {
-    "en": "Speeds up personal shield regeneration rate.",
-    "de": "Beschleunigt die Regenerationsrate des eigenen Schilds.",
-    "es": "Acelera el índice de regeneración del escudo personal.",
-    "fr": "Accélère la vitesse de régénération du bouclier personnel.",
-    "pt": "Acelera a taxa de regeneração do escudo pessoal.",
-    "ru": "Увеличивает скорость восстановления личного щита."
-  },
-  "suit_increasedbatterycapacity": {
-    "en": "Increases energy capacity of the suit battery.",
-    "de": "Erhöht die Energiekapazität der Anzugbatterie.",
-    "es": "Aumenta la capacidad de la batería del traje.",
-    "fr": "Augmente la capacité de la batterie de la combinaison.",
-    "pt": "Aumenta a capacidade de energia da bateria do traje.",
-    "ru": "Увеличивает энергоемкость батареи комбинезона."
-  },
-  "suit_improvedjumpassist": {
-    "en": "Increases thrust duration and recharge rate while reducing energy consumption.",
-    "de": "Erhöht Schubdauer und Wiederaufladerate bei geringerem Energieverbrauch.",
-    "es": "Aumenta la duración de la propulsión y la tasa de recarga, a la vez que reduce el consumo de energía.",
-    "fr": "Augmente la durée de la poussée et la vitesse de rechargement tout en réduisant la consommation énergétique.",
-    "pt": "Reduz o consumo de energia e aumenta a duração da propulsão e a taxa de recarga.",
-    "ru": "Увеличивает продолжительность рывка и скорость его перезарядки, уменьшая расход энергии."
-  },
-  "suit_increasedo2capacity": {
-    "en": "Extends life support operation time once suit energy is depleted.",
-    "de": "Verlängert die Betriebszeit der Lebenserhaltungssysteme des Anzugs, wenn dessen Energie erschöpft ist.",
-    "es": "Prolonga el tiempo de soporte vital cuando la energía del traje se agota.",
-    "fr": "Prolonge le fonctionnement du système de survie de la combinaison, une fois cette dernière à court d'énergie.",
-    "pt": "Prolonga o funcionamento do suporte de vida após a energia do traje acabar.",
-    "ru": "Продлевает работу систем жизнеобеспечения после исчерпания запаса энергии комбинезона."
-  },
-  "suit_increasedsprintduration": {
-    "en": "Optimises suit articulation, resulting in increased sprint capability.",
-    "de": "Optimiert die Beweglichkeit des Anzuges und vereinfacht so Sprints.",
-    "es": "Optimiza la articulación del traje, lo que aumenta la capacidad de esprintar.",
-    "fr": "Optimise les articulations de la combinaison, afin de faciliter la course.",
-    "pt": "Otimiza a articulação do traje, resultando em maior capacidade de corrida.",
-    "ru": "Повышает подвижность соединений комбинезона, улучшая показатели бега."
-  },
-  "suit_nightvision": {
-    "en": "Adds Night Vision capabilities to the suit.",
-    "de": "Fügt dem Anzug Nachtsichtfähigkeiten hinzu.",
-    "es": "Añade capacidades de visión nocturna al traje.",
-    "fr": "Ajoute un module de vision nocturne à la combinaison.",
-    "pt": "Adiciona funções de Visão Noturna ao traje.",
-    "ru": "Добавляет комбинезону поддержку ночного видения."
-  },
-  "suit_quieterfootsteps": {
-    "en": "Dampens the sound generated by suit steps.",
-    "de": "Dämpft das Geräusch von Schritten.",
-    "es": "Disminuye el ruido que hacen los pasos.",
-    "fr": "Étouffe le bruit des pas du porteur de la combinaison.",
-    "pt": "Amortece os sons gerados pelos passos do traje.",
-    "ru": "Приглушает звук шагов в комбинезоне."
-  },
-  "suit_reducedtoolbatteryconsumption": {
-    "en": "Reduces the energy consumption of certain suit tool functions.",
-    "de": "Verringert den Energieverbrauch bestimmter Anzugfunktionen.",
-    "es": "Reduce el consumo de energía de determinadas funciones de las herramientas del traje.",
-    "fr": "Réduit la consommation d'énergie de certaines fonctionnalités utilitaires de la combinaison.",
-    "pt": "Reduz o consumo de energia de certas funções do traje.",
-    "ru": "Снижает энергопотребление при использовании некоторых функций инструментов комбинезона."
-  },
-  "weapon_suppression_unpressurised": {
-    "en": "Reduces the weapon's simulated sound when fired in unpressurised environments.",
-    "de": "Verringert das simulierte Waffengeräusch bei der Verwendung in Umgebungen ohne Atmosphäre.",
-    "es": "Reduce el sonido simulado del arma cuando se dispara en entornos no presurizados.",
-    "fr": "Réduit le bruit simulé de l'arme lorsqu'elle est utilisée dans un environnement non pressurisé.",
-    "pt": "Reduz o som simulado da arma ao disparar em ambientes não pressurizados.",
-    "ru": "Уменьшает симулированный звук от оружия при стрельбе в негерметичной среде."
-  },
-  "weapon_handling": {
-    "en": "Reduces the weapon's draw/stow speed and improves ADS functionality.",
-    "de": "Erhöht das Tempo beim Ziehen/Wegstecken der Waffe und verbessert ADS-Funktionalität.",
-    "es": "Reduce el tiempo que tarda en sacar o guardar el arma y mejora la funcionalidad de fijar vista.",
-    "fr": "Réduit le temps nécessaire pour dégainer ou rengainer l'arme, et améliore la visée.",
-    "pt": "Reduz o tempo de saque/guarda da arma e melhora a funcionalidade de ADS.",
-    "ru": "Позволяет быстрее доставать и убирать оружие и делает прицеливание удобнее."
-  },
-  "weapon_range_kinetic": {
-    "en": "Improves the weapon's effective range.",
-    "de": "Erhöht die effektive Reichweite der Waffe.",
-    "es": "Mejora el alcance efectivo del arma.",
-    "fr": "Augmente la portée efficace de l'arme.",
-    "pt": "Melhora o alcance efetivo da arma.",
-    "ru": "Увеличивает эффективную дальность оружия."
-  },
-  "weapon_range_laser": {
-    "en": "Improves the weapon's effective range.",
-    "de": "Erhöht die effektive Reichweite der Waffe.",
-    "es": "Mejora el alcance efectivo del arma.",
-    "fr": "Augmente la portée efficace de l'arme.",
-    "pt": "Melhora o alcance efetivo da arma.",
-    "ru": "Увеличивает эффективную дальность оружия."
-  },
-  "weapon_range_plasma": {
-    "en": "Improves the weapon's effective range.",
-    "de": "Erhöht die effektive Reichweite der Waffe.",
-    "es": "Mejora el alcance efectivo del arma.",
-    "fr": "Augmente la portée efficace de l'arme.",
-    "pt": "Melhora o alcance efetivo da arma.",
-    "ru": "Увеличивает эффективную дальность оружия."
-  },
-  "weapon_headshotdamage_kinetic": {
-    "en": "Increases damage inflicted by headshots.",
-    "de": "Erhöht den durch Kopfschüsse zugefügten Schaden.",
-    "es": "Aumenta el daño que infligen los disparos a la cabeza.",
-    "fr": "Augmente les dégâts à la tête.",
-    "pt": "Aumenta o dano causado por tiros na cabeça.",
-    "ru": "Увеличивает урон, наносимый при попадании в голову."
-  },
-  "weapon_headshotdamage_laser": {
-    "en": "Increases damage inflicted by headshots.",
-    "de": "Erhöht den durch Kopfschüsse zugefügten Schaden.",
-    "es": "Aumenta el daño que infligen los disparos a la cabeza.",
-    "fr": "Augmente les dégâts à la tête.",
-    "pt": "Aumenta o dano causado por tiros na cabeça.",
-    "ru": "Увеличивает урон, наносимый при попадании в голову."
-  },
-  "weapon_headshotdamage_plasma": {
-    "en": "Increases damage inflicted by headshots.",
-    "de": "Erhöht den durch Kopfschüsse zugefügten Schaden.",
-    "es": "Aumenta el daño que infligen los disparos a la cabeza.",
-    "fr": "Augmente les dégâts à la tête.",
-    "pt": "Aumenta o dano causado por tiros na cabeça.",
-    "ru": "Увеличивает урон, наносимый при попадании в голову."
-  },
-  "weapon_accuracy_kinetic": {
-    "en": "Reduces weapon fire spread outside of ADS stance, improving accuracy.",
-    "de": "Verringert die Streuung abseits von ADS, verbessert die Präzision.",
-    "es": "Reduce la dispersión al disparar sin usar la mira, lo que mejora la precisión.",
-    "fr": "Réduit la dispersion des tirs de l'arme hors mode de visée, ce qui améliore la précision.",
-    "pt": "Reduz a dispersão de disparo fora da postura de mira, melhorando a precisão.",
-    "ru": "Повышает точность стрельбы без прицеливания."
-  },
-  "weapon_accuracy_laser": {
-    "en": "Reduces weapon fire spread outside of ADS stance, improving accuracy.",
-    "de": "Verringert die Streuung abseits von ADS, verbessert die Präzision.",
-    "es": "Reduce la dispersión al disparar sin usar la mira, lo que mejora la precisión.",
-    "fr": "Réduit la dispersion des tirs de l'arme hors mode de visée, ce qui améliore la précision.",
-    "pt": "Reduz a dispersão de disparo fora da postura de mira, melhorando a precisão.",
-    "ru": "Повышает точность стрельбы без прицеливания."
-  },
-  "weapon_accuracy_plasma": {
-    "en": "Reduces weapon fire spread outside of ADS stance, improving accuracy.",
-    "de": "Verringert die Streuung abseits von ADS, verbessert die Präzision.",
-    "es": "Reduce la dispersión al disparar sin usar la mira, lo que mejora la precisión.",
-    "fr": "Réduit la dispersion des tirs de l'arme hors mode de visée, ce qui améliore la précision.",
-    "pt": "Reduz a dispersão de disparo fora da postura de mira, melhorando a precisão.",
-    "ru": "Повышает точность стрельбы без прицеливания."
-  },
-  "weapon_clipsize": {
-    "en": "Extends the weapon's magazine size.",
-    "de": "Erhöht die Magazingröße der Waffe.",
-    "es": "Amplía el tamaño del cargador del arma.",
-    "fr": "Augmente la capacité du chargeur de l'arme.",
-    "pt": "Aumenta o tamanho do pente da arma.",
-    "ru": "Увеличивает емкость магазина оружия."
-  },
-  "weapon_suppression_pressurised": {
-    "en": "Reduces the sound of the weapon when fired in pressurised environments.",
-    "de": "Verringert das Waffengeräusch bei der Verwendung in Umgebungen mit Atmosphäre.",
-    "es": "Reduce el sonido del arma cuando se dispara en entornos presurizados.",
-    "fr": "Réduit le bruit de l'arme lorsqu'elle est utilisée dans un environnement pressurisé.",
-    "pt": "Reduz o som da arma ao disparar em ambientes pressurizados.",
-    "ru": "Уменьшает звук от оружия при стрельбе в герметичной среде."
-  },
-  "weapon_reloadspeed": {
-    "en": "Shortens the weapon's reload time.",
-    "de": "Verkürzt die Nachladezeit der Waffe.",
-    "es": "Reduce el tiempo de recarga del arma.",
-    "fr": "Réduit le temps nécessaire pour recharger l'arme.",
-    "pt": "Encurta o tempo de recarga da arma.",
-    "ru": "Сокращает время перезарядки оружия."
-  },
-  "weapon_scope": {
-    "en": "Adds a scope to the weapon (or improves an existing one).",
-    "de": "Fügt der Waffe ein Zielfernrohr hinzu (oder verbessert ein vorhandenes).",
-    "es": "Añade un visor al arma o mejora el existente si lo hay.",
-    "fr": "Ajoute une lunette de visée à l'arme (ou améliore celle dont elle est équipée).",
-    "pt": "Adiciona uma mira telescópica à arma (ou melhora a existente).",
-    "ru": "Добавляет к оружию прицел или улучшает уже имеющийся."
-  },
-  "weapon_stability": {
-    "en": "Reduces the weapon's recoil.",
-    "de": "Verringert den Rückschlag der Waffe.",
-    "es": "Reduce el retroceso del arma.",
-    "fr": "Réduit le recul de l'arme.",
-    "pt": "Reduz o recuo da arma.",
-    "ru": "Уменьшает отдачу от оружия."
-  },
-  "weapon_backpackreloading": {
-    "en": "Automatically reloads a stowed weapon after five seconds.",
-    "de": "Lädt eine weggesteckte Waffe nach 5 Sekunden automatisch nach.",
-    "es": "Recarga automáticamente un arma enfundada una vez transcurridos cinco segundos.",
-    "fr": "Recharge automatiquement toute arme rengainée au bout de 5 secondes.",
-    "pt": "Recarrega automaticamente uma arma guardada após cinco segundos.",
-    "ru": "Автоматически перезаряжает оружие через пять секунд после того, как его убрали."
+  "names": {
+    "suit_increasedmeleedamage": {
+      "en": "Improves the damage dealt by fists and weapon strikes.",
+      "de": "Erhöht den durch Schläge mit Fäusten und Waffen zugefügten Schaden.",
+      "es": "Aumenta el daño que infligen los golpes cuerpo a cuerpo de las armas y de los puños.",
+      "fr": "Augmente les dégâts infligés par les poings et les coups portés avec une arme.",
+      "pt": "Melhora o dano causado pelos punhos e golpes com armas.",
+      "ru": "Повышает урон от кулаков и оружия ближнего боя."
+    },
+    "suit_adsmovementspeed": {
+      "en": "Removes the movement penalty while aiming down sights.",
+      "de": "Entfernt die Bewegungseinschränkung bei Nutzung einer Zielvorrichtung.",
+      "es": "Elimina la penalización de movimiento al apuntar con mira.",
+      "fr": "Supprime la pénalité de déplacement pendant la visée avec une arme.",
+      "pt": "Remove a penalidade de movimento ao usar a mira.",
+      "ru": "Убирает штраф на передвижение во время прицеливания."
+    },
+    "suit_improvedarmourrating": {
+      "en": "Increases protection against certain damage types.",
+      "de": "Erhöht Schutz gegen bestimmte Schadensarten.",
+      "es": "Aumenta la protección contra determinados tipos de daño.",
+      "fr": "Améliore la protection contre certains types de dégâts.",
+      "pt": "Aumenta a proteção contra certos tipos de dano.",
+      "ru": "Увеличивает сопротивление определенным типам урона."
+    },
+    "suit_improvedradar": {
+      "en": "Increases range and speed of the suit's basic scan function.",
+      "de": "Erhöht Reichweite und Geschwindigkeit der Basis-Scanfunktion des Anzugs.",
+      "es": "Aumenta el alcance y la velocidad de la función de escaneo básico del traje.",
+      "fr": "Augmente la portée et la vitesse des analyses simples de la combinaison.",
+      "pt": "Aumenta o alcance e a velocidade da função básica do scanner do traje.",
+      "ru": "Увеличивает скорость и радиус базового сканирования комбинезона."
+    },
+    "suit_increasedammoreserves": {
+      "en": "Allows more ammo to be carried for each weapon.",
+      "de": "Erlaubt das Mitführen von mehr Munition für jede Waffe.",
+      "es": "Permite que las armas lleven más munición.",
+      "fr": "Permet à chaque arme de disposer de plus de munitions.",
+      "pt": "Permite que mais munição seja carregada para cada arma.",
+      "ru": "Увеличивает боезапас всех видов оружия."
+    },
+    "suit_backpackcapacity": {
+      "en": "Increases the inventory capacity of the suit backpack.",
+      "de": "Erhöht die Inventarkapazität des Anzugrucksacks.",
+      "es": "Aumenta la capacidad que tiene el inventario de la mochila del traje.",
+      "fr": "Augmente la capacité du sac à dos de la combinaison.",
+      "pt": "Aumenta a capacidade de inventário da mochila do traje.",
+      "ru": "Увеличивает вместимость рюкзака комбинезона."
+    },
+    "suit_increasedshieldregen": {
+      "en": "Speeds up personal shield regeneration rate.",
+      "de": "Beschleunigt die Regenerationsrate des eigenen Schilds.",
+      "es": "Acelera el índice de regeneración del escudo personal.",
+      "fr": "Accélère la vitesse de régénération du bouclier personnel.",
+      "pt": "Acelera a taxa de regeneração do escudo pessoal.",
+      "ru": "Увеличивает скорость восстановления личного щита."
+    },
+    "suit_increasedbatterycapacity": {
+      "en": "Increases energy capacity of the suit battery.",
+      "de": "Erhöht die Energiekapazität der Anzugbatterie.",
+      "es": "Aumenta la capacidad de la batería del traje.",
+      "fr": "Augmente la capacité de la batterie de la combinaison.",
+      "pt": "Aumenta a capacidade de energia da bateria do traje.",
+      "ru": "Увеличивает энергоемкость батареи комбинезона."
+    },
+    "suit_improvedjumpassist": {
+      "en": "Increases thrust duration and recharge rate while reducing energy consumption.",
+      "de": "Erhöht Schubdauer und Wiederaufladerate bei geringerem Energieverbrauch.",
+      "es": "Aumenta la duración de la propulsión y la tasa de recarga, a la vez que reduce el consumo de energía.",
+      "fr": "Augmente la durée de la poussée et la vitesse de rechargement tout en réduisant la consommation énergétique.",
+      "pt": "Reduz o consumo de energia e aumenta a duração da propulsão e a taxa de recarga.",
+      "ru": "Увеличивает продолжительность рывка и скорость его перезарядки, уменьшая расход энергии."
+    },
+    "suit_increasedo2capacity": {
+      "en": "Extends life support operation time once suit energy is depleted.",
+      "de": "Verlängert die Betriebszeit der Lebenserhaltungssysteme des Anzugs, wenn dessen Energie erschöpft ist.",
+      "es": "Prolonga el tiempo de soporte vital cuando la energía del traje se agota.",
+      "fr": "Prolonge le fonctionnement du système de survie de la combinaison, une fois cette dernière à court d'énergie.",
+      "pt": "Prolonga o funcionamento do suporte de vida após a energia do traje acabar.",
+      "ru": "Продлевает работу систем жизнеобеспечения после исчерпания запаса энергии комбинезона."
+    },
+    "suit_increasedsprintduration": {
+      "en": "Optimises suit articulation, resulting in increased sprint capability.",
+      "de": "Optimiert die Beweglichkeit des Anzuges und vereinfacht so Sprints.",
+      "es": "Optimiza la articulación del traje, lo que aumenta la capacidad de esprintar.",
+      "fr": "Optimise les articulations de la combinaison, afin de faciliter la course.",
+      "pt": "Otimiza a articulação do traje, resultando em maior capacidade de corrida.",
+      "ru": "Повышает подвижность соединений комбинезона, улучшая показатели бега."
+    },
+    "suit_nightvision": {
+      "en": "Adds Night Vision capabilities to the suit.",
+      "de": "Fügt dem Anzug Nachtsichtfähigkeiten hinzu.",
+      "es": "Añade capacidades de visión nocturna al traje.",
+      "fr": "Ajoute un module de vision nocturne à la combinaison.",
+      "pt": "Adiciona funções de Visão Noturna ao traje.",
+      "ru": "Добавляет комбинезону поддержку ночного видения."
+    },
+    "suit_quieterfootsteps": {
+      "en": "Dampens the sound generated by suit steps.",
+      "de": "Dämpft das Geräusch von Schritten.",
+      "es": "Disminuye el ruido que hacen los pasos.",
+      "fr": "Étouffe le bruit des pas du porteur de la combinaison.",
+      "pt": "Amortece os sons gerados pelos passos do traje.",
+      "ru": "Приглушает звук шагов в комбинезоне."
+    },
+    "suit_reducedtoolbatteryconsumption": {
+      "en": "Reduces the energy consumption of certain suit tool functions.",
+      "de": "Verringert den Energieverbrauch bestimmter Anzugfunktionen.",
+      "es": "Reduce el consumo de energía de determinadas funciones de las herramientas del traje.",
+      "fr": "Réduit la consommation d'énergie de certaines fonctionnalités utilitaires de la combinaison.",
+      "pt": "Reduz o consumo de energia de certas funções do traje.",
+      "ru": "Снижает энергопотребление при использовании некоторых функций инструментов комбинезона."
+    },
+    "weapon_suppression_unpressurised": {
+      "en": "Reduces the weapon's simulated sound when fired in unpressurised environments.",
+      "de": "Verringert das simulierte Waffengeräusch bei der Verwendung in Umgebungen ohne Atmosphäre.",
+      "es": "Reduce el sonido simulado del arma cuando se dispara en entornos no presurizados.",
+      "fr": "Réduit le bruit simulé de l'arme lorsqu'elle est utilisée dans un environnement non pressurisé.",
+      "pt": "Reduz o som simulado da arma ao disparar em ambientes não pressurizados.",
+      "ru": "Уменьшает симулированный звук от оружия при стрельбе в негерметичной среде."
+    },
+    "weapon_handling": {
+      "en": "Reduces the weapon's draw/stow speed and improves ADS functionality.",
+      "de": "Erhöht das Tempo beim Ziehen/Wegstecken der Waffe und verbessert ADS-Funktionalität.",
+      "es": "Reduce el tiempo que tarda en sacar o guardar el arma y mejora la funcionalidad de fijar vista.",
+      "fr": "Réduit le temps nécessaire pour dégainer ou rengainer l'arme, et améliore la visée.",
+      "pt": "Reduz o tempo de saque/guarda da arma e melhora a funcionalidade de ADS.",
+      "ru": "Позволяет быстрее доставать и убирать оружие и делает прицеливание удобнее."
+    },
+    "weapon_range": {
+      "en": "Improves the weapon's effective range.",
+      "de": "Erhöht die effektive Reichweite der Waffe.",
+      "es": "Mejora el alcance efectivo del arma.",
+      "fr": "Augmente la portée efficace de l'arme.",
+      "pt": "Melhora o alcance efetivo da arma.",
+      "ru": "Увеличивает эффективную дальность оружия."
+    },
+    "weapon_headshotdamage": {
+      "en": "Increases damage inflicted by headshots.",
+      "de": "Erhöht den durch Kopfschüsse zugefügten Schaden.",
+      "es": "Aumenta el daño que infligen los disparos a la cabeza.",
+      "fr": "Augmente les dégâts à la tête.",
+      "pt": "Aumenta o dano causado por tiros na cabeça.",
+      "ru": "Увеличивает урон, наносимый при попадании в голову."
+    },
+    "weapon_accuracy": {
+      "en": "Reduces weapon fire spread outside of ADS stance, improving accuracy.",
+      "de": "Verringert die Streuung abseits von ADS, verbessert die Präzision.",
+      "es": "Reduce la dispersión al disparar sin usar la mira, lo que mejora la precisión.",
+      "fr": "Réduit la dispersion des tirs de l'arme hors mode de visée, ce qui améliore la précision.",
+      "pt": "Reduz a dispersão de disparo fora da postura de mira, melhorando a precisão.",
+      "ru": "Повышает точность стрельбы без прицеливания."
+    },
+    "weapon_clipsize": {
+      "en": "Extends the weapon's magazine size.",
+      "de": "Erhöht die Magazingröße der Waffe.",
+      "es": "Amplía el tamaño del cargador del arma.",
+      "fr": "Augmente la capacité du chargeur de l'arme.",
+      "pt": "Aumenta o tamanho do pente da arma.",
+      "ru": "Увеличивает емкость магазина оружия."
+    },
+    "weapon_suppression_pressurised": {
+      "en": "Reduces the sound of the weapon when fired in pressurised environments.",
+      "de": "Verringert das Waffengeräusch bei der Verwendung in Umgebungen mit Atmosphäre.",
+      "es": "Reduce el sonido del arma cuando se dispara en entornos presurizados.",
+      "fr": "Réduit le bruit de l'arme lorsqu'elle est utilisée dans un environnement pressurisé.",
+      "pt": "Reduz o som da arma ao disparar em ambientes pressurizados.",
+      "ru": "Уменьшает звук от оружия при стрельбе в герметичной среде."
+    },
+    "weapon_reloadspeed": {
+      "en": "Shortens the weapon's reload time.",
+      "de": "Verkürzt die Nachladezeit der Waffe.",
+      "es": "Reduce el tiempo de recarga del arma.",
+      "fr": "Réduit le temps nécessaire pour recharger l'arme.",
+      "pt": "Encurta o tempo de recarga da arma.",
+      "ru": "Сокращает время перезарядки оружия."
+    },
+    "weapon_scope": {
+      "en": "Adds a scope to the weapon (or improves an existing one).",
+      "de": "Fügt der Waffe ein Zielfernrohr hinzu (oder verbessert ein vorhandenes).",
+      "es": "Añade un visor al arma o mejora el existente si lo hay.",
+      "fr": "Ajoute une lunette de visée à l'arme (ou améliore celle dont elle est équipée).",
+      "pt": "Adiciona uma mira telescópica à arma (ou melhora a existente).",
+      "ru": "Добавляет к оружию прицел или улучшает уже имеющийся."
+    },
+    "weapon_stability": {
+      "en": "Reduces the weapon's recoil.",
+      "de": "Verringert den Rückschlag der Waffe.",
+      "es": "Reduce el retroceso del arma.",
+      "fr": "Réduit le recul de l'arme.",
+      "pt": "Reduz o recuo da arma.",
+      "ru": "Уменьшает отдачу от оружия."
+    },
+    "weapon_backpackreloading": {
+      "en": "Automatically reloads a stowed weapon after five seconds.",
+      "de": "Lädt eine weggesteckte Waffe nach 5 Sekunden automatisch nach.",
+      "es": "Recarga automáticamente un arma enfundada una vez transcurridos cinco segundos.",
+      "fr": "Recharge automatiquement toute arme rengainée au bout de 5 secondes.",
+      "pt": "Recarrega automaticamente uma arma guardada após cinco segundos.",
+      "ru": "Автоматически перезаряжает оружие через пять секунд после того, как его убрали."
+    }
   }
 }

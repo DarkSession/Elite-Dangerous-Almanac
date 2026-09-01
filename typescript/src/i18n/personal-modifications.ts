@@ -6,17 +6,17 @@
 import modificationDescriptionsData from '../../../data/i18n/personal-modification-descriptions.jsonc' with { type: 'json' };
 import modificationNamesData from '../../../data/i18n/personal-modification-names.jsonc' with { type: 'json' };
 import {
-    createLocalizedNameIndex,
+    createDeduplicatedLocalizedNameIndex,
     getLocalizedName,
-    type LocalizedNameMap,
+    type LocalizedNameCatalogue,
 } from './internal/localized-name.js';
 
-const MODIFICATION_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
-    modificationNamesData as LocalizedNameMap,
+const MODIFICATION_NAMES = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
+    modificationNamesData as LocalizedNameCatalogue,
 );
 
-const MODIFICATION_DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(
-    modificationDescriptionsData as LocalizedNameMap,
+const MODIFICATION_DESCRIPTIONS = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
+    modificationDescriptionsData as LocalizedNameCatalogue,
 );
 
 /**
@@ -39,7 +39,7 @@ const MODIFICATION_DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(
  * All six stored locales are complete for this dataset, so a supported locale always
  * answers. The game offers Greater Range, Headshot Damage and Improved Hip Fire Accuracy
  * as one menu entry each, so the three Kinetic, Laser and Plasma recipes this repository
- * keys separately share that entry's translations.
+ * keys separately share that entry's record rather than storing it three times.
  * @throws {TypeError} If `modificationSymbol` is present and not a string, or `locale`
  * is not a string. A nullish `modificationSymbol` is a lookup miss and returns `null`.
  * @example
@@ -78,9 +78,10 @@ export function getPersonalModificationName(
  * This is display prose, not a statement of the magnitudes a recipe applies: the game
  * says a modification "allows more ammo to be carried for each weapon", never how much
  * more. `PersonalModification.modifiers` answers that, and the two are deliberately not
- * the same string — including for the recipes whose modifier list is empty because what
- * they change is qualitative. English is the game's own wording rather than a projection
- * of `PersonalModification.name`.
+ * the same string. It is also the only account of the ten recipes whose `modifiers` list
+ * is empty, whether because the recipe switches a capability on or because it moves a
+ * stat the panel puts no number on. English is the game's own wording rather than a
+ * projection of `PersonalModification.name`.
  * @throws {TypeError} If a present `modificationSymbol` or `locale` is not a string.
  * @example
  * ```ts
