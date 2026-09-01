@@ -398,8 +398,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **That shape is about visibility, not bytes.** Storing each shared entry three times
   instead costs about the same, because the six duplicate name records weigh roughly what
   the 31-entry `nameKeys` map does; the descriptions save about a fifteenth. What the
-  deduplicated form buys is that the sharing is stated in the data and checked by a test,
-  rather than sitting in six duplicate records a later edit could silently pull apart.
+  deduplicated form buys is that the sharing is stated in the data, rather than sitting in
+  six duplicate records a later edit could silently pull apart.
 - **`Headshot Damage` is the one English value the game spells differently.** The in-game
   menu reads `Headshot damage`; the owning catalogue's canonical `Headshot Damage` is
   kept, as canonical English is kept everywhere in this directory. The lower-case

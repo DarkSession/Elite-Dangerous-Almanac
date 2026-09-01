@@ -310,7 +310,8 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         suitNames,
         suitDescriptions,
         weaponDescriptions,
-        personalModifications,
+        personalModificationNames,
+        personalModificationDescriptions,
         slots,
         diagnostics,
     ] = await Promise.all([
@@ -346,6 +347,9 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         ),
         consumerBundle(
             "import { getPersonalModificationName as value } from '@elite-dangerous-almanac/core/i18n/personal-modifications'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getPersonalModificationDescription as value } from '@elite-dangerous-almanac/core/i18n/personal-modifications'; console.log(value);",
         ),
         consumerBundle(
             "import { getLoadoutSlotName as value } from '@elite-dangerous-almanac/core/i18n/slots'; console.log(value);",
@@ -387,9 +391,15 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         weaponDescriptions.length < 24 * 1024,
         `personal-weapon-description bundle is ${weaponDescriptions.length} bytes`,
     );
+    // Two datasets in one module, like the suits: importing either lookup has to drop
+    // the other, so each budget is set below what the pair weighs together.
     assert.ok(
-        personalModifications.length < 32 * 1024,
-        `personal-modification bundle is ${personalModifications.length} bytes`,
+        personalModificationNames.length < 16 * 1024,
+        `personal-modification-name bundle is ${personalModificationNames.length} bytes`,
+    );
+    assert.ok(
+        personalModificationDescriptions.length < 24 * 1024,
+        `personal-modification-description bundle is ${personalModificationDescriptions.length} bytes`,
     );
     assert.ok(slots.length < 32 * 1024, `slot-name bundle is ${slots.length} bytes`);
     assert.ok(
@@ -418,7 +428,8 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         suitNames: 'Combinaison Dominator',
         suitDescriptions: 'Der Maverick-Anzug',
         weaponDescriptions: 'semiautomática',
-        personalModifications: 'Vision nocturne',
+        personalModificationNames: 'Vision nocturne',
+        personalModificationDescriptions: 'Ajoute une lunette',
     };
     const BUNDLES = {
         modules,
@@ -431,7 +442,8 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         suitNames,
         suitDescriptions,
         weaponDescriptions,
-        personalModifications,
+        personalModificationNames,
+        personalModificationDescriptions,
         slots,
         diagnostics,
     };
