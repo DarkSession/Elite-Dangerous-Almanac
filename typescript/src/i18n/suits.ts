@@ -1,10 +1,16 @@
-/** Localized personal-suit display names and descriptions, isolated from suit stats. */
+/**
+ * Localized personal-suit display names and descriptions, and the weapon-mount labels,
+ * isolated from suit stats.
+ */
 
 import suitDescriptionsData from '../../../data/i18n/suit-descriptions.jsonc' with { type: 'json' };
 import suitNamesData from '../../../data/i18n/suit-names.jsonc' with { type: 'json' };
+import type { PersonalMount, PersonalMountKey } from '../equipment/suits.js';
+import { requireObject } from '../internal/argument-guards.js';
 import {
     createDeduplicatedLocalizedNameIndex,
     getLocalizedName,
+    getLocalizedText,
     type LocalizedNameCatalogue,
 } from './internal/localized-name.js';
 
@@ -74,4 +80,44 @@ export function getSuitName(suit: string, locale: string): string | null {
  */
 export function getSuitDescription(suit: string, locale: string): string | null {
     return getLocalizedName(SUIT_DESCRIPTIONS, suit, locale, 'getSuitDescription', 'suit');
+}
+
+const MOUNT_LABELS: Readonly<Record<PersonalMountKey, string>> = /* @__PURE__ */ Object.freeze({
+    PrimaryWeapon1: 'Primary Weapon 1',
+    PrimaryWeapon2: 'Primary Weapon 2',
+    SecondaryWeapon: 'Secondary Weapon',
+});
+
+/**
+ * Resolve a suit weapon mount's display name for a locale.
+ *
+ * @param mount - A mount from `Suit.mounts`.
+ * @param locale - A BCP 47 locale. The mount-label source supplies English only.
+ * @returns The mount's English display name for an English locale, otherwise `null`.
+ * `null` too when the mount carries a key this library does not name.
+ * @throws {TypeError} If `mount` is not an object or `locale` is not a string.
+ * @remarks
+ * The label reads the Frontier journal `SlotName` the mount carries, so it distinguishes
+ * a suit's primary mounts from each other. A consumer needs no table of its own.
+ *
+ * No locale but English answers, although the game itself publishes all six:
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26
+ * @example
+ * ```ts
+ * import { getSuitByFamily } from '@elite-dangerous-almanac/core/equipment/suits';
+ * import { getPersonalMountName } from '@elite-dangerous-almanac/core/i18n/suits';
+ *
+ * const suit = getSuitByFamily('tacticalsuit')!;
+ * getPersonalMountName(suit.mounts[1]!, 'en-GB'); // -> 'Primary Weapon 2'
+ * getPersonalMountName(suit.mounts[2]!, 'de'); // -> null
+ * ```
+ */
+export function getPersonalMountName(mount: PersonalMount, locale: string): string | null {
+    requireObject(mount, 'getPersonalMountName: mount');
+    const label = Object.hasOwn(MOUNT_LABELS, mount.key) ? MOUNT_LABELS[mount.key] : undefined;
+    return getLocalizedText(
+        label === undefined ? null : { en: label },
+        locale,
+        'getPersonalMountName',
+    );
 }

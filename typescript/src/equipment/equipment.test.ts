@@ -42,8 +42,6 @@ test('representative suits resolve by family, name and grade-specific Frontier s
         const suit = getSuitByFamily(expected.family);
         assert.ok(suit);
         assert.equal(suit.name, expected.name);
-        assert.equal(suit.primarySlots, expected.primarySlots);
-        assert.equal(suit.secondarySlots, expected.secondarySlots);
         assert.equal(suit.batteryCapacity, expected.batteryCapacity);
         assert.equal(suit.goodsCapacity, expected.goodsCapacity);
         assert.equal(getSuitByName(expected.name), suit);
@@ -59,6 +57,17 @@ test('representative suits resolve by family, name and grade-specific Frontier s
             assert.equal(grade.kineticResistance, expected.kineticResistance);
         }
         assert.equal(grade.modificationSlots, expected.modificationSlots);
+    }
+});
+
+test('every suit carries the weapon mounts the journal names, in mount order', () => {
+    assert.equal(equipmentFixture.suitMounts.length, SUITS.length);
+    for (const suit of SUITS) {
+        const expected = equipmentFixture.suitMounts.find(
+            (pinned) => pinned.family === suit.family,
+        );
+        assert.ok(expected, suit.family);
+        assert.deepEqual(suit.mounts, expected.mounts);
     }
 });
 

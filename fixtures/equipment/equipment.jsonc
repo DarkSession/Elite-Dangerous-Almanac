@@ -1,6 +1,7 @@
 /*
- * Pins representative personal-equipment identities, grade stats, engineering costs and
- * the stat multipliers an engineer-applied modification puts on a suit or a weapon.
+ * Pins representative personal-equipment identities, every suit's weapon mounts, grade
+ * stats, engineering costs and the stat multipliers an engineer-applied modification
+ * puts on a suit or a weapon.
  * Values are selected from the shared equipment catalogues whose source snapshot and
  * weapon-name corrections are documented in their own headers; no player capture is used.
  */
@@ -17,8 +18,6 @@
       "name": "Maverick Suit",
       "symbol": "utilitysuit_class3",
       "grade": 3,
-      "primarySlots": 1,
-      "secondarySlots": 1,
       "shieldStrength": 20.3,
       "kineticResistance": -0.14,
       "modificationSlots": 2,
@@ -30,12 +29,40 @@
       "name": "Flight Suit",
       "symbol": "flightsuit",
       "grade": 1,
-      "primarySlots": 0,
-      "secondarySlots": 1,
       "shieldStrength": 7.5,
       "modificationSlots": 0,
       "batteryCapacity": 7,
       "goodsCapacity": 5
+    }
+  ],
+  "suitMounts": [
+    {
+      "family": "utilitysuit",
+      "mounts": [
+        { "key": "PrimaryWeapon1", "kind": "primary" },
+        { "key": "SecondaryWeapon", "kind": "secondary" }
+      ]
+    },
+    {
+      "family": "tacticalsuit",
+      "mounts": [
+        { "key": "PrimaryWeapon1", "kind": "primary" },
+        { "key": "PrimaryWeapon2", "kind": "primary" },
+        { "key": "SecondaryWeapon", "kind": "secondary" }
+      ]
+    },
+    {
+      "family": "explorationsuit",
+      "mounts": [
+        { "key": "PrimaryWeapon1", "kind": "primary" },
+        { "key": "SecondaryWeapon", "kind": "secondary" }
+      ]
+    },
+    {
+      "family": "flightsuit",
+      "mounts": [
+        { "key": "SecondaryWeapon", "kind": "secondary" }
+      ]
     }
   ],
   "weapons": [

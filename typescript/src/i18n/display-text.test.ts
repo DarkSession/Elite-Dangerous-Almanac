@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import fixture from '../../../fixtures/i18n/display-text.jsonc' with { type: 'json' };
+import { SUITS, type PersonalMount } from '../equipment/suits.js';
 import type { CalculationIssue } from '../ships/loadout-calculations.js';
 import type { LoadoutIssue } from '../ships/loadout-validation.js';
 import { LoadoutEditError } from '../ships/ship-loadout.js';
@@ -18,6 +19,7 @@ import {
     type PreEngineeredVariantIdentity,
 } from './pre-engineered.js';
 import { getLoadoutSlotName, getSlotRestrictionLabel } from './slots.js';
+import { getPersonalMountName } from './suits.js';
 
 for (const row of fixture.preEngineered) {
     test(`pre-engineered ${row.variant.blueprintSymbol} in ${row.locale}`, () => {
@@ -31,6 +33,12 @@ for (const row of fixture.preEngineered) {
 for (const row of fixture.slots) {
     test(`slot ${row.slot.key} in ${row.locale}`, () => {
         assert.equal(getLoadoutSlotName(row.slot as BuildSlot, row.locale), row.expected);
+    });
+}
+
+for (const row of fixture.mounts) {
+    test(`mount ${row.mount.key} in ${row.locale}`, () => {
+        assert.equal(getPersonalMountName(row.mount as PersonalMount, row.locale), row.expected);
     });
 }
 
@@ -70,6 +78,24 @@ for (const row of fixture.diagnostics) {
         assert.equal(actual, row.expected);
     });
 }
+
+test('every mount in the catalogue is named in English and in no other locale', () => {
+    for (const suit of SUITS) {
+        for (const mount of suit.mounts) {
+            assert.ok(getPersonalMountName(mount, 'en'), mount.key);
+            assert.equal(getPersonalMountName(mount, 'de'), null, mount.key);
+        }
+    }
+});
+
+test('mount names reject invalid objects and inherited lookup values', () => {
+    assert.throws(
+        () => getPersonalMountName(null as never, 'en'),
+        /mount must be an object, received null/,
+    );
+    assert.equal(getPersonalMountName({ key: 'constructor' } as never, 'en'), null);
+    assert.equal(getPersonalMountName({ key: '__proto__' } as never, 'en'), null);
+});
 
 test('slot restrictions reject inherited object properties', () => {
     assert.equal(getSlotRestrictionLabel('toString' as never, 'en'), null);

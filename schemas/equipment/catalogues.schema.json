@@ -21,6 +21,31 @@
       "minItems": 1,
       "items": { "$ref": "#/definitions/ingredient" }
     },
+    "suitMount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "kind"],
+      "properties": {
+        "key": {
+          "enum": ["PrimaryWeapon1", "PrimaryWeapon2", "SecondaryWeapon"]
+        },
+        "kind": { "enum": ["primary", "secondary"] }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "key": { "enum": ["PrimaryWeapon1", "PrimaryWeapon2"] },
+            "kind": { "const": "primary" }
+          }
+        },
+        {
+          "properties": {
+            "key": { "const": "SecondaryWeapon" },
+            "kind": { "const": "secondary" }
+          }
+        }
+      ]
+    },
     "suitGrade": {
       "type": "object",
       "additionalProperties": false,
@@ -67,8 +92,7 @@
       "required": [
         "family",
         "name",
-        "primarySlots",
-        "secondarySlots",
+        "mounts",
         "health",
         "mass",
         "batteryCapacity",
@@ -85,8 +109,12 @@
       "properties": {
         "family": { "$ref": "#/definitions/nonEmptyString" },
         "name": { "$ref": "#/definitions/nonEmptyString" },
-        "primarySlots": { "$ref": "#/definitions/nonNegativeInteger" },
-        "secondarySlots": { "$ref": "#/definitions/nonNegativeInteger" },
+        "mounts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/suitMount" }
+        },
         "health": { "$ref": "#/definitions/positiveNumber" },
         "mass": { "$ref": "#/definitions/positiveNumber" },
         "batteryCapacity": { "$ref": "#/definitions/positiveNumber" },

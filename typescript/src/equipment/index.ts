@@ -17,6 +17,8 @@ export {
     getSuitBySymbol,
     getSuitGrade,
     type EquipmentGrade,
+    type PersonalMount,
+    type PersonalMountKey,
     type Suit,
     type SuitGrade,
 } from './suits.js';

@@ -1,6 +1,6 @@
 /*
- * Pins locale-aware pre-engineered, slot, restriction and structured-diagnostic display
- * text for every language implementation.
+ * Pins locale-aware pre-engineered, ship slot, restriction, suit weapon-mount and
+ * structured-diagnostic display text for every language implementation.
  */
 {
   "preEngineered": [
@@ -127,6 +127,28 @@
       },
       "locale": "en",
       "expected": "Cargo Hatch"
+    }
+  ],
+  "mounts": [
+    {
+      "mount": { "key": "PrimaryWeapon1", "kind": "primary" },
+      "locale": "en",
+      "expected": "Primary Weapon 1"
+    },
+    {
+      "mount": { "key": "PrimaryWeapon2", "kind": "primary" },
+      "locale": "en-GB",
+      "expected": "Primary Weapon 2"
+    },
+    {
+      "mount": { "key": "SecondaryWeapon", "kind": "secondary" },
+      "locale": "en",
+      "expected": "Secondary Weapon"
+    },
+    {
+      "mount": { "key": "SecondaryWeapon", "kind": "secondary" },
+      "locale": "de",
+      "expected": null
     }
   ],
   "restrictions": [

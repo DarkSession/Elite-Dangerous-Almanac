@@ -387,6 +387,13 @@ type FixtureEquipmentEquipment = {
         recipeSymbol: string;
         stat: string;
     }[];
+    suitMounts: {
+        family: string;
+        mounts: {
+            key: string;
+            kind: string;
+        }[];
+    }[];
     suits: {
         batteryCapacity: number;
         family: string;
@@ -395,8 +402,6 @@ type FixtureEquipmentEquipment = {
         kineticResistance?: number;
         modificationSlots: number;
         name: string;
-        primarySlots: number;
-        secondarySlots: number;
         shieldStrength: number;
         symbol: string;
     }[];
@@ -443,6 +448,14 @@ type FixtureI18nDisplayText = {
         expected: string | null;
         kind: string;
         locale: string;
+    }[];
+    mounts: {
+        expected: string | null;
+        locale: string;
+        mount: {
+            key: string;
+            kind: string;
+        };
     }[];
     preEngineered: {
         expected: string | null;

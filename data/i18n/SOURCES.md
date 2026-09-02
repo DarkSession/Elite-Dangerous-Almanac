@@ -466,13 +466,16 @@ record in this repository is keyed by them.
   `Kinematic Armaments` are byte-for-byte identical in all six locales wherever the game
   names them, which is why `suit-names.jsonc` stores a suit's own name and not the
   outfitting list's manufacturer-prefixed listing.
-- **Suit and weapon stat labels, the on-foot loadout panel's row labels, and engineer
-  dialogue.** These are the second reason rather than the first: the game does publish all
-  six locales for each, and none of them names a record in any catalogue here. A stat
-  label names a field of `Suit` or `PersonalWeapon`, a row label names a line of the
-  on-foot loadout panel, and an engineer's line is spoken flavour attached to an offer.
-  Storing them would mean inventing keys this repository does not otherwise own, so a
-  consumer that needs a field label supplies its own. **This is not the ship slot and
+- **Suit and weapon stat labels, the on-foot loadout panel's rows other than the weapon
+  mounts, and engineer dialogue.** These are the second reason rather than the first: the
+  game does publish all six locales for each, and none of them names a record in any
+  catalogue here. A stat label names a field of `Suit` or `PersonalWeapon`, a panel row
+  names a line of the on-foot loadout screen, and an engineer's line is spoken flavour
+  attached to an offer. Storing them would mean inventing keys this repository does not
+  otherwise own, so a consumer that needs a field label supplies its own. The weapon-mount
+  rows are outside this conclusion: `Suit.mounts` carries Frontier's own journal
+  `SlotName` for each one, so a mount row names a record this repository holds and its
+  localization is a gap rather than an invented key. **This is not the ship slot and
   restriction gap of [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320)**,
   which is about labels no source translates at all.
 
@@ -481,8 +484,11 @@ record in this repository is keyed by them.
 Localized coverage follows the accepted sources and is not complete for every catalogue or
 stored locale. A language absent from every catalogue is the locale decision
 recorded above rather than a gap. The accepted sources carry only canonical English for
-the outfitting-family labels listed above, slot and restriction labels, fixed reward names,
-and structured loadout, calculation, SLEF and edit messages. Personal equipment carries
-no gap: every suit, handheld weapon and modification the owning catalogues hold is
-complete in all six locales. Missing source-backed translations remain tracked by
+the outfitting-family labels listed above, slot and restriction labels, the suit
+weapon-mount labels, fixed reward names, and structured loadout, calculation, SLEF and
+edit messages. Every suit, handheld weapon and modification the owning catalogues hold is
+complete in all six locales; the mount labels are the one personal-equipment gap, and the
+game publishes all six locales for them, so they are tracked by
+[#26](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26) and not by #320.
+Missing source-backed translations remain tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
