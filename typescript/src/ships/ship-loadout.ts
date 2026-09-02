@@ -182,8 +182,8 @@ export type LoadoutEditErrorCode =
  * An editor request that the current hull or build constraints cannot accept.
  *
  * @remarks
- * This remains a `TypeError`, so existing `instanceof TypeError` handling continues to
- * work. Localized editors should switch on {@link code}, then use {@link constraint}
+ * It is a `TypeError`, so `instanceof TypeError` handling catches it. Localized editors
+ * should switch on {@link code}, then use {@link constraint}
  * and {@link params} instead of parsing the English fallback in `message`.
  *
  * @example
@@ -1377,7 +1377,7 @@ export class ShipLoadout {
      * omitted.
      *
      * @remarks
-     * This is the outfitting *offer*, so the fifteen {@link ships!OutfittingModule.grantOnly | grantOnly}
+     * This is the outfitting *offer*, so the {@link ships!OutfittingModule.grantOnly | grantOnly}
      * articles are never in it: each is a second identity for a module the game already
      * sells — `Int_Engine_Size2_Class1_free` is the 2E Thrusters — and listing both puts
      * the same article on the screen twice, once with no price. A build that already
@@ -1955,7 +1955,7 @@ export class ShipLoadout {
      * leave the build unchanged and return stable structured data.
      *
      * A Mercenary article is recomputed rather than composed, and that limits what can be
-     * done to the effect ten of those rows are sold carrying. At its purchase grade there
+     * done to the effect some of those rows are sold carrying. At its purchase grade there
      * is no recipe to recompute from — the bespoke recipe starts at grade 2 — so every
      * edit is refused with `unsupportedEngineering`. Once engineered to grade 2 or above
      * an edit recomputes normally, but only to an effect the module's own menu offers:
@@ -2525,9 +2525,9 @@ export class ShipLoadout {
      * Set a fitted module's power-priority group.
      *
      * @param slotKey - The slot's journal key, matched case-insensitively.
-     * @param priority - The journal's **zero-based** group, `0`–`4`. Note that the
-     * outfitting panel — and {@link ships!BuildMetrics.powerBudget | BuildMetrics.powerBudget}'s `bands[].priority` — number the same
-     * five groups `1`–`5`.
+     * @param priority - The journal's **zero-based** group, `0`–`4`. The outfitting
+     * panel, and {@link ships!BuildMetrics.powerBudget | BuildMetrics.powerBudget}'s
+     * `bands[].priority`, number the same five groups `1`–`5`.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or `priority` is not an integer in `[0, 4]`.
      * @throws {TypeError} If `slotKey` is not a string.

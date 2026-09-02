@@ -78,10 +78,10 @@ export interface AmmunitionCapacity {
  *
  * @param stats - The module's stats. A catalogue record works as-is; pass a
  * post-engineering record (`FittedModule.effectiveStats`, `effectiveModule`) to get the
- * capacity a build actually flies with. Fifteen blueprints move one figure or both — High
- * Capacity, the chaff, heat-sink and point-defence capacity recipes among them — and three
- * experimental effects move the reserve: Corrosive Shell costs a fifth of it, and Plasma
- * Slug (in both its forms) empties it, because the weapon then reloads from ship fuel.
+ * capacity a build actually flies with. Blueprints such as High Capacity and the chaff,
+ * heat-sink and point-defence capacity recipes move one figure or both, and experimental
+ * effects move the reserve: Corrosive Shell costs a fifth of it, and Plasma Slug (in both
+ * its forms) empties it, because the weapon then reloads from ship fuel.
  * @returns The {@link AmmunitionCapacity}, or `null` for a module that carries no
  * ammunition at all — the lasers, which state neither figure because they draw from the
  * weapons capacitor instead.

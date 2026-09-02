@@ -168,10 +168,10 @@ export function getPreEngineeredJournalModifiers(
  * scales with that unmodified base rather than with the result: EDSY writes a
  * pre-engineered drive's 2 s boot time as `2.000122` and its 3536 t optimal mass as
  * `3536.025391` — each a little over one part in a hundred thousand of the 10 s and
- * 2000 t stock stats they were derived from. One part in ten thousand of the base leaves that room and
- * still separates a hand-set article from every other candidate, whose predictions
- * differ by percent. Frontier's own noise floor is kept alongside it, so no capture
- * this rule used to accept is refused for having a base value of zero.
+ * 2000 t stock stats they were derived from. One part in ten thousand of the base leaves
+ * that room and still separates a hand-set article from every other candidate, whose
+ * predictions differ by percent. Frontier's own noise floor is kept alongside it, so a
+ * stat whose base value is zero still matches.
  */
 function sameJournalNumber(actual: number, expected: number, base: number): boolean {
     return (
@@ -235,7 +235,7 @@ function matchesModifierSignature(
  * The module symbol and blueprint therefore identify the purchase at grade 1 and after
  * upgrading it through grades 2–5. The fitted grade and experimental effect remain the
  * loadout's current engineering state; the returned variant carries the original purchase
- * grade, Merc Coin price and — on the ten rows sold with one — the effect the shop bakes
+ * grade, Merc Coin price and, on the rows sold with one, the effect the shop bakes
  * in. So a capture that states a different effect, or none, still identifies the article
  * it was bought as: read the capture for what is fitted now, the variant for what was
  * bought.

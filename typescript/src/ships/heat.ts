@@ -13,7 +13,7 @@
  * settles at     heatLevel = √(thermal load / heatDissipation)
  * ```
  *
- * Two consequences are worth stating outright, because they are what the numbers mean:
+ * Two consequences follow, and they are what the numbers mean:
  * a build whose thermal load stays under the hull's `heatDissipation` **always settles**
  * below heat level `1` and never overheats, however long it holds the trigger; and one
  * whose load goes over it **never settles** — heat climbs until the ship cooks, and the

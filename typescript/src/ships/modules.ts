@@ -299,7 +299,7 @@ export interface OutfittingModuleIdentity {
      * the seven {@link CoreSlotType} core functions.
      *
      * @remarks
-     * Present on every `core` module, and on the fifteen Guardian Hybrid power plants
+     * Present on every `core` module, and on the Guardian Hybrid power plants
      * and power distributors — which Frontier files under `internal`, but which go in
      * a core mount. Absent on everything else, because there is no one mount to name:
      * a weapon, a utility fitting or an ordinary optional internal fits any mount of
@@ -375,8 +375,8 @@ export interface OutfittingModuleIdentity {
      * that no outfitting screen sells. Absent on every module a station offers.
      *
      * @remarks
-     * The fifteen are the nine starter `*_free` fittings and the six bundle-granted
-     * Vessel Hangars. Each is a second identity for an article the game already sells:
+     * They are the starter `*_free` fittings and the bundle-granted Vessel Hangars. Each
+     * is a second identity for an article the game already sells:
      * `Int_Engine_Size2_Class1_free` is the 2E Thrusters again, which is why
      * {@link ShipLoadout.modulesForSlot} leaves them out — a picker that offered both
      * would list "2E Thrusters" twice, once unpriced.
@@ -415,7 +415,7 @@ export interface OutfittingModuleIdentity {
      * rule: a mount's restriction says which modules it takes, this says which mounts
      * a module goes in. Most restricted families bind one way only — a cargo rack fits
      * a `cargo` mount *and* any unrestricted optional — so this is present on just the
-     * five records the game sells for one kind of mount and nowhere else:
+     * records the game sells for one kind of mount and nowhere else:
      *
      * | Module | Requires |
      * | --- | --- |
@@ -472,12 +472,11 @@ export interface OutfittingModuleIdentity {
      * discount or markup, which is what an outfitting screen quotes at 0% discount.
      *
      * @remarks
-     * Absent on the handful of records no registry prices: the starter `*_free`
-     * variants, the two Community Goal Corrosion Resistant Cargo Racks, and the 1B
-     * shield generator — records no outfitting
-     * registry carries a figure for — among them the two Corrosion Resistant Cargo
-     * Racks no station sells, which are not free. Treat `undefined` as "unknown", never
-     * as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+     * Absent on the handful of records no registry prices: the grant-only `*_free`
+     * articles, the Community Goal Corrosion Resistant Cargo Racks, which no station
+     * sells but which are not free, and the 1B shield generator. Treat `undefined` as
+     * "unknown", never as free; see
+     * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
      */
     readonly cost?: number;
 }
@@ -662,7 +661,7 @@ export interface OutfittingModuleStats {
      * @remarks
      * A sparse capability flag rather than a percentage: `true` means the protection is
      * inherent or the grade-1 blueprint grants it, while absence means it is not granted.
-     * The two Guardian Nanite Torpedo Pylons carry it inherently; read engineered
+     * The Guardian Nanite Torpedo Pylons carry it inherently; read engineered
      * protection from a fitted module's {@link FittedModule.effectiveStats}.
      */
     readonly guardianZoneResistance?: boolean;

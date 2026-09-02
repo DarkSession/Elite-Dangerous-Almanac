@@ -56,8 +56,7 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * @throws {TypeError} If `blueprintSymbol` is not a string, including when it is missing — this
  * returns an id rather than reporting whether one is known, so there is no miss for a
  * nullish one to be. A nullish `moduleSymbol` *is* a miss: an unknown module offers no
- * menu,
- * and `blueprintSymbol` comes back unchanged.
+ * menu, and `blueprintSymbol` comes back unchanged.
  * @example
  * ```ts
  * import { resolveBlueprintForModule } from '@elite-dangerous-almanac/core/ships/blueprint-journal';

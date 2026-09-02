@@ -112,7 +112,7 @@ const isGenericSpelling = (blueprintSymbol: string): boolean =>
  *
  * The Mercenary shop's Operations keys name bespoke recipes on modules bought already
  * engineered at grade 1, so no ordinary engineering menu lists one and the menu check
- * alone would refuse every caller. (The four Operations keys a menu *does* list are
+ * alone would refuse every caller. (The Operations keys a menu *does* list are
  * recipes a player applies from grade 1, and reach the caller by the menu instead; see
  * `engineering-options`.) The pre-engineered catalogue names which module each Mercenary
  * recipe arrives on, which is the same question answered by purchase instead of by a
@@ -178,21 +178,16 @@ export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableB
  * that omits its bespoke recipe, still accepts the grades above the grade 1 it is sold
  * carrying. Community-goal and tech-broker rewards do not grant this permission: their
  * ordinary blueprint ids identify fixed articles rather than recipes that can be applied
- * to the stock module. The Mercenary check is asked about
- * the id as written
- * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
- * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
- * on a menu carrying one of the three colliding ids were recorded under the journal
- * spelling, the gate would accept it here while `applyBlueprint` folded the resolved
- * recipe. One such menu has a Mercenary variant: the ordinary multi-cannons'
- * `MultiCannon_Rapid`. That menu is where the hazard would most
- * likely arrive, since `Weapon_Overcharged` on a multi-cannon is the collision consumers
- * actually meet. None is recorded that way:
- * Mercenary rows in `pre-engineered.jsonc` name the recipe the module rolls, never a
- * spelling that would resolve to a different one, and `pre-engineered.test.ts` asserts
- * exactly that. That is a narrower claim than menu membership, which the Mercenary
- * rows do not have and are not meant to: this leg exists for them. So the question does not arise; it is
- * written down because the gate itself cannot catch it if it ever does.
+ * to the stock module. The Mercenary check is asked about the id as written *and* about
+ * the resolved one, so resolution cannot **hide** a sale recorded under the other
+ * spelling. That widening is deliberately one-way: a Mercenary variant recorded under a
+ * colliding journal spelling would pass the gate here while `applyBlueprint` folded the
+ * resolved recipe. The ordinary multi-cannon menu is where that would arise, since it
+ * carries both a Mercenary variant (`MultiCannon_Rapid`) and the `Weapon_Overcharged`
+ * collision consumers actually meet. No row is recorded that way: Mercenary rows in
+ * `pre-engineered.jsonc` name the recipe the module rolls, never a spelling that would
+ * resolve to a different one, and `pre-engineered.test.ts` pins that. The hazard is
+ * written down here because the gate itself cannot catch it.
  *
  * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a
@@ -207,8 +202,8 @@ export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableB
  * capacity" over the same three labels — but neither is a family spelling of the other, so
  * a chaff launcher's ammo recipe stays off a heat sink launcher, whose roll is a smaller
  * one. Anti-Guardian Zone Resistance needs no leg of its own: `GuardianModule_Sturdy` is
- * the id the game writes on Guardian weapons as well as modules, the nine groups offering
- * the recipe list it, and `BLUEPRINTS` keys it under nothing else.
+ * the id the game writes on Guardian weapons as well as modules, every group offering
+ * the recipe lists it, and `BLUEPRINTS` keys it under nothing else.
  *
  * Everything else is excluded by not being a generic spelling, by the signature, or by
  * not being sold on that module. `Armour_Explosive` shares `ShieldBooster_Explosive`'s
