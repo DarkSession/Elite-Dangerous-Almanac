@@ -5584,7 +5584,7 @@
     "bootTime": 5
   },
   {
-    "symbol": "Int_BuggyBayMk2_Size2_Class3",
+    "symbol": "Int_MkIILargeBuggyBay_Size2_Class3",
     "familyId": "planetaryVehicleHangars",
     "name": "Mk II Large Planetary Vehicle Hangar",
     "class": 2,
@@ -5611,7 +5611,7 @@
     "cost": 32400
   },
   {
-    "symbol": "Int_BuggyBayMk2_Size4_Class3",
+    "symbol": "Int_MkIILargeBuggyBay_Size4_Class3",
     "familyId": "planetaryVehicleHangars",
     "name": "Mk II Large Planetary Vehicle Hangar",
     "class": 4,
@@ -5638,7 +5638,7 @@
     "cost": 129600
   },
   {
-    "symbol": "Int_BuggyBayMk2_Size6_Class3",
+    "symbol": "Int_MkIILargeBuggyBay_Size6_Class3",
     "familyId": "planetaryVehicleHangars",
     "name": "Mk II Large Planetary Vehicle Hangar",
     "class": 6,

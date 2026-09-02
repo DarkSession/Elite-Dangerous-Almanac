@@ -58,8 +58,11 @@ const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
     cargo: CARGO_PREFIXES,
     // Single- and multi-limpet controllers are separate symbol families.
     limpetController: ['int_dronecontrol', 'int_multidronecontrol'],
-    // One family covers both the Mk I and Mk II vessel bays.
-    vesselHangar: ['int_fighterbay'],
+    // One family covers both the Mk I and Mk II vessel bays. The Mk II Large Planetary
+    // Vehicle Hangar is a separate family that the game also fits here: a journal
+    // `ModuleBuy` puts `int_mkiilargebuggybay_size4_class3` into the Type-11's
+    // `FighterBay01`, over the Vessel Hangar it replaced.
+    vesselHangar: ['int_fighterbay', 'int_mkiilargebuggybay'],
     // Mk II cabins are a separate family, not PassengerCabin variants.
     passenger: ['int_passengercabin', 'int_mkii_passengercabin'],
     // Both ordinary and advanced suites share this prefix and reserve this mount.

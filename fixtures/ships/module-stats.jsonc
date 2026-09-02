@@ -43,11 +43,11 @@
       "cost": 12560
     },
     {
-      "symbol": "Int_BuggyBayMk2_Size2_Class3",
+      "symbol": "Int_MkIILargeBuggyBay_Size2_Class3",
       "cost": 32400
     },
     {
-      "symbol": "Int_BuggyBayMk2_Size4_Class3",
+      "symbol": "Int_MkIILargeBuggyBay_Size4_Class3",
       "cost": 129600
     },
     {
@@ -270,7 +270,7 @@
       "bootTime": 5
     },
     {
-      "symbol": "Int_BuggyBayMk2_Size6_Class3",
+      "symbol": "Int_MkIILargeBuggyBay_Size6_Class3",
       "name": "Mk II Large Planetary Vehicle Hangar",
       "mass": 25.5,
       "integrity": 30,

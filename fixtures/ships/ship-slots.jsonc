@@ -1030,7 +1030,8 @@
       "restriction": "vesselHangar",
       "accepts": [
         "Int_FighterBay_Size5_Class1",
-        "Int_FighterBayMk2_Size5_Class1"
+        "Int_FighterBayMk2_Size5_Class1",
+        "Int_MkIILargeBuggyBay_Size4_Class3"
       ],
       "rejects": [
         "Int_CargoRack_Size5_Class1",
