@@ -18,17 +18,17 @@
 {
   "counts": {
     "core": 516,
-    "internal": 484,
+    "internal": 493,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1194
+    "all": 1203
   },
   "familyCounts": {
     "core": 516,
-    "internal": 484,
+    "internal": 493,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1194
+    "all": 1203
   },
   "familyGroupCounts": {
     "core": 8,
@@ -85,7 +85,7 @@
     "powerDistributor": 49,
     "sensors": 41,
     "fuelTank": 9,
-    "none": 663
+    "none": 672
   },
   "records": [
     {
@@ -222,6 +222,37 @@
       "restrictedToShips": [
         "Explorer_NX",
         "PantherMkII",
+        "LakonMiner"
+      ]
+    },
+    {
+      "symbol": "Int_LargeBuggyBay_Size6_Class3",
+      "category": "internal",
+      "familyId": "planetaryVehicleHangars",
+      "name": "Large Planetary Vehicle Hangar",
+      "class": 6,
+      "rating": "F"
+    },
+    {
+      "symbol": "Int_MkIILargeBuggyBay_Size6_Class3",
+      "category": "internal",
+      "familyId": "planetaryVehicleHangars",
+      "name": "Mk II Large Planetary Vehicle Hangar",
+      "class": 6,
+      "rating": "F",
+      "restrictedToShips": [
+        "TypeX_2",
+        "Anaconda",
+        "BelugaLiner",
+        "Explorer_NX",
+        "Federation_Corvette",
+        "Federation_Gunship",
+        "Cutter",
+        "Independant_Trader",
+        "Krait_MkII",
+        "PantherMkII",
+        "Type9",
+        "Type9_Military",
         "LakonMiner"
       ]
     },

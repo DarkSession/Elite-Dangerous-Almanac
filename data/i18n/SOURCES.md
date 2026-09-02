@@ -32,7 +32,12 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `data/ships/modules-*.jsonc` catalogues, which stay authoritative for canonical
   English. Each symbol joins case-insensitively to the in-game module localisation
   identity, which carries a `name`, a `longname` and an `info` string per locale. The
-  join is exact and total: every symbol resolves.
+  join is exact and total over the symbols the acquired table covers: every one of them
+  resolves. The **unreleased** Large Planetary Vehicle Hangars postdate that table
+  (§`data/ships/SOURCES.md`) and are joined to a later observation of the same
+  localisation identities instead, acquired 2026-09-02 UTC: it names
+  `Int_LargeBuggyBay_Size{2,4,6}_Class3` and their `_Free` twins in all six locales. It
+  does not name the Mk II line, whose three records carry English alone.
   - **`longname` is the name taken.** It is the outfitting list's full name and equals
     the canonical English on 1,041 of the symbols, where `name` — the abbreviated panel
     form — equals it on 726. **Both totals were counted over the 1,199-symbol set that
@@ -46,9 +51,11 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
     than text; roughly three thousand of the keys are. Each is followed to the entry
     holding real text before anything is stored, and a value still carrying a `$` token
     after that is not a name and is rejected.
-  - **The `(Free)` vessel-hangar grants have no name of their own** — theirs is a
-    template wrapping the base hangar's. Their canonical English is already the base
-    module's, so they share its record.
+  - **The `(Free)` grants have no name of their own** — theirs is a template wrapping the
+    base module's. Their canonical English is already the base module's, so they share
+    its record. This covers the six Vessel Hangar grants and the three unreleased Large
+    Planetary Vehicle Hangar grants, observed as "Large Planetary Vehicle Hangar (Free)"
+    and its five translations — each the base name plus a rendered marker.
 - **The in-game table is authoritative over the EDDI and EDSY joins.** It carries 349
   values absent from those registries and differs from them in 3,135 cells across 324
   distinct record-and-locale pairs: 73 differ only in letter case, 10 only in punctuation
@@ -67,7 +74,11 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `Elektr. Gegenmaßnahmen`. **Ten values remain abbreviated** because no source spells
   them out — the Mk II gravity-optimised thrusters in four locales, the Advanced
   Planetary Approach Suite in three, and three others — and there the alternative is a
-  bare `Schubdüsen` or `Propulseurs` that loses what distinguishes the module.
+  bare `Schubdüsen` or `Propulseurs` that loses what distinguishes the module. The
+  unreleased Large Planetary Vehicle Hangar's Russian
+  `Крупный гараж для планет. транспорта` joins them: its `планет.` is the only spelling
+  observed, and expanding it to match the shipped hangar's `планетарного` would be this
+  repository writing the translation rather than reading it.
 - **A rendered capacity or grant marker is not a name.** A longname may carry a module's
   own capacity or a `(Free)` marker — `Anti-Korrosions-Frachtgestell (KAP.: 1)` — which
   describes one module rather than naming the family, so it is rejected and the source's
@@ -78,8 +89,22 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   rest, and the singular is kept, which is also the number the English carries.
   `Hatch Breaker Limpet Controller` is specific on most symbols and generic on one, and
   the specific is kept.
-- **Coverage:** complete. Every symbol carries all six locales.
-- **Manual corrections:** none.
+- **Coverage:** complete. Every symbol carries all six locales — but five of those
+  values are **constructed rather than read**; see the manual correction below.
+- **Manual corrections:** the **Mk II** Large Planetary Vehicle Hangar's five non-English
+  names are built, not sourced. Nothing acquired names that unreleased module in any
+  locale but English, and rather than leave the lookups answering `null` the repository
+  owner chose to form each as the plain hangar's own translation with `Mk II` appended —
+  `Großer Planetenfahrzeug-Hangar Mk II`, `Hangar de vehículo planetario Mk II`,
+  `Grand hangar des véhicules planétaires Mk II`,
+  `Hangar de veículo planetário grande Mk II`,
+  `Крупный гараж для планет. транспорта Mk II`. Four locales have a precedent for that
+  shape in the shipped Mk II Vessel Hangar and Mk II Cargo Rack, which suffix `Mk II`;
+  **German does not** — Frontier writes `Mk-II-Schiffshangar` for the hangar and
+  `Frachtgestell für Mk II` for the rack, so the German value here matches neither and is
+  the likeliest of the five to be wrong. All five are to be replaced by a real
+  localisation reading on release, and none should be treated as evidence of what
+  Frontier publishes. #16 tracks them with the records themselves.
 
 ## `blueprint-names.jsonc`
 
