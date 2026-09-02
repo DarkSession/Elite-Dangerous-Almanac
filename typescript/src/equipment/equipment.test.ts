@@ -5,6 +5,7 @@ import equipmentFixture from '../../../fixtures/equipment/equipment.jsonc' with 
 import { ALL_MICRO_RESOURCES } from '../materials/micro-resources-all.js';
 import { getMicroResourceBySymbol } from '../materials/micro-resources.js';
 import { SUITS, getSuitByFamily, getSuitByName, getSuitBySymbol, getSuitGrade } from './suits.js';
+import { PERSONAL_TOOLS, getPersonalToolById } from './tools.js';
 import {
     PERSONAL_WEAPONS,
     getPersonalWeaponByName,
@@ -26,6 +27,7 @@ import { applyPersonalModifiers, sumPersonalEngineeringIngredients } from './eng
 
 test('catalogue counts are pinned by the shared fixture', () => {
     assert.equal(SUITS.length, equipmentFixture.counts.suits);
+    assert.equal(PERSONAL_TOOLS.length, equipmentFixture.counts.tools);
     assert.equal(PERSONAL_WEAPONS.length, equipmentFixture.counts.weapons);
     assert.equal(
         Object.keys(PERSONAL_MODIFICATIONS).length,
@@ -126,6 +128,34 @@ test('the two grade lookups answer a missing grade and a bad one the same way', 
             message: 'getSuitGrade: grade must be an integer in [1, 5]',
         });
     }
+});
+
+test('every suit tool carries the stats the shared fixture pins', () => {
+    for (const expected of equipmentFixture.tools) {
+        const tool = getPersonalToolById(expected.id);
+        assert.ok(tool, expected.id);
+        assert.deepEqual({ ...tool }, { ...expected });
+        for (const family of tool.suitFamilies) assert.ok(getSuitByFamily(family), family);
+    }
+});
+
+test('tool lookups ignore case and whitespace and return null for misses', () => {
+    assert.equal(getPersonalToolById(' ARC-CUTTER ')?.name, 'Arc Cutter');
+    assert.equal(getPersonalToolById('unknown'), null);
+    assert.throws(() => getPersonalToolById(42 as unknown as string), TypeError);
+});
+
+test('only the Energylink discharges, and tool ids and names are unique', () => {
+    // The discharge rate is deliberately not called a drain: Reduced Tool Battery
+    // Consumption halves `powerUsage` and `overloadPowerUsage`, and the game leaves the
+    // discharge rate alone.
+    const withDischarge = PERSONAL_TOOLS.filter((tool) => tool.dischargeRate !== undefined);
+    assert.deepEqual(
+        withDischarge.map((tool) => tool.id),
+        ['energylink'],
+    );
+    assert.equal(new Set(PERSONAL_TOOLS.map((tool) => tool.id)).size, PERSONAL_TOOLS.length);
+    assert.equal(new Set(PERSONAL_TOOLS.map((tool) => tool.name)).size, PERSONAL_TOOLS.length);
 });
 
 test('representative handheld weapons resolve with their pinned grade stats', () => {
@@ -355,6 +385,26 @@ test('modification modifiers scale the stat the shared fixture pins', () => {
     }
 });
 
+test('the tool drain recipe halves the bases the tools catalogue carries', () => {
+    // The bases come from the catalogue, not from the fixture: a tool stat that moves
+    // has to move this result too, rather than leaving a stale figure pinned here.
+    const expected = equipmentFixture.toolDrain;
+    const recipe = getPersonalModification(expected.recipeSymbol);
+    assert.ok(recipe);
+    assert.deepEqual(recipe.modifiers, [{ stat: expected.stat, multiplier: expected.multiplier }]);
+    const cutter = getPersonalToolById('arc-cutter');
+    const energylink = getPersonalToolById('energylink');
+    assert.ok(cutter?.powerUsage !== undefined && energylink?.overloadPowerUsage !== undefined);
+    assert.equal(
+        applyPersonalModifiers(expected.stat, cutter.powerUsage, recipe.modifiers),
+        expected.arcCutterPowerUsage,
+    );
+    assert.equal(
+        applyPersonalModifiers(expected.stat, energylink.overloadPowerUsage, recipe.modifiers),
+        expected.energylinkOverloadPowerUsage,
+    );
+});
+
 test('the recipes with no catalogued magnitude are the only ones with an empty modifier list', () => {
     const empty = Object.entries(PERSONAL_MODIFICATIONS)
         .filter(([, { modifiers }]) => modifiers.length === 0)
@@ -363,10 +413,10 @@ test('the recipes with no catalogued magnitude are the only ones with an empty m
     assert.deepEqual(empty, [...equipmentFixture.modificationsWithoutModifiers]);
 });
 
-test('every modifier names a catalogue field or a documented panel stat', () => {
+test('every modifier names a catalogue field or a documented exception', () => {
     // A modifier whose stat matches nothing is skipped, so a typo here would pass the
     // schema, the types and every other test while quietly doing nothing.
-    const panelOnly = new Set([
+    const withoutCatalogueField = new Set([
         'meleeDamage',
         'sprintDuration',
         'toolEnergyDrain',
@@ -383,12 +433,12 @@ test('every modifier names a catalogue field or a documented panel stat', () => 
         for (const { stat } of modifiers) {
             named.add(stat);
             assert.ok(
-                catalogued.has(stat) || panelOnly.has(stat),
+                catalogued.has(stat) || withoutCatalogueField.has(stat),
                 `${symbol} modifies unknown stat ${stat}`,
             );
         }
     }
-    for (const stat of panelOnly) {
+    for (const stat of withoutCatalogueField) {
         assert.ok(named.has(stat), `no recipe modifies documented stat ${stat}`);
     }
 });
@@ -424,6 +474,7 @@ test('sumPersonalEngineeringIngredients merges case-insensitively in first-seen 
 test('all personal-equipment catalogues and nested records are frozen', () => {
     for (const catalogue of [
         SUITS,
+        PERSONAL_TOOLS,
         PERSONAL_WEAPONS,
         PERSONAL_UPGRADE_COSTS,
         PERSONAL_MODIFICATIONS,

@@ -486,9 +486,18 @@ stored locale. A language absent from every catalogue is the locale decision
 recorded above rather than a gap. The accepted sources carry only canonical English for
 the outfitting-family labels listed above, slot and restriction labels, the suit
 weapon-mount labels, fixed reward names, and structured loadout, calculation, SLEF and
-edit messages. Every suit, handheld weapon and modification the owning catalogues hold is
-complete in all six locales; the mount labels are the one personal-equipment gap, and the
-game publishes all six locales for them, so they are tracked by
-[#26](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26) and not by #320.
-Missing source-backed translations remain tracked by
+edit messages. A missing source-backed translation that has no issue of its own
+remains tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
+
+Every suit, handheld weapon and modification the personal-equipment catalogues hold is
+complete in all six locales. That area carries these gaps:
+
+- **The suit weapon-mount labels are English only.** The game publishes all six locales
+  for them, so the values exist to be read. The gap is tracked by
+  [#26](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26).
+- **Suit tool names are English only**, held in `data/equipment/tools.jsonc` and nowhere
+  else. No accepted source translates them: Odyssey Materials
+  Helper models the tools as suit stats and its locale tables carry no tool row, so
+  there is nothing to publish and no `i18n` catalogue for them. The gap is tracked by
+  [#29](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/29).

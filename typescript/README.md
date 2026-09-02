@@ -48,7 +48,8 @@ The package has six feature areas:
 - `astro`: procedural names, id64 addresses, regions, nebulae, permit locks, and scanned
   bodies with their physics;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
-- `equipment`: Odyssey suits, handheld weapons, grade upgrades and modifications;
+- `equipment`: Odyssey suits, handheld weapons, suit tools, grade upgrades and
+  modifications;
 - `i18n`: sparse localized catalogue names, descriptions, slot labels and structured
   diagnostic messages;
 - `materials`: ship engineering materials and Odyssey micro resources;
@@ -244,7 +245,9 @@ families, so `resolvePersonalModificationForWeapon` resolves those spellings aga
 weapon before joining to `PERSONAL_MODIFICATIONS` or `PERSONAL_MODIFICATION_COSTS`.
 Material shopping lists live on the separate `equipment/modification-costs` subpath and
 consume the
-micro-resource symbols from the `materials` feature area.
+micro-resource symbols from the `materials` feature area. Suit tools are the one
+personal-equipment record with no Frontier symbol — the journal never names a tool — so
+`PersonalTool.id` is a library key such as `arc-cutter`.
 
 ## Important behavior
 

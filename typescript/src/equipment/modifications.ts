@@ -18,7 +18,13 @@ import { deepFreeze } from '../internal/deep-freeze.js';
 import { findByRawKey } from '../internal/registry-index.js';
 import type { PersonalModifier } from './engineering.js';
 
-/** Equipment kind a personal modification can be installed on. */
+/**
+ * Equipment kind a personal modification can be installed on.
+ *
+ * @remarks
+ * A suit tool is not one of them. The one recipe that changes a tool, Reduced Tool
+ * Battery Consumption, is installed on the suit and carries `"suit"`.
+ */
 export type PersonalModificationTarget = 'suit' | 'weapon';
 
 /** One permanent personal-equipment engineering recipe. */
@@ -35,9 +41,11 @@ export interface PersonalModification {
      * `equipment/engineering`.
      *
      * A modifier names a stat of whatever it modifies, which is usually the equipment
-     * the recipe is installed on. Extra Ammo Capacity is the exception a consumer has
-     * to know about: it is a suit modification and it multiplies a *weapon's*
-     * `reserveAmmo`.
+     * the recipe is installed on. Two suit modifications move something else, and a
+     * consumer has to know about both: Extra Ammo Capacity multiplies a *weapon's*
+     * `reserveAmmo`, and Reduced Tool Battery Consumption halves a *tool's*
+     * `powerUsage` and the Energylink's `overloadPowerUsage` under the name
+     * `toolEnergyDrain`.
      *
      * @remarks
      * **Empty** where the recipe changes nothing this catalogue names. Night Vision,

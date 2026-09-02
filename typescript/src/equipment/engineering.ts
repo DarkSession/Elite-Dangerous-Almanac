@@ -44,8 +44,8 @@ export function sumPersonalEngineeringIngredients(
 }
 
 /**
- * One stat multiplier an engineer-applied modification puts on a suit or a handheld
- * weapon.
+ * One stat multiplier an engineer-applied modification puts on a suit, a handheld
+ * weapon or a suit tool.
  *
  * @remarks
  * A personal modification is applied in one step: it has no grade and no quality roll,
@@ -61,8 +61,13 @@ export interface PersonalModifier {
      * @remarks
      * Some stats the game shows on foot have no catalogue field, because the panel
      * shows no base for them. They are named for what they are: `"meleeDamage"`,
-     * `"sprintDuration"`, `"toolEnergyDrain"`, and the pressurised and unpressurised
-     * firing audible ranges.
+     * `"sprintDuration"`, and the pressurised and unpressurised firing audible ranges.
+     *
+     * `"toolEnergyDrain"` names no field either, but its bases are catalogued: it is a
+     * tool's `powerUsage` and the Energylink's `overloadPowerUsage` in
+     * `equipment/tools`. The Energylink's `dischargeRate` carries its own name because
+     * the game leaves it alone, so hand `applyPersonalModifiers` the base the factor
+     * applies to.
      */
     readonly stat: string;
     /** The factor the stat is multiplied by, e.g. `1.5` for a 50% increase. */

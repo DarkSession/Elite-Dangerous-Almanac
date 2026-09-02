@@ -1,6 +1,6 @@
 /**
- * Elite Dangerous personal equipment: Odyssey suits, handheld weapons, Pioneer Supplies
- * grade progression and engineer-applied modifications.
+ * Elite Dangerous personal equipment: Odyssey suits, handheld weapons, suit tools,
+ * Pioneer Supplies grade progression and engineer-applied modifications.
  *
  * Material shopping lists are deliberately leaf-only: import grade-upgrade costs from
  * `equipment/upgrade-costs` and modification costs from
@@ -39,6 +39,8 @@ export {
     type ScopeMagnification,
     type WeaponUpgradeGroup,
 } from './weapons.js';
+
+export { PERSONAL_TOOLS, getPersonalToolById, type PersonalTool } from './tools.js';
 
 export {
     applyPersonalModifiers,

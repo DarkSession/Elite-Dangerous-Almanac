@@ -18,7 +18,7 @@ except where a derivation bullet below names the source that supplies one.
 
 ## Personal suits, handheld weapons and engineering
 
-- **Files:** `suits.jsonc`, `weapons.jsonc`, `upgrade-costs.jsonc`,
+- **Files:** `suits.jsonc`, `weapons.jsonc`, `tools.jsonc`, `upgrade-costs.jsonc`,
   `modifications.jsonc`, `modification-costs.jsonc`,
   `modification-journal-names.jsonc`.
 - **Derivation:**
@@ -42,6 +42,14 @@ except where a derivation bullet below names the source that supplies one.
     `4_5` to their target grades `2` / `3` / `4` / `5`. Weapon upgrade families retain
     the source's `karma`, `takada` and `manticore` identities; `engineeringType` separately
     records the `kinetic`, `laser` or `plasma` suffix used by modification recipes.
+  - `Suit.java`, `StaticStat.java` and `DynamicStat.java` supply the Energylink, the
+    Profile Analyser, the Arc Cutter and the Genetic Sampler.
+    The source models a tool as a suit stat rather than as an item, and that is what
+    supplies the availability: the Arc Cutter figure appears on `MAVERICK` only, the
+    Genetic Sampler figure on `ARTEMIS` only, and the Energylink and Profile Analyser
+    figures sit in the shared `genericStats` list. `suitFamilies` therefore holds
+    `utilitysuit` for the Arc Cutter, `explorationsuit` for the Genetic Sampler, and all
+    four suit families for the other two.
   - `SuitModification.java` and `WeaponModification.java` supply the journal symbols.
     English engineer names come from
     `application/src/main/resources/locale/engineer/names.csv`. A recipe is keyed by its
@@ -60,15 +68,19 @@ except where a derivation bullet below names the source that supplies one.
     **The secondary mount carries no number**: the game writes `SecondaryWeapon`, not
     `SecondaryWeapon1`. Each suit's mount list is the weapon-mount counts this catalogue
     already held, joined to those keys, primary mounts first and numbered from 1.
-  - **In-game observation supplies the stat values** described in the three sections
-    below: the suit-wide component stats and the four resistances, the weapon combat
-    stats and damage, and the multipliers each modification applies. The reload times
-    are the exception: the panel shows no reload figure, so `Weapon.java` supplies them.
+  - **In-game observation supplies the stat values** in the suit, weapon and
+    modification sections below: the suit-wide component stats and the four resistances,
+    the weapon combat stats and damage, and the multipliers each modification applies.
+    The reload times are the exception: the panel shows no reload figure, so
+    `Weapon.java` supplies them. The tool figures are Odyssey Materials Helper's,
+    converted as the suit-tool section states.
 
 - **Manual corrections:**
   - Odyssey Materials Helper's English locale calls the four Karma weapons “Kinematic”
     and expands the three TK weapon names to “Takada”. The Frontier Elite Dangerous
     Gamestore confirms the in-game prefixes are `Karma` and `TK`, which are stored here.
+  - Odyssey Materials Helper calls the Profile Analyser the “profile scanner”. The
+    in-game name is `Profile Analyser`, which is stored here.
   - Frontier's misspelled `surveilleancelogs` symbol is kept verbatim so it joins to
     journal inventory data and the micro-resource catalogue.
   - Three modification display names are the in-game text rather than the source's:
@@ -113,6 +125,34 @@ The suit stats panel is read per suit family and per grade.
 - **A grade changes the armour, the shield generator, the modification slots and the
   item symbol.** Nothing else on a suit moves with the grade, which is what makes the
   suit-wide fields safe to store once per family.
+
+### Suit tools
+
+- **A tool has no Frontier symbol, so `id` is this library's own key.** Neither Odyssey
+  Materials Helper nor the game names a tool: the source models the tools as suit stats
+  and its English locale table has no tool row, a journal `SuitLoadout` names the suit
+  and its weapon mounts only, and a `BackpackChange` reports consumables, components,
+  data and goods moving in and out of the backpack, never a tool. Each `id` is the
+  English name in lower case — `energylink`, `profile-analyser`, `arc-cutter`,
+  `genetic-sampler` — and joins to no journal field.
+- **Every power figure is normalised to MW, the unit `Suit.batteryCapacity` uses**, so a
+  suit's battery divided by a tool's per-second drain is seconds of use. The source's
+  600 kW/s Energylink discharge rate is stored as `0.6`, and its 40, 150 and 450 kW/s
+  power usages as `0.04`, `0.15` and `0.45`. The Energylink's 2.7 MW/s recharge rate and
+  its 3.0 MW overload cost are already in MW and are stored as the source holds them.
+  Durations stay in seconds.
+- **The tools take no grade.** The source holds one figure per stat with no grade or
+  class axis, and Pioneer Supplies sells no tool, so a tool record carries no `grades`
+  field at all rather than a single-entry one.
+- **Reduced Tool Battery Consumption halves `powerUsage` and the Energylink's
+  `overloadPowerUsage`**, and leaves the Energylink's discharge rate alone: the source
+  holds that rate as a static stat and applies no factor to it. The two are stored under
+  separate names for exactly that reason.
+- **A third modification target is rejected.** The question is whether a tool takes
+  modifications of its own. It does not: Reduced Tool Battery Consumption is a suit
+  modification, offered by the suit engineers and installed in a suit modification slot,
+  and no other recipe touches a tool. `target` therefore stays `suit`, and adding a
+  `tool` value would state something the game does not do.
 
 ### Weapon stats read in-game
 
@@ -178,9 +218,11 @@ that changes nothing — is never stored.
 - **`roundUp` marks the one result the game rounds up**: Magazine Size multiplies by 1.5
   and rounds the magazine up to a whole number, so 45 rounds become 68 rather than 67.5.
 - **Some recipes name a stat no catalogue field carries**, because the panel shows no
-  base for it: the melee damage, sprint duration and tool energy drain multipliers, and
-  the pressurised and unpressurised firing audible ranges. The factor is recorded
-  against the stat it moves; the base has to come from the panel.
+  base for it: the melee damage and sprint duration multipliers, and the pressurised and
+  unpressurised firing audible ranges. The factor is recorded against the stat it moves;
+  the base has to come from the panel. `toolEnergyDrain` names no field either, and its
+  bases are catalogued rather than panel-only: a tool's `powerUsage` and the Energylink's
+  `overloadPowerUsage` in `tools.jsonc`.
 - **Some recipes carry an empty modifier list**, for two different reasons, and both are
   a statement rather than a gap:
   - Night Vision, Scope, Reload Speed, Stowed reloading and Combat Movement Speed apply
