@@ -35,7 +35,7 @@ interface PermitLockedSystemData {
 }
 
 /**
- * The 54 individually permit-locked systems, sorted by name.
+ * The individually permit-locked systems, sorted by name.
  *
  * @remarks
  * The array and every record are frozen at runtime. Region-locked systems are not

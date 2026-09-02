@@ -58,9 +58,9 @@ export type ShipGunsightCatalogue = Readonly<Record<string, ShipGunsight>>;
  * by {@link ships!SHIPS | SHIPS}.
  *
  * @remarks
- * The map, each hull array and every offset pair are deeply frozen. It contains 48
- * hulls and 234 hardpoints. Importing this module adds only the compact offset map; it
- * does not import the ship or outfitting catalogues.
+ * The map, each hull array and every offset pair are deeply frozen. It covers every
+ * hardpoint of every player-flyable hull. Importing this module adds only the compact
+ * offset map; it does not import the ship or outfitting catalogues.
  *
  * @example
  * ```ts

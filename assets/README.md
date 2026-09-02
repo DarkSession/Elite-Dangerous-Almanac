@@ -15,7 +15,7 @@ assets/ships/<symbol>/schematic-bottom.svg
 on a `600 × 600` canvas. `illustration.svg` is a coloured, three-quarter vector view on
 a `1200 × 800` canvas. `schematic-top.svg` and `schematic-bottom.svg` are
 feature-annotated technical views of the upper and lower hull surfaces on the same
-canvas. The set covers all 48 hulls in the ship catalogue. The SVG content is preserved
+canvas. The set covers every hull in the ship catalogue. The SVG content is preserved
 as supplied; only the ship-image filenames are made consistent for consumers.
 
 These assets and imagery remain the property of Frontier Developments plc and are used

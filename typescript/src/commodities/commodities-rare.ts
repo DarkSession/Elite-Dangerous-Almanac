@@ -1,6 +1,6 @@
 /**
- * The catalogue of **rare** market commodities — the 142 location-specific luxury
- * goods, each produced at a single station and worth more the further it is carried.
+ * The catalogue of **rare** market commodities — the location-specific luxury goods,
+ * each produced at a single station and worth more the further it is carried.
  *
  * Every record here is a rare commodity (`rare: true`); the standard market goods
  * live in `./commodities-standard`. Search it with the query functions in
@@ -16,7 +16,7 @@ import { buildCommodityCatalogue, type CommodityRecord } from './internal/commod
 import rareData from '../../../data/commodities/rare-commodities.jsonc' with { type: 'json' };
 
 /**
- * All 142 rare commodities, in Frontier's registry order.
+ * Every rare commodity, in Frontier's registry order.
  *
  * @remarks
  * Every record has `rare: true`. The array and its records are frozen. A rare's
@@ -27,7 +27,6 @@ import rareData from '../../../data/commodities/rare-commodities.jsonc' with { t
  * ```ts
  * import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
  *
- * RARE_COMMODITIES.length; // -> 142
  * RARE_COMMODITIES.find((c) => c.symbol === 'LavianBrandy')?.name; // -> 'Lavian Brandy'
  * ```
  */

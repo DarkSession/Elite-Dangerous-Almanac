@@ -3101,6 +3101,7 @@ type FixtureShipsModules = {
         internal: number;
         utility: number;
     };
+    exclusionGroupCount: number;
     families: {
         category: string;
         count: number;

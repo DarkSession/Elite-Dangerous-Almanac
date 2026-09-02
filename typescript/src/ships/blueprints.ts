@@ -22,8 +22,8 @@
  * leaves it alone. `ships/blueprint-journal` keeps those three spellings apart from this
  * full mechanics catalogue and resolves one against a module.
  *
- * A further 25 keys are the **Operations** ids: 21 recipes a module is *sold*
- * carrying (`ships/pre-engineered`) and four Operations recipes a player rolls at an
+ * Further keys are the **Operations** ids: recipes a module is *sold*
+ * carrying (`ships/pre-engineered`) and the four Operations recipes a player rolls at an
  * engineer (`ships/engineering-options`). No journal spelling has been observed for those
  * Operations ids — a gap in the evidence, not a claim that the game writes none.
  *
@@ -32,7 +32,7 @@
  * Guardian modules; the Inara registry's `recipe_guardianmodule_sturdy` and
  * `recipe_guardianweapon_sturdy` are that registry's own spellings of the same recipe and
  * are not keys here.
- * Enumerate the 107 blueprints with `Object.keys(BLUEPRINTS)`.
+ * Enumerate every blueprint with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY; see

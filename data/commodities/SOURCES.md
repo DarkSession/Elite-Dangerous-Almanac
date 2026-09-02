@@ -6,7 +6,7 @@ combines the latter two sources, documented under Standard commodities.
 
 ## Standard commodities
 
-- **File:** `commodities.jsonc` (257 tradable goods).
+- **File:** `commodities.jsonc` (the tradable goods).
 - **Source:** EDCD FDevIDs, `commodity.csv` (columns `id,symbol,category,name`).
 - **Derivation:** records are carried over in registry order as
   `{ symbol, name, category }`. `symbol` is Frontier's internal id as the market and
@@ -29,7 +29,7 @@ combines the latter two sources, documented under Standard commodities.
 
 ## Rare commodities
 
-- **File:** `rare-commodities.jsonc` (142 location-specific luxury goods).
+- **File:** `rare-commodities.jsonc` (the location-specific luxury goods).
 - **Source:** EDCD FDevIDs, `rare_commodity.csv` (columns
   `id,symbol,market_id,category,name`).
 - **Derivation:** records are carried over in registry order as

@@ -15,7 +15,7 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `core` module, so a loader adds
- * `category: "core"` from the file it read rather than repeating it 516 times.
+ * `category: "core"` from the file it read rather than repeating it on every record.
  * `slot` says which of the eight core mounts the record fills — `armour`, or one of
  * the seven core functions (`powerPlant`, `thrusters`, `frameShiftDrive`,
  * `lifeSupport`, `powerDistributor`, `sensors`, `fuelTank`). It is on every record

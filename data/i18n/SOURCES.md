@@ -28,18 +28,18 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-08-30 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** all 1,194 current module symbols and English names come from the four
+- **Derivation:** every current module symbol and English name comes from the four
   `data/ships/modules-*.jsonc` catalogues, which stay authoritative for canonical
   English. Each symbol joins case-insensitively to the in-game module localisation
   identity, which carries a `name`, a `longname` and an `info` string per locale. The
-  join is exact and total: every one of the 1,194 resolves.
+  join is exact and total: every symbol resolves.
   - **`longname` is the name taken.** It is the outfitting list's full name and equals
     the canonical English on 1,041 of the symbols, where `name` — the abbreviated panel
     form — equals it on 726. **Both totals were counted over the 1,199-symbol set that
     preceded the removal of the five plain size-8 drives (§`data/ships/SOURCES.md`), and
     are not re-derived here:** the in-game localisation table is not vendored, so whether
     those five sat inside either total cannot be checked from this repository. Read them
-    as upper bounds over 1,194 symbols until the table is re-acquired. `name` is taken
+    as upper bounds over the current symbol set until the table is re-acquired. `name` is taken
     only where a longname is a template rather than a name, which is the cargo racks,
     fuel tanks and corrosion-resistant racks whose longname carries a capacity.
   - **Aliasing is followed.** A localisation value may be a `$Other_Key;` pointer rather
@@ -74,11 +74,11 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   other field is read instead.
 - **One record per canonical English name.** Where the source distinguishes in another
   locale what English spells the same way, the reading most symbols share is stored:
-  `Lightweight Alloy` and `Reinforced Alloy` are singular on 25 hulls and plural on the
+  `Lightweight Alloy` and `Reinforced Alloy` are singular on most hulls and plural on the
   rest, and the singular is kept, which is also the number the English carries.
-  `Hatch Breaker Limpet Controller` is specific on twenty symbols and generic on one, and
+  `Hatch Breaker Limpet Controller` is specific on most symbols and generic on one, and
   the specific is kept.
-- **Coverage:** complete. All 1,194 symbols carry all six locales.
+- **Coverage:** complete. Every symbol carries all six locales.
 - **Manual corrections:** none.
 
 ## `blueprint-names.jsonc`
@@ -88,11 +88,11 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   database version `424009901`, last-modified marker `20260810`.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** each of the 107 current keys and its English name comes from
+- **Derivation:** each current key and its English name comes from
   `data/ships/blueprints.jsonc`. Names remain keyed per blueprint because a single
   English phrase can have different grammatical translations for different module
   families. The Frontier symbol joins case-insensitively to the in-game modification
-  name table, which supplies every locale for the 90 recipes it names. The remaining 17
+  name table, which supplies every locale for the recipes it names. The rest
   are ids this repository keys separately because their numbers differ, where the game
   offers only the generic recipe's menu entry and so publishes only its name: each takes
   the locales of the generic id it shadows — `AFM_Shielded`, `Refineries_Shielded` and
@@ -106,7 +106,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   canonical name is kept, as it is for every other blueprint. Where EDSY and the in-game
   table disagree the in-game value is kept, as everywhere else in this repository: it
   differs for ten values across four locales, all of them wording, none of them meaning.
-- **Coverage:** complete. All 107 blueprints carry all six locales.
+- **Coverage:** complete. Every blueprint carries all six locales.
 - **Manual corrections:** two values in the in-game table carry a stray leading or
   trailing ASCII space, marked in the acquired table and removed here so a successful
   lookup is already trimmed like every other catalogue name: French `FSD_FastBoot` (which
@@ -119,10 +119,10 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-08-30 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** each of the 86 current keys and its English name comes from
+- **Derivation:** each current key and its English name comes from
   `data/ships/experimental-effects.jsonc`, which stays authoritative for canonical
   English. The Frontier symbol joins to the in-game experimental-effect name table,
-  which supplies every locale for all 86. Where it and EDSY disagree, the in-game value
+  which supplies every locale for all of them. Where it and EDSY disagree, the in-game value
   is kept, as everywhere else in this repository. It supplies six values EDSY does not
   carry — all five non-English `special_super_penetrator` names and the German
   `special_weapon_rateoffire` — and changes two EDSY already carried: German
@@ -134,7 +134,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `special_super_penetrator_cooled` are pre-engineered rail-gun variants the game does
   not name separately, so the source marks them as carrying the base effect's entry.
   Each takes those values, exactly as a shadowing blueprint id takes its generic's.
-- **Coverage:** complete. All 86 effects carry all six locales.
+- **Coverage:** complete. Every effect carries all six locales.
 - **Manual corrections:** the source appends a `†` to every marked cell of the three
   `_cooled` variants above; it is the acquisition's own shadow marker rather than part of
   a name, and is removed here.
@@ -144,7 +144,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-08-16 UTC.
 - **Odyssey Materials Helper revision:** commit
   `23343c453938e724f317c56e9eb7db0dbfa71f78`.
-- **Derivation:** each of the 146 current symbols and its canonical English name comes
+- **Derivation:** each current symbol and its canonical English name comes
   from the three `data/materials/materials-*.jsonc` catalogues. The lower-cased symbol
   joins directly to the final component of Odyssey Materials Helper's message key in
   `locale/material/horizons/{raw,manufactured,encoded}.csv`; only that row's explicit
@@ -155,14 +155,14 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   source values.
 - **Second source, the in-game material localisation tables**, acquired 2026-08-30 UTC;
   the game publishes no immutable identifier for them, so the acquired table is the
-  evidence. It covers all 146 materials in all six locales and, as everywhere else in
-  this repository, wins where the two disagree. That fills the 30 values Odyssey
-  Materials Helper did not carry and restyles 30 it did: 23 are the French apostrophe
+  evidence. It covers every material in all six locales and, as everywhere else in
+  this repository, wins where the two disagree. That fills the values Odyssey Materials
+  Helper did not carry and restyles others it did: most are the French apostrophe
   (the in-game tables use `'` throughout, as every other catalogue here does, where
-  Odyssey Materials Helper uses `’`), five are Spanish names the helper title-cased
+  Odyssey Materials Helper uses `’`), the next largest group is Spanish names the helper title-cased
   (`Fragmento Caústico` against the game's `Fragmento cáustico`), and the rest are
   wording.
-- **Coverage:** complete. All 146 materials carry all six locales.
+- **Coverage:** complete. Every material carries all six locales.
 - **Manual corrections:** six of the in-game values are the outfitting UI's own
   abbreviations, shortened to fit its widget rather than translated differently —
   `Comp. de destroços Guardian` against the helper's `Componentes de destroços Sentinela
@@ -183,26 +183,26 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `23343c453938e724f317c56e9eb7db0dbfa71f78`.
 - **Supplemental source:** in-game verification, acquired 2026-08-16 UTC; immutable
   revision unavailable.
-- **Derivation:** each of the 226 current symbols and its canonical English name comes
+- **Derivation:** each current symbol and its canonical English name comes
   from the four `data/materials/micro-resources-*.jsonc` catalogues. The 196 FDevIDs-backed
   records join directly to the final component of Odyssey Materials Helper's message key
   in `locale/material/odyssey/{asset,consumable,data,good}.csv`; only that row's explicit
-  localized columns are copied. Twenty-eight of the 30 in-game-backed records also have
-  rows in Odyssey Materials Helper, while `PowerVirus` and
-  `SmallCapacityPowerRegulator` do not. All 30 take the explicit in-game `name` values for
-  German, Spanish, French and Russian. In both cases the owning catalogue remains
-  authoritative for canonical English names.
+  localized columns are copied. All but two of the in-game-backed records also have
+  rows in Odyssey Materials Helper, the exceptions being `PowerVirus` and
+  `SmallCapacityPowerRegulator`. Every in-game-backed record takes the explicit in-game
+  `name` values for German, Spanish, French and Russian. In both cases the owning
+  catalogue remains authoritative for canonical English names.
 - **Second source, the in-game micro-resource localisation tables**, acquired
   2026-08-30 UTC; the game publishes no immutable identifier for them, so the acquired
-  table is the evidence. It covers 225 of the 226 in all six locales and wins where the
-  two disagree, on the same footing as the material tables above. That fills all 47
-  remaining values — including the Brazilian Portuguese for `PowerVirus` and
-  `SmallCapacityPowerRegulator`, which no registry carries — and restyles 46, of which 36
-  are the French apostrophe and seven are the French Powerplay term, which the game
+  table is the evidence. It covers all but one symbol in all six locales and wins where the
+  two disagree, on the same footing as the material tables above. That fills every
+  remaining value — including the Brazilian Portuguese for `PowerVirus` and
+  `SmallCapacityPowerRegulator`, which no registry carries — and restyles others, mostly
+  the French apostrophe and the French Powerplay term, which the game
   lower-cases (`Données classifiées de puissance`).
   `PowerMegashipData` is absent from the micro-resource table and appears in the material
   one; its values are taken from there.
-- **Coverage:** complete. All 226 micro resources carry all six locales.
+- **Coverage:** complete. Every micro resource carries all six locales.
 - **Manual corrections:** five in-game values are layout, not names. Four German
   consumables carry a `<br>` inside a compound word that the UI wraps —
   `Energie-<br>zelle`, `Splitter-<br>granate`, `Schild-<br>unterbrecher` and
@@ -223,9 +223,9 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   labels are copied verbatim. The join is on family identity rather than on English
   string equality, because the English column of the in-game table *is* the canonical
   English name the ships catalogue took from it.
-- **Coverage:** English covers all 77 families; the five other locales cover the same 58.
-  The 19 without a source-backed label are the families the in-game outfitting screen
-  does not name separately: `axMissileRacks`, `axMultiCannons`, `cargoHatches`,
+- **Coverage:** English covers every family; the five other locales cover only the
+  families the in-game outfitting screen names. The families without a source-backed
+  label are: `axMissileRacks`, `axMultiCannons`, `cargoHatches`,
   `causticSinkLaunchers`, `guardianGaussCannons`, `guardianHybridPowerDistributors`,
   `guardianHybridPowerPlants`, `guardianNaniteTorpedoPylons`, `guardianPlasmaChargers`,
   `guardianShardCannons`, `guardianShieldReinforcementPackages`,
@@ -239,21 +239,21 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-08-30 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** each of the 86 current keys comes from
+- **Derivation:** each current key comes from
   `data/ships/experimental-effects.jsonc`; the Frontier symbol joins to the in-game
-  experimental-effect description table, which supplies every locale for all 86. All six
-  values, English included, are the source's verbatim.
+  experimental-effect description table, which supplies every locale for all of them.
+  All six values, English included, are the source's verbatim.
 - **This catalogue no longer projects the ships catalogue's `description`.** The two
   answer different questions and are deliberately different strings. An effect's
   `description` in `data/ships/experimental-effects.jsonc` is a mechanical note that
   states what the `modifiers` list cannot — that High Yield Shell deals 50/50
-  kinetic/explosive damage with module splash, say — and 57 of the 86 effects need no
+  kinetic/explosive damage with module splash, say — and most effects need no
   such note and carry none. What the game shows a player is display prose that names no
   magnitudes ("Modified munitions that convert a portion of damage to explosive …"), and
   it exists for every effect. Projecting one onto the other would have cost the
   mechanical notes their numbers; storing the display prose here keeps each field doing
   its own job, and the ships catalogue is unchanged.
-- **Coverage:** complete. All 86 effects carry all six locales.
+- **Coverage:** complete. Every effect carries all six locales.
 - **Manual corrections:** 26 of the source's descriptions begin with one or more
   bracketed tokens — `[ShieldRegen]`, and `[SnsrBlinding][Heat]` on
   `special_radiant_canister`. A token is byte-identical across all six locales and is
@@ -264,19 +264,19 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 ## `pre-engineered-variant-names.jsonc`
 
 - **Acquired:** 2026-08-18 UTC; the Merc-shop names 2026-08-22 UTC.
-- **Derivation:** all 76 compound identities and English names come from
+- **Derivation:** every compound identity and English name comes from
   `data/ships/pre-engineered.jsonc`. An identity combines the base module symbol,
   blueprint, optional experimental effect and acquisition route. When a variant name
   exactly matches its base module's canonical name, it reuses that record from
-  `module-names.jsonc`; the 41 distinct display records are stored once. Fixed reward
+  `module-names.jsonc`; each distinct display record is stored once. Fixed reward
   names such as the three `Decorative_*` festive launchers remain canonical English.
-- **The 22 Merc-shop rows carry the shop's own names**, in 14 distinct records — the shop
+- **The Merc-shop rows carry the shop's own names** — the shop
   sells a "Far-Reaching Abrasion Blaster", not an Abrasion Blaster — so they do not reuse
   their base module's record. All six locales are supplied by the repository owner from
   the in-game shop listing; no registry publishes them. The Brazilian Portuguese column
   was acquired 2026-08-30 UTC and agrees byte-for-byte with the five columns already
   stored, which it does not change.
-- **A tech-broker unlock may carry an unlock marker**, and 19 of them do — see
+- **A tech-broker unlock may carry an unlock marker**, and some do — see
   `data/ships/SOURCES.md`. Those names are not their base module's, so they do not reuse
   its record. Where the marker is a manufacturer (`Sirius`, `Azimuth`) or a version
   (`V1`) it is not a translatable word, so the localized value is that marker composed
@@ -316,7 +316,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `data/equipment/suits.jsonc`, which stays authoritative for canonical English. Each
   family's grade symbols join case-insensitively to the in-game suit localisation
   identity, which carries a `name`, a `longname` and an `info` string per locale. The
-  join is exact and total: all 16 grade symbols resolve.
+  join is exact and total: every grade symbol resolves.
   - **`name` is the value taken.** It is the suit's own name and equals the canonical
     English on all four families.
   - **The manufacturer is not part of the name.** `longname` prefixes one —
@@ -329,9 +329,10 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   byte-identical values in all six locales, so one record is stored per family and
   `nameKeys` maps the family id and every grade symbol onto it. Both forms a consumer
   holds therefore resolve: `Suit.family` and the `utilitysuit_class3` a journal line
-  writes. The flight suit has a single grade whose symbol *is* the family id, so the four
-  families and 16 grade symbols make 19 distinct identifiers rather than 20.
-- **Coverage:** complete. All 19 identifiers carry all six locales.
+  writes. The flight suit has a single grade whose symbol *is* the family id, so it
+  contributes one identifier where the other families contribute their family id and
+  each grade symbol.
+- **Coverage:** complete. Every identifier carries all six locales.
 - **Two suits are not stored**, because `data/equipment/suits.jsonc` does not carry them:
   the five `specialistsuit_class{1..5}` grades, which the source does name
   (`Specialist Suit`, listed as `Remlok Paragon Specialist Suit`), and `hyperspacesuit`,
@@ -353,7 +354,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   what a suit does — shield strength, battery capacity, the four resistances — and the
   description answers what it is for, naming no figure at all. Neither is projected onto
   the other.
-- **Coverage:** complete. All 19 identifiers carry all six locales, and every grade of a
+- **Coverage:** complete. Every identifier carries all six locales, and every grade of a
   family shares its record exactly as in `suit-names.jsonc`.
 - **The Specialist Suit grades carry no description at all**, which is a second reason
   they are absent here beyond the owning catalogue not carrying them.
@@ -365,13 +366,13 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-09-01 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** all 11 current weapon symbols come from `data/equipment/weapons.jsonc`.
+- **Derivation:** every current weapon symbol comes from `data/equipment/weapons.jsonc`.
   Each joins case-insensitively to the in-game weapon localisation identity and takes its
   `info` string; the join is exact and total. All six values, English included, are the
   source's verbatim, because the owning catalogue publishes no weapon description.
 - **No sibling name catalogue exists**, and that is a decision rather than a gap — see
   §Names this repository deliberately does not localize.
-- **Coverage:** complete. All 11 weapons carry all six locales.
+- **Coverage:** complete. Every weapon carries all six locales.
 - **Two entries the source carries are not stored:** `wpn_h_launcher_rocket_sauto`
   (`Karma HL-9`), the heavy rocket launcher no current catalogue owns, and
   `wpn_m_submachinegun_kinetic_burst`, which the table lists with no text at all.
@@ -382,7 +383,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-09-01 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** all 31 recipe symbols and their canonical English names come from
+- **Derivation:** every recipe symbol and its canonical English name comes from
   `data/equipment/modifications.jsonc`, which stays authoritative for canonical English.
   A symbol joins case-insensitively to the in-game modification identity as
   `humanoidmod_<symbol>`, which carries a `name` and a `description` per locale.
@@ -392,12 +393,12 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   their material costs differ (§`data/equipment/SOURCES.md`). The `_kinetic`, `_laser`
   and `_plasma` suffix is dropped before the join, so each of the three takes its generic
   entry's locales — exactly as a shadowing blueprint id takes its generic's in
-  `blueprint-names.jsonc`. 25 distinct source entries therefore cover all 31 recipes, and
-  the catalogue stores them once each: `nameKeys` maps a recipe symbol onto the entry the
+  `blueprint-names.jsonc`. A smaller set of source entries therefore covers every recipe,
+  and the catalogue stores them once each: `nameKeys` maps a recipe symbol onto the entry the
   game publishes, as `module-names.jsonc` maps a module symbol onto a shared name.
 - **That shape is about visibility, not bytes.** Storing each shared entry three times
-  instead costs about the same, because the six duplicate name records weigh roughly what
-  the 31-entry `nameKeys` map does; the descriptions save about a fifteenth. What the
+  instead costs about the same, because the duplicate name records weigh roughly what
+  the `nameKeys` map does; the descriptions save about a fifteenth. What the
   deduplicated form buys is that the sharing is stated in the data, rather than sitting in
   six duplicate records a later edit could silently pull apart.
 - **`Headshot Damage` is the one English value the game spells differently.** The in-game
@@ -405,7 +406,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   kept, as canonical English is kept everywhere in this directory. The lower-case
   `Stowed reloading` the owning catalogue already carries *is* the game's own spelling
   and agrees with it.
-- **Coverage:** complete. All 31 recipes carry all six locales.
+- **Coverage:** complete. Every recipe carries all six locales.
 - **One in-game modification is not stored:** `humanoidmod_suit_headshotresistance`
   (`Increased Helmet Protection`), which `data/equipment/modifications.jsonc` does not
   carry as a recipe.
@@ -421,7 +422,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 - **Acquired:** 2026-09-01 UTC.
 - **In-game localisation revision:** none published; the game ships no immutable
   identifier for its localisation tables. The acquired table is the evidence.
-- **Derivation:** the same 31 recipe symbols as `personal-modification-names.jsonc`,
+- **Derivation:** the same recipe symbols as `personal-modification-names.jsonc`,
   joined the same way and sharing the generic entry across the nine technology-specific
   recipes for the same reason. Each takes the identity's `description` string. All six
   values, English included, are the source's verbatim.
@@ -431,7 +432,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   and the two are deliberately different strings. It is also the only account of the ten
   recipes whose `modifiers` list is empty — some switch a capability on, the rest move a
   stat the panel puts no number on (§`data/equipment/SOURCES.md`).
-- **Coverage:** complete. All 31 recipes carry all six locales.
+- **Coverage:** complete. Every recipe carries all six locales.
 - **Manual corrections:** none. The French
   `weapon_backpackreloading` description keeps the non-breaking space the source sets
   between a figure and its unit (`5 secondes`), which is French typography rather than
@@ -456,7 +457,7 @@ record in this repository is keyed by them.
   carries no name at all — see the header of `data/ships/engineering-options.jsonc` — and
   a consumer names one by joining a module's `familyId` to `module-family-names.jsonc`.
 - **Handheld personal-weapon names.** The in-game weapon localisation table publishes all
-  six locales for every one of the eleven weapons, and each of the 55 non-English values
+  six locales for every weapon, and every non-English value
   is byte-for-byte the English: `Karma P-15`, `TK Aphelion` and `Manticore Executioner`
   are product names the game leaves alone, exactly as it does a hull's. `PersonalWeapon`
   in `data/equipment/weapons.jsonc` is the one place to read the name; the weapons'
@@ -478,9 +479,9 @@ record in this repository is keyed by them.
 ## Known gaps
 
 Localized coverage follows the accepted sources and is not complete for every catalogue or
-stored locale. A language absent from all thirteen catalogues is the locale decision
+stored locale. A language absent from every catalogue is the locale decision
 recorded above rather than a gap. The accepted sources carry only canonical English for
-19 of the 77 outfitting-family labels, slot and restriction labels, fixed reward names,
+the outfitting-family labels listed above, slot and restriction labels, fixed reward names,
 and structured loadout, calculation, SLEF and edit messages. Personal equipment carries
 no gap: every suit, handheld weapon and modification the owning catalogues hold is
 complete in all six locales. Missing source-backed translations remain tracked by

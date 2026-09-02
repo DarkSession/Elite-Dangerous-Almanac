@@ -48,7 +48,7 @@ export type PersonalUpgradeGradeCosts = Readonly<
  * } from '@elite-dangerous-almanac/core/equipment/upgrade-costs';
  *
  * const costs: PersonalUpgradeCosts = PERSONAL_UPGRADE_COSTS;
- * Object.keys(costs.suits).length; // -> 3
+ * costs.suits['utilitysuit']?.['2']?.[0]?.symbol; // -> 'suitschematic'
  * ```
  */
 export interface PersonalUpgradeCosts {

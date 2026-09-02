@@ -11,7 +11,7 @@
  *
  * Nebula positions are galactic light-years with Sol at the origin. `regionId` is
  * the galactic codex region id (see galactic-regions.jsonc) and is carried from the
- * upstream CSV; all 5835 values were verified against this project's own region
+ * upstream CSV; every value was verified against this project's own region
  * lookup. The file determines the `procgen` class, so it is not repeated on every record.
  */
 [

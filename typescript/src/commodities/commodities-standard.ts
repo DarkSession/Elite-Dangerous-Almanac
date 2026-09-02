@@ -1,6 +1,6 @@
 /**
- * The catalogue of **standard** market commodities — the 257 goods traded at
- * station commodity markets, across all sixteen market groups.
+ * The catalogue of **standard** market commodities — the goods traded at station
+ * commodity markets, across all sixteen market groups.
  *
  * Every record here is a standard commodity (`rare: false`); the rare goods live in
  * `./commodities-rare`. Search it with the query functions in `./commodities`.
@@ -18,7 +18,7 @@ import { buildCommodityCatalogue, type CommodityRecord } from './internal/commod
 import standardData from '../../../data/commodities/commodities.jsonc' with { type: 'json' };
 
 /**
- * All 257 standard commodities, in Frontier's registry order.
+ * Every standard commodity, in Frontier's registry order.
  *
  * @remarks
  * Every record has `rare: false`. The array and its records are frozen.
@@ -27,7 +27,6 @@ import standardData from '../../../data/commodities/commodities.jsonc' with { ty
  * ```ts
  * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
  *
- * COMMODITIES.length; // -> 257
  * COMMODITIES.find((c) => c.symbol === 'Gold')?.category; // -> 'Metals'
  * ```
  */

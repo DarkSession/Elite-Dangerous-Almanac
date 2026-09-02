@@ -38,7 +38,7 @@ export interface DefaultLoadout {
 }
 
 /**
- * Default loadouts for all 48 player-flyable hulls, in
+ * Default loadouts for every player-flyable hull, in
  * {@link ships!SHIPS | SHIPS} catalogue order.
  *
  * @remarks
@@ -49,7 +49,6 @@ export interface DefaultLoadout {
  * ```ts
  * import { DEFAULT_LOADOUTS } from '@elite-dangerous-almanac/core/ships/default-loadouts';
  *
- * DEFAULT_LOADOUTS.length; // -> 48
  * DEFAULT_LOADOUTS[0]?.modules.find((module) => module.slot === 'FrameShiftDrive')?.symbol;
  * // -> 'Int_Hyperdrive_Size2_Class1'
  * ```
@@ -72,7 +71,7 @@ const DEFAULT_LOADOUTS_BY_SYMBOL = /* @__PURE__ */ createKeyIndex(DEFAULT_LOADOU
  * ```ts
  * import { getDefaultLoadout } from '@elite-dangerous-almanac/core/ships/default-loadouts';
  *
- * getDefaultLoadout(' sidewinder ')?.modules.length; // -> 16
+ * getDefaultLoadout(' sidewinder ')?.symbol; // -> 'SideWinder'
  * getDefaultLoadout('not_a_ship'); // -> null
  * ```
  */

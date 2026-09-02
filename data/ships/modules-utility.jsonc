@@ -16,7 +16,7 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `utility` module, so a loader adds
- * `category: "utility"` from the file it read rather than repeating it 35 times.
+ * `category: "utility"` from the file it read rather than repeating it on every record.
  * `kind` repeats this module's stable engineering-options group when one is published;
  * `family` is the stable descriptive English label used to group an outfitting list.
  * Identity fields are always present; every stat field is optional, present only

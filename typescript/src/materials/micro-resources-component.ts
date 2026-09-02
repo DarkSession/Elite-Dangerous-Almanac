@@ -17,7 +17,7 @@ import {
 import componentData from '../../../data/materials/micro-resources-component.jsonc' with { type: 'json' };
 
 /**
- * All 33 component micro resources, in Frontier's registry order.
+ * Every component micro resource, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'component'`. The array and its records are frozen.
@@ -26,7 +26,7 @@ import componentData from '../../../data/materials/micro-resources-component.jso
  * ```ts
  * import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
  *
- * COMPONENT_MICRO_RESOURCES.length; // -> 33
+ * COMPONENT_MICRO_RESOURCES.find((resource) => resource.symbol === 'graphene')?.name; // -> 'Graphene'
  * ```
  */
 export const COMPONENT_MICRO_RESOURCES: readonly MicroResource[] = buildMicroResourceCatalogue(

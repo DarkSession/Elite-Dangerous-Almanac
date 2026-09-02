@@ -84,12 +84,12 @@ export interface PersonalWeapon {
 }
 
 /**
- * All eleven handheld weapons in catalogue order.
+ * Every handheld weapon, in catalogue order.
  *
  * @example
  * ```ts
  * import { PERSONAL_WEAPONS } from '@elite-dangerous-almanac/core/equipment/weapons';
- * PERSONAL_WEAPONS.length; // -> 11
+ * PERSONAL_WEAPONS[0]?.symbol; // -> 'wpn_s_pistol_kinetic_sauto'
  * ```
  */
 export const PERSONAL_WEAPONS: readonly PersonalWeapon[] = deepFreeze(

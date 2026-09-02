@@ -20,22 +20,21 @@ import hardpointModulesData from '../../../data/ships/modules-hardpoint.jsonc' w
 import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
- * All 159 hardpoint modules, in Frontier's registry order.
+ * Every hardpoint module, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'hardpoint'`, added from the file it was read from
  * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `HARDPOINT_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
- * rather than with the lookups in `./modules`, which default to all 1194 modules.
+ * rather than with the lookups in `./modules`, which default to the whole catalogue.
  *
  * @example
  * ```ts
  * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
  *
- * HARDPOINT_MODULES.length; // -> 159
- * HARDPOINT_MODULES.filter((m) => m.familyId === 'beamLasers').length; // -> 12
- * HARDPOINT_MODULES.filter((m) => m.mount === 'Turreted').length; // turreted variants
+ * HARDPOINT_MODULES.find((m) => m.symbol === 'Hpt_PulseLaser_Fixed_Small')?.mount; // -> 'Fixed'
+ * HARDPOINT_MODULES.find((m) => m.familyId === 'beamLasers')?.name; // -> 'Beam Laser'
  * ```
  */
 export const HARDPOINT_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

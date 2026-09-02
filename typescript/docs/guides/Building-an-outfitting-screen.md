@@ -67,7 +67,7 @@ const optional = build.modulesForSlot('Slot01_Size7');
 const cargoRacks = optional.filter((module) => module.familyId === 'cargoRacks');
 ```
 
-The method searches all 1194 modules because some mounts accept modules from more than
+The method searches the whole module catalogue because some mounts accept modules from more than
 one outfitting category: a fuel tank is a core module that also fits optional mounts.
 `ShipLoadout` already carries the complete catalogue for whole-build operations.
 

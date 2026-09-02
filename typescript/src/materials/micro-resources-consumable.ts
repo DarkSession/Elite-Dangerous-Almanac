@@ -17,7 +17,7 @@ import {
 import consumableData from '../../../data/materials/micro-resources-consumable.jsonc' with { type: 'json' };
 
 /**
- * All 6 consumable micro resources, in Frontier's registry order.
+ * Every consumable micro resource, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'consumable'`. The array and its records are frozen.
@@ -26,7 +26,7 @@ import consumableData from '../../../data/materials/micro-resources-consumable.j
  * ```ts
  * import { CONSUMABLE_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-consumable';
  *
- * CONSUMABLE_MICRO_RESOURCES.length; // -> 6
+ * CONSUMABLE_MICRO_RESOURCES.find((resource) => resource.symbol === 'healthpack')?.name; // -> 'Medkit'
  * ```
  */
 export const CONSUMABLE_MICRO_RESOURCES: readonly MicroResource[] = buildMicroResourceCatalogue(

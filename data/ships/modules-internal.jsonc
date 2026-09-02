@@ -16,12 +16,11 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is an `internal` module, so a loader adds
- * `category: "internal"` from the file it read rather than repeating it 484 times.
- * `slot` is on fifteen records and no others: the Guardian Hybrid power plants and
- * power distributors, which Frontier files here yet which fill a *core* mount, and
- * which say so with the same `powerPlant` / `powerDistributor` values
- * `modules-core.jsonc` uses. An ordinary optional internal carries no `slot` — it
- * fits any optional mount its size.
+ * `category: "internal"` from the file it read rather than repeating it on every record.
+ * `slot` is on the Guardian Hybrid power plants and power distributors, and no others:
+ * Frontier files them here, yet they fill a *core* mount and say so with the same
+ * `powerPlant` / `powerDistributor` values `modules-core.jsonc` uses. An ordinary
+ * optional internal carries no `slot` — it fits any optional mount its size.
  * `kind` repeats this module's stable engineering-options group when one is published;
  * `family` is the stable descriptive English label used to group an outfitting list.
  * Identity fields are always present; every stat field is optional, present only

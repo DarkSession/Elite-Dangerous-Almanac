@@ -15,7 +15,7 @@ import { deepFreeze } from '../../internal/deep-freeze.js';
  * read from, so the payload states it nowhere and {@link buildModuleCatalogue} adds
  * it back. A core record's family is likewise already determined by the mount its
  * `slot` names, so the core payload states that nowhere either rather than repeating
- * one of eight ids 516 times. {@link buildModuleCatalogue} also renames `kind` at this
+ * one of eight ids on every record. {@link buildModuleCatalogue} also renames `kind` at this
  * internal boundary, keeping the shared JSONC compact without leaking its ambiguous
  * source name into the consumer API.
  */

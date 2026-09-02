@@ -1,5 +1,5 @@
 /**
- * The catalogue of **procedurally generated** nebulae — 166 nebulae the galaxy
+ * The catalogue of **procedurally generated** nebulae — the ones the galaxy
  * generator places out in the black, catalogued at a nearby system.
  *
  * Their names follow the procedural scheme of the sector they sit in
@@ -17,7 +17,7 @@ import { buildNebulaCatalogue, type NamedNebulaRecord } from './internal/nebula-
 import procgenNebulaeData from '../../../data/astro/nebulae-procgen.jsonc' with { type: 'json' };
 
 /**
- * All 166 procedurally generated nebulae, sorted by name.
+ * Every procedurally generated nebula, sorted by name.
  *
  * @remarks
  * Every record has `type: 'procgen'`. Note that `name` and `system` differ here:
@@ -28,8 +28,8 @@ import procgenNebulaeData from '../../../data/astro/nebulae-procgen.jsonc' with 
  * ```ts
  * import { PROCGEN_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-procgen';
  *
- * PROCGEN_NEBULAE.length;    // -> 166
  * PROCGEN_NEBULAE[0]?.name;   // -> 'Agnairt AA-A h36'
+ * PROCGEN_NEBULAE[0]?.system; // -> 'Agnairt TA-U d4-360'
  * ```
  */
 export const PROCGEN_NEBULAE: readonly Nebula[] = buildNebulaCatalogue(

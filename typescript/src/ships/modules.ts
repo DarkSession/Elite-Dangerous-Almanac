@@ -1,12 +1,12 @@
 /**
  * Outfitting-module types and lookups.
  *
- * Elite Dangerous has ~1200 fittable modules. This module holds the
+ * Elite Dangerous fits ships from a large outfitting registry. This module holds the
  * {@link OutfittingModule} record shape — a module's **identity and its stats**
  * together — and the functions that find one ({@link getModuleBySymbol},
  * {@link getModulesByName}, {@link getBulkheadsForShip}).
  *
- * **Every lookup searches all 1194 modules by default.** A journal `Item` string does
+ * **Every lookup searches every module by default.** A journal `Item` string does
  * not identify its outfitting category, so callers need no category for lookup:
  *
  * ```ts
@@ -17,13 +17,16 @@
  * subset — any array you have filtered yourself. The catalogue is also exported split
  * by Frontier's four outfitting categories:
  *
- * | Module | Export | Entries |
- * | --- | --- | --- |
- * | `./modules-core` | `CORE_MODULES` | 516 |
- * | `./modules-internal` | `INTERNAL_MODULES` | 484 |
- * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
- * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1194 (the default) |
+ * Sizes are each module's import graph once your bundler has minified it — the
+ * published package itself is not minified — before any transport compression.
+ *
+ * | Module | Export | Minified | Gzipped |
+ * | --- | --- | --- | --- |
+ * | `./modules-core` | `CORE_MODULES` | ~129 KiB | ~12 KiB |
+ * | `./modules-internal` | `INTERNAL_MODULES` | ~128 KiB | ~13 KiB |
+ * | `./modules-hardpoint` | `HARDPOINT_MODULES` | ~70 KiB | ~8 KiB |
+ * | `./modules-utility` | `UTILITY_MODULES` | ~10 KiB | ~2 KiB |
+ * | `./modules-all` | `ALL_MODULES` | ~335 KiB | ~33 KiB |
  *
  * Those four are for **listing** a category — an outfitting screen's hardpoint tab.
  * They make poor narrowing arguments: no module symbol or display name is shared
@@ -40,7 +43,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — ~338 KiB minified (~33 KiB gzipped) — since
+ * here pulls all four catalogues — ~337 KiB minified (~33 KiB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:
@@ -567,8 +570,8 @@ export interface OutfittingModuleStats {
      * outfitting screen labels SCO.
      *
      * @remarks
-     * A sparse capability flag on the 36 Overcharge drives and absent everywhere else,
-     * including on the 31 ordinary drives of the same sizes and ratings. Read it rather
+     * A sparse capability flag on the Overcharge drives and absent everywhere else,
+     * including on the ordinary drives of the same sizes and ratings. Read it rather
      * than matching `Int_Hyperdrive_Overcharge` on the symbol: the capability is the
      * record's to state, and a pre-engineered or fitted article carries the flag
      * through while its symbol is not always the one you looked up.
@@ -875,7 +878,7 @@ export interface OutfittingModule extends OutfittingModuleIdentity, OutfittingMo
  * @param symbol - The internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`.
  * Leading/trailing whitespace and case are ignored, so the journal's lower-cased
  * form resolves too.
- * @param modules - Optional subset to search instead of all 1194 modules —
+ * @param modules - Optional subset to search instead of every module —
  * `CORE_MODULES`, `INTERNAL_MODULES`, `HARDPOINT_MODULES`, `UTILITY_MODULES`, or any
  * array you have filtered yourself. Omit it unless you specifically want to exclude
  * the other categories; a symbol is unique across all four.

@@ -19,20 +19,20 @@ import coreModulesData from '../../../data/ships/modules-core.jsonc' with { type
 import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
- * All 516 core internal modules, in Frontier's registry order.
+ * Every core internal module, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'core'`, added from the file it was read from
  * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `CORE_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
- * rather than with the lookups in `./modules`, which default to all 1194 modules.
+ * rather than with the lookups in `./modules`, which default to the whole catalogue.
  *
  * @example
  * ```ts
  * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
  *
- * CORE_MODULES.length; // -> 516
+ * CORE_MODULES.find((m) => m.symbol === 'Int_Powerplant_Size3_Class5')?.rating; // -> 'A'
  * ```
  */
 export const CORE_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

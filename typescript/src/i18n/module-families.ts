@@ -24,7 +24,7 @@ const FAMILY_NAMES = /* @__PURE__ */ createLocalizedNameIndex(familyNamesData as
  * @remarks
  * Every module carries a family, so an outfitting list can group and label every choice
  * `ShipLoadout.modulesForSlot()` returns from this lookup alone. The table bundles no
- * module stats. Missing translations never silently fall back to English: 19 of the 77
+ * module stats. Missing translations never silently fall back to English: some
  * families have no source-backed label in any locale, tracked by
  * [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
  * @throws {TypeError} If `familyId` is present and not a string, or `locale` is not a

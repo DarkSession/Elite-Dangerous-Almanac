@@ -18,7 +18,7 @@
  * grade already applied. Most blueprint ids join to `BLUEPRINTS`; the festive
  * `Decorative_*` ids instead identify fixed grade-5 reward articles with no craftable
  * recipe or material cost.
- * The 22 Mercenary entries are bought at grade 1 and their bespoke recipes start at
+ * Mercenary entries are bought at grade 1 and their bespoke recipes start at
  * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
  * grade)` from `ships/blueprint-costs`, which answers with the materials and the Merc
  * Coin the climb costs.
@@ -35,9 +35,9 @@
  * computed. Resolve them against the base module with `getPreEngineeredStats` from
  * `./pre-engineered-stats.js`; it lives in its own module so that consumers who only
  * want the catalogue do not bundle the module and engineering tables.
- * Final articles carry {@link PreEngineeredVariant.engineeringLocked}. These are the seven
+ * Final articles carry {@link PreEngineeredVariant.engineeringLocked}. These are the
  * pre-engineered Guardian weapons, whose stock counterparts can take Anti-Guardian Zone
- * Resistance, and five fixed Enzyme/AX rewards whose stock modules have no engineering menu.
+ * Resistance, and the fixed Enzyme/AX rewards whose stock modules have no engineering menu.
  *
  * @packageDocumentation
  */
@@ -50,10 +50,10 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
 /**
  * Where a pre-engineered variant is obtained.
  *
- * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1, ten of them
+ * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1, some of them
  *   with an experimental effect already applied beside that grade-1 blueprint.
- * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, 8 of
- *   the 30 carrying an experimental effect.
+ * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, a
+ *   minority carrying an experimental effect.
  * - `techBroker` — unlocked at a tech broker. Records the route stated by the source.
  * - `eventReward` — awarded already transformed by an event; the festive articles are grade 5.
  */
@@ -159,7 +159,6 @@ export interface PreEngineeredVariant {
  * ```ts
  * import { PRE_ENGINEERED_MODULES } from '@elite-dangerous-almanac/core/ships/pre-engineered';
  *
- * PRE_ENGINEERED_MODULES.length; // -> 76
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
  * //      blueprintSymbol: 'AbrasionBlaster_FarReaching', grade: 1,

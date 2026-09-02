@@ -52,13 +52,13 @@ export interface PersonalModification {
 }
 
 /**
- * All 31 suit and weapon engineering recipes, keyed by recipe symbol.
+ * Every suit and weapon engineering recipe, keyed by recipe symbol.
  *
  * @remarks
- * There are 25 distinct display names. Greater Range, Headshot Damage and Improved
- * Hip Fire Accuracy each have separate Kinetic, Laser and Plasma recipes because their
- * material costs differ. Their keys end in `_kinetic`, `_laser` or `_plasma`; the
- * journal omits that suffix, so resolve its value with
+ * A recipe symbol is finer-grained than a display name: Greater Range, Headshot Damage
+ * and Improved Hip Fire Accuracy each have separate Kinetic, Laser and Plasma recipes
+ * because their material costs differ. Their keys end in `_kinetic`, `_laser` or
+ * `_plasma`; the journal omits that suffix, so resolve its value with
  * `resolvePersonalModificationForWeapon` from `equipment/modification-journal`.
  *
  * @example

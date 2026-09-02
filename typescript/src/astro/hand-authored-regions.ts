@@ -53,7 +53,7 @@ export interface HandAuthoredSphere {
  * A hand-authored named sector: its canonical name and the spheres it occupies.
  *
  * @remarks
- * Whether the region needs a permit is not stored here — 28 of these regions are
+ * Whether the region needs a permit is not stored here — some of these regions are
  * permit-locked, and `isPermitLockedRegionName` in `./permit-locks` is the single
  * place that knows which. Pass {@link HandAuthoredRegion.name} to it.
  *

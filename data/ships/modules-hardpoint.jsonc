@@ -16,14 +16,14 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `hardpoint` module, so a loader adds
- * `category: "hardpoint"` from the file it read rather than repeating it 159 times.
+ * `category: "hardpoint"` from the file it read rather than repeating it on every record.
  * `kind` repeats this module's stable engineering-options group when one is published;
  * `family` is the stable descriptive English label used to group an outfitting list.
  * Identity fields are always present; every stat field is optional, present only
  * where the module has it (masses in tonnes, power in MW, jump ranges in LY).
  * `restrictedToShips` lists the hull(s) a non-armour module is limited to; armour's
  * hull restriction is its `ship` field.
- * `limitGroup` marks a per-ship count allowance this module consumes; the 33 AX and
+ * `limitGroup` marks a per-ship count allowance this module consumes; the AX and
  * Guardian weapons carrying `experimentalWeapon` share the base allowance of four.
  *
  * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and

@@ -141,7 +141,10 @@ test('nearestNebulae treats count like Array.slice', () => {
     const origin = { x: 0, y: 0, z: 0 };
     assert.equal(nearestNebulae(origin, REAL_NEBULAE, 2.9).length, 2);
     assert.deepEqual(nearestNebulae(origin, REAL_NEBULAE, Number.NaN), []);
-    assert.equal(nearestNebulae(origin, REAL_NEBULAE, Number.POSITIVE_INFINITY).length, 180);
+    assert.equal(
+        nearestNebulae(origin, REAL_NEBULAE, Number.POSITIVE_INFINITY).length,
+        REAL_NEBULAE.length,
+    );
 });
 
 test('nebulaeWithin includes the boundary and rejects a negative radius', () => {

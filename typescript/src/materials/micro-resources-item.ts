@@ -17,7 +17,7 @@ import {
 import itemData from '../../../data/materials/micro-resources-item.jsonc' with { type: 'json' };
 
 /**
- * All 62 item micro resources, in catalogue order.
+ * Every item micro resource, in catalogue order.
  *
  * @remarks
  * Every record has `category: 'item'`. The array and its records are frozen.
@@ -26,7 +26,7 @@ import itemData from '../../../data/materials/micro-resources-item.jsonc' with {
  * ```ts
  * import { ITEM_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-item';
  *
- * ITEM_MICRO_RESOURCES.length; // -> 62
+ * ITEM_MICRO_RESOURCES.find((resource) => resource.symbol === 'castfossil')?.name; // -> 'Cast Fossil'
  * ```
  */
 export const ITEM_MICRO_RESOURCES: readonly MicroResource[] = buildMicroResourceCatalogue(

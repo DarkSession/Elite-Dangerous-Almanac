@@ -26,14 +26,14 @@
  * `acquisition` says where the variant comes from:
  *   - `"mercenary"`     — the Merc-Coin shop rows, all at grade 1.
  *   - `"communityGoal"` — awarded for taking part in a community goal. Mostly grade 5;
- *     8 of the 30 carry an experimental effect.
+ *     a minority carry an experimental effect.
  *   - `"techBroker"`    — unlocked at a tech broker. Human brokers stock the "V1" drives
  *     and seeker racks; the Guardian weapon rows come from the Salvation, Azimuth and
  *     Sirius brokers. Several are recorded elsewhere as having *also* been community-goal
  *     rewards; this field records the one route the source states, not every route.
  *   - `"eventReward"`   — awarded already transformed by an event; no engineer applies it.
  *
- * `engineeringLocked: true` marks the seven pre-engineered Guardian weapons and five
+ * `engineeringLocked: true` marks the pre-engineered Guardian weapons and the
  * fixed Enzyme/AX variants as final. These bought or awarded articles accept no
  * blueprint or experimental effect at all.
  *
@@ -46,7 +46,7 @@
  * and experimental effects use — a journal Modifier `label`, a `method`
  * (`multiplicative` / `additive` / `overwrite`) and a `value`. It is what makes these
  * records fittable: apply them over the base module's stats to get the engineered
- * module. The 22 `mercenary` rows carry none — no registry publishes the grade-1
+ * module. The `mercenary` rows carry none — no registry publishes the grade-1
  * pre-engineering they arrive with, and a guess is worse than an omission.
  *
  * Modifier values are the authored decimals recovered from the source's own encoding,
@@ -57,7 +57,7 @@
  * generally applicable modifications: this catalogue does not imply that a `Decorative_*`
  * identity may be placed on any other damage-bearing module.
  *
- * One modifier is deliberately dropped: burst interval, which 13 variants carry and
+ * One modifier is deliberately dropped: burst interval, which some variants carry and
  * which Frontier's journal has no Modifier Label for. It drives rate of fire, and
  * deriving a `RateOfFire` value from it needs weapon base stats the module catalogues
  * do not hold — so it is omitted rather than approximated.

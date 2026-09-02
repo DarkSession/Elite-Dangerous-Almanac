@@ -34,8 +34,8 @@ would reject is not a state this library can reach.
 `ShipLoadout` includes the menu catalogue whether or not a consumer calls these methods.
 Using one catalogue keeps the editor and menu consistent.
 
-**Not every stock module has an ordinary engineering menu.** The catalogue groups 1000 of
-the 1194 modules; the rest include whole families like fuel tanks, passenger cabins and
+**Not every stock module has an ordinary engineering menu.** The catalogue groups the
+ones that do; the rest include whole families like fuel tanks, passenger cabins and
 limpet controllers, plus individual modules denied every ordinary recipe. Six module
 symbols retain Mercenary upgrade routes despite no stock menu: the Enzyme Missile Rack,
 fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement Package,
@@ -46,9 +46,9 @@ data.
 
 ### Why there is no family map
 
-Inferring and comparing families from module and blueprint symbols refuses recipes on 52
-modules and disagrees with 76 entries in a 1902-entry build corpus. The failures come from
-the inference rather than the data — the Hatch Breaker
+Inferring and comparing families from module and blueprint symbols refuses recipes the
+game offers, and disagrees with 76 entries in the 1902-entry build corpus. The failures come
+from the inference rather than the data — the Hatch Breaker
 Limpet Controller's symbol is `Int_DroneControl_ResourceSiphon`, which no "hatchbreaker"
 prefix rule matches, and the Caustic Sink Launcher's symbol says `causticsink` where its
 group is the heat sink launchers'. A per-module menu has nothing to infer, and two
@@ -174,7 +174,7 @@ family's id, never for another generic one. `Misc_ChaffCapacity` and `Misc_HeatS
 are both "Ammo capacity" over the same three labels, but they roll different amounts of
 different ammunition, so neither may substitute for the other.
 
-**The Mercenary route.** The 22 Mercenary catalogue records describe modules bought
+**The Mercenary route.** The Mercenary catalogue records describe modules bought
 already engineered at grade 1, so no ordinary menu lists their bespoke recipes and the
 menu check alone would refuse all of them everywhere. `ships/pre-engineered` names which
 module each arrives on, and the

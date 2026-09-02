@@ -9,7 +9,7 @@
  * corrections: data/ships/SOURCES.md.
  *
  * Only the recipes that charge a currency appear; every other blueprint is absent rather
- * than zero. They come in two shapes: 21 bespoke grade-2-5 recipes that only a Mercenary
+ * than zero. They come in two shapes: bespoke grade-2-5 recipes that only a Mercenary
  * article, bought already at grade 1, can be taken through, and four ordinary
  * engineering-menu recipes spanning grades 1-5 that bill the currency as well
  * (`FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`).

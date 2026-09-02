@@ -17,7 +17,7 @@ import {
 import dataData from '../../../data/materials/micro-resources-data.jsonc' with { type: 'json' };
 
 /**
- * All 125 data micro resources, in catalogue order.
+ * Every data micro resource, in catalogue order.
  *
  * @remarks
  * Every record has `category: 'data'`. The array and its records are frozen.
@@ -26,7 +26,7 @@ import dataData from '../../../data/materials/micro-resources-data.jsonc' with {
  * ```ts
  * import { DATA_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-data';
  *
- * DATA_MICRO_RESOURCES.length; // -> 125
+ * DATA_MICRO_RESOURCES.find((resource) => resource.symbol === 'nocdata')?.name; // -> 'NOC Data'
  * ```
  */
 export const DATA_MICRO_RESOURCES: readonly MicroResource[] = buildMicroResourceCatalogue(

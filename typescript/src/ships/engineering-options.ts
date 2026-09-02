@@ -8,8 +8,8 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1000 of the 1194 modules — every stock module with an ordinary
- * engineering menu. The other 194 have no ordinary menu: whole families (fuel tanks,
+ * The catalogue groups every stock module with an ordinary engineering menu. The rest
+ * have no ordinary menu: whole families (fuel tanks,
  * cargo racks, passenger cabins, the repair, recon, research, decontamination and
  * multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
  * Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and vehicle
@@ -166,8 +166,7 @@ const DATA: EngineeringOptionData = deepFreeze(optionsData as EngineeringOptionD
  * ```ts
  * import { ENGINEERING_OPTION_GROUPS } from '@elite-dangerous-almanac/core/ships/engineering-options';
  *
- * ENGINEERING_OPTION_GROUPS['beamLasers'].experimentals.length; // -> 9
- * ENGINEERING_OPTION_GROUPS['beamLasers'].blueprints.length; // -> 7
+ * ENGINEERING_OPTION_GROUPS['beamLasers'].blueprints.includes('Weapon_Efficient'); // -> true
  * ```
  */
 export const ENGINEERING_OPTION_GROUPS: Readonly<
@@ -188,8 +187,8 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"this stock module has no ordinary engineering menu"**. For 188 of the
- * 194 ungrouped modules that is the same as "has no engineering route". Six instead
+ * `null` means **"this stock module has no ordinary engineering menu"**. For nearly every
+ * ungrouped module that is the same as "has no engineering route". Six instead
  * retain Mercenary upgrade routes: the Enzyme Missile Rack, fixed Mining Laser and Abrasion
  * Blaster, size-5 and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package
  * have no stock menu while their qualifying Mercenary articles retain bespoke upgrade routes.
@@ -269,15 +268,15 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * Every experimental effect in a stock module's ordinary menu — its group's list, minus
  * the effects that particular module is excluded from.
  *
- * Most modules take their whole group's list, but 23 are exceptions: 13 Multi-cannons
- * cannot take Phasing Sequence, six dumbfire racks cannot take Drag Munitions, and four
+ * Most modules take their whole group's list, but some are exceptions: most Multi-cannons
+ * cannot take Phasing Sequence, dumbfire racks cannot take Drag Munitions, and some
  * missile racks are short of Penetrator Munitions or FSD Interrupt. Those are applied
  * here, so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 368
- * of the 1000 grouped modules have no experimental slot; all sit in the 27 of 48 groups
- * that offer none — life support, sensors, the limpet controllers, the utility scanners,
- * and every Guardian group, weapons and modules alike. An ungrouped module answers empty
+ * **An empty array is the common answer, and it usually means "blueprints only".** Whole
+ * groups offer no experimental effect at all — life support, sensors, the limpet
+ * controllers, the utility scanners, and every Guardian group, weapons and modules alike
+ * — so every module in them answers empty. An ungrouped module answers empty
  * too; {@link getEngineeringGroup} tells the two apart.
  *
  * @param symbol - A module symbol. Leading/trailing whitespace and case are ignored.
@@ -289,10 +288,10 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * ```ts
  * import { getExperimentalsForModule } from '@elite-dangerous-almanac/core/ships/engineering-options';
  *
- * getExperimentalsForModule('Hpt_MultiCannon_Fixed_Medium').length; // -> 12
+ * getExperimentalsForModule('Hpt_MultiCannon_Fixed_Medium').includes('special_phasing_sequence'); // -> true
  *
  * // The small Multi-cannon is one effect short — no Phasing Sequence.
- * getExperimentalsForModule('Hpt_MultiCannon_Fixed_Small').length; // -> 11
+ * getExperimentalsForModule('Hpt_MultiCannon_Fixed_Small').includes('special_phasing_sequence'); // -> false
  *
  * // The stock Abrasion Blaster has no ordinary engineering menu.
  * getExperimentalsForModule('Hpt_Mining_AbrBlstr_Fixed_Small'); // -> []
@@ -315,10 +314,10 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 85 of the 107 blueprints in `BLUEPRINTS`. Of the other 22, 21 are
- * Operations keys of modules sold already engineered rather than offered in a menu (see
- * `ships/pre-engineered`); the last is the fixed Expanded Cargo Rack reward identity.
- * All 22 answer `[]` here exactly as an unknown id would, so read this function's empty answer with
+ * The groups do not name every id in `BLUEPRINTS`. The ones they miss are Operations keys
+ * of modules sold already engineered rather than offered in a menu (see
+ * `ships/pre-engineered`), plus the fixed Expanded Cargo Rack reward identity.
+ * They answer `[]` here exactly as an unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
  * Four Operations keys **are** named by a group, because they are recipes a player applies
@@ -327,7 +326,7 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `BurstLaser_ThermalPlasmaConversion` and
  * `BeamLaser_ThermalPlasmaConversion`. Anti-Guardian Zone Resistance answers `[]`, and there
  * that is the exact answer rather
- * than a miss: it has no experimental slot, on any of the nine groups that offer it.
+ * than a miss: it has no experimental slot, on any group that offers it.
  *
  * @param blueprintSymbol - A blueprint recipe's Frontier symbol, e.g. `"Weapon_Efficient"`.
  * Leading/trailing whitespace and case are ignored.
