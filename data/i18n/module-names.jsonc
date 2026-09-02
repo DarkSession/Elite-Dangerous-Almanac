@@ -862,9 +862,12 @@
     "Int_BuggyBay_Size4_Class2": "Planetary Vehicle Hangar",
     "Int_BuggyBay_Size6_Class1": "Planetary Vehicle Hangar",
     "Int_BuggyBay_Size6_Class2": "Planetary Vehicle Hangar",
-    "Int_BuggyBay_Size2_Class3": "Large Planetary Vehicle Hangar",
-    "Int_BuggyBay_Size4_Class3": "Large Planetary Vehicle Hangar",
-    "Int_BuggyBay_Size6_Class3": "Large Planetary Vehicle Hangar",
+    "Int_LargeBuggyBay_Size2_Class3": "Large Planetary Vehicle Hangar",
+    "Int_LargeBuggyBay_Size4_Class3": "Large Planetary Vehicle Hangar",
+    "Int_LargeBuggyBay_Size6_Class3": "Large Planetary Vehicle Hangar",
+    "Int_LargeBuggyBay_Size2_Class3_Free": "Large Planetary Vehicle Hangar",
+    "Int_LargeBuggyBay_Size4_Class3_Free": "Large Planetary Vehicle Hangar",
+    "Int_LargeBuggyBay_Size6_Class3_Free": "Large Planetary Vehicle Hangar",
     "Int_BuggyBayMk2_Size2_Class3": "Mk II Large Planetary Vehicle Hangar",
     "Int_BuggyBayMk2_Size4_Class3": "Mk II Large Planetary Vehicle Hangar",
     "Int_BuggyBayMk2_Size6_Class3": "Mk II Large Planetary Vehicle Hangar",
@@ -1536,7 +1539,12 @@
       "ru": "Гараж для планетарного транспорта"
     },
     "Large Planetary Vehicle Hangar": {
-      "en": "Large Planetary Vehicle Hangar"
+      "en": "Large Planetary Vehicle Hangar",
+      "de": "Großer Planetenfahrzeug-Hangar",
+      "es": "Hangar de vehículo planetario",
+      "fr": "Grand hangar des véhicules planétaires",
+      "pt": "Hangar de veículo planetário grande",
+      "ru": "Крупный гараж для планет. транспорта"
     },
     "Mk II Large Planetary Vehicle Hangar": {
       "en": "Mk II Large Planetary Vehicle Hangar"

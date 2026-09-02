@@ -18,17 +18,17 @@
 {
   "counts": {
     "core": 516,
-    "internal": 490,
+    "internal": 493,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1200
+    "all": 1203
   },
   "familyCounts": {
     "core": 516,
-    "internal": 490,
+    "internal": 493,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1200
+    "all": 1203
   },
   "familyGroupCounts": {
     "core": 8,
@@ -85,7 +85,7 @@
     "powerDistributor": 49,
     "sensors": 41,
     "fuelTank": 9,
-    "none": 669
+    "none": 672
   },
   "records": [
     {
@@ -226,7 +226,7 @@
       ]
     },
     {
-      "symbol": "Int_BuggyBay_Size6_Class3",
+      "symbol": "Int_LargeBuggyBay_Size6_Class3",
       "category": "internal",
       "familyId": "planetaryVehicleHangars",
       "name": "Large Planetary Vehicle Hangar",

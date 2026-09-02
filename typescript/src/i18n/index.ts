@@ -36,7 +36,7 @@
  * | `getPersonalWeaponDescription` | 11 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getSuitDescription` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getSuitName` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
- * | `getModuleName` | 1200 | 100 | 99 | 99 | 99 | 99 | 99 |
+ * | `getModuleName` | 1203 | 100 | 99 | 99 | 99 | 99 | 99 |
  * | `getPreEngineeredVariantName` | 76 | 100 | 92 | 89 | 89 | 100 | 100 |
  * | `getOutfittingFamilyName` | 77 | 100 | 75 | 75 | 75 | 75 | 75 |
  * <!-- end generated -->
