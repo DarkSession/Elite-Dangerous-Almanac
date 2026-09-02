@@ -168,6 +168,7 @@
         "headshotMultiplier",
         "effectiveRange",
         "scopeMagnification",
+        "reloadTime",
         "grades"
       ],
       "properties": {
@@ -194,6 +195,15 @@
         "headshotMultiplier": { "$ref": "#/definitions/positiveNumber" },
         "effectiveRange": { "$ref": "#/definitions/positiveNumber" },
         "scopeMagnification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["default", "upgraded"],
+          "properties": {
+            "default": { "$ref": "#/definitions/positiveNumber" },
+            "upgraded": { "$ref": "#/definitions/positiveNumber" }
+          }
+        },
+        "reloadTime": {
           "type": "object",
           "additionalProperties": false,
           "required": ["default", "upgraded"],

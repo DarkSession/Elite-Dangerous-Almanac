@@ -414,12 +414,7 @@
       "Uma Laszlo",
       "Eleanor Bresa"
     ],
-    "modifiers": [
-      {
-        "stat": "reloadSpeed",
-        "multiplier": 1.25
-      }
-    ]
+    "modifiers": []
   },
   "weapon_scope": {
     "name": "Scope",

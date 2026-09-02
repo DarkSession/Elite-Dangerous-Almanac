@@ -421,6 +421,10 @@ type FixtureEquipmentEquipment = {
         modificationSlots: number;
         name: string;
         rateOfFire: number;
+        reloadTime: {
+            default: number;
+            upgraded: number;
+        };
         scopeMagnification: number;
         symbol: string;
     }[];

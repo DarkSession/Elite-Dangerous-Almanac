@@ -35,6 +35,7 @@ export {
     type PersonalWeaponEngineeringType,
     type PersonalWeaponGrade,
     type PersonalWeaponSlot,
+    type ReloadTime,
     type ScopeMagnification,
     type WeaponUpgradeGroup,
 } from './weapons.js';

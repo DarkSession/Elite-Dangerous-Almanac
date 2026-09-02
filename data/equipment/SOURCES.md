@@ -13,7 +13,8 @@ Referred to throughout by source name; the pin is here, once.
 
 **Where a source and the game disagree, the in-game reading governs.** Odyssey Materials Helper
 supplies the identities, the slot and grade structure, the engineer availability and
-every material shopping list; the stat values are the ones the game itself shows.
+every material shopping list; the stat values are the ones the game itself shows,
+except where a derivation bullet below names the source that supplies one.
 
 ## Personal suits, handheld weapons and engineering
 
@@ -59,9 +60,10 @@ every material shopping list; the stat values are the ones the game itself shows
     **The secondary mount carries no number**: the game writes `SecondaryWeapon`, not
     `SecondaryWeapon1`. Each suit's mount list is the weapon-mount counts this catalogue
     already held, joined to those keys, primary mounts first and numbered from 1.
-  - **In-game observation supplies every stat value** described in the three sections
+  - **In-game observation supplies the stat values** described in the three sections
     below: the suit-wide component stats and the four resistances, the weapon combat
-    stats and damage, and the multipliers each modification applies.
+    stats and damage, and the multipliers each modification applies. The reload times
+    are the exception: the panel shows no reload figure, so `Weapon.java` supplies them.
 
 - **Manual corrections:**
   - Odyssey Materials Helper's English locale calls the four Karma weapons “Kinematic”
@@ -144,7 +146,16 @@ The suit stats panel is read per suit family and per grade.
   1.7→1.668 and `Manticore Intimidator` 1.8→1.75. Damage is stored at the precision the
   game reports it, which is why two of those grade-1 figures carry three decimals where
   the panel shows one.
-- **`scopeMagnification` is new**: the aim-down-sights magnification the panel shows with
+- **`reloadTime` holds the seconds a reload takes**, stock and with the Reload Speed
+  modification fitted. The panel shows no reload figure, so there is nothing to read
+  these values against. Odyssey Materials Helper's `Weapon.java` carries the stock figure
+  as each weapon's `DynamicStat.RELOAD_SPEED` entry. The upgraded figure is the stock one
+  divided by the factor the same file's `DynamicStat.formatValue` applies: `1.20` for
+  `TK Aphelion` and `1.25` for every other weapon. Each quotient is taken in
+  double-precision floating point and rounded to three decimals, as
+  `Number(x.toFixed(3))` does it. Reload Speed stores no modifier of its own because the
+  factor differs per weapon.
+- **`scopeMagnification` holds the aim-down-sights magnification** the panel shows with
   the sight the weapon ships with, and with the sight the Scope modification fits, both
   to two decimals. Scope stores no modifier of its own because its magnitude is this
   pair, and it differs per weapon — `Manticore Executioner` gains 1.61x→3.75x where
@@ -166,16 +177,17 @@ that changes nothing — is never stored.
   `0.55`. This is the same convention the ships domain uses for resistances.
 - **`roundUp` marks the one result the game rounds up**: Magazine Size multiplies by 1.5
   and rounds the magazine up to a whole number, so 45 rounds become 68 rather than 67.5.
-- **Six recipes name a stat no catalogue field carries**, because the panel shows no
-  base for it: the melee damage, sprint duration and tool energy drain multipliers, the
-  reload speed, and the pressurised and unpressurised firing audible ranges. The factor
-  is recorded against the stat it moves; the base has to come from the panel.
-- **Ten recipes carry an empty modifier list**, for two different reasons, and both are
+- **Some recipes name a stat no catalogue field carries**, because the panel shows no
+  base for it: the melee damage, sprint duration and tool energy drain multipliers, and
+  the pressurised and unpressurised firing audible ranges. The factor is recorded
+  against the stat it moves; the base has to come from the panel.
+- **Some recipes carry an empty modifier list**, for two different reasons, and both are
   a statement rather than a gap:
-  - Night Vision, Scope, Stowed reloading and Combat Movement Speed apply no factor to
-    any stat. Night Vision and Stowed reloading switch a capability on, Scope's whole
-    numeric effect is the weapon's own `scopeMagnification`, and Combat Movement Speed
-    changes how a suit moves while aiming without moving a displayed stat.
+  - Night Vision, Scope, Reload Speed, Stowed reloading and Combat Movement Speed apply
+    no factor to any stat. Night Vision and Stowed reloading switch a capability on,
+    Scope's whole numeric effect is the weapon's own `scopeMagnification`, Reload
+    Speed's is the weapon's own `reloadTime`, and Combat Movement Speed changes how a
+    suit moves while aiming without moving a displayed stat.
   - Faster Handling, Improved Hip Fire Accuracy, Stability and Improved Jump Assist do
     change stats, but ones the panel puts no number on — weapon handling, hip-fire
     jitter and recoil, and the jump assist's boost drain and recharge. Improved Jump

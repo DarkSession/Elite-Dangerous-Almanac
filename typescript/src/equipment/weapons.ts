@@ -1,6 +1,6 @@
 /**
  * Odyssey handheld weapons: their journal identifiers, combat stats, sight
- * magnification and grade-dependent damage.
+ * magnification, reload time and grade-dependent damage.
  *
  * @packageDocumentation
  */
@@ -30,6 +30,14 @@ export interface ScopeMagnification {
     /** Magnification of the sight the weapon ships with, e.g. `1.12` for 1.12x. */
     readonly default: number;
     /** Magnification of the sight the Scope modification fits, e.g. `1.41` for 1.41x. */
+    readonly upgraded: number;
+}
+
+/** A weapon's magazine reload time, before and after the Reload Speed modification. */
+export interface ReloadTime {
+    /** Seconds to reload the weapon as it ships, e.g. `2.7` for 2.7 s. */
+    readonly default: number;
+    /** Seconds to reload with the Reload Speed modification fitted, e.g. `2.16` for 2.16 s. */
     readonly upgraded: number;
 }
 
@@ -75,6 +83,12 @@ export interface PersonalWeapon {
      * numeric effect, and it differs per weapon.
      */
     readonly scopeMagnification: ScopeMagnification;
+    /**
+     * Seconds to reload the magazine with the stock weapon and with the Reload Speed
+     * modification fitted. Reload Speed carries no modifier of its own: this pair is its
+     * whole numeric effect, and it differs per weapon.
+     */
+    readonly reloadTime: ReloadTime;
     /**
      * Grade records keyed by `"1"` through `"5"` — every weapon carries all five,
      * unlike {@link Suit.grades}. Read one through

@@ -138,6 +138,8 @@ test('representative handheld weapons resolve with their pinned grade stats', ()
         assert.equal(weapon.magazineSize, expected.magazineSize);
         assert.equal(weapon.effectiveRange, expected.effectiveRange);
         assert.equal(weapon.scopeMagnification.default, expected.scopeMagnification);
+        assert.equal(weapon.reloadTime.default, expected.reloadTime.default);
+        assert.equal(weapon.reloadTime.upgraded, expected.reloadTime.upgraded);
         const grade = getPersonalWeaponGrade(weapon, expected.grade);
         assert.ok(grade);
         assert.equal(grade.damage, expected.damage);
@@ -361,14 +363,13 @@ test('the recipes with no catalogued magnitude are the only ones with an empty m
     assert.deepEqual(empty, [...equipmentFixture.modificationsWithoutModifiers]);
 });
 
-test('every modifier names a catalogue field or one of the six documented panel stats', () => {
+test('every modifier names a catalogue field or a documented panel stat', () => {
     // A modifier whose stat matches nothing is skipped, so a typo here would pass the
     // schema, the types and every other test while quietly doing nothing.
     const panelOnly = new Set([
         'meleeDamage',
         'sprintDuration',
         'toolEnergyDrain',
-        'reloadSpeed',
         'pressurisedFiringAudibleRange',
         'unpressurisedFiringAudibleRange',
     ]);
