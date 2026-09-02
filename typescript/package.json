@@ -190,6 +190,10 @@
             "types": "./dist/equipment/suits.d.ts",
             "import": "./dist/equipment/suits.js"
         },
+        "./equipment/tools": {
+            "types": "./dist/equipment/tools.d.ts",
+            "import": "./dist/equipment/tools.js"
+        },
         "./equipment/upgrade-costs": {
             "types": "./dist/equipment/upgrade-costs.d.ts",
             "import": "./dist/equipment/upgrade-costs.js"

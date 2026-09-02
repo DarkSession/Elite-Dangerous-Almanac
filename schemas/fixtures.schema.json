@@ -1071,12 +1071,14 @@
             "modificationNames": { "type": "integer" },
             "modificationRecipes": { "type": "integer" },
             "suits": { "type": "integer" },
+            "tools": { "type": "integer" },
             "weapons": { "type": "integer" }
           },
           "required": [
             "modificationNames",
             "modificationRecipes",
             "suits",
+            "tools",
             "weapons"
           ]
         },
@@ -1163,6 +1165,44 @@
             ]
           }
         },
+        "toolDrain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "arcCutterPowerUsage": { "type": "number" },
+            "energylinkOverloadPowerUsage": { "type": "number" },
+            "multiplier": { "type": "number" },
+            "recipeSymbol": { "type": "string" },
+            "stat": { "type": "string" }
+          },
+          "required": [
+            "arcCutterPowerUsage",
+            "energylinkOverloadPowerUsage",
+            "multiplier",
+            "recipeSymbol",
+            "stat"
+          ]
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cloneDuration": { "type": "integer" },
+              "dischargeDuration": { "type": "number" },
+              "dischargeRate": { "type": "number" },
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "overloadPowerUsage": { "type": "integer" },
+              "powerUsage": { "type": "number" },
+              "rechargeRate": { "type": "number" },
+              "scanDuration": { "type": "integer" },
+              "suitFamilies": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["id", "name", "suitFamilies"]
+          }
+        },
         "upgradeCosts": {
           "type": "object",
           "additionalProperties": false,
@@ -1227,6 +1267,8 @@
         "modifiers",
         "suitMounts",
         "suits",
+        "toolDrain",
+        "tools",
         "upgradeCosts",
         "weapons"
       ]

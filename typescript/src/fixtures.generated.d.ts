@@ -365,6 +365,7 @@ type FixtureEquipmentEquipment = {
         modificationNames: number;
         modificationRecipes: number;
         suits: number;
+        tools: number;
         weapons: number;
     };
     modification: {
@@ -404,6 +405,25 @@ type FixtureEquipmentEquipment = {
         name: string;
         shieldStrength: number;
         symbol: string;
+    }[];
+    toolDrain: {
+        arcCutterPowerUsage: number;
+        energylinkOverloadPowerUsage: number;
+        multiplier: number;
+        recipeSymbol: string;
+        stat: string;
+    };
+    tools: {
+        cloneDuration?: number;
+        dischargeDuration?: number;
+        dischargeRate?: number;
+        id: string;
+        name: string;
+        overloadPowerUsage?: number;
+        powerUsage?: number;
+        rechargeRate?: number;
+        scanDuration?: number;
+        suitFamilies: string[];
     }[];
     upgradeCosts: {
         ar50Grade5WeaponComponents: number;

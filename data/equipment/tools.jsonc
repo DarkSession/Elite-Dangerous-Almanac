@@ -1,0 +1,41 @@
+/*
+ * Suit tool catalogue: library-owned ids, English names, the suit families that carry
+ * each tool, and its battery and timing stats. Frontier publishes no item symbol for a
+ * tool, so `id` is this library's own key and joins to no journal field.
+ *
+ * Source: Odyssey Materials Helper, which models the tools as suit stats. See
+ * ../../ATTRIBUTIONS.md for credit and SOURCES.md for the pinned revision, derivation
+ * and units. Every power figure is in MW or MW/s, the unit Suit.batteryCapacity uses;
+ * every duration is in seconds.
+ */
+[
+  {
+    "id": "energylink",
+    "name": "Energylink",
+    "suitFamilies": ["utilitysuit", "tacticalsuit", "explorationsuit", "flightsuit"],
+    "rechargeRate": 2.7,
+    "dischargeRate": 0.6,
+    "dischargeDuration": 1.7,
+    "overloadPowerUsage": 3
+  },
+  {
+    "id": "profile-analyser",
+    "name": "Profile Analyser",
+    "suitFamilies": ["utilitysuit", "tacticalsuit", "explorationsuit", "flightsuit"],
+    "powerUsage": 0.04,
+    "scanDuration": 3,
+    "cloneDuration": 4
+  },
+  {
+    "id": "arc-cutter",
+    "name": "Arc Cutter",
+    "suitFamilies": ["utilitysuit"],
+    "powerUsage": 0.15
+  },
+  {
+    "id": "genetic-sampler",
+    "name": "Genetic Sampler",
+    "suitFamilies": ["explorationsuit"],
+    "powerUsage": 0.45
+  }
+]

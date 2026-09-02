@@ -1,13 +1,14 @@
 /*
  * Pins representative personal-equipment identities, every suit's weapon mounts, grade
- * stats, engineering costs and the stat multipliers an engineer-applied modification
- * puts on a suit or a weapon.
+ * stats, suit-tool stats, engineering costs and the stat multipliers an
+ * engineer-applied modification puts on a suit, a weapon or a tool.
  * Values are selected from the shared equipment catalogues whose source snapshot and
  * weapon-name corrections are documented in their own headers; no player capture is used.
  */
 {
   "counts": {
     "suits": 4,
+    "tools": 4,
     "weapons": 11,
     "modificationRecipes": 31,
     "modificationNames": 25
@@ -63,6 +64,37 @@
       "mounts": [
         { "key": "SecondaryWeapon", "kind": "secondary" }
       ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "energylink",
+      "name": "Energylink",
+      "suitFamilies": ["utilitysuit", "tacticalsuit", "explorationsuit", "flightsuit"],
+      "rechargeRate": 2.7,
+      "dischargeRate": 0.6,
+      "dischargeDuration": 1.7,
+      "overloadPowerUsage": 3
+    },
+    {
+      "id": "profile-analyser",
+      "name": "Profile Analyser",
+      "suitFamilies": ["utilitysuit", "tacticalsuit", "explorationsuit", "flightsuit"],
+      "powerUsage": 0.04,
+      "scanDuration": 3,
+      "cloneDuration": 4
+    },
+    {
+      "id": "arc-cutter",
+      "name": "Arc Cutter",
+      "suitFamilies": ["utilitysuit"],
+      "powerUsage": 0.15
+    },
+    {
+      "id": "genetic-sampler",
+      "name": "Genetic Sampler",
+      "suitFamilies": ["explorationsuit"],
+      "powerUsage": 0.45
     }
   ],
   "weapons": [
@@ -170,6 +202,13 @@
       "modified": 20.25
     }
   ],
+  "toolDrain": {
+    "recipeSymbol": "suit_reducedtoolbatteryconsumption",
+    "stat": "toolEnergyDrain",
+    "multiplier": 0.5,
+    "arcCutterPowerUsage": 0.075,
+    "energylinkOverloadPowerUsage": 1.5
+  },
   "modificationsWithoutModifiers": [
     "suit_adsmovementspeed",
     "suit_improvedjumpassist",

@@ -7,6 +7,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'modification-journal-names.jsonc': 'modificationJournalNameCatalogue',
     'modifications.jsonc': 'modificationCatalogue',
     'suits.jsonc': 'suitCatalogue',
+    'tools.jsonc': 'toolCatalogue',
     'upgrade-costs.jsonc': 'upgradeCostCatalogue',
     'weapons.jsonc': 'weaponCatalogue',
 };

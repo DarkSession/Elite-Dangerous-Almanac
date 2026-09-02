@@ -85,6 +85,7 @@ symbols you are most likely to reach for first:
 | `getBlueprintCost`, `getExperimentalEffectCost` | `core/ships/blueprint-costs` / `experimental-effect-costs` |
 | `getSuitBySymbol`, `getSuitByFamily`, `SUITS` | `core/equipment/suits` |
 | `getPersonalWeaponBySymbol`, `PERSONAL_WEAPONS` | `core/equipment/weapons` |
+| `getPersonalToolById`, `PERSONAL_TOOLS` | `core/equipment/tools` |
 | `getSuitUpgradeCost`, `getPersonalWeaponUpgradeCost` | `core/equipment/upgrade-costs` |
 | `getPersonalModification`, `PERSONAL_MODIFICATIONS` | `core/equipment/modifications` |
 | `getPersonalModificationCost` | `core/equipment/modification-costs` |

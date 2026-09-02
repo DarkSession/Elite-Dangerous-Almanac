@@ -212,7 +212,7 @@ Six feature areas exist in TypeScript, all under `typescript/src/`:
 
 - **`astro/`** — procedural system names and id64 addresses, sectors and galactic regions, nebulae, permit locks, and scanned-body physics.
 - **`commodities/`** — standard and rare market commodities.
-- **`equipment/`** — Odyssey suits, handheld weapons, upgrades, and modifications.
+- **`equipment/`** — Odyssey suits, handheld weapons, suit tools, upgrades, and modifications.
 - **`i18n/`** — localized catalogue names, descriptions, labels, and diagnostics.
 - **`materials/`** — engineering materials and micro-resources.
 - **`ships/`** — ship and outfitting catalogues, engineering (blueprints, experimental effects, pre-engineered variants), loadouts, and build metrics: power, shields, armour, resistances, weapons, jump range.

@@ -21,6 +21,7 @@ import { CONSUMABLE_MICRO_RESOURCES } from './materials/micro-resources-consumab
 import { DATA_MICRO_RESOURCES } from './materials/micro-resources-data.js';
 import { ITEM_MICRO_RESOURCES } from './materials/micro-resources-item.js';
 import { SUITS } from './equipment/suits.js';
+import { PERSONAL_TOOLS } from './equipment/tools.js';
 import { PERSONAL_WEAPONS } from './equipment/weapons.js';
 import { PERSONAL_UPGRADE_COSTS } from './equipment/upgrade-costs.js';
 import { PERSONAL_MODIFICATIONS } from './equipment/modifications.js';
@@ -78,6 +79,7 @@ test('every published catalogue and all of its nested records are frozen', () =>
         ['DATA_MICRO_RESOURCES', DATA_MICRO_RESOURCES],
         ['ITEM_MICRO_RESOURCES', ITEM_MICRO_RESOURCES],
         ['SUITS', SUITS],
+        ['PERSONAL_TOOLS', PERSONAL_TOOLS],
         ['PERSONAL_WEAPONS', PERSONAL_WEAPONS],
         ['PERSONAL_UPGRADE_COSTS', PERSONAL_UPGRADE_COSTS],
         ['PERSONAL_MODIFICATIONS', PERSONAL_MODIFICATIONS],

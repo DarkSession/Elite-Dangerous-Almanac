@@ -141,6 +141,32 @@
       "minItems": 1,
       "items": { "$ref": "#/definitions/suit" }
     },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "suitFamilies"],
+      "properties": {
+        "id": { "$ref": "#/definitions/nonEmptyString" },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "suitFamilies": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/nonEmptyString" }
+        },
+        "rechargeRate": { "$ref": "#/definitions/positiveNumber" },
+        "dischargeRate": { "$ref": "#/definitions/positiveNumber" },
+        "dischargeDuration": { "$ref": "#/definitions/positiveNumber" },
+        "overloadPowerUsage": { "$ref": "#/definitions/positiveNumber" },
+        "powerUsage": { "$ref": "#/definitions/positiveNumber" },
+        "scanDuration": { "$ref": "#/definitions/positiveNumber" },
+        "cloneDuration": { "$ref": "#/definitions/positiveNumber" }
+      }
+    },
+    "toolCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/tool" }
+    },
     "weaponGrade": {
       "type": "object",
       "additionalProperties": false,
