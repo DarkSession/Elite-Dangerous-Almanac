@@ -171,7 +171,7 @@ export function getPreEngineeredJournalModifiers(
  * 2000 t stock stats they were derived from. One part in ten thousand of the base leaves
  * that room and still separates a hand-set article from every other candidate, whose
  * predictions differ by percent. Frontier's own noise floor is kept alongside it, so a
- * stat whose base value is zero still matches.
+ * stat whose base value is zero still has a tolerance instead of none.
  */
 function sameJournalNumber(actual: number, expected: number, base: number): boolean {
     return (
