@@ -58,8 +58,7 @@ capture field with an ellipsis. They identify the bad value without copying a wh
 payload into a log or UI; structured diagnostic fields such as `slot` and `symbol` keep
 the original value for programmatic handling.
 
-Which half of your call the message names depends on what you handed over, and that is
-worth knowing before you write a `catch`:
+Which half of your call the message names depends on what you handed over:
 
 - **An entry point that takes a value names the parameter and the value**, and names
   _itself_ — a lookup you reach through a facade reports the function you called, not the
@@ -194,10 +193,9 @@ read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` an
 `FuelCapacity` directly. If import strips an unrecognised module or stocks a mount from
 the hull defaults, it drops the capture's aggregates too: mass, cargo and fuel are recomputed
 from the normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing
-records what the discarded article cost. A mount stocked from *absence* changes none of
-them: the bulkhead and the cargo hatch are free and weightless, and the planetary
-approach suite is weightless and costs 500 Cr — too little to drop a commander's
-purchase record over.
+records what the discarded article cost.
+[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown)
+names the stocked mounts that are exempt.
 
 **Absent is not zero, anywhere in the library** — and it is never a plausible-looking
 constant either. A catalogue field the source did not carry is omitted rather than
@@ -224,8 +222,10 @@ build.validation().issues; // what specifically
 Each issue carries a stable `code` and a `severity`:
 
 - **`error`** — the fit is wrong: a module in a mount that cannot take it
-  (`incompatibleModule`), or a mount the hull does not have (`unknownSlot`). This is the
-  user's problem, and you should say so. (`duplicateSlot` is an error too, but only ever
+  (`incompatibleModule`), a mount the hull does not have (`unknownSlot`), a second module
+  from a group the ship allows one of (`duplicateExclusiveModule`), or more of a limited
+  group than the hull permits (`moduleLimitExceeded`). This is the user's problem, and you
+  should say so. (`duplicateSlot` is an error too, but only ever
   reaches you from `validateLoadout` on a module list you assembled yourself — a
   `ShipLoadout` throws `TypeError` on a duplicate rather than reporting one, so do not
   write a UI branch for it on a build.)
@@ -241,7 +241,7 @@ Each issue carries a stable `code` and a `severity`:
 - **`warning`** — the build is legal and fully mounted, but it does not fly at every load
   it can carry. A warning clears neither `valid` nor `complete`, so a panel that only
   gates on those will never see it: read the issues. `thrusterMassExceeded` at the
-  `laden` load is the only warning today.
+  `laden` load is the only warning.
 
 ### Weighed at three loads
 

@@ -71,7 +71,7 @@ The method searches the whole module catalogue because some mounts accept module
 one outfitting category: a fuel tank is a core module that also fits optional mounts.
 `ShipLoadout` already carries the complete catalogue for whole-build operations.
 
-What it never offers is the fifteen `grantOnly` articles — the starter `*_free` fittings
+What it never offers is the `grantOnly` articles — the starter `*_free` fittings
 and the bundle-granted Vessel Hangars — because each is a second identity for a module
 the game already sells. Offer them and the thruster list shows "2E Thrusters" twice, the
 second one unpriced. A build that arrived carrying one keeps it, and `getModuleBySymbol`
@@ -125,8 +125,8 @@ belongs to is a field on it rather than something to recover from its symbol:
 import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
 
 const drives = CORE_MODULES.filter((module) => module.slot === 'frameShiftDrive');
-drives.length; // -> 67
-drives.filter((module) => module.supercruiseOvercharge).length; // -> 36, the SCO line
+drives.some((module) => module.supercruiseOvercharge); // -> true, the SCO line
+drives.some((module) => !module.supercruiseOvercharge); // -> true, the ordinary line
 ```
 
 ## Fit, remove, engineer
@@ -157,7 +157,7 @@ symbol. A candidate's `route` is `'ordinary'` when the stock module can take it 
 `'mercenary'` when it requires the matching Mercenary purchase. Stock and Mercenary
 articles share a module symbol, so show that route in the UI and confirm the purchase
 before treating a Mercenary candidate as applicable. `availableExperimentalEffects`
-continues to answer the stock module's ordinary experimental menu.
+answers the stock module's ordinary experimental menu.
 
 ## Report what the build does
 
