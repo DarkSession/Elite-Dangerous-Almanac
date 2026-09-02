@@ -1031,6 +1031,7 @@
       "accepts": [
         "Int_FighterBay_Size5_Class1",
         "Int_FighterBayMk2_Size5_Class1",
+        "Int_LargeBuggyBay_Size4_Class3",
         "Int_MkIILargeBuggyBay_Size4_Class3"
       ],
       "rejects": [

@@ -218,22 +218,24 @@ include the Sub-Surface Extraction Missile (`Hpt_Human_Extraction_Fixed_Medium`)
 alongside the displacement missile it varies, so it counts as a mining tool despite its
 unrelated symbol.
 
-**`vesselHangar` takes a second family the registries do not list.** Both carry the
+**`vesselHangar` takes three families, where the registries list one.** Both carry the
 Type-11's `FighterBay01` as fighter-hangars-only — coriolis `"eligible": { "fh": 1 }`,
-EDSY `{ifh:1}` — and both were read before the module existed. A journal `ModuleBuy`
+EDSY `{ifh:1}` — and both were read before the modules existed. A journal `ModuleBuy`
 records `int_mkiilargebuggybay_size4_class3` bought into that mount, over the
-`int_fighterbay_size5_class1` it replaced, so the mount takes the **unreleased** Mk II
-Large Planetary Vehicle Hangar as well, and this catalogue's fitting rule says so. In-game
-readings govern where a registry disagrees, and here the registries are not wrong so much
-as older than the module. The plain `Int_LargeBuggyBay_` line is **not** added: nothing
-shows one in a vessel-hangar mount.
+`int_fighterbay_size5_class1` it replaced, and both **unreleased** Large Planetary Vehicle
+Hangar lines fit there, so the stored rule takes `int_largebuggybay` and
+`int_mkiilargebuggybay` beside `int_fighterbay`. The plain line's prefix covers its
+`_Free` grants, which fit wherever their sold twins do. In-game readings govern where a
+registry disagrees, and here the registries are not wrong so much as older than the
+modules.
 
 **Neither Large Planetary Vehicle Hangar line carries `restrictedToSlot`.** Fitting one
-mount does not reserve a module to that kind of mount, and the Mk II line cannot be
-reserved to `vesselHangar`: of the thirteen hulls it is restricted to, only the Type-11
-has such a mount, so on the other twelve it must be fitting ordinary optionals. Those
-thirteen are exactly the hulls that can carry a ship-launched vessel, which is what makes
-the hull list and the mount reading one fact rather than two.
+mount does not reserve a module to that kind of mount, and neither line could be reserved
+to `vesselHangar` anyway: of the thirteen hulls the Mk II line is restricted to, only the
+Type-11 has such a mount, so on the other twelve it must be fitting ordinary optionals,
+and the plain line carries no hull restriction at all. Those thirteen are exactly the hulls that can carry a
+ship-launched vessel, which is what makes the hull list and the mount reading one fact
+rather than two.
 
 **`passenger` rests on a capture as well as on EDSY**, and needs to. `PASSENGER` is the
 one restricted family absent from EDSY's journal import map and its `ipc` eligibility
@@ -1258,7 +1260,9 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     `TypeX_2`, `Anaconda`, `BelugaLiner`, `Explorer_NX`, `Federation_Corvette`,
     `Federation_Gunship`, `Cutter`, `Independant_Trader`, `Krait_MkII`, `PantherMkII`,
     `Type9`, `Type9_Military` and `LakonMiner` — stored in the order they were reported.
-    The observed line carries no restriction, and the observation shows none.
+    The plain line carries no restriction, and nothing read so far shows one. **How wide
+    that line's hull coverage actually is has not been established**, so its absent
+    restriction is the reading its silence supports rather than a positive fact.
     - **The thirteen are exactly the hulls that can carry a ship-launched vessel**, and
       the journal reading is what makes that legible rather than coincidental: the Mk II
       hangar was bought into the Type-11's `FighterBay01`, the one vessel-hangar-restricted
