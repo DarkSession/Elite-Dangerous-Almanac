@@ -57,7 +57,7 @@ folded onto the module's catalogue values before any metric sees them, so there 
 step where a caller applies engineering themselves — and no way to ask for the stock
 figure through these methods.
 
-Two consequences are worth knowing before you read a number.
+Two consequences follow.
 
 **A journal's own modifiers are never recomputed.** When a build comes from
 `fromLoadout` or `fromSlef`, the `Engineering.Modifiers` block the game wrote is taken as
@@ -153,7 +153,7 @@ same way.
 **The pips are a separate call.** `shieldMetricsResult().value` is the bare shield an
 outfitting screen shows, and the SYS capacitor is
 `shieldCapacitorMetricsResult().value` — the same split `weaponMetrics()` and
-`weaponsCapacitorMetrics()` already use for WEP. It reports the SYS capacity and recharge
+`weaponsCapacitorMetrics()` use for WEP. It reports the SYS capacity and recharge
 the allocation buys, the resistance the pips add on their own, and the effective
 resistances and hit points with them folded in, so a panel showing both readings computes
 the shield once:
@@ -222,9 +222,9 @@ A distributor's three catalogue recharge figures are their four-pip maxima.
 `distributorMetricsResult().value` scales SYS, ENG and WEP independently by
 `(pips / 4) ^ 1.1` and returns each capacity, rated recharge and actual rate. Fractional
 allocations from zero through four are accepted; each defaults to four independently and
-they need not total six, so the result can compare three independent scenarios. It
-returns `null` without a powered distributor or when the fitted article's capacitor stats
-cannot be resolved; `distributorMetricsResult()` says which of those four it was.
+they need not total six, so the result can compare three independent scenarios. It is
+`null` when the distributor is missing, switched off or shed, or when the fitted article's
+capacitor stats cannot be resolved; the issue's `reason` says which.
 
 `weaponsCapacitorMetrics()` adds firing endurance to the WEP calculation. It compares
 pip-scaled recharge with **sustained** energy per second: a magazine's reload is time for
@@ -264,8 +264,8 @@ computed — a clip a journal states passes through untouched, a recipe leg that
 the clip is a published figure rather than a product of one, and a roll that leaves the clip
 where it was leaves it there.
 
-There is one more wrinkle, and it exists because registries state a recipe's multiplier to
-three or four decimals. A leg meant to add two thirds is written `0.667`, which computes
+One more rounding rule exists because registries state a recipe's multiplier to three or
+four decimals. A leg meant to add two thirds is written `0.667`, which computes
 10.002 rounds on a 6-round rack — and left alone that thousandth becomes a whole extra
 round once the clip rounds up, or a whole extra burst on a burst weapon. A clip within half
 a unit in the multiplier's third decimal is therefore taken as the whole number it means. A
@@ -310,8 +310,8 @@ settles at all, and `secondsToOverheat` fills in when it does not. A load beyond
 dissipation reports `Infinity` for the level rather than a settling point it never
 reaches.
 
-Weapons are the part worth reading twice. `firingSustained` and `firingDrained` differ
-only in the state of the weapons capacitor, and the gap is large: a shot the capacitor
+`firingSustained` and `firingDrained` differ only in the state of the weapons capacitor,
+and the gap is large: a shot the capacitor
 cannot pay for makes **five times** its thermal load. A build that never overheats in a
 duel can cook itself in a wing fight with the same guns.
 

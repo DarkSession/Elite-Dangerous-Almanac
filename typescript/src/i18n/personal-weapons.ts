@@ -17,10 +17,9 @@ const WEAPON_DESCRIPTIONS = /* @__PURE__ */ createLocalizedNameIndex(
  *
  * @param symbol - Frontier's weapon symbol, such as `"wpn_s_pistol_kinetic_sauto"`.
  * Matching ignores case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional or script subtag is dropped: every stored locale is a bare
- * language tag. All six stored locales are complete for this dataset.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched. All six stored locales are complete for
+ * this dataset.
  * @returns The localized description, or `null` when the weapon is unknown or the
  * requested locale is not one this catalogue stores.
  * @remarks

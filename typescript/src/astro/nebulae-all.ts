@@ -4,7 +4,7 @@
  *
  * @remarks
  * **This module pulls in every nebula catalogue (~432 KiB bundled)** — it exists for
- * consumers that really do want to search every record (a "nearest nebula to my
+ * consumers that want to search every record (a "nearest nebula to my
  * position" tool, say). If you only need one class, import that catalogue's module
  * (`./nebulae-real`, `./nebulae-planetary`, `./nebulae-procgen`) and nothing else
  * gets bundled.
@@ -25,9 +25,7 @@ import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
  * name).
  *
  * @remarks
- * Filter on {@link Nebula.type} to narrow it down after the fact — though importing
- * the single catalogue you need is cheaper, since it keeps the others out of your
- * bundle entirely.
+ * Filter on {@link Nebula.type} to narrow it down after the fact.
  *
  * @example
  * ```ts

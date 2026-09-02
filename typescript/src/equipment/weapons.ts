@@ -77,7 +77,7 @@ export interface PersonalWeapon {
     readonly scopeMagnification: ScopeMagnification;
     /**
      * Grade records keyed by `"1"` through `"5"` — every weapon carries all five,
-     * unlike {@link Suit.grades}, and `equipment.test.ts` pins that. Read one through
+     * unlike {@link Suit.grades}. Read one through
      * {@link getPersonalWeaponGrade} to get the same nullable answer suits give.
      */
     readonly grades: Readonly<Record<`${EquipmentGrade}`, PersonalWeaponGrade>>;

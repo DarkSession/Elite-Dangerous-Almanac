@@ -16,9 +16,8 @@ const EXPERIMENTAL_EFFECT_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  *
  * @param experimentalEffectSymbol - Frontier's experimental-effect id, such as
  * `"special_concordant_sequence"`. Matching ignores case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional tag falls back to its language after an exact-locale miss.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched.
  * @returns The localized effect name; the canonical `ExperimentalEffect.name` for any
  * English tag; or `null` when
  * the id is unknown, the locale is unsupported, or the pinned source carries no value

@@ -143,7 +143,7 @@ permitLockForSystemName('Synuefe EN-H d11-96'); // -> null       not locked
 
 There are five narrower lookups beneath it — by address, by region name, and the boolean
 forms — but start here: it is the only one that answers for both kinds without you
-knowing in advance which applies. Note that `ProceduralSystem.requiresRegionPermit` is a
+knowing in advance which applies. `ProceduralSystem.requiresRegionPermit` is a
 region-level flag only; individually locked systems are hand-named and so never reach a
 `ProceduralSystem` at all.
 

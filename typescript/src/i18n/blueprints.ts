@@ -16,9 +16,8 @@ const BLUEPRINT_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  *
  * @param blueprintSymbol - Frontier's blueprint id, such as `"FSD_LongRange"`. Matching ignores
  * case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional tag falls back to its language after an exact-locale miss.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched.
  * @returns The localized blueprint name; the canonical `Blueprint.name` for any English
  * tag; or `null` when the id is unknown, the locale is
  * unsupported, or the pinned source carries no value for that blueprint and locale.

@@ -77,9 +77,10 @@ pnpm run test:package
 pnpm run docs
 ```
 
-`pnpm run check` runs linting, formatting checks, type checking, documented-example
-compilation and value checks, and the coverage-gated test suite. Changes to exports or
-consumer-facing modules also require the build and package tests.
+`pnpm run check` runs the fixture-schema and locale-coverage drift checks, linting,
+formatting checks, type checking, documented-example compilation and value checks, and
+the coverage-gated test suite. Changes to exports or consumer-facing modules also require
+the build and package tests.
 
 API documentation is generated from TSDoc. Catalogue provenance belongs in the matching
 `data/<domain>/SOURCES.md`; open data gaps are tracked in

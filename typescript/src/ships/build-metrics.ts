@@ -16,7 +16,8 @@
  * Every calculation here is also available data-free: `./jump-range`, `./power`,
  * `./heat`, `./mobility`, `./mobility-capacitor`, `./shields`, `./shield-capacitor`,
  * `./shield-recovery`, `./armour`, `./weapons`, `./weapons-capacitor` and
- * `./distributor` each take a plain input object and import no catalogue. This class is the convenience that reads those inputs off a build.
+ * `./distributor` each take a plain input object and import no catalogue. This class is
+ * the convenience that reads those inputs off a build.
  *
  * Metrics that depend on optional build state return a {@link CalculationResult}: its
  * `value` is the completed figure or `null`, and `issues` explains an unavailable one.

@@ -16,12 +16,9 @@
  * hangars, docking computers and Supercruise Assist, the module stabilisers, the planetary
  * approach suites, the cargo hatch and the AX utility modules), plus the individual
  * modules denied every ordinary blueprint — every anti-xeno multi-cannon and missile rack,
- * the Enzyme Missile Rack, all seven mining tools, the remote-release launchers and the Mk II
- * Plasma Shock Accelerator. Six module symbols without a menu still have a Mercenary upgrade
- * route: the Enzyme Missile Rack, fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2
- * Module Reinforcement Package, and size-5 and size-6 cargo racks. Their qualifying articles can
- * take grades 2–5 of their bespoke recipes through
- * `ships/pre-engineered`; fixed community-goal cargo racks remain final articles.
+ * the Enzyme Missile Rack, every mining tool, the remote-release launchers and the Mk II
+ * Plasma Shock Accelerator. A few module symbols without a menu still have a Mercenary
+ * upgrade route through `ships/pre-engineered`; {@link getEngineeringGroup} names them.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
@@ -188,10 +185,12 @@ const moduleExclusions = new Map(
  * it.
  *
  * `null` means **"this stock module has no ordinary engineering menu"**. For nearly every
- * ungrouped module that is the same as "has no engineering route". Six instead
- * retain Mercenary upgrade routes: the Enzyme Missile Rack, fixed Mining Laser and Abrasion
+ * ungrouped module that is the same as "has no engineering route". A few instead keep a
+ * Mercenary upgrade route: the Enzyme Missile Rack, fixed Mining Laser and Abrasion
  * Blaster, size-5 and size-6 cargo racks, and size-5 class-2 Module Reinforcement Package
- * have no stock menu while their qualifying Mercenary articles retain bespoke upgrade routes.
+ * have no stock menu, while their qualifying Mercenary articles take grades 2–5 of their
+ * bespoke recipes through `ships/pre-engineered`. The fixed community-goal cargo racks are
+ * final articles.
  * The build corpus also contains an unsupported declaration on the Mk II Plasma Shock
  * Accelerator, which upstream denies every blueprint.
  *
@@ -320,12 +319,11 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * They answer `[]` here exactly as an unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
- * Four Operations keys **are** named by a group, because they are recipes a player applies
+ * Some Operations keys **are** named by a group, because they are recipes a player applies
  * rather than a purchase: the Merc-Coin blueprints published with a full grade 1–5,
- * `FuelScoop_Efficiency` and the three lasers' `PulseLaser_ThermalPlasmaConversion`,
- * `BurstLaser_ThermalPlasmaConversion` and
- * `BeamLaser_ThermalPlasmaConversion`. Anti-Guardian Zone Resistance answers `[]`, and there
- * that is the exact answer rather
+ * `FuelScoop_Efficiency` and the lasers' `PulseLaser_ThermalPlasmaConversion`,
+ * `BurstLaser_ThermalPlasmaConversion` and `BeamLaser_ThermalPlasmaConversion`.
+ * Anti-Guardian Zone Resistance answers `[]`, and there that is the exact answer rather
  * than a miss: it has no experimental slot, on any group that offers it.
  *
  * @param blueprintSymbol - A blueprint recipe's Frontier symbol, e.g. `"Weapon_Efficient"`.

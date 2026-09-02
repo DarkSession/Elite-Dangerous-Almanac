@@ -36,10 +36,10 @@ Using one catalogue keeps the editor and menu consistent.
 
 **Not every stock module has an ordinary engineering menu.** The catalogue groups the
 ones that do; the rest include whole families like fuel tanks, passenger cabins and
-limpet controllers, plus individual modules denied every ordinary recipe. Six module
-symbols retain Mercenary upgrade routes despite no stock menu: the Enzyme Missile Rack,
-fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement Package,
-and size-5 and size-6 cargo racks. Qualifying Mercenary articles can be upgraded through
+limpet controllers, plus individual modules denied every ordinary recipe. A few module
+symbols keep a Mercenary upgrade route despite having no stock menu: the Enzyme Missile
+Rack, fixed Mining Laser, fixed Abrasion Blaster, size-5 class-2 Module Reinforcement
+Package, and size-5 and size-6 cargo racks. Qualifying Mercenary articles can be upgraded through
 grades 2–5 of their bespoke recipes. Fixed Enzyme/AX variants and fixed community-goal
 cargo racks remain final articles. A module with no group is therefore not a gap in the
 data.
@@ -159,10 +159,11 @@ order — journal spelling, then the pre-engineered route, then the generic spel
 only the first can change *which* recipe an accepted id names.
 
 **The journal spelling of a menu entry.** Where the game writes one `BlueprintName` for two
-different recipes, the module's own group carries the map from that id to the entry it
-names. Only the three utility-scanner groups need one. This is pinned data rather than
-inference, because unlike the generic spellings the two ids do not describe the same
-modification.
+different recipes, `ships/blueprint-journal` reads that id against the fitted module's menu
+and resolves it to the entry the menu lists: `Sensor_LongRange` on a utility scanner becomes
+`Scanner_LongRange`, and `Weapon_Overcharged` on a multi-cannon becomes `MC_Overcharged`.
+The map is pinned data in `data/ships/blueprint-journal-names.jsonc`, not inference, because
+unlike the generic spellings the two ids do not describe the same modification.
 
 **The generic spelling.** Where a modification applies to several families, the game writes
 a family-specific id and the catalogue lists that one — but a build authored elsewhere may
@@ -226,14 +227,14 @@ A grade costs its recipe once per roll and grade `g` takes `g` rolls, so the cli
 weighted rather than a plain sum — which is what `getBlueprintCost` folds in for you.
 
 A cost is **both halves of the bill**: the `materials` consumed and the `mercCoins`
-charged beside them. Twenty-five recipes bill Merc Coin per roll, under the same
+charged beside them. A recipe that bills Merc Coin bills it per roll, under the same
 weighting; every other recipe reports `0`, which is a real amount rather than a missing
 one. `null` is reserved for "not catalogued", so it never has to be untangled from
 "charges nothing".
 
-Most of the twenty-five are the bespoke Mercenary recipes, which start at grade 2 because
-the article was bought at grade 1 — but four are ordinary menu recipes on stock modules,
-so do not read a Merc Coin charge as meaning a Mercenary article:
+Most of those are the bespoke Mercenary recipes, which start at grade 2 because the
+article was bought at grade 1, but some are ordinary menu recipes on stock modules, so do
+not read a Merc Coin charge as meaning a Mercenary article:
 
 ```ts
 import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';

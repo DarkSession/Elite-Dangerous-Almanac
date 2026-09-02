@@ -31,8 +31,7 @@
  * Frontier exposes; {@link ShipLoadout.applyBlueprint} performs that presentation step.
  *
  * The catalogues live in `./blueprints` and `./experimental-effects`; this module
- * holds no data. {@link ShipLoadout.applyBlueprint} uses this calculator, then presents
- * its result in Frontier's journal form.
+ * holds no data.
  *
  * @example
  * ```ts

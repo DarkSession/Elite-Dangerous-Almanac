@@ -62,8 +62,8 @@ import {
  * These are Frontier's own category strings (spelled with spaces where the game
  * spells them so, e.g. `"Consumer Items"`). Both standard and rare commodities draw
  * from the same set; the rare registry uses only a subset of these groups.
- * `"NonMarketable"` is Frontier's group for goods that are not freely traded (its one
- * member is Limpets).
+ * `"NonMarketable"` is Frontier's group for goods that are not freely traded, such as
+ * Limpets.
  */
 export type CommodityCategory =
     | 'Chemicals'

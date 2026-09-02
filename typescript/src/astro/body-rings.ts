@@ -209,8 +209,8 @@ export function isInvisibleRing(ring: BodyRing): boolean {
  * The `3/8` is a fitted constant, not a derivation — the Canonn Research Group arrived at
  * it from in-game measurements, having also weighed `1/e` (≈ 0.368) and `1/φ²` (≈ 0.382),
  * which it sits between. Two things bound how exact the result can be: the journal writes
- * ring radii to four significant figures, and the fit is still being refined against new
- * observations. Treat the figures as close, not exact.
+ * ring radii to four significant figures, and the constant is a fit to in-game
+ * observations rather than an exact value. Treat the figures as close, not exact.
  *
  * @param ring - The ring. Needs {@link BodyRing.InnerRad | InnerRad} and
  * {@link BodyRing.OuterRad | OuterRad}, in metres.

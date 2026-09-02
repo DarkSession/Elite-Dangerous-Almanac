@@ -169,9 +169,9 @@ export function getBlueprintGradeCost(
  * `currentGrade` to `grade − 1`; use {@link getBlueprintGradeCost} for one roll.
  *
  * A Mercenary article is bought at grade 1 and its recipe defines grades 2–5, so pass
- * `1` to price what an engineer can still add. The four ordinary-menu recipes that also
- * bill Merc Coin — `FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`
- * — define grades 1–5 on a stock module and climb from `0` like any other recipe.
+ * `1` to price what an engineer can still add. The ordinary-menu recipes that also bill
+ * Merc Coin, `FuelScoop_Efficiency` and the `*Laser_ThermalPlasmaConversion` recipes,
+ * define grades 1–5 on a stock module and climb from `0` like any other recipe.
  *
  * This is blueprint cost only. An experimental effect is a separate application, and it
  * costs materials alone; combine its `getExperimentalEffectCost` result with
@@ -272,7 +272,7 @@ export type BlueprintMercCoinCosts = Readonly<Record<string, number>>;
  * bespoke grade-2–5 recipes that only a Mercenary article, bought
  * already at grade 1, can be taken through. The others are ordinary
  * engineering-menu recipes spanning grades 1–5 that happen to bill the currency too:
- * `FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`. Every other
+ * `FuelScoop_Efficiency` and the `*Laser_ThermalPlasmaConversion` recipes. Every other
  * blueprint is absent rather than zero. Merc Coin has no credit equivalent, so it is
  * never folded into a material list.
  *

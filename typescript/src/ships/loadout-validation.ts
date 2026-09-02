@@ -40,7 +40,7 @@ export type LoadoutIssueCode =
  * @remarks
  * `dry` is the fit alone — hull plus modules, an empty tank and no cargo. `unladen`
  * adds a full main tank, and is the figure the game and every outfitting tool call a
- * ship's unladen mass; note that {@link ships!ShipLoadout.unladenMass} is the `dry`
+ * ship's unladen mass; {@link ships!ShipLoadout.unladenMass} is the `dry`
  * figure, because that is what a journal's `UnladenMass` states. `laden` adds a full
  * hold on top.
  *

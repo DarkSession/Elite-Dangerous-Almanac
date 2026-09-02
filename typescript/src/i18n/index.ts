@@ -17,8 +17,8 @@
  * **How sparse, dataset by dataset.** Each column below is the percentage of that
  * lookup's keys carrying a stored value for the locale, so a `0` would mean the dataset
  * holds nothing in that language at all and the lookup returns `null` for every key:
- * German module names are near-complete, while a quarter of the outfitting families —
- * the ones the game does not name separately — have no locale at all. Plan fallback per
+ * most datasets are complete in every locale, while the outfitting families the game
+ * does not name separately have no locale at all. Plan fallback per
  * lookup rather than per application. The table is generated from the
  * [`data/i18n/` catalogues](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/data/i18n),
  * so it moves when the data does.
@@ -45,7 +45,7 @@
  * convenience or from the corresponding `i18n/*` subpath for an explicit bundle
  * boundary.
  *
- * Structured diagnostic helpers expose their current English fallback only for English
+ * Structured diagnostic helpers expose their English fallback only for English
  * locales and return `null` otherwise, so a UI never mistakes English prose for a
  * requested translation. Stable codes and `params` remain available for applications
  * that supply their own message catalogues.
@@ -63,7 +63,7 @@
  * getBlueprintName('FSD_LongRange', 'de-DE'); // -> 'Erhöhte FSA-Reichweite'
  * getMaterialName('GridResistors', 'de'); // -> 'Gitterwiderstände'
  *
- * // Sparseness is per dataset, not per locale: German module names are near-complete,
+ * // Sparseness is per dataset, not per locale: German module names are complete,
  * // while no outfitting family the game does not name separately has any.
  * getOutfittingFamilyName('shieldGenerators', 'de'); // -> 'Schildgeneratoren'
  * getOutfittingFamilyName('xenoScanners', 'de'); // -> null

@@ -5,7 +5,7 @@
  * A hull offers a fixed set of mounts: seven core internals, a handful of weapon
  * hardpoints, some tiny utility mounts, and a column of optional internals. Some of
  * those mounts are **restricted** to one family of modules — military and
- * planetary-approach optionals on most hulls, and, on three hulls, cargo-only,
+ * planetary-approach optionals on most hulls, and, on a few hulls, cargo-only,
  * limpet-controller-only, vessel-hangar-only and passenger-cabin-only optionals and
  * mining-only hardpoints (see {@link SlotRestriction}). This module gives
  * each mount a stable **slot key** and a {@link BuildSlot} descriptor, and
@@ -15,7 +15,7 @@
  *
  * It holds no data; {@link enumerateSlots} takes a {@link ShipSlots} layout (from a
  * hull's `Ship` record via `getShipSlots` in `./ships`) and expands it into keyed
- * {@link BuildSlot}s. Most hulls number their mounts by rule; on ten the game does
+ * {@link BuildSlot}s. Most hulls number their mounts by rule; on some the game does
  * not, and a mount there carries its own `name` — see {@link enumerateSlots}.
  *
  * @packageDocumentation
@@ -181,7 +181,7 @@ export interface BuildSlotBase {
      * `core` function name is a *different* string (`thrusters` vs the key
      * `MainEngines`); see {@link CoreSlotType}.
      *
-     * **Do not compute one.** The numbering looks regular and on ten hulls is
+     * **Do not compute one.** The numbering looks regular and on some hulls is
      * not: the Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`
      * with no slots 11 or 12, the Type-9 Heavy starts at `Slot00_Size8`, the Type-7
      * Transporter uses the number `09` twice, and the Keelback's `Slot03_Size3` sits
@@ -448,7 +448,7 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * @returns Every mount the hull offers, as {@link BuildSlot}s.
  * @remarks
  * Unrestricted optionals are numbered `Slot01_SizeN`, `Slot02_SizeN`, … with no gaps,
- * and hardpoints `1, 2, 3` within each size class. **Ten hulls disagree**, and no
+ * and hardpoints `1, 2, 3` within each size class. **Some hulls disagree**, and no
  * rule derives what they do instead, so a mount on one of them carries its own
  * {@link OptionalSlotSpec.name} / {@link HardpointSlotSpec.name} and that wins:
  *
@@ -571,7 +571,7 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
  * mount. The returned `core` and `restriction` values keep this library's own
  * camelCase spelling whatever the input looked like.
  *
- * **A `_SizeN` suffix is what the name says, not what the mount is.** On three hulls
+ * **A `_SizeN` suffix is what the name says, not what the mount is.** On some hulls
  * the game's own key disagrees with the mount it names — the Keelback's
  * `Slot03_Size3` is a size-4 mount, the Asp Scout's `Slot01_Size4` a size-5 one, and
  * five of the Type-7 Transporter's ten are off. To size a mount, find it in the hull's

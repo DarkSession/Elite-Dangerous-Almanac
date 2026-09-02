@@ -47,7 +47,7 @@ function identityKey(identity: PreEngineeredVariantIdentity): string {
  * because a base module and blueprint alone do not uniquely identify every reward.
  * @param locale - A BCP 47 locale. Regional tags fall back to their supported language.
  * @returns The explicit localized name, or `null` for an unknown variant or unavailable
- * translation. Decorative reward names currently have English values only.
+ * translation. Decorative reward names have English values only.
  * @throws {TypeError} If `variant` is not an object, a required identity field or a
  * non-null `experimentalEffectSymbol` value is not a string, or `locale` is not a
  * string.

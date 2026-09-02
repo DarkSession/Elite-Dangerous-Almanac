@@ -144,8 +144,8 @@ a source total may understate the fit by that much, and by no more.
 `build.importOutcomes` says which — see
 [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 
-One limit worth knowing: what a capture never priced, it also never explains — so
-losing an unpriced module, to a removal or a replacement, cannot be detected.
+One limit: what a capture never priced, it also never explains, so losing an unpriced
+module, to a removal or a replacement, cannot be detected.
 {@link ships!LoadoutExportOptions.credits | LoadoutExportOptions.credits} records that
 and the other boundary cases.
 

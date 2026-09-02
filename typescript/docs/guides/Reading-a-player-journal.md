@@ -243,8 +243,7 @@ filled with that hull's stock article whenever the event did not leave a fitting
 a size-8 plant in a size-2 mount, anything at all in the cargo hatch), or none at all.
 Only those four kinds are corrected this way: every other optional, hardpoint or utility
 mount may stand empty, so an article the catalogue resolves but the mount refuses is left
-where
-the event put it, for `validation` to report. A stock replacement carries the source's
+where the event put it, for `validation` to report. A stock replacement carries the source's
 `On`, `Priority` and `Health` across but none of its engineering or captured value.
 
 The approach suite is on that list because a source silent about it is not a build that
@@ -258,13 +257,11 @@ removable, so a build that really does fly without one is a `removeModule` away.
 When normalization changes the fitted set, the capture's aggregates are dropped: mass,
 cargo and fuel capacity are recomputed from the fit that remains, while `modulesValue`
 and `rebuy` read `null`, since nothing records what the discarded module cost;
-`sourcePurchase` still reports the captured figures. A mount stocked from *absence* is the
-exception — the bulkhead and the cargo hatch are weightless and free, and the approach
-suite is weightless and costs 500 Cr, too little to drop a commander's whole purchase
-record over — while an absent core internal stocked from the defaults invalidates them
-like any other change. So on this account a capture's credit figures may understate an
-imported fit by the price of one suite and no more; what a capture's own totals are worth
-in the first place is its own business, and `sourcePurchase` reports them as stated.
+`sourcePurchase` still reports the captured figures. A bulkhead, cargo hatch or approach
+suite stocked from *absence* is the exception and leaves the totals standing, while an
+absent core internal stocked from the defaults invalidates them like any other change.
+[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid)
+covers why, and what the captured figures are worth.
 
 `build.validation()` therefore reports the fit that remains: optional, hardpoint and
 utility modules leave empty mounts and need no diagnostic, while required armour and core

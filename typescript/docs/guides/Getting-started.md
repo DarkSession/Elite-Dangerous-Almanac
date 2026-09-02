@@ -109,7 +109,7 @@ before any transport compression. The published package strips whitespace but do
 compress syntax or rename identifiers, so its own files on disk are larger. The heaviest
 imports are:
 
-- `ships/ship-loadout` is the batteries-included editing facade, and `ships/build-metrics`
+- `ships/ship-loadout` is the complete editing facade, and `ships/build-metrics`
   the calculating half over it — importing one does not pull in the other. Resolving
   arbitrary journal module ids and engineering recipes needs the complete ship, module,
   blueprint-mechanics and experimental-effect-mechanics catalogues, and
@@ -153,9 +153,9 @@ carry a second copy of its source.
 ## What the package weighs on disk
 
 `npm pack --dry-run` reports about 70 MB unpacked and about 18 MB as a compressed
-npm archive. Read that number before you judge it: the ship art in `assets/` is about
-67 MB of it — four SVG files per hull, shipped as static package files rather
-than as subpath exports. Everything a bundler can reach is the roughly 3 MB of
+npm archive. The ship art in `assets/` is about 67 MB of it: four SVG files per hull,
+shipped as static package files rather than as subpath exports. Everything a bundler can
+reach is the roughly 3 MB of
 `dist/`, which is the JavaScript, the type declarations and the source maps above,
 and no import of this package pulls an SVG into an application bundle.
 

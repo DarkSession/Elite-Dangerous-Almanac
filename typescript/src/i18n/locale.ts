@@ -6,7 +6,9 @@
  * Almanac. Every other locale is sparse and source-dependent. A lookup accepts any
  * string rather than only this union so callers can pass their application locale
  * directly: a regional tag such as `de-DE` falls back to `de`, while an unsupported tag
- * or a missing translation returns `null`.
+ * or a missing translation returns `null`. Matching is case-insensitive and accepts an
+ * underscore in place of a hyphen; a regional or script subtag is dropped rather than
+ * matched, since every stored locale is a bare language tag.
  * A source may explicitly publish a localized value whose spelling equals the canonical
  * English name. Lookups return that source value verbatim; they never generate an
  * English fallback for a missing locale.

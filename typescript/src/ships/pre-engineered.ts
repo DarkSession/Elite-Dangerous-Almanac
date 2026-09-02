@@ -25,9 +25,9 @@
  * Community-goal and tech-broker entries instead identify fixed reward articles; their
  * blueprint ids do not grant a recipe to the stock module.
  *
- * Note that one base module can appear more than once: the medium Seeker Missile Rack is
- * sold or awarded in six different pre-engineered flavours, so
- * `Hpt_BasicMissileRack_Fixed_Medium` has six entries. Look variants up with
+ * One base module can appear more than once: the medium Seeker Missile Rack is sold or
+ * awarded in several pre-engineered flavours, so `Hpt_BasicMissileRack_Fixed_Medium` has
+ * one entry per flavour. Look variants up with
  * {@link getPreEngineeredVariants} (plural) rather than assuming one.
  *
  * Most variants carry a `modifiers` block — the hand-set stat

@@ -9,7 +9,7 @@
  * The other categories live in `./modules-core`, `./modules-hardpoint` and
  * `./modules-utility`, so importing this module never bundles them.
  *
- * Identity primarily from EDCD FDevIDs (`outfitting.csv`), with six bundle-granted
+ * Identity primarily from EDCD FDevIDs (`outfitting.csv`), with the bundle-granted
  * Vessel Hangar variants from a public CAPI capture; stats from EDCD/coriolis-data and
  * EDSY, joined on `symbol`. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
@@ -28,7 +28,7 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  * rather than repeated on every record. **The category is the registry's filing, not a
  * fitting rule**, so do not read a fit off it: `ModularCargoBayDoor` (family
  * `cargoHatches`) is the hull's built-in Cargo Hatch and goes in the fixed `CargoHatch`
- * mount alone; the fifteen Guardian hybrid power plants and distributors carry a core
+ * mount alone; the Guardian hybrid power plants and distributors carry a core
  * {@link ships!OutfittingModule.slot | slot} and fit only that core mount; and others
  * here reserve a restricted mount or a named hull. Ask
  * {@link ships!ShipLoadout.modulesForSlot | ShipLoadout.modulesForSlot} what a mount

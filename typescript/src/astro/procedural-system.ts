@@ -155,9 +155,9 @@ export class ProceduralSystem {
      * the Cone Sector, …).
      *
      * @remarks
-     * This is a region-level flag only. Individually permit-locked systems — Sol,
-     * Shinrarta Dezhra, Achenar and 51 others — are not procedurally named, so they
-     * never reach a `ProceduralSystem`; check those with `permitLockForSystemName` from
+     * This is a region-level flag only. Individually permit-locked systems (Sol,
+     * Shinrarta Dezhra, Achenar, …) are not procedurally named, so they never reach a
+     * `ProceduralSystem`; check those with `permitLockForSystemName` from
      * `./permit-locks`, which covers both kinds of lock from a name alone.
      */
     readonly requiresRegionPermit: boolean;
