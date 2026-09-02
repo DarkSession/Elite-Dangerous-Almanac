@@ -18,7 +18,7 @@
  * These can differ near a region border; see the upstream discussion linked in the
  * data file's attribution.
  *
- * Algorithm ported from klightspeed's EliteDangerousRegionMap (`RegionMap.js`),
+ * Algorithm ported from klightspeed's EliteDangerousRegionMap (`RegionMap.js`).
  * See [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation

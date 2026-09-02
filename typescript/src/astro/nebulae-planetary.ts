@@ -4,7 +4,7 @@
  *
  * @remarks
  * **This is the heaviest data module in the library (~399 KiB bundled).** Import it
- * only when you genuinely need every planetary nebula; for the recognisable
+ * only when you need every planetary nebula; for the recognisable
  * real-world nebulae use `./nebulae-real` instead (~16 KiB). Because each catalogue
  * is its own module, importing that one never pulls this one in.
  *

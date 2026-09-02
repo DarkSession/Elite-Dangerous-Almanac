@@ -22,10 +22,8 @@ const SUIT_DESCRIPTIONS = /* @__PURE__ */ createDeduplicatedLocalizedNameIndex(
  * @param suit - Either the grade-independent family `Suit.family` carries, such as
  * `"utilitysuit"`, or one grade's Frontier symbol, such as `"utilitysuit_class3"` — the
  * form a journal line writes. Matching ignores case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional or script subtag is dropped: every stored locale is a bare
- * language tag.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched.
  * @returns The localized suit name; the canonical `Suit.name` for any English tag; or
  * `null` when the suit is unknown or the locale is not one of the six this catalogue
  * stores.

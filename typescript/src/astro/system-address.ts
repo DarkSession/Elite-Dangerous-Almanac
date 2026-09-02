@@ -338,8 +338,9 @@ export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress
  * `resolveNamingRegionOrigin` in `./naming-region-origins`.
  * @returns The 64-bit system address.
  * @throws {RangeError} If the mass code is outside 0–7, a letter is outside 0–25, `n1`
- * is not one the boxel packer accepts, the origin has a negative coordinate, the name's boxel code or sector falls outside the
- * address layout, or the sequence does not fit its size-class-dependent field.
+ * is not one the boxel packer accepts, the origin has a negative coordinate, the name's
+ * boxel code or sector falls outside the address layout, or the sequence does not fit
+ * its size-class-dependent field.
  * @example
  * ```ts
  * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
@@ -383,8 +384,9 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: NamingRegion
  * @returns The 64-bit modulated system address. These routinely exceed `2^53`, so
  * keep them as `bigint` (or a decimal string) rather than a JS `number`.
  * @throws {RangeError} If the mass code is outside 0–7, a letter is outside 0–25, `n1`
- * is not one the boxel packer accepts, the origin has a negative coordinate, the name's boxel code or sector falls outside the
- * address layout, or the sequence does not fit the 15-bit modulated field.
+ * is not one the boxel packer accepts, the origin has a negative coordinate, the name's
+ * boxel code or sector falls outside the address layout, or the sequence does not fit
+ * the 15-bit modulated field.
  * @example
  * ```ts
  * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';

@@ -28,10 +28,8 @@ const MODIFICATION_DESCRIPTIONS = /* @__PURE__ */ createDeduplicatedLocalizedNam
  * `"weapon_range_laser"`. A journal line writes the unsuffixed `"weapon_range"`, which
  * `resolvePersonalModificationForWeapon` turns into the specific symbol. Matching
  * ignores case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional or script subtag is dropped: every stored locale is a bare
- * language tag.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched.
  * @returns The localized modification name; the canonical `PersonalModification.name`
  * for any English tag; or `null` when the recipe is unknown or the locale is not one of
  * the six this catalogue stores.
@@ -78,8 +76,8 @@ export function getPersonalModificationName(
  * This is display prose, not a statement of the magnitudes a recipe applies: the game
  * says a modification "allows more ammo to be carried for each weapon", never how much
  * more. `PersonalModification.modifiers` answers that, and the two are deliberately not
- * the same string. It is also the only account of the ten recipes whose `modifiers` list
- * is empty, whether because the recipe switches a capability on or because it moves a
+ * the same string. It is also the only account of the recipes whose `modifiers` list is
+ * empty, whether because the recipe switches a capability on or because it moves a
  * stat the panel puts no number on. English is the game's own wording rather than a
  * projection of `PersonalModification.name`.
  * @throws {TypeError} If a present `modificationSymbol` or `locale` is not a string.

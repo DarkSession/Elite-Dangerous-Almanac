@@ -14,10 +14,8 @@ const FAMILY_NAMES = /* @__PURE__ */ createLocalizedNameIndex(familyNamesData as
  *
  * @param familyId - The stable family id carried by `OutfittingModuleIdentity.familyId`,
  * such as `"shieldGenerators"`. Matching ignores case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional or script subtag is dropped: every stored locale is a bare
- * language tag.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched.
  * @returns The localized family name; the canonical `OUTFITTING_FAMILIES` name for any
  * English tag; or `null` when the family is unknown, the locale is unsupported, or the
  * pinned source carries no category label for that family and locale.

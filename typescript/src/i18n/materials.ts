@@ -16,10 +16,8 @@ const MATERIAL_NAMES = /* @__PURE__ */ createLocalizedNameIndex(
  *
  * @param symbol - Frontier's material symbol, such as `"GridResistors"`. Matching
  * ignores case and surrounding whitespace.
- * @param locale - A BCP 47 language or regional tag, such as `"de"`, `"de-DE"` or
- * `"en-GB"`. Matching is case-insensitive; underscores are accepted in place of
- * hyphens. A regional or script subtag is dropped: every stored locale is a bare
- * language tag.
+ * @param locale - A BCP 47 language or regional tag, such as `"de"` or `"de-DE"`; see
+ * {@link GameLocale} for how a tag is matched.
  * @returns The localized material name; the canonical `Material.name` for any English
  * tag; or `null` when the symbol is unknown or the locale is not one of the six this
  * catalogue stores.

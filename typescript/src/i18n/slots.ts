@@ -9,7 +9,7 @@ import { getLocalizedText } from './internal/localized-name.js';
  * Resolve a loadout slot's display name for a locale.
  *
  * @param slot - A slot returned by `enumerateSlots` or `ShipLoadout.slots`.
- * @param locale - A BCP 47 locale. Current slot-label sources supply English only.
+ * @param locale - A BCP 47 locale. The slot-label sources supply English only.
  * @returns The slot's English display name for an English locale, otherwise `null`.
  * @throws {TypeError} If `slot` is not an object or `locale` is not a string.
  * @example
@@ -38,7 +38,7 @@ export function getLoadoutSlotName(slot: BuildSlot, locale: string): string | nu
  * Resolve the short display label for a restricted slot.
  *
  * @param restriction - A `BuildSlot.restriction` value.
- * @param locale - A BCP 47 locale. Current restriction-label sources supply English only.
+ * @param locale - A BCP 47 locale. The restriction-label sources supply English only.
  * @returns The English label for an English locale, otherwise `null`.
  * @throws {TypeError} If `locale` is not a string.
  * @example

@@ -1,6 +1,6 @@
 /**
  * The catalogue of **standard** market commodities — the goods traded at station
- * commodity markets, across all sixteen market groups.
+ * commodity markets, across every market group.
  *
  * Every record here is a standard commodity (`rare: false`); the rare goods live in
  * `./commodities-rare`. Search it with the query functions in `./commodities`.
