@@ -95,6 +95,9 @@ symbols you are most likely to reach for first:
 | `getExperimentalEffectName` | `core/i18n/experimental-effects` |
 | `getMaterialName` | `core/i18n/materials` |
 | `getMicroResourceName` | `core/i18n/micro-resources` |
+| `getSuitName`, `getSuitDescription` | `core/i18n/suits` |
+| `getPersonalWeaponDescription` | `core/i18n/personal-weapons` |
+| `getPersonalModificationName`, `getPersonalModificationDescription` | `core/i18n/personal-modifications` |
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |
 | `getMicroResourceByName` | `core/materials/micro-resources` |
 | `getCommodityByName` | `core/commodities/commodities` |

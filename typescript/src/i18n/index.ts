@@ -1,9 +1,11 @@
 /**
- * Sparse, source-backed localized display names for Elite Dangerous outfitting and
- * engineering catalogues.
+ * Sparse, source-backed localized display names and descriptions for Elite Dangerous
+ * outfitting, personal-equipment and engineering catalogues.
  *
  * Each lookup takes the same Frontier symbol as its owning catalogue and a BCP 47
- * locale. English is complete and exactly matches the owning record's `name`.
+ * locale. English is complete: for a name catalogue it is exactly the owning record's
+ * `name`, and for a description catalogue it is the game's own display prose, which no
+ * catalogue otherwise publishes.
  * Other locales are intentionally sparse: the function returns `null` when its pinned
  * sources carry no translation, leaving the application in control of fallback policy.
  * A source-backed localized spelling can be identical to English; the lookup returns
@@ -30,6 +32,11 @@
  * | `getMaterialName` | 146 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getMicroResourceName` | 226 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getModuleName` | 1194 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getPersonalModificationDescription` | 31 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getPersonalModificationName` | 31 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getPersonalWeaponDescription` | 11 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getSuitDescription` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getSuitName` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getPreEngineeredVariantName` | 76 | 100 | 92 | 89 | 89 | 100 | 100 |
  * | `getOutfittingFamilyName` | 77 | 100 | 75 | 75 | 75 | 75 | 75 |
  * <!-- end generated -->
@@ -72,6 +79,12 @@ export { getExperimentalEffectName } from './experimental-effects.js';
 export { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
 export { getMaterialName } from './materials.js';
 export { getMicroResourceName } from './micro-resources.js';
+export { getSuitDescription, getSuitName } from './suits.js';
+export { getPersonalWeaponDescription } from './personal-weapons.js';
+export {
+    getPersonalModificationDescription,
+    getPersonalModificationName,
+} from './personal-modifications.js';
 export { getLoadoutSlotName, getSlotRestrictionLabel } from './slots.js';
 export {
     getCalculationIssueMessage,

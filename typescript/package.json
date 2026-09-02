@@ -236,6 +236,14 @@
             "types": "./dist/i18n/module-families.d.ts",
             "import": "./dist/i18n/module-families.js"
         },
+        "./i18n/personal-modifications": {
+            "types": "./dist/i18n/personal-modifications.d.ts",
+            "import": "./dist/i18n/personal-modifications.js"
+        },
+        "./i18n/personal-weapons": {
+            "types": "./dist/i18n/personal-weapons.d.ts",
+            "import": "./dist/i18n/personal-weapons.js"
+        },
         "./i18n/pre-engineered": {
             "types": "./dist/i18n/pre-engineered.d.ts",
             "import": "./dist/i18n/pre-engineered.js"
@@ -243,6 +251,10 @@
         "./i18n/slots": {
             "types": "./dist/i18n/slots.d.ts",
             "import": "./dist/i18n/slots.js"
+        },
+        "./i18n/suits": {
+            "types": "./dist/i18n/suits.d.ts",
+            "import": "./dist/i18n/suits.js"
         },
         "./materials": {
             "types": "./dist/materials/index.d.ts",

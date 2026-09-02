@@ -1,0 +1,105 @@
+/*
+ * Localized display descriptions for the handheld personal weapons.
+ *
+ * Source: the in-game weapon localisation tables.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * known gaps: data/i18n/SOURCES.md.
+ *
+ * Keyed by the Frontier weapon symbol data/equipment/weapons.jsonc carries. These are
+ * the descriptions the game shows a player, English included; the combat stats in that
+ * catalogue answer a different question and are not projected here.
+ *
+ * No sibling name catalogue exists: a handheld weapon's name is a product name the game
+ * leaves in English in every locale — see data/i18n/SOURCES.md.
+ */
+{
+  "wpn_s_pistol_kinetic_sauto": {
+    "en": "A semi-automatic pistol with low recoil and a high fire rate, offset by comparatively low damage output.",
+    "de": "Diese halb-automatische Pistole mit geringem Rückschlag und hoher Feuerrate bietet eine nur geringe Schadenswirkung.",
+    "es": "Una pistola semiautomática con un retroceso reducido, una cadencia de disparo elevada y una capacidad de daño relativamente baja.",
+    "fr": "Pistolet semi-automatique présentant un faible recul et une cadence de tir élevée, contrebalancés par des dégâts réduits.",
+    "pt": "Uma pistola semiautomática com recuo baixo e alta frequência de disparo, compensados por uma capacidade de dano comparativamente baixa.",
+    "ru": "Полуавтоматический пистолет с низкой отдачей и высокой скоростью стрельбы, компенсирующими его низкую огневую мощь."
+  },
+  "wpn_m_assaultrifle_kinetic_fauto": {
+    "en": "This automatic rifle is a solid all-rounder with comparatively good power and range.",
+    "de": "Dieses automatische Gewehr ist eine solide Allzweckwaffe mit zufriedenstellender Durchschlagskraft und Reichweite.",
+    "es": "Un fusil automático muy versátil, con una potencia y un alcance relativamente buenos.",
+    "fr": "Fusil automatique polyvalent doté d'une bonne puissance de feu et d'une portée appréciable.",
+    "pt": "Este rifle automático é bem equilibrado, com poder de fogo e alcance comparativamente bons.",
+    "ru": "Надежная и универсальная автоматическая винтовка с относительно хорошей дальностью и мощностью."
+  },
+  "wpn_m_submachinegun_kinetic_fauto": {
+    "en": "This automatic carbine is designed to be fired in short bursts, and is most effective at short range.",
+    "de": "Dieser automatische Karabiner feuert kurze Salven und ist am effektivsten auf Nahdistanz.",
+    "es": "Esta carabina automática dispara ráfagas cortas y es más efectiva a corto alcance.",
+    "fr": "Carabine automatique conçue pour tirer de courtes rafales particulièrement dévastatrices à courte portée.",
+    "pt": "Esta carabina automática é projetada para ser disparada em rajadas curtas e é mais efetiva a curta distância.",
+    "ru": "Этот автоматический карабин стреляет короткими очередями и более эффективен на ближних дистанциях."
+  },
+  "wpn_m_launcher_rocket_sauto": {
+    "en": "A lightweight rocket launcher that fires dumbfire projectiles designed to take out personnel and SRVs.",
+    "de": "Dieser leichte Raketenwerfer feuert ungelenkte Projektile zur Abwehr von Personen und SRVs ab.",
+    "es": "Un lanzacohetes ligero que dispara proyectiles no guiados diseñados para eliminar personal y VRS.",
+    "fr": "Lance-roquettes léger tirant des projectiles simples conçus pour éliminer des cibles à pied ou des VRS.",
+    "pt": "Um lança-foguetes leve que dispara projéteis não guiados, projetado para eliminar pessoas e VRS.",
+    "ru": "Легкая пусковая установка, стреляющая снарядами без самонаведения, созданная для уничтожения бойцов и ТРП."
+  },
+  "wpn_m_assaultrifle_laser_fauto": {
+    "en": "This automatic laser rifle compensates for average damage output with excellent accuracy.",
+    "de": "Dieses automatische Lasergewehr bietet durchschnittliche Schadenswirkung, aber exzellente Präzision.",
+    "es": "Un fusil láser automático con una capacidad de daño estándar, pero con excelente precisión.",
+    "fr": "Fusil laser automatique dont les dégâts moyens sont compensés par une excellente précision.",
+    "pt": "Este rifle automático de laser compensa sua capacidade de dano mediana com uma precisão excelente.",
+    "ru": "Посредственная огневая мощь этой автоматической лазерной винтовки компенсируется превосходной точностью."
+  },
+  "wpn_m_submachinegun_laser_fauto": {
+    "en": "An automatic laser carbine with a high fire rate and good short-range accuracy.",
+    "de": "Dieser automatische Laser-Karabiner bietet eine hohe Feuerrate und gute Präzision auf Nahdistanz.",
+    "es": "Una carabina láser automática con cadencia de disparo elevada y muy precisa a corto alcance.",
+    "fr": "Carabine laser automatique dotée d'une cadence de tir élevée et d'une excellente précision à courte portée.",
+    "pt": "Uma carabina automática de laser com alta frequência de disparo e boa precisão a curta distância.",
+    "ru": "Автоматический лазерный карабин с высокой скоростью стрельбы и хорошей точностью на ближних дистанциях."
+  },
+  "wpn_s_pistol_laser_sauto": {
+    "en": "An automatic burst-fire laser pistol with a high fire rate offset by comparatively low damage output.",
+    "de": "Diese automatische Laserpistole mit Salvenfunktion und hoher Feuerrate bietet eine nur geringe Schadenswirkung.",
+    "es": "Una pistola láser de ráfagas automática, con una cadencia de disparo elevada y una capacidad de daño relativamente baja.",
+    "fr": "Pistolet laser automatique tirant en rafale, dont la cadence de tir élevée est contrebalancée par des dégâts réduits.",
+    "pt": "Uma pistola de rajada automática de laser com alta frequência de disparo compensada por uma capacidade de dano comparativamente baixa.",
+    "ru": "Автоматический лазерный залповый пистолет, компенсирующей низкую огневую мощь высокой скоростью стрельбы."
+  },
+  "wpn_m_sniper_plasma_charged": {
+    "en": "A semi-automatic, long-range plasma rifle with high damage output and a low rate of fire.",
+    "de": "Dieses halb-automatische Ferndistanz-Plasmagewehr bietet große Schadenswirkung bei geringer Feuerrate.",
+    "es": "Un fusil de plasma semiautomático de largo alcance, con una capacidad de daño elevada y una cadencia de disparo reducida.",
+    "fr": "Fusil à plasma à longue portée semi-automatique infligeant d'importants dégâts au prix d'une cadence de tir réduite.",
+    "pt": "Um rifle semiautomático de longo alcance de plasma com alta capacidade de dano e baixa cadência de disparo.",
+    "ru": "Полуавтоматическая дальнобойная плазменная винтовка, обладающая высокой огневой мощью и низкой скоростью стрельбы."
+  },
+  "wpn_s_pistol_plasma_charged": {
+    "en": "This semi-automatic plasma pistol boasts high damage output, offset by high recoil and a low fire rate.",
+    "de": "Diese halb-automatische Plasmapistole bietet große Schadenswirkung bei hohem Rückschlag und nur geringer Feuerrate.",
+    "es": "Una pistola de plasma semiautomática con una capacidad de daño elevada, un gran retroceso y una cadencia de disparo reducida.",
+    "fr": "Pistolet à plasma semi-automatique infligeant d'importants dégâts, au prix d'un recul élevé et d'une cadence de tir relativement lente.",
+    "pt": "Esta pistola semiautomática de plasma tem uma capacidade de dano alta, compensada por um recuo alto e uma baixa cadência de disparo.",
+    "ru": "Этот полуавтоматический плазменный пистолет может похвастаться высокой огневой мощью, но при этом имеет сильную отдачу и низкую скорость стрельбы."
+  },
+  "wpn_m_shotgun_plasma_doublebarrel": {
+    "en": "This semi-automatic plasma shotgun packs a punch, but has limited ammo capacity and high recoil.",
+    "de": "Diese halb-automatische Plasma-Schrotflinte bietet enorme Feuerkraft bei geringer Munitionskapazität und großem Rückstoß.",
+    "es": "Una escopeta de plasma semiautomática muy potente, con una capacidad de munición limitada y un retroceso elevado.",
+    "fr": "Fusil lourd à plasma semi-automatique aux dégâts importants, mais doté d'un chargeur réduit et souffrant d'un recul non négligeable.",
+    "pt": "Esta espingarda semiautomática de plasma tem poder de fogo, mas sua capacidade de munição é limitada e o recuo é alto.",
+    "ru": "Этот полуавтоматический плазменный дробовик наносит огромный урон, но у него ограниченный боезапас и сильная отдача."
+  },
+  "wpn_m_assaultrifle_plasma_fauto": {
+    "en": "This automatic plasma rifle balances a high fire rate with comparatively modest damage output.",
+    "de": "Dieses automatische Plasmagewehr bietet eine hohe Feuerrate bei eher geringer Schadenswirkung.",
+    "es": "Un fusil de plasma automático con una cadencia de disparo elevada y una capacidad de daño relativamente reducida.",
+    "fr": "Fusil à plasma automatique présentant une cadence de tir élevée, mais des dégâts relativement modestes.",
+    "pt": "Este rifle automático de plasma equilibra uma frequência de disparo alta com uma capacidade de dano modesta.",
+    "ru": "Эта автоматическая плазменная винтовка отличается высокой скоростью стрельбы, но при этом обладает весьма скромной огневой мощью."
+  }
+}

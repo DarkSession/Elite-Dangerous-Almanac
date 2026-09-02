@@ -173,14 +173,28 @@ import {
     getMicroResourceName,
     getModuleName,
     getOutfittingFamilyName,
+    getPersonalModificationName,
+    getSuitName,
 } from '@elite-dangerous-almanac/core/i18n';
 
 getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> "Frameshiftantrieb"
 getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
 getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
 getMicroResourceName('graphene', 'fr'); // -> "Graphène"
+getSuitName('explorationsuit_class3', 'de'); // -> "Artemis-Anzug"
+getPersonalModificationName('suit_nightvision', 'fr'); // -> "Vision nocturne"
 getOutfittingFamilyName('shieldGenerators', 'de'); // -> "Schildgeneratoren"
 getOutfittingFamilyName('xenoScanners', 'de'); // -> null
+```
+
+Display prose the game shows a player — a suit's or a handheld weapon's blurb, what an
+experimental effect or an engineer's modification does — has its own lookups in the same
+`i18n` area, each on its own subpath, complete in all six locales:
+
+```ts
+import { getSuitDescription } from '@elite-dangerous-almanac/core/i18n/suits';
+
+getSuitDescription('utilitysuit', 'en')?.slice(0, 20); // -> "The Maverick suit is"
 ```
 
 The functions return an explicit source value verbatim, so a source-backed spelling may
