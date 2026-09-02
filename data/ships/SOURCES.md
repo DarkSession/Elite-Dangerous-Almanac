@@ -885,8 +885,8 @@ and bulkhead name because those records carry no symbol upstream.
 - **Every hull is priced, and nearly every module.** The ones without a price are the
   grant/starter `*_free` variants, the two unsold Corrosion Resistant Cargo Racks
   (both Community Goal rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry
-  publishes a figure for them. The three Mk II Vessel Hangars are no longer among them:
-  they are priced from an in-game purchase capture, below.
+  publishes a figure for them. The three Mk II Vessel Hangars are priced from an in-game
+  purchase capture, below.
   **`cost` is omitted, never set to 0**: `0` is a real price (the starter
   Lightweight Alloy bulkhead costs nothing), while omission means unknown.
 - **Sixteen duplicated symbols take the first occurrence's price.** Where coriolis-data

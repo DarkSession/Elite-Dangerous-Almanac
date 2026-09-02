@@ -4,12 +4,7 @@ This file provides guidance to AI coding agents (e.g. Claude Code) when working 
 
 ## Project Purpose
 
-**Elite Dangerous Almanac** is a ready-to-go library for Elite Dangerous community app developers and researchers. It provides a comprehensive set of static data and calculations covering:
-
-- Astrophysical data
-- Ship data
-- Character data
-- Market data
+**Elite Dangerous Almanac** is a library of static data and calculations for Elite Dangerous community app developers and researchers: astronomy, ships and outfitting, personal equipment, engineering materials, localized display text and market commodities. §Repository Status lists the feature areas.
 
 ## Pre-1.0: breaking changes are acceptable
 
@@ -43,7 +38,7 @@ Two rules keep `.jsonc` portable. Catalogues are checked by `typescript/src/<dom
 1. **Comments are the only JSONC extension used.** No trailing commas, no unquoted keys, no single quotes. Strip the comments and what remains must be strict JSON that any language's standard parser accepts — Python's `json`, Go's `encoding/json`, and so on. A trailing comma is portable only in JSON5, which is a different format.
 2. **Prose lives in the header comment, never in the payload.** No top-level `attribution`, `description` or `comment` key. In `data/` that is also a bundle-size rule — every payload byte is inlined into consumers' bundles, and comment bytes are not — but it holds in `fixtures/` too, so a port's parser never has to skip fields that are not data.
 
-Each implementation strips comments in its own loader — never by generating `.json` copies, which would break the single-source-of-truth rule. TypeScript does it in `typescript/scripts/jsonc.mjs`, wired into the test runner (`scripts/register-jsonc.mjs`, via `--import` *after* tsx) and into the build (an esbuild `onLoad` plugin in `tsup.config.ts`). `src/jsonc.d.ts` types a `data/` import as `unknown`, so each catalogue module casts to its own interface. For fixtures, `pnpm run generate:fixtures` derives the shared `schemas/fixtures.schema.json` and TypeScript's `src/fixtures.generated.d.ts`; run it in the same change that changes a fixture's shape.
+Each implementation strips comments in its own loader, never by generating `.json` copies, which would break the single-source-of-truth rule. §How the shared assets flow into TypeScript describes the TypeScript loader and the fixture type generation.
 
 > **Editors reformat `.jsonc`.** Some formatters treat the extension as JSON5 and add trailing commas, silently breaking rule 1. If a data file starts failing to parse, check what your editor did to it before suspecting the loader.
 
@@ -54,10 +49,10 @@ Consumers (community apps, often web-based) must only pay for what they import. 
 - **Small modules**: one class/interface/feature area per file. No god-modules.
 - **ESM output** with `"sideEffects": false` in `package.json`; no side effects at module top level (no registration-on-import, no mutable module state, no self-executing code).
 - **Named exports only** — no default exports, no namespace-object re-export patterns (`export * as X`) that defeat tree-shaking.
-- **Subpath exports** (`exports` map in `package.json`) per feature area, so consumers can import only the slice they need. The published package is `@elite-dangerous-almanac/core`, exposing `./astro`, `./commodities`, `./equipment`, `./i18n`, `./materials` and `./ships` alongside the individual modules within each (`./ships/ship-loadout`, `./astro/nebulae-real`, …). **The public half of the map is enumerated, one subpath per runtime module** — there is no public wildcard — and `tsup.config.ts` derives its exact entry list from those `import` targets. A new module under `src/` is therefore unreachable and unbuilt until its entry is deliberately added with both `types` and `import`. Export a type-only module's symbols through the runtime entry that owns them rather than creating a declaration-only subpath; a package specifier should resolve consistently for ordinary and type-only imports. `pnpm run test:package` compares the built entries with the manifest and rejects any non-null export lacking either target. The only patterns in the map are the per-area `./<area>/internal/*` keys, each mapped to **`null`**; that makes every current and future internal deep import a resolution error without maintaining one manifest exception per file. Root-wide helpers belong in `src/internal/`, which has no entry at all. Follow that layout for anything marked `@internal`.
+- **Subpath exports** (`exports` map in `package.json`) per feature area, so consumers import only the slice they need. The published package is `@elite-dangerous-almanac/core`, exposing `./astro`, `./commodities`, `./equipment`, `./i18n`, `./materials` and `./ships` plus one subpath per runtime module inside each (`./ships/ship-loadout`, `./astro/nebulae-real`, …). The public half of the map is enumerated, with no wildcard, and `tsup.config.ts` derives its entry list from the `import` targets, so a new module under `src/` is unreachable and unbuilt until its entry is added with both `types` and `import`. `pnpm run test:package` rejects any non-null export lacking either target. Export a type-only module's symbols through the runtime entry that owns them; do not create a declaration-only subpath. The only patterns in the map are the per-area `./<area>/internal/*` keys, each mapped to **`null`**, which makes every internal deep import a resolution error. Root-wide helpers belong in `src/internal/`, which has no entry at all. Follow that layout for anything marked `@internal`.
 - **Prefer pure functions over stateful classes**; when classes are used, avoid static registries or cross-class coupling that drags unrelated code into the bundle.
 - **Static data is the biggest bundle risk**: never expose one monolithic data import. Split `data/` consumption into per-domain (and where sensible per-entity-group) modules so importing one ship's stats doesn't bundle the whole galaxy.
-- **Usability outranks tree-shaking when the two collide.** A registry lookup takes an *optional* catalogue argument defaulting to the whole registry (`getMaterialByName('iron')`) — a journal line hands you a symbol and nothing else, so making the caller identify the category first was solving the library's problem with the user's time. The price is that a default is a static import: the data cannot be dropped even when an explicit catalogue is passed. Decide it by measuring a module's import graph in `dist/` **as a consumer's bundler ships it** — that is, fully minified, while the library's own build only compacts whitespace (see §Commands): materials ~17 KiB, micro resources ~13 KiB, commodities ~30 KiB — noise; `ships/modules` ~337 KiB (~33 KiB gzipped) — worth naming in its own docs, which it does. **`astro/nebulae` is the counter-example**: `ALL_NEBULAE` is ~432 KiB, so its argument stays required. Default to the whole registry unless that would cost more than the rest of the library, say which way you went in the module's own docs, and do not reverse either decision without a fresh measurement.
+- **Usability outranks tree-shaking when the two collide.** A registry lookup takes an *optional* catalogue argument defaulting to the whole registry (`getMaterialByName('iron')`): a journal line hands the caller a symbol and nothing else, so asking them to identify the category first solves the library's problem with the user's time. The price is that a default is a static import, so the data cannot be dropped even when an explicit catalogue is passed. Decide by measuring the module's import graph in `dist/` as a consumer's bundler ships it, fully minified (the library's own build only compacts whitespace, see §Commands): materials ~17 KiB, micro resources ~13 KiB and commodities ~30 KiB are noise; `ships/modules` at ~337 KiB (~33 KiB gzipped) is named in its own docs; `ALL_NEBULAE` at ~432 KiB is the counter-example, so `astro/nebulae` keeps its argument required. Default to the whole registry unless that would cost more than the rest of the library, say which way you went in the module's own docs, and do not reverse either decision without a fresh measurement.
 - **Nothing in a data payload that isn't data.** Prose a program never reads — attribution, notes, descriptions — is inlined into every consumer's bundle just like the records are. It belongs in the file's comment header (see §Data file format), where it stays next to the data and costs consumers nothing. On the small catalogues this is not a rounding error: `permit-locks` was 20% attribution by weight.
 - **No packing or minification in the library source.** Keep the checked-in source and the shared `data/` / `fixtures/` as normal, readable, well-formatted code and JSON — never hand-minified, pre-bundled, or otherwise compacted. All bundling, minification, tree-shaking, dead-code elimination, and payload compaction belong to the per-language **build/dist step** (e.g. `tsup`/esbuild for TypeScript) or to the consumer's bundler downstream of it, never baked into source. This keeps the data reviewable and diff-able, and keeps the shared assets portable across language implementations that each pack differently.
 
@@ -70,53 +65,21 @@ Tree-shakeability is part of feature parity: other language implementations shou
   - **TypeScript**: `pnpm test` runs `node --test --experimental-test-coverage` with `--test-coverage-lines/-branches/-functions=80`, scoped recursively to `src/internal/**/*.ts` and `src/<area>/**/*.ts`, and excluding `*.test.ts`. Adding a new feature area means adding its `--test-coverage-include` glob, or the area is silently unmeasured; nested `internal/` modules inside an existing area are measured automatically.
   - **Python (future)**: measure with `coverage.py` / `pytest --cov` and fail CI under 80%.
 
-## Communication style
-
-Use [ASD-STE-100](https://www.asd-ste100.org/) (Simplified Technical English)
-when you speak to the operator.
-
-- One idea per sentence. Keep instructions to 20 words and descriptions to 25.
-- Active voice, present tense. Name who or what does the thing.
-- One word, one meaning. Choose a term and keep it; do not vary it for style.
-- Use the simplest verb that is correct. No metaphor, no idiom, no jargon the
-  operator did not use first.
-- Write a procedure as numbered steps in the order you do them. Give the
-  condition before the action: "If the build fails, read the policy output."
-- Keep a paragraph to six sentences. Split what is longer.
-
-The same rules make good comments, documentation and pull requests, together
-with the language rules below.
-
 ## Language and documentation
 
-- **Write in plain, common language.** Code, comments, documentation, commit
-  messages, pull requests and replies to the person you are working with all
-  use ordinary words a contributor can skim. Name a thing what it is. No
-  literary phrasing, no metaphor, no rhetorical build-up, no marketing
-  adjectives, no emoji: "add a tooltip to the heat glosses" beats "the glosses
-  find their voice at last". Identifiers, test names and headings follow the
-  same rule — descriptive, not clever.
-- **Say it once, and say it directly.** Short sentences, active voice, concrete
-  nouns. Drop throat-clearing openers ("it is worth noting that"),
-  self-assessment ("comprehensive", "robust", "seamless") and hedging that
-  carries no information. If deleting a sentence loses nothing, delete it.
-- **Documentation describes the current state, not the change that produced
-  it.** Git already records what moved, when and by whom; a reader opening a
-  file wants to know how the thing works now. Keep changelog residue out of
-  comments, docs, `README.md` and this file — no "previously", "now", "was
-  changed to", "new", "updated", "as of <date>", no diff narration, no dated
-  superseded notes. Write the rule, the behaviour and the reason it holds, in
-  the present tense, as though it had always been so.
-- **Delete rather than annotate.** Code and prose that no longer apply are
-  removed, not labelled obsolete and left in place. Commented-out code, "kept
-  for reference" blocks and "(deprecated)" markers on things nothing uses all
-  go; git holds the old version.
-- **Two deliberate exceptions.** A `specs/<NNN>-…/tasks.md` entry is a dated
-  record of work, and the dated notes already there stay as they were written.
-  And where a decision cannot be understood without its history — a persisted
-  format that keeps an old field name, a workaround for a known upstream defect
-  — record the reason rather than the chronology, in the one sentence that stops
-  someone undoing it.
+Use [ASD-STE-100](https://www.asd-ste100.org/) (Simplified Technical English) everywhere: replies to the person you are working with, code, comments, documentation, commit messages and pull requests.
+
+- One idea per sentence. Keep instructions to 20 words and descriptions to 25. Keep a paragraph to six sentences.
+- Active voice, present tense. Name who or what does the thing.
+- One word, one meaning. Choose a term and keep it; do not vary it for style.
+- Plain, common words. No metaphor, no idiom, no literary phrasing, no marketing adjectives, no emoji, and no jargon the reader did not use first: "add a tooltip to the heat glosses" beats "the glosses find their voice at last". Identifiers, test names and headings follow the same rule.
+- Say it once, and say it directly. Drop throat-clearing openers ("it is worth noting that"), self-assessment ("comprehensive", "robust", "seamless") and hedging that carries no information. If deleting a sentence loses nothing, delete it.
+- Write a procedure as numbered steps in the order you do them, with the condition before the action: "If the build fails, read the policy output."
+
+Two rules cover what documentation may say about the past:
+
+- **Documentation describes the current state, not the change that produced it.** Git records what moved, when and by whom; a reader opening a file wants to know how the thing works now. Keep changelog residue out of comments, docs, `README.md` and this file: no "previously", "now", "was changed to", "new", "updated", "as of <date>", no diff narration, no dated superseded notes. Write the rule, the behaviour and the reason it holds in the present tense, as though it had always been so.
+- **Delete rather than annotate.** Code and prose that do not apply any more are removed, not labelled obsolete and left in place. Commented-out code, "kept for reference" blocks and "(deprecated)" markers all go; git holds the old version. Where a decision cannot be understood without its history (a persisted format that keeps an old field name, a workaround for a known upstream defect), record the reason rather than the chronology, in the one sentence that stops someone undoing it.
 
 ## Documentation Requirements
 
@@ -142,8 +105,8 @@ state rather than narrating a change (§Language and documentation):
 **Never write a catalogue's size into prose.** Not in TSDoc, a guide, a README, a
 data-file header or a `SOURCES.md`. Ask one question: *would adding a row make this
 sentence false?* If yes, delete the number. It is a maintenance bill, and it falls due on
-whoever adds the row, in every file that took a copy. One module added to the outfitting
-catalogue needed sixteen files touched, half of them only to change a count.
+whoever adds the row, in every file that took a copy: adding one module to the outfitting
+catalogue can otherwise touch a dozen files only to change a count.
 
 Write what the catalogue holds instead. "Every core internal module, in Frontier's
 registry order" says more than "All 516 core internal modules", and stays true. The rule
@@ -173,16 +136,16 @@ adds a second thing to update.
 
 ### `SOURCES.md` documents the data, not the library
 
-A provenance file answers "where did this value come from, and what was done to it". How the library computes, accepts or refuses something is documented on the symbol that does it — its TSDoc — and never in `SOURCES.md`: two homes for one explanation is how the last one grew to three thousand lines and buried the provenance inside it. The same goes for narrating the test suite ("`x.test.ts` asserts …", "pinned in `fixtures/…` under `counts`") and for listing a module's API. Naming the *evidence* for a value is provenance and belongs there; explaining the code that consumes it does not, and neither does counting how many rows the derivation produced (§How many is not documentation).
+A provenance file answers "where did this value come from, and what was done to it". How the library computes, accepts or refuses something is documented on the symbol that does it, in its TSDoc, and never in `SOURCES.md`: two homes for one explanation drift apart and bury the provenance. The same goes for narrating the test suite ("`x.test.ts` asserts …", "pinned in `fixtures/…` under `counts`") and for listing a module's API. Naming the *evidence* for a value is provenance and belongs there; explaining the code that consumes it does not, and neither does counting how many rows the derivation produced (§How many is not documentation).
 
-Where an explanation spans several symbols and has nowhere obvious to live, it becomes a guide page under `typescript/docs/guides/`, which `typedoc.json` already publishes to the wiki — `Build-metrics.md` and `Engineering.md` are the two the ships domain needed. Put it there rather than parking it in a provenance file or bloating one symbol's page with an argument that is not about it.
+Where an explanation spans several symbols and has nowhere obvious to live, it becomes a guide page under `typescript/docs/guides/`, which `typedoc.json` publishes to the wiki, as `Build-metrics.md` and `Engineering.md` do for the ships domain. Put it there rather than in a provenance file or on one symbol's page.
 
 ### Doc-generation toolchain
 
-- **TypeScript**: TypeDoc + `typedoc-plugin-markdown` + `typedoc-github-wiki-theme`. The wiki theme produces wiki-friendly file names, wiki-compatible internal links, and a `_Sidebar.md` for navigation — which `scripts/build-wiki-sidebar.mjs` then rewrites as a collapsible tree (guides, then each feature area, then its member kinds, then a class's own members), because the theme's own sidebar is a flat list of the guides and feature areas and leaves every symbol page a module-index walk away. The script groups generated pages into navigation-context subdirectories and writes a sidebar variant beside each group; Gollum selects the nearest `_Sidebar.md`, so only the current page's ancestry starts open. It reads the generated pages rather than the reflection tree, so titles, link targets and ordering stay the ones the module index pages show; it validates every anchor it emits, and `postprocess-wiki.mjs` then checks its page links like any other page's. `typedoc.json` lists **one `src/<area>/index.ts` entry point per feature area** rather than a package-wide barrel, **plus any leaf module the barrels deliberately do not re-export** — currently `astro/{codex-region-lookup,nebulae-all,nebulae-planetary}`, `equipment/{modification-costs,upgrade-costs}` and `ships/{blueprint-costs,default-loadouts,experimental-effect-costs,modules-all,modules-core,modules-hardpoint,modules-internal,modules-utility}`. This gives the wiki one section per entry point: `Home` links to each, every one has its own index page (carrying its `@packageDocumentation` intro), and symbol pages are namespaced (e.g. `astro.Function.decodeSystemAddress`). Add a feature area here when you add one under `src/`; add a leaf only under the rule below.
-- **A leaf module may be an entry point only if no other entry point re-exports its symbols.** TypeDoc attributes each symbol to exactly one owning module and the *declaring* entry point wins, so a leaf that a barrel still re-exports does not gain a page — it **moves** the symbol out of the barrel's namespace. Adding `src/ships/ship-loadout.ts` while `src/ships/index.ts` re-exports `ShipLoadout` renames 15 pages to `ships.ship-loadout.*`, drops `ShipLoadout` from `ships.md`'s `## Classes` index into a flat `## References` list, and turns cross-references into unresolved `{@link}` warnings. That is why the split catalogues were removed from the barrels in the same change that added their entry points. Leaf `@packageDocumentation` on a re-exported module is therefore **not published**; put orientation prose and examples a reader needs on the barrel or on the symbol itself.
-- **Python (future)**: `mkdocstrings` (or `pydoc-markdown`) to render Google-style docstrings to Markdown for the same wiki.
-- **Publishing**: a GitHub Actions workflow generates the Markdown docs and pushes them to the wiki's backing git repo (`<repo>.wiki.git`), e.g. via `Andrew-Chen-Wang/github-wiki-action`. The job needs `contents: write` permission. Note: the wiki must be initialized once manually (create any first page) before CI can push to it.
+- **TypeScript**: TypeDoc + `typedoc-plugin-markdown` + `typedoc-github-wiki-theme`. The theme produces wiki-friendly file names, wiki-compatible internal links and a `_Sidebar.md`. `scripts/build-wiki-sidebar.mjs` rewrites that sidebar as a collapsible tree (guides, then each feature area, then its member kinds, then a class's own members), because the theme's own sidebar is a flat list that leaves every symbol page a module-index walk away. The script groups the generated pages into subdirectories and writes a sidebar variant beside each group; Gollum selects the nearest `_Sidebar.md`, so only the current page's ancestry starts open. It reads the generated pages rather than the reflection tree and validates every anchor it emits, and `postprocess-wiki.mjs` then checks its page links like any other page's. `typedoc.json` lists **one `src/<area>/index.ts` entry point per feature area** rather than a package-wide barrel, **plus every leaf module the barrels deliberately do not re-export** (the split catalogues and the cost tables). This gives the wiki one section per entry point: `Home` links to each, every one has its own index page carrying its `@packageDocumentation` intro, and symbol pages are namespaced (`astro.Function.decodeSystemAddress`). Add a feature area there when you add one under `src/`; add a leaf only under the rule below.
+- **A leaf module may be an entry point only if no other entry point re-exports its symbols.** TypeDoc attributes each symbol to exactly one owning module and the *declaring* entry point wins, so a leaf that a barrel still re-exports does not gain a page: it **moves** the symbol out of the barrel's namespace, drops it from the barrel's index into a flat `## References` list, and turns cross-references into unresolved `{@link}` warnings. That is why the split catalogues are absent from the barrels. A leaf's `@packageDocumentation` on a re-exported module is therefore not published; put orientation prose and examples on the barrel or on the symbol itself.
+- **Python (future)**: `mkdocstrings` (or `pydoc-markdown`) renders Google-style docstrings to Markdown for the same wiki.
+- **Publishing**: `.github/workflows/publish-wiki.yml` runs `pnpm run docs` on every push to `main` that touches `typescript/` or `data/`, then pushes `typescript/docs/wiki` to the wiki's backing repository (`<repo>.wiki.git`) with `Andrew-Chen-Wang/github-wiki-action`; the job needs `contents: write`. The wiki must be initialized once by hand (create any first page) before CI can push to it.
 
 ## Attribution Requirements
 
@@ -191,7 +154,7 @@ Much of the static data and many calculations derive from the Elite Dangerous co
 - **`ATTRIBUTIONS.md`** at the repository root is that place: every external data source, algorithm and library, with its author, link, licence position and what the project uses it for — including any licence text an upstream requires be reproduced in full. It lives at the root because it is language-neutral, exactly like `data/` and `fixtures/`, and it ships to npm consumers as `THIRD_PARTY_NOTICES.md`.
 - **Everywhere else names the source and points there.** Nothing repeats an author, a URL or a licence:
   - Data files (`data/`): open the file with a **comment header** saying what the file holds, naming the source in a line or two, and pointing at `ATTRIBUTIONS.md` for credit and at the sibling `SOURCES.md` for provenance. Put it in a comment, not in an `attribution` field — see §Data file format for why, and copy the header of any existing `data/astro/*.jsonc` for the shape.
-  - `data/<domain>/SOURCES.md`: what was taken from a source, when, from which revision, how it was derived and every manual correction — referring to the source by name. Not who to credit, not the licence, and not how the library works (see §Documentation).
+  - `data/<domain>/SOURCES.md`: what was taken from a source, when, from which revision, how it was derived and every manual correction — referring to the source by name. Not who to credit, not the licence, and not how the library works (see §`SOURCES.md` documents the data, not the library).
   - Code (calculations, ported algorithms): a doc comment on the function/module naming the original source and pointing at `ATTRIBUTIONS.md`.
 
 Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, add the source to `ATTRIBUTIONS.md` and record the provenance where the data lives, in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
@@ -212,7 +175,7 @@ What still applies, every time:
 - **Scrub the person, keep the game** (see §Commit Identity), and store the capture verbatim otherwise, with its source checksum.
 - **Builds only.** Code, stat tables and derived catalogues are held to the licence they ship under, unchanged.
 
-> **Do not write a second copy of the credits or the licence.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` and `typescript/LICENSE` are **generated, git-ignored** verbatim copies of the root `ATTRIBUTIONS.md` and `LICENSE` — npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `typescript/PROVENANCE/` is generated the same way from `data/SNAPSHOTS.md` and every `data/<domain>/SOURCES.md`, so an installed version carries its exact data currency offline. `pnpm run build` writes all three (`typescript/scripts/copy-notices.mjs`), `prepublishOnly` runs the build, and `package.test.mjs` asserts that the copies are complete and byte-identical to their sources. Edit the root files; never the copies. Because the root `LICENSE` is packed verbatim, keep its wording readable from inside a consumer's `node_modules` as well as from the repository.
+> **Do not write a second copy of the credits or the licence.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` and `typescript/LICENSE` are **generated, git-ignored** verbatim copies of the root `ATTRIBUTIONS.md` and `LICENSE`: npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `typescript/PROVENANCE/` is generated the same way from `data/SNAPSHOTS.md` and every `data/<domain>/SOURCES.md`, so an installed version carries its exact data currency offline, and `typescript/assets/` is a copy of the shared `assets/`. `pnpm run build` writes them all (§What `pnpm run build` runs) and `package.test.mjs` asserts that the copies are complete and byte-identical to their sources. Edit the root files; never the copies. Because the root `LICENSE` is packed verbatim, keep its wording readable from inside a consumer's `node_modules` as well as from the repository.
 
 ## Repository Layout
 
@@ -228,7 +191,7 @@ typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
 ```
 
-`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` defines the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps — organised by catalogue and written in the present tense. **GitHub issues** are the short actionable list of those gaps — see §Tracking known gaps.
+`data/`, `fixtures/` and `assets/` are owned by no implementation; language folders consume them. Never commit a copy of a shared asset inside a language folder; a build may copy one into the package it packs. `data/SNAPSHOTS.md` defines the metadata every update must record; each `data/<domain>/SOURCES.md` carries the provenance for that domain (source, revision, derivation, manual corrections and known gaps), organised by catalogue and written in the present tense.
 
 ## Tracking known gaps
 
@@ -247,7 +210,7 @@ Closing a gap means closing its issue in the same change that fixes it, and drop
 
 Six feature areas exist in TypeScript, all under `typescript/src/`:
 
-- **`astro/`** — procedural system names and id64 addresses, galactic regions, nebulae.
+- **`astro/`** — procedural system names and id64 addresses, sectors and galactic regions, nebulae, permit locks, and scanned-body physics.
 - **`commodities/`** — standard and rare market commodities.
 - **`equipment/`** — Odyssey suits, handheld weapons, upgrades, and modifications.
 - **`i18n/`** — localized catalogue names, descriptions, labels, and diagnostics.
@@ -263,7 +226,7 @@ Two repo-wide conventions worth knowing before touching a catalogue:
 
 ## Environment
 
-Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 also installed. Runs as the `node` user. ESLint + Prettier for TypeScript; Pylance for Python.
+Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 also installed. It runs as the `node` user, and its Dockerfile enables Corepack so that `pnpm` resolves to the version pinned in `typescript/package.json`. ESLint + Prettier for TypeScript; Pylance for Python.
 
 ## Commit Identity — no personal data in git metadata
 
@@ -294,20 +257,23 @@ A related habit, for the same reason:
 All TypeScript commands run from `typescript/`. The package manager is **pnpm** — see
 §Dependencies below before adding or updating one.
 
-| Command                          | What it does                                                                                                                                                                                                         |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm install --frozen-lockfile` | installs exactly what `pnpm-lock.yaml` pins; fails on a lockfile that disagrees with the manifest                                                                                                                    |
-| `pnpm run check`                 | lint → format:check → typecheck → check:examples → test. **Run this before finishing.**                                                                                                                              |
-| `pnpm test`                      | full suite with the coverage thresholds                                                                                                                                                                              |
-| `pnpm run typecheck`             | `tsc --noEmit`                                                                                                                                                                                                       |
-| `pnpm run check:examples`        | type-checks every documented TS snippet and executes its machine-readable value claims                                                                                                                               |
-| `pnpm run generate:fixtures`     | regenerates the shared fixture schema and TypeScript fixture import types                                                                                                                                            |
-| `pnpm run lint`                  | ESLint                                                                                                                                                                                                               |
-| `pnpm run audit`                 | `pnpm audit --audit-level=low`                                                                                                                                                                                       |
-| `pnpm run format`                | Prettier over the package, root `README`/`CONTRIBUTING`/`SECURITY`, schemas and `.github`                                                                                                                            |
-| `pnpm run build`                 | copy notices/provenance → `tsup` → source-map cleanup → `prune-barrel-imports` → `attach-barrel-docs` → `dist/` (JSON catalogues inlined; whitespace compacted, syntax and identifiers **not** minified — see below) |
-| `pnpm run test:package`          | imports the **built** `dist/` and checks every export subpath                                                                                                                                                        |
-| `pnpm run docs`                  | TypeDoc → `docs/wiki`, then `scripts/build-wiki-sidebar.mjs` and `scripts/postprocess-wiki.mjs`                                                                                                                      |
+| Command                            | What it does                                                                                                                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm install --frozen-lockfile`   | installs exactly what `pnpm-lock.yaml` pins; fails on a lockfile that disagrees with the manifest                                                                   |
+| `pnpm run check`                   | check:fixtures → check:i18n-coverage → lint → format:check → typecheck → check:examples → test. **Run this before finishing.**                                       |
+| `pnpm test`                        | full suite with the coverage thresholds                                                                                                                             |
+| `pnpm run typecheck`               | `tsc --noEmit`                                                                                                                                                      |
+| `pnpm run check:examples`          | type-checks every documented TS snippet and executes its machine-readable value claims                                                                              |
+| `pnpm run check:fixtures`          | fails when `schemas/fixtures.schema.json` or `src/fixtures.generated.d.ts` is stale                                                                                 |
+| `pnpm run generate:fixtures`       | regenerates the shared fixture schema and TypeScript fixture import types                                                                                           |
+| `pnpm run check:i18n-coverage`     | fails when the generated locale-coverage table drifts from `data/i18n/`                                                                                             |
+| `pnpm run generate:i18n-coverage`  | regenerates the locale-coverage table                                                                                                                               |
+| `pnpm run lint`                    | ESLint                                                                                                                                                              |
+| `pnpm run audit`                   | `pnpm audit --audit-level=low`                                                                                                                                      |
+| `pnpm run format`                  | Prettier over the package, root `README`/`CONTRIBUTING`/`SECURITY`, `schemas/`, `scripts/` and `.github/`                                                           |
+| `pnpm run build`                   | copy notices, provenance and assets → `tsup` → source-map cleanup → `prune-barrel-imports` → `attach-barrel-docs` → `dist/` (catalogues inlined, whitespace compacted, syntax and identifiers **not** minified; see below) |
+| `pnpm run test:package`            | imports the **built** `dist/` and checks every export subpath                                                                                                       |
+| `pnpm run docs`                    | TypeDoc → `docs/wiki`, then `scripts/build-wiki-sidebar.mjs` and `scripts/postprocess-wiki.mjs`                                                                     |
 
 `check:examples` reads public `@example` fences, the guide pages and both READMEs. A
 trailing `expression; // -> value` is executed when the snippet needs no ambient
@@ -331,13 +297,14 @@ node --import tsx --import ./scripts/register-jsonc.mjs --test src/ships/weapons
 
 ### What `pnpm run build` runs
 
-Five steps, not just `tsup`. A change to any of them is a change to what consumers receive, so `package.test.mjs` checks each one's result against the built package — run it (`pnpm run test:package`) after touching any of them:
+Six steps, not just `tsup`. A change to any of them is a change to what consumers receive, so `package.test.mjs` checks each one's result against the built package; run it (`pnpm run test:package`) after touching any of them:
 
 1. **`scripts/copy-notices.mjs`** writes the generated, git-ignored `THIRD_PARTY_NOTICES.md` and `LICENSE` copies that npm packs (see §Attribution), plus `PROVENANCE/SNAPSHOTS.md` and one verbatim `PROVENANCE/<domain>/SOURCES.md` for every shared data domain. The latter lets an installed package state its exact data currency without network access.
-2. **`tsup`** bundles ESM to `dist/` — one entry per public module, declarations, source maps, and the shared `data/` JSONC inlined through the `jsonc` esbuild plugin. Terser then strips whitespace with compression and mangling disabled: real minification stays the consuming application's bundler's job, and that is why the size figures above are measured as §Build & Tree-Shaking Requirements describes rather than by reading `dist/` byte counts. Whitespace is compacted because esbuild's pretty-printed catalogue literals otherwise dominate the package; the compact JavaScript is about 2 MB while function names remain intact. `format.preserve_annotations` keeps every `/* @__PURE__ */` marker for downstream tree-shaking, and Terser's generated map is chained onto esbuild's map so `--enable-source-maps` can resolve compact output to its original source.
-3. **`scripts/prune-sourcemap-sources.mjs`** removes the generated-code fallback segments that Terser's map names with tsup's absolute output path, then drops mappings into inlined JSONC data literals because those cannot produce consumer stack frames and otherwise dominate the maps. The remaining mappings point only at portable `src/**/*.ts` paths; package artifacts therefore retain TypeScript debugging without disclosing their build workspace or spending package weight on static-data positions.
-4. **`scripts/prune-barrel-imports.mjs`** blanks the redundant bare imports esbuild leaves in per-module entry files — the package is side-effect-free, so downstream bundlers discard them but warn while doing so — and removes the now-unreachable zero-code shared chunks that declaration-only dependencies can produce. It blanks rather than deletes entry imports so tsup's source maps stay valid, using **`scripts/strip-bare-imports.mjs`**, the same helper `package.test.mjs` imports to assert the shipped entries carry no bare imports.
-5. **`scripts/attach-barrel-docs.mjs`** re-attaches each barrel's `@packageDocumentation` block to its generated `.d.ts`, which tsup's declaration rollup drops when it flattens a file of pure re-exports. Without it, go-to-definition on an import lands on a bare export list instead of the feature area's orientation docs.
+2. **`scripts/copy-assets.mjs`** replaces the git-ignored `typescript/assets/` with a byte-identical copy of the shared `assets/ships/`, so the SVG ship assets pack with the npm package.
+3. **`tsup`** bundles ESM to `dist/` — one entry per public module, declarations, source maps, and the shared `data/` JSONC inlined through the `jsonc` esbuild plugin. Terser then strips whitespace with compression and mangling disabled: real minification stays the consuming application's bundler's job, and that is why the size figures above are measured as §Build & Tree-Shaking Requirements describes rather than by reading `dist/` byte counts. Whitespace is compacted because esbuild's pretty-printed catalogue literals otherwise dominate the package; the compact JavaScript is about 2 MB while function names remain intact. `format.preserve_annotations` keeps every `/* @__PURE__ */` marker for downstream tree-shaking, and Terser's generated map is chained onto esbuild's map so `--enable-source-maps` can resolve compact output to its original source.
+4. **`scripts/prune-sourcemap-sources.mjs`** removes the generated-code fallback segments that Terser's map names with tsup's absolute output path, then drops mappings into inlined JSONC data literals because those cannot produce consumer stack frames and otherwise dominate the maps. The remaining mappings point only at portable `src/**/*.ts` paths; package artifacts therefore retain TypeScript debugging without disclosing their build workspace or spending package weight on static-data positions.
+5. **`scripts/prune-barrel-imports.mjs`** blanks the redundant bare imports esbuild leaves in per-module entry files — the package is side-effect-free, so downstream bundlers discard them but warn while doing so — and removes the now-unreachable zero-code shared chunks that declaration-only dependencies can produce. It blanks rather than deletes entry imports so tsup's source maps stay valid, using **`scripts/strip-bare-imports.mjs`**, the same helper `package.test.mjs` imports to assert the shipped entries carry no bare imports.
+6. **`scripts/attach-barrel-docs.mjs`** re-attaches each barrel's `@packageDocumentation` block to its generated `.d.ts`, which tsup's declaration rollup drops when it flattens a file of pure re-exports. Without it, go-to-definition on an import lands on a bare export list instead of the feature area's orientation docs.
 
 ## Dependencies
 
@@ -345,7 +312,7 @@ The package manager is **pnpm**, pinned by the `packageManager` field in `typesc
 
 pnpm's own settings live in `typescript/pnpm-workspace.yaml`, which is where npm's `overrides` field moved to, and it is the only place they can go: pnpm 11 stopped reading settings from a `pnpm` key in `package.json`, and reads only authentication and registry settings from `.npmrc`. Everything the repository sets is outside that subset, so a stray user-level `.npmrc` cannot weaken it — such a setting is not overridden, it is never read.
 
-**New versions serve a seven-day cooldown.** `minimumReleaseAge: 10080` hides any release younger than that, so a package that is compromised or withdrawn in its first week never reaches the tree. Three consequences worth knowing before touching a dependency:
+**New versions serve a seven-day cooldown.** `minimumReleaseAge: 10080` hides any release younger than that, so a package that is compromised or withdrawn in its first week never reaches the tree. Three consequences:
 
 - **Every range floor in `package.json` is a version that has already served the cooldown.** A range whose lowest allowed version is younger fails outright with `ERR_PNPM_NO_MATURE_MATCHING_VERSION` — pnpm does not quietly fall back below the floor. Within a satisfiable range it does pick the newest *mature* version, so `^1.2.0` resolving to `1.2.7` while `1.2.9` exists is the setting working, not a stale lockfile.
 - **It also audits the lockfile, `--frozen-lockfile` included.** Every install checks the pinned entries and fails with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION` on one that was too young when it was written — the defence against a lockfile hand-edited to smuggle a fresh version past resolution. It reads publish dates from the metadata cache rather than the network, and entries only get older, so this never fails a lockfile that passed before.
@@ -393,4 +360,4 @@ fixtures/<domain>/*.jsonc ──(strip comments)──────────�
 
 - A catalogue module imports its `.jsonc` directly. Comments are stripped by `scripts/jsonc.mjs`, wired into the test runner via `scripts/register-jsonc.mjs` (`--import` **after** tsx) and into the build by an esbuild `onLoad` plugin in `tsup.config.ts`. `src/jsonc.d.ts` types the import as `unknown`, so each catalogue casts to its own interface — that cast is the only place the data's shape is asserted, so keep the interface honest.
 - Fixtures are imported by tests with `with { type: 'json' }` — the same loader strips their header comments — and hold the *expected* values. `pnpm run generate:fixtures` groups compatible captures into fixture families, generates the language-neutral `schemas/fixtures.schema.json`, and generates `src/fixtures.generated.d.ts` for typed TypeScript imports; `pnpm run check:fixtures` detects stale output. They are the parity contract: a fixture pins behaviour for every future language implementation, so prefer adding a fixture entry over an inline literal whenever the value is a fact about the game rather than a fact about TypeScript. The build corpus is the one fixture a test reads from disk rather than importing.
-- `typedoc.json` lists **one entry point per feature area**, plus any leaf module the barrels do not re-export (see the doc-generation toolchain section for the rule). Add a new area there, to the `exports` map and to the coverage globs.
+- `typedoc.json` lists **one entry point per feature area**, plus any leaf module the barrels do not re-export (§Doc-generation toolchain). Add a new area there, to the `exports` map and to the coverage globs.

@@ -22,8 +22,9 @@ Judge **only what a consumer can actually see and reach**:
 
 - Package metadata a consumer reads first: `package.json` (`description`,
   `exports` subpath map, `types`, `sideEffects`, `files`).
-- The **public entry points** and what they re-export (`src/index.ts`,
-  `src/*/index.ts`) — the exported symbol names and types ARE the API.
+- The **public entry points** and what they re-export (`src/*/index.ts` and the
+  leaf subpaths; there is no package-wide root entry) — the exported symbol names
+  and types ARE the API.
 - **Documentation** a consumer would rely on: `README.md`, TSDoc/JSDoc comments
   on exported symbols, generated wiki/typedoc output, `@example` blocks.
 - The **type surface** a consumer's editor would show (`.d.ts` / exported
@@ -48,7 +49,7 @@ Work top-down, the way a real evaluator adopts a library.
    README alone, can you tell what the library does, what features exist, and how
    to import one? Note what a consumer would still not know after this pass.
 2. **Map the public surface.** List every exported symbol and type per subpath
-   (`src/index.ts`, `src/astro/index.ts`, …). This is the actual API. Group by
+   (`src/astro/index.ts`, `src/ships/index.ts`, …). This is the actual API. Group by
    feature area. Flag exports whose purpose isn't obvious from the name alone.
 3. **Attempt a realistic task, using only the public surface.** Pick two or three
    concrete goals an ED app dev would have, at least one from `./ships` since
@@ -75,8 +76,9 @@ exact export/name/signature over describing it.
 
 - **Structure & modularity.** Is the split into feature areas and subpath
   exports (`./astro`, …) clear and predictable? Could a consumer guess where a
-  feature lives? Is the root barrel vs. subpath story obvious (and does the docs
-  steer them to the tree-shakeable import)? One coherent slice per subpath?
+  feature lives? Is the feature-barrel vs. leaf-subpath story obvious, and do
+  the docs steer them to the tree-shakeable import? One coherent slice per
+  subpath?
 - **Discoverability.** README quickstart, feature list, install line, first
   working example. Can someone find the entry point for their task without
   reading source? (A missing/empty README is a top-tier consumer finding.)
@@ -154,10 +156,12 @@ Answer the user's three questions directly, in this order:
 
 ## What ships today
 
-Four feature areas are published, each on its own subpath: **`./astro`**
-(procedural names, id64 addresses, regions, nebulae), **`./ships`** (ship and
-outfitting catalogues, engineering, loadouts, and build metrics — power,
-shields, armour, resistances, weapons, jump range), **`./materials`**, and
+Six feature areas are published, each on its own subpath: **`./astro`**
+(procedural names, id64 addresses, regions, nebulae, permit locks, body
+physics), **`./ships`** (ship and outfitting catalogues, engineering, loadouts,
+and build metrics — power, shields, armour, resistances, weapons, jump range),
+**`./equipment`** (Odyssey suits, handheld weapons, upgrades, modifications),
+**`./i18n`** (localized display text), **`./materials`**, and
 **`./commodities`**. `python/` does not exist yet.
 
 `./ships` is by far the largest surface and the one most worth reviewing hard:
@@ -166,11 +170,11 @@ consumer can get a plausible-looking wrong number. Do not spend the whole review
 on `astro` because it comes first alphabetically — weight attention by how much
 API a consumer actually has to navigate.
 
-A consumer-visible detail worth checking rather than assuming: several modules
-are deliberately mapped to **`null`** in the `exports` map, so deep-importing
-them throws a resolution error. Verify the ones a consumer would plausibly
-*want* are not among them — a type they need to name, or a helper the docs
-mention, being unreachable is a real finding.
+A consumer-visible detail worth checking rather than assuming: every
+`./<area>/internal/*` subpath is mapped to **`null`** in the `exports` map, so
+deep-importing an internal module throws a resolution error. Verify that
+nothing a consumer would plausibly *want* lives only there — a type they need
+to name, or a helper the docs mention, being unreachable is a real finding.
 
 Offer to render the report as an Artifact only if the user wants a shareable
 version; default to inline markdown.

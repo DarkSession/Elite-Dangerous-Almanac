@@ -243,7 +243,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `data/ships/experimental-effects.jsonc`; the Frontier symbol joins to the in-game
   experimental-effect description table, which supplies every locale for all of them.
   All six values, English included, are the source's verbatim.
-- **This catalogue no longer projects the ships catalogue's `description`.** The two
+- **This catalogue does not project the ships catalogue's `description`.** The two
   answer different questions and are deliberately different strings. An effect's
   `description` in `data/ships/experimental-effects.jsonc` is a mechanical note that
   states what the `modifiers` list cannot — that High Yield Shell deals 50/50
