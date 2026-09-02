@@ -59,10 +59,10 @@ export interface PersonalModifier {
      * `"magazineSize"`, `"effectiveRange"`, `"batteryCapacity"`, `"goodsCapacity"`.
      *
      * @remarks
-     * Six stats the game shows on foot have no catalogue field, because the panel shows
-     * no base for them, and are named for what they are: `"meleeDamage"`,
-     * `"sprintDuration"`, `"toolEnergyDrain"`, `"reloadSpeed"`, and the pressurised and
-     * unpressurised firing audible ranges.
+     * Some stats the game shows on foot have no catalogue field, because the panel
+     * shows no base for them. They are named for what they are: `"meleeDamage"`,
+     * `"sprintDuration"`, `"toolEnergyDrain"`, and the pressurised and unpressurised
+     * firing audible ranges.
      */
     readonly stat: string;
     /** The factor the stat is multiplied by, e.g. `1.5` for a 50% increase. */

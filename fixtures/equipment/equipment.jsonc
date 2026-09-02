@@ -75,7 +75,20 @@
       "magazineSize": 50,
       "effectiveRange": 50,
       "modificationSlots": 4,
-      "scopeMagnification": 1.17
+      "scopeMagnification": 1.17,
+      "reloadTime": { "default": 2.7, "upgraded": 2.16 }
+    },
+    {
+      "symbol": "wpn_m_assaultrifle_laser_fauto",
+      "name": "TK Aphelion",
+      "grade": 3,
+      "damage": 2.72,
+      "rateOfFire": 5.71,
+      "magazineSize": 25,
+      "effectiveRange": 70,
+      "modificationSlots": 2,
+      "scopeMagnification": 1.17,
+      "reloadTime": { "default": 2.27, "upgraded": 1.892 }
     },
     {
       "symbol": "wpn_m_sniper_plasma_charged",
@@ -86,7 +99,8 @@
       "magazineSize": 3,
       "effectiveRange": 100,
       "modificationSlots": 0,
-      "scopeMagnification": 1.61
+      "scopeMagnification": 1.61,
+      "reloadTime": { "default": 3.5, "upgraded": 2.8 }
     }
   ],
   "upgradeCosts": {
@@ -165,6 +179,7 @@
     "weapon_accuracy_plasma",
     "weapon_backpackreloading",
     "weapon_handling",
+    "weapon_reloadspeed",
     "weapon_scope",
     "weapon_stability"
   ],

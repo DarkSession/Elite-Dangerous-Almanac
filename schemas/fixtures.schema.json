@@ -1193,6 +1193,15 @@
               "modificationSlots": { "type": "integer" },
               "name": { "type": "string" },
               "rateOfFire": { "type": "number" },
+              "reloadTime": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "default": { "type": "number" },
+                  "upgraded": { "type": "number" }
+                },
+                "required": ["default", "upgraded"]
+              },
               "scopeMagnification": { "type": "number" },
               "symbol": { "type": "string" }
             },
@@ -1204,6 +1213,7 @@
               "modificationSlots",
               "name",
               "rateOfFire",
+              "reloadTime",
               "scopeMagnification",
               "symbol"
             ]

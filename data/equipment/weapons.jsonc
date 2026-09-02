@@ -24,6 +24,10 @@
       "default": 1.08,
       "upgraded": 1.34
     },
+    "reloadTime": {
+      "default": 1.75,
+      "upgraded": 1.4
+    },
     "grades": {
       "1": {
         "damage": 1.38,
@@ -64,6 +68,10 @@
     "scopeMagnification": {
       "default": 1.17,
       "upgraded": 1.52
+    },
+    "reloadTime": {
+      "default": 2.7,
+      "upgraded": 2.16
     },
     "grades": {
       "1": {
@@ -106,6 +114,10 @@
       "default": 1.12,
       "upgraded": 1.41
     },
+    "reloadTime": {
+      "default": 2.46,
+      "upgraded": 1.968
+    },
     "grades": {
       "1": {
         "damage": 0.65,
@@ -146,6 +158,10 @@
     "scopeMagnification": {
       "default": 1.08,
       "upgraded": 1.52
+    },
+    "reloadTime": {
+      "default": 5.78,
+      "upgraded": 4.624
     },
     "grades": {
       "1": {
@@ -188,6 +204,10 @@
       "default": 1.17,
       "upgraded": 1.52
     },
+    "reloadTime": {
+      "default": 2.27,
+      "upgraded": 1.892
+    },
     "grades": {
       "1": {
         "damage": 1.572,
@@ -228,6 +248,10 @@
     "scopeMagnification": {
       "default": 1.12,
       "upgraded": 1.41
+    },
+    "reloadTime": {
+      "default": 2.03,
+      "upgraded": 1.624
     },
     "grades": {
       "1": {
@@ -270,6 +294,10 @@
       "default": 1.08,
       "upgraded": 1.34
     },
+    "reloadTime": {
+      "default": 1.75,
+      "upgraded": 1.4
+    },
     "grades": {
       "1": {
         "damage": 1.668,
@@ -310,6 +338,10 @@
     "scopeMagnification": {
       "default": 1.61,
       "upgraded": 3.75
+    },
+    "reloadTime": {
+      "default": 3.5,
+      "upgraded": 2.8
     },
     "grades": {
       "1": {
@@ -352,6 +384,10 @@
       "default": 1.08,
       "upgraded": 1.61
     },
+    "reloadTime": {
+      "default": 2.5,
+      "upgraded": 2
+    },
     "grades": {
       "1": {
         "damage": 7.5,
@@ -393,6 +429,10 @@
       "default": 1.08,
       "upgraded": 1.25
     },
+    "reloadTime": {
+      "default": 2.5,
+      "upgraded": 2
+    },
     "grades": {
       "1": {
         "damage": 1.75,
@@ -433,6 +473,10 @@
     "scopeMagnification": {
       "default": 1.17,
       "upgraded": 1.52
+    },
+    "reloadTime": {
+      "default": 2.46,
+      "upgraded": 1.968
     },
     "grades": {
       "1": {
