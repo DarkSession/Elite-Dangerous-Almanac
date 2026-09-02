@@ -162,8 +162,8 @@ only the first can change *which* recipe an accepted id names.
 different recipes, `ships/blueprint-journal` reads that id against the fitted module's menu
 and resolves it to the entry the menu lists: `Sensor_LongRange` on a utility scanner becomes
 `Scanner_LongRange`, and `Weapon_Overcharged` on a multi-cannon becomes `MC_Overcharged`.
-This is pinned data rather than inference, because unlike the generic spellings the two ids
-do not describe the same modification.
+The map is pinned data in `data/ships/blueprint-journal-names.jsonc`, not inference, because
+unlike the generic spellings the two ids do not describe the same modification.
 
 **The generic spelling.** Where a modification applies to several families, the game writes
 a family-specific id and the catalogue lists that one — but a build authored elsewhere may
