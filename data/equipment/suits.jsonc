@@ -1,8 +1,9 @@
 /*
- * Personal suit catalogue: journal symbols, slot counts, suit-wide component stats and
+ * Personal suit catalogue: journal symbols, weapon mounts, suit-wide component stats and
  * grade-dependent defensive stats.
  *
- * Sources: Odyssey Materials Helper and direct in-game observation. See
+ * Sources: Odyssey Materials Helper, direct in-game observation, and the journal mount
+ * slot keys quoted in EDCD/EDMarketConnector. See
  * ../../ATTRIBUTIONS.md for credit and SOURCES.md for the pinned revision, derivation
  * and units.
  */
@@ -10,8 +11,10 @@
   {
     "family": "utilitysuit",
     "name": "Maverick Suit",
-    "primarySlots": 1,
-    "secondarySlots": 1,
+    "mounts": [
+      { "key": "PrimaryWeapon1", "kind": "primary" },
+      { "key": "SecondaryWeapon", "kind": "secondary" }
+    ],
     "health": 30,
     "mass": 100,
     "batteryCapacity": 13.5,
@@ -79,8 +82,11 @@
   {
     "family": "tacticalsuit",
     "name": "Dominator Suit",
-    "primarySlots": 2,
-    "secondarySlots": 1,
+    "mounts": [
+      { "key": "PrimaryWeapon1", "kind": "primary" },
+      { "key": "PrimaryWeapon2", "kind": "primary" },
+      { "key": "SecondaryWeapon", "kind": "secondary" }
+    ],
     "health": 30,
     "mass": 100,
     "batteryCapacity": 10,
@@ -148,8 +154,10 @@
   {
     "family": "explorationsuit",
     "name": "Artemis Suit",
-    "primarySlots": 1,
-    "secondarySlots": 1,
+    "mounts": [
+      { "key": "PrimaryWeapon1", "kind": "primary" },
+      { "key": "SecondaryWeapon", "kind": "secondary" }
+    ],
     "health": 30,
     "mass": 100,
     "batteryCapacity": 17,
@@ -217,8 +225,9 @@
   {
     "family": "flightsuit",
     "name": "Flight Suit",
-    "primarySlots": 0,
-    "secondarySlots": 1,
+    "mounts": [
+      { "key": "SecondaryWeapon", "kind": "secondary" }
+    ],
     "health": 30,
     "mass": 100,
     "batteryCapacity": 7,

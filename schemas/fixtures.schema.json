@@ -1120,6 +1120,21 @@
             "required": ["base", "modified", "recipeSymbol", "stat"]
           }
         },
+        "suitMounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "family": { "type": "string" },
+              "mounts": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/sharededdcd265e39e" }
+              }
+            },
+            "required": ["family", "mounts"]
+          }
+        },
         "suits": {
           "type": "array",
           "items": {
@@ -1133,8 +1148,6 @@
               "kineticResistance": { "type": "number" },
               "modificationSlots": { "type": "integer" },
               "name": { "type": "string" },
-              "primarySlots": { "type": "integer" },
-              "secondarySlots": { "type": "integer" },
               "shieldStrength": { "type": "number" },
               "symbol": { "type": "string" }
             },
@@ -1145,8 +1158,6 @@
               "grade",
               "modificationSlots",
               "name",
-              "primarySlots",
-              "secondarySlots",
               "shieldStrength",
               "symbol"
             ]
@@ -1204,6 +1215,7 @@
         "modification",
         "modificationsWithoutModifiers",
         "modifiers",
+        "suitMounts",
         "suits",
         "upgradeCosts",
         "weapons"
@@ -1241,6 +1253,21 @@
               "locale": { "type": "string" }
             },
             "required": ["diagnostic", "expected", "kind", "locale"]
+          }
+        },
+        "mounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "expected": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "locale": { "type": "string" },
+              "mount": { "$ref": "#/definitions/sharededdcd265e39e" }
+            },
+            "required": ["expected", "locale", "mount"]
           }
         },
         "preEngineered": {
@@ -1312,7 +1339,13 @@
           }
         }
       },
-      "required": ["diagnostics", "preEngineered", "restrictions", "slots"]
+      "required": [
+        "diagnostics",
+        "mounts",
+        "preEngineered",
+        "restrictions",
+        "slots"
+      ]
     },
     "i18nNames": {
       "type": "object",
@@ -9401,6 +9434,15 @@
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
+    },
+    "sharededdcd265e39e": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" },
+        "kind": { "type": "string" }
+      },
+      "required": ["key", "kind"]
     },
     "sharedeff85db8445f": {
       "type": "object",

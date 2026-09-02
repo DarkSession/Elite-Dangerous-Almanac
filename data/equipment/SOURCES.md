@@ -9,6 +9,7 @@ Referred to throughout by source name; the pin is here, once.
 | Odyssey Materials Helper                          | commit `2e6d4c3e767d2b714ffddc5c9386831d66812916` (2026-08-09), the last revision before the project extracted its core data into a separately distributed dependency | 2026-08-13 UTC |
 | Frontier Elite Dangerous Gamestore                | no immutable revision; the displayed weapon names were read on the acquisition date                                                                            | 2026-08-13 UTC |
 | Elite Dangerous in-game observation               | no game version recorded; direct reading of the suit and weapon stats panels, the sight magnification they show, and the on-foot engineering options            | 2026-08-31 UTC |
+| EDCD/EDMarketConnector                            | commit `2b6a0ce1ee3ba60c21f3f4e9fa093046da8825e4` (2026-07-26); `monitor.py` sha256 `800720e04e3089ee9a4b57749de56061e8d31ba877e17f1420f994c52bac08ac`                | 2026-09-02 UTC |
 
 **Where a source and the game disagree, the in-game reading governs.** Odyssey Materials Helper
 supplies the identities, the slot and grade structure, the engineer availability and
@@ -20,7 +21,7 @@ every material shopping list; the stat values are the ones the game itself shows
   `modifications.jsonc`, `modification-costs.jsonc`,
   `modification-journal-names.jsonc`.
 - **Derivation:**
-  - `Suit.java` supplies the four suit families, journal symbols, weapon-slot counts and
+  - `Suit.java` supplies the four suit families, journal symbols, weapon-mount counts and
     the grade-dependent modification slots, shield strength and shield regeneration.
     English suit display names come from
     `application/src/main/resources/locale/loadout/equipment.csv`. `family` removes
@@ -49,6 +50,15 @@ every material shopping list; the stat values are the ones the game itself shows
     `modification-journal-names.jsonc` records that collision once for resolution against
     the weapon. `modification-costs.jsonc` is split from recipe metadata so an identity
     lookup does not bundle every shopping list, matching the ships engineering boundary.
+  - **`mounts` carries Frontier's own journal `SlotName` for each weapon mount.**
+    EDMarketConnector's `monitor.py` quotes verbatim `SuitLoadout`, `CreateSuitLoadout`,
+    `SwitchSuitLoadout`, `LoadoutEquipModule` and `LoadoutRemoveModule` events in its
+    comments; those are Frontier game output rather than that project's own code. They
+    give `PrimaryWeapon1` and `SecondaryWeapon` on `utilitysuit_class1`, and
+    `PrimaryWeapon1`, `PrimaryWeapon2` and `SecondaryWeapon` on `tacticalsuit_class1`.
+    **The secondary mount carries no number**: the game writes `SecondaryWeapon`, not
+    `SecondaryWeapon1`. Each suit's mount list is the weapon-mount counts this catalogue
+    already held, joined to those keys, primary mounts first and numbered from 1.
   - **In-game observation supplies every stat value** described in the three sections
     below: the suit-wide component stats and the four resistances, the weapon combat
     stats and damage, and the multipliers each modification applies.

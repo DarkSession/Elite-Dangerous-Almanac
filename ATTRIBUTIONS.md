@@ -108,6 +108,11 @@ a verbatim copy produced at build time — edit this file, never the copy.
   Frontier notice below. Heat dissipation is the one entry the game never shows a player:
   it is community measurement of Frontier's game, described under Algorithms above, and
   carried here on the same terms as the rest.
+- **[EDCD/EDMarketConnector](https://github.com/EDCD/EDMarketConnector)** by the
+  **EDMarketConnector contributors**, **GPL-2.0** for its code — supplies the Frontier
+  journal `SlotName` keys that identify a suit's weapon mounts. What is taken are the
+  verbatim loadout events quoted in its `monitor.py` comments; no EDMarketConnector code
+  is incorporated. The values are game data — see the Frontier notice below.
 - **[EDDI](https://github.com/EDCD/EDDI)** by the **EDDI contributors**, **Apache 2.0**
   for its code — its module definitions and resource tables supply localized outfitting
   names. The names are factual Elite Dangerous game data; no EDDI code is incorporated.

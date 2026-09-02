@@ -9,9 +9,45 @@ import suitsData from '../../../data/equipment/suits.jsonc' with { type: 'json' 
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { createKeyIndex, findInKeyIndex, normalizeKey } from '../internal/registry-index.js';
 import { assertEquipmentGrade } from './internal/equipment-grade.js';
+import type { PersonalWeaponSlot } from './weapons.js';
 
 /** A Pioneer Supplies equipment grade, from the stock grade 1 through grade 5. */
 export type EquipmentGrade = 1 | 2 | 3 | 4 | 5;
+
+/**
+ * Frontier's own `SlotName` for a suit weapon mount, exactly as the journal spells it.
+ *
+ * @remarks
+ * The `SuitLoadout`, `CreateSuitLoadout`, `SwitchSuitLoadout`, `LoadoutEquipModule` and
+ * `LoadoutRemoveModule` events all write one of these three strings. The secondary mount
+ * carries no number, because the game gives it none. Compare a key with `===`; it is
+ * case-sensitive, like every other journal key.
+ */
+export type PersonalMountKey = 'PrimaryWeapon1' | 'PrimaryWeapon2' | 'SecondaryWeapon';
+
+/**
+ * One weapon mount on a suit.
+ *
+ * @remarks
+ * {@link PersonalMount.key} is Frontier's journal `SlotName`, so a `SuitLoadout`
+ * module joins straight onto a mount without a positional index.
+ * @example
+ * ```ts
+ * import { getSuitByFamily } from '@elite-dangerous-almanac/core/equipment/suits';
+ *
+ * const suit = getSuitByFamily('tacticalsuit')!;
+ * suit.mounts.map((mount) => mount.key);
+ * // -> ['PrimaryWeapon1', 'PrimaryWeapon2', 'SecondaryWeapon']
+ * suit.mounts.filter((mount) => mount.kind === 'primary').map((mount) => mount.key);
+ * // -> ['PrimaryWeapon1', 'PrimaryWeapon2']
+ * ```
+ */
+export interface PersonalMount {
+    /** Frontier journal `SlotName`, e.g. `"PrimaryWeapon1"`. */
+    readonly key: PersonalMountKey;
+    /** Which weapons the mount takes; a weapon whose `slot` equals it fits here. */
+    readonly kind: PersonalWeaponSlot;
+}
 
 /** The stats of one suit at one equipment grade. */
 export interface SuitGrade {
@@ -39,10 +75,15 @@ export interface Suit {
     readonly family: string;
     /** English display name, e.g. `"Maverick Suit"`. */
     readonly name: string;
-    /** Number of primary-weapon slots. */
-    readonly primarySlots: number;
-    /** Number of secondary-weapon slots. */
-    readonly secondarySlots: number;
+    /**
+     * Every weapon mount the suit carries, in the order the game lists them: the
+     * primary mounts by their number, then the secondary mount.
+     *
+     * @remarks
+     * Count a kind by filtering:
+     * `suit.mounts.filter((mount) => mount.kind === 'primary').length`.
+     */
+    readonly mounts: readonly PersonalMount[];
     /** Suit health in health points, the pool the shield protects. */
     readonly health: number;
     /** Suit mass in kilograms. */

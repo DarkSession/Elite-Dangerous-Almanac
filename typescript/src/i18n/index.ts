@@ -79,7 +79,7 @@ export { getExperimentalEffectName } from './experimental-effects.js';
 export { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
 export { getMaterialName } from './materials.js';
 export { getMicroResourceName } from './micro-resources.js';
-export { getSuitDescription, getSuitName } from './suits.js';
+export { getPersonalMountName, getSuitDescription, getSuitName } from './suits.js';
 export { getPersonalWeaponDescription } from './personal-weapons.js';
 export {
     getPersonalModificationDescription,
