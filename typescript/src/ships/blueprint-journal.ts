@@ -30,7 +30,8 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * The same holds for `Weapon_Overcharged`, which the game writes for every weapon, though
  * a multi-cannon's also cuts the clip — 3% at grade 1 falling to 15% at grade 5.
  * `BLUEPRINTS` keys that side under `MC_Overcharged`, and this is the common case: 70 of
- * the build corpus's 1902 declared entries go through it, against one for the scanners.
+ * the build corpus's 1902 declared entries go through it, against a single entry for the
+ * Long Range collision above.
  * The clip penalty is folded only where a module's menu offers the multi-cannon recipe —
  * anti-xeno multi-cannons have no ordinary menu, and cannons, fragment cannons and plasma
  * accelerators take no clip leg. See

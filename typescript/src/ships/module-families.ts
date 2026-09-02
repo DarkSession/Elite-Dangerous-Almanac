@@ -114,7 +114,7 @@ export type OutfittingFamilyId =
  *
  * @remarks
  * The names are Frontier's own outfitting category labels where the game publishes one,
- * and the Almanac's descriptive name for the 19 families it does not. They are
+ * and the Almanac's descriptive name for the families it does not. They are
  * canonical English, not localized UI text: use
  * `getOutfittingFamilyName` for a locale.
  *

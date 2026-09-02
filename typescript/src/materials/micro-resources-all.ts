@@ -17,14 +17,14 @@ import { DATA_MICRO_RESOURCES } from './micro-resources-data.js';
 import { ITEM_MICRO_RESOURCES } from './micro-resources-item.js';
 
 /**
- * All 226 micro resources across every category — component, then consumable, then
+ * Every micro resource across every category — component, then consumable, then
  * data, then item.
  *
  * @example
  * ```ts
  * import { ALL_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-all';
  *
- * ALL_MICRO_RESOURCES.length; // -> 226
+ * ALL_MICRO_RESOURCES.find((resource) => resource.symbol === 'graphene')?.category; // -> 'component'
  * ```
  */
 export const ALL_MICRO_RESOURCES: readonly MicroResource[] = Object.freeze([

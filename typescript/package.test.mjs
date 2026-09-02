@@ -372,7 +372,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         `pre-engineered-name bundle is ${preEngineered.length} bytes`,
     );
     // The largest dataset on this subpath, and deliberately so: it carries six locales
-    // of the game's own prose for all 86 effects, where every other one carries short
+    // of the game's own prose for every effect, where every other one carries short
     // display names. 129 KiB minified, 25 KiB gzipped — more than module names. It is on
     // its own subpath precisely so an application that shows no effect descriptions
     // never pays for it.
@@ -505,9 +505,39 @@ test('heavy catalogues stay on explicit subpaths', async () => {
         assert.ok(!(costSymbol in ships), `${costSymbol} leaked into the ships barrel`);
     }
 
-    assert.equal(planetary.PLANETARY_NEBULAE.length, 5489);
-    assert.equal(nebulae.ALL_NEBULAE.length, 5835);
-    assert.equal(modules.ALL_MODULES.length, 1194);
+    // The subpath catalogues are the complete ones, stated as a relation between them
+    // rather than as record counts a data update would have to come back and edit here.
+    const [procgen, core, internal, hardpoint, utility] = await Promise.all([
+        import('@elite-dangerous-almanac/core/astro/nebulae-procgen'),
+        import('@elite-dangerous-almanac/core/ships/modules-core'),
+        import('@elite-dangerous-almanac/core/ships/modules-internal'),
+        import('@elite-dangerous-almanac/core/ships/modules-hardpoint'),
+        import('@elite-dangerous-almanac/core/ships/modules-utility'),
+    ]);
+    // A sum relation holds vacuously if the JSONC inline plugin silently produced empty
+    // arrays, which is the failure this test exists to catch, so each part is non-empty.
+    for (const [name, catalogue] of [
+        ['REAL_NEBULAE', REAL_NEBULAE],
+        ['PLANETARY_NEBULAE', planetary.PLANETARY_NEBULAE],
+        ['PROCGEN_NEBULAE', procgen.PROCGEN_NEBULAE],
+        ['CORE_MODULES', core.CORE_MODULES],
+        ['INTERNAL_MODULES', internal.INTERNAL_MODULES],
+        ['HARDPOINT_MODULES', hardpoint.HARDPOINT_MODULES],
+        ['UTILITY_MODULES', utility.UTILITY_MODULES],
+    ]) {
+        assert.ok(catalogue.length > 0, `${name} is empty`);
+    }
+    assert.equal(
+        nebulae.ALL_NEBULAE.length,
+        REAL_NEBULAE.length + planetary.PLANETARY_NEBULAE.length + procgen.PROCGEN_NEBULAE.length,
+    );
+    assert.equal(
+        modules.ALL_MODULES.length,
+        core.CORE_MODULES.length +
+            internal.INTERNAL_MODULES.length +
+            hardpoint.HARDPOINT_MODULES.length +
+            utility.UTILITY_MODULES.length,
+    );
 });
 
 test('codex-region geometry stays on its explicit lookup subpath', async () => {
@@ -627,7 +657,7 @@ test('published pure annotations keep unused catalogue indexes tree-shakeable', 
             .reduce((sum, matches) => sum + matches, 0);
     assert.equal(await count(builtFiles), await count(sourceFiles));
 
-    // MaterialGrade shares a module with all 146 material records and three indexes.
+    // MaterialGrade shares a module with every material record and three indexes.
     // Its tiny consumer bundle proves those initialisers remain removable instead of
     // merely proving that annotation-looking comments occur somewhere in `dist/`.
     const gradeBundle = await consumerBundle(
@@ -1352,7 +1382,13 @@ test('the npm package contains byte-identical ship assets', async () => {
     const canonicalFiles = await relativeFiles(canonicalRoot);
     const packagedFiles = await relativeFiles(packagedRoot);
 
-    assert.equal(canonicalFiles.length, 48 * 4);
+    // Four artworks per hull, counted from the directories rather than pinned to a hull
+    // count this file would then have to track.
+    const hullDirectories = (await readdir(canonicalRoot, { withFileTypes: true })).filter(
+        (entry) => entry.isDirectory(),
+    );
+    assert.ok(hullDirectories.length > 0);
+    assert.equal(canonicalFiles.length, hullDirectories.length * 4);
     assert.deepEqual(packagedFiles, canonicalFiles);
     for (const relative of canonicalFiles) {
         const [canonical, packaged] = await Promise.all([

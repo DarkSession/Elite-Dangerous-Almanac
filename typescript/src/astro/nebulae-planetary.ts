@@ -1,10 +1,10 @@
 /**
- * The catalogue of **planetary** nebulae — 5489 of them, the largest class in the
- * catalogue, each catalogued at the procedurally-named system it surrounds.
+ * The catalogue of **planetary** nebulae — the largest class in the catalogue, each
+ * catalogued at the procedurally-named system it surrounds.
  *
  * @remarks
  * **This is the heaviest data module in the library (~399 KiB bundled).** Import it
- * only when you genuinely need every planetary nebula; for the 180 recognisable
+ * only when you genuinely need every planetary nebula; for the recognisable
  * real-world nebulae use `./nebulae-real` instead (~16 KiB). Because each catalogue
  * is its own module, importing that one never pulls this one in.
  *
@@ -18,7 +18,7 @@ import { buildNebulaCatalogue, type PlanetaryNebulaRecord } from './internal/neb
 import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' with { type: 'json' };
 
 /**
- * All 5489 planetary nebulae, sorted by name.
+ * Every planetary nebula, sorted by name.
  *
  * @remarks
  * Every record has `type: 'planetary'`. `name` is normally identical to `system`;
@@ -29,7 +29,6 @@ import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' w
  * ```ts
  * import { PLANETARY_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-planetary';
  *
- * PLANETARY_NEBULAE.length;  // -> 5489
  * PLANETARY_NEBULAE[0]?.name; // -> 'Aemonz EQ-Y e1899'
  * ```
  */

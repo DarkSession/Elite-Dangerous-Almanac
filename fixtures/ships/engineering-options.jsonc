@@ -12,7 +12,7 @@
  * Guardian Power Plant and an ordinary one are the same kind of module with different menus, so
  * they are different groups, and only the ordinary half has an experimental slot.
  * `antiGuardianZoneResistance` pins the whole of that: the recipe that is a Guardian module's
- * entire menu, offered by nine groups, none of which offers an experimental effect. `groupSizes`
+ * entire menu, offered by the Guardian groups, none of which offers an experimental effect. `groupSizes`
  * pins how many modules each group holds, so a module moving between groups fails a test rather
  * than balancing out against the totals; `modules` pins one member of every group by name.
  * `corpus` measures the catalogue against the 181-build community corpus in `builds/`.

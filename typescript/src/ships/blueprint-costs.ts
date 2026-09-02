@@ -7,7 +7,7 @@
  * Use {@link getBlueprintGradeCost} for that per-roll recipe or {@link getBlueprintCost}
  * for the complete weighted climb to a target grade. Both answer with a
  * {@link BlueprintCost} — the materials consumed *and* the **Merc Coin** billed beside
- * them, since 25 recipes charge a currency as well. The matching stat modifiers live in
+ * them, since some recipes charge a currency as well. The matching stat modifiers live in
  * `ships/blueprints`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`), with Operations and
@@ -93,8 +93,8 @@ export function getBlueprintCosts(blueprintSymbol: string): BlueprintGradeCosts 
  *
  * @remarks
  * Merc Coin has no credit equivalent and is not a material, so it is its own member
- * rather than an entry in `materials`. Only 25 of the catalogued blueprints charge any;
- * on every other recipe `mercCoins` is `0`, which is a real amount rather than a missing
+ * rather than an entry in `materials`. Only a minority of the catalogued blueprints charge
+ * any; on every other recipe `mercCoins` is `0`, which is a real amount rather than a missing
  * one — a step that is catalogued at all reports both halves of its cost.
  */
 export interface BlueprintCost {
@@ -107,10 +107,10 @@ export interface BlueprintCost {
      * The Merc Coin the step bills, already weighted for however many rolls the step
      * covers, exactly as the `materials` counts are.
      *
-     * `0` either where the recipe charges no currency — 25 blueprints do and the rest do
-     * not — or where this particular step covers no grade that charges. It is therefore
+     * `0` either where the recipe charges no currency — a minority of blueprints charge
+     * it — or where this particular step covers no grade that charges. It is therefore
      * an amount for *this* step, and reading `0` as "this blueprint never charges Merc
-     * Coin" is wrong on exactly the 25 that do.
+     * Coin" is wrong on every recipe that does.
      */
     readonly mercCoins: number;
 }
@@ -268,9 +268,9 @@ export type BlueprintMercCoinCosts = Readonly<Record<string, number>>;
  * @remarks
  * The raw catalogue behind {@link BlueprintCost.mercCoins}; reach for
  * {@link getBlueprintCost} or {@link getBlueprintGradeCost} unless you want the table
- * itself. A small subset of {@link BLUEPRINT_COSTS} — 25 of its ids, in two shapes.
- * Twenty-one are the bespoke grade-2–5 recipes that only a Mercenary article, bought
- * already at grade 1, can be taken through. The other four are ordinary
+ * itself. A small subset of {@link BLUEPRINT_COSTS}'s ids, in two shapes. Most are the
+ * bespoke grade-2–5 recipes that only a Mercenary article, bought
+ * already at grade 1, can be taken through. The others are ordinary
  * engineering-menu recipes spanning grades 1–5 that happen to bill the currency too:
  * `FuelScoop_Efficiency` and the three `*Laser_ThermalPlasmaConversion`. Every other
  * blueprint is absent rather than zero. Merc Coin has no credit equivalent, so it is

@@ -8,7 +8,7 @@
  * ({@link getMicroResourceBySymbol}, {@link getMicroResourceByName},
  * {@link microResourcesInCategory}).
  *
- * **Every lookup searches all 226 micro resources by default** — you do not have to
+ * **Every lookup searches every micro resource by default** — you do not have to
  * hand it a catalogue:
  *
  * ```ts
@@ -18,22 +18,25 @@
  * The two **by-key** lookups take an optional second argument to **narrow** the search
  * to a subset — one category's catalogue, or any array you have filtered yourself:
  *
- * | Module | Export | Entries |
- * | --- | --- | --- |
- * | `./micro-resources-component` | `COMPONENT_MICRO_RESOURCES` | 33 |
- * | `./micro-resources-consumable` | `CONSUMABLE_MICRO_RESOURCES` | 6 |
- * | `./micro-resources-data` | `DATA_MICRO_RESOURCES` | 125 |
- * | `./micro-resources-item` | `ITEM_MICRO_RESOURCES` | 62 |
- * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 226 (the default) |
+ * Sizes are each module's import graph once your bundler has minified it — the
+ * published package itself is not minified — before any transport compression.
+ *
+ * | Module | Export | Minified | Gzipped |
+ * | --- | --- | --- | --- |
+ * | `./micro-resources-component` | `COMPONENT_MICRO_RESOURCES` | ~2 KiB | ~1 KiB |
+ * | `./micro-resources-consumable` | `CONSUMABLE_MICRO_RESOURCES` | ~1 KiB | <1 KiB |
+ * | `./micro-resources-data` | `DATA_MICRO_RESOURCES` | ~7 KiB | ~2 KiB |
+ * | `./micro-resources-item` | `ITEM_MICRO_RESOURCES` | ~3 KiB | ~1 KiB |
+ * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | ~12 KiB | ~3 KiB |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all four
- * catalogues, since that is what it falls back to — ~13 KiB minified for all 226.
+ * catalogues, since that is what it falls back to — ~12 KiB minified for the set.
  * {@link microResourcesInCategory} reaches the same subsets from a plain string.
  *
  * **Only `ALL_MICRO_RESOURCES` itself is indexed.** A by-key lookup answers from an
  * O(1) index when the catalogue you pass *is* `ALL_MICRO_RESOURCES` — the same object,
  * not a copy — and scans linearly otherwise, including for `[...ALL_MICRO_RESOURCES]`,
- * which holds the same 226 records. Omitting the argument always takes the indexed
+ * which holds the same records. Omitting the argument always takes the indexed
  * path, so pass one only when you mean to exclude the rest.
  *
  * {@link microResourcesInCategory} takes no catalogue: it returns an array, so
@@ -103,8 +106,8 @@ const MICRO_RESOURCES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURC
  *
  * @param symbol - The internal symbol, e.g. `"graphene"`, or the lower-cased form the
  * player journal reports. Leading/trailing whitespace and case are ignored.
- * @param microResources - Optional subset to search instead of all 226 micro
- * resources — `COMPONENT_MICRO_RESOURCES`, `CONSUMABLE_MICRO_RESOURCES`,
+ * @param microResources - Optional subset to search instead of every micro
+ * resource — `COMPONENT_MICRO_RESOURCES`, `CONSUMABLE_MICRO_RESOURCES`,
  * `DATA_MICRO_RESOURCES`, `ITEM_MICRO_RESOURCES`, or any array you have filtered
  * yourself. Omit it unless you specifically want to exclude the rest: the indexed O(1)
  * path is taken only when the argument is omitted or is `ALL_MICRO_RESOURCES` **by
@@ -168,8 +171,8 @@ export function getMicroResourceByName(
  * ```ts
  * import { microResourcesInCategory } from '@elite-dangerous-almanac/core/materials/micro-resources';
  *
- * microResourcesInCategory('consumable').length; // -> 6
- * microResourcesInCategory('Consumable').length; // -> 6; case is ignored
+ * microResourcesInCategory('consumable')[0]?.name;     // -> 'Medkit'
+ * microResourcesInCategory('Consumable')[0]?.name;     // -> 'Medkit'; case is ignored
  * ```
  */
 export function microResourcesInCategory(category: string): MicroResource[] {

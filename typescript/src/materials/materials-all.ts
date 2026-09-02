@@ -15,13 +15,13 @@ import { MANUFACTURED_MATERIALS } from './materials-manufactured.js';
 import { ENCODED_MATERIALS } from './materials-encoded.js';
 
 /**
- * All 146 materials across every category, raw then manufactured then encoded.
+ * Every material across every category, raw then manufactured then encoded.
  *
  * @example
  * ```ts
  * import { ALL_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-all';
  *
- * ALL_MATERIALS.length; // -> 146
+ * ALL_MATERIALS.find((material) => material.symbol === 'Iron')?.category; // -> 'raw'
  * ```
  */
 export const ALL_MATERIALS: readonly Material[] = Object.freeze([

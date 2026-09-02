@@ -19,7 +19,7 @@ What that rules out is compatibility scaffolding, which is the same clutter whet
 
 - **No deprecated aliases, re-exports or shims** kept alongside the new name, and no `@deprecated` symbols retained "for one more release".
 - **No dual code paths** that accept both the old and the new shape of an argument, option object or data file.
-- **No migration prose in the documentation.** Docs describe the current surface only (see §Documentation states the present, not the history); the change belongs in the pull request and the release notes, not in a TSDoc comment or a guide page.
+- **No migration prose in the documentation.** Docs describe the current surface only (see §Language and documentation); the change belongs in the pull request and the release notes, not in a TSDoc comment or a guide page.
 
 A breaking change still has to be complete and visible: update every call site, test, fixture, documented example and guide in the same change, and say plainly in the PR description what breaks and what replaces it. The version stays below 1.0 while this holds (§Releasing to npm) and the README says so for consumers — do not describe the surface as stable anywhere until 1.0 is actually released.
 
@@ -57,7 +57,7 @@ Consumers (community apps, often web-based) must only pay for what they import. 
 - **Subpath exports** (`exports` map in `package.json`) per feature area, so consumers can import only the slice they need. The published package is `@elite-dangerous-almanac/core`, exposing `./astro`, `./commodities`, `./equipment`, `./i18n`, `./materials` and `./ships` alongside the individual modules within each (`./ships/ship-loadout`, `./astro/nebulae-real`, …). **The public half of the map is enumerated, one subpath per runtime module** — there is no public wildcard — and `tsup.config.ts` derives its exact entry list from those `import` targets. A new module under `src/` is therefore unreachable and unbuilt until its entry is deliberately added with both `types` and `import`. Export a type-only module's symbols through the runtime entry that owns them rather than creating a declaration-only subpath; a package specifier should resolve consistently for ordinary and type-only imports. `pnpm run test:package` compares the built entries with the manifest and rejects any non-null export lacking either target. The only patterns in the map are the per-area `./<area>/internal/*` keys, each mapped to **`null`**; that makes every current and future internal deep import a resolution error without maintaining one manifest exception per file. Root-wide helpers belong in `src/internal/`, which has no entry at all. Follow that layout for anything marked `@internal`.
 - **Prefer pure functions over stateful classes**; when classes are used, avoid static registries or cross-class coupling that drags unrelated code into the bundle.
 - **Static data is the biggest bundle risk**: never expose one monolithic data import. Split `data/` consumption into per-domain (and where sensible per-entity-group) modules so importing one ship's stats doesn't bundle the whole galaxy.
-- **Usability outranks tree-shaking when the two collide.** A registry lookup takes an *optional* catalogue argument defaulting to the whole registry (`getMaterialByName('iron')`) — a journal line hands you a symbol and nothing else, so making the caller identify the category first was solving the library's problem with the user's time. The price is that a default is a static import: the data cannot be dropped even when an explicit catalogue is passed. Decide it by measuring a module's import graph in `dist/` **as a consumer's bundler ships it** — that is, fully minified, while the library's own build only compacts whitespace (see §Commands): materials ~17 KiB, micro resources ~13 KiB, commodities ~30 KiB — noise; `ships/modules` ~338 KiB (~33 KiB gzipped) — worth naming in its own docs, which it does. **`astro/nebulae` is the counter-example**: `ALL_NEBULAE` is ~432 KiB, so its argument stays required. Default to the whole registry unless that would cost more than the rest of the library, say which way you went in the module's own docs, and do not reverse either decision without a fresh measurement.
+- **Usability outranks tree-shaking when the two collide.** A registry lookup takes an *optional* catalogue argument defaulting to the whole registry (`getMaterialByName('iron')`) — a journal line hands you a symbol and nothing else, so making the caller identify the category first was solving the library's problem with the user's time. The price is that a default is a static import: the data cannot be dropped even when an explicit catalogue is passed. Decide it by measuring a module's import graph in `dist/` **as a consumer's bundler ships it** — that is, fully minified, while the library's own build only compacts whitespace (see §Commands): materials ~17 KiB, micro resources ~13 KiB, commodities ~30 KiB — noise; `ships/modules` ~337 KiB (~33 KiB gzipped) — worth naming in its own docs, which it does. **`astro/nebulae` is the counter-example**: `ALL_NEBULAE` is ~432 KiB, so its argument stays required. Default to the whole registry unless that would cost more than the rest of the library, say which way you went in the module's own docs, and do not reverse either decision without a fresh measurement.
 - **Nothing in a data payload that isn't data.** Prose a program never reads — attribution, notes, descriptions — is inlined into every consumer's bundle just like the records are. It belongs in the file's comment header (see §Data file format), where it stays next to the data and costs consumers nothing. On the small catalogues this is not a rounding error: `permit-locks` was 20% attribution by weight.
 - **No packing or minification in the library source.** Keep the checked-in source and the shared `data/` / `fixtures/` as normal, readable, well-formatted code and JSON — never hand-minified, pre-bundled, or otherwise compacted. All bundling, minification, tree-shaking, dead-code elimination, and payload compaction belong to the per-language **build/dist step** (e.g. `tsup`/esbuild for TypeScript) or to the consumer's bundler downstream of it, never baked into source. This keeps the data reviewable and diff-able, and keeps the shared assets portable across language implementations that each pack differently.
 
@@ -70,6 +70,54 @@ Tree-shakeability is part of feature parity: other language implementations shou
   - **TypeScript**: `pnpm test` runs `node --test --experimental-test-coverage` with `--test-coverage-lines/-branches/-functions=80`, scoped recursively to `src/internal/**/*.ts` and `src/<area>/**/*.ts`, and excluding `*.test.ts`. Adding a new feature area means adding its `--test-coverage-include` glob, or the area is silently unmeasured; nested `internal/` modules inside an existing area are measured automatically.
   - **Python (future)**: measure with `coverage.py` / `pytest --cov` and fail CI under 80%.
 
+## Communication style
+
+Use [ASD-STE-100](https://www.asd-ste100.org/) (Simplified Technical English)
+when you speak to the operator.
+
+- One idea per sentence. Keep instructions to 20 words and descriptions to 25.
+- Active voice, present tense. Name who or what does the thing.
+- One word, one meaning. Choose a term and keep it; do not vary it for style.
+- Use the simplest verb that is correct. No metaphor, no idiom, no jargon the
+  operator did not use first.
+- Write a procedure as numbered steps in the order you do them. Give the
+  condition before the action: "If the build fails, read the policy output."
+- Keep a paragraph to six sentences. Split what is longer.
+
+The same rules make good comments, documentation and pull requests, together
+with the language rules below.
+
+## Language and documentation
+
+- **Write in plain, common language.** Code, comments, documentation, commit
+  messages, pull requests and replies to the person you are working with all
+  use ordinary words a contributor can skim. Name a thing what it is. No
+  literary phrasing, no metaphor, no rhetorical build-up, no marketing
+  adjectives, no emoji: "add a tooltip to the heat glosses" beats "the glosses
+  find their voice at last". Identifiers, test names and headings follow the
+  same rule — descriptive, not clever.
+- **Say it once, and say it directly.** Short sentences, active voice, concrete
+  nouns. Drop throat-clearing openers ("it is worth noting that"),
+  self-assessment ("comprehensive", "robust", "seamless") and hedging that
+  carries no information. If deleting a sentence loses nothing, delete it.
+- **Documentation describes the current state, not the change that produced
+  it.** Git already records what moved, when and by whom; a reader opening a
+  file wants to know how the thing works now. Keep changelog residue out of
+  comments, docs, `README.md` and this file — no "previously", "now", "was
+  changed to", "new", "updated", "as of <date>", no diff narration, no dated
+  superseded notes. Write the rule, the behaviour and the reason it holds, in
+  the present tense, as though it had always been so.
+- **Delete rather than annotate.** Code and prose that no longer apply are
+  removed, not labelled obsolete and left in place. Commented-out code, "kept
+  for reference" blocks and "(deprecated)" markers on things nothing uses all
+  go; git holds the old version.
+- **Two deliberate exceptions.** A `specs/<NNN>-…/tasks.md` entry is a dated
+  record of work, and the dated notes already there stay as they were written.
+  And where a decision cannot be understood without its history — a persisted
+  format that keeps an old field name, a workaround for a known upstream defect
+  — record the reason rather than the chronology, in the one sentence that stops
+  someone undoing it.
+
 ## Documentation Requirements
 
 This is a library, so documentation is a first-class deliverable:
@@ -80,21 +128,52 @@ This is a library, so documentation is a first-class deliverable:
   - Python (future): Google-style docstrings.
 - **Docs must be convertible to GitHub Wiki format.** API documentation is generated from source comments and published to the repo wiki automatically — never hand-edit generated wiki pages.
 
-### Documentation states the present, not the history
+### The historical facts a repository file keeps
 
-Documentation describes current behavior. Git and GitHub releases carry project history.
-Edit or delete statements that a change makes false; do not append dated change logs,
-migration stories, superseded behavior or comparisons with earlier implementations.
-
-Keep historical facts only when they explain the current state:
+Three kinds of historical fact earn their place, because each one explains the current
+state rather than narrating a change (§Language and documentation):
 
 - **Provenance.** `data/<domain>/SOURCES.md` must record, per catalogue, the source, its immutable revision or checksum, the acquisition date, the derivation and every manual correction with the reasoning behind it — that is what `data/SNAPSHOTS.md` requires, and a date there is a fact about the *source*, not about this repository's history. Record it under the catalogue it describes, in the present tense ("`Int_Sensors_Size1_Class{1..5}` `integrity` is 36/32/40/48/44; coriolis-data's size-1 row is a verbatim copy of its size-2 row, so EDSY's figures are used"), never as a dated entry in a log at the top of the file.
 - **A rejected alternative**, where writing it down stops it being rediscovered and reapplied — "these three values look wrong and are not", "storing it as a per-group alias map is worse, because …". State the standing conclusion, not the episode that produced it.
 - **A deliberate absence**, what it means, and what would fill it — with a link to its issue (§Tracking known gaps).
 
+### How many is not documentation
+
+**Never write a catalogue's size into prose.** Not in TSDoc, a guide, a README, a
+data-file header or a `SOURCES.md`. Ask one question: *would adding a row make this
+sentence false?* If yes, delete the number. It is a maintenance bill, and it falls due on
+whoever adds the row, in every file that took a copy. One module added to the outfitting
+catalogue needed sixteen files touched, half of them only to change a count.
+
+Write what the catalogue holds instead. "Every core internal module, in Frontier's
+registry order" says more than "All 516 core internal modules", and stays true. The rule
+covers fractions too: write "not every blueprint", not "85 of the 107 blueprints". Name
+the exceptions if a reader needs them. The names do not move; the count does.
+
+Three kinds of number stay:
+
+- **A count a test asserts.** Pin it in a fixture's payload, not in the fixture's header,
+  and read it from the test. Do not restate it in a second test, a doc comment or a
+  `SOURCES.md` sentence. Prefer a relation a data update cannot break: `ALL_MODULES.length`
+  equals the four category catalogues summed.
+- **A measurement of something outside this repository.** A bundle size in KiB is an
+  import decision, so it belongs in the docs. A fact about a pinned snapshot or capture is
+  provenance: "coriolis's `blueprints.json` has 81 keys and not one prefixed", "not one of
+  1902 declared entries in the build corpus is prefixed". The source is pinned, so the
+  figure cannot go stale. The build corpus in `fixtures/ships/builds/` counts as pinned:
+  it grows when a maintainer adds a capture, never when a catalogue does. Its size may
+  therefore stand in its index header, which the bullet above otherwise forbids.
+- **A number the game or the API fixes.** Region ids run 1–42, engineering grades 1–5, six
+  stored locales, eight core mounts on a hull. A reader needs these.
+
+If a figure must appear in prose, generate it. `scripts/i18n-coverage.mjs` writes the
+locale-coverage table from `data/i18n/`, and `check:i18n-coverage` fails when it drifts.
+Do not instead add a check that asserts a hand-written figure: that keeps the figure and
+adds a second thing to update.
+
 ### `SOURCES.md` documents the data, not the library
 
-A provenance file answers "where did this value come from, and what was done to it". How the library computes, accepts or refuses something is documented on the symbol that does it — its TSDoc — and never in `SOURCES.md`: two homes for one explanation is how the last one grew to three thousand lines and buried the provenance inside it. The same goes for narrating the test suite ("`x.test.ts` asserts …", "pinned in `fixtures/…` under `counts`") and for listing a module's API. Naming the *evidence* for a value is provenance and belongs there; explaining the code that consumes it does not.
+A provenance file answers "where did this value come from, and what was done to it". How the library computes, accepts or refuses something is documented on the symbol that does it — its TSDoc — and never in `SOURCES.md`: two homes for one explanation is how the last one grew to three thousand lines and buried the provenance inside it. The same goes for narrating the test suite ("`x.test.ts` asserts …", "pinned in `fixtures/…` under `counts`") and for listing a module's API. Naming the *evidence* for a value is provenance and belongs there; explaining the code that consumes it does not, and neither does counting how many rows the derivation produced (§How many is not documentation).
 
 Where an explanation spans several symbols and has nowhere obvious to live, it becomes a guide page under `typescript/docs/guides/`, which `typedoc.json` already publishes to the wiki — `Build-metrics.md` and `Engineering.md` are the two the ships domain needed. Put it there rather than parking it in a provenance file or bloating one symbol's page with an argument that is not about it.
 
@@ -129,7 +208,7 @@ A `Loadout` event, a SLEF export or a decoded share link is **Frontier game outp
 
 What still applies, every time:
 
-- **Credit the source if we have one.** Name the project and its licence position in `ATTRIBUTIONS.md`, exactly as for any other source, and record the file, the revision and the checksum in the fixture's own header. Where a build reaches us with no traceable origin — the 181 in `fixtures/ships/builds/` — that is fine and already recorded; it is not a reason to leave the build out.
+- **Credit the source if we have one.** Name the project and its licence position in `ATTRIBUTIONS.md`, exactly as for any other source, and record the file, the revision and the checksum in the fixture's own header. Where a build reaches us with no traceable origin — as the corpus in `fixtures/ships/builds/` does — that is fine and already recorded; it is not a reason to leave the build out.
 - **Scrub the person, keep the game** (see §Commit Identity), and store the capture verbatim otherwise, with its source checksum.
 - **Builds only.** Code, stat tables and derived catalogues are held to the licence they ship under, unchanged.
 
@@ -204,7 +283,7 @@ The same rule covers everything else you author. Commit messages, PR titles and 
 
 A related habit, for the same reason:
 
-- **A captured source is scrubbed of the person, not of the game.** A journal capture, a SLEF export or a community build reaches you attached to whoever produced it — a commander name, an account id, an uploader, a home directory in a path, the link the build was shared from. That goes; the game data stays. `fixtures/ships/builds/` stores its 181 builds without author, name or link (the corpus index's own header records the choice and what it costs), while the Krait Phantom capture deliberately keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` — those describe a ship, they are what makes it ground truth, and none of them names a person.
+- **A captured source is scrubbed of the person, not of the game.** A journal capture, a SLEF export or a community build reaches you attached to whoever produced it — a commander name, an account id, an uploader, a home directory in a path, the link the build was shared from. That goes; the game data stays. `fixtures/ships/builds/` stores its builds without author, name or link (the corpus index's own header records the choice and what it costs), while the Krait Phantom capture deliberately keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` — those describe a ship, they are what makes it ground truth, and none of them names a person.
 
 ## Pull requests
 

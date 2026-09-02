@@ -120,14 +120,14 @@ imports are:
   ship.
 - `astro/nebulae-all` is ~432 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
-  all 5835 records has to be your decision, not a default you did not notice. Almost all
+  every record has to be your decision, not a default you did not notice. Almost all
   of that weight is `astro/nebulae-planetary` (~399 KiB); the sibling catalogues are
   small, `astro/nebulae-real` being ~16 KiB, so pick the one that answers your question.
 - `astro/codex-region-lookup` is about 208 KiB. Its 42-region cell geometry answers
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
   about 9 KiB. The geometry-backed lookup therefore stays off the astro barrel.
 
-`ships/modules` is ~338 KiB and `ships/modules-all` ~336 KiB — heavier than the codex
+`ships/modules` is ~337 KiB and `ships/modules-all` ~335 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
 materials ~17 KiB, micro resources ~13 KiB, commodities ~30 KiB.
@@ -154,7 +154,7 @@ carry a second copy of its source.
 
 `npm pack --dry-run` reports about 70 MB unpacked and about 18 MB as a compressed
 npm archive. Read that number before you judge it: the ship art in `assets/` is about
-67 MB of it — 192 SVG files, four per hull, shipped as static package files rather
+67 MB of it — four SVG files per hull, shipped as static package files rather
 than as subpath exports. Everything a bundler can reach is the roughly 3 MB of
 `dist/`, which is the JavaScript, the type declarations and the source maps above,
 and no import of this package pulls an SVG into an application bundle.

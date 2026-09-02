@@ -1,7 +1,7 @@
 /**
  * Whole permit-locked regions, kept separate from individually locked systems.
  *
- * Importing this leaf module costs only the 28 region names. `ProceduralSystem` uses it
+ * Importing this leaf module costs only the region names. `ProceduralSystem` uses it
  * to preserve the library's fine-grained tree-shaking boundary.
  *
  * @packageDocumentation
@@ -11,7 +11,7 @@ import regionsData from '../../../data/astro/permit-locked-regions.jsonc' with {
 import { normalizeKey } from '../internal/registry-index.js';
 
 /**
- * The 28 permit-locked regions, sorted by name.
+ * The permit-locked regions, sorted by name.
  *
  * @remarks
  * Each entry is both a hand-authored region name and the whole-token prefix used

@@ -12,16 +12,16 @@
  * published package itself is not minified — before any transport compression; the
  * gzipped figure is roughly a fifth of it.
  *
- * | Module | Export | Entries | Minified | Gzipped |
- * | --- | --- | --- | --- | --- |
- * | `./nebulae-real` | `REAL_NEBULAE` | 180 | ~16 KiB | ~5 KiB |
- * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | 166 | ~16 KiB | ~6 KiB |
- * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | ~399 KiB | ~116 KiB |
- * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | ~432 KiB | ~127 KiB |
+ * | Module | Export | Minified | Gzipped |
+ * | --- | --- | --- | --- |
+ * | `./nebulae-real` | `REAL_NEBULAE` | ~16 KiB | ~5 KiB |
+ * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | ~16 KiB | ~6 KiB |
+ * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | ~399 KiB | ~116 KiB |
+ * | `./nebulae-all` | `ALL_NEBULAE` | ~432 KiB | ~127 KiB |
  *
  * Importing a query function from here costs nothing but the function: pass in
- * whichever catalogue you imported. The catalogue argument is **required** — 94% of
- * `ALL_NEBULAE` is planetary nebulae most apps never touch, so there is no default
+ * whichever catalogue you imported. The catalogue argument is **required** — nearly all
+ * of `ALL_NEBULAE` is planetary nebulae most apps never touch, so there is no default
  * worth falling back to silently.
  *
  * Positions are galactic light-years with Sol at the origin — the same frame the

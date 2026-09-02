@@ -17,8 +17,8 @@
  * } from '@elite-dangerous-almanac/core/materials';
  *
  * getMaterialByName('iron')?.grade;               // -> MaterialGrade.VeryCommon
- * materialsByGrade(MaterialGrade.Rare).length;    // -> across every category
- * materialsInCategory('raw').length;              // -> 28
+ * materialsByGrade(MaterialGrade.Rare)[0]?.name; // -> 'Yttrium'
+ * materialsInCategory('raw')[0]?.name;           // -> 'Carbon'
  * getMicroResourceBySymbol('graphene')?.name;     // -> 'Graphene'
  * ```
  *
@@ -41,7 +41,8 @@
  * import { MaterialGrade } from '@elite-dangerous-almanac/core/materials';
  * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
  *
- * RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.Rare).length; // -> 7, one per raw line
+ * RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.Rare).map((m) => m.name);
+ * // -> ['Yttrium', 'Selenium', 'Antimony', 'Tellurium', 'Technetium', 'Polonium', 'Ruthenium']
  * ```
  *
  * @packageDocumentation

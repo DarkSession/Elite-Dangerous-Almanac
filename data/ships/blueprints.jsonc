@@ -22,10 +22,10 @@
  * this mechanics payload means applying a recipe does not bundle what it costs; a
  * consumer that prices a whole build loads both.
  *
- * A key is the Frontier symbol a Loadout event's `Engineering.BlueprintName` carries
- * for 79 of the 107. Three recipe ids whose journal spelling collides with another recipe
- * live in `blueprint-journal-names.jsonc`. The remaining 25 keys are Operations ids for
- * which no journal spelling has been observed. Every recipe is keyed once: Anti-Guardian
+ * Most keys are the Frontier symbol a Loadout event's `Engineering.BlueprintName`
+ * carries. Three recipe ids whose journal spelling collides with another recipe
+ * live in `blueprint-journal-names.jsonc`. The Operations ids have no observed journal
+ * spelling at all. Every recipe is keyed once: Anti-Guardian
  * Zone Resistance is `GuardianModule_Sturdy`, the id the game writes on Guardian weapons
  * as well as modules, and the registry's `recipe_`-prefixed spellings of it are not stored.
  */

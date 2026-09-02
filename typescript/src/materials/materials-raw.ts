@@ -1,6 +1,6 @@
 /**
- * The catalogue of **raw** materials — the 28 chemical elements, in seven lines of
- * four grades (grade 1–4; raw materials have no grade 5).
+ * The catalogue of **raw** materials — the chemical elements, in seven lines of four
+ * grades (grade 1–4; raw materials have no grade 5).
  *
  * Each line is named after its grade-1 element: Carbon, Phosphorus, Sulphur, Iron,
  * Nickel, Rhenium, Lead. Search it with the query functions in `./materials`.
@@ -15,7 +15,7 @@ import { buildMaterialCatalogue, type MaterialRecord } from './internal/material
 import rawData from '../../../data/materials/materials-raw.jsonc' with { type: 'json' };
 
 /**
- * All 28 raw materials, sorted by line then grade.
+ * Every raw material, sorted by line then grade.
  *
  * @remarks
  * Every record has `category: 'raw'`. The array and its records are frozen.
@@ -24,7 +24,6 @@ import rawData from '../../../data/materials/materials-raw.jsonc' with { type: '
  * ```ts
  * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
  *
- * RAW_MATERIALS.length; // -> 28
  * RAW_MATERIALS.find((m) => m.name === 'Iron')?.elementSymbol; // -> 'Fe'
  * ```
  */

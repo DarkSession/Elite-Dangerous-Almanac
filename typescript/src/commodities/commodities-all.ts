@@ -13,13 +13,13 @@ import { COMMODITIES } from './commodities-standard.js';
 import { RARE_COMMODITIES } from './commodities-rare.js';
 
 /**
- * All 399 commodities, standard first then rare.
+ * Every commodity, standard first then rare.
  *
  * @example
  * ```ts
  * import { ALL_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-all';
  *
- * ALL_COMMODITIES.length; // -> 399
+ * ALL_COMMODITIES.find((commodity) => commodity.symbol === 'LavianBrandy')?.rare; // -> true
  * ```
  */
 export const ALL_COMMODITIES: readonly Commodity[] = Object.freeze([

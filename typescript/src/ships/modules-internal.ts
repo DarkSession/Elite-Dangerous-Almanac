@@ -21,7 +21,7 @@ import internalModulesData from '../../../data/ships/modules-internal.jsonc' wit
 import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
- * All 484 modules in the `internal` outfitting category, in registry order.
+ * Every module in the `internal` outfitting category, in registry order.
  *
  * @remarks
  * Every record has `category: 'internal'`, added from the file it was read from
@@ -37,14 +37,13 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  * To keep the other three categories out of your bundle, search this array directly —
  * `INTERNAL_MODULES.find((m) => m.symbol.toLowerCase() === wanted)`, lower-cased because
  * a journal's symbols are — rather than with the lookups in `./modules`, which default
- * to all 1194 modules.
+ * to the whole catalogue.
  *
  * @example
  * ```ts
  * import { INTERNAL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-internal';
  *
- * INTERNAL_MODULES.length; // -> 484
- * INTERNAL_MODULES.filter((m) => m.familyId === 'cargoRacks').length; // -> 16
+ * INTERNAL_MODULES.find((m) => m.symbol === 'Int_CargoRack_Size1_Class1')?.familyId; // -> 'cargoRacks'
  * ```
  */
 export const INTERNAL_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

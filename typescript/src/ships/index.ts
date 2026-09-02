@@ -28,7 +28,7 @@
  *   {@link ships/default-loadouts!DEFAULT_LOADOUTS | default-loadouts} subpath carries
  *   the stock modules {@link ShipLoadout.default} turns into a live build.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
- *   ({@link getModuleBySymbol} & co.), which search all 1194 modules unless you hand
+ *   ({@link getModuleBySymbol} & co.), which search the whole catalogue unless you hand
  *   them a narrower set; capability guards such as {@link hasWeaponDamageStats} narrow
  *   the sparse record before stat access. The catalogues live on explicit subpaths split
  *   by Frontier's four outfitting categories —
@@ -111,8 +111,8 @@
  * ```
  *
  * @example
- * **The lookup layer.** One small hull catalogue, and 1194 modules split by Frontier's
- * four outfitting categories. Lookups ignore case and surrounding whitespace.
+ * **The lookup layer.** One small hull catalogue, and the outfitting modules split by
+ * Frontier's four categories. Lookups ignore case and surrounding whitespace.
  *
  * ```ts
  * import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
@@ -121,8 +121,7 @@
  *
  * getShipBySymbol('empire_trader')?.name; // -> 'Imperial Clipper'
  *
- * // Pass a category to bound what you bundle; omit it to search all 1194.
- * CORE_MODULES.length; // -> 516
+ * // Pass a category to bound what you bundle; omit it to search every module.
  * getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)?.name;
  * // -> 'Frame Shift Drive'
  * ```

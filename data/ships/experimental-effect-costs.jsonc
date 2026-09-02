@@ -11,7 +11,7 @@
  * { symbol, name, count }; join `symbol` to the materials domain for its own grade and
  * category. Effect ids exactly match `experimental-effects.jsonc`, which carries the
  * mechanics without pulling this shopping data in with them. The material
- * list is the whole cost: no experimental effect charges Merc Coin, unlike the 25
+ * list is the whole cost: no experimental effect charges Merc Coin, unlike the
  * blueprints in blueprint-merc-coin-costs.jsonc.
  */
 {

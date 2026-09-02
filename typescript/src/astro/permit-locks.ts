@@ -6,9 +6,9 @@
  * (even Sol, permit-locked since launch, reports no permit flag), so this is a
  * hand-maintained community list. It has two halves:
  *
- * - {@link PERMIT_LOCKED_SYSTEMS} — 54 individually locked systems, each with its
+ * - {@link PERMIT_LOCKED_SYSTEMS} — individually locked systems, each with its
  *   name and `id64` (`Sol`, `Shinrarta Dezhra`, `Achenar`, …).
- * - {@link PERMIT_LOCKED_REGIONS} — 28 whole regions whose permit covers every
+ * - {@link PERMIT_LOCKED_REGIONS} — whole regions whose permit covers every
  *   system inside them (`Col 70 Sector`, `Bleia1`, `Cone Sector`, …), matched by
  *   name prefix, because the game names every system in a region after it.
  *

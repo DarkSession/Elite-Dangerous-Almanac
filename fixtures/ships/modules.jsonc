@@ -7,7 +7,8 @@
  * fixed mount in `slot`, and how many name none, across all four catalogues — a record's
  * `category` is the file it was read from, its `slot` is the one mount it fills, its
  * `engineeringGroup` is the engineering-menu family or null, and `familyId` is the
- * display grouping every module carries, core modules included. `familyCounts` pins
+ * display grouping every module carries, core modules included. `exclusionGroupCount` pins
+ * how many records carry a one-per-ship `exclusionGroup`. `familyCounts` pins
  * complete coverage, `familyGroupCounts` pins the number of groups, and `families` pins
  * representative shared groupings across ordinary and special variants. `records` pins
  * individual modules across every category, including DLC- and grant-gated modules; `shipArmour`
@@ -74,6 +75,7 @@
       ]
     }
   ],
+  "exclusionGroupCount": 194,
   "slotCounts": {
     "armour": 241,
     "powerPlant": 43,

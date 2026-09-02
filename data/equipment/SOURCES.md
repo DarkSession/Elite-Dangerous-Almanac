@@ -117,10 +117,11 @@ The suit stats panel is read per suit family and per grade.
 - **Damage** is the grade-1 figure read in-game, times the grade multiplier the game
   applies to it — `1`, `1.31`, `1.73`, `2.27`, `2.98` for grades 1 to 5. Each product is
   taken in double-precision floating point and rounded to three decimals, as
-  `Number(x.toFixed(3))` does it; that reproduces all 55 stored figures exactly. The
-  rounding rule has to be stated rather than assumed, because twelve products land on a
+  `Number(x.toFixed(3))` does it; that reproduces every stored figure exactly. The
+  rounding rule has to be stated rather than assumed, because some products land on a
   half and are therefore broken in both directions, and because scaling before rounding
-  (`Math.round(x * 1000) / 1000`) re-introduces error and misses eight of the 55.
+  (`Math.round(x * 1000) / 1000`) re-introduces error and misses some of the stored
+  figures.
 - **The multipliers are what Odyssey Materials Helper's own figures follow.** On the four
   weapons whose grade-1 damage needed no correction — `Karma L-6`,
   `Manticore Executioner`, `Manticore Tormentor` and `Manticore Oppressor` — its grades 2

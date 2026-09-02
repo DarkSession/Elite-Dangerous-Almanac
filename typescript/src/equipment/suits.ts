@@ -77,12 +77,12 @@ export interface Suit {
 }
 
 /**
- * All four personal suits, including the non-upgradeable Flight Suit.
+ * Every personal suit, including the non-upgradeable Flight Suit.
  *
  * @example
  * ```ts
  * import { SUITS } from '@elite-dangerous-almanac/core/equipment/suits';
- * SUITS.length; // -> 4
+ * SUITS.find((suit) => suit.family === 'utilitysuit')?.name; // -> 'Maverick Suit'
  * ```
  */
 export const SUITS: readonly Suit[] = deepFreeze(suitsData as unknown as readonly Suit[]);

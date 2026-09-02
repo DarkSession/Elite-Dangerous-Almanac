@@ -44,8 +44,8 @@
  * expanded — subtract it from the group's `experimentals` to get the exact set. Modules
  * absent from `exclusions` take their whole group's list.
  *
- * Only modules with an ordinary engineering menu appear at all, 1000 of the 1194; the
- * other 194 are the families no ordinary blueprint reaches, plus the individual modules
+ * Only modules with an ordinary engineering menu appear at all; the
+ * rest are the families no ordinary blueprint reaches, plus the individual modules
  * upstream denies every blueprint. A purchased Mercenary module may still take the bespoke
  * grades 2–5 it is sold with; that purchase-specific route is not an ordinary menu and is
  * recorded by `pre-engineered.jsonc`. SOURCES.md lists both sets.
@@ -56,7 +56,7 @@
  * **A group carries no display name.** The game has no engineering-group label to carry:
  * an engineering menu is headed by the module's own outfitting family, so a consumer
  * names a group by naming that family — join a module's `familyId` to
- * `module-families.jsonc`. 47 of the 48 groups sit wholly inside one family;
+ * `module-families.jsonc`. Nearly every group sits wholly inside one family;
  * `heatSinkLaunchers` is the exception, covering both `heatsinkLaunchers` and
  * `causticSinkLaunchers`, and two families are split across two groups each
  * (`fsd` by `frameShiftDrives` and `frameShiftDrivesSCO`, `hullReinforcements` by its

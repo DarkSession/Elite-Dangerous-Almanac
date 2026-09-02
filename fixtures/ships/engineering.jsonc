@@ -380,7 +380,7 @@
     }
   },
   "reachability": {
-    "description": "Which ids `applyBlueprint` accepts on at least one module, swept over every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS` against all 1194 module symbols. Fixed reward identities remain unreachable because they identify articles rather than craftable routes. `reachable` pins the six blueprints whose route to a module is narrow enough to lose by accident: each on a module that accepts it, one that must refuse it, and the exact count that takes it.",
+    "description": "Which ids `applyBlueprint` accepts on at least one module, swept over every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS` against every module symbol. Fixed reward identities remain unreachable because they identify articles rather than craftable routes. `reachable` pins the six blueprints whose route to a module is narrow enough to lose by accident: each on a module that accepts it, one that must refuse it, and the exact count that takes it.",
     "reachable": [
       {
         "id": "MC_Overcharged",

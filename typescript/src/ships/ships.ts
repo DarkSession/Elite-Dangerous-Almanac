@@ -3,7 +3,7 @@
  * stats, and its slot layout in one record**, with the lookups an app needs to turn
  * an internal symbol or a display name into a {@link Ship}.
  *
- * There is only one list of ships and it is tiny (48 records), so the lookups here
+ * There is only one list of ships and it is small, so the lookups here
  * take no catalogue argument at all — they always search {@link SHIPS}. Importing one
  * bundles the whole ship list, which is what you wanted anyway. Stock module identities
  * live in `./default-loadouts`, keeping this small hull catalogue independent of them.
@@ -154,7 +154,6 @@ export interface Ship {
  * ```ts
  * import { SHIPS } from '@elite-dangerous-almanac/core/ships/ships';
  *
- * SHIPS.length;                                  // -> 48
  * SHIPS.find((s) => s.symbol === 'Anaconda')?.name; // -> 'Anaconda'
  * ```
  */

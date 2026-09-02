@@ -10,12 +10,12 @@
  * record carries the canonical English display name, which the owning module catalogue
  * remains authoritative for, and the five other locales the source publishes.
  *
- * A record key is the English name it holds. Four names need more than one record,
+ * A record key is the English name it holds. A few names need more than one record,
  * because the game distinguishes in other locales what English spells the same way: a
  * `#2` suffix separates those. `Lightweight Alloy` and `Reinforced Alloy` are singular
- * on 25 hulls and plural on the rest, `Hatch Breaker Limpet Controller` is generic on
- * one symbol and specific on twenty, and one Corrosion Resistant Cargo Rack differs from
- * its four siblings. The suffix is part of the key only, never of a displayed name.
+ * on some hulls and plural on the rest, `Hatch Breaker Limpet Controller` is generic on
+ * one symbol and specific on the others, and one Corrosion Resistant Cargo Rack differs
+ * from its siblings. The suffix is part of the key only, never of a displayed name.
  */
 {
   "nameKeys": {

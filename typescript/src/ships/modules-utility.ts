@@ -19,21 +19,20 @@ import utilityModulesData from '../../../data/ships/modules-utility.jsonc' with 
 import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
- * All 35 utility-mount modules, in Frontier's registry order.
+ * Every utility-mount module, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'utility'`, added from the file it was read from
  * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `UTILITY_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
- * rather than with the lookups in `./modules`, which default to all 1194 modules.
+ * rather than with the lookups in `./modules`, which default to the whole catalogue.
  *
  * @example
  * ```ts
  * import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
  *
- * UTILITY_MODULES.length; // -> 35
- * UTILITY_MODULES.filter((m) => m.familyId === 'shieldBoosters').length; // -> 5
+ * UTILITY_MODULES.find((m) => m.familyId === 'shieldBoosters')?.symbol; // -> 'Hpt_ShieldBooster_Size0_Class1'
  * ```
  */
 export const UTILITY_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

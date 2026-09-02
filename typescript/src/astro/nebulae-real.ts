@@ -1,5 +1,5 @@
 /**
- * The catalogue of **real** nebulae — the 180 real-world nebulae and dark regions
+ * The catalogue of **real** nebulae — the real-world nebulae and dark regions
  * Elite Dangerous models under their catalogue name (Horsehead, Witch Head,
  * Barnard's Loop, the Coalsack and Aquila dark regions, …).
  *
@@ -18,7 +18,7 @@ import { buildNebulaCatalogue, type NamedNebulaRecord } from './internal/nebula-
 import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type: 'json' };
 
 /**
- * All 180 real-world nebulae and dark regions, sorted by name.
+ * Every real-world nebula and dark region, sorted by name.
  *
  * @remarks
  * Every record has `type: 'real'`. Search it with `nearestNebulae` or
@@ -28,7 +28,7 @@ import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type
  * ```ts
  * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
  *
- * REAL_NEBULAE.length; // -> 180
+ * REAL_NEBULAE[0]?.name; // -> 'Aquila Dark Region'
  * REAL_NEBULAE.find((n) => n.name === 'Horsehead Nebula')?.system;
  * // -> 'Horsehead Dark Region IR-V c2-9'
  * ```

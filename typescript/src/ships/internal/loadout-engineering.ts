@@ -123,7 +123,7 @@ const isGenericSpelling = (blueprintSymbol: string): boolean =>
  * This route covers the **climb**, not the purchase. A Mercenary module arrives at grade 1
  * and its recipe publishes grades 2–5 — the grades an engineer can still add — so folding
  * one is how a caller takes a bought module further. It cannot reproduce the grade the
- * module was sold at: all 22 Mercenary rows are grade 1, none of those recipes defines a
+ * module was sold at: every Mercenary row is grade 1, none of those recipes defines a
  * grade 1, and `getBlueprintGrade` refuses that call before this check is reached. Nothing
  * here recreates a reward variant either; `pre-engineered-stats` resolves those from their
  * own `modifiers`. Final pre-engineered Guardian weapons are deliberately excluded: their
@@ -190,7 +190,7 @@ export function blueprintRoutesFor(item: string): ReadonlyMap<string, AvailableB
  * actually meet. None is recorded that way:
  * Mercenary rows in `pre-engineered.jsonc` name the recipe the module rolls, never a
  * spelling that would resolve to a different one, and `pre-engineered.test.ts` asserts
- * exactly that. That is a narrower claim than menu membership, which the 22 Mercenary
+ * exactly that. That is a narrower claim than menu membership, which the Mercenary
  * rows do not have and are not meant to: this leg exists for them. So the question does not arise; it is
  * written down because the gate itself cannot catch it if it ever does.
  *

@@ -24,9 +24,9 @@
 
 ## Nebulae
 
-- **Files:** `nebulae-real.jsonc` (180 catalogued real-world nebulae and dark regions),
-  `nebulae-procgen.jsonc` (166 procedurally generated nebulae) and
-  `nebulae-planetary.jsonc` (5489 planetary nebulae), split by class.
+- **Files:** `nebulae-real.jsonc` (catalogued real-world nebulae and dark regions),
+  `nebulae-procgen.jsonc` (procedurally generated nebulae) and
+  `nebulae-planetary.jsonc` (planetary nebulae), split by class.
 - **Source:** the EDAstro nebulae coordinates dataset (`nebulae-coordinates.csv`, columns
   `Name,System,X,Y,Z,Type,RegionID`). Original observations are community exploration
   data.
@@ -36,10 +36,10 @@
 - **Derivation:** records retain their name, catalogued system, galactic X/Y/Z in
   light-years with Sol at the origin, class and region id. They are grouped by `type`
   into one file per class and sorted by name; the class is represented by that file and
-  is not repeated on every record. In the planetary file, `system` is omitted for the
-  5210 records where it is identical to `name`; all 279 differing systems remain.
+  is not repeated on every record. In the planetary file, `system` is omitted where it
+  is identical to `name`; every differing system remains.
   `regionId` is the galactic codex region id from the source CSV — a column the
-  canonn-signals JSON drops — and all 5835 values were verified to agree with this
+  canonn-signals JSON drops — and every value was verified to agree with this
   project's own codex-region lookup.
 - **Caveat:** a nebula is a volume, but the dataset records a single point — the position
   of the system it is catalogued at.
@@ -52,18 +52,19 @@
   permit flag), so the list is hand-maintained by the community and is best-effort.
 - **Obtained via:** canonn-signals, `src/app/data/permit-locked-systems.ts`, which
   transcribes the sheet into two arrays.
-- **Derivation:** the 54 exact system names are carried over unchanged and sorted
-  case-insensitively. Permit state is split by lookup domain. The 28 region entries are
+- **Derivation:** the exact system names are carried over unchanged and sorted
+  case-insensitively. Permit state is split by lookup domain. The region entries are
   names of regions in
   `hand-authored-regions.jsonc`, which stores their spheres and nothing about permits.
   Each name doubles as the matching prefix, because the game names every system in a
   region after it (`Col 70 Sector AA-D b17-0`). The upstream list matches 19 lower-cased
   stems instead; the two agree except for the digit-suffixed regions, which the region
   names resolve exactly.
-- **System addresses:** `id64` comes from Spansh for 53 of the 54, cross-checked against
-  EDSM for the 38 EDSM holds, with no disagreement in address or coordinates. The
-  remaining 16 are absent from EDSM entirely, which is expected of systems no commander
-  can enter to report. `Plaa Ain HA-Z d46` is in neither service; it is procedurally
+- **System addresses:** `id64` comes from Spansh for every system but one, cross-checked
+  against EDSM wherever EDSM holds the system, with no disagreement in address or
+  coordinates. EDSM holds no entry at all for the rest — expected of systems no commander
+  can enter to report — so their addresses rest on Spansh alone, with one exception.
+  `Plaa Ain HA-Z d46` is in neither service; it is procedurally
   named, so its address is encoded by this project's own procedural system encoder, whose
   output was confirmed against Spansh on the other two procedural entries in the list
   (`Dryio Flyuae IC-B c1-377`, `Scheau Bli NB-O d6-1409`). Values are stored as decimal

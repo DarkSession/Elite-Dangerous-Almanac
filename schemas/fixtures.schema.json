@@ -4150,6 +4150,7 @@
       "additionalProperties": false,
       "properties": {
         "counts": { "$ref": "#/definitions/sharedfe8959703dc9" },
+        "exclusionGroupCount": { "type": "integer" },
         "families": {
           "type": "array",
           "items": {
@@ -4241,6 +4242,7 @@
       },
       "required": [
         "counts",
+        "exclusionGroupCount",
         "families",
         "familyCounts",
         "familyGroupCounts",

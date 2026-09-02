@@ -1,7 +1,7 @@
 /*
  * Shared parity fixture for the stock ship-loadout catalogue.
  *
- * Pins complete coverage of the 48 hulls, the total number of fitted stock modules,
+ * Pins complete coverage of every hull, the total number of fitted stock modules,
  * representative classic and current ship fits, omission of empty mounts, and the
  * Lynx Highliner's captured hull-specific cargo-hatch symbol. Source values are the
  * checked-in data/ships/default-loadouts.jsonc catalogue; its upstream provenance is

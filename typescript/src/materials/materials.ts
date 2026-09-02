@@ -9,7 +9,7 @@
  * ({@link getMaterialBySymbol}, {@link getMaterialByName}, {@link materialsByGrade},
  * {@link materialsInLine}, …).
  *
- * **Every lookup searches all 146 materials by default** — you do not have to hand it
+ * **Every lookup searches every material by default** — you do not have to hand it
  * a catalogue:
  *
  * ```ts
@@ -20,21 +20,24 @@
  * search to a subset — one category's catalogue, or any array you have filtered
  * yourself:
  *
- * | Module | Export | Entries |
- * | --- | --- | --- |
- * | `./materials-raw` | `RAW_MATERIALS` | 28 |
- * | `./materials-manufactured` | `MANUFACTURED_MATERIALS` | 71 |
- * | `./materials-encoded` | `ENCODED_MATERIALS` | 47 |
- * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
+ * Sizes are each module's import graph once your bundler has minified it — the
+ * published package itself is not minified — before any transport compression.
+ *
+ * | Module | Export | Minified | Gzipped |
+ * | --- | --- | --- | --- |
+ * | `./materials-raw` | `RAW_MATERIALS` | ~2 KiB | ~1 KiB |
+ * | `./materials-manufactured` | `MANUFACTURED_MATERIALS` | ~7 KiB | ~1 KiB |
+ * | `./materials-encoded` | `ENCODED_MATERIALS` | ~5 KiB | ~1 KiB |
+ * | `./materials-all` | `ALL_MATERIALS` | ~14 KiB | ~3 KiB |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all three
- * catalogues, since that is what it falls back to — ~17 KiB minified for all 146.
+ * catalogues, since that is what it falls back to — ~14 KiB minified for the set.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
  * **Only `ALL_MATERIALS` itself is indexed.** A by-key lookup answers from an O(1)
  * index when the catalogue you pass *is* `ALL_MATERIALS` — the same object, not a copy
  * — and scans linearly otherwise, including for `[...ALL_MATERIALS]`, which holds the
- * same 146 records. Omitting the argument always takes the indexed path, so pass one
+ * same records. Omitting the argument always takes the indexed path, so pass one
  * only when you mean to exclude the rest.
  *
  * The filtering lookups ({@link materialsByGrade}, {@link materialsInLine},
@@ -48,8 +51,8 @@
  * ```ts
  * import { getMaterialByName, materialsInCategory } from '@elite-dangerous-almanac/core/materials';
  *
- * getMaterialByName('iron')?.grade;     // -> MaterialGrade.VeryCommon (1)
- * materialsInCategory('raw').length;    // -> 28
+ * getMaterialByName('iron')?.grade;              // -> MaterialGrade.VeryCommon (1)
+ * materialsInCategory('raw')[0]?.name;           // -> 'Carbon'
  * ```
  *
  * @packageDocumentation
@@ -199,7 +202,7 @@ const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elem
  * @param symbol - The internal symbol, e.g. `"GridResistors"`, or the lower-cased
  * form the player journal reports (`"gridresistors"`). Leading/trailing whitespace
  * and case are ignored.
- * @param materials - Optional subset to search instead of all 146 materials —
+ * @param materials - Optional subset to search instead of every material —
  * `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`, `ENCODED_MATERIALS`, or any array you
  * have filtered yourself. Omit it unless you specifically want to exclude the rest:
  * the indexed O(1) path is taken only when the argument is omitted or is
@@ -297,7 +300,7 @@ export function getMaterialByElementSymbol(
  * import { MaterialGrade, materialsByGrade } from '@elite-dangerous-almanac/core/materials/materials';
  * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
  *
- * materialsByGrade(MaterialGrade.VeryRare).length;                        // -> across every category
+ * materialsByGrade(MaterialGrade.VeryRare)[0]?.category;                 // -> 'manufactured'
  * RAW_MATERIALS.filter((m) => m.grade === MaterialGrade.Rare).length;     // -> 7, one per raw line
  * ```
  */
@@ -348,8 +351,8 @@ export function materialsInLine(line: string): Material[] {
  * ```ts
  * import { materialsInCategory } from '@elite-dangerous-almanac/core/materials/materials';
  *
- * materialsInCategory('raw').length;          // -> 28
- * materialsInCategory('Encoded').length;      // -> 47; case is ignored
+ * materialsInCategory('encoded')[0]?.name;         // -> 'Anomalous Bulk Scan Data'
+ * materialsInCategory('Encoded')[0]?.name;         // -> 'Anomalous Bulk Scan Data'; case is ignored
  * ```
  */
 export function materialsInCategory(category: string): Material[] {

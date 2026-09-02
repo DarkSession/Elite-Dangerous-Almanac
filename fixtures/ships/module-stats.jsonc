@@ -1010,7 +1010,7 @@
       "powerDraw": 832,
       "bootTime": 828
     },
-    "note": "In-game verification covers 1188 catalogue identities: 947 non-armour modules numerically and 241 ship-armour identities whose numeric values retain their separate provenance. Six bundle-granted Vessel Hangar variants rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
+    "note": "In-game verification covers every catalogue identity bar the bundle-granted Vessel Hangars: the non-armour modules numerically, and the ship-armour identities whose numeric values retain their separate provenance. Those hangars rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
     "verifiedValueFields": 284,
     "verifiedAbsentFields": 16
   },

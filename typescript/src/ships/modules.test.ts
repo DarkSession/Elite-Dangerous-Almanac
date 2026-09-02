@@ -40,7 +40,7 @@ const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
 
 test('one-per-ship module families are carried on every limited catalogue record', () => {
     const exclusive = ALL_MODULES.filter((module) => module.exclusionGroup !== undefined);
-    assert.equal(exclusive.length, 194);
+    assert.equal(exclusive.length, modulesFixture.exclusionGroupCount);
     assert.equal(
         getModuleBySymbol('Int_ShieldGenerator_Size6_Class3', INTERNAL_MODULES)?.exclusionGroup,
         'shieldGenerator',
@@ -132,7 +132,6 @@ test('engineeringGroup exposes the stable family carried by the shared data', ()
         assert.equal(module.engineeringGroup, getEngineeringGroup(module.symbol), module.symbol);
         assert.equal(Object.hasOwn(module, 'kind'), false, module.symbol);
     }
-    assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1000);
 });
 
 test('familyId groups every module, core modules included', () => {
