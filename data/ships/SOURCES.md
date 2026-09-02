@@ -1218,13 +1218,13 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
       taking the shipped `Class1` mass and the shipped `Class2` power draw — which
       produced exactly the 12 t and 0.75 MW later observed. The relations are recorded
       because they still carry the Mk II line, which has no observation.
-  - **`rating` is stored as `F`, and the observation says `C`.** The shipped hangars are
-    `Class1` rating H and `Class2` rating G, so this family does not use the ordinary
-    class-to-letter ladder that would make a `Class3` record a C; F is the letter that
-    continues its own ladder, and F is what the module was read as in the outfitting
-    panel. The `C` is what a generic mapping produces from the record's quality tier, and
-    it is not carried. This is the one place the stored value contradicts the observation
-    outright, so it is the first thing to re-read on release.
+  - **`rating` is `F`, and a `C` alongside it is a mapping artefact.** The shipped
+    hangars are `Class1` rating H and `Class2` rating G, so this family does not use the
+    ordinary class-to-letter ladder that would make a `Class3` record a C. F continues
+    its own ladder and F is what the outfitting panel reads, which settles it: the
+    panel is the grade letter's source everywhere in this catalogue. The `C` seen beside
+    these records is what a generic quality-tier mapping produces, applied to a family
+    that does not use that ladder, and it is not carried.
   - **`vehicleSlots` is observed as 1, 2 and 4 by size — and still not stored.** The
     observation carries the count for both lines and it matches the shipped hangars of
     the same sizes. No module record in this catalogue carries a vehicle-slot field, the
@@ -1293,8 +1293,9 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     records carrying at least one; the six sold ones carry a price; and all nine are
     outside in-game verification, which the `registryOnlyIdentities` count in
     `fixtures/ships/module-stats.jsonc` pins alongside the bundle-granted Vessel Hangars.
-    `data/i18n/module-names.jsonc` carries the plain line's name in all six locales and
-    the Mk II line's in English alone.
+    `data/i18n/module-names.jsonc` carries the plain line's name in all six locales; the
+    Mk II line's English is read and its five other locales are constructed, which
+    §`module-names.jsonc` there records as a manual correction.
 
 - **Vessel Hangars** — the three Mk II records
   (`Int_FighterBayMk2_Size{5,6,7}_Class1`) have the same operational stats as the Mk I

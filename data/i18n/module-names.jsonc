@@ -1547,7 +1547,12 @@
       "ru": "Крупный гараж для планет. транспорта"
     },
     "Mk II Large Planetary Vehicle Hangar": {
-      "en": "Mk II Large Planetary Vehicle Hangar"
+      "en": "Mk II Large Planetary Vehicle Hangar",
+      "de": "Großer Planetenfahrzeug-Hangar Mk II",
+      "es": "Hangar de vehículo planetario Mk II",
+      "fr": "Grand hangar des véhicules planétaires Mk II",
+      "pt": "Hangar de veículo planetário grande Mk II",
+      "ru": "Крупный гараж для планет. транспорта Mk II"
     },
     "Planetary Approach Suite": {
       "en": "Planetary Approach Suite",

@@ -89,13 +89,22 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   rest, and the singular is kept, which is also the number the English carries.
   `Hatch Breaker Limpet Controller` is specific on most symbols and generic on one, and
   the specific is kept.
-- **Coverage:** every symbol carries all six locales bar the three unreleased **Mk II**
-  Large Planetary Vehicle Hangars, whose shared name record holds English alone. No
-  translation is invented for it: the five other locales stay absent until a
-  localisation table that names the module is acquired, and the lookups return `null`
-  rather than an English fallback in the meantime. #16 tracks it with the records
-  themselves.
-- **Manual corrections:** none.
+- **Coverage:** complete. Every symbol carries all six locales — but five of those
+  values are **constructed rather than read**; see the manual correction below.
+- **Manual corrections:** the **Mk II** Large Planetary Vehicle Hangar's five non-English
+  names are built, not sourced. Nothing acquired names that unreleased module in any
+  locale but English, and rather than leave the lookups answering `null` the repository
+  owner chose to form each as the plain hangar's own translation with `Mk II` appended —
+  `Großer Planetenfahrzeug-Hangar Mk II`, `Hangar de vehículo planetario Mk II`,
+  `Grand hangar des véhicules planétaires Mk II`,
+  `Hangar de veículo planetário grande Mk II`,
+  `Крупный гараж для планет. транспорта Mk II`. Four locales have a precedent for that
+  shape in the shipped Mk II Vessel Hangar and Mk II Cargo Rack, which suffix `Mk II`;
+  **German does not** — Frontier writes `Mk-II-Schiffshangar` for the hangar and
+  `Frachtgestell für Mk II` for the rack, so the German value here matches neither and is
+  the likeliest of the five to be wrong. All five are to be replaced by a real
+  localisation reading on release, and none should be treated as evidence of what
+  Frontier publishes. #16 tracks them with the records themselves.
 
 ## `blueprint-names.jsonc`
 
