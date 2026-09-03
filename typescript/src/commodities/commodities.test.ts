@@ -136,9 +136,9 @@ test('an explicit catalogue still narrows a by-key search', () => {
 });
 
 test('a copy of ALL_COMMODITIES is scanned, and answers exactly as the index does', () => {
-    // The indexed path is chosen by reference identity, so a copy of the same 399
-    // records takes the scan instead; only identical answers make that a performance
-    // note rather than a bug.
+    // The indexed path is chosen by reference identity, so a copy of the same records
+    // takes the scan instead; only identical answers make that a performance note
+    // rather than a bug.
     const copy = [...ALL_COMMODITIES];
     for (const symbol of ['platinum', 'Platinum', ' lavianbrandy ', 'nonexistent']) {
         assert.equal(getCommodityBySymbol(symbol, copy), getCommodityBySymbol(symbol));

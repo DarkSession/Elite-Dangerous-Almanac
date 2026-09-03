@@ -170,6 +170,7 @@ pinned sources carry no translation instead of silently substituting English:
 ```ts
 import {
     getBlueprintName,
+    getCommodityName,
     getMaterialName,
     getMicroResourceName,
     getModuleName,
@@ -183,6 +184,7 @@ getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> "Frameshiftantrieb"
 getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
 getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
 getMicroResourceName('graphene', 'fr'); // -> "Graphène"
+getCommodityName('LavianBrandy', 'de'); // -> "Lave-Brandy"
 getSuitName('explorationsuit_class3', 'de'); // -> "Artemis-Anzug"
 getPersonalToolName('profile-analyser', 'es'); // -> "Analizador de perfiles"
 getPersonalModificationName('suit_nightvision', 'fr'); // -> "Vision nocturne"

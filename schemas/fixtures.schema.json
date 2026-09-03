@@ -1026,12 +1026,21 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "Chemicals": { "type": "integer" },
             "Foods": { "type": "integer" },
             "Legal Drugs": { "type": "integer" },
             "Metals": { "type": "integer" },
+            "Minerals": { "type": "integer" },
             "Salvage": { "type": "integer" }
           },
-          "required": ["Foods", "Legal Drugs", "Metals", "Salvage"]
+          "required": [
+            "Chemicals",
+            "Foods",
+            "Legal Drugs",
+            "Metals",
+            "Minerals",
+            "Salvage"
+          ]
         },
         "counts": {
           "type": "object",

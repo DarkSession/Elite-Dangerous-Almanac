@@ -42,6 +42,7 @@ const LOCALES = ['en', 'de', 'es', 'fr', 'pt', 'ru'];
 
 const DATASETS = {
     'blueprint-names.jsonc': 'getBlueprintName',
+    'commodity-names.jsonc': 'getCommodityName',
     'experimental-effect-descriptions.jsonc': 'getExperimentalEffectDescription',
     'experimental-effect-names.jsonc': 'getExperimentalEffectName',
     'material-names.jsonc': 'getMaterialName',

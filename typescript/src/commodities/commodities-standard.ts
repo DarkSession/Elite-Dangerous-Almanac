@@ -5,9 +5,10 @@
  * Every record here is a standard commodity (`rare: false`); the rare goods live in
  * `./commodities-rare`. Search it with the query functions in `./commodities`.
  *
- * Data from EDCD FDevIDs (`commodity.csv`), plus one record absent from the pinned
- * FDevIDs snapshot whose symbol and name were observed in a player journal and whose
- * market category was verified in-game; see
+ * Data from EDCD FDevIDs (`commodity.csv`), from a player-journal observation with an
+ * in-game category check, and from two readings of the running game's own commodity
+ * registry, whose difference is a batch of mineral and chemical goods the FDevIDs
+ * snapshot does not carry; see
  * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
  * @packageDocumentation

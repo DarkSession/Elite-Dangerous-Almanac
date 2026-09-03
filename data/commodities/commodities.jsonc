@@ -4,7 +4,10 @@
  *
  * Source: EDCD FDevIDs, commodity.csv. One record (`curatedcommodity`) takes its symbol
  * and name from a player-journal MarketBuy observation and its category from in-game
- * verification; it is appended after the registry order.
+ * verification; it is appended after the registry order. The records after it are the
+ * mineral and chemical goods the running game's own commodity registry holds and the
+ * FDevIDs snapshot does not, with their symbols and names read from that registry and
+ * their categories verified in-game.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/commodities/SOURCES.md.
@@ -1301,5 +1304,70 @@
     "symbol": "curatedcommodity",
     "name": "Curated Commodity Package",
     "category": "Industrial Materials"
+  },
+  {
+    "symbol": "Bastnasite",
+    "name": "Bastnasite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Deuterium",
+    "name": "Deuterium",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Diamond",
+    "name": "Diamond",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Helium",
+    "name": "Helium",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "Helium3",
+    "name": "Helium-3",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "Iridium",
+    "name": "Iridium",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Magnesite",
+    "name": "Magnesite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Olivine",
+    "name": "Olivine",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "PericlaseDunite",
+    "name": "Periclase Dunite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "QuartzPyroxenite",
+    "name": "Quartz Pyroxenite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Ruby",
+    "name": "Ruby",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Sapphire",
+    "name": "Sapphire",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Thortveitite",
+    "name": "Thortveitite",
+    "category": "Minerals"
   }
 ]

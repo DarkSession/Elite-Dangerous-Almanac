@@ -43,6 +43,7 @@ import {
 import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
 import {
     getBlueprintName,
+    getCommodityName,
     getExperimentalEffectName,
     getExperimentalEffectDescription,
     getMaterialName,
@@ -292,6 +293,7 @@ test('fine-grained package subpaths resolve', () => {
     );
     assert.equal(getMaterialName('GridResistors', 'de-DE'), 'Gitterwiderstände');
     assert.equal(getMicroResourceName('graphene', 'fr'), 'Graphène');
+    assert.equal(getCommodityName('LavianBrandy', 'de'), 'Lave-Brandy');
     assert.equal(
         getExperimentalEffectDescription('special_auto_loader', 'en'),
         'An experimental upgrade that automatically reloads the weapon, even when firing.',
@@ -305,6 +307,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         effects,
         materials,
         microResources,
+        commodities,
         preEngineered,
         effectDescriptions,
         suitNames,
@@ -330,6 +333,9 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         ),
         consumerBundle(
             "import { getMicroResourceName as value } from '@elite-dangerous-almanac/core/i18n/micro-resources'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getCommodityName as value } from '@elite-dangerous-almanac/core/i18n/commodities'; console.log(value);",
         ),
         consumerBundle(
             "import { getPreEngineeredVariantName as value } from '@elite-dangerous-almanac/core/i18n/pre-engineered'; console.log(value);",
@@ -370,6 +376,13 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
     assert.ok(
         microResources.length < 72 * 1024,
         `micro-resource-name bundle is ${microResources.length} bytes`,
+    );
+    // Short display names, but one for every good in both commodity catalogues in six
+    // locales. The lookup's own documentation quotes a larger figure because it measures
+    // the ASCII-escaped bundle; `consumerBundle` emits UTF-8, which is smaller.
+    assert.ok(
+        commodities.length < 96 * 1024,
+        `commodity-name bundle is ${commodities.length} bytes`,
     );
     assert.ok(
         preEngineered.length < 72 * 1024,
@@ -430,6 +443,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         effects: 'Konkordante Sequenz',
         materials: 'Gitterwiderstände',
         microResources: 'Graphène',
+        commodities: 'Lave-Brandy',
         preEngineered: 'Festive Red Remote Release Flak Launcher',
         effectDescriptions: 'automatically reloads the weapon',
         // A suit's own name is quoted inside its description, so the name marker has to
@@ -448,6 +462,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         effects,
         materials,
         microResources,
+        commodities,
         preEngineered,
         effectDescriptions,
         suitNames,
