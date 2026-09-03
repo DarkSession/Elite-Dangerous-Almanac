@@ -1,6 +1,7 @@
 /**
  * Sparse, source-backed localized display names and descriptions for Elite Dangerous
- * outfitting, personal-equipment and engineering catalogues.
+ * outfitting, personal-equipment, engineering, material and market-commodity
+ * catalogues.
  *
  * Each lookup takes the identifier its owning catalogue is keyed by — a Frontier symbol,
  * or the library id where the game publishes none, as for a suit tool — and a BCP 47
@@ -28,6 +29,7 @@
  * | Lookup | Keys | en | de | es | fr | pt | ru |
  * | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
  * | `getBlueprintName` | 107 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getCommodityName` | 412 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getExperimentalEffectDescription` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getExperimentalEffectName` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getMaterialName` | 146 | 100 | 100 | 100 | 100 | 100 | 100 |
@@ -79,6 +81,7 @@ export { getOutfittingFamilyName } from './module-families.js';
 export { getBlueprintName } from './blueprints.js';
 export { getExperimentalEffectName } from './experimental-effects.js';
 export { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
+export { getCommodityName } from './commodities.js';
 export { getMaterialName } from './materials.js';
 export { getMicroResourceName } from './micro-resources.js';
 export { getPersonalMountName, getSuitDescription, getSuitName } from './suits.js';

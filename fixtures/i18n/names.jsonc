@@ -1,8 +1,9 @@
 /*
  * Pins locale normalization, sparse misses and representative module, blueprint,
- * experimental-effect, material, micro-resource, ship, manufacturer, engineering-group,
- * outfitting-family, experimental-description, personal-suit, handheld-weapon,
- * suit-tool and personal-modification lookups for every language implementation.
+ * experimental-effect, material, micro-resource, commodity, ship, manufacturer,
+ * engineering-group, outfitting-family, experimental-description, personal-suit,
+ * handheld-weapon, suit-tool and personal-modification lookups for every language
+ * implementation.
  */
 {
   "lookups": [
@@ -418,6 +419,36 @@
       "kind": "personalTool",
       "identifier": "Arc Cutter",
       "locale": "en",
+      "expected": null
+    },
+    {
+      "kind": "commodity",
+      "identifier": "LavianBrandy",
+      "locale": "de-DE",
+      "expected": "Lave-Brandy"
+    },
+    {
+      "kind": "commodity",
+      "identifier": " platinum ",
+      "locale": "ru",
+      "expected": "Платина"
+    },
+    {
+      "kind": "commodity",
+      "identifier": "Drones",
+      "locale": "en",
+      "expected": "Limpets"
+    },
+    {
+      "kind": "commodity",
+      "identifier": "Bastnasite",
+      "locale": "pt-BR",
+      "expected": "Bastnasita"
+    },
+    {
+      "kind": "commodity",
+      "identifier": "Platinum",
+      "locale": "it",
       "expected": null
     }
   ]

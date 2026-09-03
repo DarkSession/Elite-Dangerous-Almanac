@@ -2,20 +2,21 @@
  * Shared test fixture — not shipped in any package.
  *
  * Ground truth for the commodity catalogues (data/commodities/commodities.jsonc and
- * rare-commodities.jsonc, from EDCD FDevIDs, plus `curatedcommodity` from a player-journal
- * observation and in-game category verification). `counts` pins the size of each catalogue;
- * `records` pins individual entries with their catalogue-derived `rare` flag; `categoryCounts`
- * pins how many commodities each market group holds across ALL_COMMODITIES; `categories` lists
- * every market group present. `symbol` is Frontier's internal id (matched case-insensitively, like
- * ships/modules/materials), `name` is the display name, `category` is the market group. `rare` is
- * derived from which catalogue a record lives in; the CSV numeric id (and rares' market_id) are
- * dropped.
+ * rare-commodities.jsonc, from EDCD FDevIDs, plus `curatedcommodity` and the mineral and
+ * chemical goods the game's own commodity registry gained after that snapshot, from
+ * player-journal and in-game observation).
+ * `counts` pins the size of each catalogue; `records` pins individual entries with their
+ * catalogue-derived `rare` flag; `categoryCounts` pins how many commodities each market group
+ * holds across ALL_COMMODITIES; `categories` lists every market group present. `symbol` is
+ * Frontier's internal id (matched case-insensitively, like ships/modules/materials), `name` is the
+ * display name, `category` is the market group. `rare` is derived from which catalogue a record
+ * lives in; the CSV numeric id (and rares' market_id) are dropped.
  */
 {
   "counts": {
-    "standard": 257,
+    "standard": 270,
     "rare": 142,
-    "all": 399
+    "all": 412
   },
   "categories": [
     "Chemicals",
@@ -61,6 +62,12 @@
       "rare": false
     },
     {
+      "symbol": "Bastnasite",
+      "name": "Bastnasite",
+      "category": "Minerals",
+      "rare": false
+    },
+    {
       "symbol": "LavianBrandy",
       "name": "Lavian Brandy",
       "category": "Legal Drugs",
@@ -75,6 +82,8 @@
   ],
   "categoryCounts": {
     "Metals": 28,
+    "Minerals": 40,
+    "Chemicals": 20,
     "Foods": 51,
     "Salvage": 99,
     "Legal Drugs": 36

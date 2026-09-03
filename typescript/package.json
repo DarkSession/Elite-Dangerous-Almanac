@@ -219,6 +219,10 @@
             "types": "./dist/i18n/experimental-effect-descriptions.d.ts",
             "import": "./dist/i18n/experimental-effect-descriptions.js"
         },
+        "./i18n/commodities": {
+            "types": "./dist/i18n/commodities.d.ts",
+            "import": "./dist/i18n/commodities.js"
+        },
         "./i18n/diagnostics": {
             "types": "./dist/i18n/diagnostics.d.ts",
             "import": "./dist/i18n/diagnostics.js"

@@ -95,6 +95,7 @@ symbols you are most likely to reach for first:
 | `getBlueprintName` | `core/i18n/blueprints` |
 | `getExperimentalEffectName` | `core/i18n/experimental-effects` |
 | `getMaterialName` | `core/i18n/materials` |
+| `getCommodityName` | `core/i18n/commodities` |
 | `getMicroResourceName` | `core/i18n/micro-resources` |
 | `getSuitName`, `getSuitDescription`, `getPersonalMountName` | `core/i18n/suits` |
 | `getPersonalToolName` | `core/i18n/personal-tools` |

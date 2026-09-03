@@ -3,6 +3,7 @@ import { test } from 'node:test';
 
 import fixture from '../../../fixtures/i18n/names.jsonc' with { type: 'json' };
 import { getBlueprintName } from './blueprints.js';
+import { getCommodityName } from './commodities.js';
 import { getExperimentalEffectName } from './experimental-effects.js';
 import { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
 import { getOutfittingFamilyName } from './module-families.js';
@@ -20,6 +21,7 @@ import { getSuitDescription, getSuitName } from './suits.js';
 type LookupKind =
     | 'module'
     | 'blueprint'
+    | 'commodity'
     | 'experimentalEffect'
     | 'material'
     | 'microResource'
@@ -36,6 +38,7 @@ type NameLookup = (identifier: string, locale: string) => string | null;
 const LOOKUP_BY_KIND: Readonly<Record<LookupKind, NameLookup>> = {
     module: getModuleName,
     blueprint: getBlueprintName,
+    commodity: getCommodityName,
     experimentalEffect: getExperimentalEffectName,
     material: getMaterialName,
     microResource: getMicroResourceName,
@@ -63,6 +66,7 @@ test('English regional tags return the owning catalogues canonical names', () =>
     assert.equal(getBlueprintName(' fsd_longrange ', 'en-AU'), 'Increased range');
     assert.equal(getExperimentalEffectName(' SPECIAL_FSD_HEAVY ', 'en'), 'Mass Manager');
     assert.equal(getMaterialName(' tellurium ', 'en-CA'), 'Tellurium');
+    assert.equal(getCommodityName(' lavianbrandy ', 'en-GB'), 'Lavian Brandy');
     assert.equal(getMicroResourceName(' GRAPHENE ', 'en-US'), 'Graphene');
     assert.equal(getSuitName(' TACTICALSUIT_CLASS4 ', 'en-NZ'), 'Dominator Suit');
     assert.equal(getPersonalToolName(' Energylink ', 'en-IE'), 'Energylink');

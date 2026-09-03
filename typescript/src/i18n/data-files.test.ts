@@ -6,11 +6,14 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
+import standardCommoditiesData from '../../../data/commodities/commodities.jsonc' with { type: 'json' };
+import rareCommoditiesData from '../../../data/commodities/rare-commodities.jsonc' with { type: 'json' };
 import modificationsData from '../../../data/equipment/modifications.jsonc' with { type: 'json' };
 import suitsData from '../../../data/equipment/suits.jsonc' with { type: 'json' };
 import toolsData from '../../../data/equipment/tools.jsonc' with { type: 'json' };
 import personalWeaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'json' };
 import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with { type: 'json' };
+import commodityNamesData from '../../../data/i18n/commodity-names.jsonc' with { type: 'json' };
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
 import effectDescriptionsData from '../../../data/i18n/experimental-effect-descriptions.jsonc' with { type: 'json' };
 import moduleFamilyNamesData from '../../../data/i18n/module-family-names.jsonc' with { type: 'json' };
@@ -45,6 +48,7 @@ import type { LocalizedNameCatalogue, LocalizedNameMap } from './internal/locali
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'blueprint-names.jsonc': 'localizedNameMap',
+    'commodity-names.jsonc': 'localizedNameMap',
     'experimental-effect-names.jsonc': 'localizedNameMap',
     'experimental-effect-descriptions.jsonc': 'localizedNameMap',
     'material-names.jsonc': 'localizedNameMap',
@@ -180,6 +184,19 @@ test('experimental-effect descriptions cover the effect registry in every locale
             );
         }
     }
+});
+
+test('English names and symbols stay aligned with both owning commodity catalogues', () => {
+    const commodities = [
+        ...(standardCommoditiesData as readonly NamedSymbol[]),
+        ...(rareCommoditiesData as readonly NamedSymbol[]),
+    ];
+
+    assertDirectEnglishNames(
+        commodityNamesData as LocalizedNameMap,
+        Object.fromEntries(commodities.map(({ symbol, name }) => [symbol, name])),
+    );
+    assertCompleteDirectLocales(commodityNamesData as LocalizedNameMap, 'commodity-names.jsonc');
 });
 
 test('English names and symbols stay aligned with every owning materials catalogue', () => {

@@ -1,9 +1,10 @@
 # Localized game-name catalogues
 
-These catalogues keep the canonical English display names already published by the ships
-and equipment data domains and add only localized values carried explicitly by accepted
-sources. Where a catalogue holds display prose rather than a name, the owning domain
-publishes no English for it and all six values are the source's own.
+These catalogues keep the canonical English display names already published by the
+ships, equipment, materials and commodities data domains and add only localized values
+carried explicitly by accepted sources. Where a catalogue holds display prose rather
+than a name, the owning domain publishes no English for it and all six values are the
+source's own.
 They are deliberately sparse: absence means that no accepted source carried a value, and
 the lookup API returns `null` for that locale rather than treating English as a
 translation.
@@ -485,6 +486,52 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   fallback.
 - **Coverage:** complete. Every tool carries all six locales.
 - **Manual corrections:** none.
+
+## `commodity-names.jsonc`
+
+- **Acquired:** 2026-09-03 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
+- **Derivation:** every symbol and canonical English name comes from
+  `data/commodities/commodities.jsonc` and `rare-commodities.jsonc`, which stay
+  authoritative for canonical English. Each symbol joins case-insensitively to the
+  in-game commodity localisation identity, which carries a `name` and an `info` string
+  per locale. `name` is the value taken. The join is exact and total: every commodity the
+  two catalogues hold resolves. The game also names commodity units no catalogue here
+  carries (§`data/commodities/SOURCES.md`); a name with no owning record is not stored,
+  so the key set is the catalogues' and not the game's.
+- **Standard and rare share one catalogue here**, because they share one symbol space
+  and the game names them from one table.
+- **The owning catalogues win the six English disagreements**, as this file's opening
+  rule requires. The game's English name is the shorter or the differently cased
+  spelling in all but the last of them: `Drones` keeps `Limpets` against `Limpet`,
+  `LowTemperatureDiamond` keeps `Low Temperature Diamonds` against
+  `Low Temp. Diamonds`, `AerialEdenApple`,
+  `WatersOfShintara` and `HIPOrganophosphates` keep their `of`, `of` and `HIP` against
+  `Of`, `Of` and `Hip`, and `ThargoidPod` keeps `Xenobiological Prison Pod` against
+  `Thargoid Bio-storage Capsule`. The last is a different name rather than a different
+  spelling, and it is the one to revisit first if the owning catalogue is ever re-derived
+  from the game.
+- **Nine stored non-English values are the game's own abbreviations** — the German
+  `Fortschr. Katalysatoren` and `Histor. Kamorin-Waffen`, the Spanish
+  `Interconect. de eyector térmico` and `Conductos de transf. de energía`, the French
+  `Sys. surveillance animale`, `Sys. enrichissement sols` and
+  `Interconnexion dissipateur therm.`, and the Russian
+  `Агенты нервно-паралит. действия` and `Детали оборон. беспилотников` — and they stay
+  abbreviated because no source spells them out. This is the same position
+  `module-names.jsonc` records for its own abbreviated labels. The English `H.E. Suits`
+  is not one of them: it is the owning catalogue's own name.
+- **Coverage:** complete. Every commodity carries all six locales, and no commodity has
+  five non-English values all byte-identical to its English, so no commodity name is a
+  proper noun the game leaves alone.
+- **The registry's `info` prose is not stored.** Each commodity also carries an `info`
+  string per locale — the market panel's production, consumption and description text. A
+  commodity description catalogue would take those six values verbatim, the way
+  `suit-descriptions.jsonc` does; none exists, so the prose is absent rather than
+  partial.
+- **Manual corrections:** one. The Spanish `BuckyballBeerMats` is published as
+  `"Posavasos Buckyball "` with a trailing space, which is layout and not part of the
+  name; it is stored trimmed. Every other value is verbatim.
 
 ## Names this repository deliberately does not localize
 

@@ -337,9 +337,11 @@ declare module '*/fixtures/astro/system-addresses.jsonc' {
 type FixtureCommoditiesCommodities = {
     categories: string[];
     categoryCounts: {
+        Chemicals: number;
         Foods: number;
         'Legal Drugs': number;
         Metals: number;
+        Minerals: number;
         Salvage: number;
     };
     counts: {
