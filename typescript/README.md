@@ -48,8 +48,8 @@ The package has six feature areas:
 - `astro`: procedural names, id64 addresses, regions, nebulae, permit locks, and scanned
   bodies with their physics;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
-- `equipment`: Odyssey suits, handheld weapons, suit tools, grade upgrades and
-  modifications;
+- `equipment`: Odyssey suits, handheld weapons and their damage per second, suit tools,
+  grade upgrades and modifications;
 - `i18n`: sparse localized catalogue names, descriptions, slot labels and structured
   diagnostic messages;
 - `materials`: ship engineering materials and Odyssey micro resources;

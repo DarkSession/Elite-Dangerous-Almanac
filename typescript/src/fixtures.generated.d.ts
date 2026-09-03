@@ -368,6 +368,15 @@ type FixtureEquipmentEquipment = {
         tools: number;
         weapons: number;
     };
+    engineeredWeaponMetrics: {
+        damagePerShot: number;
+        grade: number;
+        headshotDamagePerShot: number;
+        name: string;
+        recipeSymbol: string;
+        sustainedDamagePerSecond: number;
+        symbol: string;
+    }[];
     modification: {
         journalSymbol: string;
         kineticFirstIngredient: {
@@ -433,6 +442,17 @@ type FixtureEquipmentEquipment = {
             symbol: string;
         }[];
     };
+    weaponMetrics: {
+        damagePerSecond: number;
+        damagePerShot: number;
+        grade: number;
+        headshotDamagePerShot: number;
+        name: string;
+        rateOfFire: number;
+        sustainedDamagePerSecond: number;
+        sustainedRateOfFire: number;
+        symbol: string;
+    }[];
     weapons: {
         damage: number;
         effectiveRange: number;

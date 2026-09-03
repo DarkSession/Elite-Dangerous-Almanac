@@ -179,6 +179,19 @@
     "weapon": {
       "type": "object",
       "additionalProperties": false,
+      "if": {
+        "properties": { "fireMode": { "const": "burst" } },
+        "required": ["fireMode"]
+      },
+      "then": { "required": ["burstRounds", "burstRateOfFire"] },
+      "else": {
+        "not": {
+          "anyOf": [
+            { "required": ["burstRounds"] },
+            { "required": ["burstRateOfFire"] }
+          ]
+        }
+      },
       "required": [
         "symbol",
         "name",
@@ -216,6 +229,9 @@
         "damageType": { "enum": ["kinetic", "thermal", "plasma", "explosive"] },
         "fireMode": { "enum": ["automatic", "semi-automatic", "burst"] },
         "rateOfFire": { "$ref": "#/definitions/positiveNumber" },
+        "projectiles": { "type": "integer", "minimum": 2 },
+        "burstRounds": { "type": "integer", "minimum": 2 },
+        "burstRateOfFire": { "$ref": "#/definitions/positiveNumber" },
         "magazineSize": { "type": "integer", "minimum": 1 },
         "reserveAmmo": { "type": "integer", "minimum": 1 },
         "headshotMultiplier": { "$ref": "#/definitions/positiveNumber" },
