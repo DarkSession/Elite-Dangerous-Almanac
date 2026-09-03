@@ -2,7 +2,8 @@
  * Sparse, source-backed localized display names and descriptions for Elite Dangerous
  * outfitting, personal-equipment and engineering catalogues.
  *
- * Each lookup takes the same Frontier symbol as its owning catalogue and a BCP 47
+ * Each lookup takes the identifier its owning catalogue is keyed by — a Frontier symbol,
+ * or the library id where the game publishes none, as for a suit tool — and a BCP 47
  * locale. English is complete: for a name catalogue it is exactly the owning record's
  * `name`, and for a description catalogue it is the game's own display prose, which no
  * catalogue otherwise publishes.
@@ -34,6 +35,7 @@
  * | `getModuleName` | 1203 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getPersonalModificationDescription` | 31 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getPersonalModificationName` | 31 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getPersonalToolName` | 4 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getPersonalWeaponDescription` | 11 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getSuitDescription` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getSuitName` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
@@ -80,6 +82,7 @@ export { getExperimentalEffectDescription } from './experimental-effect-descript
 export { getMaterialName } from './materials.js';
 export { getMicroResourceName } from './micro-resources.js';
 export { getPersonalMountName, getSuitDescription, getSuitName } from './suits.js';
+export { getPersonalToolName } from './personal-tools.js';
 export { getPersonalWeaponDescription } from './personal-weapons.js';
 export {
     getPersonalModificationDescription,

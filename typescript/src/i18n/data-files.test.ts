@@ -8,6 +8,7 @@ import { test } from 'node:test';
 
 import modificationsData from '../../../data/equipment/modifications.jsonc' with { type: 'json' };
 import suitsData from '../../../data/equipment/suits.jsonc' with { type: 'json' };
+import toolsData from '../../../data/equipment/tools.jsonc' with { type: 'json' };
 import personalWeaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'json' };
 import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with { type: 'json' };
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
@@ -18,6 +19,7 @@ import microResourceNamesData from '../../../data/i18n/micro-resource-names.json
 import moduleNamesData from '../../../data/i18n/module-names.jsonc' with { type: 'json' };
 import personalModificationDescriptionsData from '../../../data/i18n/personal-modification-descriptions.jsonc' with { type: 'json' };
 import personalModificationNamesData from '../../../data/i18n/personal-modification-names.jsonc' with { type: 'json' };
+import personalToolNamesData from '../../../data/i18n/personal-tool-names.jsonc' with { type: 'json' };
 import personalWeaponDescriptionsData from '../../../data/i18n/personal-weapon-descriptions.jsonc' with { type: 'json' };
 import preEngineeredNamesData from '../../../data/i18n/pre-engineered-variant-names.jsonc' with { type: 'json' };
 import suitDescriptionsData from '../../../data/i18n/suit-descriptions.jsonc' with { type: 'json' };
@@ -51,6 +53,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'module-names.jsonc': 'localizedNameCatalogue',
     'personal-modification-descriptions.jsonc': 'localizedNameCatalogue',
     'personal-modification-names.jsonc': 'localizedNameCatalogue',
+    'personal-tool-names.jsonc': 'localizedNameMap',
     'personal-weapon-descriptions.jsonc': 'localizedNameMap',
     'pre-engineered-variant-names.jsonc': 'localizedNameCatalogue',
     'suit-descriptions.jsonc': 'localizedNameCatalogue',
@@ -232,9 +235,15 @@ function assertCompleteDirectLocales(catalogue: LocalizedNameMap, file: string):
     }
 }
 
+interface NamedId {
+    readonly id: string;
+    readonly name: string;
+}
+
 test('English names and identifiers stay aligned with every owning equipment catalogue', () => {
     const suits = suitsData as readonly SuitValue[];
     const modifications = modificationsData as Readonly<Record<string, NamedValue>>;
+    const tools = toolsData as readonly NamedId[];
 
     assertEnglishNames(
         suitNamesData as LocalizedNameCatalogue,
@@ -247,6 +256,11 @@ test('English names and identifiers stay aligned with every owning equipment cat
     assertEnglishNames(
         personalModificationNamesData as LocalizedNameCatalogue,
         Object.fromEntries(Object.entries(modifications).map(([key, value]) => [key, value.name])),
+    );
+    // A tool is keyed by this library's own id: Frontier publishes no item symbol for one.
+    assertDirectEnglishNames(
+        personalToolNamesData as LocalizedNameMap,
+        Object.fromEntries(tools.map(({ id, name }) => [id, name])),
     );
 });
 
@@ -287,6 +301,10 @@ test('personal-equipment display text covers its owning catalogues in every loca
     assertCompleteLocales(
         personalModificationDescriptionsData as LocalizedNameCatalogue,
         'personal-modification-descriptions.jsonc',
+    );
+    assertCompleteDirectLocales(
+        personalToolNamesData as LocalizedNameMap,
+        'personal-tool-names.jsonc',
     );
 });
 

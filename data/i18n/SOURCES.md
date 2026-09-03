@@ -463,6 +463,29 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   between a figure and its unit (`5 secondes`), which is French typography rather than
   layout.
 
+## `personal-tool-names.jsonc`
+
+- **Acquired:** 2026-09-03 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence.
+- **Derivation:** every tool id and its canonical English name comes from
+  `data/equipment/tools.jsonc`, which stays authoritative for canonical English. Each id
+  joins by name to the tool's row in the in-game localisation table, which carries a
+  `name` per locale. The join is exact and total: every id resolves, and every row's
+  English `name` equals the canonical English.
+- **The library id is the only key.** The localisation table keys a tool row by an
+  internal identity no journal field carries (§`data/equipment/SOURCES.md`), so a
+  consumer never holds one and it is not stored. The library id is the single identifier
+  both `getPersonalToolName` and `getPersonalToolById` take, and a second key set would
+  let one of the two answer where the other cannot.
+- **A value equal to the English is the game's own.** The game leaves `Arc Cutter` in
+  English in German, Spanish, French and Brazilian Portuguese, and `Genetic Sampler` in
+  German; Russian translates both. Storing them verbatim is what the sparse contract
+  requires: the lookup answers with a source value and never manufactures an English
+  fallback.
+- **Coverage:** complete. Every tool carries all six locales.
+- **Manual corrections:** none.
+
 ## Names this repository deliberately does not localize
 
 No catalogues are stored for the following names, either because the game does not
@@ -515,14 +538,9 @@ edit messages. A missing source-backed translation that has no issue of its own
 remains tracked by
 [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
 
-Every suit, handheld weapon and modification the personal-equipment catalogues hold is
-complete in all six locales. That area carries these gaps:
+Every suit, handheld weapon, tool and modification the personal-equipment catalogues
+hold is complete in all six locales. That area carries these gaps:
 
 - **The suit weapon-mount labels are English only.** The game publishes all six locales
   for them, so the values exist to be read. The gap is tracked by
   [#26](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26).
-- **Suit tool names are English only**, held in `data/equipment/tools.jsonc` and nowhere
-  else. No accepted source translates them: Odyssey Materials
-  Helper models the tools as suit stats and its locale tables carry no tool row, so
-  there is nothing to publish and no `i18n` catalogue for them. The gap is tracked by
-  [#29](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/29).

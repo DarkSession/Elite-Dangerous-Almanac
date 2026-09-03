@@ -244,6 +244,10 @@
             "types": "./dist/i18n/personal-modifications.d.ts",
             "import": "./dist/i18n/personal-modifications.js"
         },
+        "./i18n/personal-tools": {
+            "types": "./dist/i18n/personal-tools.d.ts",
+            "import": "./dist/i18n/personal-tools.js"
+        },
         "./i18n/personal-weapons": {
             "types": "./dist/i18n/personal-weapons.d.ts",
             "import": "./dist/i18n/personal-weapons.js"

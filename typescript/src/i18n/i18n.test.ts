@@ -13,6 +13,7 @@ import {
     getPersonalModificationDescription,
     getPersonalModificationName,
 } from './personal-modifications.js';
+import { getPersonalToolName } from './personal-tools.js';
 import { getPersonalWeaponDescription } from './personal-weapons.js';
 import { getSuitDescription, getSuitName } from './suits.js';
 
@@ -26,6 +27,7 @@ type LookupKind =
     | 'experimentalEffectDescription'
     | 'suit'
     | 'suitDescription'
+    | 'personalTool'
     | 'personalWeaponDescription'
     | 'personalModification'
     | 'personalModificationDescription';
@@ -41,6 +43,7 @@ const LOOKUP_BY_KIND: Readonly<Record<LookupKind, NameLookup>> = {
     experimentalEffectDescription: getExperimentalEffectDescription,
     suit: getSuitName,
     suitDescription: getSuitDescription,
+    personalTool: getPersonalToolName,
     personalWeaponDescription: getPersonalWeaponDescription,
     personalModification: getPersonalModificationName,
     personalModificationDescription: getPersonalModificationDescription,
@@ -62,6 +65,7 @@ test('English regional tags return the owning catalogues canonical names', () =>
     assert.equal(getMaterialName(' tellurium ', 'en-CA'), 'Tellurium');
     assert.equal(getMicroResourceName(' GRAPHENE ', 'en-US'), 'Graphene');
     assert.equal(getSuitName(' TACTICALSUIT_CLASS4 ', 'en-NZ'), 'Dominator Suit');
+    assert.equal(getPersonalToolName(' Energylink ', 'en-IE'), 'Energylink');
     assert.equal(
         getPersonalModificationName(' weapon_accuracy_laser ', 'en'),
         'Improved Hip Fire Accuracy',

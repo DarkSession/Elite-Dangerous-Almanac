@@ -50,6 +50,7 @@ const DATASETS = {
     'module-names.jsonc': 'getModuleName',
     'personal-modification-descriptions.jsonc': 'getPersonalModificationDescription',
     'personal-modification-names.jsonc': 'getPersonalModificationName',
+    'personal-tool-names.jsonc': 'getPersonalToolName',
     'personal-weapon-descriptions.jsonc': 'getPersonalWeaponDescription',
     'pre-engineered-variant-names.jsonc': 'getPreEngineeredVariantName',
     'suit-descriptions.jsonc': 'getSuitDescription',

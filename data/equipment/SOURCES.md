@@ -128,13 +128,14 @@ The suit stats panel is read per suit family and per grade.
 
 ### Suit tools
 
-- **A tool has no Frontier symbol, so `id` is this library's own key.** Neither Odyssey
-  Materials Helper nor the game names a tool: the source models the tools as suit stats
-  and its English locale table has no tool row, a journal `SuitLoadout` names the suit
-  and its weapon mounts only, and a `BackpackChange` reports consumables, components,
-  data and goods moving in and out of the backpack, never a tool. Each `id` is the
-  English name in lower case — `energylink`, `profile-analyser`, `arc-cutter`,
-  `genetic-sampler` — and joins to no journal field.
+- **A tool has no Frontier symbol, so `id` is this library's own key.** Odyssey Materials
+  Helper models the tools as suit stats and its English locale table has no tool row. The
+  game's own localisation table does name each tool, under an internal identity no
+  journal field carries: a
+  `SuitLoadout` names the suit and its weapon mounts only, and a `BackpackChange` reports
+  consumables, components, data and goods moving in and out of the backpack, never a
+  tool. Each `id` is the English name in lower case — `energylink`, `profile-analyser`,
+  `arc-cutter`, `genetic-sampler` — and joins to no journal field.
 - **Every power figure is normalised to MW, the unit `Suit.batteryCapacity` uses**, so a
   suit's battery divided by a tool's per-second drain is seconds of use. The source's
   600 kW/s Energylink discharge rate is stored as `0.6`, and its 40, 150 and 450 kW/s

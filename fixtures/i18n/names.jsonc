@@ -1,8 +1,8 @@
 /*
  * Pins locale normalization, sparse misses and representative module, blueprint,
  * experimental-effect, material, micro-resource, ship, manufacturer, engineering-group,
- * outfitting-family, experimental-description, personal-suit, handheld-weapon and
- * personal-modification lookups for every language implementation.
+ * outfitting-family, experimental-description, personal-suit, handheld-weapon,
+ * suit-tool and personal-modification lookups for every language implementation.
  */
 {
   "lookups": [
@@ -382,6 +382,42 @@
       "kind": "personalModificationDescription",
       "identifier": "suit_adsmovementspeed",
       "locale": "hu",
+      "expected": null
+    },
+    {
+      "kind": "personalTool",
+      "identifier": "energylink",
+      "locale": "de-DE",
+      "expected": "Energie-Link"
+    },
+    {
+      "kind": "personalTool",
+      "identifier": " PROFILE-ANALYSER ",
+      "locale": "ru",
+      "expected": "Анализатор профиля"
+    },
+    {
+      "kind": "personalTool",
+      "identifier": "arc-cutter",
+      "locale": "fr",
+      "expected": "Arc Cutter"
+    },
+    {
+      "kind": "personalTool",
+      "identifier": "genetic-sampler",
+      "locale": "pt-BR",
+      "expected": "Amostrador genético"
+    },
+    {
+      "kind": "personalTool",
+      "identifier": "genetic-sampler",
+      "locale": "it",
+      "expected": null
+    },
+    {
+      "kind": "personalTool",
+      "identifier": "Arc Cutter",
+      "locale": "en",
       "expected": null
     }
   ]
