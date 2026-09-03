@@ -11,6 +11,7 @@ import {
     getPersonalWeaponByName,
     getPersonalWeaponBySymbol,
     getPersonalWeaponGrade,
+    personalWeaponMetrics,
     type PersonalWeapon,
 } from './weapons.js';
 import {
@@ -177,6 +178,62 @@ test('representative handheld weapons resolve with their pinned grade stats', ()
     }
 });
 
+test('handheld weapon metrics match the pinned per-second figures', () => {
+    const round = (value: number) => Number(value.toFixed(3));
+    for (const expected of equipmentFixture.weaponMetrics) {
+        const weapon = getPersonalWeaponBySymbol(expected.symbol);
+        assert.ok(weapon, expected.name);
+        const metrics = personalWeaponMetrics(weapon, expected.grade);
+        assert.ok(metrics);
+        assert.equal(round(metrics.damagePerShot), expected.damagePerShot);
+        assert.equal(round(metrics.headshotDamagePerShot), expected.headshotDamagePerShot);
+        assert.equal(metrics.rateOfFire, expected.rateOfFire);
+        assert.equal(round(metrics.sustainedRateOfFire), expected.sustainedRateOfFire);
+        assert.equal(round(metrics.damagePerSecond), expected.damagePerSecond);
+        assert.equal(round(metrics.sustainedDamagePerSecond), expected.sustainedDamagePerSecond);
+    }
+});
+
+test('handheld weapon metrics fold in fitted modifiers', () => {
+    const round = (value: number) => Number(value.toFixed(3));
+    for (const expected of equipmentFixture.engineeredWeaponMetrics) {
+        const weapon = getPersonalWeaponBySymbol(expected.symbol);
+        assert.ok(weapon, expected.name);
+        const modifiers = getPersonalModification(expected.recipeSymbol)?.modifiers ?? [];
+        assert.ok(modifiers.length > 0, expected.recipeSymbol);
+        const metrics = personalWeaponMetrics(weapon, expected.grade, modifiers);
+        assert.ok(metrics);
+        assert.equal(round(metrics.damagePerShot), expected.damagePerShot);
+        assert.equal(round(metrics.headshotDamagePerShot), expected.headshotDamagePerShot);
+        assert.equal(round(metrics.sustainedDamagePerSecond), expected.sustainedDamagePerSecond);
+    }
+});
+
+test('handheld weapon metrics take Reload Speed as an option, and hold a magazine whole', () => {
+    const zenith = getPersonalWeaponBySymbol('wpn_s_pistol_laser_sauto')!;
+    const stock = personalWeaponMetrics(zenith, 5)!;
+
+    // Reload Speed carries its magnitude as the reloadTime pair, not as a modifier.
+    const faster = personalWeaponMetrics(zenith, 5, [], { reloadSpeed: true })!;
+    assert.ok(faster.sustainedDamagePerSecond > stock.sustainedDamagePerSecond);
+    assert.equal(faster.damagePerSecond, stock.damagePerSecond);
+
+    // A fractional magazine is held to whole rounds, rounding up, as the ship side does.
+    const fractional = [{ stat: 'magazineSize', multiplier: 1.25 }];
+    const ar50 = getPersonalWeaponBySymbol('wpn_m_assaultrifle_kinetic_fauto')!;
+    assert.equal(
+        personalWeaponMetrics(ar50, 5, fractional)!.sustainedRateOfFire,
+        personalWeaponMetrics(ar50, 5, [{ stat: 'magazineSize', multiplier: 1.26 }])!
+            .sustainedRateOfFire,
+    );
+
+    // A magazine emptied by a modifier fires nothing, rather than firing forever.
+    const empty = personalWeaponMetrics(zenith, 5, [{ stat: 'magazineSize', multiplier: 0 }])!;
+    assert.equal(empty.sustainedRateOfFire, 0);
+    assert.equal(empty.sustainedDamagePerSecond, 0);
+    assert.equal(empty.damagePerSecond, stock.damagePerSecond);
+});
+
 test('weapon lookups ignore case and reject invalid grades', () => {
     assert.equal(getPersonalWeaponByName(' karma ar-50 ')?.upgradeGroup, 'karma');
     assert.equal(getPersonalWeaponByName(' karma ar-50 ')?.engineeringType, 'kinetic');
@@ -189,6 +246,10 @@ test('weapon lookups ignore case and reject invalid grades', () => {
     const weapon = PERSONAL_WEAPONS[0]!;
     for (const invalid of [0, 2.5, 6]) {
         assert.throws(() => getPersonalWeaponGrade(weapon, invalid), RangeError);
+        assert.throws(() => personalWeaponMetrics(weapon, invalid), {
+            name: 'RangeError',
+            message: /^personalWeaponMetrics: /,
+        });
     }
 });
 

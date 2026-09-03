@@ -8,7 +8,7 @@ Referred to throughout by source name; the pin is here, once.
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | Odyssey Materials Helper                          | commit `2e6d4c3e767d2b714ffddc5c9386831d66812916` (2026-08-09), the last revision before the project extracted its core data into a separately distributed dependency | 2026-08-13 UTC |
 | Frontier Elite Dangerous Gamestore                | no immutable revision; the displayed weapon names were read on the acquisition date                                                                            | 2026-08-13 UTC |
-| Elite Dangerous in-game observation               | no game version recorded; direct reading of the suit and weapon stats panels, the sight magnification they show, and the on-foot engineering options            | 2026-08-31 UTC |
+| Elite Dangerous in-game observation               | no game version recorded; direct reading of the suit and weapon stats panels, the sight magnification they show, and the on-foot engineering options, and direct observation of what a weapon does when it is fired | panels 2026-08-31 UTC; firing behaviour 2026-09-03 UTC |
 | EDCD/EDMarketConnector                            | commit `2b6a0ce1ee3ba60c21f3f4e9fa093046da8825e4` (2026-07-26); `monitor.py` sha256 `800720e04e3089ee9a4b57749de56061e8d31ba877e17f1420f994c52bac08ac`                | 2026-09-02 UTC |
 
 **Where a source and the game disagree, the in-game reading governs.** Odyssey Materials Helper
@@ -166,6 +166,18 @@ The suit stats panel is read per suit family and per grade.
   a stock suit carries, before the Extra Ammo Capacity modification.
 - **Magazine size, effective range, class, slot, damage type and headshot multiplier**
   are unchanged: every one already matches the panel.
+- **`projectiles` holds the projectiles one round fires**, observed as the
+  weapon fires. Only `Manticore Intimidator` carries it, with 10: its round is a shotgun
+  shell, and each pellet does the full grade damage. The shot spends one round, not ten,
+  so its magazine of 2 is 2 shots. Every other weapon fires one projectile per round and
+  stores no `projectiles`.
+- **`burstRounds` and `burstRateOfFire` hold the burst shape**, observed as the weapon
+  fires. `TK Zenith` is the only weapon with `fireMode` `burst`. One trigger pull fires
+  3 rounds. A burst fires 12 rounds a second. The two fields are stored together, and
+  every other weapon stores neither.
+- **`rateOfFire` counts trigger pulls**, which is what the panel shows for the Zenith:
+  2.78 bursts a second. Every other weapon fires one round per trigger pull, so for
+  those the two readings are the same figure.
 - **Damage** is the grade-1 figure read in-game, times the grade multiplier the game
   applies to it — `1`, `1.31`, `1.73`, `2.27`, `2.98` for grades 1 to 5. Each product is
   taken in double-precision floating point and rounded to three decimals, as

@@ -1,6 +1,7 @@
 /**
  * Odyssey handheld weapons: their journal identifiers, combat stats, sight
- * magnification, reload time and grade-dependent damage.
+ * magnification, reload time, grade-dependent damage, and the damage per second those
+ * stats resolve to.
  *
  * @packageDocumentation
  */
@@ -9,6 +10,7 @@ import weaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'js
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { createKeyIndex, findInKeyIndex } from '../internal/registry-index.js';
 import { assertEquipmentGrade } from './internal/equipment-grade.js';
+import { applyPersonalModifiers, type PersonalModifier } from './engineering.js';
 import type { EquipmentGrade } from './suits.js';
 
 /** A weapon manufacturer's shared Pioneer grade-upgrade recipe. */
@@ -67,9 +69,26 @@ export interface PersonalWeapon {
     readonly damageType: PersonalDamageType;
     /** Firing cycle. */
     readonly fireMode: PersonalFireMode;
-    /** Shots per second. */
+    /** Trigger pulls per second, so bursts per second on a burst weapon. */
     readonly rateOfFire: number;
-    /** Rounds loaded in one magazine. */
+    /**
+     * Projectiles one round fires, each doing the full
+     * {@link PersonalWeaponGrade.damage}. Absent on every weapon that fires a single
+     * projectile — only the Manticore Intimidator, a shotgun, carries it.
+     */
+    readonly projectiles?: number;
+    /**
+     * Rounds one trigger pull fires, spent from the magazine. Present only when
+     * {@link PersonalWeapon.fireMode} is `"burst"`, together with
+     * {@link PersonalWeapon.burstRateOfFire}.
+     */
+    readonly burstRounds?: number;
+    /** Rounds per second within one burst. Absent whenever `burstRounds` is. */
+    readonly burstRateOfFire?: number;
+    /**
+     * Rounds loaded in one magazine. A burst weapon spends
+     * {@link PersonalWeapon.burstRounds} of them per trigger pull.
+     */
     readonly magazineSize: number;
     /** Spare rounds carried before suit-capacity changes. */
     readonly reserveAmmo: number;
@@ -171,4 +190,109 @@ export function getPersonalWeaponGrade(
 ): PersonalWeaponGrade | null {
     assertEquipmentGrade(grade, 'getPersonalWeaponGrade');
     return weapon.grades[String(grade) as `${EquipmentGrade}`] ?? null;
+}
+
+/**
+ * What one handheld weapon does per second at a grade, sustained and unsustained.
+ *
+ * @remarks
+ * Frozen, so a result can be held and shared without a defensive copy.
+ */
+export interface PersonalWeaponMetrics {
+    /** Damage of one trigger pull — every projectile of every round in it. */
+    readonly damagePerShot: number;
+    /** {@link PersonalWeaponMetrics.damagePerShot} with every projectile hitting the head. */
+    readonly headshotDamagePerShot: number;
+    /** Trigger pulls per second. */
+    readonly rateOfFire: number;
+    /** Trigger pulls per second averaged over reloads. */
+    readonly sustainedRateOfFire: number;
+    /** Damage per second while firing, reloads ignored. */
+    readonly damagePerSecond: number;
+    /** Damage per second averaged over reloads — the figure a long fight sees. */
+    readonly sustainedDamagePerSecond: number;
+}
+
+/**
+ * Everything the on-foot damage arithmetic gives you for one weapon: damage per trigger
+ * pull, per second, and per second once reloads are counted.
+ *
+ * A grade record states damage **per projectile**, so a shot is that damage times the
+ * projectiles a round carries times the rounds one trigger pull fires. The sustained
+ * figures then average in the reload: a magazine's worth of fire takes the shots after
+ * the first, plus the tail of the last burst, plus the reload.
+ *
+ * ```text
+ * damagePerShot = damage × projectiles × burstRounds
+ * DPS           = damagePerShot × rateOfFire
+ * SDPS          = damagePerShot × (magazine's shots / one magazine-and-reload cycle)
+ * ```
+ *
+ * @param weapon - A catalogue weapon record.
+ * @param grade - Integer grade `1`–`5`.
+ * @param modifiers - Fitted modification modifiers, folded per stat the way
+ * {@link applyPersonalModifiers} does. `magazineSize` and `headshotMultiplier` are the
+ * two this arithmetic reads; modifiers naming other stats are ignored. A Reload Speed
+ * modification carries no modifier at all, so it arrives through `options` instead. A
+ * fractional magazine is held to whole rounds, rounding **up**, as `ships/weapons` does.
+ * @param options - `reloadSpeed` takes the reload from
+ * {@link PersonalWeapon.reloadTime | reloadTime.upgraded} rather than `.default`,
+ * because Reload Speed carries its magnitude as that pair rather than as a modifier.
+ * @returns The frozen {@link PersonalWeaponMetrics}, or `null` when the record carries
+ * no such grade — the same nullable answer {@link getPersonalWeaponGrade} gives. A
+ * magazine that modifiers empty to zero rounds or fewer reports no sustained fire.
+ * @throws {RangeError} If `grade` is not an integer from 1 through 5.
+ * @example
+ * ```ts
+ * import {
+ *     getPersonalWeaponByName,
+ *     personalWeaponMetrics,
+ * } from '@elite-dangerous-almanac/core/equipment/weapons';
+ *
+ * const shotgun = getPersonalWeaponByName('Manticore Intimidator')!;
+ * personalWeaponMetrics(shotgun, 5)?.damagePerShot; // -> 52.15  (ten pellets of 5.215)
+ * personalWeaponMetrics(shotgun, 5)?.damagePerSecond; // -> 65.19
+ * personalWeaponMetrics(shotgun, 5)?.sustainedDamagePerSecond; // -> 31.6  (with the 2.5 s reload)
+ * ```
+ */
+export function personalWeaponMetrics(
+    weapon: PersonalWeapon,
+    grade: number,
+    modifiers: readonly PersonalModifier[] = [],
+    options: { readonly reloadSpeed?: boolean } = {},
+): PersonalWeaponMetrics | null {
+    assertEquipmentGrade(grade, 'personalWeaponMetrics');
+    const stats = getPersonalWeaponGrade(weapon, grade);
+    if (!stats) return null;
+
+    const burstRounds = weapon.burstRounds ?? 1;
+    // Held to whole rounds the way `ships/weapons` holds a clip, so a hand-built
+    // fraction cannot reach the reload cycle and give the two domains different answers.
+    const magazineSize = Math.ceil(
+        applyPersonalModifiers('magazineSize', weapon.magazineSize, modifiers),
+    );
+    const headshotMultiplier = applyPersonalModifiers(
+        'headshotMultiplier',
+        weapon.headshotMultiplier,
+        modifiers,
+    );
+    const reloadTime = options.reloadSpeed ? weapon.reloadTime.upgraded : weapon.reloadTime.default;
+
+    const damagePerShot = stats.damage * (weapon.projectiles ?? 1) * burstRounds;
+    const shots = magazineSize / burstRounds;
+    // Trigger pulls after the first, then the tail of the last burst, then the reload.
+    const cycle =
+        (shots - 1) / weapon.rateOfFire +
+        (burstRounds - 1) / (weapon.burstRateOfFire ?? 1) +
+        reloadTime;
+    const sustainedRateOfFire = shots <= 0 ? 0 : Math.min(weapon.rateOfFire, shots / cycle);
+
+    return Object.freeze({
+        damagePerShot,
+        headshotDamagePerShot: damagePerShot * headshotMultiplier,
+        rateOfFire: weapon.rateOfFire,
+        sustainedRateOfFire,
+        damagePerSecond: damagePerShot * weapon.rateOfFire,
+        sustainedDamagePerSecond: damagePerShot * sustainedRateOfFire,
+    });
 }

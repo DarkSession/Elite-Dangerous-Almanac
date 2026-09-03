@@ -1,7 +1,9 @@
 /*
  * Pins representative personal-equipment identities, every suit's weapon mounts, grade
- * stats, suit-tool stats, engineering costs and the stat multipliers an
- * engineer-applied modification puts on a suit, a weapon or a tool.
+ * stats, the per-second damage figures selected weapons resolve to before and after a
+ * modification is fitted, suit-tool stats,
+ * engineering costs and the stat multipliers an engineer-applied modification puts on a
+ * suit, a weapon or a tool.
  * Values are selected from the shared equipment catalogues whose source snapshot and
  * weapon-name corrections are documented in their own headers; no player capture is used.
  */
@@ -133,6 +135,61 @@
       "modificationSlots": 0,
       "scopeMagnification": 1.61,
       "reloadTime": { "default": 3.5, "upgraded": 2.8 }
+    }
+  ],
+  "weaponMetrics": [
+    {
+      "symbol": "wpn_m_shotgun_plasma_doublebarrel",
+      "name": "Manticore Intimidator",
+      "grade": 5,
+      "damagePerShot": 52.15,
+      "headshotDamagePerShot": 78.225,
+      "rateOfFire": 1.25,
+      "sustainedRateOfFire": 0.606,
+      "damagePerSecond": 65.188,
+      "sustainedDamagePerSecond": 31.606
+    },
+    {
+      "symbol": "wpn_s_pistol_laser_sauto",
+      "name": "TK Zenith",
+      "grade": 5,
+      "damagePerShot": 14.913,
+      "headshotDamagePerShot": 14.913,
+      "rateOfFire": 2.78,
+      "sustainedRateOfFire": 1.615,
+      "damagePerSecond": 41.458,
+      "sustainedDamagePerSecond": 24.084
+    },
+    {
+      "symbol": "wpn_s_pistol_kinetic_sauto",
+      "name": "Karma P-15",
+      "grade": 5,
+      "damagePerShot": 4.112,
+      "headshotDamagePerShot": 8.224,
+      "rateOfFire": 10,
+      "sustainedRateOfFire": 5.926,
+      "damagePerSecond": 41.12,
+      "sustainedDamagePerSecond": 24.367
+    }
+  ],
+  "engineeredWeaponMetrics": [
+    {
+      "symbol": "wpn_s_pistol_laser_sauto",
+      "name": "TK Zenith",
+      "grade": 5,
+      "recipeSymbol": "weapon_clipsize",
+      "damagePerShot": 14.913,
+      "headshotDamagePerShot": 14.913,
+      "sustainedDamagePerSecond": 27.995
+    },
+    {
+      "symbol": "wpn_s_pistol_kinetic_sauto",
+      "name": "Karma P-15",
+      "grade": 5,
+      "recipeSymbol": "weapon_headshotdamage_kinetic",
+      "damagePerShot": 4.112,
+      "headshotDamagePerShot": 12.336,
+      "sustainedDamagePerSecond": 24.367
     }
   ],
   "upgradeCosts": {

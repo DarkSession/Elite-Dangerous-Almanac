@@ -1082,6 +1082,31 @@
             "weapons"
           ]
         },
+        "engineeredWeaponMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "damagePerShot": { "type": "number" },
+              "grade": { "type": "integer" },
+              "headshotDamagePerShot": { "type": "number" },
+              "name": { "type": "string" },
+              "recipeSymbol": { "type": "string" },
+              "sustainedDamagePerSecond": { "type": "number" },
+              "symbol": { "type": "string" }
+            },
+            "required": [
+              "damagePerShot",
+              "grade",
+              "headshotDamagePerShot",
+              "name",
+              "recipeSymbol",
+              "sustainedDamagePerSecond",
+              "symbol"
+            ]
+          }
+        },
         "modification": {
           "type": "object",
           "additionalProperties": false,
@@ -1220,6 +1245,35 @@
             "maverickGrade2"
           ]
         },
+        "weaponMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "damagePerSecond": { "type": "number" },
+              "damagePerShot": { "type": "number" },
+              "grade": { "type": "integer" },
+              "headshotDamagePerShot": { "type": "number" },
+              "name": { "type": "string" },
+              "rateOfFire": { "type": "number" },
+              "sustainedDamagePerSecond": { "type": "number" },
+              "sustainedRateOfFire": { "type": "number" },
+              "symbol": { "type": "string" }
+            },
+            "required": [
+              "damagePerSecond",
+              "damagePerShot",
+              "grade",
+              "headshotDamagePerShot",
+              "name",
+              "rateOfFire",
+              "sustainedDamagePerSecond",
+              "sustainedRateOfFire",
+              "symbol"
+            ]
+          }
+        },
         "weapons": {
           "type": "array",
           "items": {
@@ -1262,6 +1316,7 @@
       },
       "required": [
         "counts",
+        "engineeredWeaponMetrics",
         "modification",
         "modificationsWithoutModifiers",
         "modifiers",
@@ -1270,6 +1325,7 @@
         "toolDrain",
         "tools",
         "upgradeCosts",
+        "weaponMetrics",
         "weapons"
       ]
     },
