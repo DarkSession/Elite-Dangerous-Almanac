@@ -310,6 +310,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         suitNames,
         suitDescriptions,
         weaponDescriptions,
+        toolNames,
         personalModificationNames,
         personalModificationDescriptions,
         slots,
@@ -344,6 +345,9 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         ),
         consumerBundle(
             "import { getPersonalWeaponDescription as value } from '@elite-dangerous-almanac/core/i18n/personal-weapons'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getPersonalToolName as value } from '@elite-dangerous-almanac/core/i18n/personal-tools'; console.log(value);",
         ),
         consumerBundle(
             "import { getPersonalModificationName as value } from '@elite-dangerous-almanac/core/i18n/personal-modifications'; console.log(value);",
@@ -391,6 +395,12 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         weaponDescriptions.length < 24 * 1024,
         `personal-weapon-description bundle is ${weaponDescriptions.length} bytes`,
     );
+    // The lightest dataset on this subpath: one short name per tool in six locales, so
+    // the budget is the tightest here.
+    assert.ok(
+        toolNames.length < 4 * 1024,
+        `personal-tool-name bundle is ${toolNames.length} bytes`,
+    );
     // Two datasets in one module, like the suits: importing either lookup has to drop
     // the other, so each budget is set below what the pair weighs together.
     assert.ok(
@@ -428,6 +438,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         suitNames: 'Combinaison Dominator',
         suitDescriptions: 'Der Maverick-Anzug',
         weaponDescriptions: 'semiautomática',
+        toolNames: 'Энерголинк',
         personalModificationNames: 'Vision nocturne',
         personalModificationDescriptions: 'Ajoute une lunette',
     };
@@ -442,6 +453,7 @@ test('localized-name datasets stay on their own leaf subpaths', async () => {
         suitNames,
         suitDescriptions,
         weaponDescriptions,
+        toolNames,
         personalModificationNames,
         personalModificationDescriptions,
         slots,

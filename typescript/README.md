@@ -175,6 +175,7 @@ import {
     getModuleName,
     getOutfittingFamilyName,
     getPersonalModificationName,
+    getPersonalToolName,
     getSuitName,
 } from '@elite-dangerous-almanac/core/i18n';
 
@@ -183,6 +184,7 @@ getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
 getMaterialName('GridResistors', 'de'); // -> "Gitterwiderstände"
 getMicroResourceName('graphene', 'fr'); // -> "Graphène"
 getSuitName('explorationsuit_class3', 'de'); // -> "Artemis-Anzug"
+getPersonalToolName('profile-analyser', 'es'); // -> "Analizador de perfiles"
 getPersonalModificationName('suit_nightvision', 'fr'); // -> "Vision nocturne"
 getOutfittingFamilyName('shieldGenerators', 'de'); // -> "Schildgeneratoren"
 getOutfittingFamilyName('xenoScanners', 'de'); // -> null
@@ -247,7 +249,8 @@ Material shopping lists live on the separate `equipment/modification-costs` subp
 consume the
 micro-resource symbols from the `materials` feature area. Suit tools are the one
 personal-equipment record with no Frontier symbol — the journal never names a tool — so
-`PersonalTool.id` is a library key such as `arc-cutter`.
+`PersonalTool.id` is a library key such as `arc-cutter`, and `getPersonalToolName` takes
+that same id.
 
 ## Important behavior
 

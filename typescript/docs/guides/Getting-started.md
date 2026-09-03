@@ -97,6 +97,7 @@ symbols you are most likely to reach for first:
 | `getMaterialName` | `core/i18n/materials` |
 | `getMicroResourceName` | `core/i18n/micro-resources` |
 | `getSuitName`, `getSuitDescription`, `getPersonalMountName` | `core/i18n/suits` |
+| `getPersonalToolName` | `core/i18n/personal-tools` |
 | `getPersonalWeaponDescription` | `core/i18n/personal-weapons` |
 | `getPersonalModificationName`, `getPersonalModificationDescription` | `core/i18n/personal-modifications` |
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |

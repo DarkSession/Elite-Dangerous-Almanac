@@ -33,9 +33,8 @@ export interface PersonalTool {
      * English display name, e.g. `"Arc Cutter"`.
      *
      * @remarks
-     * English only. No accepted source translates a tool name, so `i18n` publishes
-     * none; the gap is tracked at
-     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/29.
+     * This is the canonical English. `getPersonalToolName` in `i18n/personal-tools`
+     * takes the same `id` and answers in all six stored locales.
      */
     readonly name: string;
     /** Families of the suits that carry the tool, as {@link Suit.family} spells them. */
