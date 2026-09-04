@@ -377,7 +377,7 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   catalogue publishes no description for a suit, so there is no canonical English here
   to be authoritative for.
 - **This is display prose, not the suit's stats.** `data/equipment/suits.jsonc` answers
-  what a suit does — shield strength, battery capacity, the four resistances — and the
+  what a suit does — shield strength, battery capacity, both resistance sets — and the
   description answers what it is for, naming no figure at all. Neither is projected onto
   the other.
 - **Coverage:** complete. Every identifier carries all six locales, and every grade of a

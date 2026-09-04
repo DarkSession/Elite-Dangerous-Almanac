@@ -1,6 +1,7 @@
 /*
- * Personal suit catalogue: journal symbols, weapon mounts, suit-wide component stats and
- * grade-dependent defensive stats.
+ * Personal suit catalogue: journal symbols, weapon mounts, suit-wide component stats
+ * including the shield resistances, and the grade-dependent armour resistances and
+ * shield figures.
  *
  * Sources: Odyssey Materials Helper, direct in-game observation, and the journal mount
  * slot keys quoted in EDCD/EDMarketConnector. See
@@ -16,6 +17,10 @@
       { "key": "SecondaryWeapon", "kind": "secondary" }
     ],
     "health": 30,
+    "shieldKineticResistance": 0.6,
+    "shieldThermalResistance": -0.5,
+    "shieldPlasmaResistance": 0,
+    "shieldExplosiveResistance": 0.5,
     "mass": 100,
     "batteryCapacity": 13.5,
     "oxygenTime": 60,
@@ -32,50 +37,50 @@
         "modificationSlots": 0,
         "shieldStrength": 13.5,
         "shieldRegeneration": 0.99,
-        "kineticResistance": -0.6,
-        "thermalResistance": 0.5,
-        "plasmaResistance": -0.1,
-        "explosiveResistance": 0
+        "armourKineticResistance": -0.6,
+        "armourThermalResistance": 0.5,
+        "armourPlasmaResistance": -0.1,
+        "armourExplosiveResistance": 0
       },
       "2": {
         "symbol": "utilitysuit_class2",
         "modificationSlots": 1,
         "shieldStrength": 16.5,
         "shieldRegeneration": 1.21,
-        "kineticResistance": -0.34,
-        "thermalResistance": 0.58,
-        "plasmaResistance": 0.08,
-        "explosiveResistance": 0.16
+        "armourKineticResistance": -0.34,
+        "armourThermalResistance": 0.58,
+        "armourPlasmaResistance": 0.08,
+        "armourExplosiveResistance": 0.16
       },
       "3": {
         "symbol": "utilitysuit_class3",
         "modificationSlots": 2,
         "shieldStrength": 20.3,
         "shieldRegeneration": 1.49,
-        "kineticResistance": -0.14,
-        "thermalResistance": 0.64,
-        "plasmaResistance": 0.22,
-        "explosiveResistance": 0.29
+        "armourKineticResistance": -0.14,
+        "armourThermalResistance": 0.64,
+        "armourPlasmaResistance": 0.22,
+        "armourExplosiveResistance": 0.29
       },
       "4": {
         "symbol": "utilitysuit_class4",
         "modificationSlots": 3,
         "shieldStrength": 24.9,
         "shieldRegeneration": 1.82,
-        "kineticResistance": 0.06,
-        "thermalResistance": 0.7,
-        "plasmaResistance": 0.35,
-        "explosiveResistance": 0.41
+        "armourKineticResistance": 0.06,
+        "armourThermalResistance": 0.7,
+        "armourPlasmaResistance": 0.35,
+        "armourExplosiveResistance": 0.41
       },
       "5": {
         "symbol": "utilitysuit_class5",
         "modificationSlots": 4,
         "shieldStrength": 30.4,
         "shieldRegeneration": 2.23,
-        "kineticResistance": 0.2,
-        "thermalResistance": 0.75,
-        "plasmaResistance": 0.45,
-        "explosiveResistance": 0.5
+        "armourKineticResistance": 0.2,
+        "armourThermalResistance": 0.75,
+        "armourPlasmaResistance": 0.45,
+        "armourExplosiveResistance": 0.5
       }
     }
   },
@@ -88,6 +93,10 @@
       { "key": "SecondaryWeapon", "kind": "secondary" }
     ],
     "health": 30,
+    "shieldKineticResistance": 0.6,
+    "shieldThermalResistance": -0.5,
+    "shieldPlasmaResistance": 0,
+    "shieldExplosiveResistance": 0.5,
     "mass": 100,
     "batteryCapacity": 10,
     "oxygenTime": 60,
@@ -104,50 +113,50 @@
         "modificationSlots": 0,
         "shieldStrength": 15,
         "shieldRegeneration": 1.1,
-        "kineticResistance": -0.5,
-        "thermalResistance": 0.6,
-        "plasmaResistance": 0,
-        "explosiveResistance": 0
+        "armourKineticResistance": -0.5,
+        "armourThermalResistance": 0.6,
+        "armourPlasmaResistance": 0,
+        "armourExplosiveResistance": 0
       },
       "2": {
         "symbol": "tacticalsuit_class2",
         "modificationSlots": 1,
         "shieldStrength": 18.3,
         "shieldRegeneration": 1.34,
-        "kineticResistance": -0.26,
-        "thermalResistance": 0.66,
-        "plasmaResistance": 0.16,
-        "explosiveResistance": 0.16
+        "armourKineticResistance": -0.26,
+        "armourThermalResistance": 0.66,
+        "armourPlasmaResistance": 0.16,
+        "armourExplosiveResistance": 0.16
       },
       "3": {
         "symbol": "tacticalsuit_class3",
         "modificationSlots": 2,
         "shieldStrength": 22.5,
         "shieldRegeneration": 1.65,
-        "kineticResistance": -0.07,
-        "thermalResistance": 0.72,
-        "plasmaResistance": 0.29,
-        "explosiveResistance": 0.29
+        "armourKineticResistance": -0.07,
+        "armourThermalResistance": 0.72,
+        "armourPlasmaResistance": 0.29,
+        "armourExplosiveResistance": 0.29
       },
       "4": {
         "symbol": "tacticalsuit_class4",
         "modificationSlots": 3,
         "shieldStrength": 27.6,
         "shieldRegeneration": 2.02,
-        "kineticResistance": 0.11,
-        "thermalResistance": 0.76,
-        "plasmaResistance": 0.41,
-        "explosiveResistance": 0.41
+        "armourKineticResistance": 0.11,
+        "armourThermalResistance": 0.76,
+        "armourPlasmaResistance": 0.41,
+        "armourExplosiveResistance": 0.41
       },
       "5": {
         "symbol": "tacticalsuit_class5",
         "modificationSlots": 4,
         "shieldStrength": 33.8,
         "shieldRegeneration": 2.48,
-        "kineticResistance": 0.25,
-        "thermalResistance": 0.8,
-        "plasmaResistance": 0.5,
-        "explosiveResistance": 0.5
+        "armourKineticResistance": 0.25,
+        "armourThermalResistance": 0.8,
+        "armourPlasmaResistance": 0.5,
+        "armourExplosiveResistance": 0.5
       }
     }
   },
@@ -159,6 +168,10 @@
       { "key": "SecondaryWeapon", "kind": "secondary" }
     ],
     "health": 30,
+    "shieldKineticResistance": 0.6,
+    "shieldThermalResistance": -0.5,
+    "shieldPlasmaResistance": 0,
+    "shieldExplosiveResistance": 0.5,
     "mass": 100,
     "batteryCapacity": 17,
     "oxygenTime": 60,
@@ -175,50 +188,50 @@
         "modificationSlots": 0,
         "shieldStrength": 12,
         "shieldRegeneration": 0.88,
-        "kineticResistance": -0.7,
-        "thermalResistance": 0.4,
-        "plasmaResistance": -0.2,
-        "explosiveResistance": 0
+        "armourKineticResistance": -0.7,
+        "armourThermalResistance": 0.4,
+        "armourPlasmaResistance": -0.2,
+        "armourExplosiveResistance": 0
       },
       "2": {
         "symbol": "explorationsuit_class2",
         "modificationSlots": 1,
         "shieldStrength": 14.7,
         "shieldRegeneration": 1.07,
-        "kineticResistance": -0.43,
-        "thermalResistance": 0.5,
-        "plasmaResistance": -0.01,
-        "explosiveResistance": 0.16
+        "armourKineticResistance": -0.43,
+        "armourThermalResistance": 0.5,
+        "armourPlasmaResistance": -0.01,
+        "armourExplosiveResistance": 0.16
       },
       "3": {
         "symbol": "explorationsuit_class3",
         "modificationSlots": 2,
         "shieldStrength": 18,
         "shieldRegeneration": 1.32,
-        "kineticResistance": -0.21,
-        "thermalResistance": 0.57,
-        "plasmaResistance": 0.15,
-        "explosiveResistance": 0.29
+        "armourKineticResistance": -0.21,
+        "armourThermalResistance": 0.57,
+        "armourPlasmaResistance": 0.15,
+        "armourExplosiveResistance": 0.29
       },
       "4": {
         "symbol": "explorationsuit_class4",
         "modificationSlots": 3,
         "shieldStrength": 22.1,
         "shieldRegeneration": 1.62,
-        "kineticResistance": 0,
-        "thermalResistance": 0.65,
-        "plasmaResistance": 0.29,
-        "explosiveResistance": 0.41
+        "armourKineticResistance": 0,
+        "armourThermalResistance": 0.65,
+        "armourPlasmaResistance": 0.29,
+        "armourExplosiveResistance": 0.41
       },
       "5": {
         "symbol": "explorationsuit_class5",
         "modificationSlots": 4,
         "shieldStrength": 27,
         "shieldRegeneration": 1.98,
-        "kineticResistance": 0.15,
-        "thermalResistance": 0.7,
-        "plasmaResistance": 0.4,
-        "explosiveResistance": 0.5
+        "armourKineticResistance": 0.15,
+        "armourThermalResistance": 0.7,
+        "armourPlasmaResistance": 0.4,
+        "armourExplosiveResistance": 0.5
       }
     }
   },
@@ -229,6 +242,10 @@
       { "key": "SecondaryWeapon", "kind": "secondary" }
     ],
     "health": 30,
+    "shieldKineticResistance": 0.6,
+    "shieldThermalResistance": -0.5,
+    "shieldPlasmaResistance": 0,
+    "shieldExplosiveResistance": 0.5,
     "mass": 100,
     "batteryCapacity": 7,
     "oxygenTime": 60,
@@ -245,10 +262,10 @@
         "modificationSlots": 0,
         "shieldStrength": 7.5,
         "shieldRegeneration": 0.55,
-        "kineticResistance": -0.7,
-        "thermalResistance": 0.4,
-        "plasmaResistance": -0.2,
-        "explosiveResistance": 0
+        "armourKineticResistance": -0.7,
+        "armourThermalResistance": 0.4,
+        "armourPlasmaResistance": -0.2,
+        "armourExplosiveResistance": 0
       }
     }
   }

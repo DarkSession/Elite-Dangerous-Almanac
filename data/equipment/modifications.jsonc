@@ -52,19 +52,19 @@
     ],
     "modifiers": [
       {
-        "stat": "kineticResistance",
+        "stat": "armourKineticResistance",
         "multiplier": 0.9
       },
       {
-        "stat": "thermalResistance",
+        "stat": "armourThermalResistance",
         "multiplier": 0.9
       },
       {
-        "stat": "plasmaResistance",
+        "stat": "armourPlasmaResistance",
         "multiplier": 0.9
       },
       {
-        "stat": "explosiveResistance",
+        "stat": "armourExplosiveResistance",
         "multiplier": 0.9
       }
     ]

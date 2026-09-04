@@ -407,14 +407,21 @@ type FixtureEquipmentEquipment = {
         }[];
     }[];
     suits: {
+        armourExplosiveResistance: number;
+        armourKineticResistance: number;
+        armourPlasmaResistance: number;
+        armourThermalResistance: number;
         batteryCapacity: number;
         family: string;
         goodsCapacity: number;
         grade: number;
-        kineticResistance?: number;
         modificationSlots: number;
         name: string;
+        shieldExplosiveResistance: number;
+        shieldKineticResistance: number;
+        shieldPlasmaResistance: number;
         shieldStrength: number;
+        shieldThermalResistance: number;
         symbol: string;
     }[];
     toolDrain: {

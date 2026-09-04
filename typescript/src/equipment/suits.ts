@@ -1,6 +1,7 @@
 /**
- * Odyssey personal suits: their journal identifiers, the suit-wide component stats every
- * grade shares, and the grade-dependent defensive stats.
+ * Odyssey personal suits: their journal identifiers, the suit-wide stats every grade
+ * shares, including the shield resistances, and the grade-dependent armour resistances
+ * and shield figures.
  *
  * @packageDocumentation
  */
@@ -49,7 +50,24 @@ export interface PersonalMount {
     readonly kind: PersonalWeaponSlot;
 }
 
-/** The stats of one suit at one equipment grade. */
+/**
+ * The stats of one suit at one equipment grade.
+ *
+ * @remarks
+ * A suit defends in two layers, and each layer has its own four resistances. The four
+ * here are the armour's: they apply to the {@link Suit.health} pool, and the Damage
+ * Resistance modification moves them. The shield's four sit on {@link Suit}, because a
+ * grade leaves them alone.
+ * @example
+ * ```ts
+ * import { getSuitByFamily, getSuitGrade } from '@elite-dangerous-almanac/core/equipment/suits';
+ *
+ * const suit = getSuitByFamily('tacticalsuit')!;
+ * // The shield is weak against a laser; the armour behind it is strong.
+ * suit.shieldThermalResistance; // -> -0.5
+ * getSuitGrade(suit, 5)!.armourThermalResistance; // -> 0.8
+ * ```
+ */
 export interface SuitGrade {
     /** Frontier item symbol for this exact suit and grade. */
     readonly symbol: string;
@@ -59,14 +77,14 @@ export interface SuitGrade {
     readonly shieldStrength: number;
     /** Shield points regenerated per second. */
     readonly shieldRegeneration: number;
-    /** Kinetic damage resistance as a fraction; negative values increase damage. */
-    readonly kineticResistance: number;
-    /** Thermal damage resistance as a fraction. */
-    readonly thermalResistance: number;
-    /** Plasma damage resistance as a fraction; negative values increase damage. */
-    readonly plasmaResistance: number;
-    /** Explosive damage resistance as a fraction. */
-    readonly explosiveResistance: number;
+    /** Armour kinetic damage resistance as a fraction; negative values increase damage. */
+    readonly armourKineticResistance: number;
+    /** Armour thermal damage resistance as a fraction. */
+    readonly armourThermalResistance: number;
+    /** Armour plasma damage resistance as a fraction; negative values increase damage. */
+    readonly armourPlasmaResistance: number;
+    /** Armour explosive damage resistance as a fraction. */
+    readonly armourExplosiveResistance: number;
 }
 
 /** One personal suit model sold by Pioneer Supplies. */
@@ -86,6 +104,23 @@ export interface Suit {
     readonly mounts: readonly PersonalMount[];
     /** Suit health in health points, the pool the shield protects. */
     readonly health: number;
+    /**
+     * Shield kinetic damage resistance as a fraction.
+     *
+     * @remarks
+     * The shield takes the damage first, and the armour under it takes what gets
+     * through, so the two layers carry separate resistances. The four here are the same
+     * at every grade, so they are stored once per family, like every other stat a grade
+     * leaves alone. A grade changes the shield's strength and its regeneration, both on
+     * {@link SuitGrade}, and it changes the armour's four resistances there as well.
+     */
+    readonly shieldKineticResistance: number;
+    /** Shield thermal damage resistance as a fraction; negative values increase damage. */
+    readonly shieldThermalResistance: number;
+    /** Shield plasma damage resistance as a fraction. */
+    readonly shieldPlasmaResistance: number;
+    /** Shield explosive damage resistance as a fraction. */
+    readonly shieldExplosiveResistance: number;
     /** Suit mass in kilograms. */
     readonly mass: number;
     /** Battery capacity in energy units, the pool the suit's tools draw from. */
@@ -110,8 +145,9 @@ export interface Suit {
      * Available grade records, keyed by `"1"` through `"5"`.
      *
      * @remarks
-     * A grade changes exactly what {@link SuitGrade} carries — the four resistances,
-     * shield strength, shield regeneration, the modification slots and the item symbol.
+     * A grade changes exactly what {@link SuitGrade} carries — the four armour
+     * resistances, shield strength, shield regeneration, the modification slots and the
+     * item symbol.
      * Every stat above is a property of the suit family and is the same at all five.
      */
     readonly grades: Readonly<Partial<Record<`${EquipmentGrade}`, SuitGrade>>>;

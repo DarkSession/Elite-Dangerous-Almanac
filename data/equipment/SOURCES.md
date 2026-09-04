@@ -8,7 +8,7 @@ Referred to throughout by source name; the pin is here, once.
 | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | Odyssey Materials Helper                          | commit `2e6d4c3e767d2b714ffddc5c9386831d66812916` (2026-08-09), the last revision before the project extracted its core data into a separately distributed dependency | 2026-08-13 UTC |
 | Frontier Elite Dangerous Gamestore                | no immutable revision; the displayed weapon names were read on the acquisition date                                                                            | 2026-08-13 UTC |
-| Elite Dangerous in-game observation               | no game version recorded; direct reading of the suit and weapon stats panels, the sight magnification they show, and the on-foot engineering options, and direct observation of what a weapon does when it is fired | panels 2026-08-31 UTC; firing behaviour 2026-09-03 UTC |
+| Elite Dangerous in-game observation               | no game version recorded; direct reading of the suit and weapon stats panels, the sight magnification they show, and the on-foot engineering options, and direct observation of what a suit's two defensive layers resist and of what a weapon does when it is fired | panels 2026-08-31 UTC; firing behaviour 2026-09-03 UTC; suit shield resistances 2026-09-04 UTC |
 | EDCD/EDMarketConnector                            | commit `2b6a0ce1ee3ba60c21f3f4e9fa093046da8825e4` (2026-07-26); `monitor.py` sha256 `800720e04e3089ee9a4b57749de56061e8d31ba877e17f1420f994c52bac08ac`                | 2026-09-02 UTC |
 
 **Where a source and the game disagree, the in-game reading governs.** Odyssey Materials Helper
@@ -69,7 +69,7 @@ except where a derivation bullet below names the source that supplies one.
     `SecondaryWeapon1`. Each suit's mount list is the weapon-mount counts this catalogue
     already held, joined to those keys, primary mounts first and numbered from 1.
   - **In-game observation supplies the stat values** in the suit, weapon and
-    modification sections below: the suit-wide component stats and the four resistances,
+    modification sections below: the suit-wide component stats and both resistance sets,
     the weapon combat stats and damage, and the multipliers each modification applies.
     The reload times are the exception: the panel shows no reload figure, so
     `Weapon.java` supplies them. The tool figures are Odyssey Materials Helper's,
@@ -91,7 +91,7 @@ except where a derivation bullet below names the source that supplies one.
 
 ### Suit stats read in-game
 
-The suit stats panel is read per suit family and per grade.
+The suit stats are read per suit family and per grade.
 
 - **Suit-wide, identical at all five grades**, so they are stored once per family rather
   than per grade: `health` (30 on every suit), `mass` (100 kg on every suit),
@@ -99,32 +99,44 @@ The suit stats panel is read per suit family and per grade.
   `boostAcceleration` for the jump assist, the three backpack capacities
   (`goodsCapacity`, `assetsCapacity`, `dataCapacity`), `footstepAudibleRange` as a
   multiplier of the base audible range (1 on every suit), `losAnalysisRange` in metres
-  (50 on every suit) and `losAnalysisTime` in seconds (1 on every suit). The constant
-  ones are stored anyway: a suit-stats view reads them like any other field, and a value
-  that is the same everywhere is still the value.
-- **Resistances are stored as fractions** (`0.5` means half the damage taken),
-  matching the ships domain. The panel's own figure is the same fraction as a
-  percentage, so a negative resistance is a weakness. Every resistance is now the
-  panel's, which corrects nine grade rows against Odyssey Materials Helper:
+  (50 on every suit) and `losAnalysisTime` in seconds (1 on every suit), plus the four
+  shield resistances described below. The constant ones are stored anyway: a suit-stats
+  view reads them like any other field, and a value that is the same everywhere is still
+  the value.
+- **A suit defends in two layers, and each layer has its own four resistances.** The
+  shield takes the damage first, and the armour takes what gets through. The two sets are
+  therefore stored separately, and each names the layer that has it. Damage Resistance is
+  the armour's modification: it moves the armour set and leaves the shield set alone.
+  Frontier's own symbol for it, `suit_improvedarmourrating`, is the evidence for that.
+- **Both sets are stored as fractions** (`0.5` means half the damage taken), matching
+  the ships domain, and a negative value is a weakness.
+- **The armour resistances are the four the suit panel shows.** The panel gives each one
+  as a percentage; the catalogue stores the same figure as a fraction. Every one is the
+  panel's figure, which corrects nine grade rows against Odyssey Materials Helper:
 
   | Suit and grade      | Field → stored value                                                    |
   | ------------------- | ------------------------------------------------------------------------- |
-  | Artemis 1           | `thermalResistance` 0.39→0.4                                            |
-  | Artemis 2           | `kineticResistance` -0.42→-0.43; `plasmaResistance` 0→-0.01             |
-  | Artemis 3           | `plasmaResistance` 0.14→0.15                                            |
-  | Artemis 5           | `kineticResistance` 0.14→0.15; `plasmaResistance` 0.39→0.4              |
-  | Flight Suit         | `thermalResistance` 0.39→0.4                                            |
-  | Dominator 4         | `kineticResistance` 0.19→0.11; `thermalResistance` 0.78→0.76; `plasmaResistance` 0.46→0.41; `explosiveResistance` 0.46→0.41 |
-  | Maverick 2          | `plasmaResistance` 0.07→0.08                                            |
-  | Maverick 3          | `kineticResistance` -0.13→-0.14                                         |
-  | Maverick 5          | `kineticResistance` 0.19→0.2                                            |
+  | Artemis 1           | `armourThermalResistance` 0.39→0.4                                      |
+  | Artemis 2           | `armourKineticResistance` -0.42→-0.43; `armourPlasmaResistance` 0→-0.01 |
+  | Artemis 3           | `armourPlasmaResistance` 0.14→0.15                                      |
+  | Artemis 5           | `armourKineticResistance` 0.14→0.15; `armourPlasmaResistance` 0.39→0.4  |
+  | Flight Suit         | `armourThermalResistance` 0.39→0.4                                      |
+  | Dominator 4         | `armourKineticResistance` 0.19→0.11; `armourThermalResistance` 0.78→0.76; `armourPlasmaResistance` 0.46→0.41; `armourExplosiveResistance` 0.46→0.41 |
+  | Maverick 2          | `armourPlasmaResistance` 0.07→0.08                                      |
+  | Maverick 3          | `armourKineticResistance` -0.13→-0.14                                   |
+  | Maverick 5          | `armourKineticResistance` 0.19→0.2                                      |
 
-- **Shield strength and shield regeneration are unchanged.** Every stored value already
-  matches the panel, which is also why the resistance disagreements are read as source
-  rounding rather than as a different snapshot of the game.
-- **A grade changes the armour, the shield generator, the modification slots and the
-  item symbol.** Nothing else on a suit moves with the grade, which is what makes the
-  suit-wide fields safe to store once per family.
+- **The shield resistances are 0.6 kinetic, -0.5 thermal, 0 plasma and 0.5 explosive.**
+  The suit panel puts no figure on them. Each one is observed in-game as the multiplier
+  the shield applies to that damage type. A resistance is `1 −` that multiplier. Every
+  suit carries the same four multipliers at every grade. Reading each suit at each grade
+  establishes that.
+- **Shield strength and shield regeneration match the panel.** That agreement is also why
+  the armour-resistance disagreements above are read as source rounding rather than as a
+  different snapshot of the game.
+- **A grade changes the armour resistances, the shield's strength and regeneration, the
+  modification slots and the item symbol.** Nothing else on a suit changes with the
+  grade, which is what makes the suit-wide fields safe to store once per family.
 
 ### Suit tools
 
@@ -227,7 +239,9 @@ that changes nothing — is never stored.
   like every other modifier.
 - **A resistance factor multiplies the damage taken**, not the stored resistance
   fraction. Damage Resistance is `×0.9` on damage taken, so a `0.5` resistance becomes
-  `0.55`. This is the same convention the ships domain uses for resistances.
+  `0.55`. This is the same convention the ships domain uses for resistances. Damage
+  Resistance's four factors name the armour stats, because that is the layer it moves. No
+  recipe moves a shield resistance.
 - **`roundUp` marks the one result the game rounds up**: Magazine Size multiplies by 1.5
   and rounds the magazine up to a whole number, so 45 rounds become 68 rather than 67.5.
 - **Some recipes name a stat no catalogue field carries**, because the panel shows no
