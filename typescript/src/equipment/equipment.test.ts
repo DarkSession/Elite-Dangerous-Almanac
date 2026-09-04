@@ -56,9 +56,14 @@ test('representative suits resolve by family, name and grade-specific Frontier s
         const grade = getSuitGrade(suit, expected.grade);
         assert.ok(grade);
         assert.equal(grade.shieldStrength, expected.shieldStrength);
-        if ('kineticResistance' in expected) {
-            assert.equal(grade.kineticResistance, expected.kineticResistance);
-        }
+        assert.equal(grade.armourKineticResistance, expected.armourKineticResistance);
+        assert.equal(grade.armourThermalResistance, expected.armourThermalResistance);
+        assert.equal(grade.armourPlasmaResistance, expected.armourPlasmaResistance);
+        assert.equal(grade.armourExplosiveResistance, expected.armourExplosiveResistance);
+        assert.equal(suit.shieldKineticResistance, expected.shieldKineticResistance);
+        assert.equal(suit.shieldThermalResistance, expected.shieldThermalResistance);
+        assert.equal(suit.shieldPlasmaResistance, expected.shieldPlasmaResistance);
+        assert.equal(suit.shieldExplosiveResistance, expected.shieldExplosiveResistance);
         assert.equal(grade.modificationSlots, expected.modificationSlots);
     }
 });
@@ -504,12 +509,36 @@ test('every modifier names a catalogue field or a documented exception', () => {
     }
 });
 
+test('no recipe moves a shield resistance', () => {
+    // Damage Resistance is the armour's modification. A recipe naming a shield
+    // resistance would compile and validate, and would give the wrong engineered stat.
+    for (const [symbol, { modifiers }] of Object.entries(PERSONAL_MODIFICATIONS)) {
+        for (const { stat } of modifiers) {
+            if (!stat.endsWith('Resistance')) continue;
+            assert.ok(stat.startsWith('armour'), `${symbol} modifies ${stat}`);
+        }
+    }
+});
+
+test('every suit carries the same four shield resistances', () => {
+    // They are stored once per family because no grade changes them. A future suit that
+    // resists differently has to move them onto the grade.
+    const [first] = SUITS;
+    assert.ok(first);
+    for (const suit of SUITS) {
+        assert.equal(suit.shieldKineticResistance, first.shieldKineticResistance);
+        assert.equal(suit.shieldThermalResistance, first.shieldThermalResistance);
+        assert.equal(suit.shieldPlasmaResistance, first.shieldPlasmaResistance);
+        assert.equal(suit.shieldExplosiveResistance, first.shieldExplosiveResistance);
+    }
+});
+
 test('applyPersonalModifiers ignores other stats, rounds a magazine up and guards its arguments', () => {
     const clipSize = getPersonalModification('weapon_clipsize')!.modifiers;
     assert.equal(applyPersonalModifiers('effectiveRange', 25, clipSize), 25);
     assert.equal(applyPersonalModifiers('magazineSize', 3, clipSize), 5);
     assert.equal(applyPersonalModifiers('magazineSize', 2, clipSize), 3);
-    assert.equal(applyPersonalModifiers('kineticResistance', 0, []), 0);
+    assert.equal(applyPersonalModifiers('armourKineticResistance', 0, []), 0);
     assert.throws(() => applyPersonalModifiers(42 as unknown as string, 1, []), TypeError);
     for (const invalid of [Number.NaN, Number.POSITIVE_INFINITY, '3' as unknown as number]) {
         assert.throws(() => applyPersonalModifiers('magazineSize', invalid, clipSize), TypeError);

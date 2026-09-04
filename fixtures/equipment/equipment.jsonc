@@ -1,7 +1,7 @@
 /*
  * Pins representative personal-equipment identities, every suit's weapon mounts, grade
- * stats, the per-second damage figures selected weapons resolve to before and after a
- * modification is fitted, suit-tool stats,
+ * stats, both suit resistance sets in full, the per-second damage figures selected
+ * weapons resolve to before and after a modification is fitted, suit-tool stats,
  * engineering costs and the stat multipliers an engineer-applied modification puts on a
  * suit, a weapon or a tool.
  * Values are selected from the shared equipment catalogues whose source snapshot and
@@ -22,7 +22,14 @@
       "symbol": "utilitysuit_class3",
       "grade": 3,
       "shieldStrength": 20.3,
-      "kineticResistance": -0.14,
+      "armourKineticResistance": -0.14,
+      "armourThermalResistance": 0.64,
+      "armourPlasmaResistance": 0.22,
+      "armourExplosiveResistance": 0.29,
+      "shieldKineticResistance": 0.6,
+      "shieldThermalResistance": -0.5,
+      "shieldPlasmaResistance": 0,
+      "shieldExplosiveResistance": 0.5,
       "modificationSlots": 2,
       "batteryCapacity": 13.5,
       "goodsCapacity": 40
@@ -33,6 +40,14 @@
       "symbol": "flightsuit",
       "grade": 1,
       "shieldStrength": 7.5,
+      "armourKineticResistance": -0.7,
+      "armourThermalResistance": 0.4,
+      "armourPlasmaResistance": -0.2,
+      "armourExplosiveResistance": 0,
+      "shieldKineticResistance": 0.6,
+      "shieldThermalResistance": -0.5,
+      "shieldPlasmaResistance": 0,
+      "shieldExplosiveResistance": 0.5,
       "modificationSlots": 0,
       "batteryCapacity": 7,
       "goodsCapacity": 5
@@ -224,13 +239,13 @@
     },
     {
       "recipeSymbol": "suit_improvedarmourrating",
-      "stat": "kineticResistance",
+      "stat": "armourKineticResistance",
       "base": -0.6,
       "modified": -0.44
     },
     {
       "recipeSymbol": "suit_improvedarmourrating",
-      "stat": "thermalResistance",
+      "stat": "armourThermalResistance",
       "base": 0.5,
       "modified": 0.55
     },

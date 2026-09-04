@@ -7,6 +7,7 @@
     "nonEmptyString": { "type": "string", "minLength": 1 },
     "nonNegativeInteger": { "type": "integer", "minimum": 0 },
     "positiveNumber": { "type": "number", "exclusiveMinimum": 0 },
+    "resistance": { "type": "number", "minimum": -1, "maximum": 1 },
     "ingredient": {
       "type": "object",
       "additionalProperties": false,
@@ -54,36 +55,20 @@
         "modificationSlots",
         "shieldStrength",
         "shieldRegeneration",
-        "kineticResistance",
-        "thermalResistance",
-        "plasmaResistance",
-        "explosiveResistance"
+        "armourKineticResistance",
+        "armourThermalResistance",
+        "armourPlasmaResistance",
+        "armourExplosiveResistance"
       ],
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "modificationSlots": { "type": "integer", "minimum": 0, "maximum": 4 },
         "shieldStrength": { "$ref": "#/definitions/positiveNumber" },
         "shieldRegeneration": { "$ref": "#/definitions/positiveNumber" },
-        "kineticResistance": {
-          "type": "number",
-          "minimum": -1,
-          "maximum": 1
-        },
-        "thermalResistance": {
-          "type": "number",
-          "minimum": -1,
-          "maximum": 1
-        },
-        "plasmaResistance": {
-          "type": "number",
-          "minimum": -1,
-          "maximum": 1
-        },
-        "explosiveResistance": {
-          "type": "number",
-          "minimum": -1,
-          "maximum": 1
-        }
+        "armourKineticResistance": { "$ref": "#/definitions/resistance" },
+        "armourThermalResistance": { "$ref": "#/definitions/resistance" },
+        "armourPlasmaResistance": { "$ref": "#/definitions/resistance" },
+        "armourExplosiveResistance": { "$ref": "#/definitions/resistance" }
       }
     },
     "suit": {
@@ -94,6 +79,10 @@
         "name",
         "mounts",
         "health",
+        "shieldKineticResistance",
+        "shieldThermalResistance",
+        "shieldPlasmaResistance",
+        "shieldExplosiveResistance",
         "mass",
         "batteryCapacity",
         "oxygenTime",
@@ -116,6 +105,10 @@
           "items": { "$ref": "#/definitions/suitMount" }
         },
         "health": { "$ref": "#/definitions/positiveNumber" },
+        "shieldKineticResistance": { "$ref": "#/definitions/resistance" },
+        "shieldThermalResistance": { "$ref": "#/definitions/resistance" },
+        "shieldPlasmaResistance": { "$ref": "#/definitions/resistance" },
+        "shieldExplosiveResistance": { "$ref": "#/definitions/resistance" },
         "mass": { "$ref": "#/definitions/positiveNumber" },
         "batteryCapacity": { "$ref": "#/definitions/positiveNumber" },
         "oxygenTime": { "$ref": "#/definitions/positiveNumber" },
