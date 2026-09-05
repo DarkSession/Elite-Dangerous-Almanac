@@ -256,6 +256,8 @@ function modifierRatio(
  * `genmaxmass`, `genminmul`, and `genmaxmul` return the relevant optimal stat's
  * modifier). Blueprint recipes only name the optimal figure, so without this an
  * engineered performance curve would be built from a moved optimum and stock endpoints.
+ * A generator's maximum mass is the one that does not follow its optimum exactly — see
+ * {@link maxMassRatio}.
  */
 function relatedStat(
     module: LoadoutModule,
@@ -267,6 +269,30 @@ function relatedStat(
     if (stated !== undefined) return stated;
     const base = stats?.[field];
     return typeof base === 'number' ? base * ratio : undefined;
+}
+
+/**
+ * Whether a record carries the endpoints of a mass curve. Thrusters and shield
+ * generators are the two articles that do.
+ */
+function carriesMassCurve(stats: OutfittingModule): boolean {
+    return (
+        (stats.minMass ?? stats.maxMass ?? stats.minMultiplier ?? stats.maxMultiplier) !== undefined
+    );
+}
+
+/**
+ * The ratio a curve's **maximum** mass follows. A thruster's follows its optimum in both
+ * directions. A generator's only rises.
+ *
+ * @remarks
+ * Lightening a generator leaves the heaviest hull it can still cover where it was.
+ * Reference: EDSY's `getRelatedAttrModifier`, where `engmaxmass` is the optimal-mass
+ * modifier and `genmaxmass` is that modifier floored at zero. No blueprint raises a
+ * generator's optimal mass, so the rising half answers a stated modifier alone.
+ */
+function maxMassRatio(thrusters: boolean, ratio: number): number {
+    return thrusters ? ratio : Math.max(1, ratio);
 }
 
 /**
@@ -299,20 +325,23 @@ export function effectiveModule(
         const value = effectiveStat(module, key, stats);
         if (value !== undefined) merged[key] = value;
     }
-    if (stats.engineeringGroup === 'thrusters') {
+    if (carriesMassCurve(stats)) {
+        // The curve read off the record is the whole moved curve. Which article it
+        // belongs to is read off the mount it names, not off its engineering group: a
+        // record assembled without a group is still a curve, and only a thruster names
+        // the thruster mount.
+        const thrusters = stats.slot === 'thrusters';
         const massRatio = modifierRatio(module, stats, 'optMass');
         const minMass = relatedStat(module, stats, 'minMass', massRatio);
-        const maxMass = relatedStat(module, stats, 'maxMass', massRatio);
+        const maxMass = relatedStat(module, stats, 'maxMass', maxMassRatio(thrusters, massRatio));
         if (minMass !== undefined) merged.minMass = minMass;
         if (maxMass !== undefined) merged.maxMass = maxMass;
-    }
-    if (stats.engineeringGroup === 'thrusters' || stats.engineeringGroup === 'shieldGenerators') {
         const performanceRatio = modifierRatio(module, stats, 'optMultiplier');
         const minMultiplier = relatedStat(module, stats, 'minMultiplier', performanceRatio);
         const maxMultiplier = relatedStat(module, stats, 'maxMultiplier', performanceRatio);
         if (minMultiplier !== undefined) merged.minMultiplier = minMultiplier;
         if (maxMultiplier !== undefined) merged.maxMultiplier = maxMultiplier;
-        if (stats.engineeringGroup === 'thrusters') {
+        if (thrusters) {
             for (const field of [
                 'minSpeedMultiplier',
                 'optSpeedMultiplier',
@@ -564,15 +593,12 @@ function shieldInputFor(
         const stats = statsFor(module);
         if (!(budget.available > 0 && poweredStates(module, stats, budget).retracted)) continue;
         if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
-            const massRatio = modifierRatio(module, stats, 'optMass');
-            const strengthRatio = modifierRatio(module, stats, 'optMultiplier');
-            const optMass = effectiveStat(module, 'optMass', stats);
-            const minMass = relatedStat(module, stats, 'minMass', massRatio);
-            // Lightening a generator never lowers the hull mass it can still cover.
-            const maxMass = relatedStat(module, stats, 'maxMass', Math.max(1, massRatio));
-            const optMultiplier = effectiveStat(module, 'optMultiplier', stats);
-            const minMultiplier = relatedStat(module, stats, 'minMultiplier', strengthRatio);
-            const maxMultiplier = relatedStat(module, stats, 'maxMultiplier', strengthRatio);
+            // The curve comes off the post-engineering record, the same one
+            // `FittedModule.effectiveStats` publishes. Reading it here rather than
+            // rebuilding it keeps the published curve and this strength in step.
+            const effective = effectiveModule(module, stats);
+            const { optMass, minMass, maxMass, optMultiplier, minMultiplier, maxMultiplier } =
+                effective ?? {};
             // A generator whose record is missing part of its curve still counts as
             // fitted; the curve then resolves to 0 rather than the build reading as
             // having no shield generator at all.
