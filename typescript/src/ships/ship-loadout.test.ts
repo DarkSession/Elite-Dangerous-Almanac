@@ -51,6 +51,7 @@ import { damageFalloff, damagePerSecond } from './weapons.js';
 import type { HeatState } from './heat.js';
 import { powerBudget as calculatePowerBudget } from './power.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
+import { shieldMassCurveMultiplier } from './shields.js';
 import { getPreEngineeredVariants, PRE_ENGINEERED_MODULES } from './pre-engineered.js';
 import { getBlueprintCost } from './blueprint-costs.js';
 import { getExperimentalEffectCost } from './experimental-effect-costs.js';
@@ -1158,6 +1159,51 @@ test('the thrusters getter publishes the fitted curve without a mobility calcula
         BuildMetrics.of(unresolved).mobilityMetricsResult().issues[0]?.reason,
         'unresolved',
     );
+});
+
+test('an engineered generator moves its whole mass curve, and its maximum never falls', () => {
+    // Enhanced Low Power names the optimal mass and the optimal strength; the four
+    // endpoints it leaves unsaid follow them. The minimum mass tracks the optimum in
+    // both directions, so a lightened generator reaches its best multiplier on a lighter
+    // hull. The maximum tracks it upwards only: lightening a generator does not shrink
+    // the heaviest hull it can still cover. Reference: EDSY's `getRelatedAttrModifier`,
+    // where `genminmass` is the optimal-mass modifier and `genmaxmass` is that modifier
+    // floored at zero.
+    const build = ShipLoadout.default('Anaconda').applyBlueprint(
+        'Slot03_Size6',
+        'ShieldGenerator_Optimised',
+        { grade: 5, quality: 1 },
+    );
+    const fitted = build.fittedModuleAt('Slot03_Size6')!;
+    const stock = fitted.stats!;
+    const generator = fitted.effectiveStats!;
+    const massRatio = generator.optMass! / stock.optMass!;
+    assert.ok(massRatio < 1);
+    assert.ok(near(generator.minMass!, stock.minMass! * massRatio));
+    assert.equal(generator.maxMass, stock.maxMass);
+    const strengthRatio = generator.optMultiplier! / stock.optMultiplier!;
+    assert.ok(near(generator.minMultiplier!, stock.minMultiplier! * strengthRatio));
+    assert.ok(near(generator.maxMultiplier!, stock.maxMultiplier! * strengthRatio));
+
+    // One fitted generator, one answer: the strength the build reports is what the
+    // published curve gives for the hull the generator sits on.
+    const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
+    assert.equal(
+        shields.massCurveMultiplier,
+        shieldMassCurveMultiplier(getShipBySymbol('Anaconda')!.hullMass, generator),
+    );
+
+    // A thruster's maximum has no such floor: Dirty Drives lightens the optimal mass and
+    // the whole curve, top end included, comes down with it.
+    const drives = ShipLoadout.default('Anaconda').applyBlueprint('MainEngines', 'Engine_Dirty', {
+        grade: 5,
+        quality: 1,
+    });
+    const thrusters = drives.fittedModuleAt('MainEngines')!;
+    const driveRatio = thrusters.effectiveStats!.optMass! / thrusters.stats!.optMass!;
+    assert.ok(driveRatio < 1);
+    assert.ok(near(thrusters.effectiveStats!.maxMass!, thrusters.stats!.maxMass! * driveRatio));
+    assert.ok(near(thrusters.effectiveStats!.minMass!, thrusters.stats!.minMass! * driveRatio));
 });
 
 test('passenger capacity sums the fitted cabins and follows every edit', () => {

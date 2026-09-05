@@ -63,7 +63,10 @@ import { massCurveMultiplier, type MassCurveLabels } from './internal/mass-curve
  * An {@link OutfittingModule} record satisfies this as-is, so a catalogue entry can be
  * passed straight in — the six curve fields and the resistances are exactly what a
  * generator's record carries. `optMultiplier` is what a Reinforced/Thermic blueprint
- * moves. Every field is optional because the type accepts those records; a generator
+ * moves, and `optMass` what Enhanced Low Power moves; a recipe names those two alone and
+ * the four endpoints follow them, so hand in the whole moved curve rather than a moved
+ * optimum on stock endpoints — `FittedModule.effectiveStats` already carries it.
+ * Every field is optional because the type accepts those records; a generator
  * **missing** any of the six curve fields cannot be placed on the curve at all, and
  * raises no shield ({@link shieldMassCurveMultiplier} returns `0`).
  *
