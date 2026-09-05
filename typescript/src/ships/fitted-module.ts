@@ -67,10 +67,10 @@ export interface FittedModule {
      * recipe-only burst values that its journal-shaped modifier block does not serialize.
      * A festive variant fitted through {@link ShipLoadout.setPreEngineeredVariant} uses
      * its fixed modifier block. A thruster's or shield generator's mass curve moves as a
-     * whole, so the curve read off this record is the one the build's own metrics use: a
-     * recipe names the optimal mass and the optimal multiplier, and the endpoints follow
-     * them — except a generator's maximum mass, which a lightened optimum leaves where it
-     * is rather than shrinking the heaviest hull the generator still covers.
+     * whole. A recipe names the optimal mass and the optimal multiplier, and the four
+     * endpoints follow them. A generator's maximum mass is the exception: a lightened
+     * optimum leaves it where it was. So this record carries the curve the build's own
+     * metrics read.
      */
     readonly effectiveStats: OutfittingModule | null;
     /** Fully rearmed ammunition capacity, or `null` for modules without ammunition. */

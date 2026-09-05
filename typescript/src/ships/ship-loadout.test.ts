@@ -1185,16 +1185,32 @@ test('an engineered generator moves its whole mass curve, and its maximum never 
     assert.ok(near(generator.minMultiplier!, stock.minMultiplier! * strengthRatio));
     assert.ok(near(generator.maxMultiplier!, stock.maxMultiplier! * strengthRatio));
 
-    // One fitted generator, one answer: the strength the build reports is what the
-    // published curve gives for the hull the generator sits on.
+    // The strength the build reports is what the published curve gives for the hull the
+    // generator sits on, so a consumer reading the record gets the build's own answer.
     const shields = BuildMetrics.of(build).shieldMetricsResult().value!;
     assert.equal(
         shields.massCurveMultiplier,
         shieldMassCurveMultiplier(getShipBySymbol('Anaconda')!.hullMass, generator),
     );
 
-    // A thruster's maximum has no such floor: Dirty Drives lightens the optimal mass and
-    // the whole curve, top end included, comes down with it.
+    // The curve is the record's, not its engineering menu's. A record assembled without
+    // an engineering group still moves as a whole, and still reports the same strength.
+    const grouped = build.fittedModuleAt('Slot03_Size6')!.raw.Engineering!;
+    const ungrouped = ShipLoadout.default('Anaconda')
+        .setModule('Slot03_Size6', { ...stock, engineeringGroup: null })
+        .applyBlueprint('Slot03_Size6', 'ShieldGenerator_Optimised', { grade: 5, quality: 1 });
+    assert.deepEqual(ungrouped.fittedModuleAt('Slot03_Size6')!.raw.Engineering, grouped);
+    assert.deepEqual(ungrouped.fittedModuleAt('Slot03_Size6')!.effectiveStats, {
+        ...generator,
+        engineeringGroup: null,
+    });
+    assert.equal(
+        BuildMetrics.of(ungrouped).shieldMetricsResult().value!.strength,
+        shields.strength,
+    );
+
+    // A thruster's maximum has no such floor: Dirty lightens the optimal mass and the
+    // whole curve, top end included, comes down with it.
     const drives = ShipLoadout.default('Anaconda').applyBlueprint('MainEngines', 'Engine_Dirty', {
         grade: 5,
         quality: 1,
