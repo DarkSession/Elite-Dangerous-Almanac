@@ -134,6 +134,11 @@ for (const [name, pinned] of Object.entries(suitLoadoutFixture.imports)) {
             loadout.weapons.map(({ mount }) => mount),
             pinned.mounts,
         );
+        // `null` where the event states no instance id, which every mount below does.
+        assert.deepEqual(
+            loadout.weapons.map(({ moduleId }) => moduleId),
+            pinned.moduleIds,
+        );
         assert.deepEqual(
             loadout.weapons.flatMap((fitted) => fitted.modifications.map(({ symbol }) => symbol)),
             pinned.modifications,

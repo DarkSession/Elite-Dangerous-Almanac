@@ -134,6 +134,9 @@
       "mounts": [
         "PrimaryWeapon1"
       ],
+      "moduleIds": [
+        null
+      ],
       "modifications": [
         "weapon_clipsize"
       ],
@@ -151,6 +154,7 @@
         ]
       },
       "mounts": [],
+      "moduleIds": [],
       "modifications": [],
       "importOutcomes": [
         {
@@ -172,6 +176,7 @@
         ]
       },
       "mounts": [],
+      "moduleIds": [],
       "modifications": [],
       "importOutcomes": [
         {
@@ -193,6 +198,7 @@
         ]
       },
       "mounts": [],
+      "moduleIds": [],
       "modifications": [],
       "importOutcomes": [
         {
@@ -214,6 +220,7 @@
         ]
       },
       "mounts": [],
+      "moduleIds": [],
       "modifications": [],
       "importOutcomes": [
         {
@@ -243,6 +250,9 @@
       },
       "mounts": [
         "PrimaryWeapon1"
+      ],
+      "moduleIds": [
+        null
       ],
       "modifications": [
         "weapon_clipsize"
@@ -280,6 +290,9 @@
       "mounts": [
         "PrimaryWeapon1"
       ],
+      "moduleIds": [
+        null
+      ],
       "modifications": [],
       "importOutcomes": [
         {
@@ -291,6 +304,50 @@
           "action": "refusedModification",
           "mount": "PrimaryWeapon1",
           "sourceSymbol": "suit_nightvision"
+        }
+      ]
+    },
+    "unknownGradeBelowTheLadder": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 0
+          }
+        ]
+      },
+      "mounts": [],
+      "moduleIds": [],
+      "modifications": [],
+      "importOutcomes": [
+        {
+          "action": "unknownGrade",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "wpn_m_assaultrifle_kinetic_fauto"
+        }
+      ]
+    },
+    "unknownGradeBetweenRungs": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 2.5
+          }
+        ]
+      },
+      "mounts": [],
+      "moduleIds": [],
+      "modifications": [],
+      "importOutcomes": [
+        {
+          "action": "unknownGrade",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "wpn_m_assaultrifle_kinetic_fauto"
         }
       ]
     }

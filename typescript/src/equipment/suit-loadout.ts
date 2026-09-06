@@ -128,7 +128,11 @@ export interface FittedPersonalWeapon {
     readonly weapon: PersonalWeapon;
     /** The weapon's grade, from the event's `Class`. */
     readonly grade: EquipmentGrade;
-    /** Each modification on the weapon, in the order the event lists them. */
+    /**
+     * Each modification the catalogues resolved, in the order the event lists them.
+     * Anything the event stated and this leaves out is in
+     * {@link SuitLoadout.importOutcomes}.
+     */
     readonly modifications: readonly FittedPersonalModification[];
     /**
      * Every modifier that acts on this weapon, ready for `applyPersonalModifiers`.
@@ -210,7 +214,10 @@ export interface SuitLoadout {
     readonly loadoutId: number | null;
     /** The player-given loadout name, or `null` when the event states none. */
     readonly name: string | null;
-    /** Each modification on the suit, in the order the event lists them. */
+    /**
+     * Each modification the catalogues resolved, in the order the event lists them.
+     * Anything the event stated and this leaves out is in {@link importOutcomes}.
+     */
     readonly modifications: readonly FittedPersonalModification[];
     /**
      * Every modifier the suit's modifications carry, ready for `applyPersonalModifiers`.

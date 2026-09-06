@@ -35,6 +35,7 @@ for await (const line of lines) {
             break;
         case 'SuitLoadout':
         case 'SwitchSuitLoadout':
+        case 'CreateSuitLoadout':
             // → a SuitLoadout, below
             break;
         case 'FSDJump':
@@ -173,9 +174,11 @@ and Scope carry no modifier because their whole effect is a second figure on the
 record, so they are reported as flags instead: `fitted.reloadSpeed` selects
 `weapon.reloadTime.upgraded` and `fitted.scope` selects
 `weapon.scopeMagnification.upgraded`, and `fitted.metrics` already reads the reload.
-Others — Faster Handling, Stability, Stowed reloading, Improved Hip Fire Accuracy — carry
-none either, because the catalogues hold no stat for what they change, and they get no
-flag.
+Stowed reloading carries none either — it switches a capability on and moves no stat at
+all — and neither do Faster Handling, Stability and Improved Hip Fire Accuracy, which
+change stats the catalogues hold no field for. None of those four gets a flag: read
+`fitted.modifications` to say what is on a weapon, and `fitted.modifiers` to compute
+what it does.
 
 Greater Range, Headshot Damage and Improved Hip Fire Accuracy each carry a Kinetic, a
 Laser and a Plasma recipe whose material costs differ, and the journal writes one symbol

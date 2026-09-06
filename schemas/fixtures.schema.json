@@ -1519,9 +1519,16 @@
                   "type": "array",
                   "items": { "type": "string" }
                 },
+                "moduleIds": { "type": "array", "items": { "type": "null" } },
                 "mounts": { "type": "array", "items": { "type": "string" } }
               },
-              "required": ["event", "importOutcomes", "modifications", "mounts"]
+              "required": [
+                "event",
+                "importOutcomes",
+                "modifications",
+                "moduleIds",
+                "mounts"
+              ]
             },
             "refusedModification": {
               "type": "object",
@@ -1536,12 +1543,66 @@
                   "maxItems": 0,
                   "items": false
                 },
+                "moduleIds": { "type": "array", "items": { "type": "null" } },
                 "mounts": { "type": "array", "items": { "type": "string" } }
               },
-              "required": ["event", "importOutcomes", "modifications", "mounts"]
+              "required": [
+                "event",
+                "importOutcomes",
+                "modifications",
+                "moduleIds",
+                "mounts"
+              ]
             },
-            "refusedMount": { "$ref": "#/definitions/shared2e71016d5acd" },
-            "unknownGrade": { "$ref": "#/definitions/shared2e71016d5acd" },
+            "refusedMount": { "$ref": "#/definitions/shareda48303538b65" },
+            "unknownGrade": { "$ref": "#/definitions/shareda48303538b65" },
+            "unknownGradeBelowTheLadder": {
+              "$ref": "#/definitions/shareda48303538b65"
+            },
+            "unknownGradeBetweenRungs": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "Class": { "type": "number" },
+                          "ModuleName": { "type": "string" },
+                          "SlotName": { "type": "string" }
+                        },
+                        "required": ["Class", "ModuleName", "SlotName"]
+                      }
+                    },
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["Modules", "SuitName"]
+                },
+                "importOutcomes": {
+                  "$ref": "#/definitions/shared85800461fa45"
+                },
+                "modifications": {
+                  "type": "array",
+                  "maxItems": 0,
+                  "items": false
+                },
+                "moduleIds": { "type": "array", "maxItems": 0, "items": false },
+                "mounts": { "type": "array", "maxItems": 0, "items": false }
+              },
+              "required": [
+                "event",
+                "importOutcomes",
+                "modifications",
+                "moduleIds",
+                "mounts"
+              ]
+            },
             "unknownModification": {
               "type": "object",
               "additionalProperties": false,
@@ -1554,18 +1615,27 @@
                   "type": "array",
                   "items": { "type": "string" }
                 },
+                "moduleIds": { "type": "array", "items": { "type": "null" } },
                 "mounts": { "type": "array", "items": { "type": "string" } }
               },
-              "required": ["event", "importOutcomes", "modifications", "mounts"]
+              "required": [
+                "event",
+                "importOutcomes",
+                "modifications",
+                "moduleIds",
+                "mounts"
+              ]
             },
-            "unknownMount": { "$ref": "#/definitions/shared2e71016d5acd" },
-            "unknownWeapon": { "$ref": "#/definitions/shared2e71016d5acd" }
+            "unknownMount": { "$ref": "#/definitions/shareda48303538b65" },
+            "unknownWeapon": { "$ref": "#/definitions/shareda48303538b65" }
           },
           "required": [
             "mountSpelling",
             "refusedModification",
             "refusedMount",
             "unknownGrade",
+            "unknownGradeBelowTheLadder",
+            "unknownGradeBetweenRungs",
             "unknownModification",
             "unknownMount",
             "unknownWeapon"
@@ -9522,17 +9592,6 @@
       },
       "required": ["MaxJumpRange", "UnladenMass", "note"]
     },
-    "shared2e71016d5acd": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "event": { "$ref": "#/definitions/shared4e14f41d253e" },
-        "importOutcomes": { "$ref": "#/definitions/shared85800461fa45" },
-        "modifications": { "type": "array", "maxItems": 0, "items": false },
-        "mounts": { "type": "array", "maxItems": 0, "items": false }
-      },
-      "required": ["event", "importOutcomes", "modifications", "mounts"]
-    },
     "shared32f1a07b036c": {
       "type": "object",
       "additionalProperties": false,
@@ -10049,6 +10108,24 @@
     "shareda11919c7d0b2": {
       "type": "array",
       "items": { "$ref": "#/definitions/sharedd6c784af90cd" }
+    },
+    "shareda48303538b65": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "event": { "$ref": "#/definitions/shared4e14f41d253e" },
+        "importOutcomes": { "$ref": "#/definitions/shared85800461fa45" },
+        "modifications": { "type": "array", "maxItems": 0, "items": false },
+        "moduleIds": { "type": "array", "maxItems": 0, "items": false },
+        "mounts": { "type": "array", "maxItems": 0, "items": false }
+      },
+      "required": [
+        "event",
+        "importOutcomes",
+        "modifications",
+        "moduleIds",
+        "mounts"
+      ]
     },
     "shareda57e5d7f7e9f": {
       "type": "object",

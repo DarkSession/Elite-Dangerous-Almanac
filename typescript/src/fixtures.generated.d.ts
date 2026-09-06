@@ -577,6 +577,7 @@ type FixtureEquipmentSuitLoadouts = {
             };
             importOutcomes: never[];
             modifications: string[];
+            moduleIds: null[];
             mounts: string[];
         };
         refusedModification: {
@@ -596,6 +597,7 @@ type FixtureEquipmentSuitLoadouts = {
                 sourceSymbol: string;
             }[];
             modifications: never[];
+            moduleIds: null[];
             mounts: string[];
         };
         refusedMount: {
@@ -613,6 +615,7 @@ type FixtureEquipmentSuitLoadouts = {
                 sourceSymbol: string;
             }[];
             modifications: never[];
+            moduleIds: never[];
             mounts: never[];
         };
         unknownGrade: {
@@ -630,6 +633,43 @@ type FixtureEquipmentSuitLoadouts = {
                 sourceSymbol: string;
             }[];
             modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownGradeBelowTheLadder: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownGradeBetweenRungs: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
             mounts: never[];
         };
         unknownModification: {
@@ -649,6 +689,7 @@ type FixtureEquipmentSuitLoadouts = {
                 sourceSymbol: string;
             }[];
             modifications: string[];
+            moduleIds: null[];
             mounts: string[];
         };
         unknownMount: {
@@ -666,6 +707,7 @@ type FixtureEquipmentSuitLoadouts = {
                 sourceSymbol: string;
             }[];
             modifications: never[];
+            moduleIds: never[];
             mounts: never[];
         };
         unknownWeapon: {
@@ -683,6 +725,7 @@ type FixtureEquipmentSuitLoadouts = {
                 sourceSymbol: string;
             }[];
             modifications: never[];
+            moduleIds: never[];
             mounts: never[];
         };
     };
