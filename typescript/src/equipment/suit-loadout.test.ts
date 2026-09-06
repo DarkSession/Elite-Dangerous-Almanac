@@ -5,6 +5,7 @@ import suitLoadoutCapture from '../../../fixtures/equipment/journal-suit-loadout
 import switchSuitLoadoutCapture from '../../../fixtures/equipment/journal-switch-suit-loadout-dominator.jsonc' with { type: 'json' };
 import suitLoadoutFixture from '../../../fixtures/equipment/suit-loadouts.jsonc' with { type: 'json' };
 import { applyPersonalModifiers } from './engineering.js';
+import { PERSONAL_MODIFICATIONS, getPersonalModification } from './modifications.js';
 import { parseSuitLoadout, type SuitLoadout, type SuitLoadoutEvent } from './suit-loadout.js';
 
 const round = (value: number) => Number(value.toFixed(3));
@@ -25,7 +26,7 @@ test('a captured suit loadout imports with its suit, grade and loadout identity'
         loadout.modifications.map(({ symbol }) => symbol),
         expected.modifications,
     );
-    assert.deepEqual(loadout.outcomes, []);
+    assert.deepEqual(loadout.importOutcomes, []);
 });
 
 test('a captured suit loadout folds its suit modifiers onto the suit stats', () => {
@@ -123,9 +124,38 @@ for (const [name, pinned] of Object.entries(suitLoadoutFixture.imports)) {
             loadout.weapons.map(({ mount }) => mount),
             pinned.mounts,
         );
-        assert.deepEqual(loadout.outcomes, pinned.outcomes);
+        assert.deepEqual(
+            loadout.weapons.flatMap((fitted) => fitted.modifications.map(({ symbol }) => symbol)),
+            pinned.modifications,
+        );
+        assert.deepEqual(loadout.importOutcomes, pinned.importOutcomes);
     });
 }
+
+test('a recipe resolves whatever case the event spells it in', () => {
+    const pinned = suitLoadoutFixture.recipeSpelling;
+    const [fitted] = parseSuitLoadout(asEvent(pinned.event)).weapons;
+    assert.ok(fitted);
+
+    assert.equal(fitted.mount, pinned.mount);
+    assert.deepEqual(
+        fitted.modifications.map(({ journalSymbol }) => journalSymbol),
+        pinned.journalSymbols,
+    );
+    // The key both recipe catalogues use, whatever the event wrote.
+    assert.deepEqual(
+        fitted.modifications.map(({ symbol }) => symbol),
+        pinned.modifications,
+    );
+    for (const { symbol } of fitted.modifications) {
+        assert.ok(getPersonalModification(symbol), symbol);
+        assert.ok(Object.hasOwn(PERSONAL_MODIFICATIONS, symbol), symbol);
+    }
+    // Reload Speed and Scope carry no modifier, so a missed spelling would be silent.
+    assert.equal(fitted.reloadSpeed, pinned.reloadSpeed);
+    assert.equal(fitted.scope, pinned.scope);
+    assert.equal(round(fitted.metrics.sustainedDamagePerSecond), pinned.sustainedDamagePerSecond);
+});
 
 for (const [name, event] of Object.entries(suitLoadoutFixture.refusals)) {
     test(`an event with ${name} is refused`, () => {
@@ -144,7 +174,7 @@ test('an event states no modifications and no modules', () => {
     assert.deepEqual(loadout.modifications, []);
     assert.deepEqual(loadout.modifiers, []);
     assert.deepEqual(loadout.weapons, []);
-    assert.deepEqual(loadout.outcomes, []);
+    assert.deepEqual(loadout.importOutcomes, []);
 });
 
 test('an imported loadout is frozen through every nested record', () => {
@@ -157,5 +187,5 @@ test('an imported loadout is frozen through every nested record', () => {
     assert.equal(Object.isFrozen(loadout.weapons[0]?.metrics), true);
     assert.equal(Object.isFrozen(loadout.modifications), true);
     assert.equal(Object.isFrozen(loadout.modifiers), true);
-    assert.equal(Object.isFrozen(loadout.outcomes), true);
+    assert.equal(Object.isFrozen(loadout.importOutcomes), true);
 });

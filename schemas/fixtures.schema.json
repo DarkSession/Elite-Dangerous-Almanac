@@ -1502,81 +1502,91 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "event": { "$ref": "#/definitions/shared4e14f41d253e" },
-                "mounts": { "type": "array", "items": { "type": "string" } },
-                "outcomes": { "type": "array", "maxItems": 0, "items": false }
+                "event": { "$ref": "#/definitions/shared576f94cbb9fb" },
+                "importOutcomes": {
+                  "type": "array",
+                  "maxItems": 0,
+                  "items": false
+                },
+                "modifications": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "mounts": { "type": "array", "items": { "type": "string" } }
               },
-              "required": ["event", "mounts", "outcomes"]
+              "required": ["event", "importOutcomes", "modifications", "mounts"]
             },
-            "refusedMount": { "$ref": "#/definitions/shared5304e39fc913" },
-            "unknownGrade": { "$ref": "#/definitions/shared5304e39fc913" },
+            "refusedModification": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "event": { "$ref": "#/definitions/shared6db063975be3" },
+                "importOutcomes": {
+                  "$ref": "#/definitions/sharedb2602a7a4261"
+                },
+                "modifications": {
+                  "type": "array",
+                  "maxItems": 0,
+                  "items": false
+                },
+                "mounts": { "type": "array", "items": { "type": "string" } }
+              },
+              "required": ["event", "importOutcomes", "modifications", "mounts"]
+            },
+            "refusedMount": { "$ref": "#/definitions/shared2e71016d5acd" },
+            "unknownGrade": { "$ref": "#/definitions/shared2e71016d5acd" },
             "unknownModification": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "event": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "Modules": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "Class": { "type": "integer" },
-                          "ModuleName": { "type": "string" },
-                          "SlotName": { "type": "string" },
-                          "WeaponMods": {
-                            "type": "array",
-                            "items": { "type": "string" }
-                          }
-                        },
-                        "required": [
-                          "Class",
-                          "ModuleName",
-                          "SlotName",
-                          "WeaponMods"
-                        ]
-                      }
-                    },
-                    "SuitMods": {
-                      "type": "array",
-                      "items": { "type": "string" }
-                    },
-                    "SuitName": { "type": "string" }
-                  },
-                  "required": ["Modules", "SuitMods", "SuitName"]
+                "event": { "$ref": "#/definitions/shared6db063975be3" },
+                "importOutcomes": {
+                  "$ref": "#/definitions/sharedb2602a7a4261"
                 },
-                "mounts": { "type": "array", "items": { "type": "string" } },
-                "outcomes": {
+                "modifications": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "action": { "type": "string" },
-                      "mount": {
-                        "anyOf": [{ "type": "null" }, { "type": "string" }]
-                      },
-                      "sourceSymbol": { "type": "string" }
-                    },
-                    "required": ["action", "mount", "sourceSymbol"]
-                  }
-                }
+                  "items": { "type": "string" }
+                },
+                "mounts": { "type": "array", "items": { "type": "string" } }
               },
-              "required": ["event", "mounts", "outcomes"]
+              "required": ["event", "importOutcomes", "modifications", "mounts"]
             },
-            "unknownMount": { "$ref": "#/definitions/shared5304e39fc913" },
-            "unknownWeapon": { "$ref": "#/definitions/shared5304e39fc913" }
+            "unknownMount": { "$ref": "#/definitions/shared2e71016d5acd" },
+            "unknownWeapon": { "$ref": "#/definitions/shared2e71016d5acd" }
           },
           "required": [
             "mountSpelling",
+            "refusedModification",
             "refusedMount",
             "unknownGrade",
             "unknownModification",
             "unknownMount",
             "unknownWeapon"
+          ]
+        },
+        "recipeSpelling": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "event": { "$ref": "#/definitions/shared576f94cbb9fb" },
+            "journalSymbols": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "modifications": { "type": "array", "items": { "type": "string" } },
+            "mount": { "type": "string" },
+            "reloadSpeed": { "type": "boolean" },
+            "scope": { "type": "boolean" },
+            "sustainedDamagePerSecond": { "type": "number" }
+          },
+          "required": [
+            "event",
+            "journalSymbols",
+            "modifications",
+            "mount",
+            "reloadSpeed",
+            "scope",
+            "sustainedDamagePerSecond"
           ]
         },
         "refusals": {
@@ -1718,7 +1728,7 @@
           ]
         }
       },
-      "required": ["capture", "imports", "refusals"]
+      "required": ["capture", "imports", "recipeSpelling", "refusals"]
     },
     "i18nDisplayText": {
       "type": "object",
@@ -9389,6 +9399,17 @@
       },
       "required": ["MaxJumpRange", "UnladenMass", "note"]
     },
+    "shared2e71016d5acd": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "event": { "$ref": "#/definitions/shared4e14f41d253e" },
+        "importOutcomes": { "$ref": "#/definitions/shared85800461fa45" },
+        "modifications": { "type": "array", "maxItems": 0, "items": false },
+        "mounts": { "type": "array", "maxItems": 0, "items": false }
+      },
+      "required": ["event", "importOutcomes", "modifications", "mounts"]
+    },
     "shared32f1a07b036c": {
       "type": "object",
       "additionalProperties": false,
@@ -9562,16 +9583,6 @@
       "type": "array",
       "items": { "$ref": "#/definitions/shared34f9a7d23a34" }
     },
-    "shared5304e39fc913": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "event": { "$ref": "#/definitions/shared4e14f41d253e" },
-        "mounts": { "type": "array", "maxItems": 0, "items": false },
-        "outcomes": { "$ref": "#/definitions/shared85800461fa45" }
-      },
-      "required": ["event", "mounts", "outcomes"]
-    },
     "shared54b60d04390f": {
       "type": "object",
       "additionalProperties": false,
@@ -9590,6 +9601,15 @@
         "rechargeRate": { "type": "number" }
       },
       "required": ["capacity", "ratedRecharge", "rechargeRate"]
+    },
+    "shared576f94cbb9fb": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Modules": { "$ref": "#/definitions/shared803897e10c9e" },
+        "SuitName": { "type": "string" }
+      },
+      "required": ["Modules", "SuitName"]
     },
     "shared582e95d48378": {
       "type": "object",
@@ -9674,6 +9694,16 @@
         "yaw"
       ]
     },
+    "shared6db063975be3": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Modules": { "$ref": "#/definitions/shared803897e10c9e" },
+        "SuitMods": { "type": "array", "items": { "type": "string" } },
+        "SuitName": { "type": "string" }
+      },
+      "required": ["Modules", "SuitMods", "SuitName"]
+    },
     "shared7481e15ca29a": {
       "type": "object",
       "additionalProperties": false,
@@ -9706,6 +9736,16 @@
       },
       "required": ["regeneration", "resistances", "strength"]
     },
+    "shared798f14d97b75": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "action": { "type": "string" },
+        "mount": { "anyOf": [{ "type": "null" }, { "type": "string" }] },
+        "sourceSymbol": { "type": "string" }
+      },
+      "required": ["action", "mount", "sourceSymbol"]
+    },
     "shared7b6129ca1093": {
       "type": "object",
       "additionalProperties": false,
@@ -9714,6 +9754,10 @@
         "thermal": { "type": "number" }
       },
       "required": ["absolute", "thermal"]
+    },
+    "shared803897e10c9e": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/shared9ec821b14494" }
     },
     "shared8064b9491813": {
       "type": "object",
@@ -9836,6 +9880,17 @@
         "speed"
       ]
     },
+    "shared9ec821b14494": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Class": { "type": "integer" },
+        "ModuleName": { "type": "string" },
+        "SlotName": { "type": "string" },
+        "WeaponMods": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["Class", "ModuleName", "SlotName", "WeaponMods"]
+    },
     "shared9ee0d2bef36a": {
       "type": "object",
       "additionalProperties": false,
@@ -9877,6 +9932,10 @@
       "additionalProperties": false,
       "properties": { "fullTank": { "type": "number" } },
       "required": ["fullTank"]
+    },
+    "sharedb2602a7a4261": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/shared798f14d97b75" }
     },
     "sharedbb0c12b7a5ac": {
       "type": "object",

@@ -569,11 +569,32 @@ type FixtureEquipmentSuitLoadouts = {
                     Class: number;
                     ModuleName: string;
                     SlotName: string;
+                    WeaponMods: string[];
                 }[];
                 SuitName: string;
             };
+            importOutcomes: never[];
+            modifications: string[];
             mounts: string[];
-            outcomes: never[];
+        };
+        refusedModification: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string[];
+                }[];
+                SuitMods: string[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: null | string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            mounts: string[];
         };
         refusedMount: {
             event: {
@@ -584,12 +605,13 @@ type FixtureEquipmentSuitLoadouts = {
                 }[];
                 SuitName: string;
             };
-            mounts: never[];
-            outcomes: {
+            importOutcomes: {
                 action: string;
                 mount: string;
                 sourceSymbol: string;
             }[];
+            modifications: never[];
+            mounts: never[];
         };
         unknownGrade: {
             event: {
@@ -600,12 +622,13 @@ type FixtureEquipmentSuitLoadouts = {
                 }[];
                 SuitName: string;
             };
-            mounts: never[];
-            outcomes: {
+            importOutcomes: {
                 action: string;
                 mount: string;
                 sourceSymbol: string;
             }[];
+            modifications: never[];
+            mounts: never[];
         };
         unknownModification: {
             event: {
@@ -618,12 +641,13 @@ type FixtureEquipmentSuitLoadouts = {
                 SuitMods: string[];
                 SuitName: string;
             };
-            mounts: string[];
-            outcomes: {
+            importOutcomes: {
                 action: string;
                 mount: null | string;
                 sourceSymbol: string;
             }[];
+            modifications: string[];
+            mounts: string[];
         };
         unknownMount: {
             event: {
@@ -634,12 +658,13 @@ type FixtureEquipmentSuitLoadouts = {
                 }[];
                 SuitName: string;
             };
-            mounts: never[];
-            outcomes: {
+            importOutcomes: {
                 action: string;
                 mount: string;
                 sourceSymbol: string;
             }[];
+            modifications: never[];
+            mounts: never[];
         };
         unknownWeapon: {
             event: {
@@ -650,13 +675,31 @@ type FixtureEquipmentSuitLoadouts = {
                 }[];
                 SuitName: string;
             };
-            mounts: never[];
-            outcomes: {
+            importOutcomes: {
                 action: string;
                 mount: string;
                 sourceSymbol: string;
             }[];
+            modifications: never[];
+            mounts: never[];
         };
+    };
+    recipeSpelling: {
+        event: {
+            Modules: {
+                Class: number;
+                ModuleName: string;
+                SlotName: string;
+                WeaponMods: string[];
+            }[];
+            SuitName: string;
+        };
+        journalSymbols: string[];
+        modifications: string[];
+        mount: string;
+        reloadSpeed: boolean;
+        scope: boolean;
+        sustainedDamagePerSecond: number;
     };
     refusals: {
         moduleNameNotAString: {

@@ -163,16 +163,23 @@ applyPersonalModifiers('reserveAmmo', fitted.weapon.reserveAmmo, fitted.modifier
 
 A weapon's own list carries every modifier that acts on it, the suit's included: Extra
 Ammo Capacity is fitted to the suit and multiplies a weapon's `reserveAmmo`, so the line
-above is right whichever equipment carries the recipe. Two weapon recipes carry no
-modifier at all, because their whole effect is a second figure on the weapon record:
-`fitted.reloadSpeed` selects `weapon.reloadTime.upgraded` and `fitted.scope` selects
-`weapon.scopeMagnification.upgraded`. `fitted.metrics` already reads the reload.
+above is right whichever equipment carries the recipe. That is also why the two lists are
+never joined: `[...loadout.modifiers, ...fitted.modifiers]` multiplies such a factor in
+twice, and reads 18 rounds where the weapon holds 12. Use the weapon's list for a weapon
+stat, and the suit's for a suit or tool stat.
 
-The journal omits the technology suffix from three weapon recipes, so the symbol it
-writes for Greater Range, Headshot Damage and Improved Hip Fire Accuracy names three
-recipes with different material costs. The weapon at the mount settles which one, and
-`fitted.modifications` reports both spellings: `journalSymbol` as the event wrote it, and
-`symbol` as `PERSONAL_MODIFICATIONS` and `PERSONAL_MODIFICATION_COSTS` key it.
+Two weapon recipes carry no modifier at all, because their whole effect is a second
+figure on the weapon record: `fitted.reloadSpeed` selects `weapon.reloadTime.upgraded`
+and `fitted.scope` selects `weapon.scopeMagnification.upgraded`. `fitted.metrics` already
+reads the reload.
+
+Greater Range, Headshot Damage and Improved Hip Fire Accuracy each carry a Kinetic, a
+Laser and a Plasma recipe whose material costs differ, and the journal writes one symbol
+for all three. The weapon at the mount settles which one, so `fitted.modifications`
+reports both spellings: `journalSymbol` as the event wrote it, and `symbol` as
+`PERSONAL_MODIFICATIONS` and `PERSONAL_MODIFICATION_COSTS` key it. Every symbol an event
+writes — a mount, a weapon, a recipe — is matched with its case and surrounding
+whitespace ignored, and the loadout reports the catalogue's own spelling.
 
 ## `FSDJump` → a system
 
@@ -360,14 +367,6 @@ build.importOutcomes; // exact import changes for display or logging
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 sets the validation and calculation patterns out in full.
 
-A suit loadout is taken as far as the catalogues allow. The suit itself has to resolve,
-because the grade, the mounts and every stat come from it, so an unknown `SuitName`
-throws `TypeError`. Everything else the catalogues cannot answer is left out of the
-loadout and reported by `loadout.outcomes`: an unknown weapon or an unusable `Class`
-leaves the mount empty, a `SlotName` the suit does not carry or a weapon the mount
-refuses drops the entry, and an unknown recipe moves nothing. Each outcome names the
-mount the event wrote, or `null` for a modification on the suit itself.
-
 A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
 `SyntaxError`, and a structurally impossible event — two slot keys differing only in
 case, say — throws `TypeError` from `fromLoadout`. Catch both when the bytes come from
@@ -375,6 +374,16 @@ somewhere you do not control. A SLEF *file* holds several builds and can be part
 which is its own question —
 [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
 covers `parseSlef` against `inspectSlef` and what each does with a bad entry.
+
+A suit loadout follows the same two rules. The suit itself has to resolve, because the
+grade, the mounts and every stat come from it, so an unknown `SuitName` throws
+`TypeError` — as does a structurally impossible event, two mounts differing only in case
+among them. Everything else the catalogues cannot answer is left out of the loadout and
+reported by `loadout.importOutcomes`: an unknown weapon, an unusable `Class`, a
+`SlotName` the suit does not carry and a weapon the mount refuses each leave that mount
+without a weapon, while an unknown recipe and a recipe fitted to the other equipment — a
+suit recipe under `WeaponMods`, or the reverse — are not applied. Each outcome names the
+mount the event wrote, or `null` for a modification on the suit itself.
 
 ## Next
 

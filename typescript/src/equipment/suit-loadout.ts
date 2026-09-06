@@ -37,14 +37,19 @@ import {
 } from './weapons.js';
 
 /**
- * The two recipes whose whole effect is a pair of figures on the weapon record.
+ * Reload Speed, whose whole effect is the second figure of `PersonalWeapon.reloadTime`.
  *
- * Reload Speed and Scope carry no modifier, so a fitted one is reported as a flag —
- * {@link FittedPersonalWeapon.reloadSpeed} and {@link FittedPersonalWeapon.scope} — and
- * the second figure of `PersonalWeapon.reloadTime` or `PersonalWeapon.scopeMagnification`
- * is what it selects.
+ * The recipe carries no modifier, so a fitted one is reported as
+ * {@link FittedPersonalWeapon.reloadSpeed} instead.
  */
 const RELOAD_SPEED_SYMBOL = 'weapon_reloadspeed';
+
+/**
+ * Scope, whose whole effect is the second figure of `PersonalWeapon.scopeMagnification`.
+ *
+ * The recipe carries no modifier, so a fitted one is reported as
+ * {@link FittedPersonalWeapon.scope} instead.
+ */
 const SCOPE_SYMBOL = 'weapon_scope';
 
 /** One weapon entry in a journal suit-loadout event. */
@@ -98,13 +103,15 @@ export interface FittedPersonalModification {
     /** The symbol the event wrote, e.g. `"weapon_range"`. */
     readonly journalSymbol: string;
     /**
-     * The recipe key, e.g. `"weapon_range_kinetic"`.
+     * The recipe key, e.g. `"weapon_range_kinetic"`, ready to index
+     * `PERSONAL_MODIFICATIONS` and `PERSONAL_MODIFICATION_COSTS`.
      *
      * @remarks
-     * This is what `PERSONAL_MODIFICATIONS` and `PERSONAL_MODIFICATION_COSTS` are keyed
-     * by. It differs from {@link journalSymbol} for the three recipes whose material
-     * cost depends on the weapon's technology; `equipment/modification-journal` is the
-     * lookup that settles them, and the weapon at the mount is what settles it.
+     * It is {@link journalSymbol} trimmed and lower-cased, which is how both catalogues
+     * key a recipe. Greater Range, Headshot Damage and Improved Hip Fire Accuracy carry
+     * a Kinetic, a Laser and a Plasma recipe each, and the journal writes one symbol for
+     * all three, so there the key also gains the suffix the weapon at the mount settles;
+     * `equipment/modification-journal` is that lookup.
      */
     readonly symbol: string;
     /** The recipe itself. */
@@ -130,7 +137,8 @@ export interface FittedPersonalWeapon {
      * This includes the suit's own modifiers that name a stat the weapon carries: Extra
      * Ammo Capacity is a suit modification and multiplies a *weapon's* `reserveAmmo`, so
      * one list answers for the weapon and a consumer does not have to know which
-     * equipment the recipe sits on.
+     * equipment the recipe sits on. That is also why nothing is ever concatenated onto
+     * it: adding {@link SuitLoadout.modifiers} multiplies those factors in a second time.
      */
     readonly modifiers: readonly PersonalModifier[];
     /** Whether Reload Speed is fitted, which selects `weapon.reloadTime.upgraded`. */
@@ -145,27 +153,32 @@ export interface FittedPersonalWeapon {
  * Something an event states that the import could not use.
  *
  * @remarks
- * An event is taken as far as the catalogues allow: an entry that names a weapon, a
- * mount, a grade or a recipe the catalogues do not carry is left out of the loadout and
- * reported here. Only the suit itself is refused outright, because nothing else in the
- * event stands without it.
+ * An event is taken as far as the catalogues allow. Every outcome reports one entry the
+ * import left out — a weapon it does not fit, or a modification it does not apply — so
+ * the loadout holds what the catalogues answer for. Only the suit itself is refused
+ * outright, because nothing else in the event stands without it.
  */
 export interface SuitLoadoutImportOutcome {
     /**
-     * What the import could not use:
+     * Why the entry is left out:
      *
-     * - `unknownWeapon` — no catalogue weapon answers to `ModuleName`, so the mount is
-     *   empty.
-     * - `unknownMount` — the suit carries no mount by that `SlotName`, so the entry is
-     *   left out.
+     * - `unknownWeapon` — no catalogue weapon answers to `ModuleName`.
+     * - `unknownMount` — the suit carries no mount by that `SlotName`.
      * - `refusedMount` — the weapon resolves, and the mount does not take its kind: a
      *   primary weapon in the secondary mount, or the reverse.
      * - `unknownGrade` — `Class` is not an integer from 1 through 5, so the weapon has
-     *   no stats to report and the mount is empty.
-     * - `unknownModification` — no recipe answers to the symbol, so it moves nothing.
+     *   no stats to report.
+     * - `unknownModification` — no recipe answers to the symbol.
+     * - `refusedModification` — the recipe resolves, and it belongs to the other
+     *   equipment: a suit recipe under `WeaponMods`, or a weapon recipe under `SuitMods`.
      */
     readonly action:
-        'unknownWeapon' | 'unknownMount' | 'refusedMount' | 'unknownGrade' | 'unknownModification';
+        | 'unknownWeapon'
+        | 'unknownMount'
+        | 'refusedMount'
+        | 'unknownGrade'
+        | 'unknownModification'
+        | 'refusedModification';
     /**
      * The mount the event named, in its own spelling, or `null` for a modification on
      * the suit itself.
@@ -206,12 +219,21 @@ export interface SuitLoadout {
      * stat; Extra Ammo Capacity names a weapon's `reserveAmmo` and Reduced Tool Battery
      * Consumption names a tool's `toolEnergyDrain`. `applyPersonalModifiers` reads one
      * stat at a time, so pass the base the stat belongs to and the rest are skipped.
+     *
+     * **Never concatenate this list with a weapon's own.**
+     * {@link FittedPersonalWeapon.modifiers} already carries the suit modifiers that act
+     * on that weapon, so a joined list multiplies them in twice: the reserve of a weapon
+     * behind Extra Ammo Capacity reads 1.5× from either list alone, and 2.25× from both.
+     * Use the weapon's list for a weapon stat, and this one for a suit or tool stat.
      */
     readonly modifiers: readonly PersonalModifier[];
     /** The weapon at each occupied mount, in the order the event lists them. */
     readonly weapons: readonly FittedPersonalWeapon[];
-    /** Everything the event stated that the catalogues could not resolve. */
-    readonly outcomes: readonly SuitLoadoutImportOutcome[];
+    /**
+     * Everything the event stated that the import left out, as
+     * `ships/ship-loadout` reports its own import changes.
+     */
+    readonly importOutcomes: readonly SuitLoadoutImportOutcome[];
 }
 
 /**
@@ -227,7 +249,7 @@ export interface SuitLoadout {
  *
  * The suit has to resolve: an unknown `SuitName` is a `TypeError`, because the grade,
  * the mounts and every stat come from it. Everything else the catalogues cannot resolve
- * is left out of the loadout and reported by {@link SuitLoadout.outcomes}, so one
+ * is left out of the loadout and reported by {@link SuitLoadout.importOutcomes}, so one
  * unknown weapon does not cost a caller the rest of the event.
  *
  * `SuitID`, `SuitModuleID`, `LoadoutID` and `LoadoutName` are kept: they name the items
@@ -329,11 +351,11 @@ export function parseSuitLoadout(event: SuitLoadoutEvent): SuitLoadout {
         modifications,
         modifiers: modifications.flatMap(({ modification }) => modification.modifiers),
         weapons: fitWeapons(event.Modules, suit, modifications, outcomes),
-        outcomes,
+        importOutcomes: outcomes,
     });
 }
 
-/** Resolve one equipment's stated modifications, reporting the symbols that miss. */
+/** Resolve one equipment's stated modifications, reporting the symbols it leaves out. */
 function resolveModifications(
     stated: readonly string[] | undefined,
     label: string,
@@ -346,15 +368,25 @@ function resolveModifications(
         throw new TypeError(`${label} must be an array, received ${describeValue(stated)}`);
     }
 
+    const target = weapon ? 'weapon' : 'suit';
     const fitted: FittedPersonalModification[] = [];
     for (const [index, journalSymbol] of stated.entries()) {
         requireString(journalSymbol, `${label}[${index}]`);
-        const symbol = weapon
-            ? resolvePersonalModificationForWeapon(weapon.symbol, journalSymbol)
-            : journalSymbol;
+        // Both recipe catalogues key a lower-cased, trimmed symbol, and a collision
+        // resolves against that same spelling, so the key is what a fit reports.
+        const symbol = normalizeKey(
+            weapon
+                ? resolvePersonalModificationForWeapon(weapon.symbol, journalSymbol)
+                : journalSymbol,
+            `${label}[${index}]`,
+        );
         const modification = getPersonalModification(symbol);
         if (!modification) {
             outcomes.push({ action: 'unknownModification', mount, sourceSymbol: journalSymbol });
+            continue;
+        }
+        if (modification.target !== target) {
+            outcomes.push({ action: 'refusedModification', mount, sourceSymbol: journalSymbol });
             continue;
         }
         fitted.push({ journalSymbol, symbol, modification });
@@ -423,7 +455,7 @@ function fitWeapons(
             // A suit recipe that names a stat the weapon carries acts on the weapon:
             // Extra Ammo Capacity is fitted to the suit and multiplies `reserveAmmo`.
             ...suitModifications.flatMap(({ modification }) =>
-                modification.modifiers.filter((modifier) => modifier.stat in weapon),
+                modification.modifiers.filter((modifier) => Object.hasOwn(weapon, modifier.stat)),
             ),
         ];
         const reloadSpeed = modifications.some(({ symbol }) => symbol === RELOAD_SPEED_SYMBOL);
@@ -436,7 +468,8 @@ function fitWeapons(
             modifiers,
             reloadSpeed,
             scope: modifications.some(({ symbol }) => symbol === SCOPE_SYMBOL),
-            // The grade is checked above, so this weapon's stats resolve.
+            // Every weapon carries all five grades — `schemas/equipment/catalogues.json`
+            // requires them — and the grade is checked above, so the stats resolve.
             metrics: personalWeaponMetrics(weapon, grade, modifiers, { reloadSpeed })!,
         });
     }

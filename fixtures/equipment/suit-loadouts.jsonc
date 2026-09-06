@@ -100,14 +100,20 @@
           {
             "SlotName": " primaryweapon1 ",
             "ModuleName": "WPN_M_AssaultRifle_Kinetic_FAuto",
-            "Class": 3
+            "Class": 3,
+            "WeaponMods": [
+              "WEAPON_ClipSize"
+            ]
           }
         ]
       },
       "mounts": [
         "PrimaryWeapon1"
       ],
-      "outcomes": []
+      "modifications": [
+        "weapon_clipsize"
+      ],
+      "importOutcomes": []
     },
     "unknownWeapon": {
       "event": {
@@ -121,7 +127,8 @@
         ]
       },
       "mounts": [],
-      "outcomes": [
+      "modifications": [],
+      "importOutcomes": [
         {
           "action": "unknownWeapon",
           "mount": "PrimaryWeapon1",
@@ -141,7 +148,8 @@
         ]
       },
       "mounts": [],
-      "outcomes": [
+      "modifications": [],
+      "importOutcomes": [
         {
           "action": "unknownMount",
           "mount": "PrimaryWeapon1",
@@ -161,7 +169,8 @@
         ]
       },
       "mounts": [],
-      "outcomes": [
+      "modifications": [],
+      "importOutcomes": [
         {
           "action": "refusedMount",
           "mount": "SecondaryWeapon",
@@ -181,7 +190,8 @@
         ]
       },
       "mounts": [],
-      "outcomes": [
+      "modifications": [],
+      "importOutcomes": [
         {
           "action": "unknownGrade",
           "mount": "PrimaryWeapon1",
@@ -210,7 +220,10 @@
       "mounts": [
         "PrimaryWeapon1"
       ],
-      "outcomes": [
+      "modifications": [
+        "weapon_clipsize"
+      ],
+      "importOutcomes": [
         {
           "action": "unknownModification",
           "mount": null,
@@ -220,6 +233,40 @@
           "action": "unknownModification",
           "mount": "PrimaryWeapon1",
           "sourceSymbol": "weapon_futurerecipe"
+        }
+      ]
+    },
+    "refusedModification": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "SuitMods": [
+          "weapon_clipsize"
+        ],
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 5,
+            "WeaponMods": [
+              "suit_nightvision"
+            ]
+          }
+        ]
+      },
+      "mounts": [
+        "PrimaryWeapon1"
+      ],
+      "modifications": [],
+      "importOutcomes": [
+        {
+          "action": "refusedModification",
+          "mount": null,
+          "sourceSymbol": "weapon_clipsize"
+        },
+        {
+          "action": "refusedModification",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "suit_nightvision"
         }
       ]
     }
@@ -298,5 +345,36 @@
         }
       ]
     }
+  },
+  "recipeSpelling": {
+    "event": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": [
+        {
+          "SlotName": "PrimaryWeapon1",
+          "ModuleName": "wpn_m_launcher_rocket_sauto",
+          "Class": 5,
+          "WeaponMods": [
+            "  Weapon_ReloadSpeed  ",
+            "WEAPON_SCOPE",
+            "Weapon_HeadshotDamage"
+          ]
+        }
+      ]
+    },
+    "mount": "PrimaryWeapon1",
+    "journalSymbols": [
+      "  Weapon_ReloadSpeed  ",
+      "WEAPON_SCOPE",
+      "Weapon_HeadshotDamage"
+    ],
+    "modifications": [
+      "weapon_reloadspeed",
+      "weapon_scope",
+      "weapon_headshotdamage_kinetic"
+    ],
+    "reloadSpeed": true,
+    "scope": true,
+    "sustainedDamagePerSecond": 42.39
   }
 }
