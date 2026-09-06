@@ -4,12 +4,13 @@ title: Reading a player journal
 
 # Reading a player journal
 
-Elite Dangerous writes a newline-delimited JSON journal. Three of its events carry most
+Elite Dangerous writes a newline-delimited JSON journal. Four of its events carry most
 of what this library is for: `Loadout` describes the ship the commander is flying,
-`FSDJump` (and `Location`, and `FSDTarget`) names the system they are in, and `Scan`
-describes a body they have just resolved.
+`SuitLoadout` (and `SwitchSuitLoadout`, and `CreateSuitLoadout`) describes the suit they
+walk in, `FSDJump` (and `Location`, and `FSDTarget`) names the system they are in, and
+`Scan` describes a body they have just resolved.
 
-This guide turns all three into library objects, and covers what to do when the game
+This guide turns all four into library objects, and covers what to do when the game
 hands you something the catalogues do not recognise.
 
 ## Reading the journal
@@ -31,6 +32,10 @@ for await (const line of lines) {
     switch (event.event) {
         case 'Loadout':
             // → a ShipLoadout, below
+            break;
+        case 'SuitLoadout':
+        case 'SwitchSuitLoadout':
+            // → a SuitLoadout, below
             break;
         case 'FSDJump':
         case 'Location':
@@ -101,6 +106,73 @@ These views are snapshots, not live handles. After `setModule` or `removeModule`
 A journal's purchase figures remain separate from catalogue retail. For the source record,
 export options and edit behavior, see
 [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid).
+
+## `SuitLoadout` → a suit and its weapons
+
+`parseSuitLoadout` takes the event as the game wrote it. The game writes the same payload
+under three names — `SuitLoadout`, `SwitchSuitLoadout` and `CreateSuitLoadout` — so pass
+any of the three.
+
+```ts
+import {
+    parseSuitLoadout,
+    type SuitLoadoutEvent,
+} from '@elite-dangerous-almanac/core/equipment/suit-loadout';
+
+declare const event: SuitLoadoutEvent;
+
+const loadout = parseSuitLoadout(event);
+
+loadout.suit.name; // -> 'Dominator Suit'
+loadout.grade; // -> 5
+loadout.name; // -> 'Double Trouble'
+
+for (const fitted of loadout.weapons) {
+    fitted.mount; // -> 'PrimaryWeapon1', 'PrimaryWeapon2', 'SecondaryWeapon'
+    fitted.weapon.name; // -> 'Karma L-6'
+    fitted.metrics.sustainedDamagePerSecond; // -> what a long fight sees
+}
+```
+
+A mount the event leaves empty holds no weapon, so read one with `find` rather than by
+position:
+
+```ts
+import type { SuitLoadout } from '@elite-dangerous-almanac/core/equipment/suit-loadout';
+declare const loadout: SuitLoadout; // the `parseSuitLoadout(event)` from above
+
+loadout.weapons.find((fitted) => fitted.mount === 'SecondaryWeapon')?.weapon.name;
+```
+
+### What a modification changes
+
+A loadout carries the recipes the game states, and the modifiers those recipes apply.
+`applyPersonalModifiers` folds them onto a catalogue base, one stat at a time.
+
+```ts
+import { applyPersonalModifiers } from '@elite-dangerous-almanac/core/equipment/engineering';
+import type { SuitLoadout } from '@elite-dangerous-almanac/core/equipment/suit-loadout';
+declare const loadout: SuitLoadout; // the `parseSuitLoadout(event)` from above
+
+applyPersonalModifiers('shieldRegeneration', loadout.stats.shieldRegeneration, loadout.modifiers);
+
+const fitted = loadout.weapons[0]!;
+applyPersonalModifiers('magazineSize', fitted.weapon.magazineSize, fitted.modifiers);
+applyPersonalModifiers('reserveAmmo', fitted.weapon.reserveAmmo, fitted.modifiers);
+```
+
+A weapon's own list carries every modifier that acts on it, the suit's included: Extra
+Ammo Capacity is fitted to the suit and multiplies a weapon's `reserveAmmo`, so the line
+above is right whichever equipment carries the recipe. Two weapon recipes carry no
+modifier at all, because their whole effect is a second figure on the weapon record:
+`fitted.reloadSpeed` selects `weapon.reloadTime.upgraded` and `fitted.scope` selects
+`weapon.scopeMagnification.upgraded`. `fitted.metrics` already reads the reload.
+
+The journal omits the technology suffix from three weapon recipes, so the symbol it
+writes for Greater Range, Headshot Damage and Improved Hip Fire Accuracy names three
+recipes with different material costs. The weapon at the mount settles which one, and
+`fitted.modifications` reports both spellings: `journalSymbol` as the event wrote it, and
+`symbol` as `PERSONAL_MODIFICATIONS` and `PERSONAL_MODIFICATION_COSTS` key it.
 
 ## `FSDJump` → a system
 
@@ -287,6 +359,14 @@ build.importOutcomes; // exact import changes for display or logging
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 sets the validation and calculation patterns out in full.
+
+A suit loadout is taken as far as the catalogues allow. The suit itself has to resolve,
+because the grade, the mounts and every stat come from it, so an unknown `SuitName`
+throws `TypeError`. Everything else the catalogues cannot answer is left out of the
+loadout and reported by `loadout.outcomes`: an unknown weapon or an unusable `Class`
+leaves the mount empty, a `SlotName` the suit does not carry or a weapon the mount
+refuses drops the entry, and an unknown recipe moves nothing. Each outcome names the
+mount the event wrote, or `null` for a modification on the suit itself.
 
 A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
 `SyntaxError`, and a structurally impossible event — two slot keys differing only in

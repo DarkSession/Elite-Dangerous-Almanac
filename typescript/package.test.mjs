@@ -1095,9 +1095,14 @@ test('every JavaScript artifact references a source map without embedded sources
             `${mapFile.pathname} retains an unused name`,
         );
     }
+    // The published maps are part of the package weight, and every module adds to them.
+    // The ceiling is raised deliberately, against a fresh measurement, when a module
+    // lands — never far enough that a build change adding hundreds of kilobytes still
+    // passes quietly.
+    const SOURCE_MAP_BUDGET = 272 * 1024;
     assert.ok(
-        sourceMapBytes < 256 * 1024,
-        `TypeScript source maps are ${sourceMapBytes} bytes; expected less than 256 KiB`,
+        sourceMapBytes < SOURCE_MAP_BUDGET,
+        `TypeScript source maps are ${sourceMapBytes} bytes; expected less than ${SOURCE_MAP_BUDGET / 1024} KiB`,
     );
 });
 

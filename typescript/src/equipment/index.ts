@@ -59,3 +59,13 @@ export {
 } from './modifications.js';
 
 export { resolvePersonalModificationForWeapon } from './modification-journal.js';
+
+export {
+    parseSuitLoadout,
+    type FittedPersonalModification,
+    type FittedPersonalWeapon,
+    type SuitLoadout,
+    type SuitLoadoutEvent,
+    type SuitLoadoutImportOutcome,
+    type SuitLoadoutModuleEvent,
+} from './suit-loadout.js';

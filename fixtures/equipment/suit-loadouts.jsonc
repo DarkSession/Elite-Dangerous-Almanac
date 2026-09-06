@@ -1,0 +1,302 @@
+/*
+ * Pins what `parseSuitLoadout` makes of a journal suit loadout: the identities, grades,
+ * modifications and per-second weapon figures it resolves from the Dominator Suit capture beside
+ * it, the outcome it reports for each thing a catalogue cannot answer, and the events it refuses
+ * outright.
+ * The capture is documented in its own header. The `imports` and `refusals` events are written for
+ * this fixture, not captured: each one states the single field under test.
+ * Every damage figure is rounded to three decimals, as the other personal-equipment metrics
+ * fixtures are.
+ */
+{
+  "capture": {
+    "source": "fixtures/equipment/journal-suit-loadout-dominator.jsonc",
+    "switchSource": "fixtures/equipment/journal-switch-suit-loadout-dominator.jsonc",
+    "suitFamily": "tacticalsuit",
+    "suitName": "Dominator Suit",
+    "grade": 5,
+    "suitId": 1700482757598197,
+    "loadoutId": 4293000007,
+    "name": "Double Trouble",
+    "modifications": [
+      "suit_nightvision",
+      "suit_increasedshieldregen",
+      "suit_improvedarmourrating",
+      "suit_increasedammoreserves"
+    ],
+    "shieldRegeneration": 3.1,
+    "armourKineticResistance": 0.325,
+    "weapons": [
+      {
+        "mount": "PrimaryWeapon1",
+        "moduleId": 1701103603778031,
+        "symbol": "wpn_m_launcher_rocket_sauto",
+        "name": "Karma L-6",
+        "grade": 5,
+        "modifications": [
+          "weapon_handling",
+          "weapon_reloadspeed",
+          "weapon_backpackreloading",
+          "weapon_clipsize"
+        ],
+        "reloadSpeed": true,
+        "scope": false,
+        "magazineSize": 3,
+        "reserveAmmo": 12,
+        "damagePerShot": 119.2,
+        "headshotDamagePerShot": 119.2,
+        "damagePerSecond": 119.2,
+        "sustainedDamagePerSecond": 53.986
+      },
+      {
+        "mount": "PrimaryWeapon2",
+        "moduleId": 1869867618670051,
+        "symbol": "wpn_m_launcher_rocket_sauto",
+        "name": "Karma L-6",
+        "grade": 5,
+        "modifications": [
+          "weapon_handling",
+          "weapon_reloadspeed",
+          "weapon_backpackreloading",
+          "weapon_clipsize"
+        ],
+        "reloadSpeed": true,
+        "scope": false,
+        "magazineSize": 3,
+        "reserveAmmo": 12,
+        "damagePerShot": 119.2,
+        "headshotDamagePerShot": 119.2,
+        "damagePerSecond": 119.2,
+        "sustainedDamagePerSecond": 53.986
+      },
+      {
+        "mount": "SecondaryWeapon",
+        "moduleId": 1717600203841376,
+        "symbol": "wpn_s_pistol_plasma_charged",
+        "name": "Manticore Tormentor",
+        "grade": 5,
+        "modifications": [
+          "weapon_handling",
+          "weapon_accuracy_plasma",
+          "weapon_backpackreloading",
+          "weapon_stability"
+        ],
+        "reloadSpeed": false,
+        "scope": false,
+        "magazineSize": 6,
+        "reserveAmmo": 108,
+        "damagePerShot": 22.35,
+        "headshotDamagePerShot": 44.7,
+        "damagePerSecond": 37.325,
+        "sustainedDamagePerSecond": 24.408
+      }
+    ]
+  },
+  "imports": {
+    "mountSpelling": {
+      "event": {
+        "SuitName": "TacticalSuit_Class5",
+        "Modules": [
+          {
+            "SlotName": " primaryweapon1 ",
+            "ModuleName": "WPN_M_AssaultRifle_Kinetic_FAuto",
+            "Class": 3
+          }
+        ]
+      },
+      "mounts": [
+        "PrimaryWeapon1"
+      ],
+      "outcomes": []
+    },
+    "unknownWeapon": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_futureweapon",
+            "Class": 5
+          }
+        ]
+      },
+      "mounts": [],
+      "outcomes": [
+        {
+          "action": "unknownWeapon",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "wpn_m_futureweapon"
+        }
+      ]
+    },
+    "unknownMount": {
+      "event": {
+        "SuitName": "flightsuit",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 1
+          }
+        ]
+      },
+      "mounts": [],
+      "outcomes": [
+        {
+          "action": "unknownMount",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "wpn_m_assaultrifle_kinetic_fauto"
+        }
+      ]
+    },
+    "refusedMount": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "SecondaryWeapon",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 5
+          }
+        ]
+      },
+      "mounts": [],
+      "outcomes": [
+        {
+          "action": "refusedMount",
+          "mount": "SecondaryWeapon",
+          "sourceSymbol": "wpn_m_assaultrifle_kinetic_fauto"
+        }
+      ]
+    },
+    "unknownGrade": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 6
+          }
+        ]
+      },
+      "mounts": [],
+      "outcomes": [
+        {
+          "action": "unknownGrade",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "wpn_m_assaultrifle_kinetic_fauto"
+        }
+      ]
+    },
+    "unknownModification": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "SuitMods": [
+          "suit_futurerecipe"
+        ],
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 5,
+            "WeaponMods": [
+              "weapon_futurerecipe",
+              "weapon_clipsize"
+            ]
+          }
+        ]
+      },
+      "mounts": [
+        "PrimaryWeapon1"
+      ],
+      "outcomes": [
+        {
+          "action": "unknownModification",
+          "mount": null,
+          "sourceSymbol": "suit_futurerecipe"
+        },
+        {
+          "action": "unknownModification",
+          "mount": "PrimaryWeapon1",
+          "sourceSymbol": "weapon_futurerecipe"
+        }
+      ]
+    }
+  },
+  "refusals": {
+    "notAnObject": null,
+    "unknownSuit": {
+      "SuitName": "notasuit_class5"
+    },
+    "suitNameNotAString": {
+      "SuitName": 5
+    },
+    "modulesNotAnArray": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": "PrimaryWeapon1"
+    },
+    "moduleNotAnObject": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": [
+        "PrimaryWeapon1"
+      ]
+    },
+    "slotNameNotAString": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": [
+        {
+          "SlotName": 1,
+          "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+          "Class": 5
+        }
+      ]
+    },
+    "moduleNameNotAString": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": [
+        {
+          "SlotName": "PrimaryWeapon1",
+          "ModuleName": 1,
+          "Class": 5
+        }
+      ]
+    },
+    "repeatedMount": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": [
+        {
+          "SlotName": "PrimaryWeapon1",
+          "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+          "Class": 5
+        },
+        {
+          "SlotName": "primaryweapon1",
+          "ModuleName": "wpn_m_submachinegun_kinetic_fauto",
+          "Class": 5
+        }
+      ]
+    },
+    "suitModsNotAnArray": {
+      "SuitName": "tacticalsuit_class5",
+      "SuitMods": "suit_nightvision"
+    },
+    "suitModNotAString": {
+      "SuitName": "tacticalsuit_class5",
+      "SuitMods": [
+        1
+      ]
+    },
+    "weaponModsNotAnArray": {
+      "SuitName": "tacticalsuit_class5",
+      "Modules": [
+        {
+          "SlotName": "PrimaryWeapon1",
+          "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+          "Class": 5,
+          "WeaponMods": "weapon_clipsize"
+        }
+      ]
+    }
+  }
+}

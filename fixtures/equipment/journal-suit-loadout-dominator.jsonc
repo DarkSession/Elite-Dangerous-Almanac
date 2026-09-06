@@ -1,0 +1,80 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * A real Frontier journal `SuitLoadout` event for a grade-5 Dominator Suit under the loadout name
+ * "Double Trouble", with four suit modifications, a Karma L-6 in each primary mount and a
+ * Manticore Tormentor in the secondary mount, each weapon at grade 5 with four modifications.
+ *
+ * Its `SecondaryWeapon` states `weapon_accuracy`, the journal spelling that names a different
+ * recipe per weapon technology, so the capture also pins the collision the equipped weapon
+ * settles.
+ *
+ * Contributed 2026-09-06 UTC by the repository owner from their own commander, with no upstream
+ * project. It reached this repository as pasted text and is stored re-indented and otherwise
+ * unaltered, so the checksum attests to the stored file rather than to a file Frontier wrote.
+ * Stored SHA-256 `228f761666d93e90e47b7b6fef74ed946b2b4fd138566695d5a12d7295ef556e`.
+ *
+ * `SuitID`, `SuitModuleID`, `LoadoutID`, `LoadoutName` and `timestamp` are kept — they describe a
+ * suit, its weapons and the loadout slot they sit in, and nothing in the event names a person.
+ *
+ * The capture is Elite Dangerous game output and remains the property of Frontier Developments
+ * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+ *
+ * A stored checksum here is of the payload alone, taken with this header comment removed.
+ */
+{
+  "timestamp": "2026-09-05T19:53:01Z",
+  "event": "SuitLoadout",
+  "SuitID": 1700482757598197,
+  "SuitName": "tacticalsuit_class5",
+  "SuitName_Localised": "$TacticalSuit_Class1_Name;",
+  "SuitMods": [
+    "suit_nightvision",
+    "suit_increasedshieldregen",
+    "suit_improvedarmourrating",
+    "suit_increasedammoreserves"
+  ],
+  "LoadoutID": 4293000007,
+  "LoadoutName": "Double Trouble",
+  "Modules": [
+    {
+      "SlotName": "PrimaryWeapon1",
+      "SuitModuleID": 1701103603778031,
+      "ModuleName": "wpn_m_launcher_rocket_sauto",
+      "ModuleName_Localised": "Karma L-6",
+      "Class": 5,
+      "WeaponMods": [
+        "weapon_handling",
+        "weapon_reloadspeed",
+        "weapon_backpackreloading",
+        "weapon_clipsize"
+      ]
+    },
+    {
+      "SlotName": "PrimaryWeapon2",
+      "SuitModuleID": 1869867618670051,
+      "ModuleName": "wpn_m_launcher_rocket_sauto",
+      "ModuleName_Localised": "Karma L-6",
+      "Class": 5,
+      "WeaponMods": [
+        "weapon_handling",
+        "weapon_reloadspeed",
+        "weapon_backpackreloading",
+        "weapon_clipsize"
+      ]
+    },
+    {
+      "SlotName": "SecondaryWeapon",
+      "SuitModuleID": 1717600203841376,
+      "ModuleName": "wpn_s_pistol_plasma_charged",
+      "ModuleName_Localised": "Manticore Tormentor",
+      "Class": 5,
+      "WeaponMods": [
+        "weapon_handling",
+        "weapon_accuracy",
+        "weapon_backpackreloading",
+        "weapon_stability"
+      ]
+    }
+  ]
+}
