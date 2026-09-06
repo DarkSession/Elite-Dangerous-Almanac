@@ -334,9 +334,10 @@ export function parseSuitLoadout(event: SuitLoadoutEvent): SuitLoadout {
     const stats = getSuitGrade(suit, grade)!;
 
     const outcomes: SuitLoadoutImportOutcome[] = [];
+    const suitModsLabel = 'parseSuitLoadout: event.SuitMods';
     const modifications = resolveModifications(
-        statedModifications(event.SuitMods, 'parseSuitLoadout: event.SuitMods'),
-        'parseSuitLoadout: event.SuitMods',
+        statedModifications(event.SuitMods, suitModsLabel),
+        suitModsLabel,
         null,
         null,
         outcomes,
@@ -428,7 +429,8 @@ function fitWeapons(
         }
         const slotName = requireString(module.SlotName, `${label}.SlotName`);
         const weaponSymbol = requireString(module.ModuleName, `${label}.ModuleName`);
-        const statedMods = statedModifications(module.WeaponMods, `${label}.WeaponMods`);
+        const weaponModsLabel = `${label}.WeaponMods`;
+        const statedMods = statedModifications(module.WeaponMods, weaponModsLabel);
         const key = normalizeKey(slotName, `${label}.SlotName`);
         if (taken.has(key)) {
             throw new TypeError(`${label}.SlotName repeats mount "${truncate(slotName)}"`);
@@ -457,7 +459,7 @@ function fitWeapons(
 
         const modifications = resolveModifications(
             statedMods,
-            `${label}.WeaponMods`,
+            weaponModsLabel,
             weapon,
             slotName,
             outcomes,

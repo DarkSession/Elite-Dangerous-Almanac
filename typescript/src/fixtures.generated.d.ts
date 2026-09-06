@@ -705,60 +705,117 @@ type FixtureEquipmentSuitLoadouts = {
     };
     refusals: {
         moduleNameNotAString: {
-            Modules: {
-                Class: number;
-                ModuleName: number;
-                SlotName: string;
-            }[];
-            SuitName: string;
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: number;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
         };
         moduleNotAnObject: {
-            Modules: string[];
-            SuitName: string;
+            event: {
+                Modules: string[];
+                SuitName: string;
+            };
+            message: string;
         };
         modulesNotAnArray: {
-            Modules: string;
-            SuitName: string;
+            event: {
+                Modules: string;
+                SuitName: string;
+            };
+            message: string;
         };
-        notAnObject: null;
+        notAnObject: {
+            event: null;
+            message: string;
+        };
         repeatedMount: {
-            Modules: {
-                Class: number;
-                ModuleName: string;
-                SlotName: string;
-            }[];
-            SuitName: string;
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
         };
         slotNameNotAString: {
-            Modules: {
-                Class: number;
-                ModuleName: string;
-                SlotName: number;
-            }[];
-            SuitName: string;
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: number;
+                }[];
+                SuitName: string;
+            };
+            message: string;
         };
         suitModNotAString: {
-            SuitMods: number[];
-            SuitName: string;
+            event: {
+                SuitMods: number[];
+                SuitName: string;
+            };
+            message: string;
         };
         suitModsNotAnArray: {
-            SuitMods: string;
-            SuitName: string;
+            event: {
+                SuitMods: string;
+                SuitName: string;
+            };
+            message: string;
         };
         suitNameNotAString: {
-            SuitName: number;
+            event: {
+                SuitName: number;
+            };
+            message: string;
         };
         unknownSuit: {
-            SuitName: string;
+            event: {
+                SuitName: string;
+            };
+            message: string;
+        };
+        weaponModNotAStringOnAnUnusableGrade: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: number[];
+                }[];
+                SuitName: string;
+            };
+            message: string;
         };
         weaponModsNotAnArray: {
-            Modules: {
-                Class: number;
-                ModuleName: string;
-                SlotName: string;
-                WeaponMods: string;
-            }[];
-            SuitName: string;
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        weaponModsNotAnArrayOnAnUnknownWeapon: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
         };
     };
 };

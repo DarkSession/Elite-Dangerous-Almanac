@@ -1604,120 +1604,223 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "Modules": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "Class": { "type": "integer" },
-                      "ModuleName": { "type": "integer" },
-                      "SlotName": { "type": "string" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "Class": { "type": "integer" },
+                          "ModuleName": { "type": "integer" },
+                          "SlotName": { "type": "string" }
+                        },
+                        "required": ["Class", "ModuleName", "SlotName"]
+                      }
                     },
-                    "required": ["Class", "ModuleName", "SlotName"]
-                  }
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["Modules", "SuitName"]
                 },
-                "SuitName": { "type": "string" }
+                "message": { "type": "string" }
               },
-              "required": ["Modules", "SuitName"]
+              "required": ["event", "message"]
             },
             "moduleNotAnObject": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "Modules": { "type": "array", "items": { "type": "string" } },
-                "SuitName": { "type": "string" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["Modules", "SuitName"]
+                },
+                "message": { "type": "string" }
               },
-              "required": ["Modules", "SuitName"]
+              "required": ["event", "message"]
             },
             "modulesNotAnArray": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "Modules": { "type": "string" },
-                "SuitName": { "type": "string" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": { "type": "string" },
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["Modules", "SuitName"]
+                },
+                "message": { "type": "string" }
               },
-              "required": ["Modules", "SuitName"]
+              "required": ["event", "message"]
             },
-            "notAnObject": { "type": "null" },
-            "repeatedMount": { "$ref": "#/definitions/shared4e14f41d253e" },
+            "notAnObject": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "event": { "type": "null" },
+                "message": { "type": "string" }
+              },
+              "required": ["event", "message"]
+            },
+            "repeatedMount": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "event": { "$ref": "#/definitions/shared4e14f41d253e" },
+                "message": { "type": "string" }
+              },
+              "required": ["event", "message"]
+            },
             "slotNameNotAString": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "Modules": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "Class": { "type": "integer" },
-                      "ModuleName": { "type": "string" },
-                      "SlotName": { "type": "integer" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "Class": { "type": "integer" },
+                          "ModuleName": { "type": "string" },
+                          "SlotName": { "type": "integer" }
+                        },
+                        "required": ["Class", "ModuleName", "SlotName"]
+                      }
                     },
-                    "required": ["Class", "ModuleName", "SlotName"]
-                  }
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["Modules", "SuitName"]
                 },
-                "SuitName": { "type": "string" }
+                "message": { "type": "string" }
               },
-              "required": ["Modules", "SuitName"]
+              "required": ["event", "message"]
             },
             "suitModNotAString": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "SuitMods": { "type": "array", "items": { "type": "integer" } },
-                "SuitName": { "type": "string" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "SuitMods": {
+                      "type": "array",
+                      "items": { "type": "integer" }
+                    },
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["SuitMods", "SuitName"]
+                },
+                "message": { "type": "string" }
               },
-              "required": ["SuitMods", "SuitName"]
+              "required": ["event", "message"]
             },
             "suitModsNotAnArray": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "SuitMods": { "type": "string" },
-                "SuitName": { "type": "string" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "SuitMods": { "type": "string" },
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["SuitMods", "SuitName"]
+                },
+                "message": { "type": "string" }
               },
-              "required": ["SuitMods", "SuitName"]
+              "required": ["event", "message"]
             },
             "suitNameNotAString": {
               "type": "object",
               "additionalProperties": false,
-              "properties": { "SuitName": { "type": "integer" } },
-              "required": ["SuitName"]
+              "properties": {
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": { "SuitName": { "type": "integer" } },
+                  "required": ["SuitName"]
+                },
+                "message": { "type": "string" }
+              },
+              "required": ["event", "message"]
             },
             "unknownSuit": {
               "type": "object",
               "additionalProperties": false,
-              "properties": { "SuitName": { "type": "string" } },
-              "required": ["SuitName"]
+              "properties": {
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": { "SuitName": { "type": "string" } },
+                  "required": ["SuitName"]
+                },
+                "message": { "type": "string" }
+              },
+              "required": ["event", "message"]
             },
-            "weaponModsNotAnArray": {
+            "weaponModNotAStringOnAnUnusableGrade": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "Modules": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "Class": { "type": "integer" },
-                      "ModuleName": { "type": "string" },
-                      "SlotName": { "type": "string" },
-                      "WeaponMods": { "type": "string" }
+                "event": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "Modules": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "Class": { "type": "integer" },
+                          "ModuleName": { "type": "string" },
+                          "SlotName": { "type": "string" },
+                          "WeaponMods": {
+                            "type": "array",
+                            "items": { "type": "integer" }
+                          }
+                        },
+                        "required": [
+                          "Class",
+                          "ModuleName",
+                          "SlotName",
+                          "WeaponMods"
+                        ]
+                      }
                     },
-                    "required": [
-                      "Class",
-                      "ModuleName",
-                      "SlotName",
-                      "WeaponMods"
-                    ]
-                  }
+                    "SuitName": { "type": "string" }
+                  },
+                  "required": ["Modules", "SuitName"]
                 },
-                "SuitName": { "type": "string" }
+                "message": { "type": "string" }
               },
-              "required": ["Modules", "SuitName"]
+              "required": ["event", "message"]
+            },
+            "weaponModsNotAnArray": {
+              "$ref": "#/definitions/shared7034165f31ad"
+            },
+            "weaponModsNotAnArrayOnAnUnknownWeapon": {
+              "$ref": "#/definitions/shared7034165f31ad"
             }
           },
           "required": [
@@ -1731,7 +1834,9 @@
             "suitModsNotAnArray",
             "suitNameNotAString",
             "unknownSuit",
-            "weaponModsNotAnArray"
+            "weaponModNotAStringOnAnUnusableGrade",
+            "weaponModsNotAnArray",
+            "weaponModsNotAnArrayOnAnUnknownWeapon"
           ]
         }
       },
@@ -9392,6 +9497,17 @@
         "optMultiplier"
       ]
     },
+    "shared2985af036a23": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Class": { "type": "integer" },
+        "ModuleName": { "type": "string" },
+        "SlotName": { "type": "string" },
+        "WeaponMods": { "type": "string" }
+      },
+      "required": ["Class", "ModuleName", "SlotName", "WeaponMods"]
+    },
     "shared2a52d42245cc": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared8064b9491813" }
@@ -9541,6 +9657,15 @@
       },
       "required": ["hitPoints", "resistances"]
     },
+    "shared4bcb3d707c81": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Modules": { "$ref": "#/definitions/shared666e53b214a3" },
+        "SuitName": { "type": "string" }
+      },
+      "required": ["Modules", "SuitName"]
+    },
     "shared4cda89427f0f": {
       "type": "object",
       "additionalProperties": false,
@@ -9657,6 +9782,10 @@
       },
       "required": ["explosive", "kinetic", "thermal"]
     },
+    "shared666e53b214a3": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/shared2985af036a23" }
+    },
     "shared699fa56a25d4": {
       "type": "object",
       "additionalProperties": false,
@@ -9710,6 +9839,15 @@
         "SuitName": { "type": "string" }
       },
       "required": ["Modules", "SuitMods", "SuitName"]
+    },
+    "shared7034165f31ad": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "event": { "$ref": "#/definitions/shared4bcb3d707c81" },
+        "message": { "type": "string" }
+      },
+      "required": ["event", "message"]
     },
     "shared7481e15ca29a": {
       "type": "object",

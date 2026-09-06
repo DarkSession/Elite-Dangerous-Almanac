@@ -168,10 +168,14 @@ never joined: `[...loadout.modifiers, ...fitted.modifiers]` multiplies such a fa
 twice, and reads 18 rounds where the weapon holds 12. Use the weapon's list for a weapon
 stat, and the suit's for a suit or tool stat.
 
-Two weapon recipes carry no modifier at all, because their whole effect is a second
-figure on the weapon record: `fitted.reloadSpeed` selects `weapon.reloadTime.upgraded`
-and `fitted.scope` selects `weapon.scopeMagnification.upgraded`. `fitted.metrics` already
-reads the reload.
+A recipe in `fitted.modifications` need not appear in `fitted.modifiers`. Reload Speed
+and Scope carry no modifier because their whole effect is a second figure on the weapon
+record, so they are reported as flags instead: `fitted.reloadSpeed` selects
+`weapon.reloadTime.upgraded` and `fitted.scope` selects
+`weapon.scopeMagnification.upgraded`, and `fitted.metrics` already reads the reload.
+Others — Faster Handling, Stability, Stowed reloading, Improved Hip Fire Accuracy — carry
+none either, because the catalogues hold no stat for what they change, and they get no
+flag.
 
 Greater Range, Headshot Damage and Improved Hip Fire Accuracy each carry a Kinetic, a
 Laser and a Plasma recipe whose material costs differ, and the journal writes one symbol

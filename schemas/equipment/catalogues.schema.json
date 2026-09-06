@@ -342,7 +342,7 @@
       "type": "object",
       "minProperties": 1,
       "propertyNames": { "$ref": "#/definitions/recipeSymbol" },
-      "additionalProperties": { "$ref": "#/definitions/recipeSymbol" }
+      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
     }
   }
 }

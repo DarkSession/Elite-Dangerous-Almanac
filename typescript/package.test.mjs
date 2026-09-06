@@ -1096,10 +1096,10 @@ test('every JavaScript artifact references a source map without embedded sources
         );
     }
     // The published maps are part of the package weight, and every module adds to them.
-    // The ceiling sits one module's worth above the current total — 257.6 KiB, measured
-    // on the build this figure was last set against — so the next module has to raise it
-    // deliberately rather than land inside slack nobody looked at. Re-measure and move it
-    // by that much again; a ceiling far above the total stops reporting anything.
+    // The ceiling sits one module's worth above the total the build measures, so the next
+    // module has to raise it deliberately rather than land inside slack nobody looked at.
+    // Move it by that much again, against the byte count the failure prints; a ceiling far
+    // above the total stops reporting anything.
     const SOURCE_MAP_BUDGET = 264 * 1024;
     assert.ok(
         sourceMapBytes < SOURCE_MAP_BUDGET,

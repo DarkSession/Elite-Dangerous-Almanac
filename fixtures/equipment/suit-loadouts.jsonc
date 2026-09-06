@@ -6,6 +6,8 @@
  * The capture is documented in its own header. The `imports`, `refusals` and `recipeSpelling`
  * events are written for this fixture, not captured: each one states the single field under test,
  * and `recipeSpelling` states every recipe in a spelling the game does not use.
+ * A `refusals` case pins the message of the guard that rejects it, so no case can pass on a
+ * `TypeError` raised somewhere else.
  * A `modifierStats` list names the stat each fitted modifier moves, in order: a weapon's carries
  * the suit modifiers that act on that weapon, and nothing else the suit is wearing.
  * Every damage figure is rounded to three decimals, as the other personal-equipment metrics
@@ -294,78 +296,141 @@
     }
   },
   "refusals": {
-    "notAnObject": null,
+    "notAnObject": {
+      "event": null,
+      "message": "parseSuitLoadout: event must be a suit loadout event, received null"
+    },
     "unknownSuit": {
-      "SuitName": "notasuit_class5"
+      "event": {
+        "SuitName": "notasuit_class5"
+      },
+      "message": "parseSuitLoadout: unknown suit \"notasuit_class5\""
     },
     "suitNameNotAString": {
-      "SuitName": 5
+      "event": {
+        "SuitName": 5
+      },
+      "message": "parseSuitLoadout: event.SuitName must be a string, received number 5"
     },
     "modulesNotAnArray": {
-      "SuitName": "tacticalsuit_class5",
-      "Modules": "PrimaryWeapon1"
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": "PrimaryWeapon1"
+      },
+      "message": "parseSuitLoadout: event.Modules must be an array, received string \"PrimaryWeapon1\""
     },
     "moduleNotAnObject": {
-      "SuitName": "tacticalsuit_class5",
-      "Modules": [
-        "PrimaryWeapon1"
-      ]
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          "PrimaryWeapon1"
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[0] must be an object, received string \"PrimaryWeapon1\""
     },
     "slotNameNotAString": {
-      "SuitName": "tacticalsuit_class5",
-      "Modules": [
-        {
-          "SlotName": 1,
-          "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
-          "Class": 5
-        }
-      ]
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": 1,
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 5
+          }
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[0].SlotName must be a string, received number 1"
     },
     "moduleNameNotAString": {
-      "SuitName": "tacticalsuit_class5",
-      "Modules": [
-        {
-          "SlotName": "PrimaryWeapon1",
-          "ModuleName": 1,
-          "Class": 5
-        }
-      ]
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": 1,
+            "Class": 5
+          }
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[0].ModuleName must be a string, received number 1"
     },
     "repeatedMount": {
-      "SuitName": "tacticalsuit_class5",
-      "Modules": [
-        {
-          "SlotName": "PrimaryWeapon1",
-          "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
-          "Class": 5
-        },
-        {
-          "SlotName": "primaryweapon1",
-          "ModuleName": "wpn_m_submachinegun_kinetic_fauto",
-          "Class": 5
-        }
-      ]
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 5
+          },
+          {
+            "SlotName": "primaryweapon1",
+            "ModuleName": "wpn_m_submachinegun_kinetic_fauto",
+            "Class": 5
+          }
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[1].SlotName repeats mount \"primaryweapon1\""
     },
     "suitModsNotAnArray": {
-      "SuitName": "tacticalsuit_class5",
-      "SuitMods": "suit_nightvision"
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "SuitMods": "suit_nightvision"
+      },
+      "message": "parseSuitLoadout: event.SuitMods must be an array, received string \"suit_nightvision\""
     },
     "suitModNotAString": {
-      "SuitName": "tacticalsuit_class5",
-      "SuitMods": [
-        1
-      ]
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "SuitMods": [
+          1
+        ]
+      },
+      "message": "parseSuitLoadout: event.SuitMods[0] must be a string, received number 1"
     },
     "weaponModsNotAnArray": {
-      "SuitName": "tacticalsuit_class5",
-      "Modules": [
-        {
-          "SlotName": "PrimaryWeapon1",
-          "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
-          "Class": 5,
-          "WeaponMods": "weapon_clipsize"
-        }
-      ]
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 5,
+            "WeaponMods": "weapon_clipsize"
+          }
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[0].WeaponMods must be an array, received string \"weapon_clipsize\""
+    },
+    "weaponModsNotAnArrayOnAnUnknownWeapon": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_futureweapon",
+            "Class": 5,
+            "WeaponMods": "weapon_clipsize"
+          }
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[0].WeaponMods must be an array, received string \"weapon_clipsize\""
+    },
+    "weaponModNotAStringOnAnUnusableGrade": {
+      "event": {
+        "SuitName": "tacticalsuit_class5",
+        "Modules": [
+          {
+            "SlotName": "PrimaryWeapon1",
+            "ModuleName": "wpn_m_assaultrifle_kinetic_fauto",
+            "Class": 6,
+            "WeaponMods": [
+              1
+            ]
+          }
+        ]
+      },
+      "message": "parseSuitLoadout: event.Modules[0].WeaponMods[0] must be a string, received number 1"
     }
   },
   "recipeSpelling": {

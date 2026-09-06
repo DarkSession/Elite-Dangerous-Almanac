@@ -167,9 +167,17 @@ test('a recipe resolves whatever case the event spells it in', () => {
     assert.equal(round(fitted.metrics.sustainedDamagePerSecond), pinned.sustainedDamagePerSecond);
 });
 
-for (const [name, event] of Object.entries(suitLoadoutFixture.refusals)) {
+for (const [name, pinned] of Object.entries(suitLoadoutFixture.refusals)) {
     test(`an event with ${name} is refused`, () => {
-        assert.throws(() => parseSuitLoadout(asEvent(event)), TypeError);
+        assert.throws(
+            () => parseSuitLoadout(asEvent(pinned.event)),
+            (error: unknown) => {
+                assert.ok(error instanceof TypeError);
+                // The guard that refused it, so a case cannot pass on another one's failure.
+                assert.equal(error.message, pinned.message);
+                return true;
+            },
+        );
     });
 }
 
