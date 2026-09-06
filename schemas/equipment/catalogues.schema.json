@@ -5,6 +5,7 @@
   "description": "Language-neutral schemas for every JSONC payload in data/equipment.",
   "definitions": {
     "nonEmptyString": { "type": "string", "minLength": 1 },
+    "recipeSymbol": { "type": "string", "pattern": "^[a-z0-9_]+$" },
     "nonNegativeInteger": { "type": "integer", "minimum": 0 },
     "positiveNumber": { "type": "number", "exclusiveMinimum": 0 },
     "resistance": { "type": "number", "minimum": -1, "maximum": 1 },
@@ -328,17 +329,20 @@
     "modificationCatalogue": {
       "type": "object",
       "minProperties": 1,
+      "propertyNames": { "$ref": "#/definitions/recipeSymbol" },
       "additionalProperties": { "$ref": "#/definitions/modification" }
     },
     "modificationCostCatalogue": {
       "type": "object",
       "minProperties": 1,
+      "propertyNames": { "$ref": "#/definitions/recipeSymbol" },
       "additionalProperties": { "$ref": "#/definitions/ingredients" }
     },
     "modificationJournalNameCatalogue": {
       "type": "object",
       "minProperties": 1,
-      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+      "propertyNames": { "$ref": "#/definitions/recipeSymbol" },
+      "additionalProperties": { "$ref": "#/definitions/recipeSymbol" }
     }
   }
 }

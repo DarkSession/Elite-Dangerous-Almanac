@@ -155,8 +155,9 @@ export interface FittedPersonalWeapon {
  * @remarks
  * An event is taken as far as the catalogues allow. Every outcome reports one entry the
  * import left out — a weapon it does not fit, or a modification it does not apply — so
- * the loadout holds what the catalogues answer for. Only the suit itself is refused
- * outright, because nothing else in the event stands without it.
+ * the loadout holds what the catalogues answer for. The suit is the one identity a miss
+ * refuses outright, because nothing else in the event stands without it; a malformed
+ * event is refused too, and {@link parseSuitLoadout} states what it checks.
  */
 export interface SuitLoadoutImportOutcome {
     /**
@@ -334,7 +335,7 @@ export function parseSuitLoadout(event: SuitLoadoutEvent): SuitLoadout {
 
     const outcomes: SuitLoadoutImportOutcome[] = [];
     const modifications = resolveModifications(
-        event.SuitMods,
+        statedModifications(event.SuitMods, 'parseSuitLoadout: event.SuitMods'),
         'parseSuitLoadout: event.SuitMods',
         null,
         null,
@@ -355,23 +356,33 @@ export function parseSuitLoadout(event: SuitLoadoutEvent): SuitLoadout {
     });
 }
 
+/**
+ * Read one equipment's stated modification list.
+ *
+ * The shape is checked here, where the event is read, rather than where the list is
+ * resolved: a module whose weapon or mount the catalogues refuse never reaches the
+ * resolver, and an event must not become acceptable because of what a catalogue happens
+ * to carry.
+ */
+function statedModifications(stated: unknown, label: string): readonly string[] {
+    if (stated === undefined || stated === null) return [];
+    if (!Array.isArray(stated)) {
+        throw new TypeError(`${label} must be an array, received ${describeValue(stated)}`);
+    }
+    return stated.map((symbol, index) => requireString(symbol, `${label}[${index}]`));
+}
+
 /** Resolve one equipment's stated modifications, reporting the symbols it leaves out. */
 function resolveModifications(
-    stated: readonly string[] | undefined,
+    stated: readonly string[],
     label: string,
     weapon: PersonalWeapon | null,
     mount: string | null,
     outcomes: SuitLoadoutImportOutcome[],
 ): FittedPersonalModification[] {
-    if (stated === undefined || stated === null) return [];
-    if (!Array.isArray(stated)) {
-        throw new TypeError(`${label} must be an array, received ${describeValue(stated)}`);
-    }
-
     const target = weapon ? 'weapon' : 'suit';
     const fitted: FittedPersonalModification[] = [];
     for (const [index, journalSymbol] of stated.entries()) {
-        requireString(journalSymbol, `${label}[${index}]`);
         // Both recipe catalogues key a lower-cased, trimmed symbol, and a collision
         // resolves against that same spelling, so the key is what a fit reports.
         const symbol = normalizeKey(
@@ -417,6 +428,7 @@ function fitWeapons(
         }
         const slotName = requireString(module.SlotName, `${label}.SlotName`);
         const weaponSymbol = requireString(module.ModuleName, `${label}.ModuleName`);
+        const statedMods = statedModifications(module.WeaponMods, `${label}.WeaponMods`);
         const key = normalizeKey(slotName, `${label}.SlotName`);
         if (taken.has(key)) {
             throw new TypeError(`${label}.SlotName repeats mount "${truncate(slotName)}"`);
@@ -444,7 +456,7 @@ function fitWeapons(
         }
 
         const modifications = resolveModifications(
-            module.WeaponMods,
+            statedMods,
             `${label}.WeaponMods`,
             weapon,
             slotName,
@@ -468,7 +480,7 @@ function fitWeapons(
             modifiers,
             reloadSpeed,
             scope: modifications.some(({ symbol }) => symbol === SCOPE_SYMBOL),
-            // Every weapon carries all five grades — `schemas/equipment/catalogues.json`
+            // Every weapon carries all five grades — `schemas/equipment/catalogues.schema.json`
             // requires them — and the grade is checked above, so the stats resolve.
             metrics: personalWeaponMetrics(weapon, grade, modifiers, { reloadSpeed })!,
         });

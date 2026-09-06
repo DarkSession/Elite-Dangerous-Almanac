@@ -1429,6 +1429,7 @@
             "grade": { "type": "integer" },
             "loadoutId": { "type": "integer" },
             "modifications": { "type": "array", "items": { "type": "string" } },
+            "modifierStats": { "type": "array", "items": { "type": "string" } },
             "name": { "type": "string" },
             "shieldRegeneration": { "type": "number" },
             "source": { "type": "string" },
@@ -1451,6 +1452,10 @@
                     "type": "array",
                     "items": { "type": "string" }
                   },
+                  "modifierStats": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
                   "moduleId": { "type": "integer" },
                   "mount": { "type": "string" },
                   "name": { "type": "string" },
@@ -1467,6 +1472,7 @@
                   "headshotDamagePerShot",
                   "magazineSize",
                   "modifications",
+                  "modifierStats",
                   "moduleId",
                   "mount",
                   "name",
@@ -1484,6 +1490,7 @@
             "grade",
             "loadoutId",
             "modifications",
+            "modifierStats",
             "name",
             "shieldRegeneration",
             "source",

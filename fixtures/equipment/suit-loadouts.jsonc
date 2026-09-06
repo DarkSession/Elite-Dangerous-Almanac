@@ -3,8 +3,11 @@
  * modifications and per-second weapon figures it resolves from the Dominator Suit capture beside
  * it, the outcome it reports for each thing a catalogue cannot answer, and the events it refuses
  * outright.
- * The capture is documented in its own header. The `imports` and `refusals` events are written for
- * this fixture, not captured: each one states the single field under test.
+ * The capture is documented in its own header. The `imports`, `refusals` and `recipeSpelling`
+ * events are written for this fixture, not captured: each one states the single field under test,
+ * and `recipeSpelling` states every recipe in a spelling the game does not use.
+ * A `modifierStats` list names the stat each fitted modifier moves, in order: a weapon's carries
+ * the suit modifiers that act on that weapon, and nothing else the suit is wearing.
  * Every damage figure is rounded to three decimals, as the other personal-equipment metrics
  * fixtures are.
  */
@@ -39,6 +42,10 @@
           "weapon_backpackreloading",
           "weapon_clipsize"
         ],
+        "modifierStats": [
+          "magazineSize",
+          "reserveAmmo"
+        ],
         "reloadSpeed": true,
         "scope": false,
         "magazineSize": 3,
@@ -59,6 +66,10 @@
           "weapon_reloadspeed",
           "weapon_backpackreloading",
           "weapon_clipsize"
+        ],
+        "modifierStats": [
+          "magazineSize",
+          "reserveAmmo"
         ],
         "reloadSpeed": true,
         "scope": false,
@@ -81,6 +92,9 @@
           "weapon_backpackreloading",
           "weapon_stability"
         ],
+        "modifierStats": [
+          "reserveAmmo"
+        ],
         "reloadSpeed": false,
         "scope": false,
         "magazineSize": 6,
@@ -90,6 +104,14 @@
         "damagePerSecond": 37.325,
         "sustainedDamagePerSecond": 24.408
       }
+    ],
+    "modifierStats": [
+      "shieldRegeneration",
+      "armourKineticResistance",
+      "armourThermalResistance",
+      "armourPlasmaResistance",
+      "armourExplosiveResistance",
+      "reserveAmmo"
     ]
   },
   "imports": {

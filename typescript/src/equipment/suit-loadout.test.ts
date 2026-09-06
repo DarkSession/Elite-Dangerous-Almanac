@@ -26,6 +26,10 @@ test('a captured suit loadout imports with its suit, grade and loadout identity'
         loadout.modifications.map(({ symbol }) => symbol),
         expected.modifications,
     );
+    assert.deepEqual(
+        loadout.modifiers.map(({ stat }) => stat),
+        expected.modifierStats,
+    );
     assert.deepEqual(loadout.importOutcomes, []);
 });
 
@@ -66,6 +70,12 @@ test('a captured suit loadout resolves the weapon at every mount', () => {
         assert.deepEqual(
             fitted.modifications.map(({ symbol }) => symbol),
             expected.modifications,
+        );
+        // The suit's Extra Ammo Capacity acts on a weapon and belongs here; the rest of
+        // what the suit wears does not.
+        assert.deepEqual(
+            fitted.modifiers.map(({ stat }) => stat),
+            expected.modifierStats,
         );
         assert.equal(fitted.reloadSpeed, expected.reloadSpeed);
         assert.equal(fitted.scope, expected.scope);
@@ -118,7 +128,7 @@ test('Reload Speed shortens the reload the sustained figures average in', () => 
 });
 
 for (const [name, pinned] of Object.entries(suitLoadoutFixture.imports)) {
-    test(`an import reports ${name}`, () => {
+    test(`an import handles ${name}`, () => {
         const loadout = parseSuitLoadout(asEvent(pinned.event));
         assert.deepEqual(
             loadout.weapons.map(({ mount }) => mount),

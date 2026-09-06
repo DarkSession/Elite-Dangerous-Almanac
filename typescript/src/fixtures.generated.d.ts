@@ -538,6 +538,7 @@ type FixtureEquipmentSuitLoadouts = {
         grade: number;
         loadoutId: number;
         modifications: string[];
+        modifierStats: string[];
         name: string;
         shieldRegeneration: number;
         source: string;
@@ -552,6 +553,7 @@ type FixtureEquipmentSuitLoadouts = {
             headshotDamagePerShot: number;
             magazineSize: number;
             modifications: string[];
+            modifierStats: string[];
             moduleId: number;
             mount: string;
             name: string;
