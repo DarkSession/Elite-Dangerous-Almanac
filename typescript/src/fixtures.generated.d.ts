@@ -484,6 +484,390 @@ declare module '*/fixtures/equipment/equipment.jsonc' {
     export default value;
 }
 
+type FixtureEquipmentJournalSuitLoadoutDominator = {
+    LoadoutID: number;
+    LoadoutName: string;
+    Modules: {
+        Class: number;
+        ModuleName: string;
+        ModuleName_Localised: string;
+        SlotName: string;
+        SuitModuleID: number;
+        WeaponMods: string[];
+    }[];
+    SuitID: number;
+    SuitMods: string[];
+    SuitName: string;
+    SuitName_Localised: string;
+    event: string;
+    timestamp: string;
+};
+
+declare module '*/fixtures/equipment/journal-suit-loadout-dominator.jsonc' {
+    const value: FixtureEquipmentJournalSuitLoadoutDominator;
+    export default value;
+}
+
+type FixtureEquipmentJournalSwitchSuitLoadoutDominator = {
+    LoadoutID: number;
+    LoadoutName: string;
+    Modules: {
+        Class: number;
+        ModuleName: string;
+        ModuleName_Localised: string;
+        SlotName: string;
+        SuitModuleID: number;
+        WeaponMods: string[];
+    }[];
+    SuitID: number;
+    SuitMods: string[];
+    SuitName: string;
+    SuitName_Localised: string;
+    event: string;
+    timestamp: string;
+};
+
+declare module '*/fixtures/equipment/journal-switch-suit-loadout-dominator.jsonc' {
+    const value: FixtureEquipmentJournalSwitchSuitLoadoutDominator;
+    export default value;
+}
+
+type FixtureEquipmentSuitLoadouts = {
+    capture: {
+        armourKineticResistance: number;
+        grade: number;
+        loadoutId: number;
+        modifications: string[];
+        modifierStats: string[];
+        name: string;
+        shieldRegeneration: number;
+        source: string;
+        suitFamily: string;
+        suitId: number;
+        suitName: string;
+        switchSource: string;
+        weapons: {
+            damagePerSecond: number;
+            damagePerShot: number;
+            grade: number;
+            headshotDamagePerShot: number;
+            magazineSize: number;
+            modifications: string[];
+            modifierStats: string[];
+            moduleId: number;
+            mount: string;
+            name: string;
+            reloadSpeed: boolean;
+            reserveAmmo: number;
+            scope: boolean;
+            sustainedDamagePerSecond: number;
+            symbol: string;
+        }[];
+    };
+    imports: {
+        mountSpelling: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string[];
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: never[];
+            modifications: string[];
+            moduleIds: null[];
+            mounts: string[];
+        };
+        refusedModification: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string[];
+                }[];
+                SuitMods: string[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: null | string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: null[];
+            mounts: string[];
+        };
+        refusedMount: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownGrade: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownGradeBelowTheLadder: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownGradeBetweenRungs: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownModification: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string[];
+                }[];
+                SuitMods: string[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: null | string;
+                sourceSymbol: string;
+            }[];
+            modifications: string[];
+            moduleIds: null[];
+            mounts: string[];
+        };
+        unknownMount: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+        unknownWeapon: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            importOutcomes: {
+                action: string;
+                mount: string;
+                sourceSymbol: string;
+            }[];
+            modifications: never[];
+            moduleIds: never[];
+            mounts: never[];
+        };
+    };
+    recipeSpelling: {
+        event: {
+            Modules: {
+                Class: number;
+                ModuleName: string;
+                SlotName: string;
+                WeaponMods: string[];
+            }[];
+            SuitName: string;
+        };
+        journalSymbols: string[];
+        modifications: string[];
+        mount: string;
+        reloadSpeed: boolean;
+        scope: boolean;
+        sustainedDamagePerSecond: number;
+    };
+    refusals: {
+        moduleNameNotAString: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: number;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        moduleNotAnObject: {
+            event: {
+                Modules: string[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        modulesNotAnArray: {
+            event: {
+                Modules: string;
+                SuitName: string;
+            };
+            message: string;
+        };
+        notAnObject: {
+            event: null;
+            message: string;
+        };
+        repeatedMount: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        slotNameNotAString: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: number;
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        suitModNotAString: {
+            event: {
+                SuitMods: number[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        suitModsNotAnArray: {
+            event: {
+                SuitMods: string;
+                SuitName: string;
+            };
+            message: string;
+        };
+        suitNameNotAString: {
+            event: {
+                SuitName: number;
+            };
+            message: string;
+        };
+        unknownSuit: {
+            event: {
+                SuitName: string;
+            };
+            message: string;
+        };
+        weaponModNotAStringOnAnUnusableGrade: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: number[];
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        weaponModsNotAnArray: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+        weaponModsNotAnArrayOnAnUnknownWeapon: {
+            event: {
+                Modules: {
+                    Class: number;
+                    ModuleName: string;
+                    SlotName: string;
+                    WeaponMods: string;
+                }[];
+                SuitName: string;
+            };
+            message: string;
+        };
+    };
+};
+
+declare module '*/fixtures/equipment/suit-loadouts.jsonc' {
+    const value: FixtureEquipmentSuitLoadouts;
+    export default value;
+}
+
 type FixtureI18nDisplayText = {
     diagnostics: {
         diagnostic: {

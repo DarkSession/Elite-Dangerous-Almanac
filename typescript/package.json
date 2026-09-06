@@ -186,6 +186,10 @@
             "types": "./dist/equipment/modifications.d.ts",
             "import": "./dist/equipment/modifications.js"
         },
+        "./equipment/suit-loadout": {
+            "types": "./dist/equipment/suit-loadout.d.ts",
+            "import": "./dist/equipment/suit-loadout.js"
+        },
         "./equipment/suits": {
             "types": "./dist/equipment/suits.d.ts",
             "import": "./dist/equipment/suits.js"

@@ -49,7 +49,7 @@ The package has six feature areas:
   bodies with their physics;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
 - `equipment`: Odyssey suits, handheld weapons and their damage per second, suit tools,
-  grade upgrades and modifications;
+  grade upgrades, modifications and journal suit loadouts;
 - `i18n`: sparse localized catalogue names, descriptions, slot labels and structured
   diagnostic messages;
 - `materials`: ship engineering materials and Odyssey micro resources;
@@ -247,8 +247,10 @@ blueprints and experimental effects are keyed by theirs; neither place invents a
 synthetic id. The journal omits the technology suffix from three weapon modification
 families, so `resolvePersonalModificationForWeapon` resolves those spellings against the
 weapon before joining to `PERSONAL_MODIFICATIONS` or `PERSONAL_MODIFICATION_COSTS`.
-Material shopping lists live on the separate `equipment/modification-costs` subpath and
-consume the
+`parseSuitLoadout` reads a journal `SuitLoadout`, `SwitchSuitLoadout` or
+`CreateSuitLoadout` event into the suit, its grade, its modifications and the weapon at
+each mount, and resolves those spellings on the way. Material shopping lists live on the
+separate `equipment/modification-costs` subpath and consume the
 micro-resource symbols from the `materials` feature area. Suit tools are the one
 personal-equipment record with no Frontier symbol — the journal never names a tool — so
 `PersonalTool.id` is a library key such as `arc-cutter`, and `getPersonalToolName` takes

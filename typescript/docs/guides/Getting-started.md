@@ -91,6 +91,7 @@ symbols you are most likely to reach for first:
 | `getPersonalModificationCost` | `core/equipment/modification-costs` |
 | `applyPersonalModifiers`, `sumPersonalEngineeringIngredients` | `core/equipment/engineering` |
 | `resolvePersonalModificationForWeapon` | `core/equipment/modification-journal` |
+| `parseSuitLoadout` | `core/equipment/suit-loadout` |
 | `getModuleName` | `core/i18n/modules` |
 | `getBlueprintName` | `core/i18n/blueprints` |
 | `getExperimentalEffectName` | `core/i18n/experimental-effects` |

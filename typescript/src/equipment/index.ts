@@ -2,6 +2,12 @@
  * Elite Dangerous personal equipment: Odyssey suits, handheld weapons, suit tools,
  * Pioneer Supplies grade progression and engineer-applied modifications.
  *
+ * **Reading a journal suit loadout? Start with {@link parseSuitLoadout}.** It takes a
+ * `SuitLoadout`, `SwitchSuitLoadout` or `CreateSuitLoadout` event and answers with the
+ * suit, its stats at the grade it states, its modifications and the weapon at each
+ * mount. The lookups below are what it resolves an event against, and what an outfitting
+ * screen browsing the catalogues calls directly.
+ *
  * Material shopping lists are deliberately leaf-only: import grade-upgrade costs from
  * `equipment/upgrade-costs` and modification costs from
  * `equipment/modification-costs`. Keeping them off this barrel lets identity and stat
@@ -59,3 +65,13 @@ export {
 } from './modifications.js';
 
 export { resolvePersonalModificationForWeapon } from './modification-journal.js';
+
+export {
+    parseSuitLoadout,
+    type FittedPersonalModification,
+    type FittedPersonalWeapon,
+    type SuitLoadout,
+    type SuitLoadoutEvent,
+    type SuitLoadoutImportOutcome,
+    type SuitLoadoutModuleEvent,
+} from './suit-loadout.js';
