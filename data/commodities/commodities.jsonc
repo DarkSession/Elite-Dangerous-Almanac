@@ -5,8 +5,8 @@
  * Source: EDCD FDevIDs, commodity.csv. One record (`curatedcommodity`) takes its symbol
  * and name from a player-journal MarketBuy observation and its category from in-game
  * verification; it is appended after the registry order. The records after it are the
- * mineral and chemical goods the running game's own commodity registry holds and the
- * FDevIDs snapshot does not, with their symbols and names read from that registry and
+ * mineral, metal and chemical goods the running game's own commodity registry holds and
+ * the FDevIDs snapshot does not, with their symbols and names read from that registry and
  * their categories verified in-game.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
@@ -1333,7 +1333,7 @@
   {
     "symbol": "Iridium",
     "name": "Iridium",
-    "category": "Minerals"
+    "category": "Metals"
   },
   {
     "symbol": "Magnesite",

@@ -2,8 +2,8 @@
  * Shared test fixture — not shipped in any package.
  *
  * Ground truth for the commodity catalogues (data/commodities/commodities.jsonc and
- * rare-commodities.jsonc, from EDCD FDevIDs, plus `curatedcommodity` and the mineral and
- * chemical goods the game's own commodity registry gained after that snapshot, from
+ * rare-commodities.jsonc, from EDCD FDevIDs, plus `curatedcommodity` and the mineral, metal
+ * and chemical goods the game's own commodity registry gained after that snapshot, from
  * player-journal and in-game observation).
  * `counts` pins the size of each catalogue; `records` pins individual entries with their
  * catalogue-derived `rare` flag; `categoryCounts` pins how many commodities each market group
@@ -81,8 +81,8 @@
     }
   ],
   "categoryCounts": {
-    "Metals": 28,
-    "Minerals": 40,
+    "Metals": 29,
+    "Minerals": 39,
     "Chemicals": 20,
     "Foods": 51,
     "Salvage": 99,
