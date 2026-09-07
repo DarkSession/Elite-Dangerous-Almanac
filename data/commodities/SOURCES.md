@@ -46,7 +46,8 @@ readings are appended, in symbol order, after `curatedcommodity`**: `Bastnasite`
 - **The category is separately verified in the running game** (2026-09-03 UTC; no
   immutable revision), exactly as `curatedcommodity`'s is. The registry names a unit and
   its display name and does not say which market group it belongs to. Every one of these is
-  `Minerals` except `Helium` and `Helium3`, which are `Chemicals`.
+  `Minerals` except `Helium` and `Helium3`, which are `Chemicals`, and `Iridium`, which is
+  `Metals`.
 - **They are stored as standard, not rare.** The registry's English description marks a
   rare good with the phrase "This rare good". No appended unit carries the marker, no
   appended unit appears in FDevIDs' `rare_commodity.csv`, and every unit the marker does

@@ -7,7 +7,7 @@
  *
  * Data from EDCD FDevIDs (`commodity.csv`), from a player-journal observation with an
  * in-game category check, and from two readings of the running game's own commodity
- * registry, whose difference is a batch of mineral and chemical goods the FDevIDs
+ * registry, whose difference is a batch of mineral, metal and chemical goods the FDevIDs
  * snapshot does not carry; see
  * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
