@@ -83,6 +83,37 @@ internal static class SharedData
     internal static IReadOnlyList<T> LoadList<T>(string path) =>
         new ReadOnlyCollection<T>(Load<T[]>(path));
 
+    /// <summary>
+    /// Reads one embedded JSONC object whose keys are the names of an enum's members.
+    /// </summary>
+    /// <typeparam name="TKey">The enum the keys name.</typeparam>
+    /// <typeparam name="TValue">The shape one value has.</typeparam>
+    /// <param name="path">The repository path of the catalogue.</param>
+    /// <returns>A read-only map, in the file's own order.</returns>
+    /// <exception cref="InvalidOperationException">A key names no member of the enum.</exception>
+    internal static IReadOnlyDictionary<TKey, TValue> LoadEnumKeyed<TKey, TValue>(string path)
+        where TKey : struct, Enum
+    {
+        Dictionary<string, TValue> raw = Load<Dictionary<string, TValue>>(path);
+        Dictionary<TKey, TValue> parsed = new(raw.Count);
+        foreach (KeyValuePair<string, TValue> entry in raw)
+        {
+            if (!EnumParsing.TryParse(entry.Key, out TKey key))
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.InvariantCulture,
+                    "The shared file '{0}' names an unknown {1} '{2}'.",
+                    path,
+                    typeof(TKey).Name,
+                    entry.Key));
+            }
+
+            parsed[key] = entry.Value;
+        }
+
+        return new ReadOnlyDictionary<TKey, TValue>(parsed);
+    }
+
     /// <summary>Opens the embedded resource for <paramref name="path"/>.</summary>
     internal static Stream Open(string path)
     {
