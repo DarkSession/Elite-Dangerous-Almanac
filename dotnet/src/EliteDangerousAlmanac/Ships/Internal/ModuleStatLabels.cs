@@ -18,6 +18,22 @@ namespace EliteDangerousAlmanac.Ships.Internal;
 /// and experimental-effect catalogues alongside it.
 /// </para>
 /// </remarks>
+/// <summary>One share of a weapon's damage, as a journal modifier label names it.</summary>
+internal enum DamageShare
+{
+    /// <summary>The kinetic share.</summary>
+    Kinetic,
+
+    /// <summary>The thermal share.</summary>
+    Thermal,
+
+    /// <summary>The explosive share.</summary>
+    Explosive,
+
+    /// <summary>The absolute share.</summary>
+    Absolute,
+}
+
 internal static class ModuleStatLabels
 {
     private const double Percent = 100;
@@ -173,24 +189,28 @@ internal static class ModuleStatLabels
         // otherwise flat label mapping reads.
         new("$Kinetic;", null)
         {
+            DamageShare = DamageShare.Kinetic,
             Share = distribution => distribution.Kinetic,
             Scale = Percent,
             DefaultBase = 0,
         },
         new("$Thermal;", null)
         {
+            DamageShare = DamageShare.Thermal,
             Share = distribution => distribution.Thermal,
             Scale = Percent,
             DefaultBase = 0,
         },
         new("$Explosive;", null)
         {
+            DamageShare = DamageShare.Explosive,
             Share = distribution => distribution.Explosive,
             Scale = Percent,
             DefaultBase = 0,
         },
         new("$Absolute;", null)
         {
+            DamageShare = DamageShare.Absolute,
             Share = distribution => distribution.Absolute,
             Scale = Percent,
             DefaultBase = 0,
@@ -295,6 +315,41 @@ internal static class ModuleStatLabels
     /// </remarks>
     internal static string? CapabilityValueFor(string label) => First(label)?.CapabilityValue;
 
+    /// <summary>The damage share a journal modifier label names.</summary>
+    /// <param name="label">The journal modifier label.</param>
+    /// <returns>
+    /// The share, or <see langword="null"/> for an ordinary scalar stat and for an unknown
+    /// label.
+    /// </returns>
+    internal static DamageShare? ShareFor(string label) => First(label)?.DamageShare;
+
+    /// <summary>The journal labels that name one damage share, in declaration order.</summary>
+    /// <param name="share">The share to name.</param>
+    /// <returns>The labels.</returns>
+    internal static List<string> LabelsForShare(DamageShare share)
+    {
+        List<string> labels = [];
+        foreach (StatLabel entry in Labels)
+        {
+            if (entry.DamageShare == share) labels.Add(entry.Label);
+        }
+
+        return labels;
+    }
+
+    /// <summary>One share of a weapon's damage distribution.</summary>
+    /// <param name="distribution">The distribution to read, when the module states one.</param>
+    /// <param name="share">The share to read.</param>
+    /// <returns>The share, or <see langword="null"/> when the module states none.</returns>
+    internal static double? ShareOf(DamageDistribution? distribution, DamageShare share) =>
+        distribution is null ? null : share switch
+        {
+            DamageShare.Kinetic => distribution.Kinetic,
+            DamageShare.Thermal => distribution.Thermal,
+            DamageShare.Explosive => distribution.Explosive,
+            _ => distribution.Absolute,
+        };
+
     private static StatLabel? First(string label) =>
         ByLabel.TryGetValue(label, out List<StatLabel>? entries) ? entries[0] : null;
 
@@ -329,6 +384,9 @@ internal static class ModuleStatLabels
     {
         /// <summary>Reads the damage share the label names, for the labels that name one.</summary>
         internal Func<DamageDistribution, double?>? Share { get; init; }
+
+        /// <summary>The damage share the label names, on the labels that name one.</summary>
+        internal DamageShare? DamageShare { get; init; }
 
         /// <summary>The journal value divided by the catalogue value.</summary>
         internal double Scale { get; init; } = 1;
