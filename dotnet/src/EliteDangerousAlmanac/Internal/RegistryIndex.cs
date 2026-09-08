@@ -49,6 +49,17 @@ internal static class RegistryIndex
         return new ReadOnlyDictionary<string, T>(index);
     }
 
+    /// <summary>Freezes a catalogue that a data file already keys, for case-insensitive lookups.</summary>
+    /// <typeparam name="T">The record shape one value has.</typeparam>
+    /// <param name="raw">The catalogue as the file states it.</param>
+    /// <returns>A read-only map that answers whatever case a caller writes.</returns>
+    internal static ReadOnlyDictionary<string, T> FreezeByRawKey<T>(IReadOnlyDictionary<string, T> raw)
+    {
+        Dictionary<string, T> index = new(raw.Count, KeyComparer);
+        foreach (KeyValuePair<string, T> entry in raw) index[entry.Key] = entry.Value;
+        return new ReadOnlyDictionary<string, T>(index);
+    }
+
     /// <summary>Looks a key up in an index built by <see cref="CreateKeyIndex"/>.</summary>
     /// <returns>The record, or <see langword="null"/> for a key no record carries.</returns>
     internal static T? FindInKeyIndex<T>(IReadOnlyDictionary<string, T> index, string? wanted)
