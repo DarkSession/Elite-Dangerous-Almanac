@@ -323,6 +323,24 @@ internal static class ModuleStatLabels
     /// </returns>
     internal static DamageShare? ShareFor(string label) => First(label)?.DamageShare;
 
+    /// <summary>The journal labels that name one stat, in declaration order.</summary>
+    /// <param name="stat">The stat to name.</param>
+    /// <returns>The labels. It is empty for a stat no label names.</returns>
+    /// <remarks>
+    /// Usually one label names a stat. Where two do, the first is the one the game writes for
+    /// the module family that carries the stat in that field.
+    /// </remarks>
+    internal static List<string> LabelsForStat(ModuleStat stat)
+    {
+        List<string> labels = [];
+        foreach (StatLabel entry in Labels)
+        {
+            if (entry.Stat == stat) labels.Add(entry.Label);
+        }
+
+        return labels;
+    }
+
     /// <summary>The journal labels that name one damage share, in declaration order.</summary>
     /// <param name="share">The share to name.</param>
     /// <returns>The labels.</returns>
