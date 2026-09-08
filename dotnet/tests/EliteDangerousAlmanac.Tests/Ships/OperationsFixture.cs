@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using EliteDangerousAlmanac.Ships;
 
 namespace EliteDangerousAlmanac.Tests.Ships;
@@ -26,6 +27,217 @@ internal sealed class OperationsFixture
 
     /// <summary>The per-ship module-count allowance and what a build makes of it.</summary>
     public ModuleLimitsFixture ModuleLimits { get; set; } = new();
+
+    /// <summary>The edits a build refuses, and what each refusal reports.</summary>
+    public EditorErrorsFixture EditorErrors { get; set; } = new();
+
+    /// <summary>The mounts a hull holds shut, and why each is held.</summary>
+    public SlotRemovalFixture SlotRemoval { get; set; } = new();
+
+    /// <summary>The readings a capture's stated recipe gets.</summary>
+    public StatedRecipesFixture StatedRecipes { get; set; } = new();
+
+    /// <summary>The captures a build refuses to read at all.</summary>
+    public ImportRejectionsFixture ImportRejections { get; set; } = new();
+}
+
+/// <summary>The edits a build refuses.</summary>
+internal sealed class EditorErrorsFixture
+{
+    public EditorErrorCaseFixture IncompatibleModule { get; set; } = new();
+
+    public EditorErrorCaseFixture BuiltInHullModule { get; set; } = new();
+
+    public EditorErrorCaseFixture WrongHullArmour { get; set; } = new();
+
+    public EditorErrorCaseFixture DuplicateExclusiveModule { get; set; } = new();
+
+    public EditorErrorCaseFixture ModuleLimitExceeded { get; set; } = new();
+
+    public EditorErrorCaseFixture ImmutableSlot { get; set; } = new();
+
+    public EditorErrorCaseFixture RequiredSlot { get; set; } = new();
+
+    public EditorErrorCaseFixture ImmutableSlotReplacement { get; set; } = new();
+}
+
+/// <summary>One refused edit, and what the build states about it.</summary>
+internal sealed class EditorErrorCaseFixture
+{
+    public string Ship { get; set; } = string.Empty;
+
+    public string Slot { get; set; } = string.Empty;
+
+    public string Module { get; set; } = string.Empty;
+
+    /// <summary>The mount that takes the article first, on the exclusive-fit case.</summary>
+    public string FirstSlot { get; set; } = string.Empty;
+
+    /// <summary>The mount that then refuses it, on the exclusive-fit case.</summary>
+    public string SecondSlot { get; set; } = string.Empty;
+
+    /// <summary>The mounts filled before the refused edit, on the module-limit case.</summary>
+    public List<string> FittedSlots { get; set; } = [];
+
+    /// <summary>The mount the refused edit asks for, on the module-limit case.</summary>
+    public string TargetSlot { get; set; } = string.Empty;
+
+    /// <summary>A capture to read first, where the case starts from one.</summary>
+    public JsonElement? Input { get; set; }
+
+    public EditorErrorExpectationFixture Expected { get; set; } = new();
+}
+
+/// <summary>What one refusal reports.</summary>
+internal sealed class EditorErrorExpectationFixture
+{
+    public string Code { get; set; } = string.Empty;
+
+    public string? Constraint { get; set; }
+
+    public EditorErrorParamsFixture Params { get; set; } = new();
+}
+
+/// <summary>The language-neutral values a refusal carries.</summary>
+internal sealed class EditorErrorParamsFixture
+{
+    public string? Slot { get; set; }
+
+    public string? Symbol { get; set; }
+
+    public string? Constraint { get; set; }
+
+    public int? ModuleClass { get; set; }
+
+    public int? SlotSize { get; set; }
+
+    public string? ArmourShipName { get; set; }
+
+    public string? ArmourShipSymbol { get; set; }
+
+    public string? ShipSymbol { get; set; }
+
+    public string? ShipName { get; set; }
+
+    public string? ExclusionGroup { get; set; }
+
+    public string? PreviousSlot { get; set; }
+
+    public string? PreviousSymbol { get; set; }
+
+    public string? Group { get; set; }
+
+    public int? Count { get; set; }
+
+    public int? Limit { get; set; }
+}
+
+/// <summary>The mounts a stock hull holds shut.</summary>
+internal sealed class SlotRemovalFixture
+{
+    public string Ship { get; set; } = string.Empty;
+
+    public List<SlotRemovalExpectationFixture> Expected { get; set; } = [];
+}
+
+/// <summary>One mount, and why it cannot be emptied.</summary>
+internal sealed class SlotRemovalExpectationFixture
+{
+    public string Key { get; set; } = string.Empty;
+
+    public string Kind { get; set; } = string.Empty;
+
+    public int Size { get; set; }
+
+    public bool Removable { get; set; }
+
+    public string? ImmovableReason { get; set; }
+}
+
+/// <summary>The readings a stated recipe gets when a build reads a capture.</summary>
+internal sealed class StatedRecipesFixture
+{
+    public StatedRecipeCaseFixture CraftableRecipe { get; set; } = new();
+
+    public StatedRecipeCaseFixture FixedArticle { get; set; } = new();
+
+    public StatedRecipeCaseFixture UnresolvedRecipe { get; set; } = new();
+
+    public StatedRecipeCaseFixture MercenaryClimb { get; set; } = new();
+
+    public StatedRecipeCaseFixture MercenaryPurchase { get; set; } = new();
+
+    public StatedRecipeCaseFixture InertModifiers { get; set; } = new();
+}
+
+/// <summary>One capture stating a recipe, and the state a read of it produces.</summary>
+internal sealed class StatedRecipeCaseFixture
+{
+    public JsonElement Input { get; set; }
+
+    public StatedRecipeExpectationFixture Expected { get; set; } = new();
+}
+
+/// <summary>What one mount carries after the recipe is read.</summary>
+internal sealed class StatedRecipeExpectationFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    /// <summary>The block the module states, or absent where it states none.</summary>
+    public List<EngineeringModifier>? Modifiers { get; set; }
+
+    /// <summary>The effective stats the module then publishes, keyed by stat name.</summary>
+    public Dictionary<string, double> Stats { get; set; } = [];
+
+    public List<StatedRecipeOutcomeFixture> Outcomes { get; set; } = [];
+}
+
+/// <summary>One finding a read of a stated recipe reports.</summary>
+internal sealed class StatedRecipeOutcomeFixture
+{
+    public string Action { get; set; } = string.Empty;
+
+    public string Slot { get; set; } = string.Empty;
+
+    public string SourceSymbol { get; set; } = string.Empty;
+
+    public string BlueprintSymbol { get; set; } = string.Empty;
+
+    public PreEngineeredArticleFixture? PreEngineeredVariant { get; set; }
+}
+
+/// <summary>The catalogued article a reading passed over.</summary>
+internal sealed class PreEngineeredArticleFixture
+{
+    public string Symbol { get; set; } = string.Empty;
+
+    public string BlueprintSymbol { get; set; } = string.Empty;
+
+    public int Grade { get; set; }
+
+    public string Acquisition { get; set; } = string.Empty;
+}
+
+/// <summary>The captures a build refuses to read.</summary>
+internal sealed class ImportRejectionsFixture
+{
+    public ImportRejectionCaseFixture UnknownHull { get; set; } = new();
+}
+
+/// <summary>One refused capture.</summary>
+internal sealed class ImportRejectionCaseFixture
+{
+    public JsonElement Input { get; set; }
+
+    public ImportRejectionExpectationFixture Expected { get; set; } = new();
+}
+
+/// <summary>What a refused capture reports.</summary>
+internal sealed class ImportRejectionExpectationFixture
+{
+    public bool Accepted { get; set; }
+
+    public string Reason { get; set; } = string.Empty;
 }
 
 /// <summary>One fitted module list and the allowance it uses up.</summary>
@@ -39,9 +251,28 @@ internal sealed class ModuleLimitsFixture
 
     /// <summary>The catalogue counts the allowance is pinned on.</summary>
     public ModuleLimitCatalogueFixture Catalogue { get; set; } = new();
+
+    /// <summary>The mount a limit holds shut once the allowance it grants is spent.</summary>
+    public ModuleLimitRemovalFixture Removal { get; set; } = new();
 }
 
 /// <summary>One fitted module's limit facts.</summary>
+/// <summary>The mount a spent module-limit allowance holds shut.</summary>
+internal sealed class ModuleLimitRemovalFixture
+{
+    public string Ship { get; set; } = string.Empty;
+
+    public string Slot { get; set; } = string.Empty;
+
+    /// <summary>The article that grants the allowance.</summary>
+    public string Stabiliser { get; set; } = string.Empty;
+
+    /// <summary>The mounts filled with the articles that spend it.</summary>
+    public List<string> WeaponSlots { get; set; } = [];
+
+    public SlotRemovalExpectationFixture Expected { get; set; } = new();
+}
+
 internal sealed class ModuleLimitEntryFixture
 {
     public string? LimitGroup { get; set; }

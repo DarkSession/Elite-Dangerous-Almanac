@@ -116,47 +116,57 @@ public sealed record LoadoutFuelCapacity(
 /// carrying them.
 /// </remarks>
 public sealed record LoadoutEvent(
-    [property: JsonPropertyName("Ship")] string Ship,
-    [property: JsonPropertyName("Modules")] IReadOnlyList<LoadoutModule> Modules)
+    [property: JsonPropertyName("Ship"), JsonPropertyOrder(0)] string Ship,
+    [property: JsonPropertyName("Modules"), JsonPropertyOrder(10)] IReadOnlyList<LoadoutModule> Modules)
 {
     /// <summary>The journal line's own name, which is <c>Loadout</c> when a journal supplied it.</summary>
     [JsonPropertyName("event")]
+    [JsonPropertyOrder(-1)]
     public string? Event { get; init; }
 
     /// <summary>The player-given ship name.</summary>
     [JsonPropertyName("ShipName")]
+    [JsonPropertyOrder(1)]
     public string? ShipName { get; init; }
 
     /// <summary>The player-given ship identification plate.</summary>
     [JsonPropertyName("ShipIdent")]
+    [JsonPropertyOrder(2)]
     public string? ShipIdent { get; init; }
 
     /// <summary>The hull cost, in credits.</summary>
     [JsonPropertyName("HullValue")]
+    [JsonPropertyOrder(3)]
     public double? HullValue { get; init; }
 
     /// <summary>The fitted modules' cost, in credits.</summary>
     [JsonPropertyName("ModulesValue")]
+    [JsonPropertyOrder(4)]
     public double? ModulesValue { get; init; }
 
     /// <summary>The hull and module mass with an empty tank and no cargo, in tonnes.</summary>
     [JsonPropertyName("UnladenMass")]
+    [JsonPropertyOrder(5)]
     public double? UnladenMass { get; init; }
 
     /// <summary>The cargo rack capacity, in tonnes.</summary>
     [JsonPropertyName("CargoCapacity")]
+    [JsonPropertyOrder(6)]
     public double? CargoCapacity { get; init; }
 
     /// <summary>The exporter's own best single-jump range, in light-years.</summary>
     [JsonPropertyName("MaxJumpRange")]
+    [JsonPropertyOrder(7)]
     public double? MaxJumpRange { get; init; }
 
     /// <summary>The fuel-tank capacities, in tonnes.</summary>
     [JsonPropertyName("FuelCapacity")]
+    [JsonPropertyOrder(8)]
     public LoadoutFuelCapacity? FuelCapacity { get; init; }
 
     /// <summary>The insurance rebuy cost, in credits.</summary>
     [JsonPropertyName("Rebuy")]
+    [JsonPropertyOrder(9)]
     public double? Rebuy { get; init; }
 }
 
