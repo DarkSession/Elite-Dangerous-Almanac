@@ -43,6 +43,7 @@ internal static class SharedData
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = false,
         NumberHandling = JsonNumberHandling.Strict,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false) },
     };
 
     /// <summary>Reads one embedded JSONC payload into <typeparamref name="T"/>.</summary>
