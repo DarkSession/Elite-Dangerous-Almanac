@@ -91,4 +91,22 @@ public static class Ammunition
 
         return Capacity(module.Stats);
     }
+
+    /// <summary>What a fitted weapon holds when fully rearmed.</summary>
+    /// <param name="weapon">The weapon's resolved firing stats, post-engineering.</param>
+    /// <returns>
+    /// The capacity, or <see langword="null"/> for a weapon that carries no ammunition.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="weapon"/> is <see langword="null"/>.</exception>
+    public static AmmunitionCapacity? Capacity(WeaponStats weapon)
+    {
+        if (weapon is null) throw new ArgumentNullException(nameof(weapon));
+        if (weapon.ClipSize is null && weapon.AmmoMaximum is null) return null;
+
+        double clip = weapon.ClipSize ?? 0;
+        bool unlimited = weapon.AmmoMaximum is null;
+        double hopper = unlimited ? double.PositiveInfinity : weapon.AmmoMaximum!.Value;
+
+        return new AmmunitionCapacity(clip, hopper, clip + hopper, unlimited);
+    }
 }

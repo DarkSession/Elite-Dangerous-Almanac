@@ -39,6 +39,92 @@ internal sealed class OperationsFixture
 
     /// <summary>The captures a build refuses to read at all.</summary>
     public ImportRejectionsFixture ImportRejections { get; set; } = new();
+
+    /// <summary>What a build costs to own, in each currency the game charges for it.</summary>
+    public BuildCostFixture BuildCost { get; set; } = new();
+}
+
+/// <summary>What a build costs to own.</summary>
+internal sealed class BuildCostFixture
+{
+    public BuildCreditsCaseFixture Credits { get; set; } = new();
+
+    /// <summary>One ordinary recipe, and the Merc Coin it bills.</summary>
+    public OrdinaryEngineeringCostFixture OrdinaryEngineering { get; set; } = new();
+
+    /// <summary>Two purchased articles, and what climbing one of them costs.</summary>
+    public MercenaryCostFixture Mercenary { get; set; } = new();
+}
+
+/// <summary>One stock hull and what the shop asks for it.</summary>
+internal sealed class BuildCreditsCaseFixture
+{
+    public string Ship { get; set; } = string.Empty;
+
+    public BuildCreditsExpectationFixture Expected { get; set; } = new();
+}
+
+/// <summary>The four credit figures a build reports.</summary>
+internal sealed class BuildCreditsExpectationFixture
+{
+    public double Total { get; set; }
+
+    public double Hull { get; set; }
+
+    public double Modules { get; set; }
+
+    public double Rebuy { get; set; }
+}
+
+/// <summary>One recipe rolled on one mount, and the Merc Coin it bills.</summary>
+internal sealed class OrdinaryEngineeringCostFixture
+{
+    public string Ship { get; set; } = string.Empty;
+
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    public string Blueprint { get; set; } = string.Empty;
+
+    public int Grade { get; set; }
+
+    public int MercCoins { get; set; }
+}
+
+/// <summary>The purchased articles a build carries, and what climbing one costs.</summary>
+internal sealed class MercenaryCostFixture
+{
+    public string Ship { get; set; } = string.Empty;
+
+    public List<MercenaryArticleFixture> Modules { get; set; } = [];
+
+    /// <summary>The Merc Coin the two purchases bill together.</summary>
+    public int Expected { get; set; }
+
+    public MercenaryClimbFixture Climbed { get; set; } = new();
+}
+
+/// <summary>One purchased article and its shop price.</summary>
+internal sealed class MercenaryArticleFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    public string Blueprint { get; set; } = string.Empty;
+
+    public int Cost { get; set; }
+}
+
+/// <summary>What climbing one purchased article to a grade costs.</summary>
+internal sealed class MercenaryClimbFixture
+{
+    public int Grade { get; set; }
+
+    public int MercCoins { get; set; }
+
+    public List<EngineeringMaterial> Materials { get; set; } = [];
 }
 
 /// <summary>The edits a build refuses.</summary>
@@ -489,6 +575,39 @@ internal sealed class MobilityFixture
 
     /// <summary>A hull at a part allocation, whose every figure moves with it.</summary>
     public MobilityCaseFixture PipAllocation { get; set; } = new();
+
+    /// <summary>One whole build, read at a fuel load of its caller's choosing.</summary>
+    public MobilityFacadeFixture FacadeFuelOverride { get; set; } = new();
+}
+
+/// <summary>One build a metrics view reads for its speed and handling.</summary>
+internal sealed class MobilityFacadeFixture
+{
+    /// <summary>The capture the build is read from.</summary>
+    public JsonElement Loadout { get; set; }
+
+    public BuildLoadFixture Options { get; set; } = new();
+
+    public MobilityExpectedFixture Expected { get; set; } = new();
+
+    /// <summary>The loads a metrics view refuses.</summary>
+    public List<InvalidLoadFixture> InvalidLoads { get; set; } = [];
+}
+
+/// <summary>The fuel and the cargo one calculation runs at.</summary>
+internal sealed class BuildLoadFixture
+{
+    public double? Fuel { get; set; }
+
+    public double? Cargo { get; set; }
+}
+
+/// <summary>One load a metrics view refuses, and what it refuses with.</summary>
+internal sealed class InvalidLoadFixture
+{
+    public BuildLoadFixture Options { get; set; } = new();
+
+    public string ExpectedError { get; set; } = string.Empty;
 }
 
 /// <summary>One hull, loaded mass, thruster curve and ENG allocation, with its metrics.</summary>
@@ -606,6 +725,23 @@ internal sealed class DistributorFixture
     public DistributorInputFixture Input { get; set; } = new();
 
     public DistributorExpectedFixture Expected { get; set; } = new();
+
+    /// <summary>One whole build, read at an allocation of its caller's choosing.</summary>
+    public DistributorFacadeFixture Facade { get; set; } = new();
+}
+
+/// <summary>One build a metrics view reads its distributor from.</summary>
+internal sealed class DistributorFacadeFixture
+{
+    /// <summary>The capture the build is read from.</summary>
+    public JsonElement Loadout { get; set; }
+
+    public DistributorFacadePipsFixture Options { get; set; } = new();
+
+    public DistributorExpectedFixture Expected { get; set; } = new();
+
+    /// <summary>The captures whose distributor has no power, so no figures follow.</summary>
+    public List<JsonElement> NullLoadouts { get; set; } = [];
 }
 
 /// <summary>The three capacities, their rated recharge rates and the pips to model.</summary>
@@ -652,7 +788,17 @@ internal sealed class CapacitorFixture
     public double RechargeRate { get; set; }
 }
 
-/// <summary>The pips one distributor result was calculated at.</summary>
+/// <summary>The pips one facade case asks its build for.</summary>
+internal sealed class DistributorFacadePipsFixture
+{
+    public double SystemsPips { get; set; }
+
+    public double EnginesPips { get; set; }
+
+    public double WeaponsPips { get; set; }
+}
+
+/// <summary>The allocation one distributor result was calculated at.</summary>
 internal sealed class DistributorPipsFixture
 {
     public double Systems { get; set; }

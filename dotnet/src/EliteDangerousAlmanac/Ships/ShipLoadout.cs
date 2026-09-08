@@ -16,7 +16,7 @@ namespace EliteDangerousAlmanac.Ships;
 /// earlier answer.
 /// </para>
 /// <para>
-/// What a build calculates lives next door, on <c>BuildMetrics</c> over the same build.
+/// What a build calculates lives next door, on <see cref="BuildMetrics"/> over the same build.
 /// </para>
 /// <para>
 /// A mount key is matched without regard to case, and with surrounding whitespace ignored.
@@ -109,7 +109,7 @@ public sealed partial class ShipLoadout
     /// <summary>The prices a capture stated, where it stated any.</summary>
     /// <remarks>
     /// It is the commander's own purchase record, at whatever discount the station gave. Read
-    /// <c>BuildMetrics.BuildCost</c> for the catalogue's retail prices instead.
+    /// <see cref="BuildMetrics.BuildCost"/> for the catalogue's retail prices instead.
     /// </remarks>
     public SourcePurchaseRecord? SourcePurchase { get; }
 
