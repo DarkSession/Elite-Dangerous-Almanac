@@ -239,6 +239,31 @@ internal static class ModuleStatLabels
         return values;
     }
 
+    /// <summary>The module stat a journal modifier label writes back to.</summary>
+    /// <param name="label">The journal modifier label.</param>
+    /// <param name="stats">
+    /// The stats the label is resolved against, when there are any. A label that maps to two
+    /// stats, <c>Range</c> or <c>ShieldBankHeat</c>, answers with whichever of them the module
+    /// carries; without a module it answers with the first.
+    /// </param>
+    /// <returns>
+    /// The stat, or <see langword="null"/> when the label names a damage share, grants a
+    /// capability, or is unknown.
+    /// </returns>
+    internal static ModuleStat? StatFor(string label, ModuleStats? stats)
+    {
+        if (!ByLabel.TryGetValue(label, out List<StatLabel>? entries)) return null;
+        if (stats is not null && entries.Count > 1)
+        {
+            foreach (StatLabel entry in entries)
+            {
+                if (entry.Stat is not null && stats.Has(entry.Stat.Value)) return entry.Stat;
+            }
+        }
+
+        return entries[0].Stat;
+    }
+
     /// <summary>The journal value divided by the catalogue value for one label.</summary>
     /// <param name="label">The journal modifier label.</param>
     /// <returns>
