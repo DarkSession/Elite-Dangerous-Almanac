@@ -17,6 +17,62 @@ internal sealed class OperationsFixture
 
     /// <summary>The fitted shield cell banks and the pool they make.</summary>
     public CellBanksFixture CellBanks { get; set; } = new();
+
+    /// <summary>The thermal load a set of weapons sums to.</summary>
+    public WeaponsFixture Weapons { get; set; } = new();
+
+    /// <summary>The recharge and the endurance of one weapons capacitor.</summary>
+    public WeaponsCapacitorFixture WeaponsCapacitor { get; set; } = new();
+}
+
+/// <summary>Several weapons and the thermal load they sum to.</summary>
+internal sealed class WeaponsFixture
+{
+    public List<WeaponThermalLoadFixture> Input { get; set; } = [];
+
+    public double ExpectedThermalLoad { get; set; }
+}
+
+/// <summary>One weapon's thermal-load stat.</summary>
+internal sealed class WeaponThermalLoadFixture
+{
+    public double ThermalLoad { get; set; }
+}
+
+/// <summary>One firing load and what the weapons capacitor makes of it.</summary>
+internal sealed class WeaponsCapacitorFixture
+{
+    public WeaponsCapacitorInputFixture Input { get; set; } = new();
+
+    public WeaponsCapacitorExpectedFixture Expected { get; set; } = new();
+}
+
+/// <summary>The capacity, the rated recharge, the sustained draw and the pips to model.</summary>
+internal sealed class WeaponsCapacitorInputFixture
+{
+    public double WeaponsCapacity { get; set; }
+
+    public double WeaponsRecharge { get; set; }
+
+    public double SustainedEnergyPerSecond { get; set; }
+
+    public double WeaponsPips { get; set; }
+}
+
+/// <summary>The recharge, the drain and the endurance one case expects.</summary>
+internal sealed class WeaponsCapacitorExpectedFixture
+{
+    public double WeaponsPips { get; set; }
+
+    public double Capacity { get; set; }
+
+    public double RechargeRate { get; set; }
+
+    public double SustainedEnergyPerSecond { get; set; }
+
+    public double NetDrainRate { get; set; }
+
+    public double TimeToDrain { get; set; }
 }
 
 /// <summary>One shield and SYS capacitor at four pips, and the same at a part allocation.</summary>

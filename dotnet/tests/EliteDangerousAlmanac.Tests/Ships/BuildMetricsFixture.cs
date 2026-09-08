@@ -7,6 +7,56 @@ internal sealed class BuildMetricsFixture
 {
     /// <summary>The pure functions a build metric is composed from.</summary>
     public MetricFunctionsFixture Functions { get; set; } = new();
+
+    /// <summary>What each catalogue weapon does per second.</summary>
+    public List<CatalogueWeaponFixture> Weapons { get; set; } = [];
+
+    /// <summary>What each module holds when fully rearmed.</summary>
+    public AmmunitionFixture Ammunition { get; set; } = new();
+}
+
+/// <summary>One catalogue weapon and its per-second figures.</summary>
+internal sealed class CatalogueWeaponFixture
+{
+    public string Symbol { get; set; } = string.Empty;
+
+    public double DamagePerSecond { get; set; }
+
+    public double SustainedDamagePerSecond { get; set; }
+
+    public double SustainedFireFactor { get; set; }
+
+    public double EnergyPerSecond { get; set; }
+
+    public double HeatPerSecond { get; set; }
+
+    public bool Continuous { get; set; }
+}
+
+/// <summary>The ammunition capacities the catalogue is pinned on.</summary>
+internal sealed class AmmunitionFixture
+{
+    /// <summary>Each module and what it holds when fully rearmed.</summary>
+    public List<AmmunitionCaseFixture> Catalogue { get; set; } = [];
+
+    /// <summary>The modules that carry no ammunition at all.</summary>
+    public List<string> NoAmmunition { get; set; } = [];
+}
+
+/// <summary>One module's magazine and reserve.</summary>
+internal sealed class AmmunitionCaseFixture
+{
+    public string Symbol { get; set; } = string.Empty;
+
+    public double ClipSize { get; set; }
+
+    /// <summary>The reserve, or absent where nothing limits it.</summary>
+    public double? Hopper { get; set; }
+
+    /// <summary>The magazine and the reserve together, or absent where the reserve is unlimited.</summary>
+    public double? Total { get; set; }
+
+    public bool Unlimited { get; set; }
 }
 
 /// <summary>Each pure function, pinned at the arguments worth pinning.</summary>
@@ -19,6 +69,32 @@ internal sealed class MetricFunctionsFixture
     public List<ArmourResistanceCaseFixture> StackArmourResistance { get; set; } = [];
 
     public List<SystemsResistanceCaseFixture> SystemsResistance { get; set; } = [];
+
+    public List<DamageFalloffCaseFixture> DamageFalloff { get; set; } = [];
+
+    public List<ArmourPiercingCaseFixture> ArmourPiercingFactor { get; set; } = [];
+}
+
+/// <summary>One weapon's range band and the share of its damage that lands.</summary>
+internal sealed class DamageFalloffCaseFixture
+{
+    public double MaximumRange { get; set; }
+
+    public double FalloffRange { get; set; }
+
+    public double Metres { get; set; }
+
+    public double Expected { get; set; }
+}
+
+/// <summary>One piercing rating against one hull hardness.</summary>
+internal sealed class ArmourPiercingCaseFixture
+{
+    public double ArmourPiercing { get; set; }
+
+    public double Hardness { get; set; }
+
+    public double Expected { get; set; }
 }
 
 /// <summary>One shield stack and the resistance it leaves.</summary>
