@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 using EliteDangerousAlmanac.Ships.Internal;
 
 namespace EliteDangerousAlmanac.Ships;
@@ -109,6 +110,7 @@ public sealed record EngineeringModifier(
     /// capture wrote carries only the six decimal places it was written with, and leaves this
     /// absent. Read <see cref="PreciseValue"/> rather than this member.
     /// </remarks>
+    [JsonIgnore]
     public double? StoredValue { get; init; }
 
     /// <summary>The most precise figure available for the stat.</summary>
@@ -117,6 +119,7 @@ public sealed record EngineeringModifier(
     /// modifier came from. Both readings are the best answer available from what the producer
     /// wrote.
     /// </remarks>
+    [JsonIgnore]
     public double? PreciseValue => StoredValue ?? Value;
 }
 
