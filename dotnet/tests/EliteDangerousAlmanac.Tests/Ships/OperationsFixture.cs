@@ -23,6 +23,75 @@ internal sealed class OperationsFixture
 
     /// <summary>The recharge and the endurance of one weapons capacitor.</summary>
     public WeaponsCapacitorFixture WeaponsCapacitor { get; set; } = new();
+
+    /// <summary>The per-ship module-count allowance and what a build makes of it.</summary>
+    public ModuleLimitsFixture ModuleLimits { get; set; } = new();
+}
+
+/// <summary>One fitted module list and the allowance it uses up.</summary>
+internal sealed class ModuleLimitsFixture
+{
+    public string Group { get; set; } = string.Empty;
+
+    public List<ModuleLimitEntryFixture> Input { get; set; } = [];
+
+    public ModuleLimitUsageFixture ExpectedUsage { get; set; } = new();
+
+    /// <summary>The catalogue counts the allowance is pinned on.</summary>
+    public ModuleLimitCatalogueFixture Catalogue { get; set; } = new();
+}
+
+/// <summary>One fitted module's limit facts.</summary>
+internal sealed class ModuleLimitEntryFixture
+{
+    public string? LimitGroup { get; set; }
+
+    public ModuleLimitIncreaseFixture? LimitIncrease { get; set; }
+}
+
+/// <summary>One module's increase to an allowance.</summary>
+internal sealed class ModuleLimitIncreaseFixture
+{
+    public string Group { get; set; } = string.Empty;
+
+    public int Amount { get; set; }
+}
+
+/// <summary>The allowance and the usage one case expects.</summary>
+internal sealed class ModuleLimitUsageFixture
+{
+    public string Group { get; set; } = string.Empty;
+
+    public int BaseLimit { get; set; }
+
+    public int Increase { get; set; }
+
+    public int Limit { get; set; }
+
+    public int Count { get; set; }
+
+    public int Excess { get; set; }
+}
+
+/// <summary>The catalogue modules that consume or raise the allowance.</summary>
+internal sealed class ModuleLimitCatalogueFixture
+{
+    /// <summary>The modules that consume a place in a limit family.</summary>
+    public int LimitedCount { get; set; }
+
+    /// <summary>One module that consumes a place.</summary>
+    public string Weapon { get; set; } = string.Empty;
+
+    /// <summary>The modules that raise an allowance, and by how much.</summary>
+    public List<ModuleLimitIncreaseModuleFixture> Increases { get; set; } = [];
+}
+
+/// <summary>One catalogue module that raises an allowance.</summary>
+internal sealed class ModuleLimitIncreaseModuleFixture
+{
+    public string Symbol { get; set; } = string.Empty;
+
+    public int Amount { get; set; }
 }
 
 /// <summary>Several weapons and the thermal load they sum to.</summary>
