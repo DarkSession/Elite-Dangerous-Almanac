@@ -18,6 +18,11 @@
     <PackageReference Include="System.Text.Json" Version="10.0.0" />
   </ItemGroup>
 
+  <!-- The test suite reads the embedded catalogues and exercises the internal helpers. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="EliteDangerousAlmanac.Tests" />
+  </ItemGroup>
+
   <!--
     The shared catalogues travel inside the assembly as embedded resources, keyed by
     their repository path. The files stay where every language implementation reads
