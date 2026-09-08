@@ -11,6 +11,114 @@ internal sealed class OperationsFixture
 
     /// <summary>The three capacitors of one power distributor.</summary>
     public DistributorFixture Distributor { get; set; } = new();
+
+    /// <summary>The time a collapsed shield takes to come back.</summary>
+    public ShieldRecoveryFixture ShieldRecovery { get; set; } = new();
+
+    /// <summary>The fitted shield cell banks and the pool they make.</summary>
+    public CellBanksFixture CellBanks { get; set; } = new();
+}
+
+/// <summary>One shield and SYS capacitor at four pips, and the same at a part allocation.</summary>
+internal sealed class ShieldRecoveryFixture
+{
+    public ShieldRecoveryInputFixture Input { get; set; } = new();
+
+    public ShieldRecoveryExpectedFixture Expected { get; set; } = new();
+
+    /// <summary>The same arithmetic at a part allocation.</summary>
+    public ShieldRecoveryCaseFixture PipAllocation { get; set; } = new();
+
+    /// <summary>A shield strength the calculation must refuse.</summary>
+    public ShieldRecoveryCaseFixture InvalidStrength { get; set; } = new();
+}
+
+/// <summary>One recovery case and what it answers, or the failure it is expected to raise.</summary>
+internal sealed class ShieldRecoveryCaseFixture
+{
+    public ShieldRecoveryInputFixture Input { get; set; } = new();
+
+    public ShieldRecoveryExpectedFixture Expected { get; set; } = new();
+
+    public string? ExpectedError { get; set; }
+}
+
+/// <summary>The shield strength, generator rates and distributor figures one case states.</summary>
+internal sealed class ShieldRecoveryInputFixture
+{
+    public double Strength { get; set; }
+
+    public double RegenRate { get; set; }
+
+    public double BrokenRegenRate { get; set; }
+
+    public double DistributorDraw { get; set; }
+
+    public double SystemsCapacity { get; set; }
+
+    public double SystemsRecharge { get; set; }
+
+    /// <summary>The pips assigned to SYS, where the case states one.</summary>
+    public double? SystemsPips { get; set; }
+
+    /// <summary>The stated figures as the calculator's own input record.</summary>
+    internal ShieldRecoveryInput ToInput() => new(
+        Strength, RegenRate, BrokenRegenRate, DistributorDraw, SystemsCapacity, SystemsRecharge);
+}
+
+/// <summary>The rates and the seconds one recovery case expects.</summary>
+internal sealed class ShieldRecoveryExpectedFixture
+{
+    public double RegenRate { get; set; }
+
+    public double BrokenRegenRate { get; set; }
+
+    public double RecoveryTime { get; set; }
+
+    public double RegenTime { get; set; }
+}
+
+/// <summary>The fitted cell banks and the totals the powered ones make.</summary>
+internal sealed class CellBanksFixture
+{
+    public List<CellBankInputFixture> Input { get; set; } = [];
+
+    public CellBanksExpectedFixture Expected { get; set; } = new();
+}
+
+/// <summary>One fitted shield cell bank.</summary>
+internal sealed class CellBankInputFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    public double ReinforcementRate { get; set; }
+
+    public double Cells { get; set; }
+
+    public double SpinUp { get; set; }
+
+    public double Duration { get; set; }
+
+    public double Heat { get; set; }
+
+    public bool Powered { get; set; }
+
+    /// <summary>The stated bank as the calculator's own input record.</summary>
+    internal CellBankInput ToInput() =>
+        new(Slot, Symbol, ReinforcementRate, Cells, SpinUp, Duration, Heat, Powered);
+}
+
+/// <summary>The pool the powered banks make between them.</summary>
+internal sealed class CellBanksExpectedFixture
+{
+    public double TotalRestorable { get; set; }
+
+    public double TotalCells { get; set; }
+
+    /// <summary>Each bank's power state, in slot order.</summary>
+    public List<bool> Powered { get; set; } = [];
 }
 
 /// <summary>One loaded ship at full ENG, and the same hull at two other allocations.</summary>

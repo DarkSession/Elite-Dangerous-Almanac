@@ -18,6 +18,21 @@ namespace EliteDangerousAlmanac.Ships.Internal;
 /// </remarks>
 internal static class MassCurve
 {
+    /// <summary>One curve, for a caller that holds the six values loose.</summary>
+    /// <param name="MinMass">The mass at which performance reaches the maximum multiplier, in tonnes.</param>
+    /// <param name="OptMass">The mass at which performance is exactly the optimal multiplier, in tonnes.</param>
+    /// <param name="MaxMass">The mass beyond which the curve contributes nothing, in tonnes.</param>
+    /// <param name="MinMultiplier">The multiplier at the maximum mass.</param>
+    /// <param name="OptMultiplier">The multiplier at the optimal mass.</param>
+    /// <param name="MaxMultiplier">The multiplier at the minimum mass.</param>
+    internal sealed record Values(
+        double MinMass,
+        double OptMass,
+        double MaxMass,
+        double MinMultiplier,
+        double OptMultiplier,
+        double MaxMultiplier) : IMassCurve;
+
     /// <summary>Establishes that a curve is physical before anything reads a multiplier off it.</summary>
     /// <param name="curve">The curve as received.</param>
     /// <param name="name">The parameter to name in a failure.</param>
