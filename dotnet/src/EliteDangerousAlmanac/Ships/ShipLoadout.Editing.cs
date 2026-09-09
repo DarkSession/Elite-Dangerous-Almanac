@@ -351,19 +351,14 @@ public sealed partial class ShipLoadout
     /// <summary>Switches one fitted module on or off.</summary>
     /// <param name="slotKey">The mount key. Case and surrounding whitespace are ignored.</param>
     /// <param name="on">Whether the module runs.</param>
-    /// <returns>This build, so edits chain. An empty mount changes nothing.</returns>
+    /// <returns>This build, so edits chain.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="slotKey"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The mount is empty or unknown.</exception>
     public ShipLoadout SetModuleEnabled(string slotKey, bool on)
     {
         if (slotKey is null) throw new ArgumentNullException(nameof(slotKey));
 
-        int index = LoadoutState.IndexOf(modules, slotKey.Trim());
-        if (index >= 0)
-        {
-            modules[index] = modules[index] with { On = on };
-            slotCache.Clear();
-        }
-
+        PatchModule(slotKey, module => module with { On = on });
         return this;
     }
 
@@ -373,9 +368,11 @@ public sealed partial class ShipLoadout
     /// The band the journal writes, counted from zero. The outfitting panel numbers the same five
     /// groups from one.
     /// </param>
-    /// <returns>This build, so edits chain. An empty mount changes nothing.</returns>
+    /// <returns>This build, so edits chain.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="slotKey"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">The band is not one of the five groups.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The mount is empty or unknown, or the band is not one of the five groups.
+    /// </exception>
     public ShipLoadout SetModulePriority(string slotKey, int priority)
     {
         if (slotKey is null) throw new ArgumentNullException(nameof(slotKey));
@@ -385,14 +382,28 @@ public sealed partial class ShipLoadout
                 nameof(priority), priority, "A power band is an integer from 0 to 4.");
         }
 
+        PatchModule(slotKey, module => module with { Priority = priority });
+        return this;
+    }
+
+    /// <summary>Changes one fitted module's power state where it stands.</summary>
+    /// <remarks>
+    /// This deliberately avoids <see cref="ReplaceModule"/>. Powering a module up or down
+    /// changes no mass, capacity, value or rebuy, so running the aggregate adjustment would
+    /// wrongly drop the captured module value and rebuy an import supplied.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">The mount is empty or unknown.</exception>
+    private void PatchModule(string slotKey, Func<LoadoutModule, LoadoutModule> patch)
+    {
         int index = LoadoutState.IndexOf(modules, slotKey.Trim());
-        if (index >= 0)
+        if (index < 0)
         {
-            modules[index] = modules[index] with { Priority = priority };
-            slotCache.Clear();
+            throw new ArgumentOutOfRangeException(
+                nameof(slotKey), slotKey, Message("The mount \"{0}\" holds no module.", slotKey));
         }
 
-        return this;
+        modules[index] = patch(modules[index]);
+        slotCache.Clear();
     }
 
     /// <summary>Replaces one fitted module, keeping the captured figures coherent.</summary>

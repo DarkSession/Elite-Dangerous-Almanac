@@ -34,6 +34,19 @@
     <ProjectReference Include="../../src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj" />
   </ItemGroup>
 
+  <!--
+    The package README and the file that runs its examples, so ReadmeExampleTests can read
+    both and prove every example the README shows is one the suite actually runs.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepositoryRoot)dotnet/src/EliteDangerousAlmanac/README.md">
+      <LogicalName>docs/package-readme.md</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReadmeExampleTests.cs">
+      <LogicalName>docs/readme-example-tests.cs</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <!-- The shared fixtures are the parity contract; every implementation reads these. -->
   <ItemGroup>
     <EmbeddedResource Include="$(RepositoryRoot)fixtures/**/*.jsonc">

@@ -11,9 +11,9 @@ not ensured and breaking changes are very likely: exported names, signatures, mo
 paths, namespaces and data shapes can change in any release. Pin an exact version if
 your application needs a stable surface, and read the release notes before upgrading.
 
-The two packages do not carry the same names: each one reads the way its own language
-reads. What they share is the behaviour, which the fixtures under `fixtures/` prove for
-each of them.
+The two packages do not carry the same names: each one is written the way its own
+language reads. What they share is the behaviour, which the fixtures under `fixtures/`
+prove for each of them.
 
 ## Feature areas
 
@@ -58,8 +58,8 @@ See the [package README](dotnet/src/EliteDangerousAlmanac/README.md) for the are
 first-use examples. The XML documentation ships with the package, so an editor shows the
 same guidance the TypeScript TSDoc does.
 
-The ship assets are not in the NuGet package: they are 65 MB of SVG that no call reads.
-Copy them from [`assets/ships/`](assets/ships) instead.
+The ship assets are not in the NuGet package: they are a large body of SVG that no call
+reads. Copy them from [`assets/ships/`](assets/ships) instead.
 
 ## Licensing of the bundled data
 

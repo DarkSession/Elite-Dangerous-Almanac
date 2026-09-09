@@ -41,8 +41,15 @@ public sealed record SpinOrbitResonance(int Rotations, int Orbits);
 
 /// <summary>Where one orbit takes a body, and how the body turns along it.</summary>
 /// <remarks>
+/// <para>
 /// Every calculation reads the figures the scan states, and answers <see langword="null"/>
 /// where the body states none it can use.
+/// </para>
+/// <para>
+/// The maths is ported from the Canonn Research Group's
+/// <see href="https://github.com/canonn-science/canonn-signals">canonn-signals</see>. See
+/// <c>ATTRIBUTIONS.md</c> for credit and licence terms.
+/// </para>
 /// </remarks>
 public static class BodyOrbit
 {

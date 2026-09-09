@@ -16,10 +16,17 @@ public sealed record RocheLimits(double Rigid, double Fluid);
 
 /// <summary>What a scanned body weighs, how dense it is, and what it pulls on.</summary>
 /// <remarks>
+/// <para>
 /// Every calculation reads the figures the scan states, and answers <see langword="null"/>
 /// where the body states none it can use. A journal writes zero for a figure it does not
 /// have, so a figure of zero is read as an absent one wherever a calculation needs it above
 /// zero.
+/// </para>
+/// <para>
+/// The maths is ported from the Canonn Research Group's
+/// <see href="https://github.com/canonn-science/canonn-signals">canonn-signals</see>. See
+/// <c>ATTRIBUTIONS.md</c> for credit and licence terms.
+/// </para>
 /// </remarks>
 public static class BodyPhysics
 {

@@ -239,7 +239,7 @@ public static class Shields
     /// <exception cref="ArgumentNullException"><paramref name="input"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// With a generator fitted, the hull mass is not a finite number of zero or more, or the
-    /// generator carries a complete but non-physical curve. A generator whose record is simply
+    /// generator carries a complete but non-physical curve. A generator whose record is only
     /// missing part of its curve is not a failure: the hull mass is never read, and every strength
     /// figure is zero.
     /// </exception>
@@ -319,7 +319,7 @@ public static class Shields
         }
 
         // A hull heavier than the generator's maximum is handled by the shared curve, which
-        // answers zero there: the generator simply will not engage.
+        // answers zero there: the generator will not engage.
         return MassCurve.MultiplierAt(
             hullMass,
             new MassCurve.Values(minMass, optMass, maxMass, minMultiplier, optMultiplier, maxMultiplier),

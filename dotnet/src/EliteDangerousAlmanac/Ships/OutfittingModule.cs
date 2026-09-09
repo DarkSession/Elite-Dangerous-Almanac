@@ -62,7 +62,7 @@ namespace EliteDangerousAlmanac.Ships;
 /// and that no outfitting screen sells. Each is a second identity for an article the game
 /// already sells, which is why a module picker leaves them out — but they are real fitted
 /// articles, so every lookup still resolves one. It is not a price: the cost is missing on
-/// these and also on articles that are sold and simply unpriced by every registry.
+/// these and also on articles that are sold and unpriced by every registry.
 /// </param>
 /// <param name="RestrictedToShips">
 /// The hulls a ship-specific module is limited to. Present only on the handful of non-armour

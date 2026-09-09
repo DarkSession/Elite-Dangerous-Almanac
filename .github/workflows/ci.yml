@@ -100,7 +100,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('dotnet/**/*.csproj', 'dotnet/**/*.props') }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('dotnet/**/packages.lock.json', 'dotnet/**/*.csproj', 'dotnet/**/*.props') }}
           restore-keys: nuget-${{ runner.os }}-
 
       # `--locked-mode` is NuGet's `npm ci`: it fails rather than resolving when the

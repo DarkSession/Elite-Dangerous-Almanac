@@ -5,6 +5,11 @@
     <RootNamespace>EliteDangerousAlmanac</RootNamespace>
     <AssemblyName>EliteDangerousAlmanac</AssemblyName>
     <PackageId>EliteDangerousAlmanac</PackageId>
+    <!--
+      The version tracks the TypeScript package. It stays below 1.0 while the shape of
+      the API is still open to change.
+    -->
+    <Version>0.2.0</Version>
     <Description>Static Elite Dangerous data and calculations: astronomy, materials, commodities, Odyssey equipment and localized display text.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>

@@ -20,7 +20,7 @@ A breaking change still has to be complete and visible: update every call site, 
 
 ## Multi-Language Strategy
 
-The library started in **TypeScript** and has a **.NET** implementation beside it, with **Python** (and potentially other languages/frameworks) planned for the future. Two hard requirements shape all design decisions:
+The library has a **TypeScript** implementation and a **.NET** implementation, with **Python** (and potentially other languages/frameworks) planned for the future. Two hard requirements shape all design decisions:
 
 1. **Feature parity** — every language implementation must expose the same features and behavior.
 2. **Shared test fixtures** — all implementations are validated against the same language-agnostic test fixtures.

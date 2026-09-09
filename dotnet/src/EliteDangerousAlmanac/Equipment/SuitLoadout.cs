@@ -11,14 +11,18 @@ namespace EliteDangerousAlmanac.Equipment;
 /// <summary>One weapon a suit loadout event states.</summary>
 /// <param name="SlotName">Frontier's journal slot name, such as <c>PrimaryWeapon1</c>.</param>
 /// <param name="ModuleName">The weapon's item symbol.</param>
-/// <param name="Class">The grade the weapon is owned at.</param>
+/// <param name="Class">
+/// The grade the weapon is owned at. It is read as a real number, because the field is a
+/// journal figure and a line that states a grade between the rungs is reported rather than
+/// refused.
+/// </param>
 /// <param name="SuitModuleId">The game's own identifier for this fitted weapon.</param>
 /// <param name="ModuleNameLocalised">The weapon's display name in the player's language.</param>
 /// <param name="WeaponMods">The modification symbols the weapon carries.</param>
 public sealed record SuitLoadoutModuleEvent(
     [property: JsonPropertyName("SlotName")] string SlotName,
     [property: JsonPropertyName("ModuleName")] string ModuleName,
-    [property: JsonPropertyName("Class")] int Class,
+    [property: JsonPropertyName("Class")] double Class,
     [property: JsonPropertyName("SuitModuleID")] long? SuitModuleId = null,
     [property: JsonPropertyName("ModuleName_Localised")] string? ModuleNameLocalised = null,
     [property: JsonPropertyName("WeaponMods")] IReadOnlyList<string>? WeaponMods = null);
@@ -300,12 +304,18 @@ public sealed record SuitLoadout(
                 continue;
             }
 
-            if (module.Class < EquipmentGrades.Lowest || module.Class > EquipmentGrades.Highest)
+            // A grade is one of five rungs. A journal that states anything else, a figure
+            // between two rungs included, names no set of figures the weapon can be read at.
+            if (module.Class != Math.Floor(module.Class)
+                || module.Class < EquipmentGrades.Lowest
+                || module.Class > EquipmentGrades.Highest)
             {
                 outcomes.Add(new SuitLoadoutImportOutcome(
                     SuitLoadoutImportAction.UnknownGrade, module.SlotName, module.ModuleName));
                 continue;
             }
+
+            int grade = (int)module.Class;
 
             ReadOnlyCollection<FittedPersonalModification> modifications = ResolveModifications(
                 module.WeaponMods ?? [], weapon, module.SlotName, outcomes);
@@ -326,14 +336,14 @@ public sealed record SuitLoadout(
             weapons.Add(new FittedPersonalWeapon(
                 mount.Key,
                 weapon,
-                module.Class,
+                grade,
                 modifications,
                 new ReadOnlyCollection<PersonalModifier>(modifiers),
                 reloadSpeed,
                 Fitted(modifications, ScopeSymbol),
                 // Every weapon carries all five grades, and the grade is judged above, so
                 // the figures resolve.
-                PersonalWeaponCatalogue.Metrics(weapon, module.Class, modifiers, reloadSpeed)!,
+                PersonalWeaponCatalogue.Metrics(weapon, grade, modifiers, reloadSpeed)!,
                 module.SuitModuleId));
         }
 

@@ -20,8 +20,16 @@ internal static class EngineeringPrecision
     /// <param name="value">The value to round.</param>
     /// <returns>The rounded value.</returns>
     /// <remarks>
+    /// <para>
     /// A half goes towards positive infinity rather than away from zero, which is the rule
     /// the reference implementations round ammunition counts by.
+    /// </para>
+    /// <para>
+    /// Adding a half before the floor differs from the reference rounding on two families of
+    /// input: the double just below a half, which the reference answers as zero, and the odd
+    /// whole numbers at or above two to the fifty-second. An engineered figure stays far
+    /// below either, so no call here can reach one.
+    /// </para>
     /// </remarks>
     internal static double RoundHalfUp(double value) => Math.Floor(value + 0.5);
 

@@ -6,10 +6,11 @@ namespace EliteDangerousAlmanac.Equipment;
 
 /// <summary>Resolves the modification symbol a journal writes onto its own recipe.</summary>
 /// <remarks>
-/// Nine weapon recipes are written under a shorter shared spelling: the game writes
-/// <c>weapon_range</c> for the kinetic, laser and plasma recipes alike. The weapon the
-/// symbol was read from names the menu, and its engineering type picks the recipe out of
-/// the group.
+/// The journal leaves the technology off Greater Range, Headshot Damage and Higher
+/// Accuracy: it writes <c>weapon_range</c> for the kinetic, laser and plasma recipes alike.
+/// Those recipes ask for different materials, so the weapon the symbol was read from is
+/// what settles which one the journal means. Its engineering type picks the recipe out of
+/// the group. This is the same collision the ship engineering resolver answers.
 /// </remarks>
 public static class ModificationJournal
 {

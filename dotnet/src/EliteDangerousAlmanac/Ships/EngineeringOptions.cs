@@ -37,7 +37,7 @@ public sealed record EngineeringOptionGroup(
 /// experimental slot.
 /// </para>
 /// <para>
-/// A stock module with no ordinary menu is simply absent. A few of those still keep a Mercenary
+/// A stock module with no ordinary menu is absent. A few of those still keep a Mercenary
 /// upgrade route through their bespoke recipes, which no menu lists.
 /// </para>
 /// </remarks>

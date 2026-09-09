@@ -120,15 +120,9 @@ public sealed class SuitLoadoutTests
     public void AnEntryAReadCannotFitIsPassedOverAndReported(string name)
     {
         ImportCaseFixture expected = Fixture.Imports[name];
-        if (!Readable(expected.Event, out SuitLoadoutEvent? stated))
-        {
-            // A grade between the rungs cannot reach this reader: the event states a whole
-            // number, so the type refuses the figure before the read begins.
-            Assert.Contains("BetweenRungs", name, StringComparison.Ordinal);
-            return;
-        }
+        SuitLoadoutEvent stated = Read(expected.Event);
 
-        SuitLoadout loadout = SuitLoadout.Parse(stated!);
+        SuitLoadout loadout = SuitLoadout.Parse(stated);
 
         Assert.Equal(expected.Mounts, Mounts(loadout));
         Assert.Equal(expected.Modifications, FittedSymbols(loadout));

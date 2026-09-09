@@ -528,8 +528,9 @@ public static class Engineering
         EngineeringModifier falloff = modifiers[falloffAt];
         if (falloff.Value is null) return;
 
-        int rangeAt = IndexOf(modifiers, "Range");
-        if (rangeAt < 0) rangeAt = IndexOf(modifiers, "MaximumRange");
+        // Whichever label the recipe writes first wins, because a weapon that carries both
+        // states the same distance twice and the earlier one is the one a reader meets.
+        int rangeAt = IndexOfEither(modifiers, "Range", "MaximumRange");
         double? range = rangeAt >= 0 ? modifiers[rangeAt].Value : null;
         range ??= baseStats.TryGetValue("Range", out double stated) ? stated
             : baseStats.TryGetValue("MaximumRange", out double maximum) ? maximum
@@ -554,6 +555,22 @@ public static class Engineering
         for (int at = 0; at < modifiers.Count; at++)
         {
             if (string.Equals(modifiers[at].Label, label, StringComparison.Ordinal)) return at;
+        }
+
+        return -1;
+    }
+
+    /// <summary>Finds whichever of two labels a recipe writes first.</summary>
+    private static int IndexOfEither(List<EngineeringModifier> modifiers, string first, string second)
+    {
+        for (int at = 0; at < modifiers.Count; at++)
+        {
+            string label = modifiers[at].Label;
+            if (string.Equals(label, first, StringComparison.Ordinal)
+                || string.Equals(label, second, StringComparison.Ordinal))
+            {
+                return at;
+            }
         }
 
         return -1;

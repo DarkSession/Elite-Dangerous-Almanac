@@ -257,7 +257,7 @@ public sealed record ValidationModule(string Slot, string Symbol)
 /// <remarks>
 /// State as much as the build knows. The fuel and the cargo are capacities rather than a chosen
 /// load, because those are the heaviest the build can become without being refitted. Leave one
-/// out and the loads above it simply go unchecked.
+/// out and the loads above it go unchecked.
 /// </remarks>
 public sealed record LoadoutMass(double Dry)
 {

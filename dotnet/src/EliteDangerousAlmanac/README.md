@@ -55,7 +55,8 @@ ProceduralSystem again = ProceduralSystem.FromSystemAddress(
 using EliteDangerousAlmanac.Ships;
 
 ShipLoadout build = ShipLoadout.Default("Anaconda");
-build.SetModule("Slot01_Size7", ModuleCatalogue.FindBySymbol("Int_CargoRack_Size7_Class1")!);
+build.SetModule(
+    "Slot01_Size7", ModuleCatalogue.FindBySymbol("Int_CargoRack_Size7_Class1")!);
 
 BuildMetrics metrics = BuildMetrics.Of(build);
 JumpRangeSummary jump = metrics.JumpRangeSummary();
@@ -80,11 +81,15 @@ whitespace, and answers `null` for one no record carries.
 
 ## How a calculation answers
 
-A calculation that reads figures a build or a scan may not state answers a
-`CalculationResult<T>`, which carries either the figure or the reason it cannot be
-worked out. A lookup answers `null` for a miss. An argument the call cannot use at all
-raises `ArgumentNullException` or `ArgumentOutOfRangeException`, and wire data that
-cannot be read raises `FormatException` or `JsonException`.
+A ship calculation answers a `CalculationResult<T>`. It carries either the figure or the
+reason the build cannot be measured, such as a hull with no frame shift drive fitted.
+
+A body or star calculation answers `null` instead, because a scan states one line of
+figures and a missing field has only one meaning: the scan did not write it.
+
+A lookup answers `null` for a miss. An argument the call cannot use at all raises
+`ArgumentNullException` or `ArgumentOutOfRangeException`, and wire data that cannot be
+read raises `FormatException` or `JsonException`.
 
 ## Ship assets
 

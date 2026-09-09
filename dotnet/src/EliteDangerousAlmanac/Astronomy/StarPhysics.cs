@@ -37,8 +37,16 @@ public sealed record MassStabilityAssessment(
 
 /// <summary>What kind of neutron star one scan describes.</summary>
 /// <remarks>
+/// <para>
 /// The class follows the rotation period, and the heavier ones are set apart by mass. An
 /// ultra-long-period star is told from a magnetar by its absolute magnitude.
+/// </para>
+/// <para>
+/// The scheme is the Canonn Research Group's own, and the bands are cut at 10 ms, 5 s, 30 s
+/// and one hour of rotation period. The anomalous-mass classes mark a star heavier than
+/// 2.1 solar masses. The two ultra-long-period classes are split by absolute magnitude
+/// rather than by mass: brighter than magnitude 10 reads as a magnetar.
+/// </para>
 /// </remarks>
 public enum NeutronStarClass
 {
@@ -72,8 +80,15 @@ public enum NeutronStarClass
 
 /// <summary>What a scanned star burns, weighs and turns at.</summary>
 /// <remarks>
+/// <para>
 /// Every calculation reads the figures the scan states, and answers <see langword="null"/>
 /// where the star states none it can use.
+/// </para>
+/// <para>
+/// The maths is ported from the Canonn Research Group's
+/// <see href="https://github.com/canonn-science/canonn-signals">canonn-signals</see>. See
+/// <c>ATTRIBUTIONS.md</c> for credit and licence terms.
+/// </para>
 /// </remarks>
 public static class StarPhysics
 {
