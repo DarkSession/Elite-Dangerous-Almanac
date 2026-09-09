@@ -279,8 +279,8 @@ that same id.
 
 The [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
 contains the project guide. The generated
-[GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki) contains the
-complete API reference.
+[TypeScript wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
+contains the guides and the complete API reference.
 
 ## Data and credits
 

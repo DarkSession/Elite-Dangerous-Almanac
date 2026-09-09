@@ -41,8 +41,8 @@ every module as side-effect free.
 See the [package README](typescript/README.md) for installation and import guidance,
 the [Getting started guide](typescript/docs/guides/Getting-started.md) for first-use
 examples, and the
-[generated wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki) for the
-complete API reference.
+[TypeScript wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
+for the guides and the complete API reference.
 
 ## .NET package
 
@@ -62,8 +62,10 @@ and on Mono 6.4 and above. It takes one direct dependency, `System.Text.Json`, a
 carries the shared catalogues inside the assembly.
 
 See the [package README](dotnet/src/EliteDangerousAlmanac/README.md) for the areas and
-first-use examples. The XML documentation ships with the package, so an editor shows the
-same guidance the TypeScript TSDoc does.
+first-use examples, and the
+[.NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) for the
+guides and the complete API reference. The XML documentation ships with the package, so
+an editor shows the same guidance those pages do.
 
 The ship assets are not in the package: they are a large body of SVG that no call reads.
 Copy them from [`assets/ships/`](assets/ships) instead.
@@ -81,7 +83,8 @@ assets/      shared visual assets, keyed by catalogue symbol
 data/        shared JSONC catalogues and per-domain provenance
 fixtures/    shared JSONC behavioral fixtures, each carrying its own provenance
 schemas/     shared JSON Schemas for catalogue payloads
-scripts/     repository-only data tooling
+docs/        the wiki's shared landing page
+scripts/     repository-only data and wiki tooling
 typescript/  @elite-dangerous-almanac/core
 dotnet/      EliteDangerousAlmanac
 ```
@@ -134,7 +137,11 @@ formatting checks, type checking, documented-example compilation and value check
 the coverage-gated test suite. Changes to exports or consumer-facing modules also require
 the build and package tests.
 
-API documentation is generated from TSDoc. Catalogue provenance belongs in the matching
+API documentation is generated from source comments — TSDoc for TypeScript, XML
+documentation comments for C# — and `pnpm run docs` assembles both into the
+[wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki), which is published
+from `main`. It needs Node alone; the .NET pages are read from the C# source, not from a
+compiled assembly. Catalogue provenance belongs in the matching
 `data/<domain>/SOURCES.md`; open data gaps are tracked in
 [GitHub issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues). See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the complete development and pull-request guide.

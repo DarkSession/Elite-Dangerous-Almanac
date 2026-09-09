@@ -29,6 +29,11 @@ The package carries game and community data under source-specific terms. Read
 [LICENSE](./LICENSE) and [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) before you
 redistribute it or use it commercially.
 
+The
+[.NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)
+carries the guides and the complete API reference: every namespace, type and member,
+generated from the documentation comments below.
+
 ## Areas
 
 Every area is one namespace under `EliteDangerousAlmanac`.

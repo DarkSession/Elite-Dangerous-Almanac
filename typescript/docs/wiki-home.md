@@ -1,8 +1,10 @@
 ---
-title: Home
+title: TypeScript
 ---
 
-# Elite Dangerous Almanac
+[Elite Dangerous Almanac](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Home) / TypeScript
+
+# @elite-dangerous-almanac/core
 
 Static Elite Dangerous data and calculations for community applications and research —
 procedural system names and `id64` addresses, galactic regions and nebulae, ships and
@@ -65,6 +67,14 @@ The bulk data catalogues live on their own subpaths and are listed in full on th
 
 **[Browse the complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)**
 — every module, class, function and type, generated from the source documentation.
+
+## Writing C# instead?
+
+The same data and the same behaviour are published as a .NET package, with a reference and
+navigation of its own:
+**[the .NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)**.
+The names differ — each package is written the way its own language reads — but the
+behaviour does not, and the fixtures under `fixtures/` prove it for both.
 
 ## Licensing
 
