@@ -11,12 +11,19 @@ stable surface, and read the release notes before upgrading.
 
 ## Install
 
+The package is not on NuGet yet, so build it from the repository:
+
 ```bash
-dotnet add package EliteDangerousAlmanac
+cd dotnet
+dotnet pack --configuration Release
 ```
 
+`dotnet pack` writes `EliteDangerousAlmanac.<version>.nupkg` into
+`src/EliteDangerousAlmanac/bin/Release/`. Add that directory as a package source to
+reference it from your own project.
+
 The package targets .NET Standard 2.1, so it runs on .NET 10, on .NET Core 3.0 and
-above, and on Mono 6.4 and above. It depends on `System.Text.Json` and nothing else.
+above, and on Mono 6.4 and above. It takes one direct dependency, `System.Text.Json`.
 
 The package carries game and community data under source-specific terms. Read
 [LICENSE](./LICENSE) and [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) before you
@@ -40,13 +47,14 @@ Every area is one namespace under `EliteDangerousAlmanac`.
 ```csharp
 using EliteDangerousAlmanac.Astronomy;
 
-ProceduralSystem? system = ProceduralSystem.FromName("Synuefe EN-H d11-96");
+ProceduralSystem? system = ProceduralSystem.FromName("Synuefai XU-M d8-79");
 ulong address = system!.SystemAddress;
 
-// A journal event reports the address, and the position beside it names the region the
-// game shows for a system inside a nebula.
-ProceduralSystem again = ProceduralSystem.FromSystemAddress(
-    address, new GalacticPosition(751, -179, -91));
+// A journal event reports the address and the position together. Inside a hand-authored
+// region the game shows that region's own name, and only the position identifies it.
+ProceduralSystem named = ProceduralSystem.FromSystemAddress(
+    address, new GalacticPosition(-80.625, -146.65625, -343.25));
+string shown = named.Name;
 ```
 
 ## Fit a ship

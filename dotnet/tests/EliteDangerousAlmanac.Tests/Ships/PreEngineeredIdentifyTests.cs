@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EliteDangerousAlmanac.Ships;
 using EliteDangerousAlmanac.Ships.Internal;
+using EliteDangerousAlmanac.Tests.Support;
 using Xunit;
 
 namespace EliteDangerousAlmanac.Tests.Ships;
@@ -9,6 +11,9 @@ namespace EliteDangerousAlmanac.Tests.Ships;
 /// <summary>Reading a captured module back to the fixed article it describes.</summary>
 public class PreEngineeredIdentifyTests
 {
+    private static readonly PreEngineeredFixture Fixture =
+        SharedFixtures.Load<PreEngineeredFixture>("fixtures/ships/pre-engineered.jsonc");
+
     private static readonly PreEngineeredVariant[] Articles =
         PreEngineeredCatalogue.All.Where(variant => variant.Modifiers is { Count: > 0 }).ToArray();
 
@@ -146,15 +151,27 @@ public class PreEngineeredIdentifyTests
     [Fact]
     public void AMercenaryArticleIsIdentifiedAtEveryGradeItWasUpgradedTo()
     {
-        PreEngineeredVariant bought = Assert.Single(
-            PreEngineeredCatalogue.VariantsFor("Int_DetailedSurfaceScanner_Tiny"),
-            variant => variant.Acquisition == PreEngineeredAcquisition.Mercenary);
+        MercenaryIdentificationFixture stated = Fixture.Identification.Mercenary;
 
-        for (int grade = bought.Grade; grade <= 5; grade++)
+        PreEngineeredVariant bought = Assert.Single(
+            PreEngineeredCatalogue.VariantsFor(stated.Symbol),
+            variant => variant.Acquisition == PreEngineeredAcquisition.Mercenary
+                && string.Equals(
+                    variant.BlueprintSymbol,
+                    stated.BlueprintSymbol,
+                    StringComparison.OrdinalIgnoreCase));
+
+        // The sale states the grade it gives and the Merc Coin it bills.
+        Assert.Equal(stated.PurchaseGrade, bought.Grade);
+        Assert.Equal(stated.MercCoinCost, bought.MercCoinCost);
+
+        // The recipe is exclusive to the article, so every grade an engineer takes it to
+        // still names the same purchase.
+        for (int grade = stated.PurchaseGrade; grade <= stated.UpgradedGrade; grade++)
         {
-            LoadoutModule module = new("TinyHardpoint1", bought.Symbol)
+            LoadoutModule module = new("MediumHardpoint1", stated.Symbol)
             {
-                Engineering = new ModuleEngineering(bought.BlueprintSymbol, grade, 1),
+                Engineering = new ModuleEngineering(stated.BlueprintSymbol, grade, 1),
             };
 
             Assert.Same(bought, PreEngineeredStats.Identify(module));

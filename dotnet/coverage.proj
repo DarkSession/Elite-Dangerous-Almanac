@@ -15,8 +15,16 @@
     <Exec Command="dotnet test &quot;$(TestProject)&quot; --configuration $(CoverageConfiguration) --nologo /p:CollectCoverage=true /p:CoverletOutput=&quot;$(CoverageDirectory)&quot;" />
   </Target>
 
+  <!--
+    The readable report. `dotnet build coverage.proj -t:CoverageReport` writes a text
+    summary and a browsable HTML report beside the Cobertura file. The report generator
+    is a local tool, so the target installs it from the manifest before it runs. The
+    report types are quoted because the shell reads an unquoted semicolon as the end of
+    the command.
+  -->
   <Target Name="CoverageReport" DependsOnTargets="Coverage">
-    <Exec Command="dotnet reportgenerator -reports:&quot;$(CoverageDirectory)coverage.cobertura.xml&quot; -targetdir:&quot;$(CoverageDirectory)report&quot; -reporttypes:TextSummary;Html" />
+    <Exec Command="dotnet tool restore" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+    <Exec Command="dotnet reportgenerator -reports:&quot;$(CoverageDirectory)coverage.cobertura.xml&quot; -targetdir:&quot;$(CoverageDirectory)report&quot; -reporttypes:&quot;TextSummary;Html&quot;" WorkingDirectory="$(MSBuildThisFileDirectory)" />
   </Target>
 
 </Project>

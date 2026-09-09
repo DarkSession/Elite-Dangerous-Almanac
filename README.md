@@ -46,20 +46,27 @@ complete API reference.
 
 ## .NET package
 
+The package is not on NuGet yet, so build it from this repository:
+
 ```bash
-dotnet add package EliteDangerousAlmanac
+cd dotnet
+dotnet pack --configuration Release
 ```
 
+`dotnet pack` writes `EliteDangerousAlmanac.<version>.nupkg` into
+`dotnet/src/EliteDangerousAlmanac/bin/Release/`. Add that directory as a package source
+to reference it from your own project.
+
 The package targets .NET Standard 2.1, so it runs on .NET 10, on .NET Core 3.0 and above,
-and on Mono 6.4 and above. It depends on `System.Text.Json` and nothing else, and it
+and on Mono 6.4 and above. It takes one direct dependency, `System.Text.Json`, and it
 carries the shared catalogues inside the assembly.
 
 See the [package README](dotnet/src/EliteDangerousAlmanac/README.md) for the areas and
 first-use examples. The XML documentation ships with the package, so an editor shows the
 same guidance the TypeScript TSDoc does.
 
-The ship assets are not in the NuGet package: they are a large body of SVG that no call
-reads. Copy them from [`assets/ships/`](assets/ships) instead.
+The ship assets are not in the package: they are a large body of SVG that no call reads.
+Copy them from [`assets/ships/`](assets/ships) instead.
 
 ## Licensing of the bundled data
 

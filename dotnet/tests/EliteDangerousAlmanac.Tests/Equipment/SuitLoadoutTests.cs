@@ -125,6 +125,10 @@ public sealed class SuitLoadoutTests
         SuitLoadout loadout = SuitLoadout.Parse(stated);
 
         Assert.Equal(expected.Mounts, Mounts(loadout));
+
+        // The game's own instance identifier for a fitted weapon, or nothing where the
+        // event states none. An absent identifier is not a zero.
+        Assert.Equal(expected.ModuleIds, ModuleIds(loadout));
         Assert.Equal(expected.Modifications, FittedSymbols(loadout));
         Assert.Equal(expected.ImportOutcomes.Count, loadout.ImportOutcomes.Count);
         for (int index = 0; index < expected.ImportOutcomes.Count; index++)
@@ -264,6 +268,13 @@ public sealed class SuitLoadoutTests
         List<string> stats = [];
         foreach (PersonalModifier modifier in modifiers) stats.Add(modifier.Stat);
         return stats;
+    }
+
+    private static List<long?> ModuleIds(SuitLoadout loadout)
+    {
+        List<long?> ids = [];
+        foreach (FittedPersonalWeapon fitted in loadout.Weapons) ids.Add(fitted.ModuleId);
+        return ids;
     }
 
     private static List<string> Mounts(SuitLoadout loadout)

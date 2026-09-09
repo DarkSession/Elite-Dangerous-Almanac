@@ -57,8 +57,15 @@ public class EngineeringTests
     {
         RolledRecipeFixture climb = Fixture.PreEngineeredClimb;
 
-        // The article arrives at grade 1, so its recipe defines grades 2 through 5 only. Asking
-        // for grade 1 is asking to recreate the purchase, which no recipe can do.
+        // The article is sold carrying the recipe, at the grade the sale gives it.
+        PreEngineeredVariant sold =
+            Assert.Single(PreEngineeredCatalogue.VariantsFor(climb.Symbol));
+        Assert.Equal(climb.Blueprint, sold.BlueprintSymbol, ignoreCase: true);
+        Assert.Equal(climb.SoldAtGrade, sold.Grade);
+
+        // The article arrives at that grade, so its recipe defines the grades above it only.
+        // Asking for the sale grade is asking to recreate the purchase, which no recipe can do.
+        Assert.Equal(climb.SoldAtGrade, climb.GradeUnavailable);
         Assert.Null(BlueprintCatalogue.FindGrade(climb.Blueprint, climb.GradeUnavailable!.Value));
 
         IReadOnlyList<EngineeringModifier> modifiers = Engineering.ComputeModifiers(
@@ -95,6 +102,44 @@ public class EngineeringTests
         }
     }
 
+    /// <summary>
+    /// Shows the round-up does work. The recipe's own arithmetic, before anything rounds
+    /// it, is the figure the fixture pins as the unrounded clip. What the rule says is
+    /// stated here without reading how the library implements it: a whole number of
+    /// bursts, never below the roll, and never a whole burst above it.
+    /// </summary>
+    private static void AssertRoundsToWholeBursts(
+        ClipRoundingCaseFixture rounding, BlueprintGrade grade)
+    {
+        BlueprintFeature scale =
+            grade.Features.First(feature => feature.Label == "AmmoClipSize");
+        double roll = scale.Min + ((scale.Max - scale.Min) * rounding.Quality);
+        Assert.Equal(
+            rounding.UnroundedAmmoClipSize, rounding.BaseAmmoClipSize * (1 + roll), 6);
+
+        if (rounding.AmmoClipSize == rounding.BaseAmmoClipSize)
+        {
+            // A roll that moves the clip nowhere leaves it where it was, whether or not
+            // that is a whole number of bursts.
+            Assert.Equal(rounding.BaseAmmoClipSize, rounding.UnroundedAmmoClipSize);
+            return;
+        }
+
+        double bursts = rounding.AmmoClipSize / rounding.BurstSize;
+        Assert.Equal(Math.Round(bursts), bursts);
+
+        // Never below the roll, bar what the multiplier's own third decimal is worth on
+        // this weapon's clip. That fraction is the only one a published figure may be out
+        // by.
+        Assert.True(
+            rounding.AmmoClipSize
+                >= rounding.UnroundedAmmoClipSize - (rounding.BaseAmmoClipSize * 5e-4),
+            $"{rounding.Symbol}: the clip rounded below the roll.");
+        Assert.True(
+            rounding.AmmoClipSize - rounding.UnroundedAmmoClipSize < rounding.BurstSize,
+            $"{rounding.Symbol}: the clip rounded up by a whole burst or more.");
+    }
+
     [Theory]
     [MemberData(nameof(ClipRoundings))]
     public void AComputedClipHoldsWholeBursts(int position)
@@ -104,10 +149,12 @@ public class EngineeringTests
         Dictionary<string, double> baseStats = ModuleStatLabels.BaseStats(module);
         Assert.Equal(rounding.BaseAmmoClipSize, baseStats["AmmoClipSize"], 9);
 
-        IReadOnlyList<EngineeringModifier> modifiers = Engineering.ComputeModifiers(
-            baseStats, Grade(rounding.Blueprint, rounding.Grade), rounding.Quality);
+        BlueprintGrade grade = Grade(rounding.Blueprint, rounding.Grade);
+        IReadOnlyList<EngineeringModifier> modifiers =
+            Engineering.ComputeModifiers(baseStats, grade, rounding.Quality);
 
         Assert.Equal(rounding.AmmoClipSize, Value(modifiers, "AmmoClipSize"), 9);
+        AssertRoundsToWholeBursts(rounding, grade);
         if (rounding.AmmoMaximum.HasValue)
         {
             Assert.Equal(rounding.AmmoMaximum.Value, Value(modifiers, "AmmoMaximum"), 9);
@@ -155,7 +202,9 @@ public class EngineeringTests
             // reaches the same record.
             Assert.Same(blueprint, BlueprintCatalogue.Find(observed.Blueprint.ToLowerInvariant()));
             Assert.Contains(observed.Grade, blueprint.Grades.Keys);
-            Assert.DoesNotContain(1, blueprint.Grades.Keys);
+
+            // The recipe starts above the grade the article is sold at.
+            Assert.DoesNotContain(observed.SoldAtGrade!.Value, blueprint.Grades.Keys);
         }
     }
 

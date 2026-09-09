@@ -20,15 +20,20 @@ public sealed class ReadmeExampleTests
     [Fact]
     public void TheSystemExampleReadsASystemFromItsNameAndItsAddress()
     {
-        ProceduralSystem? system = ProceduralSystem.FromName("Synuefe EN-H d11-96");
+        ProceduralSystem? system = ProceduralSystem.FromName("Synuefai XU-M d8-79");
         ulong address = system!.SystemAddress;
 
-        // A journal event reports the address, and the position beside it names the region the
-        // game shows for a system inside a nebula.
-        ProceduralSystem again = ProceduralSystem.FromSystemAddress(
-            address, new GalacticPosition(751, -179, -91));
+        // A journal event reports the address and the position together. Inside a hand-authored
+        // region the game shows that region's own name, and only the position identifies it.
+        ProceduralSystem named = ProceduralSystem.FromSystemAddress(
+            address, new GalacticPosition(-80.625, -146.65625, -343.25));
+        string shown = named.Name;
 
-        Assert.Equal("Synuefe EN-H d11-96", again.Name);
+        // Without the position the same address reads as the procedural name it started from,
+        // so the example fails where the position stops carrying the answer.
+        Assert.Equal("Pleiades Sector HR-W d1-79", shown);
+        Assert.Equal(
+            "Synuefai XU-M d8-79", ProceduralSystem.FromSystemAddress(address).Name);
     }
 
     [Fact]

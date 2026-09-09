@@ -30,6 +30,16 @@ public sealed class EquipmentCatalogueTests
             Fixture.Counts.ModificationRecipes, PersonalModificationCatalogue.All.Count);
         Assert.Equal(
             Fixture.Counts.ModificationRecipes, PersonalModificationCatalogue.AllCosts.Count);
+
+        // Recipes outnumber the names they show: three weapon menus offer the same
+        // modification under one display name. The two counts hold that apart.
+        HashSet<string> names = [];
+        foreach (PersonalModification recipe in PersonalModificationCatalogue.All.Values)
+        {
+            names.Add(recipe.Name);
+        }
+
+        Assert.Equal(Fixture.Counts.ModificationNames, names.Count);
     }
 
     [Theory]

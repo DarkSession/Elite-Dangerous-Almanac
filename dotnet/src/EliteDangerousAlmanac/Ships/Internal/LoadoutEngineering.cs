@@ -28,8 +28,9 @@ internal static class LoadoutEngineering
     /// <remarks>
     /// A label with no base value is not automatically missing. A recipe leg on a stat the
     /// module does not have is inert: Long Range scales a projectile weapon's shot speed and
-    /// leaves a beam laser alone. A label is missing only when the catalogue models no stat for
-    /// it, so there is nowhere to store the result.
+    /// leaves a beam laser alone. A label is missing only when the catalogue models nothing for
+    /// it, so there is nowhere to store the result. A label that grants a capability models a
+    /// flag rather than a stat, and the flag is where its result goes.
     /// </remarks>
     internal static List<string> MissingBaseLabels(
         OutfittingModule stats,
@@ -44,6 +45,7 @@ internal static class LoadoutEngineering
         {
             if (baseStats.ContainsKey(label)) return;
             if (ModuleStatLabels.StatFor(label, stats.Stats) is not null) return;
+            if (ModuleStatLabels.CapabilityValueFor(label) is not null) return;
             if (seen.Add(label)) missing.Add(label);
         }
 
