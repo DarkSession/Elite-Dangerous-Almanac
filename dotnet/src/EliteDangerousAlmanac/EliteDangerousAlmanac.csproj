@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>EliteDangerousAlmanac</RootNamespace>
+    <AssemblyName>EliteDangerousAlmanac</AssemblyName>
+    <PackageId>EliteDangerousAlmanac</PackageId>
+    <!--
+      The version tracks the TypeScript package. It stays below 1.0 while the shape of
+      the API is still open to change.
+    -->
+    <Version>0.2.0</Version>
+    <Description>Static Elite Dangerous data and calculations: astronomy, materials, commodities, Odyssey equipment and localized display text.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</RepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- The test suite reads the embedded catalogues and exercises the internal helpers. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="EliteDangerousAlmanac.Tests" />
+  </ItemGroup>
+
+  <!--
+    The shared catalogues travel inside the assembly as embedded resources, keyed by
+    their repository path. The files stay where every language implementation reads
+    them; nothing is copied into dotnet/.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepositoryRoot)data/**/*.jsonc">
+      <LogicalName>data/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- The notice files npm packs for the TypeScript package, packed here for NuGet. -->
+  <ItemGroup>
+    <None Include="$(RepositoryRoot)LICENSE" Pack="true" PackagePath="/" Visible="false" />
+    <None Include="$(RepositoryRoot)ATTRIBUTIONS.md" Pack="true" PackagePath="/THIRD_PARTY_NOTICES.md" Visible="false" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

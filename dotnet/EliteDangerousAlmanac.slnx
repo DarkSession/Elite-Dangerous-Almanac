@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj" />
+  <Project Path="tests/EliteDangerousAlmanac.Tests/EliteDangerousAlmanac.Tests.csproj" />
+</Solution>

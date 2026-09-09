@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>EliteDangerousAlmanac.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CS1591;CA1707;CA1861;CA1859</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    The coverage gate the repository requires: 80% or above on lines, branches and
+    methods. coverlet fails the build under the threshold, so `dotnet test` alone
+    enforces it once CollectCoverage is on.
+  -->
+  <PropertyGroup Condition="'$(CollectCoverage)' == 'true'">
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+    <Threshold>80</Threshold>
+    <ThresholdType>line,branch,method</ThresholdType>
+    <ThresholdStat>total</ThresholdStat>
+    <Include>[EliteDangerousAlmanac]*</Include>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageReference Include="coverlet.msbuild" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj" />
+  </ItemGroup>
+
+  <!--
+    The package README and the file that runs its examples, so ReadmeExampleTests can read
+    both and prove every example the README shows is one the suite actually runs.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepositoryRoot)dotnet/src/EliteDangerousAlmanac/README.md">
+      <LogicalName>docs/package-readme.md</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReadmeExampleTests.cs">
+      <LogicalName>docs/readme-example-tests.cs</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- The shared fixtures are the parity contract; every implementation reads these. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(RepositoryRoot)fixtures/**/*.jsonc">
+      <LogicalName>fixtures/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

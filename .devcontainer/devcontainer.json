@@ -11,6 +11,11 @@
       "version": "3.12",
       "installTools": true
     },
+    // The .NET port targets .NET Standard 2.1 and its tests run on .NET 10, so the
+    // SDK the container needs is the one dotnet/global.json pins.
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "10.0"
+    },
     "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
   },
 
@@ -27,6 +32,7 @@
         "esbenp.prettier-vscode",
         "ms-python.python",
         "ms-python.vscode-pylance",
+        "ms-dotnettools.csharp",
         "anthropic.claude-code",
         "openai.chatgpt"
       ]
@@ -39,5 +45,5 @@
   // typescript/package.json, so it reports the version the container will actually use.
   // Ponytail is pinned to the v4.9.0 commit so container creation never executes a
   // moving third-party ref.
-  "postCreateCommand": "node --version && python3 --version && cd typescript && pnpm --version && codex plugin marketplace add DietrichGebert/ponytail --ref 0a4dd63ad4541f4f655c4108a295916f3c1d8fda && codex plugin add ponytail@ponytail"
+  "postCreateCommand": "node --version && python3 --version && dotnet --version && cd typescript && pnpm --version && codex plugin marketplace add DietrichGebert/ponytail --ref 0a4dd63ad4541f4f655c4108a295916f3c1d8fda && codex plugin add ponytail@ponytail"
 }

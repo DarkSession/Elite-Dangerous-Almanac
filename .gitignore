@@ -12,3 +12,7 @@ typescript/assets/
 .dump
 
 .pnpm-store/
+# .NET build output.
+dotnet/**/bin/
+dotnet/**/obj/
+dotnet/artifacts/
