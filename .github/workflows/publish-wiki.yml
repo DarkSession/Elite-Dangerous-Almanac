@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "typescript/**"
+      - "dotnet/**"
+      - "docs/**"
+      - "scripts/wiki/**"
       - "data/**"
       - ".github/workflows/publish-wiki.yml"
   workflow_dispatch:
@@ -50,6 +53,10 @@ jobs:
         run: pnpm install --frozen-lockfile
         working-directory: typescript
 
+      # Both references are generated here: TypeDoc writes the TypeScript pages and
+      # `scripts/wiki/build.mjs` writes the .NET pages from the C# source, then assembles
+      # the two surfaces into `docs/wiki`. Reading the source rather than the compiler's
+      # XML documentation file is what keeps the .NET SDK out of this job.
       - name: Generate Markdown API docs
         run: pnpm run docs
         working-directory: typescript
@@ -57,4 +64,4 @@ jobs:
       - name: Publish to GitHub Wiki
         uses: Andrew-Chen-Wang/github-wiki-action@1bbb4280446f9630e8e21a18012cbacf3b0f992e # v5.0.6
         with:
-          path: typescript/docs/wiki
+          path: docs/wiki

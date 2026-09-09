@@ -99,6 +99,11 @@ cd dotnet
 dotnet build coverage.proj
 ```
 
+`pnpm run docs` builds the whole wiki, both the TypeScript and the .NET reference, so run
+it after a C# change too — the .NET pages are read from the C# source, and a declaration
+or a documentation tag the reader has never seen fails the build rather than dropping out
+of the reference.
+
 A change to shared data, fixtures or schemas reaches both packages, so run both gates
 for one. Changes to only prose outside a package may not exercise every command, but
 data, source, schema, workflow and package changes should use the full gate.
