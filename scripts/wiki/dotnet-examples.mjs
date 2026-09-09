@@ -5,8 +5,11 @@
 // cannot be, without putting the .NET SDK behind a documentation check — so this reads
 // them the one way that needs no compiler and still catches the mistake that actually
 // happens: a member or a type named in an example that the library does not have. A
-// static call states its type outright, so `ShipCatalogue.FindBySymbol` is checkable
-// exactly as written; a call on a local variable is not, and is left alone.
+// static call on a published type states its type outright, so
+// `ShipCatalogue.FindBySymbol` is checkable exactly as written. Two things are left alone,
+// because nothing here can tell them apart from a name that is simply not the library's: a
+// call on a local variable, and a static call on a type this library does not publish —
+// `JsonSerializer.Deserialize` has to pass, so a misspelt `ShipCatalog` does too.
 
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";

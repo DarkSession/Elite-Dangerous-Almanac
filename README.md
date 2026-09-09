@@ -17,8 +17,8 @@ prove for each of them.
 
 ## Feature areas
 
-Both packages carry all six. The table names each area by its TypeScript subpath and by
-its .NET namespace.
+Both packages carry every one. The table names each area by its TypeScript subpath and
+by its .NET namespace.
 
 | Area          | .NET namespace | Provides                                                                                                                                           |
 | ------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |

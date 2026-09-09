@@ -115,17 +115,21 @@ test("ignores a block written in another language", async () => {
   );
 });
 
-test("every C# example in the .NET documentation names a published symbol", async () => {
+test("every C# example in the documentation names a published symbol", async () => {
   const namespaces = await readDotnetApi({
     sourceRoot: join(repositoryRoot, "dotnet/src/EliteDangerousAlmanac"),
     repositoryRoot,
   });
-  assert.deepEqual(
-    await findUnknownReferences({
-      docsRoot: join(repositoryRoot, "dotnet/docs"),
-      repositoryRoot,
-      namespaces,
-    }),
-    [],
-  );
+  // The .NET guides, and the shared wiki landing page, which also carries one.
+  for (const docsRoot of ["dotnet/docs", "docs"]) {
+    assert.deepEqual(
+      await findUnknownReferences({
+        docsRoot: join(repositoryRoot, docsRoot),
+        repositoryRoot,
+        namespaces,
+      }),
+      [],
+      docsRoot,
+    );
+  }
 });

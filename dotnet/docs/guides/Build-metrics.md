@@ -176,8 +176,10 @@ using EliteDangerousAlmanac.Ships;
 BuildMetrics metrics = BuildMetrics.Of(ShipLoadout.Default("Anaconda"));
 
 // The generator and boosters alone.
-metrics.ShieldMetricsResult().TryGetValue(out ShieldMetrics bare);
-double bareKinetic = bare.Resistances.Kinetic;
+if (metrics.ShieldMetricsResult().TryGetValue(out ShieldMetrics bare))
+{
+    double bareKinetic = bare.Resistances.Kinetic;
+}
 
 if (metrics.ShieldCapacitorMetricsResult(systemsPips: 2).TryGetValue(
         out ShieldCapacitorMetrics sys))
@@ -237,8 +239,8 @@ collapses to the raw stats.
 A distributor's three catalogue recharge figures are their four-pip maxima.
 `DistributorMetricsResult` scales SYS, ENG and WEP independently by `(pips / 4) ^ 1.1` and
 answers each capacity, rated recharge and actual rate. Fractional allocations from zero
-through four are accepted; each defaults to four independently and they need not total
-six, so the result can compare three independent scenarios. It is incomplete when the
+through four are accepted, an absent allocation is four pips to each, and the three need
+not total six, so the result can compare three independent scenarios. It is incomplete when the
 distributor is missing, switched off or shed, or when the fitted article's capacitor stats
 cannot be resolved; the issue's `Reason` says which.
 
@@ -360,8 +362,10 @@ carries its own resulting mass too:
 ```csharp
 using EliteDangerousAlmanac.Ships;
 
-metrics.StandardLoadResult(StandardLoad.Laden).TryGetValue(out StandardLoadFigures laden);
-double ladenMass = laden.Mass; // 1210
+if (metrics.StandardLoadResult(StandardLoad.Laden).TryGetValue(out StandardLoadFigures laden))
+{
+    double ladenMass = laden.Mass; // 1210
+}
 ```
 
 **The reserve tank is in none of these.** The game's statistics panel counts it in the
@@ -383,11 +387,13 @@ ThrusterParams curve = metrics.Thrusters()!;
 double rated = curve.OptMass; // 1440  rated performance at or below this
 double ceiling = curve.MaxMass; // 2160  past this the ship does not move at all
 
-metrics.MobilityMetricsResult().TryGetValue(out MobilityMetrics mobility);
-double loaded = mobility.LoadedMass; // 1096  what the curve was evaluated at
+if (metrics.MobilityMetricsResult().TryGetValue(out MobilityMetrics mobility))
+{
+    double loaded = mobility.LoadedMass; // 1096  what the curve was evaluated at
 
-bool agrees = Mobility.ThrusterMassCurveMultiplier(
-    mobility.LoadedMass, curve.SpeedCurve ?? curve) == mobility.MassCurveMultiplier; // true
+    bool agrees = Mobility.ThrusterMassCurveMultiplier(
+        mobility.LoadedMass, curve.SpeedCurve ?? curve) == mobility.MassCurveMultiplier;
+}
 ```
 
 `MobilityMetricsResult` quotes speed, pitch, roll and yaw at **four** ENG pips, which is
@@ -398,13 +404,17 @@ use:
 ```csharp
 using EliteDangerousAlmanac.Ships;
 
-metrics.MobilityMetricsResult().TryGetValue(out MobilityMetrics full);
-double atFour = full.Speed; // m/s at four ENG pips
+if (metrics.MobilityMetricsResult().TryGetValue(out MobilityMetrics full))
+{
+    double atFour = full.Speed; // m/s at four ENG pips
+}
 
-metrics.MobilityCapacitorMetricsResult(enginesPips: 2)
-    .TryGetValue(out MobilityCapacitorMetrics half);
-double atTwo = half.Speed;    // m/s at two
-double pips = half.EnginesPips; // 2
+if (metrics.MobilityCapacitorMetricsResult(enginesPips: 2)
+        .TryGetValue(out MobilityCapacitorMetrics half))
+{
+    double atTwo = half.Speed;      // m/s at two
+    double pips = half.EnginesPips; // 2
+}
 ```
 
 Boost is not on the capacitor result, because the allocation cannot move it: it stays on

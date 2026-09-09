@@ -51,7 +51,7 @@ function jumpRangeOf(journalLine: string) {
 - **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)**
   — `null` against the three errors, and diagnostic results for unavailable metrics.
 
-## The six feature areas
+## Feature areas
 
 | Area | Import | Provides |
 | --- | --- | --- |

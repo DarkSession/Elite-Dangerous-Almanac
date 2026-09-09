@@ -44,13 +44,13 @@ JumpRangeSummary jump = metrics.JumpRangeSummary();
   — what a recipe may go on, what it rolls, and what a roll costs.
 - **[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF)**
   — reading and writing loadout exports, and retail against captured credits.
-- **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-sectors-and-regions)**
+- **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-and-regions)**
   — the `id64` round trip, both coordinate spaces, and the four meanings of "region".
 - **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)**
   — `null` against the exceptions, and `CalculationResult<T>` for a build a metric cannot
   measure.
 
-## The six namespaces
+## The namespaces
 
 Every area is one namespace under `EliteDangerousAlmanac`.
 

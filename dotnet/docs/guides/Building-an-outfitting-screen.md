@@ -193,12 +193,16 @@ int groups = power.Bands.Count;     // 5       the five priority groups
 
 double armour = metrics.ArmourMetrics().HitPoints; // 5062.6
 
-metrics.ShieldMetricsResult().TryGetValue(out ShieldMetrics shields);
-double strength = shields.Strength;            // 3940.4 MJ
-double bare = shields.Resistances.Kinetic;     // the generator and boosters, no pips
+if (metrics.ShieldMetricsResult().TryGetValue(out ShieldMetrics shields))
+{
+    double strength = shields.Strength;        // 3940.4 MJ
+    double bare = shields.Resistances.Kinetic; // the generator and boosters, no pips
+}
 
-metrics.ShieldCapacitorMetricsResult().TryGetValue(out ShieldCapacitorMetrics sys);
-double piped = sys.EffectiveResistances.Kinetic; // with four pips to SYS
+if (metrics.ShieldCapacitorMetricsResult().TryGetValue(out ShieldCapacitorMetrics sys))
+{
+    double piped = sys.EffectiveResistances.Kinetic; // with four pips to SYS
+}
 
 BuildWeaponMetrics weapons = metrics.WeaponMetrics();
 double dps = weapons.Total.DamagePerSecond;             // 137.04
@@ -233,13 +237,17 @@ double hull = mass.Hull;       // the bare hull, in tonnes
 double modules = mass.Modules; // every fitted module, post-engineering
 double total = mass.Total;     // with a full main tank and an empty hold
 
-metrics.MobilityMetricsResult().TryGetValue(out MobilityMetrics mobility);
-double speed = mobility.Speed;      // m/s, at four ENG pips
-double loaded = mobility.LoadedMass; // the mass that speed was calculated at
+if (metrics.MobilityMetricsResult().TryGetValue(out MobilityMetrics mobility))
+{
+    double speed = mobility.Speed;       // m/s, at four ENG pips
+    double loaded = mobility.LoadedMass; // the mass that speed was calculated at
+}
 
-metrics.MobilityCapacitorMetricsResult(enginesPips: 2)
-    .TryGetValue(out MobilityCapacitorMetrics atTwo);
-double slower = atTwo.Speed; // m/s, at two
+if (metrics.MobilityCapacitorMetricsResult(enginesPips: 2)
+        .TryGetValue(out MobilityCapacitorMetrics atTwo))
+{
+    double slower = atTwo.Speed; // m/s, at two
+}
 
 double? rated = metrics.Thrusters()?.OptMass; // rated performance at or below this mass
 double? ceiling = metrics.Thrusters()?.MaxMass; // past this the ship does not move at all

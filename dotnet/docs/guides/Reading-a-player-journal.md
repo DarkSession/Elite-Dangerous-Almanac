@@ -241,7 +241,7 @@ string nearest = NebulaCatalogue.Nearest(position, NebulaCatalogue.Real, 1)[0].N
 ### Permit locks
 
 Pass `StarSystem` to the permit-lock lookup described in
-[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-sectors-and-regions#permit-locks).
+[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-and-regions#permit-locks).
 
 ## `Scan` → a body
 
@@ -395,10 +395,13 @@ IReadOnlyList<LoadoutImportOutcome> changes = build.ImportOutcomes; // for displ
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model) sets the validation and
 calculation patterns out in full.
 
-A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON raises
-`JsonException`, and a structurally impossible event — two mount keys differing only in
-case, say — raises `FormatException`. Catch both when the bytes come from somewhere you do
-not control. A SLEF *file* holds several builds and can be part-good, which is its own
+A journal line is one `Loadout` event, and it is taken whole or refused. Bad JSON raises
+`JsonException`, and a hull the catalogue does not carry raises `FormatException`, from
+`FromSlef` and `FromLoadout` alike. A structurally impossible event — two mount keys
+differing only in case, say — is refused by whichever reader meets it first:
+`FromLoadout` raises `ArgumentException` for the duplicate, while `FromSlef` reads the
+text through `Slef.Parse` and so raises `FormatException` with a `DuplicateSlot`
+diagnostic. Catch them when the bytes come from somewhere you do not control. A SLEF *file* holds several builds and can be part-good, which is its own
 question — [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF) covers `Slef.Parse`
 against `Slef.Inspect` and what each does with a bad entry.
 

@@ -582,7 +582,9 @@ export async function writeDotnetPages({
   const guides = [];
   for (const file of (await readdir(guideDir)).sort()) {
     const guide = readGuide(file, await readFile(join(guideDir, file), "utf8"));
-    const page = `${prefix}.Document.${file.replace(/\.md$/, "")}`;
+    // The page is named for the title rather than the file, which is what TypeDoc does
+    // with a `projectDocuments` page — so one guide carries one name on both surfaces.
+    const page = `${prefix}.Document.${guide.title.replaceAll(" ", "-")}`;
     guides.push({ title: guide.title, page });
     pages.set(page, guide.body);
   }

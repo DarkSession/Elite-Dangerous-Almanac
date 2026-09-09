@@ -233,6 +233,50 @@ public static class Slots
   );
 });
 
+test("refuses a public nested type rather than dropping it", () => {
+  assert.throws(
+    () =>
+      only(`
+/// <summary>Nebulae.</summary>
+public static class Nebulae
+{
+    /// <summary>A rank.</summary>
+    public readonly struct Ranked
+    {
+        /// <summary>The index.</summary>
+        public int Index { get; }
+    }
+}
+`),
+    /a public nested type is not published — "Ranked"/,
+  );
+});
+
+test("reads past a block comment, apostrophe and all", () => {
+  const type = only(`
+/// <summary>Slots.</summary>
+public static class Slots
+{
+    /* A mount's key: it is the game's, and not ours to compose. }
+       public static int Hidden => 0; */
+
+    /// <summary>The count.</summary>
+    public static int Count => 0;
+}
+`);
+  assert.deepEqual(
+    type.members.map((one) => one.name),
+    ["Count"],
+  );
+});
+
+test("refuses a block comment nothing closes", () => {
+  assert.throws(
+    () => read(`${header}public sealed class Hull\n{\n    /* open\n}\n`),
+    /an unterminated block comment/,
+  );
+});
+
 test("attaches the doc comment written above the declaration", () => {
   const type = only(`
 /// <summary>A hull.</summary>

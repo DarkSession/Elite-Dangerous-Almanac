@@ -28,6 +28,7 @@ ProceduralSystem.fromName('Synuefe EN-H d11-96')?.systemAddress; // -> 330917999
 ## [.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)
 
 ```bash
+cd dotnet
 dotnet pack src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj --configuration Release
 ```
 
@@ -44,9 +45,9 @@ ulong address = system!.SystemAddress;
 **[Open the .NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)**
 — install, guides, and the complete API reference.
 
-## The six feature areas
+## Feature areas
 
-Both packages carry all six. Each one is a TypeScript subpath and a .NET namespace.
+Both packages carry every one. Each is a TypeScript subpath and a .NET namespace.
 
 | Area | TypeScript | .NET | Provides |
 | --- | --- | --- | --- |

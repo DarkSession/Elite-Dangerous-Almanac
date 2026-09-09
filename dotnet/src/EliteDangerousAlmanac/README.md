@@ -32,7 +32,7 @@ redistribute it or use it commercially.
 The
 [.NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)
 carries the guides and the complete API reference: every namespace, type and member,
-generated from the documentation comments below.
+generated from the documentation comments in the C# source.
 
 ## Areas
 

@@ -75,7 +75,7 @@ using EliteDangerousAlmanac.Ships;
 
 try
 {
-    Slef.Inspect(bytes);
+    Slef.Inspect(text);
 }
 catch (JsonException)
 {

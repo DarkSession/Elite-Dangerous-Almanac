@@ -99,6 +99,13 @@ function blankNonCode(text, path) {
       skip(stop);
       continue;
     }
+    if (character === "/" && source[index + 1] === "*") {
+      const stop = text.indexOf("*/", index + 2);
+      if (stop === -1)
+        throw new Error(`${path}: an unterminated block comment`);
+      skip(stop + 2);
+      continue;
+    }
     if (character === "@" && source[index + 1] === '"') {
       let scan = index + 2;
       while (scan < source.length) {
@@ -404,6 +411,17 @@ export function readSourceFile(text, path) {
     return index;
   };
 
+  /**
+   * The declaration's own position, past any attributes written above it. A `Defined in:`
+   * line should point at the member and not at its `[JsonPropertyName]`.
+   */
+  const pastAttributes = (from) => {
+    let index = skipSpace(from);
+    while (code[index] === "[")
+      index = skipSpace(matchingBracket(code, index) + 1);
+    return index;
+  };
+
   /** The position just past the `}` matching the `{` at `open`. */
   const skipBlock = (open) => {
     let depth = 0;
@@ -477,7 +495,7 @@ export function readSourceFile(text, path) {
           modifiers: [],
           doc,
           file: path,
-          line: lineOf(start),
+          line: lineOf(pastAttributes(start)),
           where,
         });
         index = read.terminator === "," ? read.end + 1 : read.end;
@@ -489,11 +507,18 @@ export function readSourceFile(text, path) {
         doc,
         namespace,
         path,
-        lineOf(start),
+        lineOf(pastAttributes(start)),
         where,
       );
       if (nested !== null) {
-        // A nested type here is always private, so nothing inside it is published.
+        // A nested type is the library's own workings, so nothing inside it is published.
+        // One that is public would vanish from the reference instead, so refuse it rather
+        // than drop it: teach this reader about nested types on the day one exists.
+        if (nested.modifiers.includes("public")) {
+          throw new Error(
+            `${where}: a public nested type is not published — "${nested.name}"`,
+          );
+        }
         index = read.terminator === "{" ? skipBlock(read.end) : read.end + 1;
         continue;
       }
@@ -504,7 +529,12 @@ export function readSourceFile(text, path) {
         owner.name,
         where,
       );
-      Object.assign(member, { doc, file: path, line: lineOf(start), where });
+      Object.assign(member, {
+        doc,
+        file: path,
+        line: lineOf(pastAttributes(start)),
+        where,
+      });
       const visible =
         owner.kind === "interface" ||
         member.modifiers.includes("public") ||
@@ -566,7 +596,7 @@ export function readSourceFile(text, path) {
       docAbove(start),
       namespace,
       path,
-      lineOf(start),
+      lineOf(pastAttributes(start)),
       where,
     );
     if (type === null) {

@@ -4,7 +4,7 @@
 // it back into a build failure.
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 
 const wikiUrl = "https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/";
 
@@ -14,9 +14,7 @@ export async function checkLinks(wikiDir) {
   )
     .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
     .map((entry) => join(entry.parentPath, entry.name));
-  const pageNames = new Set(
-    files.map((file) => file.slice(file.lastIndexOf("/") + 1, -3)),
-  );
+  const pageNames = new Set(files.map((file) => basename(file, ".md")));
 
   for (const file of files) {
     const source = await readFile(file, "utf8");
