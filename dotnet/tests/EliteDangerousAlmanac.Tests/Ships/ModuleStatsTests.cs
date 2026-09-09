@@ -366,4 +366,67 @@ public class ModuleStatsTests
         "utility" => ModuleCatalogue.Utility,
         _ => ModuleCatalogue.All,
     };
+
+    [Fact]
+    public void TwoCollectionsHoldingTheSamePairsAreOneValueWhateverOrderTheyWereBuiltIn()
+    {
+        ModuleStats one = ModuleStats.From(
+        [
+            new(ModuleStat.Mass, 4),
+            new(ModuleStat.PowerDraw, 1.21),
+            new(ModuleStat.Integrity, 46),
+        ]);
+        ModuleStats other = ModuleStats.From(
+        [
+            new(ModuleStat.Integrity, 46),
+            new(ModuleStat.PowerDraw, 1.21),
+            new(ModuleStat.Mass, 4),
+        ]);
+
+        Assert.Equal(one, other);
+        Assert.Equal(one.GetHashCode(), other.GetHashCode());
+
+        // A record carrying the stats is one value on the same terms, which is what a
+        // caller gets from a set or from a comparison of two catalogue records.
+        OutfittingModule module = ModuleCatalogue.FindBySymbol("Int_Hyperdrive_Size5_Class5")!;
+        Assert.Equal(module with { Stats = one }, module with { Stats = other });
+    }
+
+    [Fact]
+    public void ACollectionDiffersFromOneCarryingAnotherValueOrAnotherStat()
+    {
+        ModuleStats stated = ModuleStats.From([new(ModuleStat.Mass, 4)]);
+
+        Assert.NotEqual(stated, ModuleStats.From([new(ModuleStat.Mass, 5)]));
+        Assert.NotEqual(stated, ModuleStats.From([new(ModuleStat.Integrity, 4)]));
+        Assert.NotEqual(stated, stated.With(ModuleStat.PowerDraw, 1.21));
+        Assert.NotEqual(stated, ModuleStats.Empty);
+    }
+
+    [Fact]
+    public void ACollectionIsNeverEqualToNothingOrToSomethingElse()
+    {
+        ModuleStats stated = ModuleStats.From([new(ModuleStat.Mass, 4)]);
+
+        Assert.False(stated.Equals(null));
+        Assert.False(stated.Equals((object?)null));
+        Assert.False(stated.Equals("Int_Hyperdrive_Size5_Class5"));
+        Assert.True(stated.Equals((object)ModuleStats.From([new(ModuleStat.Mass, 4)])));
+    }
+
+    [Fact]
+    public void DroppingAStatTheCollectionNeverCarriedLeavesEverythingElseAlone()
+    {
+        ModuleStats stated = ModuleStats.From(
+            [new(ModuleStat.Mass, 4), new(ModuleStat.PowerDraw, 1.21)]);
+
+        Assert.Same(stated, stated.Without(ModuleStat.Integrity));
+        Assert.Equal(2, stated.Without(ModuleStat.Integrity).Count);
+        Assert.Equal(4, stated.Without(ModuleStat.Integrity)[ModuleStat.Mass]);
+
+        // Dropping the last one leaves the empty collection rather than a second empty one.
+        Assert.Same(
+            ModuleStats.Empty,
+            ModuleStats.From([new(ModuleStat.Mass, 4)]).Without(ModuleStat.Mass));
+    }
 }

@@ -161,7 +161,7 @@ public sealed class SuitLoadoutTests
             return;
         }
 
-        Assert.ThrowsAny<Exception>(() => SuitLoadout.Parse(stated!));
+        Assert.Throws<FormatException>(() => SuitLoadout.Parse(stated!));
     }
 
     [Fact]
