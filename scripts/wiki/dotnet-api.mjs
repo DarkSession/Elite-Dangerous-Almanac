@@ -116,9 +116,14 @@ function anchorsOf(markdown) {
   return found;
 }
 
-/** Escape the Markdown that would otherwise read as emphasis inside a link's text. */
-function escapeLinkText(text) {
-  return text.replace(/[_*]/g, "\\$&");
+/**
+ * Escape the Markdown that would otherwise read as emphasis inside a link's text. The
+ * backslash is escaped alongside them, and first: leaving it alone lets a name carrying
+ * one turn the escape it precedes back into an emphasis marker, and leaves `sidebar.mjs`
+ * unable to read the name back out.
+ */
+export function escapeLinkText(text) {
+  return text.replace(/[\\_*]/g, "\\$&");
 }
 
 /**

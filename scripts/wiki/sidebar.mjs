@@ -562,7 +562,7 @@ function entries(lines) {
 }
 
 /** Undo the Markdown escapes a generator puts in link text and headings (`REAL\_NEBULAE`). */
-function unescape(text) {
+export function unescape(text) {
   return text.replace(/\\(.)/g, "$1");
 }
 
