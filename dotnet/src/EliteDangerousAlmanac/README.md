@@ -89,8 +89,8 @@ whitespace, and answers `null` for one no record carries.
 
 ## How a calculation answers
 
-A build-state metric answers a `CalculationResult<T>`: the eight `BuildMetrics` methods
-whose names end in `Result`. Each one carries either the figure or the reason the build
+A build-state metric answers a `CalculationResult<T>`: the `BuildMetrics` methods whose
+names end in `Result`. Each one carries either the figure or the reason the build
 cannot be measured, such as a hull with no shield generator fitted.
 
 Every other ship calculation answers a value. One that needs a part the build does not

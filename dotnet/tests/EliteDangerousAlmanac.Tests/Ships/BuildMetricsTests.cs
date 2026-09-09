@@ -530,6 +530,7 @@ public class BuildMetricsTests
         Assert.Equal(0, capacitor.SustainedEnergyPerSecond);
         Assert.Equal(double.PositiveInfinity, capacitor.TimeToDrain);
     }
+
     [Fact]
     public void AnUnpoweredBoosterLeavesTheBonusToWhateverElseTheBuildCarries()
     {
@@ -596,10 +597,6 @@ public class BuildMetricsTests
         Assert.Throws<InvalidOperationException>(() => BuildMetrics.Of(build).FrameShiftDrive());
     }
 
-    /// <summary>A hull carrying a drive and nothing else, ready for one booster.</summary>
-    private static ShipLoadout Conda() => ShipLoadout.Empty("Anaconda").SetModule(
-        "FrameShiftDrive", ModuleCatalogue.FindBySymbol("Int_Hyperdrive_Size6_Class5")!);
-
     [Fact]
     public void ABuildWhoseOnlyBoosterIsOffCarriesNoBonus()
     {
@@ -610,4 +607,7 @@ public class BuildMetricsTests
         Assert.Equal(0, BuildMetrics.Of(build).FrameShiftDrive().JumpBoost);
     }
 
+    /// <summary>A hull carrying a drive and nothing else, ready for one booster.</summary>
+    private static ShipLoadout Conda() => ShipLoadout.Empty("Anaconda").SetModule(
+        "FrameShiftDrive", ModuleCatalogue.FindBySymbol("Int_Hyperdrive_Size6_Class5")!);
 }

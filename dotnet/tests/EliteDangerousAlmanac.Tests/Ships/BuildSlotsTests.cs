@@ -148,8 +148,11 @@ public class BuildSlotsTests
 
             foreach (string symbol in expected.Rejects)
             {
-                Assert.ThrowsAny<Exception>(
+                // The refusal has to be about the fit. Any other failure, such as a symbol
+                // the catalogue does not carry, would retire the case it was written for.
+                LoadoutEditException refused = Assert.Throws<LoadoutEditException>(
                     () => build.SetModule(expected.Slot, ModuleCatalogue.FindBySymbol(symbol)!));
+                Assert.Equal(LoadoutEditErrorCode.IncompatibleModule, refused.Code);
             }
 
             // The offer and the fit check must agree, or an outfitting screen shows a

@@ -33,7 +33,7 @@ public enum EngineeringGroupId
     /// <summary>The engineering menu the guardian power distributors share.</summary>
     GuardianPowerDistributors,
 
-    /// <summary>The engineering menu the frame shift drives s c o share.</summary>
+    /// <summary>The engineering menu the SCO frame shift drives share.</summary>
     FrameShiftDrivesSCO,
 
     /// <summary>The engineering menu the shield generators share.</summary>
