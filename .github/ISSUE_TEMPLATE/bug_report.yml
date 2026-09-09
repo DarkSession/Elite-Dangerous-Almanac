@@ -11,39 +11,72 @@ body:
         Remove commander names, account identifiers, local paths and other personal
         details from every capture you paste here.
   - type: dropdown
+    id: implementation
+    attributes:
+      label: Package
+      description:
+        Which package shows the bug? Both packages prove the same behavior against the
+        shared fixtures, so a wrong result in one is worth checking in the other.
+      options:
+        - TypeScript — @elite-dangerous-almanac/core
+        - .NET — EliteDangerousAlmanac
+        - Both
+        - Not sure
+    validations:
+      required: true
+  - type: dropdown
     id: area
     attributes:
       label: Feature area
-      description: Which import does the bug come from?
+      description:
+        Which area does the bug come from? Each one names its TypeScript subpath and
+        its .NET namespace.
       options:
-        - astro
-        - ships
-        - materials
-        - commodities
-        - Package build, exports or subpaths
+        - astro / Astronomy
+        - ships / Ships
+        - equipment / Equipment
+        - i18n / Localization
+        - materials / Materials
+        - commodities / Commodities
+        - Package build, exports, subpaths or namespaces
         - Not sure
     validations:
       required: true
   - type: input
     id: entry-point
     attributes:
-      label: Import path
-      description: The exact subpath and symbol involved.
-      placeholder: "@elite-dangerous-almanac/core/astro/procedural-system — ProceduralSystem.fromName"
+      label: Entry point
+      description: The exact symbol involved, with the subpath or the namespace that holds it.
+      placeholder:
+        "@elite-dangerous-almanac/core/astro/procedural-system — ProceduralSystem.fromName, or
+        EliteDangerousAlmanac.Astronomy — ProceduralSystem.FromName"
     validations:
       required: true
   - type: textarea
-    id: reproduction
+    id: reproduction-typescript
     attributes:
-      label: Minimal reproduction
+      label: Minimal reproduction — TypeScript
       description:
-        Required. The smallest input that reproduces the bug, as runnable code. It is
-        attached as TypeScript, so no backticks are needed.
+        The smallest input that reproduces the bug, as runnable code. Fill in this field or
+        the C# one below; a report needs one of them. It is attached as TypeScript, so no
+        backticks are needed.
       render: typescript
       placeholder: |
         import { ProceduralSystem } from "@elite-dangerous-almanac/core/astro/procedural-system";
 
         ProceduralSystem.fromName("Synuefe EN-H d11-96")?.systemAddress;
+  - type: textarea
+    id: reproduction-csharp
+    attributes:
+      label: Minimal reproduction — C#
+      description:
+        The same, for the .NET package. It is attached as C#, so no backticks are
+        needed.
+      render: csharp
+      placeholder: |
+        using EliteDangerousAlmanac.Astronomy;
+
+        ulong? address = ProceduralSystem.FromName("Synuefe EN-H d11-96")?.SystemAddress;
   - type: textarea
     id: observed
     attributes:
@@ -64,16 +97,20 @@ body:
     id: version
     attributes:
       label: Package version or commit
-      description: The `@elite-dangerous-almanac/core` version, or the commit if you build from source.
-      placeholder: "0.1.0, or commit 4be0133"
+      description:
+        The `@elite-dangerous-almanac/core` or `EliteDangerousAlmanac` version, or the commit
+        if you build from source.
+      placeholder: "0.2.0, or commit 4be0133"
     validations:
       required: true
   - type: input
     id: environment
     attributes:
       label: Runtime
-      description: Node.js version, or the browser and bundler.
-      placeholder: "Node.js 22.11.0 / Vite 5 + Chrome 130"
+      description:
+        For TypeScript, the Node.js version, or the browser and bundler. For .NET, the target
+        framework and the runtime that runs it.
+      placeholder: "Node.js 22.11.0 / Vite 5 + Chrome 130, or .NET 10 on Windows 11"
     validations:
       required: true
   - type: checkboxes

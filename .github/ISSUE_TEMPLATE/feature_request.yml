@@ -5,20 +5,38 @@ body:
   - type: markdown
     attributes:
       value: |
-        Describe the consumer-visible capability you need. Proposals that keep named
-        exports, side-effect-free ESM and fine-grained subpath imports intact are easier
-        to accept — see CONTRIBUTING.md.
+        Describe the consumer-visible capability you need. A new capability lands in
+        both packages, so sketch it in the language you write in. A contributor mirrors
+        it in the other one.
+
+        Proposals that keep named exports, side-effect-free ESM and fine-grained subpath
+        imports intact in TypeScript, and that fit the area namespaces and .NET Standard
+        2.1 in .NET, are easier to accept — see CONTRIBUTING.md.
+  - type: dropdown
+    id: implementation
+    attributes:
+      label: Where is it missing?
+      options:
+        - Both packages — the capability does not exist yet
+        - Missing in TypeScript — the .NET package already has it
+        - Missing in .NET — the TypeScript package already has it
+        - Not sure
+    validations:
+      required: true
   - type: dropdown
     id: area
     attributes:
       label: Feature area
+      description: Each area names its TypeScript subpath and its .NET namespace.
       options:
-        - astro
-        - ships
-        - materials
-        - commodities
+        - astro / Astronomy
+        - ships / Ships
+        - equipment / Equipment
+        - i18n / Localization
+        - materials / Materials
+        - commodities / Commodities
         - Shared data or schemas
-        - Package build, exports or subpaths
+        - Package build, exports, subpaths or namespaces
         - New feature area
     validations:
       required: true
@@ -32,18 +50,32 @@ body:
     validations:
       required: true
   - type: textarea
-    id: proposal
+    id: proposal-typescript
     attributes:
-      label: Proposed API
+      label: Proposed API — TypeScript
       description:
-        Required. Sketch the import path, signature, units and failure behavior.
-        Attached as TypeScript, so no backticks are needed.
+        Sketch the import path, signature, units and failure behavior. Fill in this field
+        or the C# one below; a proposal needs one of them. Attached as TypeScript, so no
+        backticks are needed.
       render: typescript
       placeholder: |
         import { jumpRange } from "@elite-dangerous-almanac/core/ships/jump-range";
 
         // returns light-years; throws RangeError when fuel exceeds tank capacity
         jumpRange(loadout, { fuel: 8 });
+  - type: textarea
+    id: proposal-csharp
+    attributes:
+      label: Proposed API — C#
+      description:
+        The same, as a namespace, type and member. Attached as C#, so no backticks are
+        needed.
+      render: csharp
+      placeholder: |
+        using EliteDangerousAlmanac.Ships;
+
+        // returns light-years; throws ArgumentOutOfRangeException when fuel exceeds tank capacity
+        double range = JumpRange.Of(loadout, fuel: 8);
   - type: textarea
     id: evidence
     attributes:
@@ -68,7 +100,7 @@ body:
       label: Is this a breaking change?
       options:
         - "No — purely additive"
-        - "Yes — it changes or removes existing exports or results"
+        - "Yes — it changes or removes existing exports, types or results"
         - Not sure
     validations:
       required: true

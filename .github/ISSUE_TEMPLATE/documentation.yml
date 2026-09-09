@@ -6,16 +6,34 @@ body:
     attributes:
       value: |
         Every public API is meant to document its inputs, result, units, failure
-        behavior and an example. Use this form when documentation and reality disagree,
-        or when one of those pieces is missing.
+        behavior and an example — in TSDoc for TypeScript and in XML documentation
+        comments for C#. Use this form when documentation and reality disagree, or when
+        one of those pieces is missing.
+
+        The wiki reference is generated from those source comments, so report the
+        symbol or the guide page, not the generated wiki page.
 
         If the code is what is wrong, use the bug report instead.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Which documentation
+      options:
+        - TypeScript — TSDoc, a guide page or the package README
+        - .NET — XML documentation comments, a guide page or the package README
+        - Both — the same symbol or guide in each package
+        - Shared — the root README, CONTRIBUTING or the wiki landing page
+        - Not sure
+    validations:
+      required: true
   - type: input
     id: location
     attributes:
       label: Where
       description: The file, README section or documented symbol.
-      placeholder: "README.md — Quick start, or ships/ship-loadout.ts — ShipLoadout.powerBudget"
+      placeholder:
+        "typescript/src/ships/build-metrics.ts — BuildMetrics.powerBudget, or
+        dotnet/src/EliteDangerousAlmanac/Ships/BuildMetrics.Systems.cs — BuildMetrics.PowerBudget"
     validations:
       required: true
   - type: dropdown
@@ -27,6 +45,7 @@ body:
         - Example does not run or gives a different value
         - Units, defaults or failure behavior are unstated
         - Missing documentation for a public API
+        - The two packages document the same behavior differently
         - Unclear or hard to follow
     validations:
       required: true
