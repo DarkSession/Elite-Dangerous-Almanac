@@ -551,6 +551,56 @@ public class BuildMetricsTests
     }
 
     [Fact]
+    public void ABoosterIsIdentifiedByTheBonusItSuppliesRatherThanByItsEngineeringMenu()
+    {
+        OutfittingModule booster = ModuleCatalogue.FindBySymbol("Int_GuardianFSDBooster_Size5")!;
+        double bonus = booster.Stats[ModuleStat.JumpBoost]!.Value;
+
+        // The engineering group says which recipes may touch an article rather than what
+        // the article does, and a caller-supplied record may leave it out. Reading the
+        // bonus itself keeps such a record from weighing on the build while its boost
+        // goes uncounted.
+        ShipLoadout supplied = Conda()
+            .SetModule("Slot02_Size6", booster with { EngineeringGroup = null });
+
+        Assert.Equal(bonus, BuildMetrics.Of(supplied).FrameShiftDrive().JumpBoost);
+        Assert.Equal(
+            BuildMetrics.Of(Conda().SetModule("Slot02_Size6", booster)).MaxJumpRange(),
+            BuildMetrics.Of(supplied).MaxJumpRange());
+    }
+
+    [Fact]
+    public void ARecordWithNoBonusNeverShadowsARealBooster()
+    {
+        OutfittingModule booster = ModuleCatalogue.FindBySymbol("Int_GuardianFSDBooster_Size5")!;
+        OutfittingModule rack = ModuleCatalogue.FindBySymbol("Int_CargoRack_Size6_Class1")!;
+
+        // A bonus of nothing is not evidence of a booster. The first match wins, so
+        // believing one would let an unrelated record earlier in mount order answer.
+        ShipLoadout shadowed = Conda()
+            .SetModule("Slot01_Size7", rack with { Stats = rack.Stats.With(ModuleStat.JumpBoost, 0) })
+            .SetModule("Slot02_Size6", booster);
+
+        Assert.Equal(
+            booster.Stats[ModuleStat.JumpBoost]!.Value,
+            BuildMetrics.Of(shadowed).FrameShiftDrive().JumpBoost);
+    }
+
+    [Fact]
+    public void ARecordThatClaimsTheBoosterMenuAndStatesNoBonusIsAFault()
+    {
+        OutfittingModule booster = ModuleCatalogue.FindBySymbol("Int_GuardianFSDBooster_Size5")!;
+        ShipLoadout build = Conda().SetModule(
+            "Slot02_Size6", booster with { Stats = booster.Stats.Without(ModuleStat.JumpBoost) });
+
+        Assert.Throws<InvalidOperationException>(() => BuildMetrics.Of(build).FrameShiftDrive());
+    }
+
+    /// <summary>A hull carrying a drive and nothing else, ready for one booster.</summary>
+    private static ShipLoadout Conda() => ShipLoadout.Empty("Anaconda").SetModule(
+        "FrameShiftDrive", ModuleCatalogue.FindBySymbol("Int_Hyperdrive_Size6_Class5")!);
+
+    [Fact]
     public void ABuildWhoseOnlyBoosterIsOffCarriesNoBonus()
     {
         ShipLoadout build = ShipLoadout.FromLoadout(new LoadoutEvent(

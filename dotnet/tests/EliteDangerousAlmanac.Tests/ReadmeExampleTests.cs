@@ -27,7 +27,7 @@ public sealed class ReadmeExampleTests
         // region the game shows that region's own name, and only the position identifies it.
         ProceduralSystem named = ProceduralSystem.FromSystemAddress(
             address, new GalacticPosition(-80.625, -146.65625, -343.25));
-        string shown = named.Name;
+        string shown = named.Name; // "Pleiades Sector HR-W d1-79"
 
         // Without the position the same address reads as the procedural name it started from,
         // so the example fails where the position stops carrying the answer.

@@ -75,6 +75,25 @@ public class BuildCorpusTests
 
         Assert.Equal(Index.Count, Index.Builds.Count);
         Assert.Equal(named, onDisk);
+
+        // The index names each build's hull and role, and the build itself names both
+        // again. An index that has fallen out of step with a build file is a wrong answer
+        // to every question asked of the index alone.
+        HashSet<string> roles = [];
+        foreach (BuildCorpusEntry entry in Index.Builds)
+        {
+            BuildCorpusBuild build = Read(entry.Id);
+            Assert.Equal(entry.Ship, build.Ship);
+            Assert.Equal(entry.Role, build.Role);
+            roles.Add(entry.Role);
+        }
+
+        // The corpus is meant to span the roles a ship is flown for. It may carry more.
+        foreach (string role in
+            new[] { "combat", "exploration", "mining", "trade", "passenger", "antiXeno" })
+        {
+            Assert.Contains(role, roles);
+        }
     }
 
     [Theory]

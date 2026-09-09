@@ -50,7 +50,7 @@ The package is not on NuGet yet, so build it from this repository:
 
 ```bash
 cd dotnet
-dotnet pack --configuration Release
+dotnet pack src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj --configuration Release
 ```
 
 `dotnet pack` writes `EliteDangerousAlmanac.<version>.nupkg` into

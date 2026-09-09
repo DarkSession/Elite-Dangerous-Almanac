@@ -15,7 +15,7 @@ The package is not on NuGet yet, so build it from the repository:
 
 ```bash
 cd dotnet
-dotnet pack --configuration Release
+dotnet pack src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj --configuration Release
 ```
 
 `dotnet pack` writes `EliteDangerousAlmanac.<version>.nupkg` into
@@ -54,7 +54,7 @@ ulong address = system!.SystemAddress;
 // region the game shows that region's own name, and only the position identifies it.
 ProceduralSystem named = ProceduralSystem.FromSystemAddress(
     address, new GalacticPosition(-80.625, -146.65625, -343.25));
-string shown = named.Name;
+string shown = named.Name; // "Pleiades Sector HR-W d1-79"
 ```
 
 ## Fit a ship
@@ -89,8 +89,13 @@ whitespace, and answers `null` for one no record carries.
 
 ## How a calculation answers
 
-A ship calculation answers a `CalculationResult<T>`. It carries either the figure or the
-reason the build cannot be measured, such as a hull with no frame shift drive fitted.
+A build-state metric answers a `CalculationResult<T>`: the eight `BuildMetrics` methods
+whose names end in `Result`. Each one carries either the figure or the reason the build
+cannot be measured, such as a hull with no shield generator fitted.
+
+Every other ship calculation answers a value. One that needs a part the build does not
+carry raises `InvalidOperationException` instead, which is what a jump figure does on a
+hull with no frame shift drive.
 
 A body or star calculation answers `null` instead, because a scan states one line of
 figures and a missing field has only one meaning: the scan did not write it.

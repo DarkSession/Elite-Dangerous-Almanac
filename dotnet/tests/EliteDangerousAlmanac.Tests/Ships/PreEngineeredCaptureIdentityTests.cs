@@ -48,6 +48,13 @@ public class PreEngineeredCaptureIdentityTests
         Assert.Equal(expected.Grade, found.Grade);
         Assert.Equal(expected.ExperimentalEffectSymbol, found.ExperimentalEffectSymbol);
         Assert.Equal(expected.Acquisition, Spelled(found.Acquisition));
+
+        // The effect the capture states is either one the commander applied over the
+        // article or the article's own. Which of the two it is decides whether the
+        // article is identified at all, so the fixture states them apart.
+        Assert.Equal(
+            expected.AppliedExperimental ?? expected.ExperimentalEffectSymbol,
+            Captured(expected.Source, expected.Slot).Engineering!.ExperimentalEffect);
     }
 
     /// <summary>Ordinary engineering is never guessed to be a fixed article.</summary>
