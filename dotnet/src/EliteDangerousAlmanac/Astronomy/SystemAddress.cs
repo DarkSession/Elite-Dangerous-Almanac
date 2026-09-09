@@ -24,7 +24,7 @@ public sealed record DecodedSystemAddress(
     int SizeClass,
     SectorGridPosition SectorGridPosition,
     int BoxelCode,
-    int Sequence,
+    long Sequence,
     AbsoluteBoxel AbsoluteBoxel);
 
 /// <summary>The 64-bit number the game identifies a system by.</summary>
@@ -114,7 +114,9 @@ public static class SystemAddress
         int x0 = (int)((id64 >> (30 - (sizeClass * 2))) & (ulong)(0x3fff >> sizeClass));
         int x1 = (int)((id64 >> (30 - (sizeClass * 2))) & (ulong)(0x7f >> sizeClass));
         int x2 = (int)((id64 >> (37 - (sizeClass * 3))) & 0x7f);
-        int sequence = (int)((id64 >> (44 - (sizeClass * 3)))
+        // The field is 32 bits wide at the largest size class, so it is read as a long. A
+        // 32-bit signed number holds only half of what it can carry.
+        long sequence = (long)((id64 >> (44 - (sizeClass * 3)))
             & ((1UL << (11 + (sizeClass * 3))) - 1));
 
         return new DecodedSystemAddress(
@@ -194,7 +196,7 @@ public static class SystemAddress
             | ((ulong)(uint)boxel.Z << 3)
             | ((ulong)(uint)boxel.Y << (17 - sizeClass))
             | ((ulong)(uint)boxel.X << (30 - (sizeClass * 2)))
-            | ((ulong)(uint)parts.N2 << (44 - (sizeClass * 3)));
+            | ((ulong)parts.N2 << (44 - (sizeClass * 3)));
     }
 
     /// <summary>Writes the parts of a system name and its region origin as a modulated address.</summary>
@@ -227,7 +229,7 @@ public static class SystemAddress
         }
 
         int packed = (boxel.X & mask) | ((boxel.Y & mask) << 7) | ((boxel.Z & mask) << 14);
-        return (uint)parts.N2
+        return (ulong)parts.N2
             | ((ulong)(uint)packed << 16)
             | ((ulong)(uint)sizeClass << 37)
             | ((ulong)(uint)((boxel.X >> shift) & 0x7f) << 40)

@@ -23,7 +23,7 @@ public sealed record SystemNameParts(
     int L3,
     int SizeClass,
     int N1,
-    int N2);
+    long N2);
 
 /// <summary>The four fields one boxel code holds.</summary>
 /// <param name="L1">The first letter, zero through 25.</param>
@@ -107,9 +107,9 @@ public static class SystemName
         if (!IsDigit(lower[at])) return null;
 
         while (at > 8 && IsDigit(lower[at])) at--;
-        if (!TryReadNumber(lower, at + 1, trimmed.Length - 1, out int n2)) return null;
+        if (!TryReadNumber(lower, at + 1, trimmed.Length - 1, out long n2)) return null;
 
-        int n1 = 0;
+        long n1 = 0;
         if (lower[at] == '-')
         {
             at--;
@@ -144,7 +144,12 @@ public static class SystemName
         if (lower[at] != ' ') return null;
         at--;
 
-        return new SystemNameParts(trimmed.Substring(0, at + 1), l1, l2, l3, sizeClass, n1, n2);
+        // The number before the sequence is the boxel's own, which a boxel code holds in
+        // seven bits. A name stating a larger one names no boxel.
+        if (n1 > int.MaxValue) return null;
+
+        return new SystemNameParts(
+            trimmed.Substring(0, at + 1), l1, l2, l3, sizeClass, (int)n1, n2);
     }
 
     /// <summary>Writes parts back out as a system name.</summary>
@@ -229,11 +234,11 @@ public static class SystemName
     private static bool IsLetter(char value) => value >= 'a' && value <= 'z';
 
     /// <summary>Reads the number one run of digits states.</summary>
-    private static bool TryReadNumber(string value, int start, int end, out int number)
+    private static bool TryReadNumber(string value, int start, int end, out long number)
     {
         number = 0;
         if (end < start) return false;
-        return int.TryParse(
+        return long.TryParse(
             value.AsSpan(start, end - start + 1),
             NumberStyles.None,
             CultureInfo.InvariantCulture,

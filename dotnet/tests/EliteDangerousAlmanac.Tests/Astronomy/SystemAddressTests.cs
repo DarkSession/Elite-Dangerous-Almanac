@@ -217,6 +217,27 @@ public sealed class SystemAddressTests
             () => SystemAddress.ToBoxelCode(3, new AbsoluteBoxel(0, 0, 0), null!));
     }
 
+    [Theory]
+    [InlineData(18014398509481991UL, 2147483648L, "Thob AA-A h2147483648")]
+    [InlineData(ulong.MaxValue, 4294967295L, "Lysupe AA-A h4294967295")]
+    public void TheLargestSizeClassCarriesASequenceOfAFullThirtyTwoBits(
+        ulong id64, long sequence, string name)
+    {
+        // The field is 32 bits wide at size class seven, so its top half is past what a
+        // 32-bit signed number holds. A name is what a caller reads, and a negative one
+        // is a name this library's own reader refuses.
+        Assert.Equal(sequence, SystemAddress.Decode(id64).Sequence);
+
+        ProceduralSystem read = ProceduralSystem.FromSystemAddress(id64);
+        Assert.Equal(sequence, read.Sequence);
+        Assert.Equal(name, read.Name);
+
+        // A name states the system rather than a body inside it, so it writes back the
+        // same address with the nine body bits above the sequence cleared.
+        const ulong systemBits = (1UL << 55) - 1;
+        Assert.Equal(id64 & systemBits, ProceduralSystem.FromName(name)!.SystemAddress);
+    }
+
     /// <summary>Reads one fixture letter as its count from the start of the alphabet.</summary>
     private static int Letter(string value) => char.ToUpperInvariant(value[0]) - 'A';
 }

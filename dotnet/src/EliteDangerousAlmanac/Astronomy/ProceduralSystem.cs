@@ -73,7 +73,7 @@ public sealed class ProceduralSystem
     public char MassCode => MassCodes.FromSizeClass(parts.SizeClass);
 
     /// <summary>The system's own number inside its boxel.</summary>
-    public int Sequence => parts.N2;
+    public long Sequence => parts.N2;
 
     /// <summary>The parts the name is written from.</summary>
     /// <remarks>
