@@ -76,3 +76,47 @@ jobs:
 
       - name: Test package entry points
         run: pnpm run test:package
+
+  dotnet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: dotnet
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The SDK version comes from dotnet/global.json, so the runner installs the one
+      # a contributor builds with rather than a second version named here.
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: dotnet/global.json
+
+      - name: Cache the NuGet packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('dotnet/**/*.csproj', 'dotnet/**/*.props') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      # `--locked-mode` is NuGet's `npm ci`: it fails rather than resolving when the
+      # lock file and the project files disagree.
+      - name: Restore dependencies
+        run: dotnet restore EliteDangerousAlmanac.slnx --locked-mode
+
+      # Analyzers and code style run as errors, so this checks the source as well as
+      # building it.
+      - name: Build the solution
+        run: dotnet build EliteDangerousAlmanac.slnx --configuration Release --no-restore
+
+      # The coverage project runs the test suite and fails under the repository-wide
+      # threshold of 80% on lines, branches and methods.
+      - name: Test and check coverage
+        run: dotnet build coverage.proj -p:CoverageConfiguration=Release
+
+      - name: Pack the package
+        run: dotnet pack src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj --configuration Release --no-build

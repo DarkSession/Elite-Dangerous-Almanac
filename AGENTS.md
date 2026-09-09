@@ -20,7 +20,7 @@ A breaking change still has to be complete and visible: update every call site, 
 
 ## Multi-Language Strategy
 
-The library starts in **TypeScript**, with **Python** (and potentially other languages/frameworks) planned for the future. Two hard requirements shape all design decisions:
+The library started in **TypeScript** and has a **.NET** implementation beside it, with **Python** (and potentially other languages/frameworks) planned for the future. Two hard requirements shape all design decisions:
 
 1. **Feature parity** — every language implementation must expose the same features and behavior.
 2. **Shared test fixtures** — all implementations are validated against the same language-agnostic test fixtures.
@@ -58,11 +58,14 @@ Consumers (community apps, often web-based) must only pay for what they import. 
 
 Tree-shakeability is part of feature parity: other language implementations should mirror the same fine-grained module boundaries (e.g. Python subpackages matching the TS subpath exports).
 
+**Where a platform has no tree-shaking, the same rule becomes a loading rule.** .NET ships one assembly, so a consumer pays the download once and cannot drop a namespace they do not call. What they must not pay is the parsing and the memory: `dotnet/` keeps one type per feature area file, and every catalogue sits behind a `Lazy<T>` that reads its shared file the first time something asks for it. A caller who reads a system name therefore never parses the nebula catalogue. Keep new catalogues on that pattern.
+
 ## Testing Requirements
 
 - **Validate against the shared fixtures.** Behavior is proven against the language-neutral fixtures in `fixtures/` (see Multi-Language Strategy), so every implementation demonstrates identical behavior on identical data.
 - **Minimum coverage: ≥ 80%.** Each language implementation must keep automated-test coverage at **80% or above** on **lines, branches and functions**, and CI must enforce it — a drop below the threshold fails the build. Add genuine test cases for real behavior; do not chase the number with assertion-free tests or by excluding code from measurement.
   - **TypeScript**: `pnpm test` runs `node --test --experimental-test-coverage` with `--test-coverage-lines/-branches/-functions=80`, scoped recursively to `src/internal/**/*.ts` and `src/<area>/**/*.ts`, and excluding `*.test.ts`. Adding a new feature area means adding its `--test-coverage-include` glob, or the area is silently unmeasured; nested `internal/` modules inside an existing area are measured automatically.
+  - **.NET**: `dotnet build coverage.proj` runs the suite through coverlet with `Threshold=80` on `line,branch,method`, which fails the build under the threshold. Coverage is scoped to the `EliteDangerousAlmanac` assembly, so the test project's own helpers do not lift the figure.
   - **Python (future)**: measure with `coverage.py` / `pytest --cov` and fail CI under 80%.
 
 ## Language and documentation
@@ -188,6 +191,7 @@ fixtures/      # shared test fixtures (JSONC) — every implementation validates
 schemas/       # shared JSON Schemas — language-neutral validation for data payloads
 scripts/       # repository tooling for deriving data; never shipped in any package
 typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
+dotnet/        # .NET library (EliteDangerousAlmanac.slnx, src/, tests/)
 python/        # (future) Python library — same features, same fixtures
 ```
 
@@ -217,16 +221,18 @@ Six feature areas exist in TypeScript, all under `typescript/src/`:
 - **`materials/`** — engineering materials and micro-resources.
 - **`ships/`** — ship and outfitting catalogues, engineering (blueprints, experimental effects, pre-engineered variants), loadouts, and build metrics: power, shields, armour, resistances, weapons, jump range.
 
+The same six areas exist in .NET under `dotnet/src/EliteDangerousAlmanac/`, one namespace each: `Astronomy`, `Commodities`, `Equipment`, `Localization` (the `i18n` area), `Materials` and `Ships`. The library targets .NET Standard 2.1 and its tests run on .NET 10. It reads the shared catalogues as embedded resources keyed by their repository path, so `data/` stays the one copy.
+
 `python/` does not exist yet. When it lands it consumes the same `data/` and `fixtures/` and must reach parity.
 
 Two repo-wide conventions worth knowing before touching a catalogue:
 
-- **Catalogues are frozen.** Shared data is imported as a process-wide module singleton, so every exported catalogue is passed through `deepFreeze` (`src/internal/deep-freeze.ts`) — otherwise one consumer's mutation changes another's lookups. `src/catalogue-immutability.test.ts` asserts this for every exported catalogue; add new ones to it.
+- **Catalogues are frozen.** Shared data is imported as a process-wide module singleton, so every exported catalogue is passed through `deepFreeze` (`src/internal/deep-freeze.ts`) — otherwise one consumer's mutation changes another's lookups. `src/catalogue-immutability.test.ts` asserts this for every exported catalogue; add new ones to it. .NET keeps the same rule with immutable records and `ReadOnlyCollection`/`ReadOnlyDictionary`; `dotnet/tests/.../CatalogueImmutabilityTests.cs` finds every published catalogue by reflection, so a new one is covered the day it lands.
 - **Data files are hand-maintained artefacts.** `scripts/data/ships/merge-normalized-catalogues.mjs` joins normalized *local* arrays that a maintainer prepares; **no script in this repository reads, clones or fetches an upstream repository, and none should be added.** Fetching during acquisition is fine — write the throwaway script in a scratch directory outside the working tree, run it there, and commit only the derived data. What lands in the repo is the data plus its provenance in the domain's `SOURCES.md`, never the script that reached for it. The rule is about what ships and what CI runs, not about how a maintainer got the bytes.
 
 ## Environment
 
-Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 also installed. It runs as the `node` user, and its Dockerfile enables Corepack so that `pnpm` resolves to the version pinned in `typescript/package.json`. ESLint + Prettier for TypeScript; Pylance for Python.
+Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 and the .NET 10 SDK also installed. It runs as the `node` user, and its Dockerfile enables Corepack so that `pnpm` resolves to the version pinned in `typescript/package.json`. The .NET SDK arrives as a dev container feature and honours the version `dotnet/global.json` pins. ESLint + Prettier for TypeScript; the C# extension for .NET; Pylance for Python.
 
 ## Commit Identity — no personal data in git metadata
 
@@ -253,6 +259,28 @@ A related habit, for the same reason:
 **Before opening any PR, have a subagent re-review the complete change.** Address every meaningful finding, then ask a subagent to review the updated change again. Repeat this review-and-fix cycle until the subagent reports no more meaningful findings; only then may the PR be opened.
 
 ## Commands
+
+Each implementation has its own commands. The TypeScript ones run from `typescript/`,
+the .NET ones from `dotnet/`.
+
+### .NET
+
+The SDK version comes from `dotnet/global.json`. Every project keeps a
+`packages.lock.json` beside it, so a restore in locked mode fails rather than resolving
+when the lock file and the project files disagree.
+
+| Command                                                        | What it does                                                                                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `dotnet restore EliteDangerousAlmanac.slnx --locked-mode`       | restores exactly what the lock files pin                                                                       |
+| `dotnet build EliteDangerousAlmanac.slnx`                       | builds both projects; analyzers and code style run as errors, so this checks the source too                    |
+| `dotnet build coverage.proj`                                    | runs the suite through coverlet and fails under 80% on lines, branches and methods. **Run this before finishing.** |
+| `dotnet test EliteDangerousAlmanac.slnx --filter "FullyQualifiedName~XyzTests"` | runs one test class                                                             |
+| `dotnet pack src/EliteDangerousAlmanac/EliteDangerousAlmanac.csproj -c Release` | packs the NuGet package                                                          |
+
+Adding a package means adding it to the project file and restoring once, which rewrites
+that project's `packages.lock.json`. Commit the lock file with the change.
+
+### TypeScript
 
 All TypeScript commands run from `typescript/`. The package manager is **pnpm** — see
 §Dependencies below before adding or updating one.

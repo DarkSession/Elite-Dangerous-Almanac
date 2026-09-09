@@ -1,15 +1,33 @@
 # Elite Dangerous Almanac
 
 Static Elite Dangerous data and calculations for community applications and research.
-The repository provides an ESM TypeScript package backed by shared JSONC data, fixtures
-and JSON Schemas.
+The repository provides an ESM TypeScript package and a .NET package, both backed by the
+same shared JSONC data, fixtures and JSON Schemas.
 
 ## Project status
 
 **This library is a work in progress.** Until version 1.0, backwards compatibility is
 not ensured and breaking changes are very likely: exported names, signatures, module
-paths and data shapes can change in any release. Pin an exact version if your
-application needs a stable surface, and read the release notes before upgrading.
+paths, namespaces and data shapes can change in any release. Pin an exact version if
+your application needs a stable surface, and read the release notes before upgrading.
+
+The two packages do not carry the same names: each one reads the way its own language
+reads. What they share is the behaviour, which the fixtures under `fixtures/` prove for
+each of them.
+
+## Feature areas
+
+Both packages carry all six. The table names each area by its TypeScript subpath and by
+its .NET namespace.
+
+| Area          | .NET namespace | Provides                                                                                                                                           |
+| ------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `astro`       | `Astronomy`    | Procedural system names, id64 addresses, sectors, regions, nebulae, permit locks and scanned-body physics                                          |
+| `ships`       | `Ships`        | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics                                                 |
+| `equipment`   | `Equipment`    | Odyssey personal suits, handheld weapons and their damage per second, suit tools, grade upgrades, engineer modifications and journal suit loadouts |
+| `i18n`        | `Localization` | Sparse localized names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and personal equipment           |
+| `materials`   | `Materials`    | Ship engineering materials and Odyssey micro resources                                                                                             |
+| `commodities` | `Commodities`  | Standard and rare market commodities                                                                                                               |
 
 ## TypeScript package
 
@@ -20,20 +38,30 @@ npm install @elite-dangerous-almanac/core
 The package supports Node.js 22+ and modern browser bundlers. It is ESM-only and marks
 every module as side-effect free.
 
-| Area          | Provides                                                                                                                                           |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `astro`       | Procedural system names, id64 addresses, sectors, regions, nebulae, permit locks and scanned-body physics                                          |
-| `ships`       | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics                                                 |
-| `equipment`   | Odyssey personal suits, handheld weapons and their damage per second, suit tools, grade upgrades, engineer modifications and journal suit loadouts |
-| `i18n`        | Sparse localized names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and personal equipment           |
-| `materials`   | Ship engineering materials and Odyssey micro resources                                                                                             |
-| `commodities` | Standard and rare market commodities                                                                                                               |
-
 See the [package README](typescript/README.md) for installation and import guidance,
 the [Getting started guide](typescript/docs/guides/Getting-started.md) for first-use
 examples, and the
 [generated wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki) for the
 complete API reference.
+
+## .NET package
+
+```bash
+dotnet add package EliteDangerousAlmanac
+```
+
+The package targets .NET Standard 2.1, so it runs on .NET 10, on .NET Core 3.0 and above,
+and on Mono 6.4 and above. It depends on `System.Text.Json` and nothing else, and it
+carries the shared catalogues inside the assembly.
+
+See the [package README](dotnet/src/EliteDangerousAlmanac/README.md) for the areas and
+first-use examples. The XML documentation ships with the package, so an editor shows the
+same guidance the TypeScript TSDoc does.
+
+The ship assets are not in the NuGet package: they are 65 MB of SVG that no call reads.
+Copy them from [`assets/ships/`](assets/ships) instead.
+
+## Licensing of the bundled data
 
 The bundled game and community data has source-specific licensing, including
 non-commercial terms. Review [LICENSE](LICENSE) and
@@ -48,6 +76,7 @@ fixtures/    shared JSONC behavioral fixtures, each carrying its own provenance
 schemas/     shared JSON Schemas for catalogue payloads
 scripts/     repository-only data tooling
 typescript/  @elite-dangerous-almanac/core
+dotnet/      EliteDangerousAlmanac
 ```
 
 `data/` is the single source of truth. Implementations strip comments while loading
@@ -59,6 +88,22 @@ directory is the single source of truth; the TypeScript build copies it into the
 package under the same `assets/ships/` path.
 
 ## Development
+
+### .NET
+
+The SDK version comes from `dotnet/global.json`. Run .NET commands from `dotnet/`:
+
+```bash
+dotnet restore EliteDangerousAlmanac.slnx --locked-mode
+dotnet build EliteDangerousAlmanac.slnx
+dotnet build coverage.proj
+```
+
+`dotnet build` treats analyzer and code-style findings as errors, so it checks the source
+as well as building it. `dotnet build coverage.proj` runs the test suite and fails under
+the repository-wide coverage threshold.
+
+### TypeScript
 
 The package is managed with [pnpm](https://pnpm.io). Node 22 ships Corepack, which
 installs the exact pnpm version pinned in `typescript/package.json`:

@@ -24,6 +24,21 @@ updates:
           - patch
     open-pull-requests-limit: 5
 
+  - package-ecosystem: nuget
+    directory: /dotnet
+    schedule:
+      interval: weekly
+    groups:
+      test-dependencies:
+        patterns:
+          - "xunit*"
+          - "coverlet*"
+          - "Microsoft.NET.Test.Sdk"
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -19,4 +19,14 @@
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
+  <!--
+    Every project keeps a packages.lock.json beside it. CI restores in locked mode,
+    which fails rather than resolving when the lock file and the project files
+    disagree. It is the same guarantee the frozen lockfile gives the TypeScript
+    package.
+  -->
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
 </Project>
