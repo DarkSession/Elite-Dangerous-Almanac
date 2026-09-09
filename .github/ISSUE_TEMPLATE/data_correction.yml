@@ -5,8 +5,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this for the shared catalogues in `data/`. A correction is only actionable
-        with provenance: `data/SNAPSHOTS.md` defines what every data change must record.
+        Use this for the shared catalogues in `data/`. Both the TypeScript and the .NET
+        package read those files, so one correction reaches both. A correction is only
+        actionable with provenance: `data/SNAPSHOTS.md` defines what every data change
+        must record.
 
         Remove commander names, account identifiers and unrelated personal data from
         captures, and preserve attribution to the published author of a source.
@@ -17,6 +19,8 @@ body:
       options:
         - data/astro
         - data/commodities
+        - data/equipment
+        - data/i18n
         - data/materials
         - data/ships
         - Not sure

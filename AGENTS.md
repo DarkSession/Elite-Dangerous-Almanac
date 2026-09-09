@@ -25,6 +25,8 @@ The library has a **TypeScript** implementation and a **.NET** implementation, w
 1. **Feature parity** — every language implementation must expose the same features and behavior.
 2. **Shared test fixtures** — all implementations are validated against the same language-agnostic test fixtures.
 
+**A new capability lands in TypeScript and in .NET in the same change.** A consumer reads the feature areas in the root `README.md` and expects their own language to carry every one. The same rule covers a fix to shared behavior and the documentation of the changed surface. Where one package cannot carry the capability in the same change, open an issue for the gap (§Tracking known gaps). Link that issue from the pull request, and say in the other package's documentation what is missing.
+
 When adding features or data, keep them portable: prefer language-neutral formats (e.g. JSON) for static data and fixtures so every implementation can consume them without duplication.
 
 Every data update must also follow `data/SNAPSHOTS.md`: record its acquisition date, immutable upstream revision when available, derivation method, and any manual corrections.

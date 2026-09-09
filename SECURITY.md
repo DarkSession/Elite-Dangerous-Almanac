@@ -23,6 +23,7 @@ tracker after sensitive details are removed.
 
 ## Scope
 
-Security reports can cover the published npm package, build and release automation,
-dependency or provenance weaknesses, and handling of untrusted journal or SLEF input.
-Ordinary correctness bugs and public data gaps belong in the issue tracker.
+Security reports can cover the published npm package, the .NET package built from this
+repository, build and release automation, dependency or provenance weaknesses, and
+handling of untrusted journal or SLEF input. Ordinary correctness bugs and public data
+gaps belong in the issue tracker.

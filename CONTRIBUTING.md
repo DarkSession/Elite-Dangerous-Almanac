@@ -64,7 +64,12 @@ as errors, so a build checks the source as well as compiling it.
 
 Each package consumes the language-neutral shared catalogues and fixtures, so each one
 proves the same behavior. The two packages do not carry the same names: each one is
-written the way its own language reads. A change to shared behavior belongs in both.
+written the way its own language reads.
+
+A new capability, and a fix to shared behavior, belongs in both packages in the same
+change, with fixtures, documentation and tests on each side. If one package cannot carry
+it yet, open an issue for the gap. Link that issue from the pull request, and say in the
+other package's documentation what is missing.
 
 ## Making a change
 
@@ -96,6 +101,7 @@ pnpm run docs
 
 ```bash
 cd dotnet
+dotnet restore EliteDangerousAlmanac.slnx --locked-mode
 dotnet build coverage.proj
 ```
 
