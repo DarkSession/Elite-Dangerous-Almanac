@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EliteDangerousAlmanac.Tests.Support;
 
 namespace EliteDangerousAlmanac.Tests.Ships;
 
@@ -64,33 +65,33 @@ internal sealed class InGameBuildFixture
 internal sealed class InGameJumpRangeFixture
 {
     /// <summary>One jump on a full main tank, in light years.</summary>
-    public double FullTank { get; set; }
+    public PanelReading FullTank { get; set; }
 }
 
 /// <summary>The speed and handling the panel shows.</summary>
 internal sealed class InGameSpeedFixture
 {
-    public double Top { get; set; }
+    public PanelReading Top { get; set; }
 
-    public double Boost { get; set; }
+    public PanelReading Boost { get; set; }
 
-    public double Pitch { get; set; }
+    public PanelReading Pitch { get; set; }
 
-    public double Roll { get; set; }
+    public PanelReading Roll { get; set; }
 
-    public double Yaw { get; set; }
+    public PanelReading Yaw { get; set; }
 }
 
 /// <summary>The power the panel shows.</summary>
 internal sealed class InGamePowerFixture
 {
-    public double Available { get; set; }
+    public PanelReading Available { get; set; }
 
     /// <summary>The draw with the hardpoints stowed.</summary>
-    public double Retracted { get; set; }
+    public PanelReading Retracted { get; set; }
 
     /// <summary>The draw with the hardpoints run out.</summary>
-    public double Deployed { get; set; }
+    public PanelReading Deployed { get; set; }
 
     /// <summary>
     /// Whether the panel counts a module the commander powered down. It does, so the build
@@ -102,47 +103,49 @@ internal sealed class InGamePowerFixture
 /// <summary>What the weapons deal, as the panel shows it.</summary>
 internal sealed class InGameOffenceFixture
 {
-    public double DamagePerSecond { get; set; }
+    public PanelReading DamagePerSecond { get; set; }
 
-    public double DistributorDraw { get; set; }
+    public PanelReading DistributorDraw { get; set; }
 
-    public double ThermalLoad { get; set; }
+    public PanelReading ThermalLoad { get; set; }
 }
 
 /// <summary>The shields the panel shows.</summary>
 internal sealed class InGameShieldsFixture
 {
-    public double Strength { get; set; }
+    public PanelReading Strength { get; set; }
 
-    public InGameResistancesFixture Resistances { get; set; } = new();
+    /// <summary>What the shield resists, where the case reads them.</summary>
+    public InGameResistancesFixture? Resistances { get; set; }
 
-    public InGameRegenerationFixture Regeneration { get; set; } = new();
+    /// <summary>How fast the shield comes back, where the case reads it.</summary>
+    public InGameRegenerationFixture? Regeneration { get; set; }
 }
 
 /// <summary>How fast the shield comes back, in megajoules a second.</summary>
 internal sealed class InGameRegenerationFixture
 {
     /// <summary>The rate while the shield still stands.</summary>
-    public double Standard { get; set; }
+    public PanelReading Standard { get; set; }
 
     /// <summary>The rate while the shield is down.</summary>
-    public double Broken { get; set; }
+    public PanelReading Broken { get; set; }
 }
 
 /// <summary>What the ship weighs, as the panel shows it.</summary>
 internal sealed class InGameMassFixture
 {
     /// <summary>The ship as fitted and fuelled, reserve fuel counted.</summary>
-    public double Current { get; set; }
+    public PanelReading Current { get; set; }
 
     /// <summary>What the thrusters are rated to move.</summary>
-    public double Maximum { get; set; }
+    public PanelReading Maximum { get; set; }
 }
 
 /// <summary>The hull the panel shows.</summary>
 internal sealed class InGameArmourFixture
 {
-    public double HitPoints { get; set; }
+    public PanelReading HitPoints { get; set; }
 
     public InGameResistancesFixture Resistances { get; set; } = new();
 }
@@ -150,11 +153,11 @@ internal sealed class InGameArmourFixture
 /// <summary>The three resistances the panel shows.</summary>
 internal sealed class InGameResistancesFixture
 {
-    public double Kinetic { get; set; }
+    public PanelReading Kinetic { get; set; }
 
-    public double Thermal { get; set; }
+    public PanelReading Thermal { get; set; }
 
-    public double Explosive { get; set; }
+    public PanelReading Explosive { get; set; }
 }
 
 /// <summary>One catalogue weapon and its per-second figures.</summary>
@@ -664,9 +667,11 @@ internal sealed class ObservedShardCannonFixture
 
     public double PowerDraw { get; set; }
 
-    public double DamagePerSecond { get; set; }
+    /// <summary>The folded figure, at the one decimal place the panel shows.</summary>
+    public PanelReading DamagePerSecond { get; set; }
 
-    public double Damage { get; set; }
+    /// <summary>The damage of one round, at the one decimal place the panel shows.</summary>
+    public PanelReading Damage { get; set; }
 
     public double DistributorDraw { get; set; }
 
@@ -676,9 +681,11 @@ internal sealed class ObservedShardCannonFixture
 
     public double MaximumRange { get; set; }
 
-    public double ShotSpeed { get; set; }
+    /// <summary>The projectile's speed, at the whole metre a second the panel shows.</summary>
+    public PanelReading ShotSpeed { get; set; }
 
-    public double RateOfFire { get; set; }
+    /// <summary>The shots a second, at the one decimal place the panel shows.</summary>
+    public PanelReading RateOfFire { get; set; }
 
     public double ClipSize { get; set; }
 
