@@ -49,8 +49,8 @@ internal static partial class LoadoutMetrics
     {
         string? slot = module?.Slot ?? (DefaultSlot.TryGetValue(field, out string? mount) ? mount : null);
         string? symbol = module?.Item;
-        string named = TextPreview.Truncate(slot) ?? field.ToString();
-        string article = TextPreview.Truncate(symbol) ?? field.ToString();
+        string named = TextPreview.Truncate(slot ?? field.ToString());
+        string article = TextPreview.Truncate(symbol ?? field.ToString());
 
         string message = reason switch
         {

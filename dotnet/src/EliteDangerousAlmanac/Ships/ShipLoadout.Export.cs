@@ -7,7 +7,10 @@ namespace EliteDangerousAlmanac.Ships;
 public sealed partial class ShipLoadout
 {
     /// <summary>This build as a journal loadout event, which is the data half of a SLEF entry.</summary>
-    /// <param name="options">The module order, how sparse to be about power, and which prices.</param>
+    /// <param name="options">
+    /// The module order, how sparse to be about power, and which prices. An absent value
+    /// takes the defaults.
+    /// </param>
     /// <returns>A new event.</returns>
     /// <remarks>
     /// <para>
@@ -23,7 +26,6 @@ public sealed partial class ShipLoadout
     /// where the options ask for them, as provenance rather than as a price.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public LoadoutEvent ToLoadoutEvent(LoadoutExportOptions? options = null)
     {
         LoadoutExportOptions shape = options ?? new LoadoutExportOptions();
