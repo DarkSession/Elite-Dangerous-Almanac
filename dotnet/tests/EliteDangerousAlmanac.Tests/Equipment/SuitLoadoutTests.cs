@@ -216,7 +216,7 @@ public sealed class SuitLoadoutTests
     }
 
     private static SuitLoadoutEvent Read(string path) =>
-        SharedFixtures.Load<SuitLoadoutEvent>(path);
+        SharedFixtures.LoadCapture<SuitLoadoutEvent>(path);
 
     private static SuitLoadoutEvent Read(JsonElement stated) =>
         JsonSerializer.Deserialize<SuitLoadoutEvent>(stated.GetRawText(), Options)!;

@@ -13,11 +13,88 @@ internal sealed class SourcePurchaseFixture
     /// Hand-written events for the shapes the corpus holds no example of, keyed by case name.
     /// </summary>
     public Dictionary<string, SyntheticCaptureFixture> SyntheticCaptures { get; set; } = [];
+
+    /// <summary>What an export writes after a capture is edited, keyed by capture name.</summary>
+    public EditedExportsFixture EditedExports { get; set; } = new();
+}
+
+/// <summary>Each capture edited, then exported with its own credits.</summary>
+internal sealed class EditedExportsFixture
+{
+    /// <summary>What the cases are about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
+    /// <summary>One group for each capture the edits start from.</summary>
+    public Dictionary<string, EditedExportGroupFixture> Groups { get; set; } = [];
+}
+
+/// <summary>One capture and every edit made to it.</summary>
+internal sealed class EditedExportGroupFixture
+{
+    /// <summary>Why this capture is the one the group starts from.</summary>
+    public string? Note { get; set; }
+
+    public Dictionary<string, EditedExportScenarioFixture> Scenarios { get; set; } = [];
+}
+
+/// <summary>One set of edits, and the credits the export writes after them.</summary>
+internal sealed class EditedExportScenarioFixture
+{
+    public List<BuildEditFixture> Edits { get; set; } = [];
+
+    /// <summary>Why the export answers that, in the fixture's own words.</summary>
+    public string? Why { get; set; }
+
+    /// <summary>The credits the export writes at the top of the event.</summary>
+    public Dictionary<string, double> TopLevelCredits { get; set; } = [];
+
+    /// <summary>The mounts the capture priced that the export no longer prices.</summary>
+    public List<string> UnpricedSlots { get; set; } = [];
+
+    /// <summary>Mounts the capture never priced that the edits filled.</summary>
+    public List<string>? UnpricedNewSlots { get; set; }
+}
+
+/// <summary>One edit made to a build. Exactly one of the three is stated.</summary>
+internal sealed class BuildEditFixture
+{
+    public SetModuleEditFixture? SetModule { get; set; }
+
+    public RemoveModuleEditFixture? RemoveModule { get; set; }
+
+    public ApplyBlueprintEditFixture? ApplyBlueprint { get; set; }
+}
+
+/// <summary>Fitting one article to one mount.</summary>
+internal sealed class SetModuleEditFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+}
+
+/// <summary>Emptying one mount.</summary>
+internal sealed class RemoveModuleEditFixture
+{
+    public string Slot { get; set; } = string.Empty;
+}
+
+/// <summary>Engineering the article one mount holds.</summary>
+internal sealed class ApplyBlueprintEditFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Blueprint { get; set; } = string.Empty;
+
+    public int Grade { get; set; }
 }
 
 /// <summary>One real capture and the record it carries.</summary>
 internal sealed class SourceCaptureFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     /// <summary>The fixture path of the capture itself.</summary>
     public string Build { get; set; } = string.Empty;
 
@@ -30,6 +107,9 @@ internal sealed class SourceCaptureFixture
 /// <summary>One hand-written event and the record it produces.</summary>
 internal sealed class SyntheticCaptureFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public SyntheticEventFixture Event { get; set; } = new();
 
     /// <summary>The record, or absent where the event states no credit figure at all.</summary>
@@ -107,6 +187,9 @@ internal sealed class SourceModuleValueFixture
 /// <summary>The figures an export that quotes the capture writes.</summary>
 internal sealed class SourceExportFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public TopLevelCreditsFixture? TopLevelCredits { get; set; }
 
     /// <summary>The captured price of each mount the source priced, by mount key.</summary>

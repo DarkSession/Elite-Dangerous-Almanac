@@ -28,6 +28,21 @@ internal static class SharedFixtures
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = true,
         NumberHandling = JsonNumberHandling.Strict,
+
+        // A fixture block no model carries is a parity case this port never checks. Refusing
+        // it makes that a failure rather than a silence.
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+    };
+
+    /// <summary>The rules a captured journal line is read by.</summary>
+    /// <remarks>
+    /// A real journal line carries the fields the game writes on every event, such as its
+    /// timestamp. A library type states the fields it reads and no more, so the strict rules
+    /// above would refuse the very captures the library exists to read.
+    /// </remarks>
+    private static readonly JsonSerializerOptions CaptureOptions = new(Options)
+    {
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
     };
 
     /// <summary>Reads one fixture into <typeparamref name="T"/>.</summary>
@@ -37,6 +52,15 @@ internal static class SharedFixtures
         using Stream stream = Open(path);
         return JsonSerializer.Deserialize<T>(stream, Options)
             ?? throw new InvalidOperationException($"The fixture '{path}' holds no payload.");
+    }
+
+    /// <summary>Reads one captured journal line into the library type that reads it.</summary>
+    /// <param name="path">The repository path of the capture.</param>
+    internal static T LoadCapture<T>(string path)
+    {
+        using Stream stream = Open(path);
+        return JsonSerializer.Deserialize<T>(stream, CaptureOptions)
+            ?? throw new InvalidOperationException($"The capture '{path}' holds no payload.");
     }
 
     /// <summary>Reads one fixture as a document, for a payload with a loose shape.</summary>

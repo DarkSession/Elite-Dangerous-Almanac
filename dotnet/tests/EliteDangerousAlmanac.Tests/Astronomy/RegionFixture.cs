@@ -13,6 +13,9 @@ internal sealed class HandAuthoredRegionsFixture
 /// <summary>One system the game names after a region instead of its sector.</summary>
 internal sealed class HandAuthoredSystemFixture
 {
+    /// <summary>Where the record comes from, in the fixture's own words.</summary>
+    public string? Source { get; set; }
+
     public string Name { get; set; } = string.Empty;
 
     public string Id64 { get; set; } = string.Empty;
@@ -61,6 +64,9 @@ internal sealed class PermitLockCountsFixture
 /// <summary>One system name, and the permit it asks for.</summary>
 internal sealed class PermitLockCaseFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Comment { get; set; }
+
     public string Name { get; set; } = string.Empty;
 
     public PermitLockFixture? Lock { get; set; }

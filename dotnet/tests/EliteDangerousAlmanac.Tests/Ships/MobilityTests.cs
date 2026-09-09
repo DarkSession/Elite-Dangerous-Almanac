@@ -38,6 +38,17 @@ public class MobilityTests
         Thrusters = Thrusters,
     };
 
+    /// <summary>A hull whose top speed sits below its bottom one describes no ship.</summary>
+    [Fact]
+    public void TheSharedFixturePinsSpeedEndpointsTheCalculationRefuses()
+    {
+        InvalidMobilityFixture stated = Fixture.InvalidSpeedEndpoints;
+
+        Assert.Equal("RangeError", stated.ExpectedError);
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => Mobility.Metrics(stated.Input.ToInput()));
+    }
+
     [Fact]
     public void TheSharedFixturePinsSpeedBoostAndHandling()
     {

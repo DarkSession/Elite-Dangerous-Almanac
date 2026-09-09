@@ -16,6 +16,11 @@ public class JumpRangeTests
     /// <summary>The precision the fixture states a range to.</summary>
     private const double Tolerance = 5e-7;
 
+    private static readonly JsonSerializerOptions JournalOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
+
     public static TheoryData<string> Builds()
     {
         TheoryData<string> data = [];
@@ -30,10 +35,37 @@ public class JumpRangeTests
         return data;
     }
 
+    /// <summary>The anchor drive is the one the named hull carries.</summary>
+    [Fact]
+    public void TheAnchorDriveIsTheOneTheNamedHullCarries() =>
+        Assert.NotNull(ShipCatalogue.FindBySymbol(Fixture.Ship));
+
+    /// <summary>A caller that states its own fuel gets the range that fuel reaches.</summary>
+    /// <remarks>
+    /// A part tank makes fewer jumps than a full one, and each of them is longer, because
+    /// the ship carries less. The total is still shorter than the full tank's.
+    /// </remarks>
+    [Fact]
+    public void AStatedFuelLoadReachesTheRangeThatFuelAllows()
+    {
+        ShipLoadout build = ShipLoadout.FromLoadout(
+            Fixture.ExplicitFuel.Loadout.Deserialize<LoadoutEvent>(JournalOptions)!);
+        BuildMetrics metrics = BuildMetrics.Of(build);
+
+        TotalRangeDetails stated = metrics.TotalRange(new BuildLoad(Fixture.ExplicitFuel.Options.Fuel));
+
+        Assert.Equal(Fixture.ExplicitFuel.Expected.Jumps, stated.Jumps);
+        Assert.Equal(Fixture.ExplicitFuel.Expected.Range, stated.Range, Tolerance);
+        Assert.True(metrics.TotalRange().Range > stated.Range);
+    }
+
     [Fact]
     public void TheAnchorDriveReachesTheFixturesRanges()
     {
         FrameShiftDriveParams drive = Drive(Fixture.FrameShiftDrive);
+
+        // EDSY publishes the same one-jump range, which is what the two figures pin.
+        Assert.Equal(Fixture.EdsyMaxJumpRange, Fixture.MaxJumpRange, 1e-4);
 
         // The longest jump carries exactly one jump's fuel: more only weighs the ship down.
         Assert.Equal(

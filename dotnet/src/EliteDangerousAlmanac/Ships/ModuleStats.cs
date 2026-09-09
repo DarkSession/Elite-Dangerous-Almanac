@@ -71,10 +71,27 @@ public sealed class ModuleStats : IEquatable<ModuleStats>
     }
 
     /// <summary>The stats the module states, in no particular order.</summary>
-    public IEnumerable<KeyValuePair<ModuleStat, double>> Entries => values;
+    /// <remarks>
+    /// The dictionary behind the collection is never handed out. A caller that reaches the
+    /// stats of a catalogue module would otherwise be able to write to the record every
+    /// other caller in the process reads.
+    /// </remarks>
+    public IEnumerable<KeyValuePair<ModuleStat, double>> Entries
+    {
+        get
+        {
+            foreach (KeyValuePair<ModuleStat, double> entry in values) yield return entry;
+        }
+    }
 
     /// <summary>The stats the module states, by key.</summary>
-    public IEnumerable<ModuleStat> Keys => values.Keys;
+    public IEnumerable<ModuleStat> Keys
+    {
+        get
+        {
+            foreach (ModuleStat stat in values.Keys) yield return stat;
+        }
+    }
 
     /// <inheritdoc/>
     public bool Equals(ModuleStats? other)

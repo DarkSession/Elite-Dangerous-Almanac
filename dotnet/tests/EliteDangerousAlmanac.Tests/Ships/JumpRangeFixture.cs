@@ -50,11 +50,51 @@ internal sealed class JumpRangeFixture
 
     /// <summary>Whole builds, each pinned against the figure its source states.</summary>
     public Dictionary<string, JumpRangeBuildFixture> Builds { get; set; } = [];
+
+    /// <summary>The hull the constants above are taken from.</summary>
+    public string Ship { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The same one-jump range as <see cref="MaxJumpRange"/>, as EDSY publishes it.
+    /// </summary>
+    public double EdsyMaxJumpRange { get; set; }
+
+    /// <summary>A total range asked for at a stated part tank rather than a full one.</summary>
+    public ExplicitFuelFixture ExplicitFuel { get; set; } = new();
+}
+
+/// <summary>A total range worked out at a stated fuel load.</summary>
+internal sealed class ExplicitFuelFixture
+{
+    /// <summary>The build the range is asked of.</summary>
+    public JsonElement Loadout { get; set; }
+
+    /// <summary>The load the caller states.</summary>
+    public ExplicitFuelLoadFixture Options { get; set; } = new();
+
+    public ExplicitFuelExpectationFixture Expected { get; set; } = new();
+}
+
+/// <summary>The fuel a caller states rather than letting the tank decide.</summary>
+internal sealed class ExplicitFuelLoadFixture
+{
+    public double Fuel { get; set; }
+}
+
+/// <summary>What the stated load reaches.</summary>
+internal sealed class ExplicitFuelExpectationFixture
+{
+    public double Range { get; set; }
+
+    public int Jumps { get; set; }
 }
 
 /// <summary>One drive's post-engineering constants.</summary>
 internal sealed class FrameShiftDriveFixture
 {
+    /// <summary>The drive the constants are taken from.</summary>
+    public string Symbol { get; set; } = string.Empty;
+
     public double OptMass { get; set; }
 
     public double MaxFuel { get; set; }
@@ -80,6 +120,9 @@ internal sealed class InvalidInputFixture
 /// <summary>A tank too large to evaluate in one call.</summary>
 internal sealed class ExcessiveJumpsFixture
 {
+    /// <summary>Why no call evaluates the tank, in the reference implementation's own words.</summary>
+    public string Error { get; set; } = string.Empty;
+
     public double Mass { get; set; }
 
     public double Fuel { get; set; }
@@ -101,6 +144,9 @@ internal sealed class TinyFuelFixture
 /// <summary>Constants whose summed range leaves the range of a number.</summary>
 internal sealed class OverflowingTotalFixture
 {
+    /// <summary>Why no call evaluates the constants, in the reference implementation's own words.</summary>
+    public string Error { get; set; } = string.Empty;
+
     public double Mass { get; set; }
 
     public double Fuel { get; set; }
@@ -111,6 +157,15 @@ internal sealed class OverflowingTotalFixture
 /// <summary>One whole build's jumps.</summary>
 internal sealed class JumpRangeBuildFixture
 {
+    /// <summary>The hull the build sits on.</summary>
+    public string Ship { get; set; } = string.Empty;
+
+    /// <summary>What the build is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
+    /// <summary>The fixture path of the capture the build is read from.</summary>
+    public string Build { get; set; } = string.Empty;
+
     public FrameShiftDriveFixture FrameShiftDrive { get; set; } = new();
 
     public double UnladenMass { get; set; }

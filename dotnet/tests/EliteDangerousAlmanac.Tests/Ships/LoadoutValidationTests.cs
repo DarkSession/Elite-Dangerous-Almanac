@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EliteDangerousAlmanac.Ships;
+using EliteDangerousAlmanac.Tests.Support;
 using Xunit;
 
 namespace EliteDangerousAlmanac.Tests.Ships;
@@ -29,6 +30,32 @@ public class LoadoutValidationTests
 
     private static ValidationModule Fitted(string slot, string symbol) =>
         new(slot, symbol) { RequiresKnownSlot = false };
+
+    private static readonly ThrusterMassFixture ThrusterMass =
+        SharedFixtures.Load<OperationsFixture>("fixtures/ships/operations.jsonc").ThrusterMass;
+
+    /// <summary>The thrusters every mass case is weighed against.</summary>
+    private static ValidationModule Thrusters() =>
+        Fitted(ThrusterMass.Input.Slot, ThrusterMass.Input.Symbol) with
+        {
+            ThrusterMaxMass = ThrusterMass.Input.ThrusterMaxMass,
+        };
+
+    /// <summary>One stated load, where a load that carries nothing states nothing.</summary>
+    private static LoadoutMass Mass(ThrusterMassLoadFixture load) =>
+        new(load.Dry)
+        {
+            Fuel = load.Fuel == 0 ? null : load.Fuel,
+            Cargo = load.Cargo == 0 ? null : load.Cargo,
+        };
+
+    /// <summary>Names one enumeration member the way the shared fixtures spell it.</summary>
+    private static string Spelled<T>(T value)
+        where T : struct, Enum
+    {
+        string name = value.ToString()!;
+        return char.ToLowerInvariant(name[0]) + name.Substring(1);
+    }
 
     [Fact]
     public void ABuildThatClaimsNoImpossibleFitIsValid()
@@ -185,44 +212,67 @@ public class LoadoutValidationTests
             issue.Message);
     }
 
-    [Fact]
-    public void AShipTooHeavyForItsOwnThrustersCannotLeaveThePad()
+    public static TheoryData<int> ThrusterMassCases()
     {
-        LoadoutValidation result = ValidateBare(
-            [Fitted("MainEngines", "Int_Engine_Size2_Class1") with { ThrusterMaxMass = 72 }],
-            new LoadoutMass(60.6) { Fuel = 25 });
-
-        LoadoutIssue issue = Assert.Single(result.Issues);
-
-        Assert.Equal(LoadoutIssueCode.ThrusterMassExceeded, issue.Code);
-        Assert.Equal(LoadoutIssueSeverity.Error, issue.Severity);
-
-        // The full tank is what sinks it: the fit alone is inside the rating.
-        Assert.Equal(ThrusterLoad.Unladen, issue.Load);
-        Assert.Equal(85.6, issue.Mass);
-        Assert.Equal(72, issue.MaxMass);
-        Assert.Equal(
-            "MainEngines: Int_Engine_Size2_Class1 is rated to 72 t but the ship weighs 85.6 t with a full tank",
-            issue.Message);
-        Assert.False(result.Valid);
+        TheoryData<int> positions = [];
+        for (int index = 0; index < ThrusterMass.Cases.Count; index++) positions.Add(index);
+        return positions;
     }
 
-    [Fact]
-    public void AShipTooHeavyOnlyWhenLadenStillFlies()
+    public static TheoryData<int> QuietThrusterLoads()
     {
+        TheoryData<int> positions = [];
+        for (int index = 0; index < ThrusterMass.Quiet.Count; index++) positions.Add(index);
+        return positions;
+    }
+
+    /// <summary>Thrusters rated below what the ship weighs, at each load in turn.</summary>
+    /// <remarks>
+    /// Only the lightest overloaded load is reported, and how badly it reads follows that
+    /// load: a ship too heavy dry or with a full tank cannot leave the pad at all, while one
+    /// that only a full hold sinks still flies.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(ThrusterMassCases))]
+    public void ThrustersRatedBelowTheShipReportTheLightestLoadTheyCannotMove(int position)
+    {
+        ThrusterMassCaseFixture stated = ThrusterMass.Cases[position];
+        ThrusterMassIssueFixture expected = stated.ExpectedIssue!;
+
         LoadoutValidation result = ValidateBare(
-            [Fitted("MainEngines", "Int_Engine_Size2_Class1") with { ThrusterMaxMass = 72 }],
-            new LoadoutMass(40) { Fuel = 25, Cargo = 16 });
+            [Thrusters()],
+            new LoadoutMass(stated.Mass.Dry)
+            {
+                Fuel = stated.Mass.Fuel,
+                Cargo = stated.Mass.Cargo,
+            });
 
         LoadoutIssue issue = Assert.Single(result.Issues);
+        Assert.Equal(expected.Code, Spelled(issue.Code));
+        Assert.Equal(expected.Severity, Spelled(issue.Severity));
+        Assert.Equal(expected.Message, issue.Message);
+        Assert.Equal(expected.Params.Slot, issue.Slot);
+        Assert.Equal(expected.Params.Symbol, issue.Symbol);
+        Assert.Equal(expected.Params.Load, Spelled(issue.Load!.Value));
+        Assert.Equal(expected.Params.Mass, issue.Mass);
+        Assert.Equal(expected.Params.MaxMass, issue.MaxMass);
 
-        Assert.Equal(ThrusterLoad.Laden, issue.Load);
-        Assert.Equal(LoadoutIssueSeverity.Warning, issue.Severity);
-        Assert.EndsWith("fully laden", issue.Message, StringComparison.Ordinal);
+        // Only a load the ship never has to fly at leaves the build legal.
+        Assert.Equal(issue.Severity == LoadoutIssueSeverity.Warning, result.Valid);
+    }
 
-        // A warning is a note against a build that is both legal and fully mounted.
-        Assert.True(result.Valid);
-        Assert.True(result.Complete);
+    /// <summary>A ship the same thrusters carry at every load it states.</summary>
+    /// <remarks>
+    /// An unstated tank is a tank of unknown size rather than an empty one, so the loads
+    /// above the fit itself go unchecked.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(QuietThrusterLoads))]
+    public void ThrustersRatedAboveTheShipReportNothing(int position)
+    {
+        ThrusterMassLoadFixture load = ThrusterMass.Quiet[position];
+
+        Assert.Empty(ValidateBare([Thrusters()], Mass(load)).Issues);
     }
 
     [Fact]

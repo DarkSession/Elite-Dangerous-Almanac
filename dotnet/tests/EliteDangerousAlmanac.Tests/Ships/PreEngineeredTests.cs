@@ -334,6 +334,17 @@ public class PreEngineeredTests
 
         // No recipe names the rate of fire, and the article still reports the one its cycle makes.
         Assert.Equal(moved.RateOfFire, resolved.Stats[ModuleStat.RateOfFire]!.Value, 6);
+
+        // One article, one rate of fire: the resolved stat is the figure the article's own
+        // engineering block states, down to the last place a journal writes.
+        EngineeringModifier? stated = null;
+        foreach (EngineeringModifier modifier in PreEngineeredStats.JournalModifiers(variant))
+        {
+            if (modifier.Label == "RateOfFire") stated = modifier;
+        }
+
+        Assert.Equal(moved.BlockRateOfFire, stated!.Value);
+        Assert.Equal(resolved.Stats[ModuleStat.RateOfFire]!.Value, stated.Value!.Value, 6);
     }
 
     [Fact]

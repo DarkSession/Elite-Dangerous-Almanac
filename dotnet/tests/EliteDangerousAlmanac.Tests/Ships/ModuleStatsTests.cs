@@ -111,6 +111,95 @@ public class ModuleStatsTests
         }
     }
 
+    /// <summary>Every captured purchase reproduces from the catalogue price and the rule.</summary>
+    /// <remarks>
+    /// <para>
+    /// The game subtracts a truncated discount at each step rather than truncating the
+    /// product, so two discounts are <c>ceil(ceil(list * 9/10) * 39/40)</c>. The arithmetic
+    /// is integral throughout: 0.9 times 0.975 is not exactly 0.8775 in binary floating
+    /// point, and the error crosses a rounding boundary.
+    /// </para>
+    /// <para>
+    /// The capture alone cannot prove the rule, having been fitted to it. The cross-checks
+    /// are what does: readings this repository already held, at their own discounts, which a
+    /// wrong rule cannot reproduce from the same prices.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void EveryCapturedPurchaseReproducesWhatWasPaid()
+    {
+        foreach (PurchaseReadingFixture reading in Fixture.PurchaseCapture.Readings)
+        {
+            OutfittingModule module = ModuleCatalogue.FindBySymbol(reading.Symbol)!;
+            Assert.Equal(reading.Cost, module.Cost);
+            Assert.Equal(reading.Paid, PaidFor(reading.Cost));
+
+            // Whether the reading pins one list price on its own. Where it does not, the
+            // price is settled by other evidence and a neighbouring price bills the same
+            // credits, so the fixture says so rather than letting the figure drift.
+            bool alone = PaidFor(reading.Cost - 1) != reading.Paid
+                && PaidFor(reading.Cost + 1) != reading.Paid;
+            Assert.Equal(reading.Unique, alone);
+        }
+
+        foreach (PurchaseCrossCheckFixture check in Fixture.PurchaseCapture.CrossChecks)
+        {
+            OutfittingModule module = ModuleCatalogue.FindBySymbol(check.Symbol)!;
+            long cost = module.Cost!.Value;
+            long expected = check.Discount == "2.5" ? CeilingDivide(cost * 39, 40) : PaidFor(cost);
+            Assert.Equal(check.Value, expected);
+        }
+    }
+
+    /// <summary>The credits a list price bills at a 10 per cent and a 2.5 per cent discount.</summary>
+    private static long PaidFor(long cost) => CeilingDivide(CeilingDivide(cost * 9, 10) * 39, 40);
+
+    private static long CeilingDivide(long numerator, long denominator) =>
+        numerator % denominator == 0 ? numerator / denominator : (numerator / denominator) + 1;
+
+    /// <summary>The audit accounts for every record, and pins every value a reading fixed.</summary>
+    /// <remarks>
+    /// The counts hold the audit together. A record that quietly leaves a catalogue, or a
+    /// pinned value deleted from a list, moves one of them.
+    /// </remarks>
+    [Fact]
+    public void TheVerificationAuditAccountsForEveryRecord()
+    {
+        InGameAuditFixture audit = Fixture.InGameAudit;
+
+        Assert.Equal(audit.CatalogueIdentities, ModuleCatalogue.All.Count);
+        Assert.Equal(
+            audit.CatalogueIdentities, audit.IdentityMatches + audit.RegistryOnlyIdentities);
+        Assert.Equal(
+            audit.ArmourModulesOutsideNumericVerification,
+            ModuleCatalogue.All.Count(module => module.Ship is not null));
+        Assert.Equal(
+            audit.IdentityMatches,
+            audit.NumericModulesVerified + audit.ArmourModulesOutsideNumericVerification);
+
+        HashSet<string> records = new(StringComparer.Ordinal);
+        foreach (ModuleStatSpot spot in Fixture.InGameVerifiedValues) records.Add(spot.Symbol);
+        foreach (AbsentFieldsFixture absent in Fixture.InGameVerifiedAbsentFields)
+        {
+            records.Add(absent.Symbol);
+        }
+
+        Assert.Equal(audit.VerifiedRecords, records.Count);
+        Assert.Equal(
+            audit.VerifiedValueFields,
+            Fixture.InGameVerifiedValues.Sum(spot => spot.Fields.Count));
+        Assert.Equal(
+            audit.VerifiedAbsentFields,
+            Fixture.InGameVerifiedAbsentFields.Sum(absent => absent.Fields.Count));
+        Assert.Equal(audit.VerifiedFields, audit.VerifiedValueFields + audit.VerifiedAbsentFields);
+
+        foreach (KeyValuePair<string, int> entry in audit.CatalogueFieldCounts)
+        {
+            Assert.True(Enum.TryParse(entry.Key, ignoreCase: true, out ModuleStat stat));
+            Assert.Equal(entry.Value, ModuleCatalogue.All.Count(module => module.Stats.Has(stat)));
+        }
+    }
+
     [Fact]
     public void EveryStatABlueprintScalesIsCarriedByItsWholeFamily()
     {

@@ -196,6 +196,108 @@ public class ShipLoadoutTests
         Assert.Equal(expected.Discount.SourceRebuy, source.Rebuy);
     }
 
+    /// <summary>Each way one capture's own credits fail to be a property of the build.</summary>
+    /// <remarks>
+    /// A capture states what one commander paid at one market. The hull is quoted with its
+    /// stock fittings, the modules that came with the hull are given no price at all, and
+    /// the rest were bought at whatever discount the shipyard offered. Each is a separate
+    /// reason none of the figures is carried through, and each is pinned where the fixture
+    /// states it.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(CapturedBuilds))]
+    public void ACapturesOwnCreditsDivergeFromRetailForTheReasonsTheFixturePins(string name)
+    {
+        BuildCaseFixture expected = Case(name);
+        DiscountFixture discount = expected.Discount;
+        ShipLoadout build = Read(expected.Build);
+        LoadoutEvent capture = Capture(expected.Build);
+        LoadoutEvent recomputed = build.ToLoadoutEvent();
+        Ship hull = ShipCatalogue.FindBySymbol(build.ShipSymbol)!;
+
+        Assert.Equal(discount.SourceHullValue, capture.HullValue);
+        Assert.Equal(discount.SourceModulesValue, capture.ModulesValue);
+        Assert.Equal(discount.SourceRebuy, capture.Rebuy);
+
+        // The game quotes the hull with its stock fittings. This library quotes the bare
+        // hull, which is the lower of the two figures the catalogue carries.
+        if (discount.HullRetailCost is double retail)
+        {
+            Assert.Equal(retail, hull.RetailCost);
+            Assert.True(recomputed.HullValue < retail);
+        }
+
+        if (discount.HullCost is double bare)
+        {
+            Assert.Equal(bare, hull.HullCost);
+            Assert.Equal(bare, recomputed.HullValue);
+            Assert.True(discount.SourceHullValue < bare);
+            Assert.True(bare < discount.HullRetailCost);
+        }
+
+        // The modules the hull came with are given no price at all, so pricing them at list
+        // is what puts this library's total above the capture's own.
+        if (discount.UnpricedInSource.Count > 0)
+        {
+            Assert.Equal(discount.UnpricedInSource, UnpricedOutfitting(capture));
+            Assert.True(recomputed.ModulesValue > discount.SourceModulesValue);
+        }
+
+        // The rest were bought at one flat fraction of list.
+        if (discount.PricedInSource is int priced)
+        {
+            List<LoadoutModule> quoted = [];
+            foreach (LoadoutModule module in capture.Modules)
+            {
+                if (module.Value is not null) quoted.Add(module);
+            }
+
+            Assert.Equal(priced, quoted.Count);
+            foreach (LoadoutModule module in quoted)
+            {
+                double list = ModuleCatalogue.FindBySymbol(module.Item)!.Cost!.Value;
+                double paid = Math.Abs(module.Value!.Value - (list * discount.ModuleDiscount!.Value));
+                Assert.True(
+                    paid <= discount.ModuleDiscountToleranceCr,
+                    $"{module.Item} paid {module.Value}");
+            }
+        }
+
+        // And a capture's own rebuy need not even be the share of its own figures that the
+        // game charges, so it cannot be reconciled at all.
+        if (discount.RebuyFromOwnFigures is double own)
+        {
+            Assert.Equal(
+                own,
+                Math.Truncate(
+                    (capture.HullValue!.Value + capture.ModulesValue!.Value)
+                        * Fixture.RebuyFraction));
+            Assert.NotEqual(own, discount.SourceRebuy);
+        }
+    }
+
+    /// <summary>The outfitting mounts a capture gave no price, cosmetics left out.</summary>
+    private static List<string> UnpricedOutfitting(LoadoutEvent capture)
+    {
+        string[] cosmetic =
+            ["PaintJob", "Ship", "Bobble", "Decal", "Weapon", "Engine", "Vessel"];
+        List<string> unpriced = [];
+        foreach (LoadoutModule module in capture.Modules)
+        {
+            if (module.Value is not null) continue;
+
+            bool decoration = false;
+            foreach (string prefix in cosmetic)
+            {
+                if (module.Slot.StartsWith(prefix, StringComparison.Ordinal)) decoration = true;
+            }
+
+            if (!decoration) unpriced.Add(module.Slot);
+        }
+
+        return unpriced;
+    }
+
     [Fact]
     public void AnExportsPhysicalFiguresReproduceTheSourceExportsOwn()
     {

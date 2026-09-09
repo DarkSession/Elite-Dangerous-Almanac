@@ -7,6 +7,15 @@ namespace EliteDangerousAlmanac.Tests.Ships;
 /// <summary>The part of <c>fixtures/ships/operations.jsonc</c> the data-free calculators read.</summary>
 internal sealed class OperationsFixture
 {
+    /// <summary>What a refused payload and a refused build report.</summary>
+    public DiagnosticsFixture Diagnostics { get; set; } = new();
+
+    /// <summary>The finding a second module of a one-per-ship family reports.</summary>
+    public ExclusivityFixture Exclusivity { get; set; } = new();
+
+    /// <summary>Thrusters rated below what the ship weighs.</summary>
+    public ThrusterMassFixture ThrusterMass { get; set; } = new();
+
     /// <summary>The speed and handling of one loaded ship.</summary>
     public MobilityFixture Mobility { get; set; } = new();
 
@@ -295,6 +304,12 @@ internal sealed class StatedRecipeOutcomeFixture
 /// <summary>The catalogued article a reading passed over.</summary>
 internal sealed class PreEngineeredArticleFixture
 {
+    /// <summary>The modifiers the article is sold carrying.</summary>
+    public List<ModifierFixture>? Modifiers { get; set; }
+
+    /// <summary>The name the shop lists the article under.</summary>
+    public string? Name { get; set; }
+
     public string Symbol { get; set; } = string.Empty;
 
     public string BlueprintSymbol { get; set; } = string.Empty;
@@ -329,6 +344,9 @@ internal sealed class ImportRejectionExpectationFixture
 /// <summary>One fitted module list and the allowance it uses up.</summary>
 internal sealed class ModuleLimitsFixture
 {
+    /// <summary>The finding an over-filled family reports.</summary>
+    public ModuleLimitIssueFixture ExpectedIssue { get; set; } = new();
+
     public string Group { get; set; } = string.Empty;
 
     public List<ModuleLimitEntryFixture> Input { get; set; } = [];
@@ -578,6 +596,216 @@ internal sealed class MobilityFixture
 
     /// <summary>One whole build, read at a fuel load of its caller's choosing.</summary>
     public MobilityFacadeFixture FacadeFuelOverride { get; set; } = new();
+
+    /// <summary>A hull whose top speed is below its bottom one.</summary>
+    public InvalidMobilityFixture InvalidSpeedEndpoints { get; set; } = new();
+}
+
+/// <summary>Figures that describe no hull, and the refusal they raise.</summary>
+internal sealed class InvalidMobilityFixture
+{
+    public MobilityInputFixture Input { get; set; } = new();
+
+    public string ExpectedError { get; set; } = string.Empty;
+}
+
+/// <summary>What one refused build reports, at the level the reader works at.</summary>
+internal sealed class DiagnosticsFixture
+{
+    /// <summary>A payload the SLEF reader refuses before a build is built at all.</summary>
+    public SlefDiagnosticCaseFixture Slef { get; set; } = new();
+
+    /// <summary>An article too large for the mount it is fitted to.</summary>
+    public LoadoutDiagnosticCaseFixture Loadout { get; set; } = new();
+
+    /// <summary>A hatch every hull carries, fitted a second time to an optional mount.</summary>
+    public LoadoutDiagnosticCaseFixture BuiltInHullModuleLoadout { get; set; } = new();
+
+    /// <summary>A hatch one hull family carries, fitted a second time to an optional mount.</summary>
+    public HullSpecificHatchFixture HullSpecificHullModuleLoadout { get; set; } = new();
+
+    /// <summary>An article sold for one hull, fitted to another.</summary>
+    public LoadoutDiagnosticCaseFixture RestrictedLoadout { get; set; } = new();
+}
+
+/// <summary>One payload the SLEF reader refuses, and the field it names.</summary>
+internal sealed class SlefDiagnosticCaseFixture
+{
+    public JsonElement Input { get; set; }
+
+    public SlefDiagnosticFixture Expected { get; set; } = new();
+}
+
+/// <summary>The field a refused payload is refused on.</summary>
+internal sealed class SlefDiagnosticFixture
+{
+    public string Code { get; set; } = string.Empty;
+
+    /// <summary>Where in the payload the field sits.</summary>
+    public string Path { get; set; } = string.Empty;
+
+    /// <summary>The rule the field breaks.</summary>
+    public string Constraint { get; set; } = string.Empty;
+}
+
+/// <summary>One build a validation refuses, and the finding it reports.</summary>
+internal sealed class LoadoutDiagnosticCaseFixture
+{
+    public JsonElement Input { get; set; }
+
+    /// <summary>The mount a read keeps filled, where the case states one.</summary>
+    public KeptModuleFixture? Kept { get; set; }
+
+    public LoadoutDiagnosticFixture Expected { get; set; } = new();
+}
+
+/// <summary>A mount a read leaves filled, and what the read reported doing.</summary>
+internal sealed class KeptModuleFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    public List<ImportOutcomeFixture> ImportOutcomes { get; set; } = [];
+}
+
+/// <summary>The finding one refused build reports, and every figure it quotes.</summary>
+internal sealed class LoadoutDiagnosticFixture
+{
+    public string Code { get; set; } = string.Empty;
+
+    public LoadoutDiagnosticParamsFixture Params { get; set; } = new();
+}
+
+/// <summary>The figures a finding quotes, which a caller composes its own text from.</summary>
+internal sealed class LoadoutDiagnosticParamsFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    /// <summary>Why the article does not fit.</summary>
+    public string Constraint { get; set; } = string.Empty;
+
+    public int? ModuleClass { get; set; }
+
+    public int? SlotSize { get; set; }
+
+    /// <summary>The hulls a restricted article is sold for, by name.</summary>
+    public List<string>? AllowedShipNames { get; set; }
+
+    /// <summary>The same hulls, by symbol.</summary>
+    public List<string>? AllowedShipSymbols { get; set; }
+
+    /// <summary>The hull being fitted.</summary>
+    public string? ShipSymbol { get; set; }
+}
+
+/// <summary>A hatch one hull family carries, fitted a second time.</summary>
+/// <remarks>
+/// The catalogue carries such a hatch once for every hull family that names its own, so a
+/// read empties the second mount rather than reporting the build invalid.
+/// </remarks>
+internal sealed class HullSpecificHatchFixture
+{
+    public JsonElement Input { get; set; }
+
+    /// <summary>The mount the read empties, and what it reported doing.</summary>
+    public EmptiedModuleFixture Emptied { get; set; } = new();
+
+    /// <summary>The hatch the hull family names.</summary>
+    public string HatchSymbol { get; set; } = string.Empty;
+
+    /// <summary>Whether the read build is valid once the second mount is empty.</summary>
+    public bool Valid { get; set; }
+}
+
+/// <summary>A mount a read empties, and what the read reported doing.</summary>
+internal sealed class EmptiedModuleFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public List<ImportOutcomeFixture> ImportOutcomes { get; set; } = [];
+}
+
+/// <summary>One-per-ship families, and the finding a second one reports.</summary>
+internal sealed class ExclusivityFixture
+{
+    public string Group { get; set; } = string.Empty;
+
+    public string ExpectedCode { get; set; } = string.Empty;
+}
+
+/// <summary>Thrusters rated below what the ship weighs, load by load.</summary>
+internal sealed class ThrusterMassFixture
+{
+    public ThrusterMassInputFixture Input { get; set; } = new();
+
+    public List<ThrusterMassCaseFixture> Cases { get; set; } = [];
+
+    /// <summary>Ship weights the same thrusters carry at every load, so nothing is reported.</summary>
+    public List<ThrusterMassLoadFixture> Quiet { get; set; } = [];
+}
+
+/// <summary>The thrusters the cases are measured against.</summary>
+internal sealed class ThrusterMassInputFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    /// <summary>What the thrusters are rated to move, in tonnes.</summary>
+    public double ThrusterMaxMass { get; set; }
+}
+
+/// <summary>One ship weight, and the load at which the thrusters give out.</summary>
+internal sealed class ThrusterMassCaseFixture
+{
+    public string Name { get; set; } = string.Empty;
+
+    public ThrusterMassLoadFixture Mass { get; set; } = new();
+
+    /// <summary>The finding, or nothing where the thrusters carry every load.</summary>
+    public ThrusterMassIssueFixture? ExpectedIssue { get; set; }
+}
+
+/// <summary>What the ship weighs, empty and at each thing it carries.</summary>
+internal sealed class ThrusterMassLoadFixture
+{
+    public double Dry { get; set; }
+
+    /// <summary>The main tank, which a load that carries none leaves out.</summary>
+    public double Fuel { get; set; }
+
+    /// <summary>The hold, which a load that carries none leaves out.</summary>
+    public double Cargo { get; set; }
+}
+
+/// <summary>The finding one overloaded set of thrusters reports.</summary>
+internal sealed class ThrusterMassIssueFixture
+{
+    public string Code { get; set; } = string.Empty;
+
+    public string Severity { get; set; } = string.Empty;
+
+    public string Message { get; set; } = string.Empty;
+
+    public ThrusterMassParamsFixture Params { get; set; } = new();
+}
+
+/// <summary>The figures an overload finding quotes.</summary>
+internal sealed class ThrusterMassParamsFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    /// <summary>The lightest load the thrusters cannot move.</summary>
+    public string Load { get; set; } = string.Empty;
+
+    public double Mass { get; set; }
+
+    public double MaxMass { get; set; }
 }
 
 /// <summary>One build a metrics view reads for its speed and handling.</summary>
@@ -733,6 +961,12 @@ internal sealed class DistributorFixture
 /// <summary>One build a metrics view reads its distributor from.</summary>
 internal sealed class DistributorFacadeFixture
 {
+    /// <summary>What an absent build means here, in the fixture's own words.</summary>
+    public string? NullLoadoutsNote { get; set; }
+
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     /// <summary>The capture the build is read from.</summary>
     public JsonElement Loadout { get; set; }
 
@@ -806,4 +1040,22 @@ internal sealed class DistributorPipsFixture
     public double Engines { get; set; }
 
     public double Weapons { get; set; }
+}
+
+/// <summary>The finding an over-filled per-ship count family reports.</summary>
+internal sealed class ModuleLimitIssueFixture
+{
+    public string Code { get; set; } = string.Empty;
+
+    public ModuleLimitIssueParamsFixture Params { get; set; } = new();
+}
+
+/// <summary>The figures an over-filled family quotes.</summary>
+internal sealed class ModuleLimitIssueParamsFixture
+{
+    public string Group { get; set; } = string.Empty;
+
+    public int Count { get; set; }
+
+    public int Limit { get; set; }
 }

@@ -109,6 +109,29 @@ public class LoadoutImportTests
         }
     }
 
+    /// <summary>A build made of the read modules answers the figures the fixture states.</summary>
+    /// <remarks>
+    /// The capture is thin enough that import fills ten mounts from the hull's own
+    /// defaults. What those defaults add up to is the parity case: a capture this sparse
+    /// still reads as a build that flies.
+    /// </remarks>
+    [Fact]
+    public void AReadBuildWeighsAndHoldsWhatTheFixtureStates()
+    {
+        ImportExpectationFixture expected = Fixture.ImportNormalization.Expected;
+        ShipLoadout build = ShipLoadout.FromLoadout(
+            Fixture.ImportNormalization.Input.Deserialize<LoadoutEvent>(JournalOptions)!);
+
+        Assert.Equal(expected.UnladenMass, build.UnladenMass, 6);
+        Assert.Equal(expected.CargoCapacity, build.CargoCapacity);
+        Assert.Equal(expected.PassengerCapacity, build.PassengerCapacity);
+        Assert.Equal(expected.FuelCapacity.Main, build.FuelCapacity.Main);
+        Assert.Equal(expected.FuelCapacity.Reserve, build.FuelCapacity.Reserve);
+        Assert.Equal(expected.ModulesValue, build.ModulesValue);
+        Assert.Equal(expected.Rebuy, build.Rebuy);
+        Assert.Equal(expected.Complete, build.Validation().Complete);
+    }
+
     [Fact]
     public void AnImportReportsNoChangeTheFixtureDoesNotState()
     {

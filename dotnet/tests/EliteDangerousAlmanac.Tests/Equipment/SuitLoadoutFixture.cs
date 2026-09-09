@@ -93,6 +93,9 @@ internal sealed class CaptureWeaponFixture
 /// <summary>One event a read passes an entry over on.</summary>
 internal sealed class ImportCaseFixture
 {
+    /// <summary>The game's own identifier for each fitted weapon, in mount order.</summary>
+    public List<long?> ModuleIds { get; set; } = [];
+
     /// <summary>The event, as the journal states it.</summary>
     public JsonElement Event { get; set; }
 
@@ -119,6 +122,9 @@ internal sealed class ImportOutcomeFixture
 /// <summary>One event a read refuses altogether.</summary>
 internal sealed class RefusalFixture
 {
+    /// <summary>The refusal the reference implementation writes.</summary>
+    public string Message { get; set; } = string.Empty;
+
     /// <summary>The event, as the journal states it.</summary>
     public JsonElement Event { get; set; }
 }

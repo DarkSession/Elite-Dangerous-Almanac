@@ -134,5 +134,32 @@ internal sealed class DiagnosticMessageFixture
 /// <summary>The message a finding carries.</summary>
 internal sealed class DiagnosticFixture
 {
+    /// <summary>The figures the message is composed from.</summary>
+    public DiagnosticParamsFixture? Params { get; set; }
+
+    /// <summary>Where in a refused payload the field sits.</summary>
+    public string? Path { get; set; }
+
+    /// <summary>The rule the field breaks.</summary>
+    public string? Constraint { get; set; }
+
+    /// <summary>Which entry of a multi-build export the finding is about.</summary>
+    public int? Index { get; set; }
+
+    /// <summary>The figure the finding is about, where the finding names one.</summary>
+    public string? Field { get; set; }
+
+    /// <summary>How badly the finding bears on the build.</summary>
+    public string Severity { get; set; } = string.Empty;
+
+    /// <summary>The code the reader keys the message by.</summary>
+    public string Code { get; set; } = string.Empty;
+
     public string Message { get; set; } = string.Empty;
+}
+
+/// <summary>The figures one finding's message is composed from.</summary>
+internal sealed class DiagnosticParamsFixture
+{
+    public string? Slot { get; set; }
 }

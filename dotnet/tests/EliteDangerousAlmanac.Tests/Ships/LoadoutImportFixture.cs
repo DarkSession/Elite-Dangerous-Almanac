@@ -7,6 +7,9 @@ namespace EliteDangerousAlmanac.Tests.Ships;
 /// <summary>The part of <c>fixtures/ships/slef-export.jsonc</c> that pins an import.</summary>
 internal sealed class LoadoutExportFixture
 {
+    /// <summary>The SLEF engineering block that states no modifiers at all.</summary>
+    public EngineeringWithoutModifiersFixture EngineeringWithoutModifiers { get; set; } = new();
+
     /// <summary>The share of the hull and module prices a rebuy costs.</summary>
     public double RebuyFraction { get; set; }
 
@@ -36,6 +39,12 @@ internal sealed class LoadoutExportFixture
 /// <summary>One captured build, and what a read of it answers.</summary>
 internal sealed class BuildCaseFixture
 {
+    /// <summary>What the capture says the loaded weapons hold.</summary>
+    public CaptureAmmunitionFixture? Ammunition { get; set; }
+
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     /// <summary>The capture's own fixture path.</summary>
     public string Build { get; set; } = string.Empty;
 
@@ -93,6 +102,9 @@ internal sealed class RecomputedFiguresFixture
 /// <summary>The capture's own physical figures, which it rounds.</summary>
 internal sealed class JournalToleranceFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public double? UnladenMass { get; set; }
 
     public double? MaxJumpRange { get; set; }
@@ -101,6 +113,24 @@ internal sealed class JournalToleranceFixture
 /// <summary>What the capture paid.</summary>
 internal sealed class DiscountFixture
 {
+    /// <summary>The rebuy the capture's own figures work out to, where it can be worked out.</summary>
+    public double? RebuyFromOwnFigures { get; set; }
+
+    /// <summary>The mounts the capture gave a price, where the case counts them.</summary>
+    public int? PricedInSource { get; set; }
+
+    /// <summary>How near two credit figures must be to read as the same discount.</summary>
+    public double? ModuleDiscountToleranceCr { get; set; }
+
+    /// <summary>The bare hull, which is the figure this library quotes.</summary>
+    public double? HullCost { get; set; }
+
+    /// <summary>The hull with its stock fittings, which is the figure the journal quotes.</summary>
+    public double? HullRetailCost { get; set; }
+
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public double? SourceHullValue { get; set; }
 
     public double? SourceModulesValue { get; set; }
@@ -116,6 +146,9 @@ internal sealed class DiscountFixture
 /// <summary>One edit made to a read build, and the figures the edit produces.</summary>
 internal sealed class AfterEditFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public string Slot { get; set; } = string.Empty;
 
     public string Item { get; set; } = string.Empty;
@@ -128,6 +161,9 @@ internal sealed class AfterEditFixture
 /// <summary>A build put together from a stock hull and named modules.</summary>
 internal sealed class AssembledFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public string Ship { get; set; } = string.Empty;
 
     /// <summary>The modules to fit, keyed by mount.</summary>
@@ -143,6 +179,9 @@ internal sealed class AssembledFixture
     /// <summary>The modules an export writes.</summary>
     public List<JsonElement> Modules { get; set; } = [];
 
+    /// <summary>Why each module carries its own price, in the fixture's own words.</summary>
+    public string? ValueNote { get; set; }
+
     /// <summary>The modules an export writes when asked to state the power of each.</summary>
     public List<JsonElement> ModulesWithExplicitPower { get; set; } = [];
 }
@@ -150,6 +189,9 @@ internal sealed class AssembledFixture
 /// <summary>The capture fields a durable build drops.</summary>
 internal sealed class JournalFieldExclusionsFixture
 {
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     /// <summary>The capture whose top-level fields are dropped.</summary>
     public string TopLevelBuild { get; set; } = string.Empty;
 
@@ -184,6 +226,29 @@ internal sealed class ImportExpectationFixture
 
     /// <summary>The rebuy, absent where the import invalidated it.</summary>
     public double? Rebuy { get; set; }
+
+    /// <summary>The mass a build made of the read modules weighs, in tonnes.</summary>
+    public double UnladenMass { get; set; }
+
+    /// <summary>The cargo the same build holds, in tonnes.</summary>
+    public double CargoCapacity { get; set; }
+
+    /// <summary>The passengers the same build carries.</summary>
+    public double PassengerCapacity { get; set; }
+
+    /// <summary>The fuel the same build holds.</summary>
+    public FuelCapacityFixture FuelCapacity { get; set; } = new();
+
+    /// <summary>Whether the read build fills every mount it needs to fly.</summary>
+    public bool Complete { get; set; }
+}
+
+/// <summary>The fuel one build holds, in tonnes.</summary>
+internal sealed class FuelCapacityFixture
+{
+    public double Main { get; set; }
+
+    public double Reserve { get; set; }
 }
 
 /// <summary>One mount an import leaves filled.</summary>
@@ -215,6 +280,12 @@ internal sealed class ImportOutcomeFixture
 /// <summary>How an import classifies a mount key.</summary>
 internal sealed class ClassificationFixture
 {
+    /// <summary>Whether the patterns are matched against a lower-cased slot key.</summary>
+    public bool PatternsMatchLowerCasedSlot { get; set; }
+
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
     public List<string> OutfittingSlotPatterns { get; set; } = [];
 
     public string NonOutfittingSlotPattern { get; set; } = string.Empty;
@@ -225,9 +296,59 @@ internal sealed class ClassificationFixture
 /// <summary>One worked classification, and the reading it gets.</summary>
 internal sealed class ClassificationExampleFixture
 {
+    /// <summary>Why the entry is read that way, in the fixture's own words.</summary>
+    public string? Why { get; set; }
+
     public string Slot { get; set; } = string.Empty;
 
     public string Item { get; set; } = string.Empty;
 
     public string Verdict { get; set; } = string.Empty;
+}
+
+/// <summary>What a SLEF engineering block with no modifiers array means.</summary>
+/// <remarks>
+/// The format asks only for the ship, the modules, and each module's mount and article.
+/// The specification's own example carries an engineering block with a recipe, a grade, a
+/// quality and an experimental effect, and no modifiers. A reader that insists on modifiers
+/// cannot read the format it implements.
+/// </remarks>
+internal sealed class EngineeringWithoutModifiersFixture
+{
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
+    /// <summary>Whether a reader may insist on a modifiers array.</summary>
+    public bool ModifiersRequired { get; set; }
+
+    /// <summary>Whether an export writes an empty modifiers array where the source stated none.</summary>
+    public bool ExportInventsEmptyArray { get; set; }
+}
+
+/// <summary>What one capture says its loaded weapons hold.</summary>
+/// <remarks>
+/// A capture reports a rearm state, and a build carries none: what a weapon can hold is
+/// reported from the catalogue instead. The two agree here because both weapons were at
+/// capacity when the capture was taken, which makes the capture an outside reading of the
+/// catalogue's magazine and reserve.
+/// </remarks>
+internal sealed class CaptureAmmunitionFixture
+{
+    /// <summary>What the case is about, in the fixture's own words.</summary>
+    public string? Note { get; set; }
+
+    /// <summary>The weapons that were carrying ammunition when the capture was taken.</summary>
+    public List<LoadedWeaponFixture> Loaded { get; set; } = [];
+}
+
+/// <summary>One loaded weapon, as the capture reports it.</summary>
+internal sealed class LoadedWeaponFixture
+{
+    public string Symbol { get; set; } = string.Empty;
+
+    /// <summary>The rounds in the magazine.</summary>
+    public double AmmoInClip { get; set; }
+
+    /// <summary>The rounds in the reserve, which excludes the magazine.</summary>
+    public double AmmoInHopper { get; set; }
 }
