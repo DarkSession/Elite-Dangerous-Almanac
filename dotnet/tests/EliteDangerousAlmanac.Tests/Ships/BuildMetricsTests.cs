@@ -530,4 +530,34 @@ public class BuildMetricsTests
         Assert.Equal(0, capacitor.SustainedEnergyPerSecond);
         Assert.Equal(double.PositiveInfinity, capacitor.TimeToDrain);
     }
+    [Fact]
+    public void AnUnpoweredBoosterLeavesTheBonusToWhateverElseTheBuildCarries()
+    {
+        // A capture is free to state two boosters: a read fills the mounts a capture
+        // names rather than enforcing the one-per-ship rule the shop applies.
+        ShipLoadout build = ShipLoadout.FromLoadout(new LoadoutEvent(
+            "Anaconda",
+            [
+                new LoadoutModule("Slot02_Size6", "Int_GuardianFSDBooster_Size5") { On = false },
+                new LoadoutModule("Slot03_Size6", "Int_GuardianFSDBooster_Size5") { On = true },
+            ]));
+
+        double running = ModuleCatalogue
+            .FindBySymbol("Int_GuardianFSDBooster_Size5")!.Stats[ModuleStat.JumpBoost]!.Value;
+
+        // The booster that is switched off supplies nothing. The one that is running
+        // still supplies its whole bonus.
+        Assert.Equal(running, BuildMetrics.Of(build).FrameShiftDrive().JumpBoost);
+    }
+
+    [Fact]
+    public void ABuildWhoseOnlyBoosterIsOffCarriesNoBonus()
+    {
+        ShipLoadout build = ShipLoadout.FromLoadout(new LoadoutEvent(
+            "Anaconda",
+            [new LoadoutModule("Slot02_Size6", "Int_GuardianFSDBooster_Size5") { On = false }]));
+
+        Assert.Equal(0, BuildMetrics.Of(build).FrameShiftDrive().JumpBoost);
+    }
+
 }

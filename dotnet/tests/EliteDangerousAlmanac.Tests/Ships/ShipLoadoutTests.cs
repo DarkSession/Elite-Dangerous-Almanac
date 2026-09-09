@@ -479,4 +479,31 @@ public class ShipLoadoutTests
             }
         }
     }
+    [Fact]
+    public void EveryLoadedWeaponWasCapturedSittingAtTheCapacityTheCatalogueGivesIt()
+    {
+        BuildCaseFixture stated = Fixture.PythonMkII;
+        LoadoutEvent capture = Capture(stated.Build);
+        ShipLoadout build = ShipLoadout.FromLoadout(capture);
+
+        Assert.NotEmpty(stated.Ammunition!.Loaded);
+        foreach (LoadedWeaponFixture loaded in stated.Ammunition.Loaded)
+        {
+            // The rounds themselves are read off the capture. A rearm state is not part of
+            // a build, so a fitted module carries no count of what was loaded.
+            LoadoutModule armed = Assert.Single(
+                capture.Modules,
+                module => string.Equals(
+                    module.Item, loaded.Symbol, StringComparison.OrdinalIgnoreCase));
+
+            // Both weapons were at capacity, so what the game reported loaded is an outside
+            // reading of the magazine and the reserve the catalogue gives them.
+            AmmunitionCapacity capacity = build.FittedModuleAt(armed.Slot)!.Ammunition!;
+            Assert.Equal(loaded.AmmoInClip, capacity.ClipSize);
+            Assert.Equal(loaded.AmmoInHopper, capacity.Hopper);
+            Assert.Equal(loaded.AmmoInClip + loaded.AmmoInHopper, capacity.Total);
+            Assert.False(capacity.Unlimited);
+        }
+    }
+
 }

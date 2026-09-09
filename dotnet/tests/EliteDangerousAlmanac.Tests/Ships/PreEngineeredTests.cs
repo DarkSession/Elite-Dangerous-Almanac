@@ -287,12 +287,26 @@ public class PreEngineeredTests
                 festive.Resolved.BaseDamage,
                 ModuleCatalogue.FindBySymbol(festive.Symbol)!.Stats[ModuleStat.Damage]!.Value,
                 6);
+            OutfittingModule resolved = PreEngineeredStats.Resolve(variant)!;
+            Assert.Equal(festive.Resolved.Damage, resolved.Stats[ModuleStat.Damage]!.Value, 6);
+
+            // The article fires twice a second, so its damage a second is half its round.
+            WeaponMetrics metrics = Weapons.Metrics(WeaponStats.FromModule(resolved));
+            Assert.Equal(festive.Resolved.DamagePerSecond, metrics.DamagePerSecond, 6);
+
+            // The panel rounds all three, and the round-up is what puts a hundredth of the
+            // stock article on a screen that would otherwise show nothing at all.
+            FestivePanelFixture panel = festive.Resolved.Panel;
             Assert.Equal(
-                festive.Resolved.Damage,
-                PreEngineeredStats.Resolve(variant)!.Stats[ModuleStat.Damage]!.Value,
-                6);
+                panel.Percent, Math.Round(festive.Modifier.Value * 100, MidpointRounding.AwayFromZero));
+            Assert.Equal(panel.Damage, Rounded(resolved.Stats[ModuleStat.Damage]!.Value, 1));
+            Assert.Equal(panel.DamagePerSecond, Rounded(metrics.DamagePerSecond, 1));
         }
     }
+
+    /// <summary>One figure at the decimal places the outfitting panel writes it with.</summary>
+    private static double Rounded(double value, int places) =>
+        Math.Round(value, places, MidpointRounding.AwayFromZero);
 
     [Theory]
     [MemberData(nameof(BakedEffects))]
@@ -387,6 +401,106 @@ public class PreEngineeredTests
         {
             Assert.Equal(expected.Unresolved, PreEngineeredStats.UnresolvedLabels(variant));
         }
+
+        AssertPanel(expected, stock, resolved);
+    }
+
+    /// <summary>
+    /// The article as the outfitting panel shows it: each figure at the precision the panel
+    /// writes it with, and the change beside it against the stock article.
+    /// </summary>
+    private static void AssertPanel(
+        ResolvedVariantFixture expected, OutfittingModule stock, OutfittingModule resolved)
+    {
+        if (expected.Displayed is DisplayedPanelFixture panel)
+        {
+            AssertReading(panel.Mass, resolved, ModuleStat.Mass);
+            AssertReading(panel.PowerDraw, resolved, ModuleStat.PowerDraw);
+            AssertReading(panel.DistributorDraw, resolved, ModuleStat.DistributorDraw);
+            AssertReading(panel.ThermalLoad, resolved, ModuleStat.ThermalLoad);
+            AssertReading(panel.ArmourPiercing, resolved, ModuleStat.ArmourPiercing);
+            AssertReading(panel.MaximumRange, resolved, ModuleStat.MaximumRange);
+            AssertReading(panel.ShotSpeed, resolved, ModuleStat.ShotSpeed);
+            AssertReading(panel.Jitter, resolved, ModuleStat.Jitter);
+            AssertReading(panel.FalloffRange, resolved, ModuleStat.FalloffRange);
+            AssertReading(panel.Damage, resolved, ModuleStat.Damage);
+            AssertReading(panel.RateOfFire, resolved, ModuleStat.RateOfFire);
+            AssertReading(panel.ClipSize, resolved, ModuleStat.ClipSize);
+            AssertReading(panel.AmmoMaximum, resolved, ModuleStat.AmmoMaximum);
+
+            if (panel.DamagePerSecond is PanelReading rate)
+            {
+                WeaponStats firepower = WeaponStats.FromModule(resolved);
+                WeaponMetrics metrics = Weapons.Metrics(firepower);
+                Assert.True(
+                    rate.Matches(metrics.DamagePerSecond),
+                    $"The panel shows {rate} a second, and the article deals {metrics.DamagePerSecond}.");
+            }
+
+            if (panel.DamageType is string type)
+            {
+                Assert.Equal(type, DominantDamageType(resolved));
+            }
+        }
+
+        if (expected.DisplayedChanges is not DisplayedChangesFixture changes) return;
+
+        AssertPercent(changes.MassPercent, stock, resolved, ModuleStat.Mass);
+        AssertPercent(changes.PowerDrawPercent, stock, resolved, ModuleStat.PowerDraw);
+        AssertPercent(
+            changes.DistributorDrawPercent, stock, resolved, ModuleStat.DistributorDraw);
+        AssertPercent(changes.ThermalLoadPercent, stock, resolved, ModuleStat.ThermalLoad);
+        AssertPercent(changes.ArmourPiercingPercent, stock, resolved, ModuleStat.ArmourPiercing);
+        AssertPercent(changes.MaximumRangePercent, stock, resolved, ModuleStat.MaximumRange);
+        AssertPercent(changes.ShotSpeedPercent, stock, resolved, ModuleStat.ShotSpeed);
+        AssertPercent(changes.FalloffRangePercent, stock, resolved, ModuleStat.FalloffRange);
+
+        // Jitter is a spread in degrees, so the panel states the difference rather than a
+        // proportion.
+        Assert.Equal(
+            changes.JitterDegrees,
+            resolved.Stats[ModuleStat.Jitter]!.Value - stock.Stats[ModuleStat.Jitter]!.Value,
+            6);
+    }
+
+    private static void AssertReading(
+        PanelReading? shown, OutfittingModule resolved, ModuleStat stat)
+    {
+        if (shown is not PanelReading reading) return;
+
+        double carried = resolved.Stats[stat]!.Value;
+        Assert.True(
+            reading.Matches(carried),
+            $"The panel shows {stat} as {reading}, and the article carries {carried}.");
+    }
+
+    /// <summary>The change the panel writes beside one stat, to one decimal place.</summary>
+    private static void AssertPercent(
+        double shown, OutfittingModule stock, OutfittingModule resolved, ModuleStat stat)
+    {
+        double moved = resolved.Stats[stat]!.Value / stock.Stats[stat]!.Value;
+        Assert.Equal(shown, Math.Round((moved - 1) * 1000, MidpointRounding.AwayFromZero) / 10, 6);
+    }
+
+    /// <summary>The damage type the panel names, which is the one the round deals most of.</summary>
+    private static string DominantDamageType(OutfittingModule resolved)
+    {
+        DamageDistribution split = resolved.DamageDistribution!;
+        (string Name, double Share)[] shares =
+        [
+            ("Kinetic", split.Kinetic ?? 0),
+            ("Thermal", split.Thermal ?? 0),
+            ("Explosive", split.Explosive ?? 0),
+            ("Absolute", split.Absolute ?? 0),
+        ];
+
+        (string Name, double Share) best = shares[0];
+        foreach ((string Name, double Share) candidate in shares)
+        {
+            if (candidate.Share > best.Share) best = candidate;
+        }
+
+        return best.Name;
     }
 
     [Fact]

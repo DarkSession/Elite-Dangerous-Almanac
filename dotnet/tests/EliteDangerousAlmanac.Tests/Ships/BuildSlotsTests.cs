@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EliteDangerousAlmanac.Ships;
@@ -119,6 +120,48 @@ public class BuildSlotsTests
                 .Enumerate(ShipCatalogue.FindSlots(expected.Ship)!)
                 .Single(candidate => candidate.Key == expected.Slot);
             AssertRestriction(expected.Restriction, slot.Restriction);
+        }
+    }
+
+    [Fact]
+    public void EveryRestrictedMountTakesAndRefusesWhatTheFixturePins()
+    {
+        // Which families a restriction takes is a fact about the game rather than about
+        // one implementation, so the fixture pins it for every language.
+        foreach (SlotRestrictionFixture expected in Fixture.Restrictions)
+        {
+            ShipLoadout build = ShipLoadout.Empty(expected.Ship);
+
+            // Resolve every symbol first, so a typo in the fixture fails loudly rather
+            // than quietly retiring the case it was written for.
+            foreach (string symbol in expected.Accepts.Concat(expected.Rejects))
+            {
+                Assert.True(
+                    ModuleCatalogue.FindBySymbol(symbol) is not null,
+                    $"The catalogue holds no module \"{symbol}\".");
+            }
+
+            foreach (string symbol in expected.Accepts)
+            {
+                build.SetModule(expected.Slot, ModuleCatalogue.FindBySymbol(symbol)!);
+            }
+
+            foreach (string symbol in expected.Rejects)
+            {
+                Assert.ThrowsAny<Exception>(
+                    () => build.SetModule(expected.Slot, ModuleCatalogue.FindBySymbol(symbol)!));
+            }
+
+            // The offer and the fit check must agree, or an outfitting screen shows a
+            // module the fit check then refuses.
+            HashSet<string> offered = [];
+            foreach (OutfittingModule module in build.ModulesForSlot(expected.Slot))
+            {
+                offered.Add(module.Symbol);
+            }
+
+            foreach (string symbol in expected.Accepts) Assert.Contains(symbol, offered);
+            foreach (string symbol in expected.Rejects) Assert.DoesNotContain(symbol, offered);
         }
     }
 

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Text.Json;
+using EliteDangerousAlmanac.Tests.Support;
 
 namespace EliteDangerousAlmanac.Tests.Ships;
 
@@ -252,10 +252,10 @@ internal sealed class ResolvedVariantFixture
     public string? Note { get; set; }
 
     /// <summary>The same article as the outfitting panel shows it, rounded the way it rounds.</summary>
-    public Dictionary<string, JsonElement>? Displayed { get; set; }
+    public DisplayedPanelFixture? Displayed { get; set; }
 
     /// <summary>The percentage changes the panel writes beside each moved stat.</summary>
-    public Dictionary<string, double>? DisplayedChanges { get; set; }
+    public DisplayedChangesFixture? DisplayedChanges { get; set; }
 
     public string Symbol { get; set; } = string.Empty;
 
@@ -403,4 +403,69 @@ internal sealed class OmittedBakedEffectFixture
 
     /// <summary>What the case proves, in the fixture's own words.</summary>
     public string? Note { get; set; }
+}
+
+/// <summary>One article as its outfitting panel shows it.</summary>
+/// <remarks>
+/// Each figure carries the decimal places the fixture writes it with, so a reading is
+/// compared at the precision the panel shows rather than at the precision it is computed to.
+/// </remarks>
+internal sealed class DisplayedPanelFixture
+{
+    public PanelReading? Mass { get; set; }
+
+    public PanelReading? PowerDraw { get; set; }
+
+    public PanelReading? DistributorDraw { get; set; }
+
+    public PanelReading? ThermalLoad { get; set; }
+
+    public PanelReading? ArmourPiercing { get; set; }
+
+    public PanelReading? MaximumRange { get; set; }
+
+    public PanelReading? ShotSpeed { get; set; }
+
+    public PanelReading? Jitter { get; set; }
+
+    public PanelReading? FalloffRange { get; set; }
+
+    public PanelReading? DamagePerSecond { get; set; }
+
+    public PanelReading? Damage { get; set; }
+
+    public PanelReading? RateOfFire { get; set; }
+
+    public PanelReading? ClipSize { get; set; }
+
+    public PanelReading? AmmoMaximum { get; set; }
+
+    /// <summary>The damage type the panel names.</summary>
+    public string? DamageType { get; set; }
+}
+
+/// <summary>The changes the panel writes beside each stat one article moves.</summary>
+/// <remarks>
+/// A percentage is written to one decimal place. Jitter is the one change the panel states
+/// as a difference in degrees rather than as a proportion.
+/// </remarks>
+internal sealed class DisplayedChangesFixture
+{
+    public double MassPercent { get; set; }
+
+    public double PowerDrawPercent { get; set; }
+
+    public double DistributorDrawPercent { get; set; }
+
+    public double ThermalLoadPercent { get; set; }
+
+    public double ArmourPiercingPercent { get; set; }
+
+    public double MaximumRangePercent { get; set; }
+
+    public double ShotSpeedPercent { get; set; }
+
+    public double JitterDegrees { get; set; }
+
+    public double FalloffRangePercent { get; set; }
 }

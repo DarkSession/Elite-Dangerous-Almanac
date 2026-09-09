@@ -90,7 +90,7 @@ public enum MaterialLine
 
 /// <summary>Reads and writes the in-game spelling of a <see cref="MaterialLine"/>.</summary>
 /// <remarks>
-/// Four lines are two words in the game — mechanical components, emission data, wake
+/// Some lines are two words in the game — mechanical components, emission data, wake
 /// scans, shield data, encryption files, data archives and encoded firmware — so the
 /// member name and the in-game name differ. Use these members whenever a line has to
 /// reach a user interface or arrive from one.

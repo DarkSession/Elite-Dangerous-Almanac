@@ -555,7 +555,9 @@ public sealed partial class ShipLoadout
                 continue;
             }
 
-            if (module.On == false) return 0;
+            // An unpowered booster supplies nothing, so the scan carries on to whatever
+            // else the build holds rather than answering for the whole build.
+            if (module.On == false) continue;
             if (boost is not double bonus)
             {
                 throw new InvalidOperationException(string.Format(
