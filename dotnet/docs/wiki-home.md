@@ -34,15 +34,21 @@ JumpRangeSummary jump = metrics.JumpRangeSummary();
 
 - **[Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Getting-started)**
   — install, the namespaces, how a catalogue loads, and the first calls in each area.
+- **[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal)**
+  — turning `Loadout`, `SuitLoadout`, `FSDJump` and `Scan` events into library objects.
+- **[Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)**
+  — mounts, what fits, fitting it, and every metric a shipyard shows.
+- **[Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics)**
+  — how power, shields, armour, weapons, ammunition and range are computed.
+- **[Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Engineering)**
+  — what a recipe may go on, what it rolls, and what a roll costs.
+- **[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF)**
+  — reading and writing loadout exports, and retail against captured credits.
+- **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-sectors-and-regions)**
+  — the `id64` round trip, both coordinate spaces, and the four meanings of "region".
 - **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)**
   — `null` against the exceptions, and `CalculationResult<T>` for a build a metric cannot
   measure.
-
-The domain itself — how a build metric is computed, what an engineering roll costs, the
-four meanings of "region", how a SLEF payload is read — is explained once, on the
-[TypeScript guides](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript).
-Both packages implement the same behaviour against the same fixtures, so those pages
-describe this one too; only their examples are in the other language.
 
 ## The six namespaces
 

@@ -226,6 +226,16 @@ function matchingParen(text, open) {
   throw new Error(`unbalanced parentheses in "${text}"`);
 }
 
+/** The position of the `]` closing the `[` at `open`. */
+function matchingBracket(text, open) {
+  let depth = 0;
+  for (let index = open; index < text.length; index += 1) {
+    if (text[index] === "[") depth += 1;
+    else if (text[index] === "]" && --depth === 0) return index;
+  }
+  throw new Error(`unbalanced brackets in "${text}"`);
+}
+
 /** The generic parameters of `Name<T, TValue>`, and the name without them. */
 function splitGenerics(text) {
   const open = text.indexOf("<");
@@ -277,6 +287,24 @@ function parseMember(signature, terminator, owner, where) {
   );
   const cut = cutInitializer(rest);
   const declaration = cut.declaration.trim();
+
+  // An indexer is a property reached through a bracketed argument list rather than a
+  // name, so it is read like one and keeps the arguments that select the value.
+  const indexer = /\bthis\s*\[/.exec(declaration);
+  if (indexer) {
+    const open = indexer.index + indexer[0].length - 1;
+    return {
+      kind: "indexer",
+      name: "this[]",
+      type: declaration.slice(0, indexer.index).trim(),
+      parameters: parseParameterList(
+        declaration.slice(open + 1, matchingBracket(declaration, open)),
+        where,
+      ),
+      modifiers: found,
+    };
+  }
+
   const open = parameterListParen(declaration);
 
   if (open !== -1) {

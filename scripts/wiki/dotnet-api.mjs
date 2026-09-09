@@ -36,6 +36,7 @@ const memberSectionOrder = [
   ["constructor", "Constructors"],
   ["field", "Fields"],
   ["property", "Properties"],
+  ["indexer", "Indexers"],
   ["method", "Methods"],
   ["enum-member", "Enumeration Members"],
 ];
@@ -179,6 +180,10 @@ function signatureOf(member, type, index) {
       return `> ${lead}**${member.name}**${generics}${renderParameterNames(member.parameters)}: ${renderType(member.returnType, index)}`;
     case "property":
       return `> ${lead}**${member.name}**: ${renderType(member.type, index)}`;
+    case "indexer":
+      return `> ${lead}**this**\\[${member.parameters
+        .map((one) => `${renderType(one.type, index)} \`${one.name}\``)
+        .join(", ")}\\]: ${renderType(member.type, index)}`;
     case "field":
       return `> ${lead}**${member.name}**: ${renderType(member.type, index)}${
         member.value === null || member.value === undefined

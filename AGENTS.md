@@ -144,7 +144,9 @@ A provenance file answers "where did this value come from, and what was done to 
 
 Where an explanation spans several symbols and has nowhere obvious to live, it becomes a guide page under `typescript/docs/guides/`, which `typedoc.json` publishes to the wiki, as `Build-metrics.md` and `Engineering.md` do for the ships domain. Put it there rather than in a provenance file or on one symbol's page.
 
-**The domain is explained once, on the TypeScript surface.** Both implementations compute the same things against the same fixtures, so a second copy of "how a build metric is computed" would be a second thing to keep true. `dotnet/docs/guides/` carries only what is genuinely different in .NET — how the package is installed and how it fails — and the .NET surface page sends a reader to the TypeScript guides for the rest. Write a .NET guide when the .NET answer differs, never to restate a TypeScript one in another language.
+**Each surface is self-contained.** A .NET consumer never reads a TypeScript page to learn what the library does, so `dotnet/docs/guides/` carries the same set of guides as `typescript/docs/guides/`, in C#: the domain explained in the language the reader is writing, with that language's own types, exceptions and idioms. The two describe one behaviour, which the fixtures under `fixtures/` prove for both, so a change to what the library *does* is a change to both guides — write the second one at the same time, never as a follow-up. A cross-surface link says "the other package exists"; it never carries an explanation the reader needs.
+
+C# examples are checked without a compiler: `scripts/wiki/dotnet-examples.mjs` reads every ```csharp fence under `dotnet/docs/` and fails the build on a type or member the published surface does not carry. It cannot see a call on a local, so write an example whose static entry points state the names it should check, and keep every statement valid C# — a bare member access is a TypeScript idiom, not one that compiles here.
 
 ### Doc-generation toolchain
 

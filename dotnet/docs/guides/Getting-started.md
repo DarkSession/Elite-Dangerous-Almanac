@@ -122,11 +122,19 @@ rather than having one imposed on you.
 
 ## Where to go next
 
+- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal)
+  — `Loadout`, `SuitLoadout`, `FSDJump` and `Scan` as library objects.
+- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
+  — mounts, what fits, and every metric a shipyard shows.
+- [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics)
+  — power, shields, armour, weapons, heat, mass and range.
+- [Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Engineering)
+  — what a recipe may go on, what it rolls, and what a roll costs.
+- [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF)
+  — loadout exports, and retail against captured credits.
+- [Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-sectors-and-regions)
+  — the `id64` round trip and the four meanings of "region".
 - [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)
   — `null`, the exceptions, and `CalculationResult<T>`.
 - [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
   — every namespace, type and member.
-- The
-  [TypeScript guides](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
-  explain the domain itself — build metrics, engineering, SLEF, the four meanings of
-  "region" — once, for both packages. Only their examples are in the other language.

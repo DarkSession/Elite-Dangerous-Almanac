@@ -101,9 +101,10 @@ are what an application should branch on, and
 [DisplayText](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization.Class.DisplayText)
 turns one into a message when you want to show it.
 
-## The same model in TypeScript
+## Next
 
-The TypeScript package makes the same three distinctions with the shapes that language
-uses — `null`, `TypeError`/`RangeError`/`SyntaxError`, and a diagnostic result. Its
-[failure model guide](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-covers them.
+- [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics)
+  — which figures answer a `CalculationResult<T>`, and what each issue means.
+- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
+  — validation issues, and where each one belongs on a panel.
+- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)

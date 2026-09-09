@@ -70,8 +70,8 @@ The bulk data catalogues live on their own subpaths and are listed in full on th
 
 ## Writing C# instead?
 
-The same data and the same behaviour are published as a .NET package, with a reference and
-navigation of its own:
+The same data and the same behaviour are published as a .NET package, with guides, a
+reference and navigation of its own:
 **[the .NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)**.
 The names differ — each package is written the way its own language reads — but the
 behaviour does not, and the fixtures under `fixtures/` prove it for both.
