@@ -22,7 +22,12 @@ public sealed record CodexRegionBounds(double MinX, double MaxX, double MinZ, do
 
 /// <summary>One of the galaxy's codex regions.</summary>
 /// <param name="Id">The region's number, one through 42.</param>
-/// <param name="Name">The region name, such as <c>Inner Orion Spur</c>.</param>
+/// <param name="Name">
+/// The region name in English, such as <c>Inner Orion Spur</c>. For a player's own
+/// language, pass <c>Id</c> to
+/// <see cref="Localization.DisplayText.CodexRegionName"/>, which reads a separate
+/// catalogue.
+/// </param>
 /// <param name="Grayscale">The grey the region carries in the region map the data came from.</param>
 /// <param name="CellCount">How many cells of the region grid the region fills.</param>
 /// <param name="AreaLy2">About how much of the plane the region covers, in square light years.</param>

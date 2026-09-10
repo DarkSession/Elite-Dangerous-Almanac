@@ -89,7 +89,11 @@ export interface CodexRegionBounds {
 export interface CodexRegion {
     /** Region id, 1–42. Stable across releases; matches the codex region ordering. */
     readonly id: number;
-    /** Human-readable region name, e.g. `"Inner Orion Spur"`. */
+    /**
+     * Human-readable region name, e.g. `"Inner Orion Spur"`. This is the canonical
+     * English name. For a player's own language, pass the id to `getCodexRegionName`
+     * in `i18n/codex-regions`, which reads a separate catalogue.
+     */
     readonly name: string;
     /**
      * Grayscale value this region has in the upstream `RegionMap.png`

@@ -20,14 +20,14 @@ prove for each of them.
 Both packages carry every one. The table names each area by its TypeScript subpath and
 by its .NET namespace.
 
-| Area          | .NET namespace | Provides                                                                                                                                           |
-| ------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `astro`       | `Astronomy`    | Procedural system names, id64 addresses, sectors, regions, nebulae, permit locks and scanned-body physics                                          |
-| `ships`       | `Ships`        | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics                                                 |
-| `equipment`   | `Equipment`    | Odyssey personal suits, handheld weapons and their damage per second, suit tools, grade upgrades, engineer modifications and journal suit loadouts |
-| `i18n`        | `Localization` | Sparse localized names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and personal equipment           |
-| `materials`   | `Materials`    | Ship engineering materials and Odyssey micro resources                                                                                             |
-| `commodities` | `Commodities`  | Standard and rare market commodities                                                                                                               |
+| Area          | .NET namespace | Provides                                                                                                                                                         |
+| ------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `astro`       | `Astronomy`    | Procedural system names, id64 addresses, sectors, regions, nebulae, permit locks and scanned-body physics                                                        |
+| `ships`       | `Ships`        | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics                                                               |
+| `equipment`   | `Equipment`    | Odyssey personal suits, handheld weapons and their damage per second, suit tools, grade upgrades, engineer modifications and journal suit loadouts               |
+| `i18n`        | `Localization` | Sparse localized names and descriptions for modules, blueprints, effects, materials, micro resources, commodities, personal equipment and galactic codex regions |
+| `materials`   | `Materials`    | Ship engineering materials and Odyssey micro resources                                                                                                           |
+| `commodities` | `Commodities`  | Standard and rare market commodities                                                                                                                             |
 
 ## TypeScript package
 

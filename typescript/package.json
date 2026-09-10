@@ -211,6 +211,10 @@
             "types": "./dist/i18n/index.d.ts",
             "import": "./dist/i18n/index.js"
         },
+        "./i18n/codex-regions": {
+            "types": "./dist/i18n/codex-regions.d.ts",
+            "import": "./dist/i18n/codex-regions.js"
+        },
         "./i18n/blueprints": {
             "types": "./dist/i18n/blueprints.d.ts",
             "import": "./dist/i18n/blueprints.js"

@@ -93,3 +93,21 @@ e3-26` sits ≈6800 ly beyond every Bleia sphere, and `Praea Aec AA-A b1-1` sits
   approximate (≈49.35 ly grid resolution); coordinates are quantised to 1/64 ly.
 - **Grid mapping:** regions sit on a `4096 / 83` ly (≈49.3494 ly) grid over the galactic
   plane, origin corner at `(x0, y0, z0) = (-49985, -40985, -24105)` ly.
+- **Manual corrections:** one. Region 31 is stored as `The Formidine Rift`. The upstream
+  transcription drops the article, and the game's own codex English carries it
+  (§`data/i18n/SOURCES.md`, acquired 2026-09-10 UTC). The game is taken as authoritative
+  for a region name, because `RegionMap.png` reads the codex names rather than naming the
+  regions itself. The Veils, The Conduit, The Abyss and The Void keep their article
+  upstream, so this is a transcription slip and not an upstream naming choice. Every
+  other region name matches the game's English exactly.
+  - **A name lookup answers the game's spelling and not the transcription's.** Resolving
+    a region by the name `Formidine Rift` misses, where it hit before the correction.
+    That spelling is what the upstream catalogues carry, and it is also the game's own
+    Spanish, so a caller holding either has to pass `The Formidine Rift`. A region id is
+    unaffected, which is why `data/i18n/codex-region-names.jsonc` is keyed by id.
+- **The game's own region raster is not a second source for the geometry.** The codex
+  localisation table acquired for `data/i18n/codex-region-names.jsonc` also carries a
+  region raster and per-region border polygons. The raster reproduces
+  `galactic-region-cells.jsonc` cell for cell, so it confirms the upstream derivation
+  and adds nothing to it. The borders are that raster's outline on cell edges, which the
+  cells already state; they are not stored.

@@ -3,6 +3,7 @@ import { test } from 'node:test';
 
 import fixture from '../../../fixtures/i18n/names.jsonc' with { type: 'json' };
 import { getBlueprintName } from './blueprints.js';
+import { getCodexRegionName } from './codex-regions.js';
 import { getCommodityName } from './commodities.js';
 import { getExperimentalEffectName } from './experimental-effects.js';
 import { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
@@ -20,6 +21,7 @@ import { getSuitDescription, getSuitName } from './suits.js';
 
 type LookupKind =
     | 'module'
+    | 'codexRegion'
     | 'blueprint'
     | 'commodity'
     | 'experimentalEffect'
@@ -37,6 +39,9 @@ type NameLookup = (identifier: string, locale: string) => string | null;
 
 const LOOKUP_BY_KIND: Readonly<Record<LookupKind, NameLookup>> = {
     module: getModuleName,
+    // The region catalogue is keyed by a numeric id; the fixture states every identifier
+    // as a string, so this is the one lookup that converts.
+    codexRegion: (identifier, locale) => getCodexRegionName(Number(identifier), locale),
     blueprint: getBlueprintName,
     commodity: getCommodityName,
     experimentalEffect: getExperimentalEffectName,

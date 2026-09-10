@@ -8,11 +8,13 @@ import { test } from 'node:test';
 
 import standardCommoditiesData from '../../../data/commodities/commodities.jsonc' with { type: 'json' };
 import rareCommoditiesData from '../../../data/commodities/rare-commodities.jsonc' with { type: 'json' };
+import codexRegionsData from '../../../data/astro/galactic-regions.jsonc' with { type: 'json' };
 import modificationsData from '../../../data/equipment/modifications.jsonc' with { type: 'json' };
 import suitsData from '../../../data/equipment/suits.jsonc' with { type: 'json' };
 import toolsData from '../../../data/equipment/tools.jsonc' with { type: 'json' };
 import personalWeaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'json' };
 import blueprintNamesData from '../../../data/i18n/blueprint-names.jsonc' with { type: 'json' };
+import codexRegionNamesData from '../../../data/i18n/codex-region-names.jsonc' with { type: 'json' };
 import commodityNamesData from '../../../data/i18n/commodity-names.jsonc' with { type: 'json' };
 import effectNamesData from '../../../data/i18n/experimental-effect-names.jsonc' with { type: 'json' };
 import effectDescriptionsData from '../../../data/i18n/experimental-effect-descriptions.jsonc' with { type: 'json' };
@@ -48,6 +50,7 @@ import type { LocalizedNameCatalogue, LocalizedNameMap } from './internal/locali
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'blueprint-names.jsonc': 'localizedNameMap',
+    'codex-region-names.jsonc': 'localizedNameMap',
     'commodity-names.jsonc': 'localizedNameMap',
     'experimental-effect-names.jsonc': 'localizedNameMap',
     'experimental-effect-descriptions.jsonc': 'localizedNameMap',
@@ -197,6 +200,26 @@ test('English names and symbols stay aligned with both owning commodity catalogu
         Object.fromEntries(commodities.map(({ symbol, name }) => [symbol, name])),
     );
     assertCompleteDirectLocales(commodityNamesData as LocalizedNameMap, 'commodity-names.jsonc');
+});
+
+interface CodexRegionValue {
+    readonly id: number;
+    readonly name: string;
+}
+
+test('English names and ids stay aligned with the owning codex-region catalogue', () => {
+    const regions = codexRegionsData as readonly CodexRegionValue[];
+
+    // The catalogue is keyed by the region id, so the astro catalogue stays authoritative
+    // for canonical English and a corrected name cannot orphan its translations.
+    assertDirectEnglishNames(
+        codexRegionNamesData as LocalizedNameMap,
+        Object.fromEntries(regions.map(({ id, name }) => [String(id), name])),
+    );
+    assertCompleteDirectLocales(
+        codexRegionNamesData as LocalizedNameMap,
+        'codex-region-names.jsonc',
+    );
 });
 
 test('English names and symbols stay aligned with every owning materials catalogue', () => {

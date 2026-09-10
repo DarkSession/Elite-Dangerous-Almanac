@@ -12,7 +12,7 @@
 // than dropping out of the reference unannounced.
 
 import { readdir, readFile } from "node:fs/promises";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 
 const typeKeywords = new Set([
   "class",
@@ -652,14 +652,28 @@ function readTypeDeclaration(read, doc, namespace, path, line, where) {
   };
 }
 
-/** Every `.cs` file under a directory, in a stable order. */
+/**
+ * Every hand-written `.cs` file under a directory, in a stable order.
+ *
+ * `obj/` and `bin/` hold what the SDK generates — assembly attributes and the like —
+ * which is not the library's source and does not parse as a declaration this reader
+ * accepts. They are build output, so they are skipped rather than allowed to fail the
+ * read: a documented `dotnet build` would otherwise break the documentation build.
+ */
 async function sourceFiles(directory) {
   const entries = await readdir(directory, {
     recursive: true,
     withFileTypes: true,
   });
   return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".cs"))
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        entry.name.endsWith(".cs") &&
+        !relative(directory, entry.parentPath)
+          .split(sep)
+          .some((segment) => segment === "obj" || segment === "bin"),
+    )
     .map((entry) => join(entry.parentPath, entry.name))
     .sort();
 }

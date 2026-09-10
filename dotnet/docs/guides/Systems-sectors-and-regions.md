@@ -107,6 +107,28 @@ the `Y`; the overload taking a
 [GalacticPlanePosition](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.GalacticPlanePosition) says the same
 thing in the type.
 
+`CodexRegion.Name` is the canonical English name. To show the region in the player's
+language, pass the identifier to
+[DisplayText.CodexRegionName](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization.Class.DisplayText),
+which reads a separate catalogue so a region lookup never loads six languages:
+
+```csharp
+using EliteDangerousAlmanac.Astronomy;
+using EliteDangerousAlmanac.Localization;
+
+GalacticPosition position = new(-81.625, -151.3125, -376.0625);
+
+CodexRegion? region = CodexRegionMap.FindAt(position);
+string? english = region?.Name;                                  // "Inner Orion Spur"
+string? french = DisplayText.CodexRegionName(region?.Id ?? 0, "fr"); // "Boucle d'Orion interne"
+```
+
+The catalogue is keyed by the identifier and not by the name, so a corrected English name
+cannot orphan its translations. It is complete in all six languages, and it stores the
+game's own value where the game leaves a region untranslated:
+`DisplayText.CodexRegionName(18, "ru")` is `"Inner Orion Spur"` because that is what the
+game shows, not because the lookup fell back to English.
+
 A system inside a hand-authored region takes that region's name instead of the procedural
 sector's — `ProceduralSystem.UsesHandAuthoredRegion` tells you which happened. That is
 also why `FromSystemAddress` takes an optional position: an address states the boxel and
