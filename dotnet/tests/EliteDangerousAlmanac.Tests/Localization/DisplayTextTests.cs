@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using EliteDangerousAlmanac.Equipment;
 using EliteDangerousAlmanac.Localization;
 using EliteDangerousAlmanac.Ships;
@@ -187,6 +188,11 @@ public sealed class DisplayTextTests
         "experimentalEffectDescription" =>
             DisplayText.ExperimentalEffectDescription(identifier, locale),
         "commodity" => DisplayText.CommodityName(identifier, locale),
+        // The region catalogue is keyed by a number; the fixture states every identifier
+        // as a string, so this is the one lookup that converts.
+        "codexRegion" => DisplayText.CodexRegionName(
+            int.Parse(identifier, CultureInfo.InvariantCulture),
+            locale),
         "material" => DisplayText.MaterialName(identifier, locale),
         "microResource" => DisplayText.MicroResourceName(identifier, locale),
         "suit" => DisplayText.SuitName(identifier, locale),

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using EliteDangerousAlmanac.Localization.Internal;
 
 namespace EliteDangerousAlmanac.Localization;
@@ -45,6 +46,9 @@ public static partial class DisplayText
 
     private static readonly Lazy<IReadOnlyDictionary<string, LocalizedName>> CommodityNames =
         new(() => LocalizedNames.Direct("data/i18n/commodity-names.jsonc"));
+
+    private static readonly Lazy<IReadOnlyDictionary<string, LocalizedName>> CodexRegionNames =
+        new(() => LocalizedNames.Direct("data/i18n/codex-region-names.jsonc"));
 
     private static readonly Lazy<IReadOnlyDictionary<string, LocalizedName>> MaterialNames =
         new(() => LocalizedNames.Direct("data/i18n/material-names.jsonc"));
@@ -132,6 +136,35 @@ public static partial class DisplayText
     /// <returns>The name, or <see langword="null"/> for a miss.</returns>
     public static string? CommodityName(string? symbol, string? locale) =>
         LocalizedNames.Find(CommodityNames.Value, symbol, locale);
+
+    /// <summary>Reads a galactic codex region's display name.</summary>
+    /// <param name="regionId">
+    /// The region identifier, 1 to 42, as <see cref="Astronomy.CodexRegion.Id"/> carries it. Region
+    /// 0 means "outside the mapped region grid" and has no name.
+    /// </param>
+    /// <param name="locale">A BCP 47 tag, such as <c>de</c> or <c>de-DE</c>.</param>
+    /// <returns>
+    /// The name, or <see langword="null"/> where the identifier is outside 1 to 42 or the
+    /// catalogue carries no such language.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The catalogue is keyed by the region identifier, not by the English name, because
+    /// the identifier is the region's stable identity and the name is the value being
+    /// translated.
+    /// </para>
+    /// <para>
+    /// Every stored language is complete, so a language it carries always answers. The
+    /// game leaves many regions untranslated in some languages, and spells Izanami,
+    /// Temple, Mare Somnia, Xibalba and Tenebrae alike in all six. Those source values are
+    /// stored verbatim rather than read as a missing translation.
+    /// </para>
+    /// </remarks>
+    public static string? CodexRegionName(int regionId, string? locale) =>
+        LocalizedNames.Find(
+            CodexRegionNames.Value,
+            regionId.ToString(CultureInfo.InvariantCulture),
+            locale);
 
     /// <summary>Reads an engineering material's display name.</summary>
     /// <param name="symbol">The material symbol, such as <c>GridResistors</c>.</param>

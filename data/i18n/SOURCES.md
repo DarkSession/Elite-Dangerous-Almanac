@@ -533,6 +533,64 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   `"Posavasos Buckyball "` with a trailing space, which is layout and not part of the
   name; it is stored trimmed. Every other value is verbatim.
 
+## `codex-region-names.jsonc`
+
+- **Acquired:** 2026-09-10 UTC.
+- **In-game localisation revision:** none published; the game ships no immutable
+  identifier for its localisation tables. The acquired table is the evidence, and its
+  SHA-256 is
+  `b280c66219b2fc6d6e92120f013247fdd2404a8a7614e59c0d79a23f300ae51e`.
+- **Derivation:** every region id and canonical English name comes from
+  `data/astro/galactic-regions.jsonc`, which stays authoritative for the id set. Each id
+  joins to the in-game codex localisation identity `$Codex_RegionName_<id>;`, which
+  carries one name per locale. The join is exact and total: every region resolves, and
+  the acquired table names no region the astro catalogue does not carry.
+- **The catalogue is keyed by the region id, not by the English name.** The id is the
+  region's stable identity and the name is the value being translated, so a corrected
+  English name cannot orphan its translations. The correction below is the reason
+  this matters rather than a hypothetical.
+- **The game wins the one English disagreement, against this file's opening rule.** The
+  astro catalogue's region names are transcribed from EliteDangerousRegionMap's
+  `RegionMap.png`, which reads the game's own codex names rather than naming the regions
+  itself, so it is not an independent authority the way a ships or commodities catalogue
+  is. The game's English is `The Formidine Rift`; German, Portuguese and Russian repeat
+  it, Spanish drops the article and French translates the name. The transcription dropped
+  the article, and The Veils, The Conduit, The Abyss and The Void all keep theirs
+  upstream. The astro catalogue is corrected to the game's English
+  (§`data/astro/SOURCES.md`) and the two agree on every other region.
+- **Coverage:** complete. Every region carries all six locales. French translates most of
+  the regions; German, Spanish, Portuguese and Russian translate few and otherwise carry
+  the English name, which is the game's own value and not a fallback this project
+  manufactured. Izanami, Temple, Mare Somnia, Xibalba and Tenebrae are spelled alike in
+  all six, so those are proper nouns the game leaves alone.
+- **Some differences look like defects and are the source's own values.** A locale that
+  carries the English name does not always carry it byte for byte:
+  - **The possessive apostrophe is mixed.** Newton's Vault, Aquila's Halo, Lyra's Song and
+    Kepler's Crest carry `U+2019` in German, Spanish, Portuguese and Russian, against the
+    English `U+0027`. This is the position `suit-descriptions.jsonc` already records for
+    its own mixed apostrophes.
+  - **Achilles's Altar differs by the possessive as well as the glyph.** German, Spanish,
+    Portuguese and Russian carry `Achilles’ Altar` — `U+2019` and no trailing `s` —
+    against the English `Achilles's Altar`.
+  - **Russian carries `Ori-Cygnus Arm` for Orion-Cygnus Arm.** It is the game's string,
+    and nothing here expands it.
+  A fixture pins one of each, so normalising them fails a test rather than changing the
+  data quietly.
+- **The acquired table's region grid is not stored, because this repository already has
+  it.** The table carries a run-length region raster and a per-region border polygon
+  beside the names. The raster reproduces `data/astro/galactic-region-cells.jsonc`
+  cell for cell — the same region ids over the same 2048-by-2048 grid, with the same
+  projection — and the borders are that raster's own outline, traced on cell edges and
+  quantised to 1/32 light year against the cells' 1/64. Neither carries a fact the cells
+  do not, so importing either would be a second copy of one geometry. Re-deriving this
+  catalogue must take the names alone.
+- **The `$Codex_RegionName_<id>;` keys are not stored, and that is a decision rather than
+  a gap.** The key states the region id inside its own name, so a journal `CodexEntry`
+  yields the id by reading the number out of the key. A key column would restate what the
+  key already carries, and would have to be re-derived every time this catalogue is.
+  Storing the id alone is the smaller record.
+- **Manual corrections:** none. Every value is stored verbatim.
+
 ## Names this repository deliberately does not localize
 
 No catalogues are stored for the following names, either because the game does not

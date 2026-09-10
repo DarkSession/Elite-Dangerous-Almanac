@@ -1,0 +1,352 @@
+/*
+ * Localized display names for the 42 galactic codex regions, keyed by region id.
+ *
+ * Source: Frontier's in-game codex-region localisation, observed in the running game.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revision, derivation and
+ * known gaps: data/i18n/SOURCES.md.
+ *
+ * The key is the region id that data/astro/galactic-regions.jsonc carries, because the
+ * id is the stable identity and the name is the value being translated. English is the
+ * owning catalogue's canonical name. Brazilian Portuguese is stored under the bare `pt`
+ * tag, as SOURCES.md documents. Every region carries all six locales, and the game names
+ * Izanami, Temple, Mare Somnia, Xibalba and Tenebrae alike in every language.
+ */
+{
+  "1": {
+    "en": "Galactic Centre",
+    "de": "Galaktisches Zentrum",
+    "es": "Centro galáctico",
+    "fr": "Centre galactique",
+    "pt": "Centro Galáctico",
+    "ru": "Галактический центр"
+  },
+  "2": {
+    "en": "Empyrean Straits",
+    "de": "Empyrean Straits",
+    "es": "Empyrean Straits",
+    "fr": "Détroit Empyréen",
+    "pt": "Empyrean Straits",
+    "ru": "Empyrean Straits"
+  },
+  "3": {
+    "en": "Ryker's Hope",
+    "de": "Ryker's Hope",
+    "es": "Ryker's Hope",
+    "fr": "Espérance de Ryker",
+    "pt": "Ryker's Hope",
+    "ru": "Ryker's Hope"
+  },
+  "4": {
+    "en": "Odin's Hold",
+    "de": "Odin's Hold",
+    "es": "Odin's Hold",
+    "fr": "Forteresse d'Odin",
+    "pt": "Odin's Hold",
+    "ru": "Odin's Hold"
+  },
+  "5": {
+    "en": "Norma Arm",
+    "de": "Norma Arm",
+    "es": "Norma Arm",
+    "fr": "Bras de la Règle",
+    "pt": "Norma Arm",
+    "ru": "Norma Arm"
+  },
+  "6": {
+    "en": "Arcadian Stream",
+    "de": "Arcadian Stream",
+    "es": "Arcadian Stream",
+    "fr": "Courant Arcadien",
+    "pt": "Arcadian Stream",
+    "ru": "Arcadian Stream"
+  },
+  "7": {
+    "en": "Izanami",
+    "de": "Izanami",
+    "es": "Izanami",
+    "fr": "Izanami",
+    "pt": "Izanami",
+    "ru": "Izanami"
+  },
+  "8": {
+    "en": "Inner Orion-Perseus Conflux",
+    "de": "Inner Orion-Perseus Conflux",
+    "es": "Inner Orion-Perseus Conflux",
+    "fr": "Confluent Orio-Perse interne",
+    "pt": "Inner Orion-Perseus Conflux",
+    "ru": "Inner Orion-Perseus Conflux"
+  },
+  "9": {
+    "en": "Inner Scutum-Centaurus Arm",
+    "de": "Inner Scutum-Centaurus Arm",
+    "es": "Inner Scutum-Centaurus Arm",
+    "fr": "Bras Écu-Croix interne",
+    "pt": "Inner Scutum-Centaurus Arm",
+    "ru": "Inner Scutum-Centaurus Arm"
+  },
+  "10": {
+    "en": "Norma Expanse",
+    "de": "Norma Expanse",
+    "es": "Norma Expanse",
+    "fr": "Étendue de la Règle",
+    "pt": "Norma Expanse",
+    "ru": "Norma Expanse"
+  },
+  "11": {
+    "en": "Trojan Belt",
+    "de": "Trojan Belt",
+    "es": "Trojan Belt",
+    "fr": "Ceinture Troyenne",
+    "pt": "Trojan Belt",
+    "ru": "Trojan Belt"
+  },
+  "12": {
+    "en": "The Veils",
+    "de": "The Veils",
+    "es": "The Veils",
+    "fr": "Dentelles du Cygne",
+    "pt": "The Veils",
+    "ru": "The Veils"
+  },
+  "13": {
+    "en": "Newton's Vault",
+    "de": "Newton’s Vault",
+    "es": "Newton’s Vault",
+    "fr": "Voûte de Newton",
+    "pt": "Newton’s Vault",
+    "ru": "Newton’s Vault"
+  },
+  "14": {
+    "en": "The Conduit",
+    "de": "The Conduit",
+    "es": "The Conduit",
+    "fr": "Le Conduit",
+    "pt": "The Conduit",
+    "ru": "The Conduit"
+  },
+  "15": {
+    "en": "Outer Orion-Perseus Conflux",
+    "de": "Outer Orion-Perseus Conflux",
+    "es": "Outer Orion-Perseus Conflux",
+    "fr": "Confluent Orio-Perse externe",
+    "pt": "Outer Orion-Perseus Conflux",
+    "ru": "Outer Orion-Perseus Conflux"
+  },
+  "16": {
+    "en": "Orion-Cygnus Arm",
+    "de": "Orion-Cygnus Arm",
+    "es": "Orion-Cygnus Arm",
+    "fr": "Bras d'Orion",
+    "pt": "Orion-Cygnus Arm",
+    "ru": "Ori-Cygnus Arm"
+  },
+  "17": {
+    "en": "Temple",
+    "de": "Temple",
+    "es": "Temple",
+    "fr": "Temple",
+    "pt": "Temple",
+    "ru": "Temple"
+  },
+  "18": {
+    "en": "Inner Orion Spur",
+    "de": "Inner Orion Spur",
+    "es": "Inner Orion Spur",
+    "fr": "Boucle d'Orion interne",
+    "pt": "Inner Orion Spur",
+    "ru": "Inner Orion Spur"
+  },
+  "19": {
+    "en": "Hawking's Gap",
+    "de": "Hawking's Gap",
+    "es": "Hawking's Gap",
+    "fr": "Brèche de Hawking",
+    "pt": "Hawking's Gap",
+    "ru": "Hawking's Gap"
+  },
+  "20": {
+    "en": "Dryman's Point",
+    "de": "Dryman's Point",
+    "es": "Dryman's Point",
+    "fr": "Point de Dryman",
+    "pt": "Dryman's Point",
+    "ru": "Dryman's Point"
+  },
+  "21": {
+    "en": "Sagittarius-Carina Arm",
+    "de": "Sagittarius-Carina Arm",
+    "es": "Sagittarius-Carina Arm",
+    "fr": "Bras Sagittaire-Carène",
+    "pt": "Sagittarius-Carina Arm",
+    "ru": "Sagittarius-Carina Arm"
+  },
+  "22": {
+    "en": "Mare Somnia",
+    "de": "Mare Somnia",
+    "es": "Mare Somnia",
+    "fr": "Mare Somnia",
+    "pt": "Mare Somnia",
+    "ru": "Mare Somnia"
+  },
+  "23": {
+    "en": "Acheron",
+    "de": "Acheron",
+    "es": "Acheron",
+    "fr": "Achéron",
+    "pt": "Acheron",
+    "ru": "Acheron"
+  },
+  "24": {
+    "en": "Formorian Frontier",
+    "de": "Formorian Frontier",
+    "es": "Formorian Frontier",
+    "fr": "Frontière Formorienne",
+    "pt": "Formorian Frontier",
+    "ru": "Formorian Frontier"
+  },
+  "25": {
+    "en": "Hieronymus Delta",
+    "de": "Hieronymus Delta",
+    "es": "Hieronymus Delta",
+    "fr": "Delta de Hieronymus",
+    "pt": "Hieronymus Delta",
+    "ru": "Hieronymus Delta"
+  },
+  "26": {
+    "en": "Outer Scutum-Centaurus Arm",
+    "de": "Outer Scutum-Centaurus Arm",
+    "es": "Outer Scutum-Centaurus Arm",
+    "fr": "Bras Écu-Croix externe",
+    "pt": "Outer Scutum-Centaurus Arm",
+    "ru": "Outer Scutum-Centaurus Arm"
+  },
+  "27": {
+    "en": "Outer Arm",
+    "de": "Outer Arm",
+    "es": "Outer Arm",
+    "fr": "Bras Extérieur",
+    "pt": "Outer Arm",
+    "ru": "Outer Arm"
+  },
+  "28": {
+    "en": "Aquila's Halo",
+    "de": "Aquila’s Halo",
+    "es": "Aquila’s Halo",
+    "fr": "Halo de l'Aigle",
+    "pt": "Aquila’s Halo",
+    "ru": "Aquila’s Halo"
+  },
+  "29": {
+    "en": "Errant Marches",
+    "de": "Errant Marches",
+    "es": "Errant Marches",
+    "fr": "Marches Errantes",
+    "pt": "Errant Marches",
+    "ru": "Errant Marches"
+  },
+  "30": {
+    "en": "Perseus Arm",
+    "de": "Perseus Arm",
+    "es": "Perseus Arm",
+    "fr": "Bras de Persée",
+    "pt": "Perseus Arm",
+    "ru": "Perseus Arm"
+  },
+  "31": {
+    "en": "The Formidine Rift",
+    "de": "The Formidine Rift",
+    "es": "Formidine Rift",
+    "fr": "Faille Formidine",
+    "pt": "The Formidine Rift",
+    "ru": "The Formidine Rift"
+  },
+  "32": {
+    "en": "Vulcan Gate",
+    "de": "Vulcan Gate",
+    "es": "Vulcan Gate",
+    "fr": "Porte de Vulcain",
+    "pt": "Vulcan Gate",
+    "ru": "Vulcan Gate"
+  },
+  "33": {
+    "en": "Elysian Shore",
+    "de": "Elysian Shore",
+    "es": "Elysian Shore",
+    "fr": "Rivage Élyséen",
+    "pt": "Elysian Shore",
+    "ru": "Elysian Shore"
+  },
+  "34": {
+    "en": "Sanguineous Rim",
+    "de": "Sanguineous Rim",
+    "es": "Sanguineous Rim",
+    "fr": "Frontière Sanguine",
+    "pt": "Sanguineous Rim",
+    "ru": "Sanguineous Rim"
+  },
+  "35": {
+    "en": "Outer Orion Spur",
+    "de": "Outer Orion Spur",
+    "es": "Outer Orion Spur",
+    "fr": "Boucle d'Orion externe",
+    "pt": "Outer Orion Spur",
+    "ru": "Outer Orion Spur"
+  },
+  "36": {
+    "en": "Achilles's Altar",
+    "de": "Achilles’ Altar",
+    "es": "Achilles’ Altar",
+    "fr": "Autel d'Achille",
+    "pt": "Achilles’ Altar",
+    "ru": "Achilles’ Altar"
+  },
+  "37": {
+    "en": "Xibalba",
+    "de": "Xibalba",
+    "es": "Xibalba",
+    "fr": "Xibalba",
+    "pt": "Xibalba",
+    "ru": "Xibalba"
+  },
+  "38": {
+    "en": "Lyra's Song",
+    "de": "Lyra’s Song",
+    "es": "Lyra’s Song",
+    "fr": "Chant de la Lyre",
+    "pt": "Lyra’s Song",
+    "ru": "Lyra’s Song"
+  },
+  "39": {
+    "en": "Tenebrae",
+    "de": "Tenebrae",
+    "es": "Tenebrae",
+    "fr": "Tenebrae",
+    "pt": "Tenebrae",
+    "ru": "Tenebrae"
+  },
+  "40": {
+    "en": "The Abyss",
+    "de": "The Abyss",
+    "es": "The Abyss",
+    "fr": "L'Abysse",
+    "pt": "The Abyss",
+    "ru": "The Abyss"
+  },
+  "41": {
+    "en": "Kepler's Crest",
+    "de": "Kepler’s Crest",
+    "es": "Kepler’s Crest",
+    "fr": "Crête de Kepler",
+    "pt": "Kepler’s Crest",
+    "ru": "Kepler’s Crest"
+  },
+  "42": {
+    "en": "The Void",
+    "de": "The Void",
+    "es": "The Void",
+    "fr": "Le Néant",
+    "pt": "The Void",
+    "ru": "The Void"
+  }
+}

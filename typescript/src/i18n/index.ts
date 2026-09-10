@@ -1,13 +1,13 @@
 /**
  * Sparse, source-backed localized display names and descriptions for Elite Dangerous
- * outfitting, personal-equipment, engineering, material and market-commodity
- * catalogues.
+ * outfitting, personal-equipment, engineering, material, market-commodity and galactic
+ * codex-region catalogues.
  *
  * Each lookup takes the identifier its owning catalogue is keyed by — a Frontier symbol,
- * or the library id where the game publishes none, as for a suit tool — and a BCP 47
- * locale. English is complete: for a name catalogue it is exactly the owning record's
- * `name`, and for a description catalogue it is the game's own display prose, which no
- * catalogue otherwise publishes.
+ * the library id where the game publishes none, as for a suit tool, or the region id for
+ * a galactic codex region — and a BCP 47 locale. English is complete: for a name
+ * catalogue it is exactly the owning record's `name`, and for a description catalogue it
+ * is the game's own display prose, which no catalogue otherwise publishes.
  * Other locales are intentionally sparse: the function returns `null` when its pinned
  * sources carry no translation, leaving the application in control of fallback policy.
  * A source-backed localized spelling can be identical to English; the lookup returns
@@ -29,6 +29,7 @@
  * | Lookup | Keys | en | de | es | fr | pt | ru |
  * | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
  * | `getBlueprintName` | 107 | 100 | 100 | 100 | 100 | 100 | 100 |
+ * | `getCodexRegionName` | 42 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getCommodityName` | 412 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getExperimentalEffectDescription` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getExperimentalEffectName` | 86 | 100 | 100 | 100 | 100 | 100 | 100 |
@@ -82,6 +83,7 @@ export { getBlueprintName } from './blueprints.js';
 export { getExperimentalEffectName } from './experimental-effects.js';
 export { getExperimentalEffectDescription } from './experimental-effect-descriptions.js';
 export { getCommodityName } from './commodities.js';
+export { getCodexRegionName } from './codex-regions.js';
 export { getMaterialName } from './materials.js';
 export { getMicroResourceName } from './micro-resources.js';
 export { getPersonalMountName, getSuitDescription, getSuitName } from './suits.js';

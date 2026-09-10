@@ -105,6 +105,27 @@ resolveNamingRegionOrigin('Synuefai')?.x0; // -> 1556480             naming-regi
 `findCodexRegionAt` reads only `{x, z}`, because the codex map is an X/Z projection. It
 takes a `GalacticPosition` as it comes and ignores the `y`.
 
+`CodexRegion.name` is the canonical English name. To show the region in the player's
+language, pass the id to `getCodexRegionName`, which reads a separate catalogue so a
+region lookup never bundles six languages:
+
+```ts
+import { findCodexRegionAt } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+import { getCodexRegionName } from '@elite-dangerous-almanac/core/i18n/codex-regions';
+
+const position = { x: -81.625, y: -151.3125, z: -376.0625 };
+
+const region = findCodexRegionAt(position);
+region?.name; // -> 'Inner Orion Spur'                 canonical English
+getCodexRegionName(region?.id ?? 0, 'fr'); // -> "Boucle d'Orion interne"
+```
+
+The catalogue is keyed by the id and not by the name, so a corrected English name cannot
+orphan its translations. It is complete in all six languages, and it stores the game's own
+value where the game leaves a region untranslated — `getCodexRegionName(18, 'ru')` is
+`'Inner Orion Spur'` because that is what the game shows, not because the lookup fell back
+to English.
+
 A system inside a hand-authored region takes that region's name instead of the
 procedural sector's — `ProceduralSystem.usesHandAuthoredRegion` tells you which happened.
 

@@ -2,8 +2,8 @@
  * Pins locale normalization, sparse misses and representative module, blueprint,
  * experimental-effect, material, micro-resource, commodity, ship, manufacturer,
  * engineering-group, outfitting-family, experimental-description, personal-suit,
- * handheld-weapon, suit-tool and personal-modification lookups for every language
- * implementation.
+ * handheld-weapon, suit-tool, personal-modification and galactic-codex-region lookups
+ * for every language implementation.
  */
 {
   "lookups": [
@@ -450,6 +450,66 @@
       "identifier": "Platinum",
       "locale": "it",
       "expected": null
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "1",
+      "locale": "de-DE",
+      "expected": "Galaktisches Zentrum"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "5",
+      "locale": "fr",
+      "expected": "Bras de la Règle"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "31",
+      "locale": "en",
+      "expected": "The Formidine Rift"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "17",
+      "locale": "ru",
+      "expected": "Temple"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "18",
+      "locale": "ru",
+      "expected": "Inner Orion Spur"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "1",
+      "locale": "it",
+      "expected": null
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "0",
+      "locale": "de",
+      "expected": null
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "41",
+      "locale": "de",
+      "expected": "Kepler’s Crest"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "36",
+      "locale": "de",
+      "expected": "Achilles’ Altar"
+    },
+    {
+      "kind": "codexRegion",
+      "identifier": "16",
+      "locale": "ru",
+      "expected": "Ori-Cygnus Arm"
     }
   ]
 }

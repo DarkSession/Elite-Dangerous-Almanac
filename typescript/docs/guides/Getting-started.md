@@ -98,6 +98,7 @@ symbols you are most likely to reach for first:
 | `getMaterialName` | `core/i18n/materials` |
 | `getCommodityName` | `core/i18n/commodities` |
 | `getMicroResourceName` | `core/i18n/micro-resources` |
+| `getCodexRegionName` | `core/i18n/codex-regions` |
 | `getSuitName`, `getSuitDescription`, `getPersonalMountName` | `core/i18n/suits` |
 | `getPersonalToolName` | `core/i18n/personal-tools` |
 | `getPersonalWeaponDescription` | `core/i18n/personal-weapons` |

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EliteDangerousAlmanac.Astronomy;
 using EliteDangerousAlmanac.Commodities;
 using EliteDangerousAlmanac.Equipment;
 using EliteDangerousAlmanac.Localization;
@@ -125,8 +126,20 @@ public sealed class DisplayTextDataTests
         }
     }
 
+    [Fact]
+    public void EveryCodexRegionIsNamedAsItsCatalogueNamesIt()
+    {
+        // The catalogue is keyed by the region identifier, so this is what stops an astro
+        // rename from orphaning the English column it is supposed to track.
+        foreach (CodexRegion region in CodexRegions.All)
+        {
+            Assert.Equal(region.Name, DisplayText.CodexRegionName(region.Id, "en"));
+        }
+    }
+
     [Theory]
     [InlineData("data/i18n/blueprint-names.jsonc")]
+    [InlineData("data/i18n/codex-region-names.jsonc")]
     [InlineData("data/i18n/commodity-names.jsonc")]
     [InlineData("data/i18n/experimental-effect-names.jsonc")]
     [InlineData("data/i18n/experimental-effect-descriptions.jsonc")]
