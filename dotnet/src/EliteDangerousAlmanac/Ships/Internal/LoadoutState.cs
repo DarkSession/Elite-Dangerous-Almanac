@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace EliteDangerousAlmanac.Ships.Internal;
@@ -53,20 +54,8 @@ internal static class LoadoutState
     /// </remarks>
     internal static string? MatchingKey(IReadOnlyList<LoadoutModule> fitted, string slotKey)
     {
-        foreach (LoadoutModule module in fitted)
-        {
-            if (string.Equals(module.Slot, slotKey, StringComparison.Ordinal)) return module.Slot;
-        }
-
-        foreach (LoadoutModule module in fitted)
-        {
-            if (string.Equals(module.Slot, slotKey, StringComparison.OrdinalIgnoreCase))
-            {
-                return module.Slot;
-            }
-        }
-
-        return null;
+        int index = IndexOf(fitted, slotKey);
+        return index < 0 ? null : fitted[index].Slot;
     }
 
     /// <summary>
@@ -103,11 +92,9 @@ internal static class LoadoutState
     /// <summary>The index of one mount in a build's store, or -1 when it holds none.</summary>
     internal static int IndexOf(IReadOnlyList<LoadoutModule> fitted, string slotKey)
     {
-        string? held = MatchingKey(fitted, slotKey);
-        if (held is null) return -1;
         for (int index = 0; index < fitted.Count; index++)
         {
-            if (string.Equals(fitted[index].Slot, held, StringComparison.Ordinal)) return index;
+            if (string.Equals(fitted[index].Slot, slotKey, StringComparison.OrdinalIgnoreCase)) return index;
         }
 
         return -1;
@@ -125,21 +112,7 @@ internal static class LoadoutState
         Dictionary<string, int> order = new(layout.Count, StringComparer.OrdinalIgnoreCase);
         for (int index = 0; index < layout.Count; index++) order[layout[index].Key] = index;
 
-        // Index the source positions so the sort stays stable for the mounts the layout does
-        // not name, which all share one rank.
-        List<(T Value, int Rank, int Source)> ranked = new(values.Count);
-        for (int index = 0; index < values.Count; index++)
-        {
-            int rank = order.TryGetValue(slotOf(values[index]), out int found) ? found : int.MaxValue;
-            ranked.Add((values[index], rank, index));
-        }
-
-        ranked.Sort((left, right) => left.Rank != right.Rank
-            ? left.Rank.CompareTo(right.Rank)
-            : left.Source.CompareTo(right.Source));
-
-        List<T> ordered = new(ranked.Count);
-        foreach ((T value, _, _) in ranked) ordered.Add(value);
-        return ordered;
+        return values.OrderBy(value =>
+            order.TryGetValue(slotOf(value), out int rank) ? rank : int.MaxValue).ToList();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EliteDangerousAlmanac.Internal;
 
 namespace EliteDangerousAlmanac.Ships.Internal;
@@ -808,25 +809,11 @@ internal static class LoadoutEngineering
         return (damagePerSecond, derivedRate);
     }
 
-    private static List<EngineeringModifier> SortJournalModifiers(List<EngineeringModifier> modifiers)
-    {
-        List<(EngineeringModifier Modifier, int Rank, int Source)> ranked = new(modifiers.Count);
-        for (int index = 0; index < modifiers.Count; index++)
-        {
-            int rank = JournalModifierRank.TryGetValue(modifiers[index].Label, out int found)
-                ? found
-                : JournalModifierOrder.Length;
-            ranked.Add((modifiers[index], rank, index));
-        }
-
-        ranked.Sort((left, right) => left.Rank != right.Rank
-            ? left.Rank.CompareTo(right.Rank)
-            : left.Source.CompareTo(right.Source));
-
-        List<EngineeringModifier> sorted = new(ranked.Count);
-        foreach ((EngineeringModifier modifier, _, _) in ranked) sorted.Add(modifier);
-        return sorted;
-    }
+    private static List<EngineeringModifier> SortJournalModifiers(List<EngineeringModifier> modifiers) =>
+        modifiers.OrderBy(modifier =>
+            JournalModifierRank.TryGetValue(modifier.Label, out int rank)
+                ? rank
+                : JournalModifierOrder.Length).ToList();
 }
 
 /// <summary>Whether a captured block proves the ordinary roll it names.</summary>

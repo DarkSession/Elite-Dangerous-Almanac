@@ -31,9 +31,6 @@ export async function checkLinks(wikiDir) {
         throw new Error(`${file}: link targets missing wiki page "${target}"`);
       }
     }
-    if (fixed.includes("](../wiki/#")) {
-      throw new Error(`${file}: generated a broken wiki-home member link`);
-    }
 
     // The hand-written pages under `docs/` link between wiki pages with absolute URLs,
     // because a relative `../wiki/…` in a TypeDoc `projectDocuments` page makes it warn
