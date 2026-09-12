@@ -20,7 +20,7 @@
  * every data domain is represented.
  */
 
-import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const copies = [
@@ -32,12 +32,9 @@ for (const [from, to] of copies) {
     const source = new URL(from, import.meta.url);
     const target = new URL(to, import.meta.url);
 
-    const text = await readFile(source, 'utf8');
-    await writeFile(target, text);
+    await copyFile(source, target);
 
-    console.log(
-        `copied ${fileURLToPath(source)} -> ${fileURLToPath(target)} (${text.length} bytes)`,
-    );
+    console.log(`copied ${fileURLToPath(source)} -> ${fileURLToPath(target)}`);
 }
 
 const dataRoot = new URL('../../data/', import.meta.url);
@@ -60,9 +57,6 @@ for (const domain of domains) {
 for (const [from, to] of provenanceFiles) {
     const source = new URL(from, dataRoot);
     const target = new URL(to, provenanceRoot);
-    const text = await readFile(source, 'utf8');
-    await writeFile(target, text);
-    console.log(
-        `copied ${fileURLToPath(source)} -> ${fileURLToPath(target)} (${text.length} bytes)`,
-    );
+    await copyFile(source, target);
+    console.log(`copied ${fileURLToPath(source)} -> ${fileURLToPath(target)}`);
 }
