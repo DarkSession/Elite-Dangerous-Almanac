@@ -46,8 +46,8 @@
  * and experimental effects use — a journal Modifier `label`, a `method`
  * (`multiplicative` / `additive` / `overwrite`) and a `value`. It is what makes these
  * records fittable: apply them over the base module's stats to get the engineered
- * module. The `mercenary` rows carry none — no registry publishes the grade-1
- * pre-engineering they arrive with, and a guess is worse than an omission.
+ * module. A `mercenary` row carries this block when its grade-1 transformation is
+ * observed. An unmeasured row omits it.
  *
  * Modifier values are the authored decimals recovered from the source's own encoding,
  * not figures rounded by eye; SOURCES.md records how.
@@ -62,8 +62,9 @@
  * deriving a `RateOfFire` value from it needs weapon base stats the module catalogues
  * do not hold — so it is omitted rather than approximated.
  *
- * The Merc recipes start at grade 2 precisely because grade 1 is what the purchased
- * module already contains. Community-goal and tech-broker rewards are mostly already at
+ * The measured Merc recipes start at grade 2 because grade 1 is what the purchased
+ * module already contains. Some observed recipes have no measured numeric grades yet.
+ * Community-goal and tech-broker rewards are mostly already at
  * grade 5 — but not always: the Guardian weapon rows record grade 1, and there the
  * blueprint's own grade 1 exists, so the grade is a real grade of a real recipe. That
  * identity does not make the final Guardian articles engineerable.
@@ -188,12 +189,74 @@
     "mercCoinCost": 900
   },
   {
+    "symbol": "Hpt_BeamLaser_Fixed_Huge",
+    "name": "Overloaded Beam laser",
+    "blueprintSymbol": "BeamLaser_Overloaded",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "mercCoinCost": 950,
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": 0.1 },
+      { "label": "DistributorDraw", "method": "multiplicative", "value": 0.25 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.5 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.125 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": 0.095 }
+    ]
+  },
+  {
+    "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
+    "name": "Regenerative Burst Laser",
+    "blueprintSymbol": "BurstLaser_Regenerative",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_regeneration_sequence",
+    "mercCoinCost": 750,
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": 0.04 },
+      { "label": "DistributorDraw", "method": "multiplicative", "value": 0.138 },
+      { "label": "FalloffRange", "method": "multiplicative", "value": -0.472 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": 0.1 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.02 }
+    ]
+  },
+  {
+    "symbol": "Hpt_Cannon_Fixed_Huge",
+    "name": "Force Impact Cannon",
+    "blueprintSymbol": "Cannon_ForceImpact",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_force_shell",
+    "mercCoinCost": 850,
+    "damageDistribution": { "kinetic": 0.5, "explosive": 0.5 },
+    "modifiers": [
+      { "label": "AmmoClipSize", "method": "multiplicative", "value": 0.167 },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.058 },
+      { "label": "Damage", "method": "multiplicative", "value": -0.35 },
+      { "label": "DistributorDraw", "method": "multiplicative", "value": 0.1 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.25 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.15 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": -0.143 }
+    ]
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+    "name": "Exposing Missiles",
+    "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "mercCoinCost": 800
+  },
+  {
     "symbol": "Int_CargoRack_Size5_Class1",
     "name": "Extended Cargo Rack",
     "blueprintSymbol": "CargoRackS5C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 550
+    "mercCoinCost": 550,
+    "modifiers": [
+      { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+    ]
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
@@ -201,7 +264,10 @@
     "blueprintSymbol": "CargoRackS6C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 550
+    "mercCoinCost": 550,
+    "modifiers": [
+      { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+    ]
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",

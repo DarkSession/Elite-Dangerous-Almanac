@@ -15,6 +15,15 @@
     },
     {
       "variant": {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+        "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+        "acquisition": "mercenary"
+      },
+      "locale": "pt-BR",
+      "expected": "Misseis de exposição"
+    },
+    {
+      "variant": {
         "symbol": "Hpt_FlakMortar_Turret_Medium",
         "blueprintSymbol": "Decorative_Red",
         "acquisition": "eventReward"

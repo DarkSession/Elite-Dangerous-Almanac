@@ -1476,7 +1476,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 `special_plasma_slug` is the id the game writes. This repo follows EDSY: one
 `special_plasma_slug` at damage −10% / ammo −100%, plus the `_cooled` rail-gun variant.
 
-- **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers),
+- **Files:** `blueprints.jsonc` (identity, display text and measured per-grade stat modifiers),
   `blueprint-costs.jsonc` (the matching per-grade material requirements),
   `blueprint-merc-coin-costs.jsonc` (the per-roll Merc-Coin amounts the recipes that
   charge a currency bill alongside those materials),
@@ -1585,9 +1585,24 @@ up straight through with no disambiguation at all. Both paths are evidence that
     record of the same recipe is rejected: it is a copy that can drift from the one the
     game names, no observed journal, SLEF export or corpus build carries a prefixed id
     (see above), and nothing else in this catalogue keys one recipe twice.
+  - **Direct in-game observation supplies Mercenary weapon recipes.** It supplies the
+    identities, names, grade roll bounds, materials, and Merc-Coin costs for
+    `BeamLaser_Overloaded`, `BurstLaser_Regenerative`, `Cannon_ForceImpact`, and
+    `SeekerMissileRackLarge_ExposingMissiles`. The observations were acquired
+    2026-09-13 UTC. The stored decimals remove binary floating-point noise.
+  - **Direct in-game observation also supplies selected existing recipe mechanics.** It
+    supplies the grade bounds for `MultiCannon_Rapid`, `SeekerMissileRack_Drag`, both
+    `SeekerMissileRack*_Lockdown` recipes, and the named ordinary recipes in the same
+    observation. `Sensor_Expanded` includes its power-draw leg. The stored weapon rate
+    derives from the observed burst interval. The observations were acquired
+    2026-09-13 UTC.
+  - **The two Lockdown recipes have different Merc-Coin costs.** The medium recipe costs
+    10, 10, 20, and 40 Merc Coin per roll at grades 2–5. The large recipe costs 10, 15,
+    25, and 45. Direct in-game observation supplies both sets.
 
-  The registry exposes **one displayed total per grade**, not a roll-bounded range, so each
-  feature stores that total as a fixed value (`min == max`).
+  Where only the registry supplies a recipe, it exposes **one displayed total per grade**.
+  Each such feature stores that total as a fixed value (`min == max`). Direct in-game
+  observations store the observed roll bounds.
   The three Plasma conversion recipes also expose equal and opposite damage-share totals.
   Inara labels those player-facing rows **Thermal** and **Plasma**, not with journal
   modifier labels: Thermal decreases by 3.9, 6.6, 9.4, 12.4 and 15.5 percentage points
@@ -1622,11 +1637,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   each grade by its roll count.
   - **A minority of recipes charge one.** Inara's blueprint
     index marks a charging recipe by rendering its name in the coin colour, and the marked
-    set is exactly the bespoke grade-2–5 recipes a bought Mercenary article climbs plus the
-    four Operations recipes an ordinary menu lists at grades 1–5 (`FuelScoop_Efficiency`
-    and the three `*Laser_ThermalPlasmaConversion`) — 18 marked rows of the 197 the index
-    lists, fewer than the ids they price because one published recipe can answer to more
-    than one stored id. An ordinary engineer recipe is therefore **absent rather than
+    set is the bespoke grade-2–5 recipes a bought Mercenary article climbs plus the
+    Operations recipes an ordinary menu lists at grades 1–5 (`FuelScoop_Efficiency`
+    and the `*Laser_ThermalPlasmaConversion` recipes). One published recipe can answer to
+    more than one stored id. An ordinary engineer recipe is therefore **absent rather than
     zero**, and `GuardianModule_Sturdy`
     is absent for the same reason. That index is the whole evidence for the negative half
     of the claim: it is a completeness reading of one listing, not 197 pages checked one
@@ -2132,15 +2146,27 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
       against rows already here — the large rack is 3A and its other Merc row is 900 MC, the
       medium is 2B and its Lockdown row is 800 MC — and that corroboration is what carries
       the weight.
+    - **These shop articles come from direct in-game observation:** the 4A fixed
+      Overloaded Beam laser at 950 MC, the 2F gimballed Regenerative Burst Laser at 750
+      MC, the 4B fixed Force Impact Cannon at 850 MC and the 3A fixed Exposing Missiles
+      seeker rack at 800 MC. The observations were acquired 2026-09-13 UTC.
+      The observed grade-1 panels supply the fixed transformations for the beam laser,
+      burst laser, cannon and both Extended Cargo Rack sizes. The burst laser's stated
+      damage includes Regeneration Sequence. Its fixed Damage change is therefore +4%,
+      which composes with the effect's −10% to give the observed −6.4%. Force Shell
+      supplies the cannon's −16.7% Shot Speed change. The cannon's fixed damage split is
+      equal parts Kinetic and Explosive. Both cargo racks carry the exact multiplier
+      implied by their observed capacities.
     - **Some Merc rows carry a default experimental effect** applied beside the grade-1
       blueprint, recorded as `experimentalEffectSymbol`: Screening Shell on both Double
       Screaming Fragment Cannons, Incendiary Rounds on the Long Range Mining Laser,
       Phasing Sequence on the Rapid Phase Multi-Cannon, Feedback Cascade on the Enduring
       Feedback Rail Gun, Drag Munitions on both Drag Seeker Missile Racks, Thermal Cascade
-      on the Lightweight Thermal Seeker Missile Rack, and FSD Interrupt on both Lockdown
-      Seeker Missile Racks. Source: repository-owner in-game observation, recorded
-      2026-08-29 UTC; no registry publishes them. These rows still carry no `modifiers`:
-      the effect is recorded, the unpublished grade-1 blueprint transformation is not.
+      on the Lightweight Thermal Seeker Missile Rack, FSD Interrupt on both Lockdown
+      Seeker Missile Racks, Regeneration Sequence on the Regenerative Burst Laser, and
+      Force Shell on the Force Impact Cannon. Source: repository-owner in-game
+      observation; no registry publishes them. A row carries `modifiers` when its
+      grade-1 transformation is observed. An unmeasured row omits them.
       - **Two independent checks each corroborate all but one, and between them cover
         every row.** The first: the effect is one the stock module's own experimental menu
         offers, so the shop is baking in an effect the module can carry
@@ -2201,16 +2227,15 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
   Merc Coin is a separate currency with no credit equivalent, which is why it is its own
   field rather than the `cost` modules carry. Tech-broker unlocks have no equivalent
   number: they are paid in materials and commodities, so nothing is stored for them.
-- **`modifiers` is the hand-set stat block a reward variant arrives with** — what makes
+- **`modifiers` is the hand-set stat block a fixed variant arrives with** — what makes
   these records fittable rather than merely catalogued. Same vocabulary as a blueprint
   feature: a journal Modifier `label`, a `method` (`multiplicative` / `additive` /
   `overwrite`) and a `value`. Decoded from the same EDSY preset state as the blueprint
   and grade, then translated into the Almanac's own vocabulary — EDSY's attribute names
   map to journal Modifier Labels through its own table, and resistances, which EDSY
   stores in a different form from this repo, are converted using the module's base
-  resistance. Every row carries one except the `mercenary` rows, because no registry
-  publishes the grade-1 pre-engineering they arrive with and a guess is worse than an
-  omission.
+  resistance. A Mercenary row carries one when direct observation supplies its grade-1
+  transformation. An unmeasured Mercenary row omits it.
   - **Values are the authored decimals, recovered rather than rounded.** The presets
     encode modifiers in EDSY's custom 20-bit float (1 sign, 5 exponent, 14 mantissa),
     which carries about fifteen significant bits — so decoding a change the game states

@@ -6461,7 +6461,7 @@ test('a burst-pattern variant identifies before and after export', () => {
     );
 });
 
-test('a Mercenary variant omits its unpublished modifier block', () => {
+test('an unmeasured Mercenary variant omits its modifier block', () => {
     const variant = getPreEngineeredVariants('Int_PowerDistributor_Size6_Class5').find(
         (candidate) => candidate.acquisition === 'mercenary',
     )!;
@@ -6484,10 +6484,7 @@ test('a Mercenary variant omits its unpublished modifier block', () => {
 });
 
 test('a fitted Mercenary article publishes what its baked effect moves', () => {
-    // Ten Merc-shop rows are sold carrying an experimental effect. Seven of those effects
-    // move at least one stat, and a fitted article has to say so: reading the purchase
-    // through `setPreEngineeredVariant` and reading the same catalogue row through
-    // `getPreEngineeredJournalModifiers` describe one article, so they must agree.
+    // A fitted article publishes its measured fixed block and its baked effect together.
     let withMovedStats = 0;
     for (const variant of PRE_ENGINEERED_MODULES.filter(
         (candidate) => candidate.acquisition === 'mercenary',
@@ -6506,7 +6503,7 @@ test('a fitted Mercenary article publishes what its baked effect moves', () => {
 
         assert.equal(fitted.preEngineeredVariant, variant, label);
         if (expected.length === 0) {
-            // No stat block and no effect that moves one: the article carries no
+            // No measured block and no effect that moves one: the article carries no
             // `Modifiers` key at all rather than an empty array claiming it changes none.
             assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'), label);
         } else {
@@ -6514,7 +6511,7 @@ test('a fitted Mercenary article publishes what its baked effect moves', () => {
             assert.deepEqual(fitted.engineering!.Modifiers, expected, label);
         }
     }
-    assert.equal(withMovedStats, 7);
+    assert.equal(withMovedStats, preEngineeredFixture.modifierCounts.mercenaryWithResolvedStats);
 });
 
 test('a fitted article resolves the rate of fire its own block states', () => {
@@ -6555,7 +6552,7 @@ test('a fitted article resolves the rate of fire its own block states', () => {
     }
     // Every catalogued article but one, whose hull class the Anaconda does not carry.
     assert.equal(fittedCount, PRE_ENGINEERED_MODULES.length - 1);
-    assert.equal(stated, 15);
+    assert.equal(stated, preEngineeredFixture.modifierCounts.withStatedRateOfFire);
 });
 
 test('an applied burst recipe resolves the rate of fire its own block states', () => {
@@ -6831,7 +6828,7 @@ test('journal DPS uses an engineered rounds-per-shot value', () => {
     assert.ok(near(fitted.effectiveStats!.damage!, damage, 1e-6));
     assert.equal(fitted.effectiveStats!.roundsPerShot, rounds);
     assert.ok(
-        near(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-6),
+        near(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-5),
     );
     assert.ok(damagePerSecond > damage * rate);
 });

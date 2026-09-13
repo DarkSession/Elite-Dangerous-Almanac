@@ -124,7 +124,10 @@ public class PreEngineeredIdentifyTests
     [Fact]
     public void AnEmptyModifierListIdentifiesNothing()
     {
-        PreEngineeredVariant variant = Articles[0];
+        PreEngineeredVariant variant = Assert.Single(
+            Articles,
+            candidate => candidate.Symbol == "Hpt_Mining_AbrBlstr_Fixed_Small"
+                && candidate.Acquisition == PreEngineeredAcquisition.CommunityGoal);
         LoadoutModule module = new("TinyHardpoint1", variant.Symbol)
         {
             Engineering = new ModuleEngineering(variant.BlueprintSymbol, variant.Grade, 1)

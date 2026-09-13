@@ -168,6 +168,7 @@ public class PreEngineeredTests
         Assert.Equal(Acquisition(expected.Acquisition), variant.Acquisition);
         Assert.Equal(expected.EngineeringLocked, variant.EngineeringLocked);
         Assert.Equal(expected.MercCoinCost, variant.MercCoinCost);
+        Assert.Equal(expected.DamageDistribution, variant.DamageDistribution);
 
         if (expected.Modifiers is null)
         {
@@ -234,7 +235,7 @@ public class PreEngineeredTests
         Assert.True(Fixture.Joins["everySymbolIsAKnownModule"]);
         Assert.True(Fixture.Joins["everyBlueprintIsAKnownBlueprint"]);
         Assert.True(Fixture.Joins["everyExperimentalIsAKnownEffect"]);
-        Assert.True(Fixture.Joins["everyMercenaryBlueprintStartsAtGradeTwo"]);
+        Assert.True(Fixture.Joins["everyMercenaryBlueprintExcludesGradeOne"]);
         Assert.True(Fixture.Joins["everyRewardGradeIsARealGrade"]);
 
         foreach (PreEngineeredVariant variant in PreEngineeredCatalogue.All)
@@ -255,7 +256,7 @@ public class PreEngineeredTests
 
             if (variant.Acquisition == PreEngineeredAcquisition.Mercenary)
             {
-                // The article is bought at grade 1, so its recipe starts at grade 2.
+                // The article is bought at grade 1, so its recipe does not define grade 1.
                 Assert.DoesNotContain(1, blueprint!.Grades.Keys);
             }
 
@@ -310,17 +311,15 @@ public class PreEngineeredTests
 
     [Theory]
     [MemberData(nameof(BakedEffects))]
-    public void ABoughtArticleArrivesByItsBakedEffectAlone(int position)
+    public void ABoughtArticleCarriesItsObservedBakedEffect(int position)
     {
         BakedEffectFixture baked = Fixture.MercenaryBakedEffects.Variants[position];
         PreEngineeredVariant variant = Variant(baked.Symbol, baked.BlueprintSymbol, baked.ExperimentalEffectSymbol);
 
         Assert.Equal(PreEngineeredAcquisition.Mercenary, variant.Acquisition);
 
-        // No registry publishes the grade-1 pre-engineering a shop row arrives with, so what its
-        // baked effect moves is the whole of what it reports.
-        Assert.Null(variant.Modifiers);
-        Assert.Equal(baked.MovedStats, MovedStats(variant));
+        Assert.Equal(baked.ExperimentalEffectSymbol, variant.ExperimentalEffectSymbol);
+        if (variant.Modifiers is null) Assert.Equal(baked.MovedStats, MovedStats(variant));
     }
 
     [Fact]
@@ -427,6 +426,7 @@ public class PreEngineeredTests
             AssertReading(panel.RateOfFire, resolved, ModuleStat.RateOfFire);
             AssertReading(panel.ClipSize, resolved, ModuleStat.ClipSize);
             AssertReading(panel.AmmoMaximum, resolved, ModuleStat.AmmoMaximum);
+            AssertReading(panel.CargoCapacity, resolved, ModuleStat.CargoCapacity);
 
             if (panel.DamagePerSecond is PanelReading rate)
             {

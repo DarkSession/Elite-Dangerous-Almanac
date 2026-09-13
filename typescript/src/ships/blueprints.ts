@@ -23,10 +23,9 @@
  * full mechanics catalogue and resolves one against a module.
  *
  * Further keys are the **Operations** ids: recipes a module is *sold*
- * carrying (`ships/pre-engineered`) and the four Operations recipes a player rolls at an
+ * carrying (`ships/pre-engineered`) and the Operations recipes a player rolls at an
  * engineer (`ships/engineering-options`). No journal spelling has been observed for those
  * Operations ids — a gap in the evidence, not a claim that the game writes none.
- *
  * **Every recipe is keyed once.** Anti-Guardian Zone Resistance is
  * `GuardianModule_Sturdy`, the id the game writes on Guardian weapons as well as on
  * Guardian modules; the Inara registry's `recipe_guardianmodule_sturdy` and

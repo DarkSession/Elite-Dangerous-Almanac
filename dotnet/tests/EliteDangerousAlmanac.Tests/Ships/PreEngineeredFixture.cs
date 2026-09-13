@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EliteDangerousAlmanac.Ships;
 using EliteDangerousAlmanac.Tests.Support;
 
 namespace EliteDangerousAlmanac.Tests.Ships;
@@ -211,6 +212,8 @@ internal sealed class PreEngineeredRecordFixture
     public bool EngineeringLocked { get; set; }
 
     public int? MercCoinCost { get; set; }
+
+    public DamageDistribution? DamageDistribution { get; set; }
 
     public List<PreEngineeredModifierFixture>? Modifiers { get; set; }
 }
@@ -439,6 +442,8 @@ internal sealed class DisplayedPanelFixture
     public PanelReading? ClipSize { get; set; }
 
     public PanelReading? AmmoMaximum { get; set; }
+
+    public PanelReading? CargoCapacity { get; set; }
 
     /// <summary>The damage type the panel names.</summary>
     public string? DamageType { get; set; }

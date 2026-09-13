@@ -109,7 +109,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## `blueprint-names.jsonc`
 
-- **Acquired:** EDSY 2026-08-14 UTC; the in-game modification names 2026-08-23 UTC.
+- **Acquired:** EDSY 2026-08-14 UTC; in-game modification names 2026-08-23 and
+  2026-09-13 UTC.
 - **EDSY revision:** commit `e446fbe6e4597dea7ab0bd3105b9a36642388040`;
   database version `424009901`, last-modified marker `20260810`.
 - **In-game localisation revision:** none published; the game ships no immutable
@@ -139,6 +140,10 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   EDSY carries with the same trailing space) and German `Railgun_LongShot`. The
   Portuguese `GuardianModule_Sturdy` and `GuardianWeapon_Sturdy` values carry a literal
   `<br>` line break for the in-game layout, which is stored as a single space.
+- **These Mercenary blueprint names come from direct in-game observation:**
+  `BeamLaser_Overloaded`, `BurstLaser_Regenerative`, `Cannon_ForceImpact` and
+  `SeekerMissileRackLarge_ExposingMissiles` carry all six observed locales. English uses
+  the catalogue's short-name style. The other locales keep the observed strings.
 
 ## `experimental-effect-names.jsonc`
 
@@ -289,7 +294,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
 
 ## `pre-engineered-variant-names.jsonc`
 
-- **Acquired:** 2026-08-18 UTC; the Merc-shop names 2026-08-22 UTC.
+- **Acquired:** 2026-08-18 UTC; Merc-shop names 2026-08-22, 2026-08-30 and
+  2026-09-13 UTC.
 - **Derivation:** every compound identity and English name comes from
   `data/ships/pre-engineered.jsonc`. An identity combines the base module symbol,
   blueprint, optional experimental effect and acquisition route. When a variant name

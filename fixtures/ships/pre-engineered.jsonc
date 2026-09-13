@@ -16,28 +16,28 @@
  * `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that
  * drives their rate of fire cannot be dropped again, each with the `rateOfFire` the resolved
  * article carries and the `blockRateOfFire` its published engineering block states — one
- * article states one rate of fire, so the two are the same figure; `mercenaryBakedEffects` pins the ten
- * Merc-shop rows sold with an experimental effect already applied, each with the stats that
- * effect alone moves on the stock module — the shop rows publish no `modifiers`, so the
- * effect is the whole of what resolves for them, and its `resolved.journalModifiers` pins the
- * engineering block a fitted one publishes, which is that same effect in journal spelling;
+ * article states one rate of fire, so the two are the same figure; `mercenaryBakedEffects` pins
+ * Merc-shop rows sold with an experimental effect already applied. A measured shop row also
+ * carries its fixed grade-1 transformation. An unmeasured row resolves from its effect alone;
  * `resolved` pins whole stat blocks against known in-game values; `identification.mercenary`
  * pins the Mercenary-only blueprint identity
  * that survives later grade upgrades; `mercCoin` pins shop prices; `joins` pins that every
  * record resolves against the module, blueprint and experimental catalogues.
  */
 {
-  "count": 76,
+  "count": 80,
   "counts": {
-    "mercenary": 22,
+    "mercenary": 26,
     "communityGoal": 30,
     "techBroker": 21,
     "eventReward": 3
   },
   "modifierCounts": {
-    "withModifiers": 54,
-    "withoutModifiers": 22,
-    "withMercCoinCost": 22
+    "withModifiers": 59,
+    "withoutModifiers": 21,
+    "withMercCoinCost": 26,
+    "mercenaryWithResolvedStats": 12,
+    "withStatedRateOfFire": 17
   },
   "engineeringLocked": {
     "count": 12,
@@ -58,11 +58,7 @@
   "festive": {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
     "grade": 5,
-    "blueprints": [
-      "Decorative_Green",
-      "Decorative_Red",
-      "Decorative_Yellow"
-    ],
+    "blueprints": ["Decorative_Green", "Decorative_Red", "Decorative_Yellow"],
     "modifier": {
       "label": "Damage",
       "method": "multiplicative",
@@ -105,6 +101,7 @@
     "MaximumRange",
     "PowerCapacity",
     "PowerDraw",
+    "RateOfFire",
     "ReloadTime",
     "RoundsPerShot",
     "ScannerRange",
@@ -118,48 +115,37 @@
     "WeaponsRecharge"
   ],
   "mercenaryBakedEffects": {
-    "count": 10,
+    "count": 12,
     "variants": [
       {
         "symbol": "Hpt_Slugshot_Gimbal_Small",
         "blueprintSymbol": "FragmentCannonSmall_DoubleScreaming",
         "experimentalEffectSymbol": "special_screening_shell",
-        "movedStats": [
-          "reloadTime"
-        ]
+        "movedStats": ["reloadTime"]
       },
       {
         "symbol": "Hpt_Slugshot_Gimbal_Large",
         "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
         "experimentalEffectSymbol": "special_screening_shell",
-        "movedStats": [
-          "reloadTime"
-        ]
+        "movedStats": ["reloadTime"]
       },
       {
         "symbol": "Hpt_MiningLaser_Fixed_Small",
         "blueprintSymbol": "MiningLaser_LongRange",
         "experimentalEffectSymbol": "special_incendiary_rounds",
-        "movedStats": [
-          "thermalLoad"
-        ]
+        "movedStats": ["thermalLoad"]
       },
       {
         "symbol": "Hpt_MultiCannon_Fixed_Medium",
         "blueprintSymbol": "MultiCannon_Rapid",
         "experimentalEffectSymbol": "special_phasing_sequence",
-        "movedStats": [
-          "damage"
-        ]
+        "movedStats": ["damage"]
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium",
         "blueprintSymbol": "RailGun_LongShot",
         "experimentalEffectSymbol": "special_feedback_cascade_cooled",
-        "movedStats": [
-          "damage",
-          "thermalLoad"
-        ]
+        "movedStats": ["damage", "thermalLoad"]
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -183,21 +169,25 @@
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
         "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
         "experimentalEffectSymbol": "special_fsd_interrupt",
-        "movedStats": [
-          "burstInterval",
-          "damage",
-          "rateOfFire"
-        ]
+        "movedStats": ["burstInterval", "damage", "rateOfFire"]
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
         "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
         "experimentalEffectSymbol": "special_fsd_interrupt",
-        "movedStats": [
-          "burstInterval",
-          "damage",
-          "rateOfFire"
-        ]
+        "movedStats": ["burstInterval", "damage", "rateOfFire"]
+      },
+      {
+        "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
+        "blueprintSymbol": "BurstLaser_Regenerative",
+        "experimentalEffectSymbol": "special_regeneration_sequence",
+        "movedStats": ["damage"]
+      },
+      {
+        "symbol": "Hpt_Cannon_Fixed_Huge",
+        "blueprintSymbol": "Cannon_ForceImpact",
+        "experimentalEffectSymbol": "special_force_shell",
+        "movedStats": ["shotSpeed"]
       }
     ],
     "resolved": {
@@ -396,11 +386,92 @@
     "symbols": []
   },
   "mercCoin": {
-    "total": 13900,
+    "total": 17250,
     "cheapest": 300,
     "dearest": 950
   },
   "records": [
+    {
+      "symbol": "Hpt_BeamLaser_Fixed_Huge",
+      "name": "Overloaded Beam laser",
+      "blueprintSymbol": "BeamLaser_Overloaded",
+      "grade": 1,
+      "acquisition": "mercenary",
+      "mercCoinCost": 950,
+      "modifiers": [
+        { "label": "Damage", "method": "multiplicative", "value": 0.1 },
+        { "label": "DistributorDraw", "method": "multiplicative", "value": 0.25 },
+        { "label": "Mass", "method": "multiplicative", "value": 0.5 },
+        { "label": "PowerDraw", "method": "multiplicative", "value": 0.125 },
+        { "label": "ThermalLoad", "method": "multiplicative", "value": 0.095 }
+      ]
+    },
+    {
+      "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
+      "name": "Regenerative Burst Laser",
+      "blueprintSymbol": "BurstLaser_Regenerative",
+      "grade": 1,
+      "acquisition": "mercenary",
+      "experimentalEffectSymbol": "special_regeneration_sequence",
+      "mercCoinCost": 750,
+      "modifiers": [
+        { "label": "Damage", "method": "multiplicative", "value": 0.04 },
+        { "label": "DistributorDraw", "method": "multiplicative", "value": 0.138 },
+        { "label": "FalloffRange", "method": "multiplicative", "value": -0.472 },
+        { "label": "MaximumRange", "method": "multiplicative", "value": 0.1 },
+        { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
+        { "label": "RateOfFire", "method": "multiplicative", "value": 0.02 }
+      ]
+    },
+    {
+      "symbol": "Hpt_Cannon_Fixed_Huge",
+      "name": "Force Impact Cannon",
+      "blueprintSymbol": "Cannon_ForceImpact",
+      "grade": 1,
+      "acquisition": "mercenary",
+      "experimentalEffectSymbol": "special_force_shell",
+      "mercCoinCost": 850,
+      "damageDistribution": { "kinetic": 0.5, "explosive": 0.5 },
+      "modifiers": [
+        { "label": "AmmoClipSize", "method": "multiplicative", "value": 0.167 },
+        { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.058 },
+        { "label": "Damage", "method": "multiplicative", "value": -0.35 },
+        { "label": "DistributorDraw", "method": "multiplicative", "value": 0.1 },
+        { "label": "Mass", "method": "multiplicative", "value": 0.25 },
+        { "label": "PowerDraw", "method": "multiplicative", "value": 0.15 },
+        { "label": "RateOfFire", "method": "multiplicative", "value": -0.143 }
+      ]
+    },
+    {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+      "name": "Exposing Missiles",
+      "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+      "grade": 1,
+      "acquisition": "mercenary",
+      "mercCoinCost": 800
+    },
+    {
+      "symbol": "Int_CargoRack_Size5_Class1",
+      "name": "Extended Cargo Rack",
+      "blueprintSymbol": "CargoRackS5C1_Extended",
+      "grade": 1,
+      "acquisition": "mercenary",
+      "mercCoinCost": 550,
+      "modifiers": [
+        { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+      ]
+    },
+    {
+      "symbol": "Int_CargoRack_Size6_Class1",
+      "name": "Extended Cargo Rack",
+      "blueprintSymbol": "CargoRackS6C1_Extended",
+      "grade": 1,
+      "acquisition": "mercenary",
+      "mercCoinCost": 550,
+      "modifiers": [
+        { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+      ]
+    },
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
       "name": "Enduring Feedback Rail Gun",
@@ -678,16 +749,114 @@
   "sameTripleDifferentGrade": {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
     "blueprintSymbol": "Weapon_LongRange",
-    "grades": [
-      5,
-      1
-    ],
-    "acquisitions": [
-      "communityGoal",
-      "techBroker"
-    ]
+    "grades": [5, 1],
+    "acquisitions": ["communityGoal", "techBroker"]
   },
   "resolved": {
+    "overloadedBeamLaserG1": {
+      "symbol": "Hpt_BeamLaser_Fixed_Huge",
+      "blueprintSymbol": "BeamLaser_Overloaded",
+      "base": {
+        "mass": 16,
+        "powerDraw": 2.61,
+        "damage": 41.38,
+        "distributorDraw": 8.19,
+        "thermalLoad": 9.93
+      },
+      "engineered": {
+        "mass": 24,
+        "powerDraw": 2.93625,
+        "damage": 45.518002,
+        "distributorDraw": 10.237499,
+        "thermalLoad": 10.87335
+      },
+      "displayed": {
+        "mass": 24,
+        "powerDraw": 2.94,
+        "damagePerSecond": 45.5,
+        "distributorDraw": 10.24,
+        "thermalLoad": 10.9
+      }
+    },
+    "regenerativeBurstLaserG1": {
+      "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
+      "blueprintSymbol": "BurstLaser_Regenerative",
+      "base": {
+        "powerDraw": 1.04,
+        "damage": 2.45,
+        "distributorDraw": 0.49,
+        "maximumRange": 3000,
+        "falloffRange": 500,
+        "rateOfFire": 4.202586
+      },
+      "engineered": {
+        "powerDraw": 1.092,
+        "damage": 2.2932,
+        "distributorDraw": 0.55762,
+        "maximumRange": 3300,
+        "falloffRange": 264,
+        "rateOfFire": 4.286638
+      },
+      "displayed": {
+        "powerDraw": 1.09,
+        "damagePerSecond": 9.8,
+        "damage": 2.3,
+        "distributorDraw": 0.56,
+        "maximumRange": 3300,
+        "falloffRange": 264,
+        "rateOfFire": 4.3
+      }
+    },
+    "forceImpactCannonG1": {
+      "symbol": "Hpt_Cannon_Fixed_Huge",
+      "blueprintSymbol": "Cannon_ForceImpact",
+      "base": {
+        "mass": 16,
+        "powerDraw": 0.92,
+        "damage": 83.125,
+        "distributorDraw": 1.61,
+        "shotSpeed": 900,
+        "rateOfFire": 0.380228,
+        "clipSize": 6,
+        "ammoMaximum": 120
+      },
+      "engineered": {
+        "mass": 20,
+        "powerDraw": 1.058,
+        "damage": 54.031246,
+        "distributorDraw": 1.771,
+        "shotSpeed": 749.999695,
+        "rateOfFire": 0.325855,
+        "clipSize": 7,
+        "ammoMaximum": 127
+      },
+      "displayed": {
+        "mass": 20,
+        "powerDraw": 1.06,
+        "damagePerSecond": 17.6,
+        "damage": 54,
+        "distributorDraw": 1.77,
+        "shotSpeed": 750,
+        "rateOfFire": 0.3,
+        "clipSize": 7,
+        "ammoMaximum": 127,
+        "damageType": "Kinetic"
+      }
+    },
+    "extendedCargoRackSize5G1": {
+      "symbol": "Int_CargoRack_Size5_Class1",
+      "blueprintSymbol": "CargoRackS5C1_Extended",
+      "base": { "cargoCapacity": 32 },
+      "engineered": { "cargoCapacity": 35 },
+      "displayed": { "cargoCapacity": 35 }
+    },
+    "extendedCargoRackSize6G1": {
+      "symbol": "Int_CargoRack_Size6_Class1",
+      "blueprintSymbol": "CargoRackS6C1_Extended",
+      "base": { "cargoCapacity": 64 },
+      "engineered": { "cargoCapacity": 70 },
+      "displayed": { "cargoCapacity": 70 }
+    },
     "fsdV1Size5": {
       "symbol": "Int_Hyperdrive_Size5_Class5",
       "blueprintSymbol": "FSD_LongRange",
@@ -891,7 +1060,7 @@
     "everySymbolIsAKnownModule": true,
     "everyBlueprintIsAKnownBlueprint": true,
     "everyExperimentalIsAKnownEffect": true,
-    "everyMercenaryBlueprintStartsAtGradeTwo": true,
+    "everyMercenaryBlueprintExcludesGradeOne": true,
     "everyRewardGradeIsARealGrade": true
   }
 }

@@ -1956,7 +1956,7 @@ export class ShipLoadout {
      *
      * A Mercenary article is recomputed rather than composed, and that limits what can be
      * done to the effect some of those rows are sold carrying. At its purchase grade there
-     * is no recipe to recompute from — the bespoke recipe starts at grade 2 — so every
+     * is no recipe to recompute from — measured bespoke recipes start at grade 2 — so every
      * edit is refused with `unsupportedEngineering`. Once engineered to grade 2 or above
      * an edit recomputes normally, but only to an effect the module's own menu offers:
      * the Merc Mining Laser's Incendiary Rounds is not one, so re-stating it is refused
@@ -2372,10 +2372,10 @@ export class ShipLoadout {
      * {@link getPreEngineeredJournalModifiers} for the same variant, and the module's
      * {@link FittedModule.effectiveStats | effectiveStats} resolve to the figures it
      * states — including a rate of fire, which no recipe names and both the block and the
-     * stats derive from the article's firing cycle. A Mercenary variant
-     * publishes no fixed stat block of its own, so it keeps the stock catalogue stats
-     * apart from its baked experimental effect, and states that effect's modifiers and
-     * no others. An article that moves no stat at all carries no `Modifiers` key, rather
+     * stats derive from the article's firing cycle. A Mercenary variant uses its observed
+     * fixed stat block when one is available. Otherwise, it keeps the stock catalogue
+     * stats apart from its baked experimental effect and states only that effect's
+     * modifiers. An article that moves no stat at all carries no `Modifiers` key, rather
      * than an empty array claiming it changes none.
      *
      * @param slotKey - The slot key to fit into, matched case-insensitively.
@@ -2440,11 +2440,7 @@ export class ShipLoadout {
         }
         this.setModule(slotKey, stats);
         const module = this.#fittedModuleFor(slotKey)!;
-        // Whatever the article moves is what it publishes. A Mercenary row carries no
-        // stat block of its own, but its baked experimental effect still moves stats, and
-        // those belong in the block — a fitted article that states an effect and no
-        // `Modifiers` would disagree with `getPreEngineeredJournalModifiers` about the
-        // same purchase.
+        // Whatever the article moves is what it publishes, including its baked effect.
         const journalModifiers = getPreEngineeredJournalModifiers(known);
         const engineering: ModuleEngineering = {
             BlueprintName: known.blueprintSymbol,

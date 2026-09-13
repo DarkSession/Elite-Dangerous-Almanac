@@ -11,6 +11,9 @@ internal sealed class EngineeringFixture
     /// <summary>A module bought already engineered, taken further at an engineer.</summary>
     public RolledRecipeFixture PreEngineeredClimb { get; set; } = new();
 
+    /// <summary>Observed grade feature bounds and damage distributions.</summary>
+    public List<ObservedGradeValueFixture> ObservedGradeValues { get; set; } = [];
+
     /// <summary>One journal name, two scanner recipes.</summary>
     public CollisionFixture ScannerIdCollision { get; set; } = new();
 
@@ -53,6 +56,24 @@ internal sealed class EngineeringFixture
     public int BlueprintCount { get; set; }
 
     public int ExperimentalCount { get; set; }
+}
+
+/// <summary>One observed grade feature or damage distribution.</summary>
+internal sealed class ObservedGradeValueFixture
+{
+    public string Blueprint { get; set; } = string.Empty;
+
+    public int Grade { get; set; }
+
+    public string? Label { get; set; }
+
+    public double? Min { get; set; }
+
+    public double? Max { get; set; }
+
+    public double? Kinetic { get; set; }
+
+    public double? Explosive { get; set; }
 }
 
 /// <summary>Weapons whose exact damage amounts follow the engineered total.</summary>

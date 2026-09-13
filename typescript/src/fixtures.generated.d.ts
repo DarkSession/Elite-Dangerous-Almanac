@@ -1969,6 +1969,12 @@ type FixtureShipsEngineering = {
                 '4': number;
                 '5': number;
             };
+            BeamLaser_Overloaded: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
             BeamLaser_ThermalPlasmaConversion: {
                 '1': number;
                 '2': number;
@@ -1976,8 +1982,20 @@ type FixtureShipsEngineering = {
                 '4': number;
                 '5': number;
             };
+            BurstLaser_Regenerative: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
             BurstLaser_ThermalPlasmaConversion: {
                 '1': number;
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
+            Cannon_ForceImpact: {
                 '2': number;
                 '3': number;
                 '4': number;
@@ -2093,6 +2111,12 @@ type FixtureShipsEngineering = {
                 '4': number;
                 '5': number;
             };
+            SeekerMissileRackLarge_ExposingMissiles: {
+                '2': number;
+                '3': number;
+                '4': number;
+                '5': number;
+            };
             SeekerMissileRackLarge_Lockdown: {
                 '2': number;
                 '3': number;
@@ -2119,6 +2143,15 @@ type FixtureShipsEngineering = {
             };
         };
     };
+    observedGradeValues: {
+        blueprint: string;
+        explosive?: number;
+        grade: number;
+        kinetic?: number;
+        label?: string;
+        max?: number;
+        min?: number;
+    }[];
     overchargedIdCollision: {
         cases: {
             base: {
@@ -4876,7 +4909,7 @@ type FixtureShipsPreEngineered = {
     joins: {
         everyBlueprintIsAKnownBlueprint: boolean;
         everyExperimentalIsAKnownEffect: boolean;
-        everyMercenaryBlueprintStartsAtGradeTwo: boolean;
+        everyMercenaryBlueprintExcludesGradeOne: boolean;
         everyRewardGradeIsARealGrade: boolean;
         everySymbolIsAKnownModule: boolean;
     };
@@ -4913,8 +4946,10 @@ type FixtureShipsPreEngineered = {
         }[];
     };
     modifierCounts: {
+        mercenaryWithResolvedStats: number;
         withMercCoinCost: number;
         withModifiers: number;
+        withStatedRateOfFire: number;
         withoutModifiers: number;
     };
     modifierLabels: string[];
@@ -4926,6 +4961,10 @@ type FixtureShipsPreEngineered = {
     records: {
         acquisition: string;
         blueprintSymbol: string;
+        damageDistribution?: {
+            explosive: number;
+            kinetic: number;
+        };
         engineeringLocked?: boolean;
         experimentalEffectSymbol?: string;
         grade: number;
@@ -4939,6 +4978,68 @@ type FixtureShipsPreEngineered = {
         symbol: string;
     }[];
     resolved: {
+        extendedCargoRackSize5G1: {
+            base: {
+                cargoCapacity: number;
+            };
+            blueprintSymbol: string;
+            displayed: {
+                cargoCapacity: number;
+            };
+            engineered: {
+                cargoCapacity: number;
+            };
+            symbol: string;
+        };
+        extendedCargoRackSize6G1: {
+            base: {
+                cargoCapacity: number;
+            };
+            blueprintSymbol: string;
+            displayed: {
+                cargoCapacity: number;
+            };
+            engineered: {
+                cargoCapacity: number;
+            };
+            symbol: string;
+        };
+        forceImpactCannonG1: {
+            base: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                shotSpeed: number;
+            };
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                damagePerSecond: number;
+                damageType: string;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                shotSpeed: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                shotSpeed: number;
+            };
+            symbol: string;
+        };
         fragmentCannonDoubleShot: {
             base: {
                 ammoMaximum: number;
@@ -5046,6 +5147,60 @@ type FixtureShipsPreEngineered = {
                 shotSpeed: number;
             };
             grade: number;
+            symbol: string;
+        };
+        overloadedBeamLaserG1: {
+            base: {
+                damage: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                thermalLoad: number;
+            };
+            blueprintSymbol: string;
+            displayed: {
+                damagePerSecond: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                damage: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
+        regenerativeBurstLaserG1: {
+            base: {
+                damage: number;
+                distributorDraw: number;
+                falloffRange: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
+            blueprintSymbol: string;
+            displayed: {
+                damage: number;
+                damagePerSecond: number;
+                distributorDraw: number;
+                falloffRange: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
+            engineered: {
+                damage: number;
+                distributorDraw: number;
+                falloffRange: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
             symbol: string;
         };
     };

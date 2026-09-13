@@ -403,9 +403,9 @@ public sealed partial class ShipLoadout
     /// The article's fixed stats and its journal engineering block are resolved together. It
     /// carries its grade, the best quality roll, any baked experimental effect and its fixed
     /// modifiers. Because the article names the module it fits as, a decorative identity cannot
-    /// reach an unrelated weapon. A Mercenary article publishes no fixed stat block of its own,
-    /// so it keeps the stock stats apart from its baked effect, and states that effect's
-    /// modifiers and no others. An article that moves no stat states no modifiers at all, rather
+    /// reach an unrelated weapon. A Mercenary article uses its observed fixed stat block when one
+    /// is available. Otherwise, it keeps the stock stats apart from its baked effect and states
+    /// only that effect's modifiers. An article that moves no stat states no modifiers at all, rather
     /// than an empty list claiming it changes none.
     /// </remarks>
     /// <exception cref="ArgumentNullException">An argument is <see langword="null"/>.</exception>
@@ -468,8 +468,7 @@ public sealed partial class ShipLoadout
         SetModule(slotKey, stats);
         LoadoutModule module = FittedModuleFor(slotKey)!;
 
-        // Whatever the article moves is what it publishes. A Mercenary row carries no stat block
-        // of its own, but its baked effect still moves stats, and those belong in the block.
+        // Whatever the article moves is what it publishes, including its baked effect.
         IReadOnlyList<EngineeringModifier> journal = PreEngineeredStats.JournalModifiers(known);
         ModuleEngineering engineering = new(known.BlueprintSymbol, known.Grade, 1)
         {

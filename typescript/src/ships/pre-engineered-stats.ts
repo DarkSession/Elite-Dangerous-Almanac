@@ -82,8 +82,7 @@ function modifiersWithExperimental(
  *
  * @param variant - A pre-engineered variant.
  * @returns One modifier per computable label, or an empty array when the variant carries
- * neither a stat block nor a baked effect that moves a stat (a `mercenary` row carries no
- * stat block, so only its baked effect contributes) or its symbol is unknown.
+ * neither a stat block nor a baked effect that moves a stat, or its symbol is unknown.
  *
  * @example
  * ```ts
@@ -112,9 +111,9 @@ function journalModifiersWithExperimental(
         modifiersWithExperimental(variant, experimental) ?? [],
     );
     const effectName = experimental === undefined ? variant.experimentalEffectSymbol : experimental;
-    const damageDistribution = effectName
-        ? getExperimentalEffect(effectName)?.damageDistribution
-        : undefined;
+    const damageDistribution =
+        (effectName ? getExperimentalEffect(effectName)?.damageDistribution : undefined) ??
+        variant.damageDistribution;
     if (!damageDistribution) return modifiers;
     for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
         const value = damageDistribution[type];
@@ -139,9 +138,8 @@ function journalModifiersWithExperimental(
  *
  * @param variant - A pre-engineered variant.
  * @returns Its computable fixed modifiers in journal representation, or an empty array
- * when its symbol is unknown or it moves no stat the catalogue carries. A `mercenary` row
- * publishes no stat block, so what its baked experimental effect moves is the whole of
- * what it reports — the same block `ShipLoadout.setPreEngineeredVariant` fits.
+ * when its symbol is unknown or it moves no stat the catalogue carries. A measured
+ * Mercenary row combines its fixed block with its baked experimental effect.
  *
  * @example
  * ```ts
@@ -408,10 +406,9 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * Exact damage components scale with an engineered `damage` value so their proportions
  * and the anti-xeno overlay remain coherent with the resolved scalar.
  *
- * A variant with no stat block (every `mercenary` row) resolves to a copy of the base
- * record with only its baked experimental effect applied, which is the honest answer —
- * the effect is published, the grade-1 pre-engineering those arrive with is not, so the
- * catalogue does not guess at it.
+ * A variant with no stat block resolves to a copy of the base record with only its baked
+ * experimental effect applied. An unmeasured Mercenary row therefore does not guess at
+ * its fixed grade-1 transformation.
  *
  * `rateOfFire` follows a moved firing cycle even though no recipe names it: an article
  * whose burst interval, burst size or within-burst rate moves — by its own stat block or
@@ -449,9 +446,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         // owns, so whether a write to the result succeeds never depends on which of them
         // ran — and the shared catalogue singleton is never handed out at all.
         return { ...module };
-    // Everything the article moves, its baked experimental effect included — a
-    // `mercenary` row publishes no stat block of its own and arrives entirely by that
-    // effect, so reading `variant.modifiers` alone would miss what it changes.
+    // Everything the article moves, including its baked experimental effect.
     const applied = getPreEngineeredModifiers(variant);
     const resolved: { -readonly [K in keyof OutfittingModule]: OutfittingModule[K] } = {
         ...module,
@@ -468,11 +463,12 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
             Object.assign(resolved, { [field]: true });
         }
     }
-    const experimentalDamageDistribution = variant.experimentalEffectSymbol
-        ? getExperimentalEffect(variant.experimentalEffectSymbol)?.damageDistribution
-        : undefined;
-    if (experimentalDamageDistribution) {
-        resolved.damageDistribution = { ...experimentalDamageDistribution };
+    const fixedDamageDistribution =
+        (variant.experimentalEffectSymbol
+            ? getExperimentalEffect(variant.experimentalEffectSymbol)?.damageDistribution
+            : undefined) ?? variant.damageDistribution;
+    if (fixedDamageDistribution) {
+        resolved.damageDistribution = { ...fixedDamageDistribution };
         delete resolved.damageComponents;
     }
     // A variant that changes the burst pattern changes the rate of fire with it, even
@@ -491,7 +487,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         );
         if (rate !== undefined) resolved.rateOfFire = rate;
     }
-    if (module.damageComponents && !experimentalDamageDistribution) {
+    if (module.damageComponents && !fixedDamageDistribution) {
         resolved.damageComponents = scaleDamageComponents(
             module.damageComponents,
             module.damage,

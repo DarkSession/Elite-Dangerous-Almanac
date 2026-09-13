@@ -93,9 +93,8 @@ public static class PreEngineeredStats
     /// <para>
     /// Exact damage components scale with an engineered damage value, so their proportions and
     /// the anti-xeno overlay stay coherent with the resolved scalar. A variant with no stat block
-    /// resolves to the base record with its baked experimental effect applied, which is the
-    /// honest answer: the effect is published, and the grade-1 pre-engineering a Mercenary
-    /// article arrives with is not.
+    /// resolves to the base record with its baked experimental effect applied. An unmeasured
+    /// Mercenary row does not guess at its fixed grade-1 transformation.
     /// </para>
     /// <para>
     /// The rate of fire follows a moved firing cycle even though no recipe names it. An article
@@ -117,9 +116,7 @@ public static class PreEngineeredStats
             return module;
         }
 
-        // Everything the article moves, its baked experimental effect included. A Mercenary row
-        // publishes no stat block of its own and arrives entirely by that effect, so reading the
-        // block alone would miss what it changes.
+        // Everything the article moves, including its baked experimental effect.
         IReadOnlyList<EngineeringModifier> applied = Compute(variant, module);
         ModuleStats stats = module.Stats;
         bool guardianZoneResistance = module.GuardianZoneResistance;
@@ -141,9 +138,10 @@ public static class PreEngineeredStats
             }
         }
 
-        DamageDistribution? converted = variant.ExperimentalEffectSymbol is null
+        DamageDistribution? converted = (variant.ExperimentalEffectSymbol is null
             ? null
-            : ExperimentalEffectCatalogue.Find(variant.ExperimentalEffectSymbol)?.DamageDistribution;
+            : ExperimentalEffectCatalogue.Find(variant.ExperimentalEffectSymbol)?.DamageDistribution)
+            ?? variant.DamageDistribution;
 
         stats = WithDerivedRateOfFire(stats, applied);
 
@@ -395,9 +393,10 @@ public static class PreEngineeredStats
             module, Compute(variant, module, experimental, overridden));
 
         string? effectName = overridden ? experimental : variant.ExperimentalEffectSymbol;
-        DamageDistribution? converted = effectName is null
+        DamageDistribution? converted = (effectName is null
             ? null
-            : ExperimentalEffectCatalogue.Find(effectName)?.DamageDistribution;
+            : ExperimentalEffectCatalogue.Find(effectName)?.DamageDistribution)
+            ?? variant.DamageDistribution;
         LoadoutEngineering.AppendDamageShares(modifiers, module, converted);
         return modifiers;
     }

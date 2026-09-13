@@ -81,6 +81,12 @@
     },
     {
       "kind": "blueprint",
+      "identifier": "BurstLaser_Regenerative",
+      "locale": "ru",
+      "expected": "Регенеративный пульсирующий лазер"
+    },
+    {
+      "kind": "blueprint",
       "identifier": "MC_Overcharged",
       "locale": "fr",
       "expected": "Arme surchargée"

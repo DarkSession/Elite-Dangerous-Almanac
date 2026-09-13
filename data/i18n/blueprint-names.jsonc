@@ -1,7 +1,7 @@
 /*
  * Localized display names for ship engineering blueprints.
  *
- * Sources: EDSY.
+ * Sources: EDSY and in-game observations.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * known gaps: data/i18n/SOURCES.md.
@@ -67,6 +67,14 @@
     "pt": "Blindagem de Resistência Térmica",
     "ru": "Термостойкая броня"
   },
+  "BeamLaser_Overloaded": {
+    "en": "Beam Laser — Overloaded",
+    "de": "Überladener Strahlenlaser",
+    "es": "Láser de rayo sobrecargado",
+    "fr": "Rayon laser surchargé",
+    "pt": "Laser contínuo sobrecarregado",
+    "ru": "Разогнанный пучковый лазер"
+  },
   "BeamLaser_ThermalPlasmaConversion": {
     "en": "Plasma conversion",
     "de": "Plasmaumwandlung",
@@ -75,6 +83,14 @@
     "pt": "Conversão de plasma",
     "ru": "Преобразование в плазму"
   },
+  "BurstLaser_Regenerative": {
+    "en": "Burst Laser — Regenerative",
+    "de": "Regenerativer Salvenlaser",
+    "es": "Láser de ráfagas regenerativo",
+    "fr": "Laser à rafale régénératif",
+    "pt": "Laser de rajada regenerativo",
+    "ru": "Регенеративный пульсирующий лазер"
+  },
   "BurstLaser_ThermalPlasmaConversion": {
     "en": "Plasma conversion",
     "de": "Plasmaumwandlung",
@@ -82,6 +98,14 @@
     "fr": "Conversion de plasma",
     "pt": "Conversão de plasma",
     "ru": "Преобразование в плазму"
+  },
+  "Cannon_ForceImpact": {
+    "en": "Cannon — Force impact",
+    "de": "Krafteinschlagkanone",
+    "es": "Cañón de impacto potente",
+    "fr": "Canon à impact de force",
+    "pt": "Canhão de impacto de força",
+    "ru": "Орудие силового воздействия"
   },
   "CargoRack_IncreasedCapacity": {
     "en": "Expanded Cargo Rack",
@@ -642,6 +666,14 @@
     "fr": "Batterie de missiles TC thermiques légers",
     "pt": "Estante de míssil guiado leve",
     "ru": "Легкий блок тепловых ракет с самонаведением"
+  },
+  "SeekerMissileRackLarge_ExposingMissiles": {
+    "en": "Seeker Missile Rack — Exposing missiles",
+    "de": "Enttarnungsraketen",
+    "es": "Misiles reveladores",
+    "fr": "Missiles exposés",
+    "pt": "Misseis de exposição",
+    "ru": "Ракеты обнаружения"
   },
   "SeekerMissileRackLarge_Lockdown": {
     "en": "Seeker Missile Rack — Lockdown",

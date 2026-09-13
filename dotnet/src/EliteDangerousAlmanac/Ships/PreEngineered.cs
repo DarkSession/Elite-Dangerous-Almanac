@@ -74,10 +74,11 @@ public sealed record PreEngineeredModifier(string Label, ModifierMethod Method, 
 /// bought with a currency. It is the purchase alone, and engineering the article above the grade
 /// it is sold at costs further Merc Coin per roll.
 /// </param>
+/// <param name="DamageDistribution">The fixed damage-type shares the variant arrives with.</param>
 /// <param name="Modifiers">
-/// The hand-set stat block the variant arrives with, sorted by label. It is absent on every
-/// Mercenary row, because no registry publishes the grade-1 pre-engineering those arrive with,
-/// and present on every community-goal, tech-broker and event-reward row.
+/// The hand-set stat block the variant arrives with, sorted by label. It is present when the
+/// fixed transformation is measured. An unmeasured Mercenary row omits it. Every other route
+/// carries it.
 /// </param>
 public sealed record PreEngineeredVariant(
     string Symbol,
@@ -88,6 +89,7 @@ public sealed record PreEngineeredVariant(
     string? ExperimentalEffectSymbol = null,
     bool EngineeringLocked = false,
     int? MercCoinCost = null,
+    DamageDistribution? DamageDistribution = null,
     IReadOnlyList<PreEngineeredModifier>? Modifiers = null);
 
 /// <summary>
@@ -107,8 +109,9 @@ public sealed record PreEngineeredVariant(
 /// assuming there is one.
 /// </para>
 /// <para>
-/// A Mercenary article is bought at grade 1 and its bespoke recipe starts at grade 2; price the
-/// remaining upgrade with <see cref="BlueprintCosts.FindClimbCost"/>. A community-goal or
+/// A Mercenary article is bought at grade 1. A measured bespoke recipe starts at grade 2.
+/// Price the remaining upgrade with <see cref="BlueprintCosts.FindClimbCost"/>. It returns
+/// <see langword="null"/> when numeric grades and costs are not measured. A community-goal or
 /// tech-broker article instead names a fixed reward, and its blueprint identifier grants no
 /// recipe to the stock module.
 /// </para>

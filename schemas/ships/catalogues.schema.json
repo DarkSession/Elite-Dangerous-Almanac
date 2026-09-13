@@ -1338,6 +1338,9 @@
           "type": "integer",
           "exclusiveMinimum": 0
         },
+        "damageDistribution": {
+          "$ref": "#/definitions/damageDistribution"
+        },
         "modifiers": {
           "type": "array",
           "minItems": 1,
