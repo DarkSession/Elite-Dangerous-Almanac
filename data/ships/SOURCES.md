@@ -2124,30 +2124,17 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
 - **`acquisition` says where each remaining variant comes from** — `mercenary`,
   `communityGoal` or `techBroker`.
   - **`mercenary`** — the Merc-Coin shop rows. Source: the in-game outfitting and
-    blueprint registries, cross-checked against Inara's outfitting and blueprint registries
-    acquired 2026-08-07 UTC (no immutable revision exposed) and Frontier's update notes.
-    Every one is grade 1, and that is the point: the
+    blueprint panels observed by the repository owner on 2026-09-13 UTC. Every one is
+    grade 1, and that is the point: the
     purchased module already
     contains the grade-1 pre-engineering, which is exactly why these blueprints' own
     recipes start at grade 2 (see the Operations section above). The two facts are
     consistent by construction: material costs for further engineering begin at grade 2.
     - **The large Seeker Missile Rack's Lockdown** is a `mercenary` row on
-      `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**.
-      Four things agree, none of them a guess about a module symbol: the registry keys
-      Lockdown by _size_ and the twin `SeekerMissileRackMedium_Lockdown` binds to the medium
-      rack; the large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
-      stocks it; both Lockdown recipes run grades 2–5, the weapon-reward range that marks a
-      module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in the
-      file
-      that would otherwise have no row, every other one having one. Price and size confirmed
-      2026-08-07 UTC against an index of the Inara outfitting listing, which
-      reports the MERC Lockdown Seeker Missile Rack [Fixed] at 900 MC for the 3A and 800 MC
-      for the 2B. This is an index reading rather than a pinned page capture. Both halves check
-      against rows already here — the large rack is 3A and its other Merc row is 900 MC, the
-      medium is 2B and its Lockdown row is 800 MC — and that corroboration is what carries
-      the weight.
+      `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**. Direct observation supplies its
+      size, price and fixed transformation.
     - **These shop articles come from direct in-game observation.** The observations were
-      acquired 2026-09-13 UTC. The observed panels supply each measured Mercenary row's
+      acquired 2026-09-13 UTC. The observed panels supply each Mercenary row's
       grade-1 fixed transformation. The burst laser's stated damage includes Regeneration
       Sequence. Its fixed Damage change is therefore +4%, which composes with the effect's
       −10% to give the observed −6.4%. Force Shell supplies the cannon's −16.7% Shot Speed
@@ -2156,35 +2143,17 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
       Rounds supplies part of the mining laser's Thermal Load increase. FSD Interrupt
       supplies part of both Lockdown racks' Damage and Rate of Fire reductions. The
       cannon's fixed damage split is equal parts Kinetic and Explosive. Both cargo racks
-      carry the exact multiplier implied by their observed capacities. The large Drag
-      Seeker Missile Rack has no observed panel, so its fixed transformation is absent.
+      carry the exact multiplier implied by their observed capacities.
     - **Some Merc rows carry a default experimental effect** applied beside the grade-1
       blueprint, recorded as `experimentalEffectSymbol`: Screening Shell on both Double
       Screaming Fragment Cannons, Incendiary Rounds on the Long Range Mining Laser,
       Phasing Sequence on the Rapid Phase Multi-Cannon, Feedback Cascade on the Enduring
-      Feedback Rail Gun, Drag Munitions on both Drag Seeker Missile Racks and Exposing
+      Feedback Rail Gun, Drag Munitions on the Drag Seeker Missile Rack and Exposing
       Missiles, Thermal Cascade on the Lightweight Thermal Seeker Missile Rack, FSD
       Interrupt on both Lockdown Seeker Missile Racks, Regeneration Sequence on the
       Regenerative Burst Laser, and Force Shell on the Force Impact Cannon. Source:
-      repository-owner in-game
-      observation; no registry publishes them. A row carries `modifiers` when its
-      grade-1 transformation is observed. An unmeasured row omits them.
-      - **Two independent checks each corroborate all but one, and between them cover
-        every row.** The first: the effect is one the stock module's own experimental menu
-        offers, so the shop is baking in an effect the module can carry
-        (`engineering-options.jsonc`). That covers every row but the Mining Laser, whose
-        base module offers no experimental effect at all. The second: the same base module
-        already carries the same effect on a catalogued community-goal or tech-broker
-        variant. That covers every row but the large Drag Seeker Missile Rack, whose
-        corroboration is its medium twin rather than a variant of its own symbol.
-      - **The mining laser is the weakest of them.** Incendiary Rounds is outside
-        `Hpt_MiningLaser_Fixed_Small`'s experimental menu — it is the only row a shop menu
-        could not have offered — so only the twin check speaks for it, and a twin is
-        consistency more than evidence. It is recorded because it was observed. The
-        blueprint names of the seeker racks and the rail gun do echo their effects
-        (`SeekerMissileRack*_Lockdown`, `_LightWeightThermal`, `_Drag`, "Enduring
-        Feedback"), but a name is weaker evidence than either check above, and no row
-        rests on one.
+      repository-owner in-game observation. Every row carries
+      its observed grade-1 transformation in `modifiers`.
   - **`communityGoal`** — modules awarded for taking part in a community goal. Source:
     EDSY's stored-module presets, which record each reward as an encoded module state; the
     blueprint, grade and experimental effect were
@@ -2236,8 +2205,7 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
   and grade, then translated into the Almanac's own vocabulary — EDSY's attribute names
   map to journal Modifier Labels through its own table, and resistances, which EDSY
   stores in a different form from this repo, are converted using the module's base
-  resistance. A Mercenary row carries one when direct observation supplies its grade-1
-  transformation. An unmeasured Mercenary row omits it.
+  resistance. Each Mercenary row carries its observed grade-1 transformation.
   - **Values are the authored decimals, recovered rather than rounded.** The presets
     encode modifiers in EDSY's custom 20-bit float (1 sign, 5 exponent, 14 mantissa),
     which carries about fifteen significant bits — so decoding a change the game states

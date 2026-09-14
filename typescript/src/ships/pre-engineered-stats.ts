@@ -406,9 +406,8 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * Exact damage components scale with an engineered `damage` value so their proportions
  * and the anti-xeno overlay remain coherent with the resolved scalar.
  *
- * A variant with no stat block resolves to a copy of the base record with only its baked
- * experimental effect applied. An unmeasured Mercenary row therefore does not guess at
- * its fixed grade-1 transformation.
+ * A caller-supplied variant with no stat block resolves to a copy of the base record with only
+ * its baked experimental effect applied.
  *
  * `rateOfFire` follows a moved firing cycle even though no recipe names it: an article
  * whose burst interval, burst size or within-burst rate moves — by its own stat block or

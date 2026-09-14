@@ -92,9 +92,8 @@ public static class PreEngineeredStats
     /// </para>
     /// <para>
     /// Exact damage components scale with an engineered damage value, so their proportions and
-    /// the anti-xeno overlay stay coherent with the resolved scalar. A variant with no stat block
-    /// resolves to the base record with its baked experimental effect applied. An unmeasured
-    /// Mercenary row does not guess at its fixed grade-1 transformation.
+    /// the anti-xeno overlay stay coherent with the resolved scalar. A caller-supplied variant
+    /// with no stat block resolves to the base record with its baked experimental effect applied.
     /// </para>
     /// <para>
     /// The rate of fire follows a moved firing cycle even though no recipe names it. An article

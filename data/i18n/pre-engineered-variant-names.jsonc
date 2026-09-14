@@ -17,7 +17,6 @@
     "Hpt_MultiCannon_Fixed_Medium|MultiCannon_Rapid|special_phasing_sequence|mercenary": "Rapid Phase Multi-Cannon",
     "Hpt_Railgun_Fixed_Medium|RailGun_LongShot|special_feedback_cascade_cooled|mercenary": "Enduring Feedback Rail Gun",
     "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRack_Drag|special_drag_munitions|mercenary": "Drag Seeker Missile Rack",
-    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRack_Drag|special_drag_munitions|mercenary": "Drag Seeker Missile Rack",
     "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRack_LightWeightThermal|special_thermal_cascade|mercenary": "Lightweight Thermal Seeker Missile Rack",
     "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRackMedium_Lockdown|special_fsd_interrupt|mercenary": "Lockdown Seeker Missile Rack",
     "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRackLarge_Lockdown|special_fsd_interrupt|mercenary": "Lockdown Seeker Missile Rack",

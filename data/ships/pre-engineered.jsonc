@@ -46,8 +46,7 @@
  * and experimental effects use — a journal Modifier `label`, a `method`
  * (`multiplicative` / `additive` / `overwrite`) and a `value`. It is what makes these
  * records fittable: apply them over the base module's stats to get the engineered
- * module. A `mercenary` row carries this block when its grade-1 transformation is
- * observed. An unmeasured row omits it.
+ * module. Every `mercenary` row carries its observed grade-1 transformation.
  *
  * Modifier values are the authored decimals recovered from the source's own encoding,
  * not figures rounded by eye; SOURCES.md records how.
@@ -242,15 +241,6 @@
       { "label": "PowerDraw", "method": "multiplicative", "value": 0.0625 },
       { "label": "RateOfFire", "method": "multiplicative", "value": 0.02 }
     ]
-  },
-  {
-    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
-    "name": "Drag Seeker Missile Rack",
-    "blueprintSymbol": "SeekerMissileRack_Drag",
-    "grade": 1,
-    "acquisition": "mercenary",
-    "experimentalEffectSymbol": "special_drag_munitions",
-    "mercCoinCost": 900
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",

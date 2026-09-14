@@ -76,9 +76,8 @@ public sealed record PreEngineeredModifier(string Label, ModifierMethod Method, 
 /// </param>
 /// <param name="DamageDistribution">The fixed damage-type shares the variant arrives with.</param>
 /// <param name="Modifiers">
-/// The hand-set stat block the variant arrives with, sorted by label. It is present when the
-/// fixed transformation is measured. An unmeasured Mercenary row omits it. Every other route
-/// carries it.
+/// The hand-set stat block the variant arrives with, sorted by label. Every catalogued variant
+/// carries this block.
 /// </param>
 public sealed record PreEngineeredVariant(
     string Symbol,

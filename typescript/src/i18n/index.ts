@@ -42,7 +42,7 @@
  * | `getPersonalWeaponDescription` | 11 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getSuitDescription` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
  * | `getSuitName` | 19 | 100 | 100 | 100 | 100 | 100 | 100 |
- * | `getPreEngineeredVariantName` | 80 | 100 | 92 | 90 | 90 | 100 | 100 |
+ * | `getPreEngineeredVariantName` | 79 | 100 | 92 | 89 | 89 | 100 | 100 |
  * | `getOutfittingFamilyName` | 77 | 100 | 75 | 75 | 75 | 75 | 75 |
  * <!-- end generated -->
  *

@@ -143,8 +143,7 @@ export interface PreEngineeredVariant {
     /**
      * The hand-set stat block the variant arrives with, sorted by `label`.
      *
-     * Present when the fixed transformation is measured. An unmeasured Mercenary row omits it.
-     * Every community-goal, tech-broker and event-reward row carries it.
+     * Every catalogued variant carries this block.
      */
     readonly modifiers?: readonly PreEngineeredModifier[];
 }

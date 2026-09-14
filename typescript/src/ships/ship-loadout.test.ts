@@ -6461,26 +6461,6 @@ test('a burst-pattern variant identifies before and after export', () => {
     );
 });
 
-test('an unmeasured Mercenary variant omits its modifier block', () => {
-    const variant = getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Large').find(
-        (candidate) => candidate.blueprintSymbol === 'SeekerMissileRack_Drag',
-    )!;
-    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('LargeHardpoint1', variant);
-    const fitted = build.fittedModuleAt('LargeHardpoint1')!;
-
-    assert.deepEqual(fitted.engineering, {
-        BlueprintName: variant.blueprintSymbol,
-        Level: variant.grade,
-        Quality: 1,
-        ExperimentalEffect: variant.experimentalEffectSymbol,
-    });
-    assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'));
-    assert.equal(fitted.preEngineeredVariant, variant);
-
-    build.clearEngineering('PowerDistributor');
-    assert.equal(build.fittedModuleAt('PowerDistributor')!.preEngineeredVariant, null);
-});
-
 test('a fitted Mercenary article publishes what its baked effect moves', () => {
     // A fitted article publishes its measured fixed block and its baked effect together.
     let withMovedStats = 0;
@@ -6625,12 +6605,11 @@ test('a partial capture cannot invent a rate of fire the weapon has no cycle for
     assert.equal(rateFor(0), 1.670286);
 });
 
-test('completing a Merc article turns on whether it has a block to state', () => {
+test('completing a Merc article follows the modifiers it can state', () => {
     // A completed roll that states its modifiers is already whole, and one that states
     // none is rolled from its recipe — but a Merc purchase grade is not in any recipe.
-    // So the two halves of the shop answer differently, and each answer is the honest
-    // one: the rows whose baked effect moves a stat arrive at quality 1 already stating
-    // everything they move, while the rows that state nothing have nothing to roll.
+    // A row whose engineering moves a carried stat arrives at quality 1 and states that
+    // move. A row with no carried stat to state has nothing to roll.
     for (const variant of PRE_ENGINEERED_MODULES.filter(
         (candidate) => candidate.acquisition === 'mercenary',
     )) {

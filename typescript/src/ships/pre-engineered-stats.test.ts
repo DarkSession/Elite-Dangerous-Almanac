@@ -608,61 +608,6 @@ test('identity fields survive resolution — a variant is the same article', () 
     );
 });
 
-test('an unmeasured variant resolves to the base record and its baked effect', () => {
-    const baked = fixture.mercenaryBakedEffects;
-    const seen: { symbol: string; blueprintSymbol: string; experimentalEffectSymbol: string }[] =
-        [];
-    for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition !== 'mercenary' || variant.modifiers !== undefined) continue;
-        const stock = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
-        const resolved = getPreEngineeredStats(variant)!;
-        // A copy, never the frozen singleton: that would make this the one resolved
-        // record a consumer cannot adjust before fitting it.
-        assert.notEqual(resolved, stock);
-        assert.deepEqual(unresolvedModifiers(variant), []);
-        const effect = variant.experimentalEffectSymbol;
-        if (effect === undefined) {
-            assert.deepEqual(resolved, stock);
-            assert.deepEqual(getPreEngineeredModifiers(variant), []);
-            continue;
-        }
-        const expected = baked.variants.find(
-            (row) =>
-                row.symbol === variant.symbol && row.blueprintSymbol === variant.blueprintSymbol,
-        );
-        assert.ok(expected, `${variant.symbol}: ${variant.blueprintSymbol} is not a pinned row`);
-        assert.equal(variant.experimentalEffectSymbol, expected.experimentalEffectSymbol);
-        const moved = Object.keys(resolved).filter(
-            (key) =>
-                resolved[key as keyof OutfittingModule] !== stock[key as keyof OutfittingModule],
-        );
-        assert.deepEqual(moved.sort(), [...expected.movedStats].sort(), variant.symbol);
-        seen.push({
-            symbol: variant.symbol,
-            blueprintSymbol: variant.blueprintSymbol,
-            experimentalEffectSymbol: effect,
-        });
-    }
-    // ...and the pinned set is exactly the rows the catalogue carries, so a row that
-    // quietly gains or loses its baked effect fails here rather than passing unnoticed.
-    const effectOnly = baked.variants.filter(({ symbol, blueprintSymbol }) => {
-        const variant = PRE_ENGINEERED_MODULES.find(
-            (candidate) =>
-                candidate.symbol === symbol && candidate.blueprintSymbol === blueprintSymbol,
-        );
-        return variant?.modifiers === undefined;
-    });
-    assert.equal(seen.length, effectOnly.length);
-    assert.deepEqual(
-        seen,
-        effectOnly.map(({ symbol, blueprintSymbol, experimentalEffectSymbol }) => ({
-            symbol,
-            blueprintSymbol,
-            experimentalEffectSymbol,
-        })),
-    );
-});
-
 test('a measured Merc row composes its fixed transformation with its baked effect', () => {
     // Feedback Cascade changes Damage and ThermalLoad after the fixed grade-one
     // transformation changes those same stats.
@@ -680,14 +625,12 @@ test('a measured Merc row composes its fixed transformation with its baked effec
     }
 });
 
-test('both resolution paths hand back a record the caller owns', () => {
-    // One return type, one mutability contract: whether the variant had a stat block to
-    // apply must not decide whether writing to the result throws.
-    const withoutStatBlock = PRE_ENGINEERED_MODULES.find(
+test('resolved records belong to the caller', () => {
+    const mercenary = PRE_ENGINEERED_MODULES.find(
         (variant) => variant.acquisition === 'mercenary',
     )!;
-    const withStatBlock = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium')[0]!;
-    for (const variant of [withoutStatBlock, withStatBlock]) {
+    const techBroker = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium')[0]!;
+    for (const variant of [mercenary, techBroker]) {
         const resolved = getPreEngineeredStats(variant)!;
         assert.equal(Object.isFrozen(resolved), false, variant.symbol);
         (resolved as { mass?: number }).mass = 999;

@@ -439,9 +439,9 @@ test('a (symbol, blueprint, grade, experimental) tuple appears at most once', ()
 test('one blueprint can be sold on more than one base module', () => {
     assert.deepEqual(
         PRE_ENGINEERED_MODULES.filter(
-            (variant) => variant.blueprintSymbol === 'SeekerMissileRack_Drag',
+            (variant) => variant.blueprintSymbol === 'CargoRack_IncreasedCapacity',
         ).map((variant) => variant.symbol),
-        ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large'],
+        ['Int_CargoRack_Size5_Class1', 'Int_CargoRack_Size6_Class1'],
     );
 });
 
@@ -483,15 +483,9 @@ test('a Merc Coin price is carried by exactly the rows that are bought with one'
     assert.equal(Math.max(...priced.map((v) => v.mercCoinCost!)), fixture.mercCoin.dearest);
 });
 
-test('a stat block is carried by each measured fixed article', () => {
+test('every catalogued variant carries a stat block', () => {
     const withMods = PRE_ENGINEERED_MODULES.filter((v) => v.modifiers !== undefined);
     assert.equal(withMods.length, fixture.modifierCounts.withModifiers);
-    assert.ok(
-        PRE_ENGINEERED_MODULES.filter((v) => v.acquisition !== 'mercenary').every(
-            (v) => v.modifiers !== undefined,
-        ),
-    );
-    assert.ok(withMods.some((v) => v.acquisition === 'mercenary'));
     assert.equal(
         PRE_ENGINEERED_MODULES.filter((v) => v.modifiers === undefined).length,
         fixture.modifierCounts.withoutModifiers,
