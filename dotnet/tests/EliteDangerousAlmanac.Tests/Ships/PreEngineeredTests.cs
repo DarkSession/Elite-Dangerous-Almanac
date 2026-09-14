@@ -414,6 +414,7 @@ public class PreEngineeredTests
         if (expected.Displayed is DisplayedPanelFixture panel)
         {
             AssertReading(panel.Mass, resolved, ModuleStat.Mass);
+            AssertReading(panel.Integrity, resolved, ModuleStat.Integrity);
             AssertReading(panel.PowerDraw, resolved, ModuleStat.PowerDraw);
             AssertReading(panel.DistributorDraw, resolved, ModuleStat.DistributorDraw);
             AssertReading(panel.ThermalLoad, resolved, ModuleStat.ThermalLoad);
@@ -424,9 +425,19 @@ public class PreEngineeredTests
             AssertReading(panel.FalloffRange, resolved, ModuleStat.FalloffRange);
             AssertReading(panel.Damage, resolved, ModuleStat.Damage);
             AssertReading(panel.RateOfFire, resolved, ModuleStat.RateOfFire);
+            AssertReading(panel.BurstRounds, resolved, ModuleStat.BurstRounds);
             AssertReading(panel.ClipSize, resolved, ModuleStat.ClipSize);
             AssertReading(panel.AmmoMaximum, resolved, ModuleStat.AmmoMaximum);
             AssertReading(panel.CargoCapacity, resolved, ModuleStat.CargoCapacity);
+            AssertReading(panel.ReloadTime, resolved, ModuleStat.ReloadTime);
+            AssertReading(panel.ModuleProtection, resolved, ModuleStat.ModuleProtection);
+            AssertReading(panel.WeaponsCapacity, resolved, ModuleStat.WeaponsCapacity);
+            AssertReading(panel.WeaponsRecharge, resolved, ModuleStat.WeaponsRecharge);
+            AssertReading(panel.EnginesCapacity, resolved, ModuleStat.EnginesCapacity);
+            AssertReading(panel.EnginesRecharge, resolved, ModuleStat.EnginesRecharge);
+            AssertReading(panel.SystemsCapacity, resolved, ModuleStat.SystemsCapacity);
+            AssertReading(panel.SystemsRecharge, resolved, ModuleStat.SystemsRecharge);
+            AssertReading(panel.ProbeRadius, resolved, ModuleStat.ProbeRadius);
 
             if (panel.DamagePerSecond is PanelReading rate)
             {

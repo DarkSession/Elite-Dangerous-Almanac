@@ -959,8 +959,8 @@
         "slot": "SmallHardpoint1",
         "modifiers": null,
         "stats": {
-          "maximumRange": 1000,
-          "shotSpeed": 667
+          "maximumRange": 1400,
+          "shotSpeed": 933.799988
         },
         "outcomes": []
       }

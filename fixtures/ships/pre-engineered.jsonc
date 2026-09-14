@@ -33,11 +33,11 @@
     "eventReward": 3
   },
   "modifierCounts": {
-    "withModifiers": 59,
-    "withoutModifiers": 21,
+    "withModifiers": 79,
+    "withoutModifiers": 1,
     "withMercCoinCost": 26,
-    "mercenaryWithResolvedStats": 12,
-    "withStatedRateOfFire": 17
+    "mercenaryWithResolvedStats": 25,
+    "withStatedRateOfFire": 24
   },
   "engineeringLocked": {
     "count": 12,
@@ -86,6 +86,7 @@
     "CargoCapacity",
     "DSS_PatchRadius",
     "Damage",
+    "DamageProtection",
     "DistributorDraw",
     "EnginesCapacity",
     "EnginesRecharge",
@@ -101,6 +102,7 @@
     "MaximumRange",
     "PowerCapacity",
     "PowerDraw",
+    "ProbeRadius",
     "RateOfFire",
     "ReloadTime",
     "RoundsPerShot",
@@ -115,7 +117,7 @@
     "WeaponsRecharge"
   ],
   "mercenaryBakedEffects": {
-    "count": 12,
+    "count": 13,
     "variants": [
       {
         "symbol": "Hpt_Slugshot_Gimbal_Small",
@@ -188,6 +190,12 @@
         "blueprintSymbol": "Cannon_ForceImpact",
         "experimentalEffectSymbol": "special_force_shell",
         "movedStats": ["shotSpeed"]
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+        "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+        "experimentalEffectSymbol": "special_drag_munitions",
+        "movedStats": []
       }
     ],
     "resolved": {
@@ -198,29 +206,64 @@
         "thermalLoad": 20
       },
       "engineered": {
-        "damage": 33.223999,
-        "thermalLoad": 12
+        "damage": 38.99667,
+        "thermalLoad": 19.200001
       },
       "journalModifiers": [
         {
+          "Label": "Mass",
+          "Value": 4.9,
+          "OriginalValue": 4
+        },
+        {
+          "Label": "PowerDraw",
+          "Value": 1.77181,
+          "OriginalValue": 1.63
+        },
+        {
           "Label": "DamagePerSecond",
-          "Value": 40.028915,
+          "Value": 48.957253,
           "OriginalValue": 50.036144
         },
         {
           "Label": "Damage",
-          "Value": 33.223999,
+          "Value": 38.99667,
           "OriginalValue": 41.529999
         },
         {
           "Label": "ThermalLoad",
-          "Value": 12,
+          "Value": 19.200001,
           "OriginalValue": 20
+        },
+        {
+          "Label": "MaximumRange",
+          "Value": 3300,
+          "OriginalValue": 3000
+        },
+        {
+          "Label": "RateOfFire",
+          "Value": 1.255421,
+          "OriginalValue": 1.204819
+        },
+        {
+          "Label": "AmmoMaximum",
+          "Value": 88,
+          "OriginalValue": 80
+        },
+        {
+          "Label": "ReloadTime",
+          "Value": 1.062,
+          "OriginalValue": 1
+        },
+        {
+          "Label": "DamageFalloffRange",
+          "Value": 1319.999878,
+          "OriginalValue": 1000
         }
       ]
     }
   },
-  "maxModifierDecimalPlaces": 5,
+  "maxModifierDecimalPlaces": 6,
   "burstIntervalVariants": {
     "count": 15,
     "variants": [
@@ -230,9 +273,9 @@
         "grade": 1,
         "experimentalEffectSymbol": "special_fsd_interrupt",
         "stockBurstInterval": 3,
-        "burstInterval": 4.5,
-        "rateOfFire": 0.222222,
-        "blockRateOfFire": 0.222222
+        "burstInterval": 4.455,
+        "rateOfFire": 0.224467,
+        "blockRateOfFire": 0.224467
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -240,9 +283,9 @@
         "grade": 1,
         "experimentalEffectSymbol": "special_fsd_interrupt",
         "stockBurstInterval": 3,
-        "burstInterval": 4.5,
-        "rateOfFire": 0.222222,
-        "blockRateOfFire": 0.222222
+        "burstInterval": 4.455,
+        "rateOfFire": 0.224467,
+        "blockRateOfFire": 0.224467
       },
       {
         "symbol": "Hpt_Slugshot_Gimbal_Small",
@@ -377,7 +420,7 @@
     ]
   },
   "authoredStats": {
-    "count": 20,
+    "count": 23,
     "note": "Modifiers stored as an `overwrite` of the resulting stat rather than a multiplier, because that is what the game authored — see SOURCES.md. Each must resolve to exactly its stored value."
   },
   "fullyUnresolved": {
@@ -400,7 +443,11 @@
       "mercCoinCost": 950,
       "modifiers": [
         { "label": "Damage", "method": "multiplicative", "value": 0.1 },
-        { "label": "DistributorDraw", "method": "multiplicative", "value": 0.25 },
+        {
+          "label": "DistributorDraw",
+          "method": "multiplicative",
+          "value": 0.25
+        },
         { "label": "Mass", "method": "multiplicative", "value": 0.5 },
         { "label": "PowerDraw", "method": "multiplicative", "value": 0.125 },
         { "label": "ThermalLoad", "method": "multiplicative", "value": 0.095 }
@@ -416,8 +463,16 @@
       "mercCoinCost": 750,
       "modifiers": [
         { "label": "Damage", "method": "multiplicative", "value": 0.04 },
-        { "label": "DistributorDraw", "method": "multiplicative", "value": 0.138 },
-        { "label": "FalloffRange", "method": "multiplicative", "value": -0.472 },
+        {
+          "label": "DistributorDraw",
+          "method": "multiplicative",
+          "value": 0.138
+        },
+        {
+          "label": "FalloffRange",
+          "method": "multiplicative",
+          "value": -0.472
+        },
         { "label": "MaximumRange", "method": "multiplicative", "value": 0.1 },
         { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
         { "label": "RateOfFire", "method": "multiplicative", "value": 0.02 }
@@ -436,7 +491,11 @@
         { "label": "AmmoClipSize", "method": "multiplicative", "value": 0.167 },
         { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.058 },
         { "label": "Damage", "method": "multiplicative", "value": -0.35 },
-        { "label": "DistributorDraw", "method": "multiplicative", "value": 0.1 },
+        {
+          "label": "DistributorDraw",
+          "method": "multiplicative",
+          "value": 0.1
+        },
         { "label": "Mass", "method": "multiplicative", "value": 0.25 },
         { "label": "PowerDraw", "method": "multiplicative", "value": 0.15 },
         { "label": "RateOfFire", "method": "multiplicative", "value": -0.143 }
@@ -448,7 +507,26 @@
       "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
       "grade": 1,
       "acquisition": "mercenary",
-      "mercCoinCost": 800
+      "experimentalEffectSymbol": "special_drag_munitions",
+      "mercCoinCost": 800,
+      "modifiers": [
+        {
+          "label": "AmmoClipSize",
+          "method": "multiplicative",
+          "value": 0.166667
+        },
+        {
+          "label": "AmmoMaximum",
+          "method": "multiplicative",
+          "value": 0.055556
+        },
+        { "label": "Damage", "method": "multiplicative", "value": -0.04 },
+        { "label": "Mass", "method": "multiplicative", "value": 0.35 },
+        { "label": "PowerDraw", "method": "multiplicative", "value": 0.125 },
+        { "label": "RateOfFire", "method": "multiplicative", "value": 0.036 },
+        { "label": "ReloadTime", "method": "multiplicative", "value": -0.05 },
+        { "label": "ThermalLoad", "method": "multiplicative", "value": 1.04 }
+      ]
     },
     {
       "symbol": "Int_CargoRack_Size5_Class1",
@@ -458,7 +536,11 @@
       "acquisition": "mercenary",
       "mercCoinCost": 550,
       "modifiers": [
-        { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+        {
+          "label": "CargoCapacity",
+          "method": "multiplicative",
+          "value": 0.09375
+        }
       ]
     },
     {
@@ -469,7 +551,11 @@
       "acquisition": "mercenary",
       "mercCoinCost": 550,
       "modifiers": [
-        { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+        {
+          "label": "CargoCapacity",
+          "method": "multiplicative",
+          "value": 0.09375
+        }
       ]
     },
     {
@@ -479,7 +565,18 @@
       "grade": 1,
       "acquisition": "mercenary",
       "experimentalEffectSymbol": "special_feedback_cascade_cooled",
-      "mercCoinCost": 950
+      "mercCoinCost": 950,
+      "modifiers": [
+        { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.1 },
+        { "label": "Damage", "method": "multiplicative", "value": 0.17375 },
+        { "label": "FalloffRange", "method": "multiplicative", "value": 0.32 },
+        { "label": "Mass", "method": "multiplicative", "value": 0.225 },
+        { "label": "MaximumRange", "method": "multiplicative", "value": 0.1 },
+        { "label": "PowerDraw", "method": "multiplicative", "value": 0.087 },
+        { "label": "RateOfFire", "method": "multiplicative", "value": 0.042 },
+        { "label": "ReloadTime", "method": "multiplicative", "value": 0.062 },
+        { "label": "ThermalLoad", "method": "multiplicative", "value": 0.6 }
+      ]
     },
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -577,7 +674,42 @@
       "blueprintSymbol": "PowerDistributor_Balanced",
       "grade": 1,
       "acquisition": "mercenary",
-      "mercCoinCost": 500
+      "mercCoinCost": 500,
+      "modifiers": [
+        {
+          "label": "EnginesCapacity",
+          "method": "multiplicative",
+          "value": 0.021
+        },
+        {
+          "label": "EnginesRecharge",
+          "method": "multiplicative",
+          "value": 0.023
+        },
+        { "label": "Integrity", "method": "multiplicative", "value": -0.0125 },
+        { "label": "Mass", "method": "multiplicative", "value": 0.025 },
+        { "label": "PowerDraw", "method": "multiplicative", "value": -0.01 },
+        {
+          "label": "SystemsCapacity",
+          "method": "multiplicative",
+          "value": 0.021
+        },
+        {
+          "label": "SystemsRecharge",
+          "method": "multiplicative",
+          "value": 0.023
+        },
+        {
+          "label": "WeaponsCapacity",
+          "method": "multiplicative",
+          "value": 0.021
+        },
+        {
+          "label": "WeaponsRecharge",
+          "method": "multiplicative",
+          "value": 0.023
+        }
+      ]
     },
     {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
@@ -753,6 +885,434 @@
     "acquisitions": ["communityGoal", "techBroker"]
   },
   "resolved": {
+    "farReachingAbrasionBlasterG1": {
+      "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+      "blueprintSymbol": "AbrasionBlaster_FarReaching",
+      "engineered": {
+        "powerDraw": 0.2975,
+        "distributorDraw": 1.75,
+        "thermalLoad": 1.9,
+        "maximumRange": 1400,
+        "shotSpeed": 933.799988,
+        "falloffRange": 420.000031
+      },
+      "displayed": {
+        "powerDraw": 0.3,
+        "distributorDraw": 1.75,
+        "thermalLoad": 1.9,
+        "maximumRange": 1400,
+        "falloffRange": 420
+      }
+    },
+    "highYieldEnzymeMissileRackG1": {
+      "symbol": "Hpt_CausticMissile_Fixed_Medium",
+      "blueprintSymbol": "EnzymeMissileRack_HighYield",
+      "engineered": {
+        "mass": 4.6,
+        "powerDraw": 1.26,
+        "damage": 5.25,
+        "clipSize": 9,
+        "ammoMaximum": 65
+      },
+      "displayed": {
+        "mass": 4.6,
+        "powerDraw": 1.26,
+        "damagePerSecond": 2.6,
+        "damage": 5.2,
+        "clipSize": 9,
+        "ammoMaximum": 65
+      }
+    },
+    "doubleScreamingFragmentCannonSmallG1": {
+      "symbol": "Hpt_Slugshot_Gimbal_Small",
+      "blueprintSymbol": "FragmentCannonSmall_DoubleScreaming",
+      "engineered": {
+        "mass": 2.3,
+        "powerDraw": 0.6195,
+        "maximumRange": 1950,
+        "rateOfFire": 2.264706,
+        "burstRounds": 2,
+        "clipSize": 4,
+        "ammoMaximum": 192,
+        "reloadTime": 2.5
+      },
+      "displayed": {
+        "mass": 2.3,
+        "powerDraw": 0.62,
+        "damagePerSecond": 27.4,
+        "maximumRange": 1950,
+        "rateOfFire": 2.3,
+        "burstRounds": 2,
+        "clipSize": 4,
+        "ammoMaximum": 192,
+        "reloadTime": 2.5
+      }
+    },
+    "doubleScreamingFragmentCannonLargeG1": {
+      "symbol": "Hpt_Slugshot_Gimbal_Large",
+      "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
+      "engineered": {
+        "mass": 9.2,
+        "powerDraw": 1.6275,
+        "maximumRange": 1950,
+        "rateOfFire": 2.166667,
+        "burstRounds": 2,
+        "clipSize": 4,
+        "ammoMaximum": 192,
+        "reloadTime": 2.5
+      },
+      "displayed": {
+        "mass": 9.2,
+        "powerDraw": 1.63,
+        "damagePerSecond": 98,
+        "maximumRange": 1950,
+        "rateOfFire": 2.2,
+        "burstRounds": 2,
+        "clipSize": 4,
+        "ammoMaximum": 192,
+        "reloadTime": 2.5
+      }
+    },
+    "longRangeMiningLaserG1": {
+      "symbol": "Hpt_MiningLaser_Fixed_Small",
+      "blueprintSymbol": "MiningLaser_LongRange",
+      "engineered": {
+        "integrity": 35,
+        "powerDraw": 0.475,
+        "damage": 1.9,
+        "distributorDraw": 1.425,
+        "thermalLoad": 5.502,
+        "maximumRange": 700,
+        "falloffRange": 210
+      },
+      "displayed": {
+        "integrity": 35,
+        "powerDraw": 0.47,
+        "damagePerSecond": 1.9,
+        "distributorDraw": 1.42,
+        "thermalLoad": 5.5,
+        "maximumRange": 700,
+        "falloffRange": 210
+      }
+    },
+    "rapidPhaseMultiCannonG1": {
+      "symbol": "Hpt_MultiCannon_Fixed_Medium",
+      "blueprintSymbol": "MultiCannon_Rapid",
+      "engineered": {
+        "damage": 1.971,
+        "maximumRange": 3500,
+        "rateOfFire": 7.692857,
+        "clipSize": 130,
+        "ammoMaximum": 2530,
+        "jitter": 0.75,
+        "falloffRange": 315
+      },
+      "displayed": {
+        "damagePerSecond": 15.2,
+        "damage": 2,
+        "maximumRange": 3500,
+        "rateOfFire": 7.7,
+        "clipSize": 130,
+        "ammoMaximum": 2530,
+        "jitter": 0.75,
+        "falloffRange": 315
+      }
+    },
+    "enduringFeedbackRailGunG1": {
+      "symbol": "Hpt_Railgun_Fixed_Medium",
+      "blueprintSymbol": "RailGun_LongShot",
+      "engineered": {
+        "mass": 4.9,
+        "powerDraw": 1.77181,
+        "damage": 38.99667,
+        "thermalLoad": 19.200001,
+        "maximumRange": 3300,
+        "rateOfFire": 1.255421,
+        "ammoMaximum": 88,
+        "reloadTime": 1.062,
+        "falloffRange": 1319.999878
+      },
+      "displayed": {
+        "mass": 4.9,
+        "powerDraw": 1.77,
+        "damage": 39,
+        "thermalLoad": 19.2,
+        "maximumRange": 3300,
+        "rateOfFire": 1.3,
+        "ammoMaximum": 88,
+        "reloadTime": 1.1,
+        "falloffRange": 1320
+      }
+    },
+    "dragSeekerMissileRackMediumG1": {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+      "blueprintSymbol": "SeekerMissileRack_Drag",
+      "engineered": {
+        "mass": 5.5,
+        "powerDraw": 1.275,
+        "distributorDraw": 0.265,
+        "rateOfFire": 0.34,
+        "clipSize": 8,
+        "ammoMaximum": 21
+      },
+      "displayed": {
+        "mass": 5.5,
+        "powerDraw": 1.27,
+        "damagePerSecond": 13.6,
+        "distributorDraw": 0.27,
+        "rateOfFire": 0.3,
+        "clipSize": 8,
+        "ammoMaximum": 21
+      }
+    },
+    "lightweightThermalSeekerMissileRackG1": {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+      "blueprintSymbol": "SeekerMissileRack_LightWeightThermal",
+      "engineered": {
+        "mass": 3.64,
+        "integrity": 43.350002,
+        "powerDraw": 1.176,
+        "distributorDraw": 0.2304,
+        "rateOfFire": 0.336666,
+        "clipSize": 7,
+        "ammoMaximum": 19
+      },
+      "displayed": {
+        "mass": 3.64,
+        "integrity": 43,
+        "powerDraw": 1.18,
+        "damagePerSecond": 13.5,
+        "distributorDraw": 0.23,
+        "rateOfFire": 0.3,
+        "clipSize": 7,
+        "ammoMaximum": 19
+      }
+    },
+    "lockdownSeekerMissileRackMediumG1": {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+      "blueprintSymbol": "SeekerMissileRackMedium_Lockdown",
+      "engineered": {
+        "mass": 5.2,
+        "integrity": 56.100002,
+        "powerDraw": 1.29,
+        "damage": 28.960009,
+        "thermalLoad": 3.564,
+        "armourPiercing": 62.399998,
+        "rateOfFire": 0.224467,
+        "clipSize": 7,
+        "ammoMaximum": 19
+      },
+      "displayed": {
+        "mass": 5.2,
+        "integrity": 56,
+        "powerDraw": 1.29,
+        "damagePerSecond": 6.5,
+        "damage": 29,
+        "thermalLoad": 3.6,
+        "armourPiercing": 62,
+        "rateOfFire": 0.2,
+        "clipSize": 7,
+        "ammoMaximum": 19
+      }
+    },
+    "lockdownSeekerMissileRackLargeG1": {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+      "blueprintSymbol": "SeekerMissileRackLarge_Lockdown",
+      "engineered": {
+        "mass": 10.4,
+        "integrity": 70.400002,
+        "powerDraw": 1.7415,
+        "damage": 28.960009,
+        "thermalLoad": 3.564,
+        "armourPiercing": 62.399998,
+        "rateOfFire": 0.224467,
+        "clipSize": 7,
+        "ammoMaximum": 39
+      },
+      "displayed": {
+        "mass": 10.4,
+        "integrity": 70,
+        "powerDraw": 1.74,
+        "damagePerSecond": 6.5,
+        "damage": 29,
+        "thermalLoad": 3.6,
+        "armourPiercing": 62,
+        "rateOfFire": 0.2,
+        "clipSize": 7,
+        "ammoMaximum": 39
+      }
+    },
+    "exposingMissilesG1": {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+      "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+      "engineered": {
+        "mass": 10.8,
+        "powerDraw": 1.8225,
+        "damage": 38.399998,
+        "thermalLoad": 7.344,
+        "rateOfFire": 0.345333,
+        "clipSize": 7,
+        "ammoMaximum": 38,
+        "reloadTime": 11.4
+      },
+      "displayed": {
+        "mass": 10.8,
+        "powerDraw": 1.82,
+        "damagePerSecond": 13.3,
+        "damage": 38.4,
+        "thermalLoad": 7.3,
+        "rateOfFire": 0.3,
+        "clipSize": 7,
+        "ammoMaximum": 38,
+        "reloadTime": 11.4
+      }
+    },
+    "longRangeDetailedSurfaceScannerG1": {
+      "symbol": "Int_DetailedSurfaceScanner_Tiny",
+      "blueprintSymbol": "DetailedSurfaceScanner_LongRange",
+      "engineered": { "probeRadius": 22 },
+      "displayed": { "probeRadius": 22 }
+    },
+    "heavyDutyModuleReinforcementG1": {
+      "symbol": "Int_ModuleReinforcement_Size5_Class2",
+      "blueprintSymbol": "ModuleReinforcement_HeavyDuty",
+      "engineered": {
+        "mass": 20,
+        "integrity": 358.75,
+        "moduleProtection": 0.615
+      },
+      "displayed": {
+        "mass": 20,
+        "integrity": 359,
+        "moduleProtection": 0.62
+      }
+    },
+    "supportFocusedPowerDistributorSize3Class2G1": {
+      "symbol": "Int_PowerDistributor_Size3_Class2",
+      "blueprintSymbol": "PowerDistributorS3C2_SupportFocused",
+      "engineered": {
+        "weaponsCapacity": 16.875,
+        "weaponsRecharge": 1.995,
+        "enginesCapacity": 14.629999,
+        "enginesRecharge": 1.04,
+        "systemsCapacity": 14.629999,
+        "systemsRecharge": 1.04
+      },
+      "displayed": {
+        "weaponsCapacity": 16.87,
+        "weaponsRecharge": 2,
+        "enginesCapacity": 14.63,
+        "enginesRecharge": 1.04,
+        "systemsCapacity": 14.63,
+        "systemsRecharge": 1.04
+      }
+    },
+    "supportFocusedPowerDistributorSize3Class5G1": {
+      "symbol": "Int_PowerDistributor_Size3_Class5",
+      "blueprintSymbol": "PowerDistributorS3C5_SupportFocused",
+      "engineered": {
+        "weaponsCapacity": 22.5,
+        "weaponsRecharge": 2.66,
+        "enginesCapacity": 18.809999,
+        "enginesRecharge": 1.352,
+        "systemsCapacity": 18.809999,
+        "systemsRecharge": 1.352
+      },
+      "displayed": {
+        "weaponsCapacity": 22.5,
+        "weaponsRecharge": 2.66,
+        "enginesCapacity": 18.81,
+        "enginesRecharge": 1.35,
+        "systemsCapacity": 18.81,
+        "systemsRecharge": 1.35
+      }
+    },
+    "supportFocusedPowerDistributorSize4Class2G1": {
+      "symbol": "Int_PowerDistributor_Size4_Class2",
+      "blueprintSymbol": "PowerDistributorS4C2_SupportFocused",
+      "engineered": {
+        "weaponsCapacity": 22.5,
+        "weaponsRecharge": 2.47,
+        "enginesCapacity": 17.764999,
+        "enginesRecharge": 1.456,
+        "systemsCapacity": 17.764999,
+        "systemsRecharge": 1.456
+      },
+      "displayed": {
+        "weaponsCapacity": 22.5,
+        "weaponsRecharge": 2.47,
+        "enginesCapacity": 17.76,
+        "enginesRecharge": 1.46,
+        "systemsCapacity": 17.76,
+        "systemsRecharge": 1.46
+      }
+    },
+    "supportFocusedPowerDistributorSize4Class5G1": {
+      "symbol": "Int_PowerDistributor_Size4_Class5",
+      "blueprintSymbol": "PowerDistributorS4C5_SupportFocused",
+      "engineered": {
+        "weaponsCapacity": 30,
+        "weaponsRecharge": 3.325,
+        "enginesCapacity": 24.035,
+        "enginesRecharge": 1.976,
+        "systemsCapacity": 24.035,
+        "systemsRecharge": 1.976
+      },
+      "displayed": {
+        "weaponsCapacity": 30,
+        "weaponsRecharge": 3.33,
+        "enginesCapacity": 24.03,
+        "enginesRecharge": 1.98,
+        "systemsCapacity": 24.03,
+        "systemsRecharge": 1.98
+      }
+    },
+    "balancedPowerDistributorSize5Class5G1": {
+      "symbol": "Int_PowerDistributor_Size5_Class5",
+      "blueprintSymbol": "PowerDistributor_Balanced",
+      "engineered": {
+        "mass": 20.5,
+        "integrity": 104.675003,
+        "powerDraw": 0.7326,
+        "weaponsCapacity": 41.861,
+        "weaponsRecharge": 4.3989,
+        "enginesCapacity": 29.609001,
+        "enginesRecharge": 2.5575,
+        "systemsCapacity": 29.609001,
+        "systemsRecharge": 2.5575
+      },
+      "displayed": {
+        "mass": 20.5,
+        "integrity": 105,
+        "powerDraw": 0.73,
+        "weaponsCapacity": 41.86,
+        "weaponsRecharge": 4.4,
+        "enginesCapacity": 29.6,
+        "enginesRecharge": 2.56,
+        "systemsCapacity": 29.6,
+        "systemsRecharge": 2.56
+      }
+    },
+    "supportFocusedPowerDistributorSize6Class5G1": {
+      "symbol": "Int_PowerDistributor_Size6_Class5",
+      "blueprintSymbol": "PowerDistributorS6C5_SupportFocused",
+      "engineered": {
+        "weaponsCapacity": 46.875,
+        "weaponsRecharge": 4.94,
+        "enginesCapacity": 36.574997,
+        "enginesRecharge": 3.328,
+        "systemsCapacity": 36.574997,
+        "systemsRecharge": 3.328
+      },
+      "displayed": {
+        "weaponsCapacity": 46.88,
+        "weaponsRecharge": 4.94,
+        "enginesCapacity": 36.57,
+        "enginesRecharge": 3.33,
+        "systemsCapacity": 36.57,
+        "systemsRecharge": 3.33
+      }
+    },
     "overloadedBeamLaserG1": {
       "symbol": "Hpt_BeamLaser_Fixed_Huge",
       "blueprintSymbol": "BeamLaser_Overloaded",

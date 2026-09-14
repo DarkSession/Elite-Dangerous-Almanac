@@ -24,7 +24,7 @@
     "Hpt_BeamLaser_Fixed_Huge|BeamLaser_Overloaded||mercenary": "Overloaded Beam laser",
     "Hpt_PulseLaserBurst_Gimbal_Medium|BurstLaser_Regenerative|special_regeneration_sequence|mercenary": "Regenerative Burst Laser",
     "Hpt_Cannon_Fixed_Huge|Cannon_ForceImpact|special_force_shell|mercenary": "Force Impact Cannon",
-    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRackLarge_ExposingMissiles||mercenary": "Exposing Missiles",
+    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRackLarge_ExposingMissiles|special_drag_munitions|mercenary": "Exposing Missiles",
     "Int_CargoRack_Size5_Class1|CargoRackS5C1_Extended||mercenary": "Extended Cargo Rack",
     "Int_CargoRack_Size6_Class1|CargoRackS6C1_Extended||mercenary": "Extended Cargo Rack",
     "Int_DetailedSurfaceScanner_Tiny|DetailedSurfaceScanner_LongRange||mercenary": "Long Range Detailed Surface Scanner",

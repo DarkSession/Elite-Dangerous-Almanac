@@ -900,7 +900,7 @@ type FixtureI18nDisplayText = {
         variant: {
             acquisition: string;
             blueprintSymbol: string;
-            experimentalEffectSymbol?: null | string;
+            experimentalEffectSymbol?: string | null;
             symbol: string;
         };
     }[];
@@ -4969,7 +4969,7 @@ type FixtureShipsPreEngineered = {
         experimentalEffectSymbol?: string;
         grade: number;
         mercCoinCost?: number;
-        modifiers?: {
+        modifiers: {
             label: string;
             method: string;
             value: number;
@@ -4978,6 +4978,154 @@ type FixtureShipsPreEngineered = {
         symbol: string;
     }[];
     resolved: {
+        balancedPowerDistributorSize5Class5G1: {
+            blueprintSymbol: string;
+            displayed: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            engineered: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            symbol: string;
+        };
+        doubleScreamingFragmentCannonLargeG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                burstRounds: number;
+                clipSize: number;
+                damagePerSecond: number;
+                mass: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                burstRounds: number;
+                clipSize: number;
+                mass: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+            };
+            symbol: string;
+        };
+        doubleScreamingFragmentCannonSmallG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                burstRounds: number;
+                clipSize: number;
+                damagePerSecond: number;
+                mass: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                burstRounds: number;
+                clipSize: number;
+                mass: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+            };
+            symbol: string;
+        };
+        dragSeekerMissileRackMediumG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                clipSize: number;
+                damagePerSecond: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                clipSize: number;
+                distributorDraw: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
+            symbol: string;
+        };
+        enduringFeedbackRailGunG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                damage: number;
+                falloffRange: number;
+                mass: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                damage: number;
+                falloffRange: number;
+                mass: number;
+                maximumRange: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
+        exposingMissilesG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                damagePerSecond: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                reloadTime: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
         extendedCargoRackSize5G1: {
             base: {
                 cargoCapacity: number;
@@ -5001,6 +5149,25 @@ type FixtureShipsPreEngineered = {
             };
             engineered: {
                 cargoCapacity: number;
+            };
+            symbol: string;
+        };
+        farReachingAbrasionBlasterG1: {
+            blueprintSymbol: string;
+            displayed: {
+                distributorDraw: number;
+                falloffRange: number;
+                maximumRange: number;
+                powerDraw: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                distributorDraw: number;
+                falloffRange: number;
+                maximumRange: number;
+                powerDraw: number;
+                shotSpeed: number;
+                thermalLoad: number;
             };
             symbol: string;
         };
@@ -5149,6 +5316,148 @@ type FixtureShipsPreEngineered = {
             grade: number;
             symbol: string;
         };
+        heavyDutyModuleReinforcementG1: {
+            blueprintSymbol: string;
+            displayed: {
+                integrity: number;
+                mass: number;
+                moduleProtection: number;
+            };
+            engineered: {
+                integrity: number;
+                mass: number;
+                moduleProtection: number;
+            };
+            symbol: string;
+        };
+        highYieldEnzymeMissileRackG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                damagePerSecond: number;
+                mass: number;
+                powerDraw: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                mass: number;
+                powerDraw: number;
+            };
+            symbol: string;
+        };
+        lightweightThermalSeekerMissileRackG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                clipSize: number;
+                damagePerSecond: number;
+                distributorDraw: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                clipSize: number;
+                distributorDraw: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+            };
+            symbol: string;
+        };
+        lockdownSeekerMissileRackLargeG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                armourPiercing: number;
+                clipSize: number;
+                damage: number;
+                damagePerSecond: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                armourPiercing: number;
+                clipSize: number;
+                damage: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
+        lockdownSeekerMissileRackMediumG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                armourPiercing: number;
+                clipSize: number;
+                damage: number;
+                damagePerSecond: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                armourPiercing: number;
+                clipSize: number;
+                damage: number;
+                integrity: number;
+                mass: number;
+                powerDraw: number;
+                rateOfFire: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
+        longRangeDetailedSurfaceScannerG1: {
+            blueprintSymbol: string;
+            displayed: {
+                probeRadius: number;
+            };
+            engineered: {
+                probeRadius: number;
+            };
+            symbol: string;
+        };
+        longRangeMiningLaserG1: {
+            blueprintSymbol: string;
+            displayed: {
+                damagePerSecond: number;
+                distributorDraw: number;
+                falloffRange: number;
+                integrity: number;
+                maximumRange: number;
+                powerDraw: number;
+                thermalLoad: number;
+            };
+            engineered: {
+                damage: number;
+                distributorDraw: number;
+                falloffRange: number;
+                integrity: number;
+                maximumRange: number;
+                powerDraw: number;
+                thermalLoad: number;
+            };
+            symbol: string;
+        };
         overloadedBeamLaserG1: {
             base: {
                 damage: number;
@@ -5171,6 +5480,29 @@ type FixtureShipsPreEngineered = {
                 mass: number;
                 powerDraw: number;
                 thermalLoad: number;
+            };
+            symbol: string;
+        };
+        rapidPhaseMultiCannonG1: {
+            blueprintSymbol: string;
+            displayed: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                damagePerSecond: number;
+                falloffRange: number;
+                jitter: number;
+                maximumRange: number;
+                rateOfFire: number;
+            };
+            engineered: {
+                ammoMaximum: number;
+                clipSize: number;
+                damage: number;
+                falloffRange: number;
+                jitter: number;
+                maximumRange: number;
+                rateOfFire: number;
             };
             symbol: string;
         };
@@ -5200,6 +5532,106 @@ type FixtureShipsPreEngineered = {
                 maximumRange: number;
                 powerDraw: number;
                 rateOfFire: number;
+            };
+            symbol: string;
+        };
+        supportFocusedPowerDistributorSize3Class2G1: {
+            blueprintSymbol: string;
+            displayed: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            engineered: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            symbol: string;
+        };
+        supportFocusedPowerDistributorSize3Class5G1: {
+            blueprintSymbol: string;
+            displayed: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            engineered: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            symbol: string;
+        };
+        supportFocusedPowerDistributorSize4Class2G1: {
+            blueprintSymbol: string;
+            displayed: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            engineered: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            symbol: string;
+        };
+        supportFocusedPowerDistributorSize4Class5G1: {
+            blueprintSymbol: string;
+            displayed: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            engineered: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            symbol: string;
+        };
+        supportFocusedPowerDistributorSize6Class5G1: {
+            blueprintSymbol: string;
+            displayed: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
+            };
+            engineered: {
+                enginesCapacity: number;
+                enginesRecharge: number;
+                systemsCapacity: number;
+                systemsRecharge: number;
+                weaponsCapacity: number;
+                weaponsRecharge: number;
             };
             symbol: string;
         };

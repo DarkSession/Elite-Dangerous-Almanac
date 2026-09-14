@@ -29,10 +29,11 @@ import type { LoadoutEvent, LoadoutModule } from './slef.js';
 /** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */
 const round6 = (value: number): number => Math.round(value * 1e6) / 1e6;
 
-/** Round one value to the decimal places a panel reading carries. */
-const asDisplayed = (value: number, reading: number): number => {
+/** Test one value against the precision a panel reading carries. */
+const matchesDisplayed = (value: number, reading: number): boolean => {
     const places = String(reading).split('.')[1]?.length ?? 0;
-    return Number(value.toFixed(places));
+    const interval = 0.5 * 10 ** -places;
+    return Math.abs(value - reading) <= interval + Math.abs(reading) * 1.1920929e-7;
 };
 
 /** The one variant matching every field given — asserted unique so a pin cannot drift. */
@@ -460,6 +461,26 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
 
 test('observed Mercenary grade-one articles reproduce their panel values', () => {
     const observed = [
+        fixture.resolved.farReachingAbrasionBlasterG1,
+        fixture.resolved.highYieldEnzymeMissileRackG1,
+        fixture.resolved.doubleScreamingFragmentCannonSmallG1,
+        fixture.resolved.doubleScreamingFragmentCannonLargeG1,
+        fixture.resolved.longRangeMiningLaserG1,
+        fixture.resolved.rapidPhaseMultiCannonG1,
+        fixture.resolved.enduringFeedbackRailGunG1,
+        fixture.resolved.dragSeekerMissileRackMediumG1,
+        fixture.resolved.lightweightThermalSeekerMissileRackG1,
+        fixture.resolved.lockdownSeekerMissileRackMediumG1,
+        fixture.resolved.lockdownSeekerMissileRackLargeG1,
+        fixture.resolved.exposingMissilesG1,
+        fixture.resolved.longRangeDetailedSurfaceScannerG1,
+        fixture.resolved.heavyDutyModuleReinforcementG1,
+        fixture.resolved.supportFocusedPowerDistributorSize3Class2G1,
+        fixture.resolved.supportFocusedPowerDistributorSize3Class5G1,
+        fixture.resolved.supportFocusedPowerDistributorSize4Class2G1,
+        fixture.resolved.supportFocusedPowerDistributorSize4Class5G1,
+        fixture.resolved.balancedPowerDistributorSize5Class5G1,
+        fixture.resolved.supportFocusedPowerDistributorSize6Class5G1,
         fixture.resolved.overloadedBeamLaserG1,
         fixture.resolved.regenerativeBurstLaserG1,
         fixture.resolved.forceImpactCannonG1,
@@ -468,7 +489,7 @@ test('observed Mercenary grade-one articles reproduce their panel values', () =>
     ] as readonly {
         symbol: string;
         blueprintSymbol: string;
-        base: Record<string, number>;
+        base?: Record<string, number>;
         engineered: Record<string, number>;
         displayed: Record<string, number | string>;
     }[];
@@ -480,7 +501,7 @@ test('observed Mercenary grade-one articles reproduce their panel values', () =>
         });
         const stock = getModuleBySymbol(expected.symbol, ALL_MODULES)!;
         const resolved = getPreEngineeredStats(variant)!;
-        for (const [field, value] of Object.entries(expected.base)) {
+        for (const [field, value] of Object.entries(expected.base ?? {})) {
             assert.equal(stock[field as keyof OutfittingModule], value, `${field}: stock`);
         }
         for (const [field, value] of Object.entries(expected.engineered)) {
@@ -493,7 +514,7 @@ test('observed Mercenary grade-one articles reproduce their panel values', () =>
                     ? weaponMetrics(resolved).damagePerSecond
                     : resolved[field as keyof OutfittingModule];
             if (typeof value !== 'number') assert.fail(`${field}: no numeric value`);
-            assert.equal(asDisplayed(value, shown as number), shown, `${field}: panel`);
+            assert.ok(matchesDisplayed(value, shown as number), `${field}: panel`);
         }
     }
 
@@ -642,9 +663,9 @@ test('an unmeasured variant resolves to the base record and its baked effect', (
     );
 });
 
-test('an unmeasured Merc row resolves the stat values its baked effect produces', () => {
-    // The values, not just which stats moved: Feedback Cascade's own contribution over the
-    // stock rail gun, with no grade-1 blueprint transformation invented around it.
+test('a measured Merc row composes its fixed transformation with its baked effect', () => {
+    // Feedback Cascade changes Damage and ThermalLoad after the fixed grade-one
+    // transformation changes those same stats.
     const pinned = fixture.mercenaryBakedEffects.resolved;
     const variant = getPreEngineeredVariants(pinned.symbol).find(
         (candidate) => candidate.blueprintSymbol === pinned.blueprintSymbol,

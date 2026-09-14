@@ -2132,7 +2132,7 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
     recipes start at grade 2 (see the Operations section above). The two facts are
     consistent by construction: material costs for further engineering begin at grade 2.
     - **The large Seeker Missile Rack's Lockdown** is a `mercenary` row on
-      `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**, taking the shop total to 13 900 MC.
+      `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**.
       Four things agree, none of them a guess about a module symbol: the registry keys
       Lockdown by _size_ and the twin `SeekerMissileRackMedium_Lockdown` binds to the medium
       rack; the large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
@@ -2146,25 +2146,27 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
       against rows already here — the large rack is 3A and its other Merc row is 900 MC, the
       medium is 2B and its Lockdown row is 800 MC — and that corroboration is what carries
       the weight.
-    - **These shop articles come from direct in-game observation:** the 4A fixed
-      Overloaded Beam laser at 950 MC, the 2F gimballed Regenerative Burst Laser at 750
-      MC, the 4B fixed Force Impact Cannon at 850 MC and the 3A fixed Exposing Missiles
-      seeker rack at 800 MC. The observations were acquired 2026-09-13 UTC.
-      The observed grade-1 panels supply the fixed transformations for the beam laser,
-      burst laser, cannon and both Extended Cargo Rack sizes. The burst laser's stated
-      damage includes Regeneration Sequence. Its fixed Damage change is therefore +4%,
-      which composes with the effect's −10% to give the observed −6.4%. Force Shell
-      supplies the cannon's −16.7% Shot Speed change. The cannon's fixed damage split is
-      equal parts Kinetic and Explosive. Both cargo racks carry the exact multiplier
-      implied by their observed capacities.
+    - **These shop articles come from direct in-game observation.** The observations were
+      acquired 2026-09-13 UTC. The observed panels supply each measured Mercenary row's
+      grade-1 fixed transformation. The burst laser's stated damage includes Regeneration
+      Sequence. Its fixed Damage change is therefore +4%, which composes with the effect's
+      −10% to give the observed −6.4%. Force Shell supplies the cannon's −16.7% Shot Speed
+      change. Feedback Cascade supplies the rail gun's Damage and Thermal Load reductions.
+      Screening Shell supplies both fragment cannons' Reload Time reduction. Incendiary
+      Rounds supplies part of the mining laser's Thermal Load increase. FSD Interrupt
+      supplies part of both Lockdown racks' Damage and Rate of Fire reductions. The
+      cannon's fixed damage split is equal parts Kinetic and Explosive. Both cargo racks
+      carry the exact multiplier implied by their observed capacities. The large Drag
+      Seeker Missile Rack has no observed panel, so its fixed transformation is absent.
     - **Some Merc rows carry a default experimental effect** applied beside the grade-1
       blueprint, recorded as `experimentalEffectSymbol`: Screening Shell on both Double
       Screaming Fragment Cannons, Incendiary Rounds on the Long Range Mining Laser,
       Phasing Sequence on the Rapid Phase Multi-Cannon, Feedback Cascade on the Enduring
-      Feedback Rail Gun, Drag Munitions on both Drag Seeker Missile Racks, Thermal Cascade
-      on the Lightweight Thermal Seeker Missile Rack, FSD Interrupt on both Lockdown
-      Seeker Missile Racks, Regeneration Sequence on the Regenerative Burst Laser, and
-      Force Shell on the Force Impact Cannon. Source: repository-owner in-game
+      Feedback Rail Gun, Drag Munitions on both Drag Seeker Missile Racks and Exposing
+      Missiles, Thermal Cascade on the Lightweight Thermal Seeker Missile Rack, FSD
+      Interrupt on both Lockdown Seeker Missile Racks, Regeneration Sequence on the
+      Regenerative Burst Laser, and Force Shell on the Force Impact Cannon. Source:
+      repository-owner in-game
       observation; no registry publishes them. A row carries `modifiers` when its
       grade-1 transformation is observed. An unmeasured row omits them.
       - **Two independent checks each corroborate all but one, and between them cover

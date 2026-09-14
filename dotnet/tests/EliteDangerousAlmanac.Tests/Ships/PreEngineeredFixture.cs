@@ -287,10 +287,9 @@ internal sealed class FestivePanelFixture
     public double DamagePerSecond { get; set; }
 }
 
-/// <summary>One bought article's baked effect, resolved to the exact figures it produces.</summary>
+/// <summary>One bought article's fixed transformation and baked effect, resolved together.</summary>
 /// <remarks>
-/// The figures themselves, not only which stats moved: the effect's own contribution over
-/// the stock article, with no grade-one recipe invented around it.
+/// The figures include both changes when the fixed transformation and effect move one stat.
 /// </remarks>
 internal sealed class BakedEffectResolutionFixture
 {
@@ -417,6 +416,8 @@ internal sealed class DisplayedPanelFixture
 {
     public PanelReading? Mass { get; set; }
 
+    public PanelReading? Integrity { get; set; }
+
     public PanelReading? PowerDraw { get; set; }
 
     public PanelReading? DistributorDraw { get; set; }
@@ -439,11 +440,31 @@ internal sealed class DisplayedPanelFixture
 
     public PanelReading? RateOfFire { get; set; }
 
+    public PanelReading? BurstRounds { get; set; }
+
     public PanelReading? ClipSize { get; set; }
 
     public PanelReading? AmmoMaximum { get; set; }
 
     public PanelReading? CargoCapacity { get; set; }
+
+    public PanelReading? ReloadTime { get; set; }
+
+    public PanelReading? ModuleProtection { get; set; }
+
+    public PanelReading? WeaponsCapacity { get; set; }
+
+    public PanelReading? WeaponsRecharge { get; set; }
+
+    public PanelReading? EnginesCapacity { get; set; }
+
+    public PanelReading? EnginesRecharge { get; set; }
+
+    public PanelReading? SystemsCapacity { get; set; }
+
+    public PanelReading? SystemsRecharge { get; set; }
+
+    public PanelReading? ProbeRadius { get; set; }
 
     /// <summary>The damage type the panel names.</summary>
     public string? DamageType { get; set; }

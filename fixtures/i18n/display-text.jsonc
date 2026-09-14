@@ -17,6 +17,7 @@
       "variant": {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
         "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+        "experimentalEffectSymbol": "special_drag_munitions",
         "acquisition": "mercenary"
       },
       "locale": "pt-BR",

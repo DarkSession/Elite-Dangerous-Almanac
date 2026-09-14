@@ -6462,19 +6462,17 @@ test('a burst-pattern variant identifies before and after export', () => {
 });
 
 test('an unmeasured Mercenary variant omits its modifier block', () => {
-    const variant = getPreEngineeredVariants('Int_PowerDistributor_Size6_Class5').find(
-        (candidate) => candidate.acquisition === 'mercenary',
+    const variant = getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Large').find(
+        (candidate) => candidate.blueprintSymbol === 'SeekerMissileRack_Drag',
     )!;
-    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
-        'PowerDistributor',
-        variant,
-    );
-    const fitted = build.fittedModuleAt('PowerDistributor')!;
+    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('LargeHardpoint1', variant);
+    const fitted = build.fittedModuleAt('LargeHardpoint1')!;
 
     assert.deepEqual(fitted.engineering, {
         BlueprintName: variant.blueprintSymbol,
         Level: variant.grade,
         Quality: 1,
+        ExperimentalEffect: variant.experimentalEffectSymbol,
     });
     assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'));
     assert.equal(fitted.preEngineeredVariant, variant);
