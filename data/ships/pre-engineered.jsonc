@@ -46,8 +46,7 @@
  * and experimental effects use — a journal Modifier `label`, a `method`
  * (`multiplicative` / `additive` / `overwrite`) and a `value`. It is what makes these
  * records fittable: apply them over the base module's stats to get the engineered
- * module. The `mercenary` rows carry none — no registry publishes the grade-1
- * pre-engineering they arrive with, and a guess is worse than an omission.
+ * module. Every `mercenary` row carries its observed grade-1 transformation.
  *
  * Modifier values are the authored decimals recovered from the source's own encoding,
  * not figures rounded by eye; SOURCES.md records how.
@@ -57,13 +56,12 @@
  * generally applicable modifications: this catalogue does not imply that a `Decorative_*`
  * identity may be placed on any other damage-bearing module.
  *
- * One modifier is deliberately dropped: burst interval, which some variants carry and
- * which Frontier's journal has no Modifier Label for. It drives rate of fire, and
- * deriving a `RateOfFire` value from it needs weapon base stats the module catalogues
- * do not hold — so it is omitted rather than approximated.
+ * Some variants modify burst interval, which drives rate of fire. The resolver converts
+ * that interval into the `RateOfFire` value a journal reports.
  *
- * The Merc recipes start at grade 2 precisely because grade 1 is what the purchased
- * module already contains. Community-goal and tech-broker rewards are mostly already at
+ * The measured Merc recipes start at grade 2 because grade 1 is what the purchased
+ * module already contains. Some observed recipes have no measured numeric grades yet.
+ * Community-goal and tech-broker rewards are mostly already at
  * grade 5 — but not always: the Guardian weapon rows record grade 1, and there the
  * blueprint's own grade 1 exists, so the grade is a real grade of a real recipe. That
  * identity does not make the final Guardian articles engineerable.
@@ -87,7 +85,19 @@
     "blueprintSymbol": "AbrasionBlaster_FarReaching",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 400
+    "mercCoinCost": 400,
+    "modifiers": [
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.125
+      },
+      { "label": "FalloffRange", "method": "multiplicative", "value": -0.58 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": 0.4 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": -0.125 },
+      { "label": "ShotSpeed", "method": "multiplicative", "value": 0.4 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": -0.05 }
+    ]
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
@@ -95,7 +105,14 @@
     "blueprintSymbol": "EnzymeMissileRack_HighYield",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 850
+    "mercCoinCost": 850,
+    "modifiers": [
+      { "label": "AmmoClipSize", "method": "multiplicative", "value": 0.125 },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.015625 },
+      { "label": "Damage", "method": "multiplicative", "value": 0.05 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.15 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 }
+    ]
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
@@ -104,7 +121,20 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_screening_shell",
-    "mercCoinCost": 800
+    "mercCoinCost": 800,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.333333
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.066667 },
+      { "label": "BurstSize", "method": "additive", "value": 1 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.15 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": -0.025 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": -0.615 }
+    ]
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
@@ -113,7 +143,20 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_screening_shell",
-    "mercCoinCost": 950
+    "mercCoinCost": 950,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.333333
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.066667 },
+      { "label": "BurstSize", "method": "additive", "value": 1 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.15 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": -0.025 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": -0.5449747 }
+    ]
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
@@ -122,7 +165,20 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_incendiary_rounds",
-    "mercCoinCost": 450
+    "mercCoinCost": 450,
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": -0.05 },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.05
+      },
+      { "label": "FalloffRange", "method": "multiplicative", "value": -0.3 },
+      { "label": "Integrity", "method": "multiplicative", "value": -0.125 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": 0.4 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": -0.05 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": -0.083 }
+    ]
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
@@ -131,7 +187,15 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_phasing_sequence",
-    "mercCoinCost": 850
+    "mercCoinCost": 850,
+    "modifiers": [
+      { "label": "AmmoClipSize", "method": "overwrite", "value": 130 },
+      { "label": "AmmoMaximum", "method": "overwrite", "value": 2530 },
+      { "label": "FalloffRange", "method": "overwrite", "value": 315 },
+      { "label": "Jitter", "method": "additive", "value": 0.75 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": -0.125 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.077 }
+    ]
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -140,7 +204,18 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_feedback_cascade_cooled",
-    "mercCoinCost": 950
+    "mercCoinCost": 950,
+    "modifiers": [
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.1 },
+      { "label": "Damage", "method": "multiplicative", "value": 0.17375 },
+      { "label": "FalloffRange", "method": "multiplicative", "value": 0.32 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.225 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": 0.1 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.087 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.042 },
+      { "label": "ReloadTime", "method": "multiplicative", "value": 0.062 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": 0.6 }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -149,16 +224,23 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_drag_munitions",
-    "mercCoinCost": 800
-  },
-  {
-    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
-    "name": "Drag Seeker Missile Rack",
-    "blueprintSymbol": "SeekerMissileRack_Drag",
-    "grade": 1,
-    "acquisition": "mercenary",
-    "experimentalEffectSymbol": "special_drag_munitions",
-    "mercCoinCost": 900
+    "mercCoinCost": 800,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.333333
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.166667 },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": 0.104167
+      },
+      { "label": "Mass", "method": "multiplicative", "value": 0.375 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.0625 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.02 }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -167,7 +249,24 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_thermal_cascade",
-    "mercCoinCost": 800
+    "mercCoinCost": 800,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.166667
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.055556 },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.04
+      },
+      { "label": "Integrity", "method": "multiplicative", "value": -0.15 },
+      { "label": "Mass", "method": "multiplicative", "value": -0.09 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": -0.02 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.01 }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -176,7 +275,26 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_fsd_interrupt",
-    "mercCoinCost": 800
+    "mercCoinCost": 800,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.166667
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.055556 },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 0.04
+      },
+      { "label": "BurstInterval", "method": "multiplicative", "value": -0.01 },
+      { "label": "Damage", "method": "multiplicative", "value": 0.034286 },
+      { "label": "Integrity", "method": "multiplicative", "value": 0.1 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.3 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.075 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": -0.01 }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -185,7 +303,100 @@
     "grade": 1,
     "acquisition": "mercenary",
     "experimentalEffectSymbol": "special_fsd_interrupt",
-    "mercCoinCost": 900
+    "mercCoinCost": 900,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.166667
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.083333 },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 0.04
+      },
+      { "label": "BurstInterval", "method": "multiplicative", "value": -0.01 },
+      { "label": "Damage", "method": "multiplicative", "value": 0.034286 },
+      { "label": "Integrity", "method": "multiplicative", "value": 0.1 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.3 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.075 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": -0.01 }
+    ]
+  },
+  {
+    "symbol": "Hpt_BeamLaser_Fixed_Huge",
+    "name": "Overloaded Beam laser",
+    "blueprintSymbol": "BeamLaser_Overloaded",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "mercCoinCost": 950,
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": 0.1 },
+      { "label": "DistributorDraw", "method": "multiplicative", "value": 0.25 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.5 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.125 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": 0.095 }
+    ]
+  },
+  {
+    "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
+    "name": "Regenerative Burst Laser",
+    "blueprintSymbol": "BurstLaser_Regenerative",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_regeneration_sequence",
+    "mercCoinCost": 750,
+    "modifiers": [
+      { "label": "Damage", "method": "multiplicative", "value": 0.04 },
+      { "label": "DistributorDraw", "method": "multiplicative", "value": 0.138 },
+      { "label": "FalloffRange", "method": "multiplicative", "value": -0.472 },
+      { "label": "MaximumRange", "method": "multiplicative", "value": 0.1 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.02 }
+    ]
+  },
+  {
+    "symbol": "Hpt_Cannon_Fixed_Huge",
+    "name": "Force Impact Cannon",
+    "blueprintSymbol": "Cannon_ForceImpact",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_force_shell",
+    "mercCoinCost": 850,
+    "damageDistribution": { "kinetic": 0.5, "explosive": 0.5 },
+    "modifiers": [
+      { "label": "AmmoClipSize", "method": "multiplicative", "value": 0.167 },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.058 },
+      { "label": "Damage", "method": "multiplicative", "value": -0.35 },
+      { "label": "DistributorDraw", "method": "multiplicative", "value": 0.1 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.25 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.15 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": -0.143 }
+    ]
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+    "name": "Exposing Missiles",
+    "blueprintSymbol": "SeekerMissileRackLarge_ExposingMissiles",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "experimentalEffectSymbol": "special_drag_munitions",
+    "mercCoinCost": 800,
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.166667
+      },
+      { "label": "AmmoMaximum", "method": "multiplicative", "value": 0.055556 },
+      { "label": "Damage", "method": "multiplicative", "value": -0.04 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.35 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": 0.125 },
+      { "label": "RateOfFire", "method": "multiplicative", "value": 0.036 },
+      { "label": "ReloadTime", "method": "multiplicative", "value": -0.05 },
+      { "label": "ThermalLoad", "method": "multiplicative", "value": 1.04 }
+    ]
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
@@ -193,7 +404,10 @@
     "blueprintSymbol": "CargoRackS5C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 550
+    "mercCoinCost": 550,
+    "modifiers": [
+      { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+    ]
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
@@ -201,7 +415,10 @@
     "blueprintSymbol": "CargoRackS6C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 550
+    "mercCoinCost": 550,
+    "modifiers": [
+      { "label": "CargoCapacity", "method": "multiplicative", "value": 0.09375 }
+    ]
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
@@ -209,7 +426,10 @@
     "blueprintSymbol": "DetailedSurfaceScanner_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 350
+    "mercCoinCost": 350,
+    "modifiers": [
+      { "label": "ProbeRadius", "method": "multiplicative", "value": 0.1 }
+    ]
   },
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
@@ -217,7 +437,16 @@
     "blueprintSymbol": "ModuleReinforcement_HeavyDuty",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 450
+    "mercCoinCost": 450,
+    "modifiers": [
+      {
+        "label": "DamageProtection",
+        "method": "multiplicative",
+        "value": 0.025
+      },
+      { "label": "Integrity", "method": "multiplicative", "value": 0.025 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.25 }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
@@ -225,7 +454,31 @@
     "blueprintSymbol": "PowerDistributorS3C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 300
+    "mercCoinCost": 300,
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "EnginesRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "SystemsRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.0625
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.05
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
@@ -233,7 +486,31 @@
     "blueprintSymbol": "PowerDistributorS3C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 350
+    "mercCoinCost": 350,
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "EnginesRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "SystemsRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.0625
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.05
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
@@ -241,7 +518,31 @@
     "blueprintSymbol": "PowerDistributorS4C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 400
+    "mercCoinCost": 400,
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "EnginesRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "SystemsRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.0625
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.05
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
@@ -249,7 +550,31 @@
     "blueprintSymbol": "PowerDistributorS4C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 450
+    "mercCoinCost": 450,
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "EnginesRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "SystemsRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.0625
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.05
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
@@ -257,7 +582,42 @@
     "blueprintSymbol": "PowerDistributor_Balanced",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 500
+    "mercCoinCost": 500,
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.021
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "value": 0.023
+      },
+      { "label": "Integrity", "method": "multiplicative", "value": -0.0125 },
+      { "label": "Mass", "method": "multiplicative", "value": 0.025 },
+      { "label": "PowerDraw", "method": "multiplicative", "value": -0.01 },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.021
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.023
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": 0.021
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": 0.023
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
@@ -265,7 +625,31 @@
     "blueprintSymbol": "PowerDistributorS6C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
-    "mercCoinCost": 550
+    "mercCoinCost": 550,
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "EnginesRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.045
+      },
+      { "label": "SystemsRecharge", "method": "multiplicative", "value": 0.04 },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.0625
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.05
+      }
+    ]
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",

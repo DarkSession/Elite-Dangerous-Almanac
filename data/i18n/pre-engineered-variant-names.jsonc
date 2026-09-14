@@ -17,10 +17,13 @@
     "Hpt_MultiCannon_Fixed_Medium|MultiCannon_Rapid|special_phasing_sequence|mercenary": "Rapid Phase Multi-Cannon",
     "Hpt_Railgun_Fixed_Medium|RailGun_LongShot|special_feedback_cascade_cooled|mercenary": "Enduring Feedback Rail Gun",
     "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRack_Drag|special_drag_munitions|mercenary": "Drag Seeker Missile Rack",
-    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRack_Drag|special_drag_munitions|mercenary": "Drag Seeker Missile Rack",
     "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRack_LightWeightThermal|special_thermal_cascade|mercenary": "Lightweight Thermal Seeker Missile Rack",
     "Hpt_BasicMissileRack_Fixed_Medium|SeekerMissileRackMedium_Lockdown|special_fsd_interrupt|mercenary": "Lockdown Seeker Missile Rack",
     "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRackLarge_Lockdown|special_fsd_interrupt|mercenary": "Lockdown Seeker Missile Rack",
+    "Hpt_BeamLaser_Fixed_Huge|BeamLaser_Overloaded||mercenary": "Overloaded Beam laser",
+    "Hpt_PulseLaserBurst_Gimbal_Medium|BurstLaser_Regenerative|special_regeneration_sequence|mercenary": "Regenerative Burst Laser",
+    "Hpt_Cannon_Fixed_Huge|Cannon_ForceImpact|special_force_shell|mercenary": "Force Impact Cannon",
+    "Hpt_BasicMissileRack_Fixed_Large|SeekerMissileRackLarge_ExposingMissiles|special_drag_munitions|mercenary": "Exposing Missiles",
     "Int_CargoRack_Size5_Class1|CargoRackS5C1_Extended||mercenary": "Extended Cargo Rack",
     "Int_CargoRack_Size6_Class1|CargoRackS6C1_Extended||mercenary": "Extended Cargo Rack",
     "Int_DetailedSurfaceScanner_Tiny|DetailedSurfaceScanner_LongRange||mercenary": "Long Range Detailed Surface Scanner",
@@ -158,6 +161,38 @@
       "fr": "Batterie de missiles TC à verrouillage",
       "pt": "Estante de míssil guiado de precisão",
       "ru": "Блок ракет с самонаведением и блокировкой"
+    },
+    "Overloaded Beam laser": {
+      "en": "Overloaded Beam laser",
+      "de": "Überladener Strahlenlaser",
+      "es": "Láser de rayo sobrecargado",
+      "fr": "Rayon laser surchargé",
+      "pt": "Laser contínuo sobrecarregado",
+      "ru": "Разогнанный пучковый лазер"
+    },
+    "Regenerative Burst Laser": {
+      "en": "Regenerative Burst Laser",
+      "de": "Regenerativer Salvenlaser",
+      "es": "Láser de ráfagas regenerativo",
+      "fr": "Laser à rafale régénératif",
+      "pt": "Laser de rajada regenerativo",
+      "ru": "Регенеративный пульсирующий лазер"
+    },
+    "Force Impact Cannon": {
+      "en": "Force Impact Cannon",
+      "de": "Krafteinschlagkanone",
+      "es": "Cañón de impacto potente",
+      "fr": "Canon à impact de force",
+      "pt": "Canhão de impacto de força",
+      "ru": "Орудие силового воздействия"
+    },
+    "Exposing Missiles": {
+      "en": "Exposing Missiles",
+      "de": "Enttarnungsraketen",
+      "es": "Misiles reveladores",
+      "fr": "Missiles exposés",
+      "pt": "Misseis de exposição",
+      "ru": "Ракеты обнаружения"
     },
     "Extended Cargo Rack": {
       "en": "Extended Cargo Rack",

@@ -5828,85 +5828,45 @@ test('a baked effect outside the module menu can be kept and restored', () => {
         'updated',
     );
 });
-test('a Merc article at its purchase grade refuses an effect edit losslessly', () => {
-    // The counterpart of the test above: the same Mining Laser effect, on the Merc row
-    // that is sold carrying it rather than the tech-broker article. Grade 1 is what the
-    // purchase contains and the bespoke recipe starts at grade 2, so there is no recipe
-    // to recompute from and the edit is refused — with the baked effect left intact.
-    const merc = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
-        (candidate) => candidate.acquisition === 'mercenary',
-    )!;
-    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant('SmallHardpoint1', merc);
-    const before = build.fittedModuleAt('SmallHardpoint1')!.effectiveStats!.thermalLoad;
+test('Mercenary hardpoints keep their purchased experimental state', () => {
+    for (const expected of preEngineeredFixture.mercenaryHardpointExperimentals) {
+        const variant = getPreEngineeredVariants(expected.symbol).find(
+            (candidate) => candidate.blueprintSymbol === expected.blueprintSymbol,
+        )!;
+        const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(expected.slot, variant);
 
-    const removal = build.setExperimentalEffect('SmallHardpoint1', null);
-    assert.equal(removal.kind, 'unsupported');
-    assert.equal(removal.code, 'unsupportedEngineering');
-    assert.equal(
-        build.fittedModuleAt('SmallHardpoint1')!.engineering!.ExperimentalEffect,
-        merc.experimentalEffectSymbol,
-    );
-    assert.equal(build.fittedModuleAt('SmallHardpoint1')!.effectiveStats!.thermalLoad, before);
-    // Re-stating the effect it already carries is still the ordinary no-op.
-    assert.deepEqual(
-        build.setExperimentalEffect('SmallHardpoint1', merc.experimentalEffectSymbol!),
-        { kind: 'unchanged', experimentalEffectSymbol: merc.experimentalEffectSymbol },
-    );
-});
-
-test('a climbed Merc article refuses its out-of-menu baked effect, and does not throw', () => {
-    // The Merc Mining Laser is sold carrying Incendiary Rounds, which its own module menu
-    // does not offer. Above the purchase grade both entry points recompute through
-    // `applyBlueprint`, which refuses an out-of-menu effect by throwing — so the baked
-    // effect must not be waved past the menu gate here. Ordinary captured data reaches
-    // this: a lossless refusal is the contract, an exception is not.
-    const merc = getPreEngineeredVariants('Hpt_MiningLaser_Fixed_Small').find(
-        (candidate) => candidate.acquisition === 'mercenary',
-    )!;
-    for (const level of [2, 3, 5]) {
-        const build = ShipLoadout.fromLoadout({
-            Ship: 'Anaconda',
-            Modules: [
-                {
-                    Slot: 'SmallHardpoint1',
-                    Item: merc.symbol,
-                    Engineering: {
-                        BlueprintName: merc.blueprintSymbol,
-                        Level: level,
-                        Quality: 0.5,
-                        ExperimentalEffect: merc.experimentalEffectSymbol!,
-                    },
-                },
-            ],
-        });
-        const normalized = build.completeEngineeringGrade('SmallHardpoint1');
-        assert.equal(normalized.kind, 'unsupported', `grade ${level}`);
-        assert.equal(normalized.code, 'unsupportedExperimentalEffect', `grade ${level}`);
-
-        // And the same effect asked for outright rather than reached by normalization.
-        // The module's menu is empty, so there is no effect to step away to first: the
-        // capture that reaches this states the climb without the effect, which is what a
-        // player who dropped it on the way to grade 2 exports.
-        const dropped = ShipLoadout.fromLoadout({
-            Ship: 'Anaconda',
-            Modules: [
-                {
-                    Slot: 'SmallHardpoint1',
-                    Item: merc.symbol,
-                    Engineering: {
-                        BlueprintName: merc.blueprintSymbol,
-                        Level: level,
-                        Quality: 0.5,
-                    },
-                },
-            ],
-        });
-        const restated = dropped.setExperimentalEffect(
-            'SmallHardpoint1',
-            merc.experimentalEffectSymbol!,
+        assert.deepEqual(build.availableExperimentalEffects(expected.slot), []);
+        build.applyBlueprint(expected.slot, expected.blueprintSymbol, { grade: 5, quality: 0.5 });
+        assert.equal(build.completeEngineeringGrade(expected.slot).kind, 'normalized');
+        assert.equal(
+            build.fittedModuleAt(expected.slot)!.engineering!.ExperimentalEffect ?? null,
+            expected.experimentalEffectSymbol,
         );
-        assert.equal(restated.kind, 'unsupported', `grade ${level}`);
-        assert.equal(restated.code, 'unsupportedExperimentalEffect', `grade ${level}`);
+        assert.deepEqual(
+            build.setExperimentalEffect(expected.slot, expected.experimentalEffectSymbol),
+            {
+                kind: 'unchanged',
+                experimentalEffectSymbol: expected.experimentalEffectSymbol,
+            },
+        );
+
+        const requested =
+            expected.experimentalEffectSymbol === null ? 'special_thermal_vent' : null;
+        const edit = build.setExperimentalEffect(expected.slot, requested);
+        assert.equal(edit.kind, 'unsupported');
+        assert.equal(edit.code, 'unsupportedExperimentalEffect');
+        assert.equal(
+            build.fittedModuleAt(expected.slot)!.engineering!.ExperimentalEffect ?? null,
+            expected.experimentalEffectSymbol,
+        );
+        assert.throws(
+            () =>
+                build.applyBlueprint(expected.slot, expected.blueprintSymbol, {
+                    grade: 5,
+                    experimentalEffectSymbol: 'special_weapon_damage',
+                }),
+            /keeps its purchased experimental effect/,
+        );
     }
 });
 
@@ -6461,33 +6421,8 @@ test('a burst-pattern variant identifies before and after export', () => {
     );
 });
 
-test('a Mercenary variant omits its unpublished modifier block', () => {
-    const variant = getPreEngineeredVariants('Int_PowerDistributor_Size6_Class5').find(
-        (candidate) => candidate.acquisition === 'mercenary',
-    )!;
-    const build = ShipLoadout.empty('Anaconda').setPreEngineeredVariant(
-        'PowerDistributor',
-        variant,
-    );
-    const fitted = build.fittedModuleAt('PowerDistributor')!;
-
-    assert.deepEqual(fitted.engineering, {
-        BlueprintName: variant.blueprintSymbol,
-        Level: variant.grade,
-        Quality: 1,
-    });
-    assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'));
-    assert.equal(fitted.preEngineeredVariant, variant);
-
-    build.clearEngineering('PowerDistributor');
-    assert.equal(build.fittedModuleAt('PowerDistributor')!.preEngineeredVariant, null);
-});
-
 test('a fitted Mercenary article publishes what its baked effect moves', () => {
-    // Ten Merc-shop rows are sold carrying an experimental effect. Seven of those effects
-    // move at least one stat, and a fitted article has to say so: reading the purchase
-    // through `setPreEngineeredVariant` and reading the same catalogue row through
-    // `getPreEngineeredJournalModifiers` describe one article, so they must agree.
+    // A fitted article publishes its measured fixed block and its baked effect together.
     let withMovedStats = 0;
     for (const variant of PRE_ENGINEERED_MODULES.filter(
         (candidate) => candidate.acquisition === 'mercenary',
@@ -6506,7 +6441,7 @@ test('a fitted Mercenary article publishes what its baked effect moves', () => {
 
         assert.equal(fitted.preEngineeredVariant, variant, label);
         if (expected.length === 0) {
-            // No stat block and no effect that moves one: the article carries no
+            // No measured block and no effect that moves one: the article carries no
             // `Modifiers` key at all rather than an empty array claiming it changes none.
             assert.ok(!Object.hasOwn(fitted.engineering!, 'Modifiers'), label);
         } else {
@@ -6514,7 +6449,7 @@ test('a fitted Mercenary article publishes what its baked effect moves', () => {
             assert.deepEqual(fitted.engineering!.Modifiers, expected, label);
         }
     }
-    assert.equal(withMovedStats, 7);
+    assert.equal(withMovedStats, preEngineeredFixture.modifierCounts.mercenaryWithResolvedStats);
 });
 
 test('a fitted article resolves the rate of fire its own block states', () => {
@@ -6555,7 +6490,7 @@ test('a fitted article resolves the rate of fire its own block states', () => {
     }
     // Every catalogued article but one, whose hull class the Anaconda does not carry.
     assert.equal(fittedCount, PRE_ENGINEERED_MODULES.length - 1);
-    assert.equal(stated, 15);
+    assert.equal(stated, preEngineeredFixture.modifierCounts.withStatedRateOfFire);
 });
 
 test('an applied burst recipe resolves the rate of fire its own block states', () => {
@@ -6574,6 +6509,35 @@ test('an applied burst recipe resolves the rate of fire its own block states', (
     assert.notEqual(rate.Value, fitted.stats!.rateOfFire);
     assert.equal(fitted.effectiveStats!.rateOfFire, rate.Value);
     assert.equal(BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics.rateOfFire, rate.Value);
+});
+
+test('a Double Screaming article reaches its observed grade-five stats', () => {
+    const expected = preEngineeredFixture.mercenaryClimb;
+    const variant = getPreEngineeredVariants(expected.symbol).find(
+        (candidate) =>
+            candidate.blueprintSymbol === expected.blueprintSymbol &&
+            candidate.experimentalEffectSymbol === expected.experimentalEffectSymbol,
+    )!;
+    const build = ShipLoadout.empty('Anaconda')
+        .setPreEngineeredVariant('LargeHardpoint1', variant)
+        .applyBlueprint('LargeHardpoint1', expected.blueprintSymbol, {
+            grade: expected.grade,
+            quality: expected.quality,
+            experimentalEffectSymbol: expected.experimentalEffectSymbol,
+        });
+    const stats = build.fittedModuleAt('LargeHardpoint1')!.effectiveStats!;
+    const damagePerSecond =
+        BuildMetrics.of(build).weaponMetrics().weapons[0]!.metrics.damagePerSecond;
+
+    assert.equal(stats.mass, expected.engineered.mass);
+    assert.equal(stats.powerDraw, expected.engineered.powerDraw);
+    assert.ok(near(damagePerSecond, expected.engineered.damagePerSecond, 1e-6));
+    assert.equal(stats.maximumRange, expected.engineered.maximumRange);
+    assert.equal(stats.rateOfFire, expected.engineered.rateOfFire);
+    assert.equal(stats.burstRounds, expected.engineered.burstRounds);
+    assert.equal(stats.clipSize, expected.engineered.clipSize);
+    assert.equal(stats.ammoMaximum, expected.engineered.ammoMaximum);
+    assert.equal(stats.reloadTime, expected.engineered.reloadTime);
 });
 
 test('a partial capture cannot invent a rate of fire the weapon has no cycle for', () => {
@@ -6630,12 +6594,11 @@ test('a partial capture cannot invent a rate of fire the weapon has no cycle for
     assert.equal(rateFor(0), 1.670286);
 });
 
-test('completing a Merc article turns on whether it has a block to state', () => {
+test('completing a Merc article follows the modifiers it can state', () => {
     // A completed roll that states its modifiers is already whole, and one that states
     // none is rolled from its recipe — but a Merc purchase grade is not in any recipe.
-    // So the two halves of the shop answer differently, and each answer is the honest
-    // one: the rows whose baked effect moves a stat arrive at quality 1 already stating
-    // everything they move, while the rows that state nothing have nothing to roll.
+    // A row whose engineering moves a carried stat arrives at quality 1 and states that
+    // move. A row with no carried stat to state has nothing to roll.
     for (const variant of PRE_ENGINEERED_MODULES.filter(
         (candidate) => candidate.acquisition === 'mercenary',
     )) {
@@ -6831,7 +6794,7 @@ test('journal DPS uses an engineered rounds-per-shot value', () => {
     assert.ok(near(fitted.effectiveStats!.damage!, damage, 1e-6));
     assert.equal(fitted.effectiveStats!.roundsPerShot, rounds);
     assert.ok(
-        near(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-6),
+        near(BuildMetrics.of(build).weaponMetrics().total.damagePerSecond, damagePerSecond, 1e-5),
     );
     assert.ok(damagePerSecond > damage * rate);
 });

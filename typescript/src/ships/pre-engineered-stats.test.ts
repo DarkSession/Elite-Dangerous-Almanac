@@ -29,6 +29,13 @@ import type { LoadoutEvent, LoadoutModule } from './slef.js';
 /** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */
 const round6 = (value: number): number => Math.round(value * 1e6) / 1e6;
 
+/** Test one value against the precision a panel reading carries. */
+const matchesDisplayed = (value: number, reading: number): boolean => {
+    const places = String(reading).split('.')[1]?.length ?? 0;
+    const interval = 0.5 * 10 ** -places;
+    return Math.abs(value - reading) <= interval + Math.abs(reading) * 1.1920929e-7;
+};
+
 /** The one variant matching every field given — asserted unique so a pin cannot drift. */
 function only(match: Partial<PreEngineeredVariant>): PreEngineeredVariant {
     const found = PRE_ENGINEERED_MODULES.filter((v) =>
@@ -164,7 +171,7 @@ test('a Mercenary-only blueprint identifies the bought article at every reachabl
     }
 });
 
-test('every Mercenary catalogue row identifies without a published modifier block', () => {
+test('every Mercenary catalogue row identifies without stat evidence', () => {
     for (const variant of PRE_ENGINEERED_MODULES.filter(
         (candidate) => candidate.acquisition === 'mercenary',
     )) {
@@ -452,6 +459,71 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
+test('observed Mercenary grade-one articles reproduce their panel values', () => {
+    const observed = [
+        fixture.resolved.farReachingAbrasionBlasterG1,
+        fixture.resolved.highYieldEnzymeMissileRackG1,
+        fixture.resolved.doubleScreamingFragmentCannonSmallG1,
+        fixture.resolved.doubleScreamingFragmentCannonLargeG1,
+        fixture.resolved.longRangeMiningLaserG1,
+        fixture.resolved.rapidPhaseMultiCannonG1,
+        fixture.resolved.enduringFeedbackRailGunG1,
+        fixture.resolved.dragSeekerMissileRackMediumG1,
+        fixture.resolved.lightweightThermalSeekerMissileRackG1,
+        fixture.resolved.lockdownSeekerMissileRackMediumG1,
+        fixture.resolved.lockdownSeekerMissileRackLargeG1,
+        fixture.resolved.exposingMissilesG1,
+        fixture.resolved.longRangeDetailedSurfaceScannerG1,
+        fixture.resolved.heavyDutyModuleReinforcementG1,
+        fixture.resolved.supportFocusedPowerDistributorSize3Class2G1,
+        fixture.resolved.supportFocusedPowerDistributorSize3Class5G1,
+        fixture.resolved.supportFocusedPowerDistributorSize4Class2G1,
+        fixture.resolved.supportFocusedPowerDistributorSize4Class5G1,
+        fixture.resolved.balancedPowerDistributorSize5Class5G1,
+        fixture.resolved.supportFocusedPowerDistributorSize6Class5G1,
+        fixture.resolved.overloadedBeamLaserG1,
+        fixture.resolved.regenerativeBurstLaserG1,
+        fixture.resolved.forceImpactCannonG1,
+        fixture.resolved.extendedCargoRackSize5G1,
+        fixture.resolved.extendedCargoRackSize6G1,
+    ] as readonly {
+        symbol: string;
+        blueprintSymbol: string;
+        base?: Record<string, number>;
+        engineered: Record<string, number>;
+        displayed: Record<string, number | string>;
+    }[];
+
+    for (const expected of observed) {
+        const variant = only({
+            symbol: expected.symbol,
+            blueprintSymbol: expected.blueprintSymbol,
+        });
+        const stock = getModuleBySymbol(expected.symbol, ALL_MODULES)!;
+        const resolved = getPreEngineeredStats(variant)!;
+        for (const [field, value] of Object.entries(expected.base ?? {})) {
+            assert.equal(stock[field as keyof OutfittingModule], value, `${field}: stock`);
+        }
+        for (const [field, value] of Object.entries(expected.engineered)) {
+            assert.equal(resolved[field as keyof OutfittingModule], value, `${field}: engineered`);
+        }
+        for (const [field, shown] of Object.entries(expected.displayed)) {
+            if (field === 'damageType') continue;
+            const value =
+                field === 'damagePerSecond'
+                    ? weaponMetrics(resolved).damagePerSecond
+                    : resolved[field as keyof OutfittingModule];
+            if (typeof value !== 'number') assert.fail(`${field}: no numeric value`);
+            assert.ok(matchesDisplayed(value, shown as number), `${field}: panel`);
+        }
+    }
+
+    assert.deepEqual(
+        getPreEngineeredStats(only({ blueprintSymbol: 'Cannon_ForceImpact' }))!.damageDistribution,
+        { kinetic: 0.5, explosive: 0.5 },
+    );
+});
+
 test('a final pre-engineered Guardian weapon stays locked when resolved', () => {
     const variant = getPreEngineeredVariants('Hpt_Guardian_GaussCannon_Fixed_Medium')[0]!;
     assert.equal(variant.engineeringLocked, true);
@@ -536,62 +608,9 @@ test('identity fields survive resolution — a variant is the same article', () 
     );
 });
 
-test('a variant with no stat block resolves to the base record and its baked effect', () => {
-    // Every Merc row: the grade-1 pre-engineering it arrives with is not published, so
-    // the honest answer is the stock stats rather than an invented set. The experimental
-    // effect the shop bakes in *is* published, so the rows that carry one resolve with
-    // its contribution applied and nothing else — which makes the fixture's `movedStats`
-    // the complete list of stats that may differ from stock.
-    const baked = fixture.mercenaryBakedEffects;
-    const seen: { symbol: string; blueprintSymbol: string; experimentalEffectSymbol: string }[] =
-        [];
-    for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition !== 'mercenary') continue;
-        const stock = getModuleBySymbol(variant.symbol, ALL_MODULES)!;
-        const resolved = getPreEngineeredStats(variant)!;
-        // A copy, never the frozen singleton: that would make this the one resolved
-        // record a consumer cannot adjust before fitting it.
-        assert.notEqual(resolved, stock);
-        assert.deepEqual(unresolvedModifiers(variant), []);
-        const effect = variant.experimentalEffectSymbol;
-        if (effect === undefined) {
-            assert.deepEqual(resolved, stock);
-            assert.deepEqual(getPreEngineeredModifiers(variant), []);
-            continue;
-        }
-        const expected = baked.variants.find(
-            (row) =>
-                row.symbol === variant.symbol && row.blueprintSymbol === variant.blueprintSymbol,
-        );
-        assert.ok(expected, `${variant.symbol}: ${variant.blueprintSymbol} is not a pinned row`);
-        assert.equal(variant.experimentalEffectSymbol, expected.experimentalEffectSymbol);
-        const moved = Object.keys(resolved).filter(
-            (key) =>
-                resolved[key as keyof OutfittingModule] !== stock[key as keyof OutfittingModule],
-        );
-        assert.deepEqual(moved.sort(), [...expected.movedStats].sort(), variant.symbol);
-        seen.push({
-            symbol: variant.symbol,
-            blueprintSymbol: variant.blueprintSymbol,
-            experimentalEffectSymbol: effect,
-        });
-    }
-    // ...and the pinned set is exactly the rows the catalogue carries, so a row that
-    // quietly gains or loses its baked effect fails here rather than passing unnoticed.
-    assert.equal(seen.length, baked.count);
-    assert.deepEqual(
-        seen,
-        baked.variants.map(({ symbol, blueprintSymbol, experimentalEffectSymbol }) => ({
-            symbol,
-            blueprintSymbol,
-            experimentalEffectSymbol,
-        })),
-    );
-});
-
-test('a Merc row resolves the stat values its baked effect alone produces', () => {
-    // The values, not just which stats moved: Feedback Cascade's own contribution over the
-    // stock rail gun, with no grade-1 blueprint transformation invented around it.
+test('a measured Merc row composes its fixed transformation with its baked effect', () => {
+    // Feedback Cascade changes Damage and ThermalLoad after the fixed grade-one
+    // transformation changes those same stats.
     const pinned = fixture.mercenaryBakedEffects.resolved;
     const variant = getPreEngineeredVariants(pinned.symbol).find(
         (candidate) => candidate.blueprintSymbol === pinned.blueprintSymbol,
@@ -606,14 +625,12 @@ test('a Merc row resolves the stat values its baked effect alone produces', () =
     }
 });
 
-test('both resolution paths hand back a record the caller owns', () => {
-    // One return type, one mutability contract: whether the variant had a stat block to
-    // apply must not decide whether writing to the result throws.
-    const withoutStatBlock = PRE_ENGINEERED_MODULES.find(
+test('resolved records belong to the caller', () => {
+    const mercenary = PRE_ENGINEERED_MODULES.find(
         (variant) => variant.acquisition === 'mercenary',
     )!;
-    const withStatBlock = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium')[0]!;
-    for (const variant of [withoutStatBlock, withStatBlock]) {
+    const techBroker = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium')[0]!;
+    for (const variant of [mercenary, techBroker]) {
         const resolved = getPreEngineeredStats(variant)!;
         assert.equal(Object.isFrozen(resolved), false, variant.symbol);
         (resolved as { mass?: number }).mass = 999;

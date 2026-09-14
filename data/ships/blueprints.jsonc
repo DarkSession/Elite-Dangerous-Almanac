@@ -3,8 +3,8 @@
  * applies, keyed by the blueprint's Frontier symbol.
  *
  * Sources: EDCD/coriolis-data (grade features and apply method), EDSY (journal Modifier
- * Labels), and the Inara blueprint registry with
- * Frontier's Operations update notes (Operations and Anti-Guardian recipes).
+ * Labels), the Inara blueprint registry with Frontier's Operations update notes
+ * (Operations and Anti-Guardian recipes), and in-game observations.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/ships/SOURCES.md.
@@ -141,7 +141,7 @@
           {
             "label": "Mass",
             "method": "multiplicative",
-            "min": 0,
+            "min": -0.05,
             "max": -0.15
           },
           {
@@ -1367,7 +1367,7 @@
           {
             "label": "EngineOptPerformance",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.05,
             "max": 0.12
           },
           {
@@ -1651,13 +1651,13 @@
           {
             "label": "EngineOptPerformance",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.03,
             "max": 0.08
           },
           {
             "label": "EngineHeatRate",
             "method": "multiplicative",
-            "min": 0,
+            "min": -0.1,
             "max": -0.2
           }
         ]
@@ -2116,7 +2116,7 @@
           {
             "label": "FSDHeatRate",
             "method": "multiplicative",
-            "min": 0,
+            "min": -0.05,
             "max": -0.1
           }
         ]
@@ -6705,6 +6705,12 @@
       "1": {
         "features": [
           {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.1,
+            "max": 0.1
+          },
+          {
             "label": "Mass",
             "method": "multiplicative",
             "min": 0.2,
@@ -6720,6 +6726,12 @@
       },
       "2": {
         "features": [
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.2
+          },
           {
             "label": "Mass",
             "method": "multiplicative",
@@ -6737,6 +6749,12 @@
       "3": {
         "features": [
           {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.3,
+            "max": 0.3
+          },
+          {
             "label": "Mass",
             "method": "multiplicative",
             "min": 0.6,
@@ -6753,6 +6771,12 @@
       "4": {
         "features": [
           {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.4,
+            "max": 0.4
+          },
+          {
             "label": "Mass",
             "method": "multiplicative",
             "min": 0.8,
@@ -6768,6 +6792,12 @@
       },
       "5": {
         "features": [
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.5
+          },
           {
             "label": "Mass",
             "method": "multiplicative",
@@ -8470,14 +8500,14 @@
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.04,
             "max": 0.08
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": 0,
-            "max": -0.38
+            "min": -0.3,
+            "max": -0.375
           }
         ]
       },
@@ -8492,7 +8522,7 @@
           {
             "label": "DistributorDraw",
             "method": "multiplicative",
-            "min": 0,
+            "min": -0.05,
             "max": -0.15
           },
           {
@@ -8504,8 +8534,8 @@
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.38,
-            "max": -0.43
+            "min": -0.375,
+            "max": -0.425
           }
         ]
       },
@@ -8532,8 +8562,8 @@
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.43,
-            "max": -0.48
+            "min": -0.425,
+            "max": -0.475
           }
         ]
       },
@@ -8560,8 +8590,8 @@
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.48,
-            "max": -0.52
+            "min": -0.475,
+            "max": -0.525
           }
         ]
       },
@@ -8588,7 +8618,7 @@
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.52,
+            "min": -0.525,
             "max": -0.6
           }
         ]
@@ -8603,25 +8633,25 @@
           {
             "label": "FalloffRange",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.2,
             "max": 0.36
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.2,
             "max": 0.4
           },
           {
             "label": "Range",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.2,
             "max": 0.36
           },
           {
             "label": "ShotSpeed",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.2,
             "max": 0.36
           },
           {
@@ -9406,7 +9436,7 @@
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.2,
             "max": 0.3
           },
           {
@@ -9799,7 +9829,7 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.5,
             "max": 1
           },
           {
@@ -9811,13 +9841,13 @@
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0,
+            "min": 0.1,
             "max": 0.2
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": 0,
+            "min": -0.05,
             "max": -0.1
           }
         ]
@@ -9827,7 +9857,7 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 1.5,
+            "min": 1,
             "max": 1.5
           },
           {
@@ -9855,7 +9885,7 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 2,
+            "min": 1.5,
             "max": 2
           },
           {
@@ -9883,7 +9913,7 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 2.5,
+            "min": 2,
             "max": 2.5
           },
           {
@@ -9911,7 +9941,7 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 3,
+            "min": 2.5,
             "max": 3
           },
           {
@@ -9959,7 +9989,7 @@
           {
             "label": "RefuelRate",
             "method": "multiplicative",
-            "min": 0.1,
+            "min": 0.05,
             "max": 0.1
           },
           {
@@ -9975,7 +10005,7 @@
           {
             "label": "RefuelRate",
             "method": "multiplicative",
-            "min": 0.2,
+            "min": 0.1,
             "max": 0.2
           },
           {
@@ -9991,7 +10021,7 @@
           {
             "label": "RefuelRate",
             "method": "multiplicative",
-            "min": 0.3,
+            "min": 0.2,
             "max": 0.3
           },
           {
@@ -10007,7 +10037,7 @@
           {
             "label": "RefuelRate",
             "method": "multiplicative",
-            "min": 0.4,
+            "min": 0.3,
             "max": 0.4
           },
           {
@@ -10031,6 +10061,147 @@
             "method": "multiplicative",
             "min": 0.15,
             "max": 0.15
+          }
+        ]
+      }
+    }
+  },
+  "BeamLaser_Overloaded": {
+    "name": "Beam Laser — Overloaded",
+    "grades": {
+      "2": {
+        "features": [
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.333333,
+            "max": 0.333333
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.25,
+            "max": 0.333333
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 0.2375,
+            "max": 0.316667
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 0.666667,
+            "max": 0.666667
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.166667,
+            "max": 0.166667
+          }
+        ]
+      },
+      "3": {
+        "features": [
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.5
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.333333,
+            "max": 0.5
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 0.316667,
+            "max": 0.475
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 1,
+            "max": 1
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.25,
+            "max": 0.25
+          }
+        ]
+      },
+      "4": {
+        "features": [
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.75188,
+            "max": 0.75188
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.75188
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 0.475,
+            "max": 0.714286
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 1.503759,
+            "max": 1.503759
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.37594,
+            "max": 0.37594
+          }
+        ]
+      },
+      "5": {
+        "features": [
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 1,
+            "max": 1
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.75188,
+            "max": 1
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 0.714286,
+            "max": 0.95
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 2,
+            "max": 2
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.5
           }
         ]
       }
@@ -10138,6 +10309,195 @@
           "thermal": 0.845,
           "absolute": 0.155
         }
+      }
+    }
+  },
+  "BurstLaser_Regenerative": {
+    "name": "Burst Laser — Regenerative",
+    "grades": {
+      "2": {
+        "features": [
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.066667,
+            "max": 0.066667
+          },
+          {
+            "label": "MaximumRange",
+            "method": "multiplicative",
+            "min": 0.25,
+            "max": 0.333333
+          },
+          {
+            "label": "FalloffRange",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 1.133333
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.183333,
+            "max": 0.183333
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.066667,
+            "max": 0.090909
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.116667,
+            "max": -0.116667
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.01,
+            "max": 0.02
+          }
+        ]
+      },
+      "3": {
+        "features": [
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.1,
+            "max": 0.1
+          },
+          {
+            "label": "MaximumRange",
+            "method": "multiplicative",
+            "min": 0.333333,
+            "max": 0.5
+          },
+          {
+            "label": "FalloffRange",
+            "method": "multiplicative",
+            "min": 1.133333,
+            "max": 2.6
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.275,
+            "max": 0.275
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.090909,
+            "max": 0.142857
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.175,
+            "max": -0.175
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.02,
+            "max": 0.08
+          }
+        ]
+      },
+      "4": {
+        "features": [
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.150376,
+            "max": 0.150376
+          },
+          {
+            "label": "MaximumRange",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.75188
+          },
+          {
+            "label": "FalloffRange",
+            "method": "multiplicative",
+            "min": 2.6,
+            "max": 5.322573
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.413534,
+            "max": 0.413534
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.142857,
+            "max": 0.231481
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.263158,
+            "max": -0.263158
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.08,
+            "max": 0.170677
+          }
+        ]
+      },
+      "5": {
+        "features": [
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.2
+          },
+          {
+            "label": "MaximumRange",
+            "method": "multiplicative",
+            "min": 0.75188,
+            "max": 1
+          },
+          {
+            "label": "FalloffRange",
+            "method": "multiplicative",
+            "min": 5.322573,
+            "max": 8.6
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.55,
+            "max": 0.55
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.231481,
+            "max": 0.333333
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.35,
+            "max": -0.35
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": 0.170677,
+            "max": 0.26
+          }
+        ]
       }
     }
   },
@@ -11876,12 +12236,6 @@
             "method": "multiplicative",
             "min": 0.2,
             "max": 0.2
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -11928,12 +12282,6 @@
             "method": "multiplicative",
             "min": 0.3,
             "max": 0.3
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -11980,12 +12328,6 @@
             "method": "multiplicative",
             "min": 0.451,
             "max": 0.451
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12032,12 +12374,6 @@
             "method": "multiplicative",
             "min": 0.6,
             "max": 0.6
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       }
@@ -12089,12 +12425,6 @@
             "method": "multiplicative",
             "min": 0.2,
             "max": 0.2
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12141,12 +12471,6 @@
             "method": "multiplicative",
             "min": 0.3,
             "max": 0.3
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12193,12 +12517,6 @@
             "method": "multiplicative",
             "min": 0.451,
             "max": 0.451
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12207,14 +12525,14 @@
           {
             "label": "Range",
             "method": "multiplicative",
-            "min": -0.075,
-            "max": -0.075
+            "min": -0.075188,
+            "max": -0.075188
           },
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.581,
-            "max": 0.581
+            "min": 0.5623337,
+            "max": 0.5623337
           },
           {
             "label": "BurstSize",
@@ -12245,12 +12563,6 @@
             "method": "multiplicative",
             "min": 0.6,
             "max": 0.6
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       }
@@ -12696,38 +13008,38 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.105,
-            "max": 0.105
+            "min": 0.105257,
+            "max": 0.105257
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.682,
-            "max": 0.682
+            "min": 0.512,
+            "max": 0.682667
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75,
             "max": 1
           },
           {
             "label": "Range",
             "method": "multiplicative",
-            "min": -0.167,
-            "max": -0.167
+            "min": -0.166667,
+            "max": -0.166667
           },
           {
             "label": "FalloffRange",
             "method": "multiplicative",
-            "min": -0.5,
+            "min": -0.625,
             "max": -0.5
           },
           {
             "label": "Jitter",
             "method": "additive",
             "min": 1.25,
-            "max": 1.25
+            "max": 1.4
           }
         ]
       },
@@ -12736,7 +13048,7 @@
           {
             "label": "Rounds",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0,
             "max": 1
           },
           {
@@ -12748,19 +13060,19 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.167,
-            "max": 0.167
+            "min": 0.166657,
+            "max": 0.166657
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 1.024,
+            "min": 0.682667,
             "max": 1.024
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 1.5,
+            "min": 1,
             "max": 1.5
           },
           {
@@ -12772,7 +13084,7 @@
           {
             "label": "FalloffRange",
             "method": "multiplicative",
-            "min": -0.325,
+            "min": -0.55,
             "max": -0.325
           },
           {
@@ -12800,38 +13112,38 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.274,
-            "max": 0.274
+            "min": 0.27358,
+            "max": 0.27358
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 1.54,
-            "max": 1.54
+            "min": 1.024,
+            "max": 1.53985
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 2.26,
-            "max": 2.26
+            "min": 1.5,
+            "max": 2.255639
           },
           {
             "label": "Range",
             "method": "multiplicative",
-            "min": -0.376,
-            "max": -0.376
+            "min": -0.37594,
+            "max": -0.37594
           },
           {
             "label": "FalloffRange",
             "method": "multiplicative",
-            "min": -0.155,
-            "max": -0.155
+            "min": -0.438346,
+            "max": -0.155407
           },
           {
             "label": "Jitter",
             "method": "additive",
-            "min": 2.26,
-            "max": 2.26
+            "min": 2.255639,
+            "max": 2.255639
           }
         ]
       },
@@ -12840,7 +13152,7 @@
           {
             "label": "Rounds",
             "method": "multiplicative",
-            "min": 2,
+            "min": 1,
             "max": 2
           },
           {
@@ -12852,19 +13164,19 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.4,
-            "max": 0.4
+            "min": 0.399972,
+            "max": 0.399972
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 2.048,
+            "min": 1.53985,
             "max": 2.048
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 3,
+            "min": 2.255639,
             "max": 3
           },
           {
@@ -12876,7 +13188,7 @@
           {
             "label": "FalloffRange",
             "method": "multiplicative",
-            "min": -0.1,
+            "min": -0.323308,
             "max": -0.1
           },
           {
@@ -12889,6 +13201,235 @@
       }
     }
   },
+  "Cannon_ForceImpact": {
+    "name": "Cannon — Force impact",
+    "grades": {
+      "2": {
+        "features": [
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 0.333333,
+            "max": 0.333333
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.2
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.133333,
+            "max": 0.133333
+          },
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.1,
+            "max": 0.133333
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.15,
+            "max": 0.2
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": -0.2,
+            "max": -0.228571
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.35,
+            "max": -0.35
+          },
+          {
+            "label": "ShotSpeed",
+            "method": "multiplicative",
+            "min": -0.166667,
+            "max": -0.166667
+          }
+        ],
+        "damageDistribution": {
+          "kinetic": 0.5,
+          "explosive": 0.5
+        }
+      },
+      "3": {
+        "features": [
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.5
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.3,
+            "max": 0.3
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.2
+          },
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.133333,
+            "max": 0.2
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.3
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": -0.228571,
+            "max": -0.28
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.35,
+            "max": -0.35
+          },
+          {
+            "label": "ShotSpeed",
+            "method": "multiplicative",
+            "min": -0.166667,
+            "max": -0.166667
+          }
+        ],
+        "damageDistribution": {
+          "kinetic": 0.5,
+          "explosive": 0.5
+        }
+      },
+      "4": {
+        "features": [
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 0.75188,
+            "max": 0.75188
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.451128,
+            "max": 0.451128
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.300752,
+            "max": 0.300752
+          },
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.300752
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.3,
+            "max": 0.451128
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": -0.28,
+            "max": -0.345902
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.35,
+            "max": -0.35
+          },
+          {
+            "label": "ShotSpeed",
+            "method": "multiplicative",
+            "min": -0.166667,
+            "max": -0.166667
+          }
+        ],
+        "damageDistribution": {
+          "kinetic": 0.5,
+          "explosive": 0.5
+        }
+      },
+      "5": {
+        "features": [
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 1,
+            "max": 1
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.6,
+            "max": 0.6
+          },
+          {
+            "label": "DistributorDraw",
+            "method": "multiplicative",
+            "min": 0.4,
+            "max": 0.4
+          },
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.300752,
+            "max": 0.4
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.451128,
+            "max": 0.6
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": -0.345902,
+            "max": -0.4
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.35,
+            "max": -0.35
+          },
+          {
+            "label": "ShotSpeed",
+            "method": "multiplicative",
+            "min": -0.166667,
+            "max": -0.166667
+          }
+        ],
+        "damageDistribution": {
+          "kinetic": 0.5,
+          "explosive": 0.5
+        }
+      }
+    }
+  },
   "SeekerMissileRack_Drag": {
     "name": "Seeker Missile Rack — Drag",
     "grades": {
@@ -12897,20 +13438,20 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.071,
-            "max": 0.071
+            "min": 0.052632,
+            "max": 0.071429
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.667,
-            "max": 0.667
+            "min": 0.5,
+            "max": 0.666667
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.667,
-            "max": 0.667
+            "min": 0.5,
+            "max": 0.666667
           },
           {
             "label": "Mass",
@@ -12927,8 +13468,8 @@
           {
             "label": "PowerDraw",
             "method": "multiplicative",
-            "min": 0.083,
-            "max": 0.083
+            "min": 0.083333,
+            "max": 0.083333
           }
         ]
       },
@@ -12937,19 +13478,19 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.111,
-            "max": 0.111
+            "min": 0.071429,
+            "max": 0.111111
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.666667,
             "max": 1
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.666667,
             "max": 1
           },
           {
@@ -12961,8 +13502,8 @@
           {
             "label": "DistributorDraw",
             "method": "multiplicative",
-            "min": 0.209,
-            "max": 0.209
+            "min": 0.2085,
+            "max": 0.2085
           },
           {
             "label": "PowerDraw",
@@ -12977,38 +13518,38 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.177,
-            "max": 0.177
+            "min": 0.111111,
+            "max": 0.176991
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 1.5,
-            "max": 1.5
+            "min": 1,
+            "max": 1.503759
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 1.667,
-            "max": 1.667
+            "min": 1,
+            "max": 1.503759
           },
           {
             "label": "Mass",
             "method": "multiplicative",
-            "min": 1.128,
-            "max": 1.128
+            "min": 1.12782,
+            "max": 1.12782
           },
           {
             "label": "DistributorDraw",
             "method": "multiplicative",
-            "min": 0.314,
-            "max": 0.314
+            "min": 0.313534,
+            "max": 0.313534
           },
           {
             "label": "PowerDraw",
             "method": "multiplicative",
-            "min": 0.188,
-            "max": 0.188
+            "min": 0.18797,
+            "max": 0.18797
           }
         ]
       },
@@ -13017,19 +13558,19 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.25,
+            "min": 0.176991,
             "max": 0.25
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 2,
+            "min": 1.503759,
             "max": 2
           },
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 2,
+            "min": 1.503759,
             "max": 2
           },
           {
@@ -13251,14 +13792,14 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.333,
-            "max": 0.333
+            "min": 0.25,
+            "max": 0.333333
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.333,
-            "max": 0.333
+            "min": 0.25,
+            "max": 0.333333
           },
           {
             "label": "PowerDraw",
@@ -13269,8 +13810,8 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.31,
-            "max": -0.31
+            "min": -0.316239,
+            "max": -0.310345
           },
           {
             "label": "Mass",
@@ -13281,26 +13822,26 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0.333,
-            "max": 0.333
+            "min": 0.25,
+            "max": 0.333333
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.033,
-            "max": -0.033
+            "min": -0.025,
+            "max": -0.033333
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.133,
-            "max": 0.133
+            "min": 0.1,
+            "max": 0.133333
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.218,
-            "max": -0.218
+            "min": -0.23875,
+            "max": -0.218333
           }
         ]
       },
@@ -13309,13 +13850,13 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.5,
+            "min": 0.333333,
             "max": 0.5
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.5,
+            "min": 0.333333,
             "max": 0.5
           },
           {
@@ -13327,8 +13868,8 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.298,
-            "max": -0.298
+            "min": -0.310345,
+            "max": -0.298246
           },
           {
             "label": "Mass",
@@ -13339,26 +13880,26 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0.5,
+            "min": 0.333333,
             "max": 0.5
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.05,
+            "min": -0.033333,
             "max": -0.05
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.2,
+            "min": 0.133333,
             "max": 0.2
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.178,
-            "max": -0.178
+            "min": -0.218333,
+            "max": -0.1775
           }
         ]
       },
@@ -13367,56 +13908,56 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.722,
-            "max": 0.722
+            "min": 0.5,
+            "max": 0.75188
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.722,
-            "max": 0.722
+            "min": 0.5,
+            "max": 0.75188
           },
           {
             "label": "PowerDraw",
             "method": "multiplicative",
-            "min": 0.226,
-            "max": 0.226
+            "min": 0.225564,
+            "max": 0.225564
           },
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.279,
-            "max": -0.279
+            "min": -0.298246,
+            "max": -0.279133
           },
           {
             "label": "Mass",
             "method": "multiplicative",
-            "min": 0.902,
-            "max": 0.902
+            "min": 0.902256,
+            "max": 0.902256
           },
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0.752,
-            "max": 0.752
+            "min": 0.5,
+            "max": 0.75188
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.075,
-            "max": -0.075
+            "min": -0.05,
+            "max": -0.075188
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.3,
-            "max": 0.3
+            "min": 0.2,
+            "max": 0.300752
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.116,
-            "max": -0.116
+            "min": -0.1775,
+            "max": -0.115789
           }
         ]
       },
@@ -13425,13 +13966,13 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75188,
             "max": 1
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75188,
             "max": 1
           },
           {
@@ -13443,8 +13984,8 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.259,
-            "max": -0.259
+            "min": -0.279133,
+            "max": -0.259259
           },
           {
             "label": "Mass",
@@ -13455,26 +13996,239 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75188,
             "max": 1
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.1,
+            "min": -0.075188,
             "max": -0.1
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.4,
+            "min": 0.300752,
             "max": 0.4
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.055,
+            "min": -0.115789,
             "max": -0.055
+          }
+        ]
+      }
+    }
+  },
+  "SeekerMissileRackLarge_ExposingMissiles": {
+    "name": "Seeker Missile Rack — Exposing missiles",
+    "grades": {
+      "2": {
+        "features": [
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.266667
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.166667,
+            "max": 0.166667
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.2,
+            "max": 0.266667
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.09589,
+            "max": 0.132075
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 0.466667,
+            "max": 0.466667
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.066667,
+            "max": -0.066667
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 1.1,
+            "max": 1.133333
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.1,
+            "max": -0.133333
+          }
+        ]
+      },
+      "3": {
+        "features": [
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.266667,
+            "max": 0.4
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.25,
+            "max": 0.25
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.266667,
+            "max": 0.4
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.132075,
+            "max": 0.212121
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 0.7,
+            "max": 0.7
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.1,
+            "max": -0.1
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 1.133333,
+            "max": 1.2
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.133333,
+            "max": -0.2
+          }
+        ]
+      },
+      "4": {
+        "features": [
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.4,
+            "max": 0.601504
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.37594,
+            "max": 0.37594
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.4,
+            "max": 0.601504
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.212121,
+            "max": 0.357143
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 1.052632,
+            "max": 1.052632
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.150376,
+            "max": -0.150376
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 1.2,
+            "max": 1.300752
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.2,
+            "max": -0.300752
+          }
+        ]
+      },
+      "5": {
+        "features": [
+          {
+            "label": "AmmoClipSize",
+            "method": "multiplicative",
+            "min": 0.601504,
+            "max": 0.8
+          },
+          {
+            "label": "PowerDraw",
+            "method": "multiplicative",
+            "min": 0.5,
+            "max": 0.5
+          },
+          {
+            "label": "AmmoMaximum",
+            "method": "multiplicative",
+            "min": 0.601504,
+            "max": 0.8
+          },
+          {
+            "label": "RateOfFire",
+            "method": "multiplicative",
+            "min": 0.357143,
+            "max": 0.538462
+          },
+          {
+            "label": "Mass",
+            "method": "multiplicative",
+            "min": 1.4,
+            "max": 1.4
+          },
+          {
+            "label": "ReloadTime",
+            "method": "multiplicative",
+            "min": -0.2,
+            "max": -0.2
+          },
+          {
+            "label": "ThermalLoad",
+            "method": "multiplicative",
+            "min": 1.300752,
+            "max": 1.4
+          },
+          {
+            "label": "Damage",
+            "method": "multiplicative",
+            "min": -0.300752,
+            "max": -0.4
           }
         ]
       }
@@ -13488,14 +14242,14 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.333,
-            "max": 0.333
+            "min": 0.25,
+            "max": 0.333333
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.333,
-            "max": 0.333
+            "min": 0.25,
+            "max": 0.333333
           },
           {
             "label": "PowerDraw",
@@ -13506,8 +14260,8 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.31,
-            "max": -0.31
+            "min": -0.316239,
+            "max": -0.310345
           },
           {
             "label": "Mass",
@@ -13518,26 +14272,26 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0.333,
-            "max": 0.333
+            "min": 0.25,
+            "max": 0.333333
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.033,
-            "max": -0.033
+            "min": -0.025,
+            "max": -0.033333
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.133,
-            "max": 0.133
+            "min": 0.1,
+            "max": 0.133333
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.218,
-            "max": -0.218
+            "min": -0.23875,
+            "max": -0.218333
           }
         ]
       },
@@ -13546,13 +14300,13 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.5,
+            "min": 0.333333,
             "max": 0.5
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.5,
+            "min": 0.333333,
             "max": 0.5
           },
           {
@@ -13564,8 +14318,8 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.298,
-            "max": -0.298
+            "min": -0.310345,
+            "max": -0.298246
           },
           {
             "label": "Mass",
@@ -13576,26 +14330,26 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0.5,
+            "min": 0.333333,
             "max": 0.5
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.05,
+            "min": -0.033333,
             "max": -0.05
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.2,
+            "min": 0.133333,
             "max": 0.2
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.178,
-            "max": -0.178
+            "min": -0.218333,
+            "max": -0.1775
           }
         ]
       },
@@ -13604,56 +14358,56 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 0.722,
-            "max": 0.722
+            "min": 0.5,
+            "max": 0.75188
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 0.722,
-            "max": 0.722
+            "min": 0.5,
+            "max": 0.75188
           },
           {
             "label": "PowerDraw",
             "method": "multiplicative",
-            "min": 0.226,
-            "max": 0.226
+            "min": 0.225564,
+            "max": 0.225564
           },
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.279,
-            "max": -0.279
+            "min": -0.298246,
+            "max": -0.279133
           },
           {
             "label": "Mass",
             "method": "multiplicative",
-            "min": 0.902,
-            "max": 0.902
+            "min": 0.902256,
+            "max": 0.902256
           },
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 0.752,
-            "max": 0.752
+            "min": 0.5,
+            "max": 0.75188
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.075,
-            "max": -0.075
+            "min": -0.05,
+            "max": -0.075188
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.3,
-            "max": 0.3
+            "min": 0.2,
+            "max": 0.300752
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.116,
-            "max": -0.116
+            "min": -0.1775,
+            "max": -0.115789
           }
         ]
       },
@@ -13662,13 +14416,13 @@
           {
             "label": "AmmoClipSize",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75188,
             "max": 1
           },
           {
             "label": "AmmoMaximum",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75188,
             "max": 1
           },
           {
@@ -13680,8 +14434,8 @@
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": -0.259,
-            "max": -0.259
+            "min": -0.279133,
+            "max": -0.259259
           },
           {
             "label": "Mass",
@@ -13692,25 +14446,25 @@
           {
             "label": "Integrity",
             "method": "multiplicative",
-            "min": 1,
+            "min": 0.75188,
             "max": 1
           },
           {
             "label": "ThermalLoad",
             "method": "multiplicative",
-            "min": -0.1,
+            "min": -0.075188,
             "max": -0.1
           },
           {
             "label": "ArmourPenetration",
             "method": "multiplicative",
-            "min": 0.4,
+            "min": 0.300752,
             "max": 0.4
           },
           {
             "label": "Damage",
             "method": "multiplicative",
-            "min": -0.055,
+            "min": -0.115789,
             "max": -0.055
           }
         ]

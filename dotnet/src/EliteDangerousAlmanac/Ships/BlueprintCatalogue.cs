@@ -20,7 +20,7 @@ namespace EliteDangerousAlmanac.Ships;
 /// <see cref="BlueprintJournal"/> settles a journal identifier against the fitted module.
 /// </para>
 /// <para>
-/// Further keys are the Operations identifiers: recipes a module is sold carrying, and the four
+/// Further keys are the Operations identifiers: recipes a module is sold carrying, and the
 /// Operations recipes a player rolls at an engineer. No journal spelling has been observed for
 /// those, which is a gap in the evidence rather than a claim that the game writes none.
 /// </para>

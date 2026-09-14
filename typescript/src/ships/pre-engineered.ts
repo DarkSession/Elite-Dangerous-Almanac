@@ -18,10 +18,9 @@
  * grade already applied. Most blueprint ids join to `BLUEPRINTS`; the festive
  * `Decorative_*` ids instead identify fixed grade-5 reward articles with no craftable
  * recipe or material cost.
- * Mercenary entries are bought at grade 1 and their bespoke recipes start at
- * grade 2 — price the remaining upgrade with `getBlueprintCost(blueprint, target,
- * grade)` from `ships/blueprint-costs`, which answers with the materials and the Merc
- * Coin the climb costs.
+ * Mercenary entries are bought at grade 1. Measured bespoke recipes start at grade 2.
+ * Price a measured upgrade with `getBlueprintCost(blueprint, target, grade)` from
+ * `ships/blueprint-costs`. It returns `null` when numeric grades and costs are not measured.
  * Community-goal and tech-broker entries instead identify fixed reward articles; their
  * blueprint ids do not grant a recipe to the stock module.
  *
@@ -46,6 +45,7 @@ import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { 
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { filterByKey } from '../internal/registry-index.js';
 import { requireStringIfPresent } from '../internal/argument-guards.js';
+import type { DamageDistribution } from './modules.js';
 
 /**
  * Where a pre-engineered variant is obtained.
@@ -138,11 +138,12 @@ export interface PreEngineeredVariant {
      * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost}.
      */
     readonly mercCoinCost?: number;
+    /** The fixed damage-type shares the variant arrives with. */
+    readonly damageDistribution?: DamageDistribution;
     /**
      * The hand-set stat block the variant arrives with, sorted by `label`.
      *
-     * Absent on every `mercenary` row: no registry publishes the grade-1 pre-engineering
-     * those arrive with. Present on all community-goal, tech-broker and event-reward rows.
+     * Every catalogued variant carries this block.
      */
     readonly modifiers?: readonly PreEngineeredModifier[];
 }

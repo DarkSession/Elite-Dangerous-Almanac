@@ -1978,7 +1978,7 @@
                   "acquisition": { "type": "string" },
                   "blueprintSymbol": { "type": "string" },
                   "experimentalEffectSymbol": {
-                    "anyOf": [{ "type": "null" }, { "type": "string" }]
+                    "anyOf": [{ "type": "string" }, { "type": "null" }]
                   },
                   "symbol": { "type": "string" }
                 },
@@ -3657,11 +3657,20 @@
                 "AbrasionBlaster_FarReaching": {
                   "$ref": "#/definitions/shared1e44f939dc59"
                 },
+                "BeamLaser_Overloaded": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
                 "BeamLaser_ThermalPlasmaConversion": {
                   "$ref": "#/definitions/sharede13731d6e20c"
                 },
+                "BurstLaser_Regenerative": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
                 "BurstLaser_ThermalPlasmaConversion": {
                   "$ref": "#/definitions/sharede13731d6e20c"
+                },
+                "Cannon_ForceImpact": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
                 },
                 "CargoRackS5C1_Extended": {
                   "$ref": "#/definitions/shared1e44f939dc59"
@@ -3717,6 +3726,9 @@
                 "RailGun_LongShot": {
                   "$ref": "#/definitions/shared1e44f939dc59"
                 },
+                "SeekerMissileRackLarge_ExposingMissiles": {
+                  "$ref": "#/definitions/shared1e44f939dc59"
+                },
                 "SeekerMissileRackLarge_Lockdown": {
                   "$ref": "#/definitions/shared1e44f939dc59"
                 },
@@ -3732,8 +3744,11 @@
               },
               "required": [
                 "AbrasionBlaster_FarReaching",
+                "BeamLaser_Overloaded",
                 "BeamLaser_ThermalPlasmaConversion",
+                "BurstLaser_Regenerative",
                 "BurstLaser_ThermalPlasmaConversion",
+                "Cannon_ForceImpact",
                 "CargoRackS5C1_Extended",
                 "CargoRackS6C1_Extended",
                 "DetailedSurfaceScanner_LongRange",
@@ -3752,6 +3767,7 @@
                 "PowerDistributor_Balanced",
                 "PulseLaser_ThermalPlasmaConversion",
                 "RailGun_LongShot",
+                "SeekerMissileRackLarge_ExposingMissiles",
                 "SeekerMissileRackLarge_Lockdown",
                 "SeekerMissileRackMedium_Lockdown",
                 "SeekerMissileRack_Drag",
@@ -3760,6 +3776,23 @@
             }
           },
           "required": ["climbs", "description", "perRoll"]
+        },
+        "observedGradeValues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "blueprint": { "type": "string" },
+              "explosive": { "type": "number" },
+              "grade": { "type": "integer" },
+              "kinetic": { "type": "number" },
+              "label": { "type": "string" },
+              "max": { "type": "number" },
+              "min": { "type": "number" }
+            },
+            "required": ["blueprint", "grade"]
+          }
         },
         "overchargedIdCollision": {
           "type": "object",
@@ -3971,6 +4004,7 @@
         "journalNames",
         "journalSpellings",
         "mercCoinCosts",
+        "observedGradeValues",
         "overchargedIdCollision",
         "preEngineeredClimb",
         "reachability",
@@ -6777,12 +6811,7 @@
                       "items": false
                     },
                     "slot": { "type": "string" },
-                    "stats": {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": { "cargoCapacity": { "type": "integer" } },
-                      "required": ["cargoCapacity"]
-                    }
+                    "stats": { "$ref": "#/definitions/shared57093e568d42" }
                   },
                   "required": ["modifiers", "outcomes", "slot", "stats"]
                 },
@@ -6864,7 +6893,15 @@
                       "items": false
                     },
                     "slot": { "type": "string" },
-                    "stats": { "$ref": "#/definitions/sharedf71f20a45e54" }
+                    "stats": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "maximumRange": { "type": "integer" },
+                        "shotSpeed": { "type": "integer" }
+                      },
+                      "required": ["maximumRange", "shotSpeed"]
+                    }
                   },
                   "required": ["modifiers", "outcomes", "slot", "stats"]
                 },
@@ -6887,7 +6924,15 @@
                       "items": false
                     },
                     "slot": { "type": "string" },
-                    "stats": { "$ref": "#/definitions/sharedf71f20a45e54" }
+                    "stats": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "maximumRange": { "type": "integer" },
+                        "shotSpeed": { "type": "number" }
+                      },
+                      "required": ["maximumRange", "shotSpeed"]
+                    }
                   },
                   "required": ["modifiers", "outcomes", "slot", "stats"]
                 },
@@ -7304,14 +7349,14 @@
           "properties": {
             "everyBlueprintIsAKnownBlueprint": { "type": "boolean" },
             "everyExperimentalIsAKnownEffect": { "type": "boolean" },
-            "everyMercenaryBlueprintStartsAtGradeTwo": { "type": "boolean" },
+            "everyMercenaryBlueprintExcludesGradeOne": { "type": "boolean" },
             "everyRewardGradeIsARealGrade": { "type": "boolean" },
             "everySymbolIsAKnownModule": { "type": "boolean" }
           },
           "required": [
             "everyBlueprintIsAKnownBlueprint",
             "everyExperimentalIsAKnownEffect",
-            "everyMercenaryBlueprintStartsAtGradeTwo",
+            "everyMercenaryBlueprintExcludesGradeOne",
             "everyRewardGradeIsARealGrade",
             "everySymbolIsAKnownModule"
           ]
@@ -7337,11 +7382,27 @@
               "additionalProperties": false,
               "properties": {
                 "blueprintSymbol": { "type": "string" },
-                "engineered": { "$ref": "#/definitions/shared8b2c766c07ae" },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damage": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": ["damage", "thermalLoad"]
+                },
                 "journalModifiers": {
                   "$ref": "#/definitions/shared528e5444e605"
                 },
-                "stock": { "$ref": "#/definitions/shared8b2c766c07ae" },
+                "stock": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damage": { "type": "number" },
+                    "thermalLoad": { "type": "integer" }
+                  },
+                  "required": ["damage", "thermalLoad"]
+                },
                 "symbol": { "type": "string" }
               },
               "required": [
@@ -7377,15 +7438,89 @@
           },
           "required": ["count", "resolved", "variants"]
         },
+        "mercenaryClimb": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "blueprintSymbol": { "type": "string" },
+            "engineered": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ammoMaximum": { "type": "integer" },
+                "burstRounds": { "type": "integer" },
+                "clipSize": { "type": "integer" },
+                "damagePerSecond": { "type": "number" },
+                "mass": { "type": "number" },
+                "maximumRange": { "type": "number" },
+                "powerDraw": { "type": "number" },
+                "rateOfFire": { "type": "number" },
+                "reloadTime": { "type": "number" }
+              },
+              "required": [
+                "ammoMaximum",
+                "burstRounds",
+                "clipSize",
+                "damagePerSecond",
+                "mass",
+                "maximumRange",
+                "powerDraw",
+                "rateOfFire",
+                "reloadTime"
+              ]
+            },
+            "experimentalEffectSymbol": { "type": "string" },
+            "grade": { "type": "integer" },
+            "quality": { "type": "integer" },
+            "symbol": { "type": "string" }
+          },
+          "required": [
+            "blueprintSymbol",
+            "engineered",
+            "experimentalEffectSymbol",
+            "grade",
+            "quality",
+            "symbol"
+          ]
+        },
+        "mercenaryHardpointExperimentals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "blueprintSymbol": { "type": "string" },
+              "experimentalEffectSymbol": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "slot": { "type": "string" },
+              "symbol": { "type": "string" }
+            },
+            "required": [
+              "blueprintSymbol",
+              "experimentalEffectSymbol",
+              "slot",
+              "symbol"
+            ]
+          }
+        },
         "modifierCounts": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "mercenaryWithResolvedStats": { "type": "integer" },
             "withMercCoinCost": { "type": "integer" },
             "withModifiers": { "type": "integer" },
+            "withStatedRateOfFire": { "type": "integer" },
             "withoutModifiers": { "type": "integer" }
           },
-          "required": ["withMercCoinCost", "withModifiers", "withoutModifiers"]
+          "required": [
+            "mercenaryWithResolvedStats",
+            "withMercCoinCost",
+            "withModifiers",
+            "withStatedRateOfFire",
+            "withoutModifiers"
+          ]
         },
         "modifierLabels": { "type": "array", "items": { "type": "string" } },
         "multiVariant": {
@@ -7406,6 +7541,9 @@
             "properties": {
               "acquisition": { "type": "string" },
               "blueprintSymbol": { "type": "string" },
+              "damageDistribution": {
+                "$ref": "#/definitions/shared4694a8122232"
+              },
               "engineeringLocked": { "type": "boolean" },
               "experimentalEffectSymbol": { "type": "string" },
               "grade": { "type": "integer" },
@@ -7418,6 +7556,7 @@
               "acquisition",
               "blueprintSymbol",
               "grade",
+              "modifiers",
               "name",
               "symbol"
             ]
@@ -7427,6 +7566,489 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "balancedPowerDistributorSize5Class5G1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enginesCapacity": { "type": "number" },
+                    "enginesRecharge": { "type": "number" },
+                    "integrity": { "type": "integer" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "systemsCapacity": { "type": "number" },
+                    "systemsRecharge": { "type": "number" },
+                    "weaponsCapacity": { "type": "number" },
+                    "weaponsRecharge": { "type": "number" }
+                  },
+                  "required": [
+                    "enginesCapacity",
+                    "enginesRecharge",
+                    "integrity",
+                    "mass",
+                    "powerDraw",
+                    "systemsCapacity",
+                    "systemsRecharge",
+                    "weaponsCapacity",
+                    "weaponsRecharge"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enginesCapacity": { "type": "number" },
+                    "enginesRecharge": { "type": "number" },
+                    "integrity": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "systemsCapacity": { "type": "number" },
+                    "systemsRecharge": { "type": "number" },
+                    "weaponsCapacity": { "type": "number" },
+                    "weaponsRecharge": { "type": "number" }
+                  },
+                  "required": [
+                    "enginesCapacity",
+                    "enginesRecharge",
+                    "integrity",
+                    "mass",
+                    "powerDraw",
+                    "systemsCapacity",
+                    "systemsRecharge",
+                    "weaponsCapacity",
+                    "weaponsRecharge"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "doubleScreamingFragmentCannonLargeG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "burstRounds": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damagePerSecond": { "type": "integer" },
+                    "mass": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "reloadTime": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "burstRounds",
+                    "clipSize",
+                    "damagePerSecond",
+                    "mass",
+                    "maximumRange",
+                    "powerDraw",
+                    "rateOfFire",
+                    "reloadTime"
+                  ]
+                },
+                "engineered": { "$ref": "#/definitions/shared963500b6ce75" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "doubleScreamingFragmentCannonSmallG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "burstRounds": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damagePerSecond": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "reloadTime": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "burstRounds",
+                    "clipSize",
+                    "damagePerSecond",
+                    "mass",
+                    "maximumRange",
+                    "powerDraw",
+                    "rateOfFire",
+                    "reloadTime"
+                  ]
+                },
+                "engineered": { "$ref": "#/definitions/shared963500b6ce75" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "dragSeekerMissileRackMediumG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damagePerSecond": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damagePerSecond",
+                    "distributorDraw",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "distributorDraw": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "distributorDraw",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "enduringFeedbackRailGunG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "damage": { "type": "integer" },
+                    "falloffRange": { "type": "integer" },
+                    "mass": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "reloadTime": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "damage",
+                    "falloffRange",
+                    "mass",
+                    "maximumRange",
+                    "powerDraw",
+                    "rateOfFire",
+                    "reloadTime",
+                    "thermalLoad"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "falloffRange": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "reloadTime": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "damage",
+                    "falloffRange",
+                    "mass",
+                    "maximumRange",
+                    "powerDraw",
+                    "rateOfFire",
+                    "reloadTime",
+                    "thermalLoad"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "exposingMissilesG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "damagePerSecond": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "reloadTime": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "damagePerSecond",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire",
+                    "reloadTime",
+                    "thermalLoad"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "reloadTime": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire",
+                    "reloadTime",
+                    "thermalLoad"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "extendedCargoRackSize5G1": {
+              "$ref": "#/definitions/shared3dc56207f4f8"
+            },
+            "extendedCargoRackSize6G1": {
+              "$ref": "#/definitions/shared3dc56207f4f8"
+            },
+            "farReachingAbrasionBlasterG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "distributorDraw": { "type": "number" },
+                    "falloffRange": { "type": "integer" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "distributorDraw",
+                    "falloffRange",
+                    "maximumRange",
+                    "powerDraw",
+                    "thermalLoad"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "distributorDraw": { "type": "number" },
+                    "falloffRange": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "shotSpeed": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "distributorDraw",
+                    "falloffRange",
+                    "maximumRange",
+                    "powerDraw",
+                    "shotSpeed",
+                    "thermalLoad"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "forceImpactCannonG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "mass": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "shotSpeed": { "type": "integer" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "distributorDraw",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire",
+                    "shotSpeed"
+                  ]
+                },
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "integer" },
+                    "damagePerSecond": { "type": "number" },
+                    "damageType": { "type": "string" },
+                    "distributorDraw": { "type": "number" },
+                    "mass": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "shotSpeed": { "type": "integer" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "damagePerSecond",
+                    "damageType",
+                    "distributorDraw",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire",
+                    "shotSpeed"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "mass": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" },
+                    "shotSpeed": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "distributorDraw",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire",
+                    "shotSpeed"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "base",
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
             "fragmentCannonDoubleShot": {
               "type": "object",
               "additionalProperties": false,
@@ -7671,13 +8293,458 @@
                 "symbol": { "type": "string" }
               },
               "required": ["blueprintSymbol", "engineered", "grade", "symbol"]
+            },
+            "heavyDutyModuleReinforcementG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "integrity": { "type": "integer" },
+                    "mass": { "type": "integer" },
+                    "moduleProtection": { "type": "number" }
+                  },
+                  "required": ["integrity", "mass", "moduleProtection"]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "integrity": { "type": "number" },
+                    "mass": { "type": "integer" },
+                    "moduleProtection": { "type": "number" }
+                  },
+                  "required": ["integrity", "mass", "moduleProtection"]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "highYieldEnzymeMissileRackG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "damagePerSecond": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "damagePerSecond",
+                    "mass",
+                    "powerDraw"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "mass",
+                    "powerDraw"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "lightweightThermalSeekerMissileRackG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damagePerSecond": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "integrity": { "type": "integer" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damagePerSecond",
+                    "distributorDraw",
+                    "integrity",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "distributorDraw": { "type": "number" },
+                    "integrity": { "type": "number" },
+                    "mass": { "type": "number" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "distributorDraw",
+                    "integrity",
+                    "mass",
+                    "powerDraw",
+                    "rateOfFire"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "lockdownSeekerMissileRackLargeG1": {
+              "$ref": "#/definitions/shared84f607abd4e0"
+            },
+            "lockdownSeekerMissileRackMediumG1": {
+              "$ref": "#/definitions/shared84f607abd4e0"
+            },
+            "longRangeDetailedSurfaceScannerG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": { "$ref": "#/definitions/sharede4f7a240f42f" },
+                "engineered": { "$ref": "#/definitions/sharede4f7a240f42f" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "longRangeMiningLaserG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damagePerSecond": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "falloffRange": { "type": "integer" },
+                    "integrity": { "type": "integer" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "damagePerSecond",
+                    "distributorDraw",
+                    "falloffRange",
+                    "integrity",
+                    "maximumRange",
+                    "powerDraw",
+                    "thermalLoad"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damage": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "falloffRange": { "type": "integer" },
+                    "integrity": { "type": "integer" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "damage",
+                    "distributorDraw",
+                    "falloffRange",
+                    "integrity",
+                    "maximumRange",
+                    "powerDraw",
+                    "thermalLoad"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "overloadedBeamLaserG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "base": { "$ref": "#/definitions/shareda135265e841c" },
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damagePerSecond": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "mass": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "thermalLoad": { "type": "number" }
+                  },
+                  "required": [
+                    "damagePerSecond",
+                    "distributorDraw",
+                    "mass",
+                    "powerDraw",
+                    "thermalLoad"
+                  ]
+                },
+                "engineered": { "$ref": "#/definitions/shareda135265e841c" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "base",
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "rapidPhaseMultiCannonG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "integer" },
+                    "damagePerSecond": { "type": "number" },
+                    "falloffRange": { "type": "integer" },
+                    "jitter": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "damagePerSecond",
+                    "falloffRange",
+                    "jitter",
+                    "maximumRange",
+                    "rateOfFire"
+                  ]
+                },
+                "engineered": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ammoMaximum": { "type": "integer" },
+                    "clipSize": { "type": "integer" },
+                    "damage": { "type": "number" },
+                    "falloffRange": { "type": "integer" },
+                    "jitter": { "type": "number" },
+                    "maximumRange": { "type": "integer" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "ammoMaximum",
+                    "clipSize",
+                    "damage",
+                    "falloffRange",
+                    "jitter",
+                    "maximumRange",
+                    "rateOfFire"
+                  ]
+                },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "regenerativeBurstLaserG1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "base": { "$ref": "#/definitions/shared41b8e6b09cb6" },
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "damage": { "type": "number" },
+                    "damagePerSecond": { "type": "number" },
+                    "distributorDraw": { "type": "number" },
+                    "falloffRange": { "type": "integer" },
+                    "maximumRange": { "type": "integer" },
+                    "powerDraw": { "type": "number" },
+                    "rateOfFire": { "type": "number" }
+                  },
+                  "required": [
+                    "damage",
+                    "damagePerSecond",
+                    "distributorDraw",
+                    "falloffRange",
+                    "maximumRange",
+                    "powerDraw",
+                    "rateOfFire"
+                  ]
+                },
+                "engineered": { "$ref": "#/definitions/shared41b8e6b09cb6" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "base",
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "supportFocusedPowerDistributorSize3Class2G1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enginesCapacity": { "type": "number" },
+                    "enginesRecharge": { "type": "number" },
+                    "systemsCapacity": { "type": "number" },
+                    "systemsRecharge": { "type": "number" },
+                    "weaponsCapacity": { "type": "number" },
+                    "weaponsRecharge": { "type": "integer" }
+                  },
+                  "required": [
+                    "enginesCapacity",
+                    "enginesRecharge",
+                    "systemsCapacity",
+                    "systemsRecharge",
+                    "weaponsCapacity",
+                    "weaponsRecharge"
+                  ]
+                },
+                "engineered": { "$ref": "#/definitions/shared57a96ef116ee" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "supportFocusedPowerDistributorSize3Class5G1": {
+              "$ref": "#/definitions/sharede662dc44d831"
+            },
+            "supportFocusedPowerDistributorSize4Class2G1": {
+              "$ref": "#/definitions/sharede662dc44d831"
+            },
+            "supportFocusedPowerDistributorSize4Class5G1": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "blueprintSymbol": { "type": "string" },
+                "displayed": { "$ref": "#/definitions/shareda9f70a716aea" },
+                "engineered": { "$ref": "#/definitions/shareda9f70a716aea" },
+                "symbol": { "type": "string" }
+              },
+              "required": [
+                "blueprintSymbol",
+                "displayed",
+                "engineered",
+                "symbol"
+              ]
+            },
+            "supportFocusedPowerDistributorSize6Class5G1": {
+              "$ref": "#/definitions/sharede662dc44d831"
             }
           },
           "required": [
+            "balancedPowerDistributorSize5Class5G1",
+            "doubleScreamingFragmentCannonLargeG1",
+            "doubleScreamingFragmentCannonSmallG1",
+            "dragSeekerMissileRackMediumG1",
+            "enduringFeedbackRailGunG1",
+            "exposingMissilesG1",
+            "extendedCargoRackSize5G1",
+            "extendedCargoRackSize6G1",
+            "farReachingAbrasionBlasterG1",
+            "forceImpactCannonG1",
             "fragmentCannonDoubleShot",
             "fsdV1Size5",
             "guardianShardMediumG1",
-            "guardianShardMediumLongRange"
+            "guardianShardMediumLongRange",
+            "heavyDutyModuleReinforcementG1",
+            "highYieldEnzymeMissileRackG1",
+            "lightweightThermalSeekerMissileRackG1",
+            "lockdownSeekerMissileRackLargeG1",
+            "lockdownSeekerMissileRackMediumG1",
+            "longRangeDetailedSurfaceScannerG1",
+            "longRangeMiningLaserG1",
+            "overloadedBeamLaserG1",
+            "rapidPhaseMultiCannonG1",
+            "regenerativeBurstLaserG1",
+            "supportFocusedPowerDistributorSize3Class2G1",
+            "supportFocusedPowerDistributorSize3Class5G1",
+            "supportFocusedPowerDistributorSize4Class2G1",
+            "supportFocusedPowerDistributorSize4Class5G1",
+            "supportFocusedPowerDistributorSize6Class5G1"
           ]
         },
         "sameBlueprintTwice": {
@@ -7715,6 +8782,8 @@
         "maxModifierDecimalPlaces",
         "mercCoin",
         "mercenaryBakedEffects",
+        "mercenaryClimb",
+        "mercenaryHardpointExperimentals",
         "modifierCounts",
         "modifierLabels",
         "multiVariant",
@@ -9636,6 +10705,50 @@
       },
       "required": ["Label", "OriginalValue", "Value"]
     },
+    "shared3db56e8e8480": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ammoMaximum": { "type": "integer" },
+        "armourPiercing": { "type": "number" },
+        "clipSize": { "type": "integer" },
+        "damage": { "type": "number" },
+        "integrity": { "type": "number" },
+        "mass": { "type": "number" },
+        "powerDraw": { "type": "number" },
+        "rateOfFire": { "type": "number" },
+        "thermalLoad": { "type": "number" }
+      },
+      "required": [
+        "ammoMaximum",
+        "armourPiercing",
+        "clipSize",
+        "damage",
+        "integrity",
+        "mass",
+        "powerDraw",
+        "rateOfFire",
+        "thermalLoad"
+      ]
+    },
+    "shared3dc56207f4f8": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": { "$ref": "#/definitions/shared57093e568d42" },
+        "blueprintSymbol": { "type": "string" },
+        "displayed": { "$ref": "#/definitions/shared57093e568d42" },
+        "engineered": { "$ref": "#/definitions/shared57093e568d42" },
+        "symbol": { "type": "string" }
+      },
+      "required": [
+        "base",
+        "blueprintSymbol",
+        "displayed",
+        "engineered",
+        "symbol"
+      ]
+    },
     "shared3df13eb56caf": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared47a59d5e42bf" }
@@ -9668,6 +10781,26 @@
         "sourceModulesValue",
         "sourceRebuy",
         "unpricedInSource"
+      ]
+    },
+    "shared41b8e6b09cb6": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "damage": { "type": "number" },
+        "distributorDraw": { "type": "number" },
+        "falloffRange": { "type": "integer" },
+        "maximumRange": { "type": "integer" },
+        "powerDraw": { "type": "number" },
+        "rateOfFire": { "type": "number" }
+      },
+      "required": [
+        "damage",
+        "distributorDraw",
+        "falloffRange",
+        "maximumRange",
+        "powerDraw",
+        "rateOfFire"
       ]
     },
     "shared41cf73923ed3": {
@@ -9793,6 +10926,12 @@
       },
       "required": ["capacity", "ratedRecharge", "rechargeRate"]
     },
+    "shared57093e568d42": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "cargoCapacity": { "type": "integer" } },
+      "required": ["cargoCapacity"]
+    },
     "shared576f94cbb9fb": {
       "type": "object",
       "additionalProperties": false,
@@ -9801,6 +10940,26 @@
         "SuitName": { "type": "string" }
       },
       "required": ["Modules", "SuitName"]
+    },
+    "shared57a96ef116ee": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enginesCapacity": { "type": "number" },
+        "enginesRecharge": { "type": "number" },
+        "systemsCapacity": { "type": "number" },
+        "systemsRecharge": { "type": "number" },
+        "weaponsCapacity": { "type": "number" },
+        "weaponsRecharge": { "type": "number" }
+      },
+      "required": [
+        "enginesCapacity",
+        "enginesRecharge",
+        "systemsCapacity",
+        "systemsRecharge",
+        "weaponsCapacity",
+        "weaponsRecharge"
+      ]
     },
     "shared582e95d48378": {
       "type": "object",
@@ -9995,6 +11154,17 @@
       "type": "array",
       "items": { "$ref": "#/definitions/sharedf77bc75a6f0c" }
     },
+    "shared84f607abd4e0": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "blueprintSymbol": { "type": "string" },
+        "displayed": { "$ref": "#/definitions/shareda31c0d4cde39" },
+        "engineered": { "$ref": "#/definitions/shared3db56e8e8480" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["blueprintSymbol", "displayed", "engineered", "symbol"]
+    },
     "shared85800461fa45": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared582e95d48378" }
@@ -10008,15 +11178,6 @@
         "weapons": { "type": "integer" }
       },
       "required": ["engines", "systems", "weapons"]
-    },
-    "shared8b2c766c07ae": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "damage": { "type": "number" },
-        "thermalLoad": { "type": "integer" }
-      },
-      "required": ["damage", "thermalLoad"]
     },
     "shared8d1c2fa65d38": {
       "type": "object",
@@ -10047,6 +11208,30 @@
     "shared95d233b3ae4f": {
       "type": "array",
       "items": { "$ref": "#/definitions/sharedd522a8014c27" }
+    },
+    "shared963500b6ce75": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ammoMaximum": { "type": "integer" },
+        "burstRounds": { "type": "integer" },
+        "clipSize": { "type": "integer" },
+        "mass": { "type": "number" },
+        "maximumRange": { "type": "integer" },
+        "powerDraw": { "type": "number" },
+        "rateOfFire": { "type": "number" },
+        "reloadTime": { "type": "number" }
+      },
+      "required": [
+        "ammoMaximum",
+        "burstRounds",
+        "clipSize",
+        "mass",
+        "maximumRange",
+        "powerDraw",
+        "rateOfFire",
+        "reloadTime"
+      ]
     },
     "shared997edec7cdca": {
       "type": "object",
@@ -10109,6 +11294,52 @@
       "type": "array",
       "items": { "$ref": "#/definitions/sharedd6c784af90cd" }
     },
+    "shareda135265e841c": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "damage": { "type": "number" },
+        "distributorDraw": { "type": "number" },
+        "mass": { "type": "integer" },
+        "powerDraw": { "type": "number" },
+        "thermalLoad": { "type": "number" }
+      },
+      "required": [
+        "damage",
+        "distributorDraw",
+        "mass",
+        "powerDraw",
+        "thermalLoad"
+      ]
+    },
+    "shareda31c0d4cde39": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ammoMaximum": { "type": "integer" },
+        "armourPiercing": { "type": "integer" },
+        "clipSize": { "type": "integer" },
+        "damage": { "type": "integer" },
+        "damagePerSecond": { "type": "number" },
+        "integrity": { "type": "integer" },
+        "mass": { "type": "number" },
+        "powerDraw": { "type": "number" },
+        "rateOfFire": { "type": "number" },
+        "thermalLoad": { "type": "number" }
+      },
+      "required": [
+        "ammoMaximum",
+        "armourPiercing",
+        "clipSize",
+        "damage",
+        "damagePerSecond",
+        "integrity",
+        "mass",
+        "powerDraw",
+        "rateOfFire",
+        "thermalLoad"
+      ]
+    },
     "shareda48303538b65": {
       "type": "object",
       "additionalProperties": false,
@@ -10139,6 +11370,26 @@
     "shareda9bcce333977": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared51d3801083d1" }
+    },
+    "shareda9f70a716aea": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enginesCapacity": { "type": "number" },
+        "enginesRecharge": { "type": "number" },
+        "systemsCapacity": { "type": "number" },
+        "systemsRecharge": { "type": "number" },
+        "weaponsCapacity": { "type": "integer" },
+        "weaponsRecharge": { "type": "number" }
+      },
+      "required": [
+        "enginesCapacity",
+        "enginesRecharge",
+        "systemsCapacity",
+        "systemsRecharge",
+        "weaponsCapacity",
+        "weaponsRecharge"
+      ]
     },
     "sharedaa5cf1cc328e": {
       "type": "object",
@@ -10272,6 +11523,23 @@
       "type": "array",
       "items": { "$ref": "#/definitions/shared0ff8838421c7" }
     },
+    "sharede4f7a240f42f": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "probeRadius": { "type": "integer" } },
+      "required": ["probeRadius"]
+    },
+    "sharede662dc44d831": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "blueprintSymbol": { "type": "string" },
+        "displayed": { "$ref": "#/definitions/shared57a96ef116ee" },
+        "engineered": { "$ref": "#/definitions/shared57a96ef116ee" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["blueprintSymbol", "displayed", "engineered", "symbol"]
+    },
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
@@ -10350,15 +11618,6 @@
         "symbol": { "type": "string" }
       },
       "required": ["slot", "symbol"]
-    },
-    "sharedf71f20a45e54": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "maximumRange": { "type": "integer" },
-        "shotSpeed": { "type": "integer" }
-      },
-      "required": ["maximumRange", "shotSpeed"]
     },
     "sharedf77bc75a6f0c": {
       "type": "object",

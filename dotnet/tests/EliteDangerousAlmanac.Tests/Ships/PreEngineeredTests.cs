@@ -168,6 +168,7 @@ public class PreEngineeredTests
         Assert.Equal(Acquisition(expected.Acquisition), variant.Acquisition);
         Assert.Equal(expected.EngineeringLocked, variant.EngineeringLocked);
         Assert.Equal(expected.MercCoinCost, variant.MercCoinCost);
+        Assert.Equal(expected.DamageDistribution, variant.DamageDistribution);
 
         if (expected.Modifiers is null)
         {
@@ -234,7 +235,7 @@ public class PreEngineeredTests
         Assert.True(Fixture.Joins["everySymbolIsAKnownModule"]);
         Assert.True(Fixture.Joins["everyBlueprintIsAKnownBlueprint"]);
         Assert.True(Fixture.Joins["everyExperimentalIsAKnownEffect"]);
-        Assert.True(Fixture.Joins["everyMercenaryBlueprintStartsAtGradeTwo"]);
+        Assert.True(Fixture.Joins["everyMercenaryBlueprintExcludesGradeOne"]);
         Assert.True(Fixture.Joins["everyRewardGradeIsARealGrade"]);
 
         foreach (PreEngineeredVariant variant in PreEngineeredCatalogue.All)
@@ -255,7 +256,7 @@ public class PreEngineeredTests
 
             if (variant.Acquisition == PreEngineeredAcquisition.Mercenary)
             {
-                // The article is bought at grade 1, so its recipe starts at grade 2.
+                // The article is bought at grade 1, so its recipe does not define grade 1.
                 Assert.DoesNotContain(1, blueprint!.Grades.Keys);
             }
 
@@ -310,17 +311,15 @@ public class PreEngineeredTests
 
     [Theory]
     [MemberData(nameof(BakedEffects))]
-    public void ABoughtArticleArrivesByItsBakedEffectAlone(int position)
+    public void ABoughtArticleCarriesItsObservedBakedEffect(int position)
     {
         BakedEffectFixture baked = Fixture.MercenaryBakedEffects.Variants[position];
         PreEngineeredVariant variant = Variant(baked.Symbol, baked.BlueprintSymbol, baked.ExperimentalEffectSymbol);
 
         Assert.Equal(PreEngineeredAcquisition.Mercenary, variant.Acquisition);
 
-        // No registry publishes the grade-1 pre-engineering a shop row arrives with, so what its
-        // baked effect moves is the whole of what it reports.
-        Assert.Null(variant.Modifiers);
-        Assert.Equal(baked.MovedStats, MovedStats(variant));
+        Assert.Equal(baked.ExperimentalEffectSymbol, variant.ExperimentalEffectSymbol);
+        if (variant.Modifiers is null) Assert.Equal(baked.MovedStats, MovedStats(variant));
     }
 
     [Fact]
@@ -331,6 +330,81 @@ public class PreEngineeredTests
             PreEngineeredCatalogue.All.Count(variant =>
                 variant.Acquisition == PreEngineeredAcquisition.Mercenary
                 && variant.ExperimentalEffectSymbol is not null));
+    }
+
+    [Fact]
+    public void ADoubleScreamingArticleReachesItsObservedGradeFiveStats()
+    {
+        MercenaryStatClimbFixture expected = Fixture.MercenaryClimb;
+        PreEngineeredVariant variant = Variant(
+            expected.Symbol,
+            expected.BlueprintSymbol,
+            expected.ExperimentalEffectSymbol);
+        ShipLoadout build = ShipLoadout.Empty("Anaconda");
+        build.SetPreEngineeredVariant("LargeHardpoint1", variant);
+        build.ApplyBlueprint(
+            "LargeHardpoint1",
+            expected.BlueprintSymbol,
+            new ApplyBlueprintOptions(
+                expected.Grade,
+                expected.Quality,
+                expected.ExperimentalEffectSymbol));
+
+        OutfittingModule stats = build.FittedModuleAt("LargeHardpoint1")!.EffectiveStats!;
+        foreach (KeyValuePair<string, double> stat in expected.Engineered)
+        {
+            if (stat.Key == "damagePerSecond")
+            {
+                double damagePerSecond = Weapons.DamagePerSecond(WeaponStats.FromModule(stats));
+                Assert.InRange(Math.Abs(damagePerSecond - stat.Value), 0, 1e-6);
+                continue;
+            }
+
+            double actual = stats.Stats[Stat(stat.Key)]!.Value;
+            Assert.Equal(stat.Value, actual, 6);
+        }
+    }
+
+    [Fact]
+    public void MercenaryHardpointsKeepTheirPurchasedExperimentalState()
+    {
+        foreach (MercenaryExperimentalFixture expected in Fixture.MercenaryHardpointExperimentals)
+        {
+            PreEngineeredVariant variant = Variant(
+                expected.Symbol,
+                expected.BlueprintSymbol,
+                expected.ExperimentalEffectSymbol);
+            ShipLoadout build = ShipLoadout.Empty("Anaconda");
+            build.SetPreEngineeredVariant(expected.Slot, variant);
+
+            Assert.Empty(build.AvailableExperimentalEffects(expected.Slot));
+            build.ApplyBlueprint(
+                expected.Slot,
+                expected.BlueprintSymbol,
+                new ApplyBlueprintOptions(5, 0.5));
+            Assert.Equal(
+                EngineeringEditKind.Updated,
+                build.CompleteEngineeringGrade(expected.Slot).Kind);
+            Assert.Equal(
+                expected.ExperimentalEffectSymbol,
+                build.FittedModuleAt(expected.Slot)!.Engineering!.ExperimentalEffect);
+            Assert.Equal(
+                EngineeringEditKind.Unchanged,
+                build.SetExperimentalEffect(expected.Slot, expected.ExperimentalEffectSymbol).Kind);
+
+            string? requested = expected.ExperimentalEffectSymbol is null
+                ? "special_thermal_vent"
+                : null;
+            ExperimentalEffectEdit edit = build.SetExperimentalEffect(expected.Slot, requested);
+            Assert.Equal(EngineeringEditCode.UnsupportedExperimentalEffect, edit.Code);
+            Assert.Equal(
+                expected.ExperimentalEffectSymbol,
+                build.FittedModuleAt(expected.Slot)!.Engineering!.ExperimentalEffect);
+            Assert.Throws<ArgumentException>(() => build.ApplyBlueprint(
+                expected.Slot,
+                expected.BlueprintSymbol,
+                new ApplyBlueprintOptions(5, 1, "special_weapon_damage")));
+        }
     }
 
     [Theory]
@@ -415,6 +489,7 @@ public class PreEngineeredTests
         if (expected.Displayed is DisplayedPanelFixture panel)
         {
             AssertReading(panel.Mass, resolved, ModuleStat.Mass);
+            AssertReading(panel.Integrity, resolved, ModuleStat.Integrity);
             AssertReading(panel.PowerDraw, resolved, ModuleStat.PowerDraw);
             AssertReading(panel.DistributorDraw, resolved, ModuleStat.DistributorDraw);
             AssertReading(panel.ThermalLoad, resolved, ModuleStat.ThermalLoad);
@@ -425,8 +500,19 @@ public class PreEngineeredTests
             AssertReading(panel.FalloffRange, resolved, ModuleStat.FalloffRange);
             AssertReading(panel.Damage, resolved, ModuleStat.Damage);
             AssertReading(panel.RateOfFire, resolved, ModuleStat.RateOfFire);
+            AssertReading(panel.BurstRounds, resolved, ModuleStat.BurstRounds);
             AssertReading(panel.ClipSize, resolved, ModuleStat.ClipSize);
             AssertReading(panel.AmmoMaximum, resolved, ModuleStat.AmmoMaximum);
+            AssertReading(panel.CargoCapacity, resolved, ModuleStat.CargoCapacity);
+            AssertReading(panel.ReloadTime, resolved, ModuleStat.ReloadTime);
+            AssertReading(panel.ModuleProtection, resolved, ModuleStat.ModuleProtection);
+            AssertReading(panel.WeaponsCapacity, resolved, ModuleStat.WeaponsCapacity);
+            AssertReading(panel.WeaponsRecharge, resolved, ModuleStat.WeaponsRecharge);
+            AssertReading(panel.EnginesCapacity, resolved, ModuleStat.EnginesCapacity);
+            AssertReading(panel.EnginesRecharge, resolved, ModuleStat.EnginesRecharge);
+            AssertReading(panel.SystemsCapacity, resolved, ModuleStat.SystemsCapacity);
+            AssertReading(panel.SystemsRecharge, resolved, ModuleStat.SystemsRecharge);
+            AssertReading(panel.ProbeRadius, resolved, ModuleStat.ProbeRadius);
 
             if (panel.DamagePerSecond is PanelReading rate)
             {

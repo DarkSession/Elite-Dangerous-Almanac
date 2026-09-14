@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { BLUEPRINTS, getBlueprint, getBlueprintGrade } from './blueprints.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
+import fixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
 test('every blueprint carries a display name and grades', () => {
     for (const [blueprintSymbol, bp] of Object.entries(BLUEPRINTS)) {
@@ -22,6 +23,25 @@ test('getBlueprint resolves case-insensitively and misses cleanly', () => {
     assert.equal(getBlueprint('fsd_longrange')?.name, 'Increased range');
     assert.equal(getBlueprint('guardianmodule_sturdy')?.name, 'Anti-Guardian Zone Resistance');
     assert.equal(getBlueprint('nope'), null);
+});
+
+test('observed grade values match the shared fixture', () => {
+    for (const expected of fixture.observedGradeValues) {
+        const grade = getBlueprintGrade(expected.blueprint, expected.grade);
+        assert.ok(grade, `${expected.blueprint} grade ${expected.grade} is missing`);
+        if ('label' in expected) {
+            const feature = grade.features.find((candidate) => candidate.label === expected.label);
+            assert.deepEqual(feature && { min: feature.min, max: feature.max }, {
+                min: expected.min,
+                max: expected.max,
+            });
+        } else {
+            assert.deepEqual(grade.damageDistribution, {
+                kinetic: expected.kinetic,
+                explosive: expected.explosive,
+            });
+        }
+    }
 });
 
 test('Anti-Guardian Zone Resistance is keyed once, under the id the game writes', () => {

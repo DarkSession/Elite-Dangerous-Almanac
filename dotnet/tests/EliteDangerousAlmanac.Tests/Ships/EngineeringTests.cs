@@ -75,6 +75,27 @@ public class EngineeringTests
         AssertValues(climb.Expected, modifiers, 1e-3);
     }
 
+    [Fact]
+    public void ObservedGradeValuesMatchTheSharedFixture()
+    {
+        foreach (ObservedGradeValueFixture expected in Fixture.ObservedGradeValues)
+        {
+            BlueprintGrade grade = Grade(expected.Blueprint, expected.Grade);
+            if (expected.Label is not null)
+            {
+                BlueprintFeature feature = Assert.Single(
+                    grade.Features, candidate => candidate.Label == expected.Label);
+                Assert.Equal(expected.Min, feature.Min);
+                Assert.Equal(expected.Max, feature.Max);
+                continue;
+            }
+
+            Assert.NotNull(grade.DamageDistribution);
+            Assert.Equal(expected.Kinetic, grade.DamageDistribution.Kinetic);
+            Assert.Equal(expected.Explosive, grade.DamageDistribution.Explosive);
+        }
+    }
+
     [Theory]
     [MemberData(nameof(ScannerCollisions))]
     public void AScannerNameResolvesAgainstTheFittedModule(int position) =>

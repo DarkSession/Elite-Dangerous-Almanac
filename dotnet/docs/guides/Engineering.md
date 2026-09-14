@@ -160,6 +160,8 @@ bespoke Mercenary upgrade recipe after the ordinary menu and marks it `Route`
 blueprint is available only to its corresponding purchase. A fitted module carrying that
 blueprint is therefore identified as the Mercenary article at its purchase grade or after a
 later upgrade; its variant retains the original grade and Merc Coin price.
+Mercenary hardpoints keep the experimental state they are sold with through each upgrade.
+`AvailableExperimentalEffects` returns no choices, and `SetExperimentalEffect` refuses a change.
 
 ## The three accommodations
 

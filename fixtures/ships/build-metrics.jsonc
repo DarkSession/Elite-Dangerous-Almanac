@@ -934,7 +934,7 @@
           "note": "Plasma Slug empties the reserve because the weapon then reloads from ship fuel — a tank this does not model, which is why the answer is a reserve of zero and not an unlimited one.",
           "slot": "MediumHardpoint1",
           "module": "Hpt_RailGun_Fixed_Medium",
-          "blueprint": "RailGun_LongShot",
+          "blueprint": "Weapon_LongRange",
           "grade": 5,
           "experimental": "special_plasma_slug_cooled",
           "stock": {

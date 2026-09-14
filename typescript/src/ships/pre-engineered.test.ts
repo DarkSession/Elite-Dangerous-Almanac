@@ -79,9 +79,7 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
     // pre-engineered leg beside the one it has for blueprints. A fixed reward may arrive
     // carrying an effect outside the stock module's menu, but that identifies the article
     // rather than making the effect applicable, and a Merc-shop row's baked effect says
-    // what was bought rather than what a menu offers. The Merc Mining Laser, the two
-    // Enhanced AX Multi-Cannons and the long-range Mining Laser are the four such records
-    // in this catalogue.
+    // what was bought rather than what a menu offers.
     assert.deepEqual(
         PRE_ENGINEERED_MODULES.filter(
             (variant) =>
@@ -100,6 +98,12 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
                 symbol: 'Hpt_MiningLaser_Fixed_Small',
                 blueprintSymbol: 'MiningLaser_LongRange',
                 experimentalEffectSymbol: 'special_incendiary_rounds',
+                acquisition: 'mercenary',
+            },
+            {
+                symbol: 'Hpt_PulseLaserBurst_Gimbal_Medium',
+                blueprintSymbol: 'BurstLaser_Regenerative',
+                experimentalEffectSymbol: 'special_regeneration_sequence',
                 acquisition: 'mercenary',
             },
             {
@@ -124,8 +128,8 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
     );
     // The blueprint half of that contrast. Community-goal and tech-broker records identify
     // what was bought or awarded; they do not make that recipe applicable to a stock
-    // module. Every Mercenary record instead arrives at grade 1 and opens grades 2-5 of
-    // its own bespoke recipe, even though no ordinary menu lists that recipe.
+    // module. A Mercenary record instead grants its own bespoke recipe. The public list
+    // includes that route only when the recipe's numeric grades are measured.
     const sold = PRE_ENGINEERED_MODULES.filter(
         (variant) =>
             variant.acquisition !== 'eventReward' &&
@@ -142,13 +146,14 @@ test('pre-engineered variants distinguish menus, Mercenary upgrades and fixed ar
             availableBlueprintsFor(variant.symbol).some(
                 (candidate) => candidate.blueprintSymbol === variant.blueprintSymbol,
             ),
-            variant.acquisition === 'mercenary',
+            variant.acquisition === 'mercenary' &&
+                Object.keys(BLUEPRINTS[variant.blueprintSymbol]?.grades ?? {}).length > 0,
             `${variant.symbol}: ${variant.blueprintSymbol} menu visibility`,
         );
     }
 });
 
-test('every Mercenary module arrives at grade 1 and can climb through grades 2-5', () => {
+test('every Mercenary module arrives at grade 1 and exposes only measured climbs', () => {
     const mercenary = PRE_ENGINEERED_MODULES.filter(
         (variant) => variant.acquisition === 'mercenary',
     );
@@ -164,9 +169,18 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
             blueprintAvailableFor(variant.symbol, variant.blueprintSymbol),
             `${variant.symbol}: ${variant.blueprintSymbol} is not upgradeable`,
         );
-        // The docs send a consumer from a `mercenary` row straight to getBlueprintCost
-        // for the Merc Coin as well. A recipe with no currency entry would answer 0, so
-        // the cross-catalogue join is asserted rather than assumed.
+        const blueprint = BLUEPRINTS[variant.blueprintSymbol]!;
+        if (Object.keys(blueprint.grades).length === 0) {
+            assert.equal(getBlueprintCost(variant.blueprintSymbol, 5, variant.grade), null);
+            assert.equal(
+                availableBlueprintsFor(variant.symbol).some(
+                    (candidate) => candidate.blueprintSymbol === variant.blueprintSymbol,
+                ),
+                false,
+            );
+            continue;
+        }
+        // A measured recipe carries its Merc Coin costs and appears in the public route list.
         assert.ok(
             (getBlueprintCost(variant.blueprintSymbol, 5, variant.grade)?.mercCoins ?? 0) > 0,
             `${variant.symbol}: ${variant.blueprintSymbol} prices no Merc Coin above grade ${variant.grade}`,
@@ -178,7 +192,6 @@ test('every Mercenary module arrives at grade 1 and can climb through grades 2-5
             { blueprintSymbol: variant.blueprintSymbol, grades: [2, 3, 4, 5], route: 'mercenary' },
             `${variant.symbol}: ${variant.blueprintSymbol} is missing from available blueprints`,
         );
-        const blueprint = BLUEPRINTS[variant.blueprintSymbol]!;
         assert.deepEqual(
             Object.keys(blueprint.grades).map(Number),
             [2, 3, 4, 5],
@@ -271,7 +284,7 @@ test("each Merc-shop variant is sold under its own name, not the base module's",
     }
 });
 
-test('a Merc-shop blueprint starts at grade 2 — grade 1 is what you bought', () => {
+test('a Merc-shop blueprint excludes grade 1 because that is what you bought', () => {
     // Only the Merc rows work this way. Community-goal and tech-broker rewards use
     // ordinary journal blueprints, which do define a grade 1.
     for (const variant of PRE_ENGINEERED_MODULES) {
@@ -426,9 +439,9 @@ test('a (symbol, blueprint, grade, experimental) tuple appears at most once', ()
 test('one blueprint can be sold on more than one base module', () => {
     assert.deepEqual(
         PRE_ENGINEERED_MODULES.filter(
-            (variant) => variant.blueprintSymbol === 'SeekerMissileRack_Drag',
+            (variant) => variant.blueprintSymbol === 'CargoRack_IncreasedCapacity',
         ).map((variant) => variant.symbol),
-        ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large'],
+        ['Int_CargoRack_Size5_Class1', 'Int_CargoRack_Size6_Class1'],
     );
 });
 
@@ -470,18 +483,13 @@ test('a Merc Coin price is carried by exactly the rows that are bought with one'
     assert.equal(Math.max(...priced.map((v) => v.mercCoinCost!)), fixture.mercCoin.dearest);
 });
 
-test('a stat block is carried by exactly the reward rows', () => {
-    // The reward routes publish the hand-set stats each variant arrives with. The Merc
-    // shop rows do not, and the catalogue omits rather than guesses — so the two sets
-    // are complements, and `mercCoinCost` and `modifiers` never appear together.
+test('every catalogued variant carries a stat block', () => {
     const withMods = PRE_ENGINEERED_MODULES.filter((v) => v.modifiers !== undefined);
     assert.equal(withMods.length, fixture.modifierCounts.withModifiers);
-    assert.ok(withMods.every((v) => v.acquisition !== 'mercenary'));
     assert.equal(
         PRE_ENGINEERED_MODULES.filter((v) => v.modifiers === undefined).length,
         fixture.modifierCounts.withoutModifiers,
     );
-    assert.ok(PRE_ENGINEERED_MODULES.every((v) => !(v.modifiers && v.mercCoinCost !== undefined)));
 });
 
 test('every modifier is well formed and sorted by label', () => {
@@ -499,11 +507,10 @@ test('every modifier is well formed and sorted by label', () => {
     }
 });
 
-test('modifier values are the authored decimals, not raw decoding noise', () => {
+test('modifier values use bounded decimal precision', () => {
     // The source encodes modifiers in a 20-bit float, so decoding +20% yields 0.199997.
-    // Each stored value is the shortest decimal that re-encodes to the identical bits,
-    // which recovers the authored figure without inventing precision. Capping the
-    // decimal places guards that step: raw noise runs to six or more.
+    // Encoded values use the shortest decimal that restores the same bits. Directly
+    // observed values keep only the precision needed to reproduce the observed stat.
     for (const variant of PRE_ENGINEERED_MODULES) {
         for (const m of variant.modifiers ?? []) {
             const places = (String(m.value).split('.')[1] ?? '').length;
