@@ -7438,6 +7438,72 @@
           },
           "required": ["count", "resolved", "variants"]
         },
+        "mercenaryClimb": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "blueprintSymbol": { "type": "string" },
+            "engineered": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ammoMaximum": { "type": "integer" },
+                "burstRounds": { "type": "integer" },
+                "clipSize": { "type": "integer" },
+                "damagePerSecond": { "type": "number" },
+                "mass": { "type": "number" },
+                "maximumRange": { "type": "number" },
+                "powerDraw": { "type": "number" },
+                "rateOfFire": { "type": "number" },
+                "reloadTime": { "type": "number" }
+              },
+              "required": [
+                "ammoMaximum",
+                "burstRounds",
+                "clipSize",
+                "damagePerSecond",
+                "mass",
+                "maximumRange",
+                "powerDraw",
+                "rateOfFire",
+                "reloadTime"
+              ]
+            },
+            "experimentalEffectSymbol": { "type": "string" },
+            "grade": { "type": "integer" },
+            "quality": { "type": "integer" },
+            "symbol": { "type": "string" }
+          },
+          "required": [
+            "blueprintSymbol",
+            "engineered",
+            "experimentalEffectSymbol",
+            "grade",
+            "quality",
+            "symbol"
+          ]
+        },
+        "mercenaryHardpointExperimentals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "blueprintSymbol": { "type": "string" },
+              "experimentalEffectSymbol": {
+                "anyOf": [{ "type": "string" }, { "type": "null" }]
+              },
+              "slot": { "type": "string" },
+              "symbol": { "type": "string" }
+            },
+            "required": [
+              "blueprintSymbol",
+              "experimentalEffectSymbol",
+              "slot",
+              "symbol"
+            ]
+          }
+        },
         "modifierCounts": {
           "type": "object",
           "additionalProperties": false,
@@ -8716,6 +8782,8 @@
         "maxModifierDecimalPlaces",
         "mercCoin",
         "mercenaryBakedEffects",
+        "mercenaryClimb",
+        "mercenaryHardpointExperimentals",
         "modifierCounts",
         "modifierLabels",
         "multiVariant",

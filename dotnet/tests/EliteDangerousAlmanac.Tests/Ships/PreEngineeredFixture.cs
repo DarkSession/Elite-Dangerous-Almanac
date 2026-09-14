@@ -29,6 +29,12 @@ internal sealed class PreEngineeredFixture
     /// <summary>Articles bought with an experimental effect already applied.</summary>
     public BakedEffectsFixture MercenaryBakedEffects { get; set; } = new();
 
+    /// <summary>One bought article after further engineering.</summary>
+    public MercenaryStatClimbFixture MercenaryClimb { get; set; } = new();
+
+    /// <summary>Bought hardpoints with and without a fixed experimental effect.</summary>
+    public List<MercenaryExperimentalFixture> MercenaryHardpointExperimentals { get; set; } = [];
+
     /// <summary>The decimal places a modifier value is authored to.</summary>
     public int MaxModifierDecimalPlaces { get; set; }
 
@@ -133,6 +139,35 @@ internal sealed class BakedEffectFixture
     public string ExperimentalEffectSymbol { get; set; } = string.Empty;
 
     public List<string> MovedStats { get; set; } = [];
+}
+
+/// <summary>One bought article after further engineering.</summary>
+internal sealed class MercenaryStatClimbFixture
+{
+    public string Symbol { get; set; } = string.Empty;
+
+    public string BlueprintSymbol { get; set; } = string.Empty;
+
+    public int Grade { get; set; }
+
+    public double Quality { get; set; }
+
+    public string ExperimentalEffectSymbol { get; set; } = string.Empty;
+
+    /// <summary>The effective stats after the climb.</summary>
+    public Dictionary<string, double> Engineered { get; set; } = [];
+}
+
+/// <summary>One bought hardpoint's fixed experimental state.</summary>
+internal sealed class MercenaryExperimentalFixture
+{
+    public string Slot { get; set; } = string.Empty;
+
+    public string Symbol { get; set; } = string.Empty;
+
+    public string BlueprintSymbol { get; set; } = string.Empty;
+
+    public string? ExperimentalEffectSymbol { get; set; }
 }
 
 /// <summary>The articles whose firing cycle moves.</summary>

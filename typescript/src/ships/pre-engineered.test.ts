@@ -507,11 +507,10 @@ test('every modifier is well formed and sorted by label', () => {
     }
 });
 
-test('modifier values are the authored decimals, not raw decoding noise', () => {
+test('modifier values use bounded decimal precision', () => {
     // The source encodes modifiers in a 20-bit float, so decoding +20% yields 0.199997.
-    // Each stored value is the shortest decimal that re-encodes to the identical bits,
-    // which recovers the authored figure without inventing precision. Capping the
-    // decimal places guards that step: raw noise runs to six or more.
+    // Encoded values use the shortest decimal that restores the same bits. Directly
+    // observed values keep only the precision needed to reproduce the observed stat.
     for (const variant of PRE_ENGINEERED_MODULES) {
         for (const m of variant.modifiers ?? []) {
             const places = (String(m.value).split('.')[1] ?? '').length;

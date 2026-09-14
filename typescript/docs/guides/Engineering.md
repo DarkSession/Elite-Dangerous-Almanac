@@ -151,6 +151,8 @@ bespoke Mercenary upgrade recipe after the ordinary menu and marks it with `rout
 available only to its corresponding purchase. A fitted module carrying that blueprint is
 therefore identified as the Mercenary article at its purchase grade or after a later
 upgrade; its `preEngineeredVariant` retains the original grade and Merc Coin price.
+Mercenary hardpoints keep the experimental state they are sold with through each upgrade.
+`availableExperimentalEffects` returns no choices, and `setExperimentalEffect` refuses a change.
 
 ## The three accommodations
 

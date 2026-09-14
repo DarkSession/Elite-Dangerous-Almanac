@@ -155,7 +155,7 @@
       { "label": "Mass", "method": "multiplicative", "value": 0.15 },
       { "label": "MaximumRange", "method": "multiplicative", "value": -0.025 },
       { "label": "PowerDraw", "method": "multiplicative", "value": 0.05 },
-      { "label": "RateOfFire", "method": "multiplicative", "value": -0.545 }
+      { "label": "RateOfFire", "method": "multiplicative", "value": -0.5449747 }
     ]
   },
   {

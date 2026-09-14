@@ -258,7 +258,8 @@ public sealed partial class ShipLoadout
     /// <param name="slotKey">The mount key. Case and surrounding whitespace are ignored.</param>
     /// <returns>
     /// The effect symbols in engineering-menu order. It is empty where the mount is empty,
-    /// unresolved or final, or the module has no experimental menu.
+    /// unresolved or final, the module has no experimental menu, or a Mercenary hardpoint has a
+    /// fixed experimental state.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="slotKey"/> is <see langword="null"/>.</exception>
     public IReadOnlyList<string> AvailableExperimentalEffects(string slotKey)
@@ -266,9 +267,15 @@ public sealed partial class ShipLoadout
         if (slotKey is null) throw new ArgumentNullException(nameof(slotKey));
 
         LoadoutModule? module = FittedModuleFor(slotKey);
-        return new ReadOnlyCollection<string>(module is null
+        OutfittingModule? stats = module is null ? null : StatsFor(module);
+        PreEngineeredVariant? variant = module is null
+            ? null
+            : LoadoutImport.PreEngineeredVariantFor(module);
+        bool fixedMercenaryState = stats?.Category == ModuleCategory.Hardpoint
+            && variant?.Acquisition == PreEngineeredAcquisition.Mercenary;
+        return new ReadOnlyCollection<string>(module is null || fixedMercenaryState
             ? []
-            : LoadoutEngineering.AvailableExperimentalsFor(module.Item, StatsFor(module)));
+            : LoadoutEngineering.AvailableExperimentalsFor(module.Item, stats));
     }
 
     /// <summary>The modules one mount takes.</summary>

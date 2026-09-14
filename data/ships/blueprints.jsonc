@@ -12236,12 +12236,6 @@
             "method": "multiplicative",
             "min": 0.2,
             "max": 0.2
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12288,12 +12282,6 @@
             "method": "multiplicative",
             "min": 0.3,
             "max": 0.3
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12340,12 +12328,6 @@
             "method": "multiplicative",
             "min": 0.451,
             "max": 0.451
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12392,12 +12374,6 @@
             "method": "multiplicative",
             "min": 0.6,
             "max": 0.6
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       }
@@ -12449,12 +12425,6 @@
             "method": "multiplicative",
             "min": 0.2,
             "max": 0.2
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12501,12 +12471,6 @@
             "method": "multiplicative",
             "min": 0.3,
             "max": 0.3
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12553,12 +12517,6 @@
             "method": "multiplicative",
             "min": 0.451,
             "max": 0.451
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       },
@@ -12567,14 +12525,14 @@
           {
             "label": "Range",
             "method": "multiplicative",
-            "min": -0.075,
-            "max": -0.075
+            "min": -0.075188,
+            "max": -0.075188
           },
           {
             "label": "RateOfFire",
             "method": "multiplicative",
-            "min": 0.581,
-            "max": 0.581
+            "min": 0.5623337,
+            "max": 0.5623337
           },
           {
             "label": "BurstSize",
@@ -12605,12 +12563,6 @@
             "method": "multiplicative",
             "min": 0.6,
             "max": 0.6
-          },
-          {
-            "label": "ReloadTime",
-            "method": "multiplicative",
-            "min": -0.5,
-            "max": -0.5
           }
         ]
       }

@@ -18,7 +18,9 @@
  * article carries and the `blockRateOfFire` its published engineering block states — one
  * article states one rate of fire, so the two are the same figure; `mercenaryBakedEffects` pins
  * Merc-shop rows sold with an experimental effect already applied. Each shop row also carries
- * its fixed grade-1 transformation;
+ * its fixed grade-1 transformation; `mercenaryClimb` pins one shop article after further
+ * engineering against its observed effective stats; `mercenaryHardpointExperimentals` pins
+ * hardpoints with and without a fixed experimental effect;
  * `resolved` pins whole stat blocks against known in-game values; `identification.mercenary`
  * pins the Mercenary-only blueprint identity
  * that survives later grade upgrades; `mercCoin` pins shop prices; `joins` pins that every
@@ -257,7 +259,39 @@
       ]
     }
   },
-  "maxModifierDecimalPlaces": 6,
+  "mercenaryClimb": {
+    "symbol": "Hpt_Slugshot_Gimbal_Large",
+    "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
+    "grade": 5,
+    "quality": 1,
+    "experimentalEffectSymbol": "special_screening_shell",
+    "engineered": {
+      "mass": 12.8,
+      "powerDraw": 1.86,
+      "damagePerSecond": 336.57135,
+      "maximumRange": 1849.624023,
+      "rateOfFire": 7.439685,
+      "burstRounds": 2,
+      "clipSize": 8,
+      "ammoMaximum": 302,
+      "reloadTime": 2.5
+    }
+  },
+  "mercenaryHardpointExperimentals": [
+    {
+      "slot": "LargeHardpoint1",
+      "symbol": "Hpt_Slugshot_Gimbal_Large",
+      "blueprintSymbol": "FragmentCannonLarge_DoubleScreaming",
+      "experimentalEffectSymbol": "special_screening_shell"
+    },
+    {
+      "slot": "HugeHardpoint1",
+      "symbol": "Hpt_BeamLaser_Fixed_Huge",
+      "blueprintSymbol": "BeamLaser_Overloaded",
+      "experimentalEffectSymbol": null
+    }
+  ],
+  "maxModifierDecimalPlaces": 7,
   "burstIntervalVariants": {
     "count": 15,
     "variants": [
@@ -949,7 +983,7 @@
         "mass": 9.2,
         "powerDraw": 1.6275,
         "maximumRange": 1950,
-        "rateOfFire": 2.166667,
+        "rateOfFire": 2.166787,
         "burstRounds": 2,
         "clipSize": 4,
         "ammoMaximum": 192,

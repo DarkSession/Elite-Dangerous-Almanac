@@ -1596,6 +1596,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     observation. `Sensor_Expanded` includes its power-draw leg. The stored weapon rate
     derives from the observed burst interval. The observations were acquired
     2026-09-13 UTC.
+  - **The large Double Screaming Fragment Cannon grade-5 result is observed directly.**
+    The observation was acquired 2026-09-14 UTC. Its rate is 7.439685 shots per second.
+    Its damage rate is 336.571350 per second. Its range is 1849.624023 metres. These values
+    give the stored `RateOfFire` and `Range` multipliers. Screening Shell supplies the only Reload Time
+    reduction for both Double Screaming recipes. The effect keeps the grade-5 reload at
+    2.5 seconds, so these recipes contain no separate Reload Time feature.
   - **The two Lockdown recipes have different Merc-Coin costs.** The medium recipe costs
     10, 10, 20, and 40 Merc Coin per roll at grades 2–5. The large recipe costs 10, 15,
     25, and 45. Direct in-game observation supplies both sets.
@@ -2144,6 +2150,12 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
       supplies part of both Lockdown racks' Damage and Rate of Fire reductions. The
       cannon's fixed damage split is equal parts Kinetic and Explosive. Both cargo racks
       carry the exact multiplier implied by their observed capacities.
+      Mercenary hardpoints keep the experimental state supplied by the shop. An engineer
+      cannot add, remove or replace their effect. Direct observation acquired 2026-09-14 UTC
+      supplies this rule.
+    - **The large Double Screaming Fragment Cannon uses its exact observed firing rate.**
+      Its grade-1 rate is 2.166787 shots per second. The fixed transformation stores the
+      multiplier that reproduces this rate from the stock firing cycle.
     - **Some Merc rows carry a default experimental effect** applied beside the grade-1
       blueprint, recorded as `experimentalEffectSymbol`: Screening Shell on both Double
       Screaming Fragment Cannons, Incendiary Rounds on the Long Range Mining Laser,

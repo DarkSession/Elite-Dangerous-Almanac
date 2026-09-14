@@ -1352,7 +1352,8 @@ export class ShipLoadout {
      *
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns Frozen Frontier effect ids in engineering-menu order, or an empty array
-     * when the slot is empty, unresolved, final, or has no experimental menu.
+     * when the slot is empty, unresolved, final, has no experimental menu, or holds a
+     * Mercenary hardpoint with a fixed experimental state.
      * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
@@ -1366,8 +1367,12 @@ export class ShipLoadout {
      */
     availableExperimentalEffects(slotKey: string): readonly string[] {
         const module = this.#fittedModuleFor(slotKey);
+        const stats = module ? this.#statsFor(module) : null;
+        const variant = module ? preEngineeredVariantFor(module) : null;
         return deepFreeze(
-            module ? availableExperimentalsFor(module.Item, this.#statsFor(module)) : [],
+            module && !(stats?.category === 'hardpoint' && variant?.acquisition === 'mercenary')
+                ? availableExperimentalsFor(module.Item, stats)
+                : [],
         );
     }
 
@@ -1725,6 +1730,8 @@ export class ShipLoadout {
      * (`MaximumRange`, `Range`); recipe-only values a journal serializes no label for
      * stay available through {@link FittedModule.effectiveStats}, which is what keeps
      * burst and reload-cycle calculations faithful.
+     * A Mercenary hardpoint keeps the experimental state it is sold with when its grade
+     * changes. The caller cannot add, remove or replace that effect.
      *
      * **Which recipe an id names can depend on the module.** The game writes
      * `Sensor_LongRange` for both a sensor suite's modification and a utility scanner's,
@@ -1738,7 +1745,8 @@ export class ShipLoadout {
      * @param blueprintSymbol - The blueprint recipe's Frontier symbol, e.g. `"FSD_LongRange"`.
      * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
      * (0–1, default 1), and optional `experimental` effect symbol. A nullish
-     * `experimental` means no effect, the same as leaving it out. Each is read once,
+     * `experimental` means no effect, the same as leaving it out. A Mercenary hardpoint
+     * instead retains its fixed state when this option is absent. Each value is read once,
      * before anything is checked, so an accessor cannot answer the check and the use
      * differently.
      * @returns `this`, for chaining.
@@ -1748,8 +1756,8 @@ export class ShipLoadout {
      * object, or `options.experimentalEffectSymbol` carries a value that is not a string — a nullish
      * one is no effect, not a wrong type. Also if the fitted module has no stats to
      * engineer, is final and accepts no further engineering, is not offered the blueprint
-     * by its own menu, is not offered the experimental effect by it, or the id names a
-     * fixed event-reward identity rather than a craftable recipe — use
+     * by its own menu, is not offered the experimental effect by it, tries to change a
+     * Mercenary hardpoint's fixed effect, or names a fixed event-reward identity — use
      * {@link setPreEngineeredVariant} for those. Finally, if the catalogue does not carry
      * every base stat the recipe modifies: incomplete engineering is rejected rather than
      * stored as a partial journal modifier block.
@@ -1789,7 +1797,7 @@ export class ShipLoadout {
         const wantedQuality = options.quality;
         // Nullish means no effect. Normalize it once so validation and all consumers read
         // the same value.
-        const wantedExperimental = options.experimentalEffectSymbol ?? undefined;
+        let wantedExperimental = options.experimentalEffectSymbol ?? undefined;
         requireStringIfPresent(
             wantedExperimental,
             'ShipLoadout.applyBlueprint: options.experimentalEffectSymbol',
@@ -1820,6 +1828,28 @@ export class ShipLoadout {
         // to an arbitrary stock module.
         const written = blueprintSymbol.trim().toLowerCase();
         const resolved = recipe.trim().toLowerCase();
+        const mercenaryHardpoint =
+            fittedStats.category === 'hardpoint'
+                ? getPreEngineeredVariants(module.Item).find(
+                      (variant) =>
+                          variant.acquisition === 'mercenary' &&
+                          (variant.blueprintSymbol.toLowerCase() === written ||
+                              variant.blueprintSymbol.toLowerCase() === resolved),
+                  )
+                : undefined;
+        if (mercenaryHardpoint) {
+            const locked = mercenaryHardpoint.experimentalEffectSymbol;
+            if (
+                wantedExperimental !== undefined &&
+                (locked === undefined ||
+                    locked.trim().toLowerCase() !== wantedExperimental.trim().toLowerCase())
+            ) {
+                throw new TypeError(
+                    `ShipLoadout.applyBlueprint: Mercenary hardpoint "${truncate(module.Item)}" keeps its purchased experimental effect`,
+                );
+            }
+            wantedExperimental = locked;
+        }
         if (
             getPreEngineeredVariants(module.Item).some(
                 (variant) =>
@@ -1879,7 +1909,8 @@ export class ShipLoadout {
         }
         if (
             wantedExperimental !== undefined &&
-            !experimentalAvailableFor(module.Item, wantedExperimental)
+            !experimentalAvailableFor(module.Item, wantedExperimental) &&
+            mercenaryHardpoint === undefined
         ) {
             const offered = getExperimentalsForModule(module.Item);
             throw new TypeError(
@@ -1949,19 +1980,13 @@ export class ShipLoadout {
     /**
      * Add, replace or remove only the fitted module's experimental effect.
      *
-     * Ordinary and Mercenary engineering is recomputed at its current blueprint, grade
-     * and quality. A fixed reward instead retains its hand-authored modifiers and
+     * Ordinary engineering is recomputed at its current blueprint, grade and quality.
+     * A fixed reward instead retains its hand-authored modifiers and
      * purchase identity while the requested effect is composed with them. Refused edits
      * leave the build unchanged and return stable structured data.
      *
-     * A Mercenary article is recomputed rather than composed, and that limits what can be
-     * done to the effect some of those rows are sold carrying. At its purchase grade there
-     * is no recipe to recompute from — measured bespoke recipes start at grade 2 — so every
-     * edit is refused with `unsupportedEngineering`. Once engineered to grade 2 or above
-     * an edit recomputes normally, but only to an effect the module's own menu offers:
-     * the Merc Mining Laser's Incendiary Rounds is not one, so re-stating it is refused
-     * with `unsupportedExperimentalEffect`. Both refusals are lossless like any other, and
-     * the baked effect stays where it is.
+     * A Mercenary hardpoint keeps the experimental state it is sold with. An effect cannot
+     * be added, removed or replaced at any grade. Re-stating the same state is a no-op.
      *
      * @param slotKey - The engineered slot, matched case-insensitively.
      * @param experimental - Experimental-effect symbol, or `null` to remove the effect.
@@ -2020,6 +2045,13 @@ export class ShipLoadout {
         }
 
         const variant = preEngineeredVariantFor(module);
+        if (stats.category === 'hardpoint' && variant?.acquisition === 'mercenary') {
+            return experimentalEffectUnsupported('unsupportedExperimentalEffect', {
+                slot: module.Slot,
+                symbol: module.Item,
+                ...(wanted === null ? {} : { experimental: wanted }),
+            });
+        }
         let effect;
         if (wanted !== null) {
             effect = getExperimentalEffect(wanted);
@@ -2252,11 +2284,9 @@ export class ShipLoadout {
             });
         }
         const variant = preEngineeredVariantFor(module);
-        // Mercenary excluded for the reason given in `setExperimentalEffect`: its recompute
-        // runs through `applyBlueprint`, which refuses an out-of-menu effect by throwing.
         const restoresBakedEffect =
             variant?.experimentalEffectSymbol !== undefined &&
-            variant.acquisition !== 'mercenary' &&
+            (variant.acquisition !== 'mercenary' || stats.category === 'hardpoint') &&
             variant.experimentalEffectSymbol.trim().toLowerCase() ===
                 experimental?.trim().toLowerCase();
         if (

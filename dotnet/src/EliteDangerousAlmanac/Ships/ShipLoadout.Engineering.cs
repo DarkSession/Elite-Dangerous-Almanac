@@ -22,6 +22,7 @@ public sealed partial class ShipLoadout
     /// roll moves, in the labels a journal writes. A fixed pre-engineered article is rolled from
     /// the stock module behind it rather than from its own fixed figures, so replacing its
     /// engineering does not fold those figures in a second time.
+    /// A Mercenary hardpoint keeps the experimental state it is sold with at every grade.
     /// </remarks>
     /// <exception cref="ArgumentNullException">An argument is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -30,8 +31,8 @@ public sealed partial class ShipLoadout
     /// </exception>
     /// <exception cref="ArgumentException">
     /// No catalogue carries stats for the fitted module, the module's own menu does not offer the
-    /// recipe or the effect, the article is final, the named recipe is a fixed article's identity
-    /// rather than a recipe, or the catalogues carry no base stat the roll needs.
+    /// recipe or the effect, the article is final, the request changes a Mercenary hardpoint's
+    /// fixed effect, the named recipe is a fixed article's identity, or a required stat is absent.
     /// </exception>
     public ShipLoadout ApplyBlueprint(
         string slotKey,
@@ -52,6 +53,40 @@ public sealed partial class ShipLoadout
         // rolls rather than another family's.
         string recipe = BlueprintJournal.ResolveForModule(module.Item, blueprintSymbol);
         string named = NamedRecipe(blueprintSymbol, recipe);
+        string? wantedExperimental = options.ExperimentalEffectSymbol;
+        PreEngineeredVariant? mercenaryHardpoint = null;
+        if (fittedStats.Category == ModuleCategory.Hardpoint)
+        {
+            foreach (PreEngineeredVariant candidate in
+                PreEngineeredCatalogue.VariantsFor(module.Item))
+            {
+                if (candidate.Acquisition != PreEngineeredAcquisition.Mercenary
+                    || (!SameSymbol(candidate.BlueprintSymbol, blueprintSymbol)
+                        && !SameSymbol(candidate.BlueprintSymbol, recipe)))
+                {
+                    continue;
+                }
+
+                mercenaryHardpoint = candidate;
+                break;
+            }
+        }
+
+        if (mercenaryHardpoint is not null)
+        {
+            string? locked = mercenaryHardpoint.ExperimentalEffectSymbol;
+            if (wantedExperimental is not null
+                && (locked is null || !SameSymbol(locked, wantedExperimental)))
+            {
+                throw new ArgumentException(
+                    Message(
+                        "The Mercenary hardpoint \"{0}\" keeps its purchased experimental effect.",
+                        module.Item),
+                    nameof(options));
+            }
+
+            wantedExperimental = locked;
+        }
 
         // A festive fixed article reaches this method as a real journal identity that names no
         // craftable recipe. It is fitted as an article, not rolled onto a stock module.
@@ -84,15 +119,15 @@ public sealed partial class ShipLoadout
         }
 
         ExperimentalEffect? experimental = null;
-        if (options.ExperimentalEffectSymbol is string wantedExperimental)
+        if (wantedExperimental is string requestedExperimental)
         {
-            experimental = ExperimentalEffectCatalogue.Find(wantedExperimental)
+            experimental = ExperimentalEffectCatalogue.Find(requestedExperimental)
                 ?? throw new ArgumentOutOfRangeException(
                     nameof(options),
-                    wantedExperimental,
+                    requestedExperimental,
                     Message(
                         "No catalogue carries the experimental effect \"{0}\".",
-                        wantedExperimental));
+                        requestedExperimental));
         }
 
         double quality = options.Quality;
@@ -121,8 +156,9 @@ public sealed partial class ShipLoadout
                 UnofferedBlueprintMessage(module.Item, named), nameof(blueprintSymbol));
         }
 
-        if (options.ExperimentalEffectSymbol is string requested
-            && !LoadoutEngineering.ExperimentalAvailableFor(module.Item, requested))
+        if (wantedExperimental is string requested
+            && !LoadoutEngineering.ExperimentalAvailableFor(module.Item, requested)
+            && mercenaryHardpoint is null)
         {
             IReadOnlyList<string> offered = EngineeringOptions.ExperimentalsFor(module.Item);
             throw new ArgumentException(
@@ -172,7 +208,7 @@ public sealed partial class ShipLoadout
 
         ModuleEngineering engineering = new(blueprintSymbol, options.Grade, quality)
         {
-            ExperimentalEffect = options.ExperimentalEffectSymbol,
+            ExperimentalEffect = wantedExperimental,
             Modifiers = journal,
         };
         ReplaceModule(module.Slot, module with { Engineering = engineering }, stats, primitives);
@@ -187,16 +223,13 @@ public sealed partial class ShipLoadout
     /// <returns>The outcome. A refusal leaves the build unchanged.</returns>
     /// <remarks>
     /// <para>
-    /// Ordinary and Mercenary engineering is recomputed at the recipe, the grade and the quality
-    /// the module already states. A fixed reward instead keeps its hand-set modifiers and its
+    /// Ordinary engineering is recomputed at the recipe, the grade and the quality the module
+    /// already states. A fixed reward instead keeps its hand-set modifiers and its
     /// purchase identity while the requested effect composes with them.
     /// </para>
     /// <para>
-    /// A Mercenary article is recomputed rather than composed, and that limits what its baked
-    /// effect accepts. At the purchase grade there is no recipe to recompute from, because the
-    /// bespoke recipe starts at grade 2, so every edit is refused. Above that grade an edit
-    /// recomputes normally, to an effect the module's own menu offers alone. Both refusals leave
-    /// the baked effect where it is.
+    /// A Mercenary hardpoint keeps the experimental state it is sold with. An effect cannot be
+    /// added, removed or replaced at any grade. Re-stating the same state changes nothing.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="slotKey"/> is <see langword="null"/>.</exception>
@@ -239,6 +272,14 @@ public sealed partial class ShipLoadout
         }
 
         PreEngineeredVariant? variant = LoadoutImport.PreEngineeredVariantFor(module);
+        if (stats.Category == ModuleCategory.Hardpoint
+            && variant?.Acquisition == PreEngineeredAcquisition.Mercenary)
+        {
+            return EffectRefused(
+                EngineeringEditCode.UnsupportedExperimentalEffect,
+                fitted with { ExperimentalEffectSymbol = wanted });
+        }
+
         ExperimentalEffect? effect = null;
         if (wanted is not null)
         {
@@ -356,11 +397,10 @@ public sealed partial class ShipLoadout
 
         PreEngineeredVariant? variant = LoadoutImport.PreEngineeredVariantFor(module);
 
-        // Mercenary excluded for the reason given on the effect edit: its recompute runs through
-        // the recipe, which refuses an out-of-menu effect by throwing.
         bool restoresBakedEffect = experimental is not null
             && variant?.ExperimentalEffectSymbol is string baked
-            && variant.Acquisition != PreEngineeredAcquisition.Mercenary
+            && (variant.Acquisition != PreEngineeredAcquisition.Mercenary
+                || stats.Category == ModuleCategory.Hardpoint)
             && SameSymbol(baked, experimental);
         if (experimental is not null
             && !LoadoutEngineering.ExperimentalAvailableFor(module.Item, experimental)

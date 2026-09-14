@@ -332,6 +332,81 @@ public class PreEngineeredTests
                 && variant.ExperimentalEffectSymbol is not null));
     }
 
+    [Fact]
+    public void ADoubleScreamingArticleReachesItsObservedGradeFiveStats()
+    {
+        MercenaryStatClimbFixture expected = Fixture.MercenaryClimb;
+        PreEngineeredVariant variant = Variant(
+            expected.Symbol,
+            expected.BlueprintSymbol,
+            expected.ExperimentalEffectSymbol);
+        ShipLoadout build = ShipLoadout.Empty("Anaconda");
+        build.SetPreEngineeredVariant("LargeHardpoint1", variant);
+        build.ApplyBlueprint(
+            "LargeHardpoint1",
+            expected.BlueprintSymbol,
+            new ApplyBlueprintOptions(
+                expected.Grade,
+                expected.Quality,
+                expected.ExperimentalEffectSymbol));
+
+        OutfittingModule stats = build.FittedModuleAt("LargeHardpoint1")!.EffectiveStats!;
+        foreach (KeyValuePair<string, double> stat in expected.Engineered)
+        {
+            if (stat.Key == "damagePerSecond")
+            {
+                double damagePerSecond = Weapons.DamagePerSecond(WeaponStats.FromModule(stats));
+                Assert.InRange(Math.Abs(damagePerSecond - stat.Value), 0, 1e-6);
+                continue;
+            }
+
+            double actual = stats.Stats[Stat(stat.Key)]!.Value;
+            Assert.Equal(stat.Value, actual, 6);
+        }
+    }
+
+    [Fact]
+    public void MercenaryHardpointsKeepTheirPurchasedExperimentalState()
+    {
+        foreach (MercenaryExperimentalFixture expected in Fixture.MercenaryHardpointExperimentals)
+        {
+            PreEngineeredVariant variant = Variant(
+                expected.Symbol,
+                expected.BlueprintSymbol,
+                expected.ExperimentalEffectSymbol);
+            ShipLoadout build = ShipLoadout.Empty("Anaconda");
+            build.SetPreEngineeredVariant(expected.Slot, variant);
+
+            Assert.Empty(build.AvailableExperimentalEffects(expected.Slot));
+            build.ApplyBlueprint(
+                expected.Slot,
+                expected.BlueprintSymbol,
+                new ApplyBlueprintOptions(5, 0.5));
+            Assert.Equal(
+                EngineeringEditKind.Updated,
+                build.CompleteEngineeringGrade(expected.Slot).Kind);
+            Assert.Equal(
+                expected.ExperimentalEffectSymbol,
+                build.FittedModuleAt(expected.Slot)!.Engineering!.ExperimentalEffect);
+            Assert.Equal(
+                EngineeringEditKind.Unchanged,
+                build.SetExperimentalEffect(expected.Slot, expected.ExperimentalEffectSymbol).Kind);
+
+            string? requested = expected.ExperimentalEffectSymbol is null
+                ? "special_thermal_vent"
+                : null;
+            ExperimentalEffectEdit edit = build.SetExperimentalEffect(expected.Slot, requested);
+            Assert.Equal(EngineeringEditCode.UnsupportedExperimentalEffect, edit.Code);
+            Assert.Equal(
+                expected.ExperimentalEffectSymbol,
+                build.FittedModuleAt(expected.Slot)!.Engineering!.ExperimentalEffect);
+            Assert.Throws<ArgumentException>(() => build.ApplyBlueprint(
+                expected.Slot,
+                expected.BlueprintSymbol,
+                new ApplyBlueprintOptions(5, 1, "special_weapon_damage")));
+        }
+    }
+
     [Theory]
     [MemberData(nameof(BurstIntervalVariants))]
     public void AMovedFiringCycleMovesTheRateOfFireWithIt(int position)

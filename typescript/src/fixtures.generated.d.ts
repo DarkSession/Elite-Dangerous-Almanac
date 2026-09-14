@@ -4945,6 +4945,30 @@ type FixtureShipsPreEngineered = {
             symbol: string;
         }[];
     };
+    mercenaryClimb: {
+        blueprintSymbol: string;
+        engineered: {
+            ammoMaximum: number;
+            burstRounds: number;
+            clipSize: number;
+            damagePerSecond: number;
+            mass: number;
+            maximumRange: number;
+            powerDraw: number;
+            rateOfFire: number;
+            reloadTime: number;
+        };
+        experimentalEffectSymbol: string;
+        grade: number;
+        quality: number;
+        symbol: string;
+    };
+    mercenaryHardpointExperimentals: {
+        blueprintSymbol: string;
+        experimentalEffectSymbol: string | null;
+        slot: string;
+        symbol: string;
+    }[];
     modifierCounts: {
         mercenaryWithResolvedStats: number;
         withMercCoinCost: number;

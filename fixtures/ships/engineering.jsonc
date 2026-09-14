@@ -55,6 +55,8 @@
     { "blueprint": "Sensor_Expanded", "grade": 5, "label": "PowerDraw", "min": 0.5, "max": 0.5 },
     { "blueprint": "Weapon_Efficient", "grade": 1, "label": "ThermalLoad", "min": -0.3, "max": -0.375 },
     { "blueprint": "MultiCannon_Rapid", "grade": 2, "label": "Jitter", "min": 1.25, "max": 1.4 },
+    { "blueprint": "FragmentCannonLarge_DoubleScreaming", "grade": 5, "label": "Range", "min": -0.075188, "max": -0.075188 },
+    { "blueprint": "FragmentCannonLarge_DoubleScreaming", "grade": 5, "label": "RateOfFire", "min": 0.5623337, "max": 0.5623337 },
     { "blueprint": "SeekerMissileRack_Drag", "grade": 4, "label": "AmmoClipSize", "min": 1, "max": 1.503759 },
     { "blueprint": "SeekerMissileRackMedium_Lockdown", "grade": 4, "label": "AmmoClipSize", "min": 0.5, "max": 0.75188 }
   ],
