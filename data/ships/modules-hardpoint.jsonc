@@ -4745,7 +4745,7 @@
     "bootTime": 0,
     "damage": 13.94,
     "damageDistribution": {
-      "unclassified": 1
+      "absolute": 1
     },
     "rateOfFire": 7.844017,
     "burstInterval": 0.4028,
@@ -4760,11 +4760,6 @@
     "maximumRange": 3000,
     "falloffRange": 2500,
     "shotSpeed": 1200,
-    "cost": 3051200,
-    "damageComponents": {
-      "unclassified": [
-        13.94
-      ]
-    }
+    "cost": 3051200
   }
 ]

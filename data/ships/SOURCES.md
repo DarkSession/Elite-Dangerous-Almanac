@@ -732,10 +732,11 @@ the armour modules, blueprint grade rolls and crafting costs remain unverified t
 It also did not unambiguously settle the shield-generator resistances, shield-booster
 properties or probe radius. Those values are not changed on guesswork. For the
 anti-xeno, Guardian and special weapons whose damage observed in-game does not reduce honestly
-to one conventional scalar, `damageComponents` preserves the exact amounts. The two
-channel types not established by in-game verification remain `unclassified`. The
-projectile-limited hardpoints carry their boundary parameters observed in-game in
-`projectileRange`; those parameters are not presented as effective ranges.
+to one conventional scalar, `damageComponents` preserves the exact amounts. The Enzyme
+Missile Rack's minor channel, the one channel type in-game verification does not
+establish, remains `unclassified`. The projectile-limited hardpoints carry their boundary
+parameters observed in-game in `projectileRange`; those parameters are not presented as
+effective ranges.
 
 **A journal capture is a third source, and it reaches fields in-game verification does
 not.** Every engineered module in a `Loadout` states its own _unmodified_ value beside
@@ -847,7 +848,7 @@ Resource Siphon, the corrections are:
 | Beam Laser, Cannon, Fragment Cannon, Multi-Cannon, Plasma Accelerator, Rail Gun, Shock Cannon and Point Defence records | damage / thermal load                                             | `damage` and `thermalLoad` read from the module panel per symbol   |
 | Advanced Plasma Accelerator, Imperial Hammer, Shock Cannons and Mk II Plasma Shock Accelerator                          | burst interval / combined rate of fire                            | exact cycle values derived with the catalogue's documented formula |
 | mining, utility and Guardian hardpoints                                                                                 | clip, distributor draw, reload, jitter, falloff and maximum range | observed values per symbol                                         |
-| anti-xeno, Guardian and special weapons                                                                                 | scalar, distribution and exact damage components                  | one component record per weapon                                    |
+| anti-xeno, Guardian and special weapons                                                                                 | scalar, distribution and exact damage components                  | a component record wherever the damage needs more than a share     |
 | AX missiles, subsurface displacement missiles and seismic charge launchers                                              | projectile boundary parameters; misleading ordinary ranges absent | `projectileRange` stored; `maximumRange` and `falloffRange` absent |
 
 In-game verification gives the integer thruster/FSD masses, 1.1/1.2 enhanced-thruster
@@ -878,6 +879,20 @@ settle the registry disagreement in favour of coriolis-data's 22 / 38.5 rather t
 EDSY's 40 / 70. The catalogue stores the displayed values without further derivation and
 applies the same correction to their exact thermal and anti-xeno components. The two
 panel readings have no upstream immutable revision.
+
+**The Mk II Plasma Shock Accelerator deals absolute damage, under the in-game name
+Plasma.** The weapon's damage type is **Plasma**, which is Frontier's name for the channel
+and not one of the four a defender carries a resistance to: no shield generator, no armour
+and no hull reinforcement offers a Plasma resistance, so the whole of it lands whatever the
+target has fitted. That is what `absolute` means here, and it is the reading this
+catalogue already applies to the Operations Plasma conversion's Plasma share under
+"Engineering (blueprints and experimental effects)" below, so the accelerator's
+`damageDistribution` stores one whole absolute share instead of leaving the channel
+`unclassified`. Its scalar is unchanged. The exact-amount record goes with the
+unclassified spelling: `damageComponents` states what a distribution cannot, and one
+conventional type at the full scalar is not that. Should Frontier ever give a defensive
+module a Plasma resistance, this is the value to revisit, because the two names would stop
+being synonyms.
 
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"

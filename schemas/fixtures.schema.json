@@ -3414,19 +3414,7 @@
                 "additionalProperties": false,
                 "properties": {
                   "baseComponents": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "absolute": { "type": "number" },
-                      "antiXeno": { "type": "number" },
-                      "explosive": { "type": "integer" },
-                      "kinetic": { "type": "number" },
-                      "thermal": { "type": "number" },
-                      "unclassified": {
-                        "type": "array",
-                        "items": { "type": "integer" }
-                      }
-                    }
+                    "$ref": "#/definitions/shared2350c6a3558c"
                   },
                   "baseDamage": { "type": "number" },
                   "effectiveDamage": { "type": "number" },
@@ -5274,19 +5262,7 @@
               "clipSize": { "type": "integer" },
               "damage": { "type": "number" },
               "damageComponents": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "absolute": { "type": "number" },
-                  "antiXeno": { "type": "number" },
-                  "explosive": { "type": "integer" },
-                  "kinetic": { "type": "number" },
-                  "thermal": { "type": "number" },
-                  "unclassified": {
-                    "type": "array",
-                    "items": { "type": "number" }
-                  }
-                }
+                "$ref": "#/definitions/shared2350c6a3558c"
               },
               "damageDistribution": {
                 "type": "object",
@@ -10615,6 +10591,18 @@
         "Ship",
         "UnladenMass"
       ]
+    },
+    "shared2350c6a3558c": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "absolute": { "type": "number" },
+        "antiXeno": { "type": "number" },
+        "explosive": { "type": "integer" },
+        "kinetic": { "type": "number" },
+        "thermal": { "type": "number" },
+        "unclassified": { "type": "array", "items": { "type": "integer" } }
+      }
     },
     "shared28704cd9e15a": {
       "type": "object",

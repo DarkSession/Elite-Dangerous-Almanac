@@ -1048,13 +1048,13 @@
     "numericModulesVerified": 947,
     "armourModulesOutsideNumericVerification": 241,
     "verifiedRecords": 135,
-    "verifiedFields": 300,
+    "verifiedFields": 299,
     "catalogueFieldCounts": {
       "powerDraw": 841,
       "bootTime": 837
     },
     "note": "In-game verification covers every catalogue identity bar two sets: the non-armour modules numerically, and the ship-armour identities whose numeric values retain their separate provenance. The bundle-granted Vessel Hangars rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. The unreleased Large Planetary Vehicle Hangars (Int_BuggyBay{,Mk2}_Size{2,4,6}_Class3) carry values reported ahead of release that no registry publishes and that the game cannot yet be asked for. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
-    "verifiedValueFields": 284,
+    "verifiedValueFields": 283,
     "verifiedAbsentFields": 16
   },
   "inGameVerifiedValues": [
@@ -1408,10 +1408,7 @@
       "thermalLoad": 1.66,
       "damage": 13.94,
       "damageDistribution": {
-        "unclassified": 1
-      },
-      "damageComponents": {
-        "unclassified": [13.94]
+        "absolute": 1
       }
     },
     {

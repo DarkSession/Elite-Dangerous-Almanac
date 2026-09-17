@@ -184,6 +184,14 @@ test('damage splits by type, and anti-xeno overlays rather than partitions', () 
     assert.ok(near(ax.damageByType.kinetic, ax.damagePerSecond));
     assert.ok(ax.damageByType.antiXeno > ax.damagePerSecond);
     assert.ok(near(ax.damageByType.antiXeno, 2.19 * ax.rateOfFire));
+
+    // The Mk II Plasma Shock Accelerator's in-game Plasma damage is carried as absolute:
+    // nothing resists it, so every point of its output lands whatever the defender fits.
+    const mkII = weaponMetrics(
+        getModuleBySymbol('Hpt_MkIIPlasmaShockAutocannon_Fixed_Large', HARDPOINT_MODULES)!,
+    );
+    assert.ok(near(mkII.damageByType.absolute, mkII.damagePerSecond));
+    assert.equal(mkII.damageByType.unclassified, undefined);
 });
 
 test('exact components preserve Guardian and unclassified damage without double-counting AX', () => {
@@ -204,11 +212,6 @@ test('exact components preserve Guardian and unclassified damage without double-
             enzyme.damagePerSecond,
         ),
     );
-
-    const mkII = weaponMetrics(
-        getModuleBySymbol('Hpt_MkIIPlasmaShockAutocannon_Fixed_Large', HARDPOINT_MODULES)!,
-    );
-    assert.ok(near(mkII.damageByType.unclassified ?? 0, mkII.damagePerSecond));
 });
 
 test('every fitted-stat view scales exact damage components with effective damage', () => {
