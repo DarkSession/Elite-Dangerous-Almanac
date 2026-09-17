@@ -880,19 +880,23 @@ EDSY's 40 / 70. The catalogue stores the displayed values without further deriva
 applies the same correction to their exact thermal and anti-xeno components. The two
 panel readings have no upstream immutable revision.
 
-**The Mk II Plasma Shock Accelerator deals absolute damage, under the in-game name
-Plasma.** The weapon's damage type is **Plasma**, which is Frontier's name for the channel
-and not one of the four a defender carries a resistance to: no shield generator, no armour
-and no hull reinforcement offers a Plasma resistance, so the whole of it lands whatever the
-target has fitted. That is what `absolute` means here, and it is the reading this
-catalogue already applies to the Operations Plasma conversion's Plasma share under
-"Engineering (blueprints and experimental effects)" below, so the accelerator's
-`damageDistribution` stores one whole absolute share instead of leaving the channel
-`unclassified`. Its scalar is unchanged. The exact-amount record goes with the
-unclassified spelling: `damageComponents` states what a distribution cannot, and one
-conventional type at the full scalar is not that. Should Frontier ever give a defensive
-module a Plasma resistance, this is the value to revisit, because the two names would stop
-being synonyms.
+**The Mk II Plasma Shock Accelerator's damage type is Plasma, and it is stored as
+`absolute`.** Plasma is a type of its own, not a second name for absolute damage, and the
+stored share is not a claim that Frontier calls the channel absolute. What the two types
+share is the only property a damage calculation reads from either: nothing resists them.
+No shield generator, armour or hull reinforcement carries a Plasma resistance any more
+than it carries an absolute one, so the whole of this weapon's output lands whatever the
+target has fitted, and a share stored as `absolute` computes its effect exactly. The same
+reading already stores the Operations Plasma conversion's Plasma share as `absolute`,
+under "Engineering (blueprints and experimental effects)" below. What the storage costs is
+the distinction itself, which is why it is written down here: should Frontier ever give a
+defensive module a Plasma resistance, the two types stop agreeing, and this weapon and
+that blueprint are the records to revisit.
+
+Its `damageComponents` record goes with the `unclassified` spelling it replaces.
+`damageComponents` preserves amounts a fractional split cannot state honestly — an
+anti-xeno overlay, or a channel whose type is not established — and one conventional type
+at the full scalar is neither.
 
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"

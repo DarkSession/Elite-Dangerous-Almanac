@@ -171,6 +171,12 @@ public sealed record ModuleLimitIncrease(ModuleLimitGroup Group, int Amount);
 /// shield or hull resistance reduces absolute damage, and in-game verification does not
 /// establish the type or the mitigation of unclassified damage.
 /// <para>
+/// A weapon the game gives the <b>Plasma</b> damage type carries its share under the absolute
+/// one, as the Mk II Plasma Shock Accelerator does. Plasma is a type of its own and not a
+/// second name for absolute damage, but no defensive module resists either one, so the two are
+/// indistinguishable to a damage calculation and one share states the weapon's effect exactly.
+/// </para>
+/// <para>
 /// The anti-xeno share is different: it overlays the conventional split instead of partitioning
 /// it, flagging the portion that is effective against Thargoid targets. It is expressed relative
 /// to conventional damage and can exceed 1, so the values can sum past 1.

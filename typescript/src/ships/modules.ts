@@ -154,6 +154,12 @@ export interface ModuleLimitIncrease {
  * resistance reduces absolute damage; the type and mitigation of unclassified damage
  * are not established by in-game verification.
  *
+ * A weapon the game gives the **Plasma** damage type carries its share under
+ * {@link DamageDistribution.absolute | absolute}, as the Mk II Plasma Shock Accelerator
+ * does. Plasma is a type of its own and not a second name for absolute damage, but no
+ * defensive module resists either one, so the two are indistinguishable to a damage
+ * calculation and one share states the weapon's effect exactly.
+ *
  * {@link DamageDistribution.antiXeno | antiXeno} is different: it **overlays** the
  * conventional split instead of partitioning it, flagging the portion that is effective
  * against Thargoid targets. It is expressed relative to conventional damage and can
