@@ -18,6 +18,7 @@ Referred to throughout by source name; the pin is here, once.
 | Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                          | 2026-08-14 UTC |
 | Elite Dangerous in-game purchase capture                                                        | no game version recorded; nine `ModuleBuyAndStore` journal entries from market `128666762`, 17:34-17:37, at a 10% and a 2.5% outfitting discount                            | 2026-08-30 UTC |
 | Elite Dangerous in-game outfitting observation                                                  | no game version recorded; direct in-game observation that outfitting offers no non-SCO size-8 frame shift drive                                                             | 2026-08-30 UTC |
+| Elite Dangerous in-game SCO outfitting observation                                              | no game version recorded; direct in-game observation that outfitting offers no SCO frame shift drive below the size of the mount being outfitted                    | 2026-09-17 UTC |
 | Elite Dangerous Large Planetary Vehicle Hangar readings                                         | **unreleased** — observation of the modules an unreleased update adds, plus outfitting and journal `ModuleBuy` readings at a 10% and 2.5% discount                          | 2026-09-02 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
@@ -434,17 +435,29 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     in the symbol and the display name.
   - **Derivation:** the symbol family is the classification, exactly as it is for `slot`
     above, and it is applied once here so that consumers read a datum instead of
-    matching `Int_Hyperdrive_Overcharge` themselves — which a pre-engineered or fitted
-    article's symbol does not always let them do. Stored as a sparse flag rather than a
-    `true`/`false` pair on every drive, following `alwaysPowered` and
-    `guardianZoneResistance`.
-  - **Nothing else is derived from it.** The two lines share every jump constant this
-    catalogue carries (`optMass`, `maxFuel`, `fuelMul`, `fuelPower`, and the
-    `fsdHeatRate`, which is a function of a drive's size alone — 10, 14, 18, 27, 37, 43
-    and 50 for sizes 2 to 8, identical on the plain and SCO lines at every size), so no
-    calculation reads the flag; the
-    overcharged supercruise behaviour the drives are named for has no published figures
-    and none are stored.
+    matching `Int_Hyperdrive_Overcharge` themselves. Every record carrying the flag has
+    `Overcharge` in its symbol today and no other record does, so the two agree; stating
+    the capability keeps that agreement from being something a consumer has to rely on.
+    Stored as a sparse flag rather than a `true`/`false` pair on every drive, following
+    `alwaysPowered` and `guardianZoneResistance`.
+  - **The two lines share every jump constant this catalogue carries** — `optMass`,
+    `maxFuel`, `fuelMul`, `fuelPower`, and the `fsdHeatRate`, which is a function of a
+    drive's size alone: 10, 14, 18, 27, 37, 43 and 50 for sizes 2 to 8, and where both
+    lines offer a size they state the same value. The overcharged supercruise behaviour
+    the drives are named for has no published figures and none are stored. The plain line
+    runs from size 2 to 7 and the SCO line from 2 to 8, so size 8 is stated on the SCO
+    line alone.
+  - **An SCO drive is sold only at the size of the mount being outfitted.** Outfitting
+    offers a class-4 SCO drive for a class-4 frame shift drive mount and not for a
+    class-5 one, where it does offer a class-4 plain drive — an SCO drive cannot be
+    underfitted.
+    - **Source:** Elite Dangerous in-game SCO outfitting observation, pinned above.
+    - **Derivation:** none; the observation is recorded as stated. No catalogue field
+      carries it — the drives are exactly the records `supercruiseOvercharge` already
+      marks, and every one of them states a `class` matching the `Size` token in its
+      symbol, so the flag and the class are together sufficient to state the rule.
+      Neither registry source carries a field stating such a restriction, so the
+      observation is the only evidence for it.
 - **`cabinCapacity` — a passenger cabin's berths.** The `passengerCabins` records
   carry it; every other record in all four catalogues omits it, and no cabin carries a
   zero. It is the module's own seat count, not the ship's.
@@ -732,10 +745,11 @@ the armour modules, blueprint grade rolls and crafting costs remain unverified t
 It also did not unambiguously settle the shield-generator resistances, shield-booster
 properties or probe radius. Those values are not changed on guesswork. For the
 anti-xeno, Guardian and special weapons whose damage observed in-game does not reduce honestly
-to one conventional scalar, `damageComponents` preserves the exact amounts. The two
-channel types not established by in-game verification remain `unclassified`. The
-projectile-limited hardpoints carry their boundary parameters observed in-game in
-`projectileRange`; those parameters are not presented as effective ranges.
+to one conventional scalar, `damageComponents` preserves the exact amounts. It read the
+Enzyme Missile Rack's two channels as amounts without settling the minor one's type; that
+type is caustic, and the note below records the correction. The projectile-limited
+hardpoints carry their boundary parameters observed in-game in `projectileRange`; those
+parameters are not presented as effective ranges.
 
 **A journal capture is a third source, and it reaches fields in-game verification does
 not.** Every engineered module in a `Loadout` states its own _unmodified_ value beside
@@ -847,7 +861,7 @@ Resource Siphon, the corrections are:
 | Beam Laser, Cannon, Fragment Cannon, Multi-Cannon, Plasma Accelerator, Rail Gun, Shock Cannon and Point Defence records | damage / thermal load                                             | `damage` and `thermalLoad` read from the module panel per symbol   |
 | Advanced Plasma Accelerator, Imperial Hammer, Shock Cannons and Mk II Plasma Shock Accelerator                          | burst interval / combined rate of fire                            | exact cycle values derived with the catalogue's documented formula |
 | mining, utility and Guardian hardpoints                                                                                 | clip, distributor draw, reload, jitter, falloff and maximum range | observed values per symbol                                         |
-| anti-xeno, Guardian and special weapons                                                                                 | scalar, distribution and exact damage components                  | one component record per weapon                                    |
+| anti-xeno, Guardian and special weapons                                                                                 | scalar, distribution and exact damage components                  | a component record wherever the damage needs more than a share     |
 | AX missiles, subsurface displacement missiles and seismic charge launchers                                              | projectile boundary parameters; misleading ordinary ranges absent | `projectileRange` stored; `maximumRange` and `falloffRange` absent |
 
 In-game verification gives the integer thruster/FSD masses, 1.1/1.2 enhanced-thruster
@@ -878,6 +892,37 @@ settle the registry disagreement in favour of coriolis-data's 22 / 38.5 rather t
 EDSY's 40 / 70. The catalogue stores the displayed values without further derivation and
 applies the same correction to their exact thermal and anti-xeno components. The two
 panel readings have no upstream immutable revision.
+
+**The Mk II Plasma Shock Accelerator's damage type is Plasma, and it is stored as
+`absolute`.** Plasma is a type of its own, not a second name for absolute damage, and the
+stored share is not a claim that Frontier calls the channel absolute. What the two types
+share is the only property a damage calculation reads from either: nothing resists them.
+No shield generator, armour or hull reinforcement carries a Plasma resistance any more
+than it carries an absolute one, so the whole of this weapon's output lands whatever the
+target has fitted, and a share stored as `absolute` computes its effect exactly. The same
+reading already stores the Operations Plasma conversion's Plasma share as `absolute`,
+under "Engineering (blueprints and experimental effects)" below. What the storage costs is
+the distinction itself, which is why it is written down here: should Frontier ever give a
+defensive module a Plasma resistance, the two types stop agreeing, and this weapon and
+that blueprint are the records to revisit.
+
+Its `damageComponents` record goes with the `unclassified` spelling it replaces.
+`damageComponents` preserves amounts a fractional split cannot state honestly — an
+anti-xeno overlay, or a channel whose type is not established — and one conventional type
+at the full scalar is neither.
+
+**The Enzyme Missile Rack's minor damage channel is Caustic.** Of the 5 damage its round
+carries, 4 are explosive and 1 is caustic. The amounts are what in-game verification
+established; the minor channel's type it did not, and the share was stored as
+`unclassified` for exactly as long as that was the whole of what was known. The type is
+caustic, and the catalogue's own vocabulary says so twice over: Frontier's symbol for the
+weapon is `Hpt_CausticMissile_Fixed_Medium`, and the enzyme it delivers is the damage the
+Caustic Sink Launcher exists to shed. This is not the Mk II's situation above. Caustic is
+a type the defensive side of the catalogue already names — `causticResistance` on the
+armour and hull reinforcement records meets it, and it is one of the four resistances a build carries —
+so the spelling decides whether a defender's caustic resistance reaches this weapon's
+minor channel at all. `unclassified` would have kept it out of that arithmetic on a point
+the game does settle.
 
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"

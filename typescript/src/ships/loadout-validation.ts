@@ -68,6 +68,7 @@ export type ModuleFitConstraint =
     | 'optionalInternalRequired'
     | 'coreModuleInOptionalSlot'
     | 'oversized'
+    | 'exactSizeRequired'
     | 'unknownConstraint';
 
 /**

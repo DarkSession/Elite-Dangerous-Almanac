@@ -19,6 +19,7 @@ import {
 import { getModuleBySymbol, type OutfittingModuleStats } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { effectiveModule, weaponStatsFor } from './internal/loadout-metrics.js';
+import { scaleDamageComponents } from './internal/damage-components.js';
 import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
@@ -184,9 +185,17 @@ test('damage splits by type, and anti-xeno overlays rather than partitions', () 
     assert.ok(near(ax.damageByType.kinetic, ax.damagePerSecond));
     assert.ok(ax.damageByType.antiXeno > ax.damagePerSecond);
     assert.ok(near(ax.damageByType.antiXeno, 2.19 * ax.rateOfFire));
+
+    // The Mk II Plasma Shock Accelerator's in-game Plasma damage is carried as absolute:
+    // nothing resists it, so every point of its output lands whatever the defender fits.
+    const mkII = weaponMetrics(
+        getModuleBySymbol('Hpt_MkIIPlasmaShockAutocannon_Fixed_Large', HARDPOINT_MODULES)!,
+    );
+    assert.ok(near(mkII.damageByType.absolute, mkII.damagePerSecond));
+    assert.equal(mkII.damageByType.unclassified, undefined);
 });
 
-test('exact components preserve Guardian and unclassified damage without double-counting AX', () => {
+test('exact components preserve Guardian and caustic damage without double-counting AX', () => {
     const gauss = weaponMetrics(
         getModuleBySymbol('Hpt_Guardian_GaussCannon_Fixed_Medium', HARDPOINT_MODULES)!,
     );
@@ -197,18 +206,10 @@ test('exact components preserve Guardian and unclassified damage without double-
         getModuleBySymbol('Hpt_CausticMissile_Fixed_Medium', HARDPOINT_MODULES)!,
     );
     assert.ok(near(enzyme.damageByType.explosive, 2));
-    assert.ok(near(enzyme.damageByType.unclassified ?? 0, 0.5));
+    assert.ok(near(enzyme.damageByType.caustic, 0.5));
     assert.ok(
-        near(
-            enzyme.damageByType.explosive + (enzyme.damageByType.unclassified ?? 0),
-            enzyme.damagePerSecond,
-        ),
+        near(enzyme.damageByType.explosive + enzyme.damageByType.caustic, enzyme.damagePerSecond),
     );
-
-    const mkII = weaponMetrics(
-        getModuleBySymbol('Hpt_MkIIPlasmaShockAutocannon_Fixed_Large', HARDPOINT_MODULES)!,
-    );
-    assert.ok(near(mkII.damageByType.unclassified ?? 0, mkII.damagePerSecond));
 });
 
 test('every fitted-stat view scales exact damage components with effective damage', () => {
@@ -246,11 +247,24 @@ test('every fitted-stat view scales exact damage components with effective damag
     }
 });
 
+test('scaling an amount whose type is unestablished keeps it in step with the rest', () => {
+    // No catalogue record states an `unclassified` amount today, so the fixture cases
+    // above cannot reach this branch — they name real weapons. The member stays public as
+    // the escape hatch for an amount in-game verification has not typed, and an amount
+    // that did not scale with the weapon's damage would be a silent arithmetic error, so
+    // exercise it on a record built for the purpose.
+    assert.deepEqual(scaleDamageComponents({ explosive: 4, unclassified: [1, 3] }, 8, 4), {
+        explosive: 2,
+        unclassified: [0.5, 1.5],
+    });
+});
+
 test('splitDamage treats an unknown distribution as absolute damage', () => {
     assert.deepEqual(splitDamage(10), {
         kinetic: 0,
         thermal: 0,
         explosive: 0,
+        caustic: 0,
         absolute: 10,
         antiXeno: 0,
     });
@@ -258,6 +272,7 @@ test('splitDamage treats an unknown distribution as absolute damage', () => {
         kinetic: 20,
         thermal: 40,
         explosive: 0,
+        caustic: 0,
         absolute: 0,
         antiXeno: 0,
     });
@@ -354,6 +369,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 8,
                 thermal: 9,
                 explosive: 10,
+                caustic: 105,
                 absolute: 11,
                 unclassified: 12,
                 antiXeno: 13,
@@ -362,6 +378,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 14,
                 thermal: 15,
                 explosive: 16,
+                caustic: 165,
                 absolute: 17,
                 unclassified: 18,
                 antiXeno: 19,
@@ -384,6 +401,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 90,
                 thermal: 100,
                 explosive: 110,
+                caustic: 115,
                 absolute: 120,
                 unclassified: 130,
                 antiXeno: 140,
@@ -392,6 +410,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 150,
                 thermal: 160,
                 explosive: 170,
+                caustic: 175,
                 absolute: 180,
                 unclassified: 190,
                 antiXeno: 200,
@@ -413,6 +432,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
             kinetic: 98,
             thermal: 109,
             explosive: 120,
+            caustic: 220,
             absolute: 131,
             unclassified: 142,
             antiXeno: 153,
@@ -421,13 +441,21 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
             kinetic: 164,
             thermal: 175,
             explosive: 186,
+            caustic: 340,
             absolute: 197,
             unclassified: 208,
             antiXeno: 219,
         },
     });
 
-    const zeroSplit = { kinetic: 0, thermal: 0, explosive: 0, absolute: 0, antiXeno: 0 };
+    const zeroSplit = {
+        kinetic: 0,
+        thermal: 0,
+        explosive: 0,
+        caustic: 0,
+        absolute: 0,
+        antiXeno: 0,
+    };
     assert.deepEqual(sumWeaponMetrics([]), {
         damagePerSecond: 0,
         sustainedDamagePerSecond: 0,

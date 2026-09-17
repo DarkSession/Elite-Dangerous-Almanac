@@ -1855,20 +1855,20 @@ type FixtureShipsEngineering = {
             baseComponents: {
                 absolute?: number;
                 antiXeno?: number;
+                caustic?: number;
                 explosive?: number;
                 kinetic?: number;
                 thermal?: number;
-                unclassified?: number[];
             };
             baseDamage: number;
             effectiveDamage: number;
             expectedComponents: {
                 absolute?: number;
                 antiXeno?: number;
+                caustic?: number;
                 explosive?: number;
                 kinetic?: number;
                 thermal?: number;
-                unclassified?: number[];
             };
             symbol: string;
         }[];
@@ -3737,6 +3737,7 @@ type FixtureShipsModuleStats = {
             powerDraw: number;
         };
         catalogueIdentities: number;
+        componentRecords: number;
         identityMatches: number;
         note: string;
         numericModulesVerified: number;
@@ -3759,18 +3760,18 @@ type FixtureShipsModuleStats = {
         damageComponents?: {
             absolute?: number;
             antiXeno?: number;
+            caustic?: number;
             explosive?: number;
             kinetic?: number;
             thermal?: number;
-            unclassified?: number[];
         };
         damageDistribution?: {
             absolute?: number;
             antiXeno?: number;
+            caustic?: number;
             explosive?: number;
             kinetic?: number;
             thermal?: number;
-            unclassified?: number;
         };
         distributorDraw?: number;
         falloffRange?: number;
@@ -4271,6 +4272,22 @@ type FixtureShipsOperations = {
                 }[];
                 Ship: string;
             };
+            slot: string;
+        };
+        undersizedScoDrive: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    constraint: string;
+                    moduleClass: number;
+                    slot: string;
+                    slotSize: number;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
             slot: string;
         };
         wrongHullArmour: {
@@ -4971,6 +4988,7 @@ type FixtureShipsPreEngineered = {
     }[];
     modifierCounts: {
         mercenaryWithResolvedStats: number;
+        withAnacondaMount: number;
         withMercCoinCost: number;
         withModifiers: number;
         withStatedRateOfFire: number;

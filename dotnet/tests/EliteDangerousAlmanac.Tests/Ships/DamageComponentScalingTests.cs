@@ -28,7 +28,7 @@ public class DamageComponentScalingTests
     }
 
     [Fact]
-    public void TheCasesCoverEveryAmountAWeaponCanState()
+    public void TheCasesCoverEveryAmountTheCatalogueStates()
     {
         HashSet<string> covered = [];
         foreach (DamageComponentCaseFixture stated in Fixture.Cases)
@@ -36,14 +36,31 @@ public class DamageComponentScalingTests
             if (stated.BaseComponents.Kinetic is not null) covered.Add("kinetic");
             if (stated.BaseComponents.Thermal is not null) covered.Add("thermal");
             if (stated.BaseComponents.Explosive is not null) covered.Add("explosive");
+            if (stated.BaseComponents.Caustic is not null) covered.Add("caustic");
             if (stated.BaseComponents.Absolute is not null) covered.Add("absolute");
             if (stated.BaseComponents.AntiXeno is not null) covered.Add("antiXeno");
-            if (stated.BaseComponents.Unclassified is not null) covered.Add("unclassified");
         }
 
         Assert.Equal(
-            ["absolute", "antiXeno", "explosive", "kinetic", "thermal", "unclassified"],
+            ["absolute", "antiXeno", "caustic", "explosive", "kinetic", "thermal"],
             Sorted(covered));
+    }
+
+    [Fact]
+    public void ScalingAnAmountWhoseTypeIsUnestablishedKeepsItInStepWithTheRest()
+    {
+        // No catalogue record states an unclassified amount today, so the fixture cases cannot
+        // reach this branch — they name real weapons. The member stays public as the escape
+        // hatch for an amount in-game verification has not typed, and an amount that did not
+        // scale with the weapon's damage would be a silent arithmetic error, so exercise it on
+        // a record built for the purpose.
+        DamageComponents scaled = DamageComponentScaling.Scale(
+            new DamageComponents(Explosive: 4, Unclassified: [1, 3]),
+            baseDamage: 8,
+            effectiveDamage: 4);
+
+        Assert.Equal(2, scaled.Explosive);
+        Assert.Equal([0.5, 1.5], scaled.Unclassified);
     }
 
     [Theory]
@@ -113,9 +130,9 @@ public class DamageComponentScalingTests
         Assert.Equal(expected.Kinetic, carried.Kinetic);
         Assert.Equal(expected.Thermal, carried.Thermal);
         Assert.Equal(expected.Explosive, carried.Explosive);
+        Assert.Equal(expected.Caustic, carried.Caustic);
         Assert.Equal(expected.Absolute, carried.Absolute);
         Assert.Equal(expected.AntiXeno, carried.AntiXeno);
-        Assert.Equal(expected.Unclassified, carried.Unclassified);
     }
 
     private static DamageComponentCaseFixture Case(string symbol)

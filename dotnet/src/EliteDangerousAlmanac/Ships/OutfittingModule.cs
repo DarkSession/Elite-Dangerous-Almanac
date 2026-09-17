@@ -94,7 +94,9 @@ namespace EliteDangerousAlmanac.Ships;
 /// <param name="SupercruiseOvercharge">
 /// <see langword="true"/> on a Supercruise Overcharge drive, the line an outfitting screen
 /// labels SCO. The two lines share every jump constant this library models, so the flag changes
-/// no calculation here; it is what an outfitting list filters and labels on.
+/// no jump calculation; it is what an outfitting list filters and labels on, and it is what
+/// makes a drive unfittable below its own size — an SCO drive takes the mount of its own class
+/// and no larger one, where an ordinary drive may be underfitted.
 /// </param>
 /// <param name="GuardianZoneResistance">
 /// <see langword="true"/> when Anti-Guardian Zone Resistance protects this Guardian module from

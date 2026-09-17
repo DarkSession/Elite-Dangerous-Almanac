@@ -247,6 +247,14 @@ Two repo-wide conventions worth knowing before touching a catalogue:
 
 Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 and the .NET 10 SDK also installed. It runs as the `node` user, and its Dockerfile enables Corepack so that `pnpm` resolves to the version pinned in `typescript/package.json`. The .NET SDK arrives as a dev container feature and honours the version `dotnet/global.json` pins. ESLint + Prettier for TypeScript; the C# extension for .NET; Pylance for Python.
 
+**A session outside that container installs the SDK from the distribution's archive, not from Microsoft's.** A remote or web session can land on a bare image where `dotnet` is absent, and there the usual `dotnet-install.sh` is a dead end: it downloads from `builds.dotnet.microsoft.com`, which an egress policy may refuse (`403` on the CONNECT). The distribution's own archive carries a build inside the band `dotnet/global.json` accepts, so on Ubuntu:
+
+```bash
+apt-get update && apt-get install -y dotnet-sdk-10.0
+```
+
+Run the update first. A stale package list names pool files that have since been superseded, and every download 404s against an archive that is otherwise working — which reads like a blocked host and is not one. Adding Microsoft's `packages-microsoft-prod` feed is not the fix either; it is reachable, but the SDK still resolves from the distribution. `api.nuget.org` is reachable, so `dotnet restore --locked-mode` works once the SDK is in place. **Never report the .NET suite as unrunnable without trying this** — the whole point of the parity rule is that both suites run on the same change.
+
 ## Commit Identity — no personal data in git metadata
 
 **Commit as whoever git is already configured as. Never set an identity yourself.** The environment configures `user.name` / `user.email` (and, where signing is enabled, the signing key) before you start. Do not pass `-c user.name=…` / `-c user.email=…` to `git commit`, do not `git config` a different one, and do not use `--reset-author` to change *who* a commit is by. An agent that substitutes its own choice produces commits GitHub marks **Unverified**, because the identity no longer matches the key that signed them.

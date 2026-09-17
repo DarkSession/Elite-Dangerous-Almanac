@@ -53,7 +53,10 @@ value you captured earlier.
 ## Offer only what fits
 
 `modulesForSlot` filters the complete module catalogue down to the modules that mount
-will actually accept, by size and by restriction.
+will actually accept, by size and by restriction. Size is usually an upper bound — a
+smaller module may be underfitted into a larger mount — but a Supercruise Overcharge
+frame shift drive is sold at one size only, so a drive mount offers the SCO drives of
+its own size and no smaller ones.
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

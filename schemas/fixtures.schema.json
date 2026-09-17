@@ -3414,19 +3414,7 @@
                 "additionalProperties": false,
                 "properties": {
                   "baseComponents": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "absolute": { "type": "number" },
-                      "antiXeno": { "type": "number" },
-                      "explosive": { "type": "integer" },
-                      "kinetic": { "type": "number" },
-                      "thermal": { "type": "number" },
-                      "unclassified": {
-                        "type": "array",
-                        "items": { "type": "integer" }
-                      }
-                    }
+                    "$ref": "#/definitions/sharedeb9ffe121aa9"
                   },
                   "baseDamage": { "type": "number" },
                   "effectiveDamage": { "type": "number" },
@@ -3436,13 +3424,10 @@
                     "properties": {
                       "absolute": { "type": "integer" },
                       "antiXeno": { "type": "number" },
+                      "caustic": { "type": "number" },
                       "explosive": { "type": "integer" },
                       "kinetic": { "type": "integer" },
-                      "thermal": { "type": "number" },
-                      "unclassified": {
-                        "type": "array",
-                        "items": { "type": "number" }
-                      }
+                      "thermal": { "type": "number" }
                     }
                   },
                   "symbol": { "type": "string" }
@@ -5227,6 +5212,7 @@
               "required": ["bootTime", "powerDraw"]
             },
             "catalogueIdentities": { "type": "integer" },
+            "componentRecords": { "type": "integer" },
             "identityMatches": { "type": "integer" },
             "note": { "type": "string" },
             "numericModulesVerified": { "type": "integer" },
@@ -5240,6 +5226,7 @@
             "armourModulesOutsideNumericVerification",
             "catalogueFieldCounts",
             "catalogueIdentities",
+            "componentRecords",
             "identityMatches",
             "note",
             "numericModulesVerified",
@@ -5274,19 +5261,7 @@
               "clipSize": { "type": "integer" },
               "damage": { "type": "number" },
               "damageComponents": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "absolute": { "type": "number" },
-                  "antiXeno": { "type": "number" },
-                  "explosive": { "type": "integer" },
-                  "kinetic": { "type": "number" },
-                  "thermal": { "type": "number" },
-                  "unclassified": {
-                    "type": "array",
-                    "items": { "type": "number" }
-                  }
-                }
+                "$ref": "#/definitions/sharedeb9ffe121aa9"
               },
               "damageDistribution": {
                 "type": "object",
@@ -5294,10 +5269,10 @@
                 "properties": {
                   "absolute": { "type": "integer" },
                   "antiXeno": { "type": "number" },
+                  "caustic": { "type": "number" },
                   "explosive": { "type": "number" },
                   "kinetic": { "type": "integer" },
-                  "thermal": { "type": "integer" },
-                  "unclassified": { "type": "number" }
+                  "thermal": { "type": "integer" }
                 }
               },
               "distributorDraw": { "type": "number" },
@@ -6087,24 +6062,7 @@
               "required": ["expected", "module", "ship", "slot"]
             },
             "incompatibleModule": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "expected": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "code": { "type": "string" },
-                    "constraint": { "type": "string" },
-                    "params": { "$ref": "#/definitions/shared8d1c2fa65d38" }
-                  },
-                  "required": ["code", "constraint", "params"]
-                },
-                "module": { "type": "string" },
-                "ship": { "type": "string" },
-                "slot": { "type": "string" }
-              },
-              "required": ["expected", "module", "ship", "slot"]
+              "$ref": "#/definitions/shared75e08f7e8d62"
             },
             "moduleLimitExceeded": {
               "type": "object",
@@ -6156,6 +6114,9 @@
               },
               "required": ["expected", "input", "slot"]
             },
+            "undersizedScoDrive": {
+              "$ref": "#/definitions/shared75e08f7e8d62"
+            },
             "wrongHullArmour": {
               "type": "object",
               "additionalProperties": false,
@@ -6206,6 +6167,7 @@
             "incompatibleModule",
             "moduleLimitExceeded",
             "requiredSlot",
+            "undersizedScoDrive",
             "wrongHullArmour"
           ]
         },
@@ -7509,6 +7471,7 @@
           "additionalProperties": false,
           "properties": {
             "mercenaryWithResolvedStats": { "type": "integer" },
+            "withAnacondaMount": { "type": "integer" },
             "withMercCoinCost": { "type": "integer" },
             "withModifiers": { "type": "integer" },
             "withStatedRateOfFire": { "type": "integer" },
@@ -7516,6 +7479,7 @@
           },
           "required": [
             "mercenaryWithResolvedStats",
+            "withAnacondaMount",
             "withMercCoinCost",
             "withModifiers",
             "withStatedRateOfFire",
@@ -11089,6 +11053,17 @@
       "type": "array",
       "items": { "$ref": "#/definitions/shared463ee6a0fb9c" }
     },
+    "shared75e08f7e8d62": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expected": { "$ref": "#/definitions/sharedf9204b4dacaf" },
+        "module": { "type": "string" },
+        "ship": { "type": "string" },
+        "slot": { "type": "string" }
+      },
+      "required": ["expected", "module", "ship", "slot"]
+    },
     "shared76b50319dd2c": {
       "type": "object",
       "additionalProperties": false,
@@ -11544,6 +11519,18 @@
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
     },
+    "sharedeb9ffe121aa9": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "absolute": { "type": "number" },
+        "antiXeno": { "type": "number" },
+        "caustic": { "type": "integer" },
+        "explosive": { "type": "integer" },
+        "kinetic": { "type": "number" },
+        "thermal": { "type": "number" }
+      }
+    },
     "sharededdcd265e39e": {
       "type": "object",
       "additionalProperties": false,
@@ -11647,6 +11634,16 @@
         "Ship": { "type": "string" }
       },
       "required": ["Modules", "Ship"]
+    },
+    "sharedf9204b4dacaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string" },
+        "constraint": { "type": "string" },
+        "params": { "$ref": "#/definitions/shared8d1c2fa65d38" }
+      },
+      "required": ["code", "constraint", "params"]
     },
     "sharedfbeeff3a79e6": {
       "type": "object",

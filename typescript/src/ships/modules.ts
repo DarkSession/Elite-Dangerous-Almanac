@@ -147,12 +147,19 @@ export interface ModuleLimitIncrease {
  * The conventional shares — {@link DamageDistribution.kinetic | kinetic},
  * {@link DamageDistribution.thermal | thermal},
  * {@link DamageDistribution.explosive | explosive},
+ * {@link DamageDistribution.caustic | caustic},
  * {@link DamageDistribution.absolute | absolute}, and any
  * {@link DamageDistribution.unclassified | unclassified} share — partition the damage and sum to
- * `1`; a type a weapon does not deal is absent rather than `0`. Kinetic, thermal and
- * explosive damage meet the defender's resistance of the same name. No shield or hull
- * resistance reduces absolute damage; the type and mitigation of unclassified damage
- * are not established by in-game verification.
+ * `1`; a type a weapon does not deal is absent rather than `0`. Kinetic, thermal,
+ * explosive and caustic damage meet the defender's resistance of the same name. No
+ * shield or hull resistance reduces absolute damage; the type and mitigation of
+ * unclassified damage are not established by in-game verification.
+ *
+ * A weapon the game gives the **Plasma** damage type carries its share under
+ * {@link DamageDistribution.absolute | absolute}, as the Mk II Plasma Shock Accelerator
+ * does. Plasma is a type of its own and not a second name for absolute damage, but no
+ * defensive module resists either one, so the two are indistinguishable to a damage
+ * calculation and one share states the weapon's effect exactly.
  *
  * {@link DamageDistribution.antiXeno | antiXeno} is different: it **overlays** the
  * conventional split instead of partitioning it, flagging the portion that is effective
@@ -166,6 +173,8 @@ export interface DamageDistribution {
     readonly thermal?: number;
     /** Explosive share of one shot's damage, `0`–`1`. */
     readonly explosive?: number;
+    /** Caustic share of one shot's damage, `0`–`1`. */
+    readonly caustic?: number;
     /** Absolute share — damage no resistance reduces — of one shot's damage, `0`–`1`. */
     readonly absolute?: number;
     /** Share unclassified by in-game verification, `0`–`1`. */
@@ -181,7 +190,7 @@ export interface DamageDistribution {
  * Exact damage amounts carried by one round, or one second of continuous fire.
  *
  * @remarks
- * Every amount is non-negative. Kinetic, thermal, explosive, absolute and all
+ * Every amount is non-negative. Kinetic, thermal, explosive, caustic, absolute and all
  * `unclassified` entries sum to the module's conventional {@link OutfittingModule.damage}.
  * `antiXeno` overlays that conventional amount and is not added to it. The exact amounts
  * are authoritative when present; {@link DamageDistribution} remains the compatible
@@ -201,6 +210,8 @@ export interface DamageComponents {
     readonly thermal?: number;
     /** Non-negative explosive damage. */
     readonly explosive?: number;
+    /** Non-negative caustic damage. */
+    readonly caustic?: number;
     /** Non-negative absolute damage, which no resistance reduces. */
     readonly absolute?: number;
     /** Non-negative damage effective against Thargoid targets, overlaid on conventional damage. */
@@ -560,8 +571,8 @@ export interface OutfittingModuleStats {
      * {@link OutfittingModule.engineHeatRate}. It is what Faster Boot Sequence trades
      * away, what Shielded improves, and the whole of the Deep Charge / Thermal Spread
      * (`special_fsd_cooled`) experimental effect. A drive's size sets it — every rating
-     * of a size shares one value, and a supercruise-assist (SCO) drive matches the plain
-     * drive of the same size.
+     * of a size shares one value, and a Supercruise Overcharge (SCO) drive matches the
+     * plain drive of the same size.
      */
     readonly fsdHeatRate?: number;
     /**
@@ -572,14 +583,16 @@ export interface OutfittingModuleStats {
      * A sparse capability flag on the Overcharge drives and absent everywhere else,
      * including on the ordinary drives of the same sizes and ratings. Read it rather
      * than matching `Int_Hyperdrive_Overcharge` on the symbol: the capability is the
-     * record's to state, and a pre-engineered or fitted article carries the flag
-     * through while its symbol is not always the one you looked up.
+     * record's to state, so a consumer that reads the flag stays correct for any
+     * article the catalogue flags, whatever Frontier names it.
      *
      * The two lines share every jump constant this library models, so the flag changes
-     * no calculation here; it is what an outfitting list filters and labels on. The
-     * overcharged supercruise behaviour itself — the boosted acceleration and the extra
-     * fuel it burns — is in-flight behaviour the game publishes no figures for, and the
-     * library models none of it.
+     * no jump calculation; it is what an outfitting list filters and labels on, and it
+     * is what makes a drive unfittable below its own size — an SCO drive takes the mount
+     * of its own class and no larger one, where an ordinary drive may be underfitted.
+     * The overcharged supercruise behaviour itself — the boosted acceleration and the
+     * extra fuel it burns — is in-flight behaviour the game publishes no figures for,
+     * and the library models none of it.
      *
      * @example
      * ```ts

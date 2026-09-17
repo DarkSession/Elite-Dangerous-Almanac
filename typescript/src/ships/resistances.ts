@@ -100,8 +100,9 @@ export interface DamageResistanceParams {
  * @remarks
  * This is the **defensive** set — what a shield or a hull resists. Absolute damage is
  * absent because nothing resists it. A weapon's *output* is broken down over a different
- * set, {@link DamageDistribution} in `./modules`, which carries `absolute` and `antiXeno`
- * and no `caustic`; the two are not interchangeable.
+ * set, {@link DamageDistribution} in `./modules`, which shares these four names but also
+ * carries `absolute`, `antiXeno` and `unclassified` shares; the two are not
+ * interchangeable.
  */
 export type DamageType = keyof DamageTypeValues;
 

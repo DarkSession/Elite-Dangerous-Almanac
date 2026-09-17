@@ -198,6 +198,10 @@ public class ModuleStatsTests
             Assert.True(Enum.TryParse(entry.Key, ignoreCase: true, out ModuleStat stat));
             Assert.Equal(entry.Value, ModuleCatalogue.All.Count(module => module.Stats.Has(stat)));
         }
+
+        Assert.Equal(
+            audit.ComponentRecords,
+            ModuleCatalogue.All.Count(module => module.DamageComponents is not null));
     }
 
     [Fact]
@@ -342,6 +346,7 @@ public class ModuleStatsTests
         "kinetic" => distribution.Kinetic,
         "thermal" => distribution.Thermal,
         "explosive" => distribution.Explosive,
+        "caustic" => distribution.Caustic,
         "absolute" => distribution.Absolute,
         "unclassified" => distribution.Unclassified,
         "antiXeno" => distribution.AntiXeno,
@@ -353,6 +358,7 @@ public class ModuleStatsTests
         "kinetic" => components.Kinetic,
         "thermal" => components.Thermal,
         "explosive" => components.Explosive,
+        "caustic" => components.Caustic,
         "absolute" => components.Absolute,
         "antiXeno" => components.AntiXeno,
         _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Not a damage component."),

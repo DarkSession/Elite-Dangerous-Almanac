@@ -12,7 +12,9 @@
  * tuple is unique across the catalogue — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the
  * catalogue size and its split by acquisition; `records` pins individual pairings;
- * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable;
+ * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable,
+ * `withAnacondaMount` among them: the articles an Anaconda has a mount for, which pins that the
+ * ones it cannot take are only the ones a fitting rule excludes;
  * `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that
  * drives their rate of fire cannot be dropped again, each with the `rateOfFire` the resolved
  * article carries and the `blockRateOfFire` its published engineering block states — one
@@ -39,7 +41,8 @@
     "withoutModifiers": 0,
     "withMercCoinCost": 25,
     "mercenaryWithResolvedStats": 25,
-    "withStatedRateOfFire": 24
+    "withStatedRateOfFire": 24,
+    "withAnacondaMount": 74
   },
   "engineeringLocked": {
     "count": 12,

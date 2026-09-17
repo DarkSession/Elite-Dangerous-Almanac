@@ -275,6 +275,9 @@ internal sealed class InGameAuditFixture
 
     /// <summary>How many records carry each stat the audit counted.</summary>
     public Dictionary<string, int> CatalogueFieldCounts { get; set; } = [];
+
+    /// <summary>How many catalogue records state exact damage components.</summary>
+    public int ComponentRecords { get; set; }
 }
 
 /// <summary>One module's pinned stats: its symbol and whatever fields the fixture carries.</summary>

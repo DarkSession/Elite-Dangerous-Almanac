@@ -127,12 +127,33 @@ internal static class LoadoutFitting
         // A utility mount takes any utility fitting, whatever its class says.
         if (slot.Kind == SlotKind.Utility) return null;
 
-        return module.Class > slot.Size
-            ? new ModuleFitProblem(
+        if (module.Class > slot.Size)
+        {
+            return new ModuleFitProblem(
                 ModuleFitConstraint.Oversized,
                 string.Format(
                     CultureInfo.InvariantCulture,
                     "module size {0} exceeds slot size {1}",
+                    module.Class,
+                    slot.Size))
+            {
+                ModuleClass = module.Class,
+                SlotSize = slot.Size,
+            };
+        }
+
+        // An ordinary module may be underfitted — a smaller, lighter, cheaper article in a
+        // mount that would take more. An SCO frame shift drive may not: the game sells one per
+        // mount size and offers none below the mount it is being fitted to. Read the record's
+        // own capability flag rather than matching the overcharge symbol; the capability is the
+        // catalogue's to state, so the rule holds for any article flagged with it whatever
+        // Frontier names that article.
+        return module.SupercruiseOvercharge && module.Class < slot.Size
+            ? new ModuleFitProblem(
+                ModuleFitConstraint.ExactSizeRequired,
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    "an SCO drive fits a size {0} mount only, not size {1}",
                     module.Class,
                     slot.Size))
             {

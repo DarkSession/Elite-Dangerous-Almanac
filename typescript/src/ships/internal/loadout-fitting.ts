@@ -221,13 +221,27 @@ export function moduleFitProblem(
         }
     }
 
-    return module.class > slot.size
-        ? problem(
-              'oversized',
-              `module size ${truncate(module.class)} exceeds slot size ${slot.size}`,
-              { moduleClass: module.class, slotSize: slot.size },
-          )
-        : null;
+    if (module.class > slot.size) {
+        return problem(
+            'oversized',
+            `module size ${truncate(module.class)} exceeds slot size ${slot.size}`,
+            { moduleClass: module.class, slotSize: slot.size },
+        );
+    }
+    // An ordinary module may be underfitted — a smaller, lighter, cheaper article in a
+    // mount that would take more. An SCO frame shift drive may not: the game sells one
+    // per mount size and offers none below the mount it is being fitted to. Read the
+    // record's own capability flag rather than matching `Int_Hyperdrive_Overcharge` on
+    // the symbol; the capability is the catalogue's to state, so the rule holds for any
+    // article flagged with it whatever Frontier names that article.
+    if (module.supercruiseOvercharge === true && module.class < slot.size) {
+        return problem(
+            'exactSizeRequired',
+            `an SCO drive fits a size ${truncate(module.class)} mount only, not size ${slot.size}`,
+            { moduleClass: module.class, slotSize: slot.size },
+        );
+    }
+    return null;
 }
 
 /** Explain why `module` cannot fit `slot`, or return `null` when it fits. */

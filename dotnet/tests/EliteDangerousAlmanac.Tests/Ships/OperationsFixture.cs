@@ -141,6 +141,9 @@ internal sealed class EditorErrorsFixture
 {
     public EditorErrorCaseFixture IncompatibleModule { get; set; } = new();
 
+    /// <summary>An SCO drive offered a mount larger than its own class.</summary>
+    public EditorErrorCaseFixture UndersizedScoDrive { get; set; } = new();
+
     public EditorErrorCaseFixture BuiltInHullModule { get; set; } = new();
 
     public EditorErrorCaseFixture WrongHullArmour { get; set; } = new();
