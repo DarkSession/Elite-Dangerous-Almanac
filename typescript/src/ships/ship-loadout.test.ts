@@ -6461,15 +6461,25 @@ test('a fitted article resolves the rate of fire its own block states', () => {
     // keeps its catalogue cadence rather than acquiring a recomputed one.
     let stated = 0;
     let fittedCount = 0;
-    for (const variant of PRE_ENGINEERED_MODULES) {
-        const build = ShipLoadout.empty('Anaconda');
-        const slot = build
+    const mountFor = (build: ShipLoadout, symbol: string) =>
+        build
             .slots()
             .find((candidate) =>
                 build
                     .modulesForSlot(candidate.key)
-                    .some((module) => module.symbol.toLowerCase() === variant.symbol.toLowerCase()),
+                    .some((module) => module.symbol.toLowerCase() === symbol.toLowerCase()),
             )?.key;
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        // The Anaconda takes most of these. The ones it cannot take go on the first hull
+        // that can: an SCO drive takes the mount of its own class and no larger one, so
+        // five of the six pre-engineered drives have no Anaconda mount at all.
+        let build = ShipLoadout.empty('Anaconda');
+        let slot = mountFor(build, variant.symbol);
+        for (const hull of SHIPS) {
+            if (slot !== undefined) break;
+            build = ShipLoadout.empty(hull.symbol);
+            slot = mountFor(build, variant.symbol);
+        }
         if (slot === undefined) continue;
         fittedCount++;
         const fitted = build.setPreEngineeredVariant(slot, variant).fittedModuleAt(slot)!;
@@ -6488,8 +6498,8 @@ test('a fitted article resolves the rate of fire its own block states', () => {
         // article and one that only asks the catalogue for it read one cadence.
         assert.equal(fitted.stats!.rateOfFire, rate.Value, label);
     }
-    // Every catalogued article but one, whose hull class the Anaconda does not carry.
-    assert.equal(fittedCount, PRE_ENGINEERED_MODULES.length - 1);
+    // Every catalogued article reaches a mount on some hull, so none goes unchecked.
+    assert.equal(fittedCount, PRE_ENGINEERED_MODULES.length);
     assert.equal(stated, preEngineeredFixture.modifierCounts.withStatedRateOfFire);
 });
 

@@ -358,6 +358,37 @@ test('shared editor failures expose stable codes and localization params', () =>
         incompatible.expected,
     );
 
+    // An SCO drive of the mount's own size fits; the same drive one size down does not,
+    // where an ordinary drive of that size still would.
+    const anaconda = ShipLoadout.empty('Anaconda');
+    assert.equal(
+        anaconda
+            .setModule('FrameShiftDrive', getModuleBySymbol('Int_Hyperdrive_Size5_Class5')!)
+            .fittedModuleAt('FrameShiftDrive')?.stats?.class,
+        5,
+    );
+    assert.equal(
+        anaconda
+            .setModule(
+                'FrameShiftDrive',
+                getModuleBySymbol('Int_Hyperdrive_Overcharge_Size6_Class5')!,
+            )
+            .fittedModuleAt('FrameShiftDrive')?.stats?.class,
+        6,
+    );
+    const undersizedSco = fixture.editorErrors.undersizedScoDrive;
+    assert.deepEqual(
+        project(
+            capture(() =>
+                ShipLoadout.empty(undersizedSco.ship).setModule(
+                    undersizedSco.slot,
+                    getModuleBySymbol(undersizedSco.module)!,
+                ),
+            ),
+        ),
+        undersizedSco.expected,
+    );
+
     const builtInHull = fixture.editorErrors.builtInHullModule;
     assert.deepEqual(
         project(

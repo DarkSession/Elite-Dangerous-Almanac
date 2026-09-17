@@ -4273,6 +4273,22 @@ type FixtureShipsOperations = {
             };
             slot: string;
         };
+        undersizedScoDrive: {
+            expected: {
+                code: string;
+                constraint: string;
+                params: {
+                    constraint: string;
+                    moduleClass: number;
+                    slot: string;
+                    slotSize: number;
+                    symbol: string;
+                };
+            };
+            module: string;
+            ship: string;
+            slot: string;
+        };
         wrongHullArmour: {
             expected: {
                 code: string;

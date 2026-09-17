@@ -587,10 +587,12 @@ export interface OutfittingModuleStats {
      * through while its symbol is not always the one you looked up.
      *
      * The two lines share every jump constant this library models, so the flag changes
-     * no calculation here; it is what an outfitting list filters and labels on. The
-     * overcharged supercruise behaviour itself — the boosted acceleration and the extra
-     * fuel it burns — is in-flight behaviour the game publishes no figures for, and the
-     * library models none of it.
+     * no jump calculation; it is what an outfitting list filters and labels on, and it
+     * is what makes a drive unfittable below its own size — an SCO drive takes the mount
+     * of its own class and no larger one, where an ordinary drive may be underfitted.
+     * The overcharged supercruise behaviour itself — the boosted acceleration and the
+     * extra fuel it burns — is in-flight behaviour the game publishes no figures for,
+     * and the library models none of it.
      *
      * @example
      * ```ts

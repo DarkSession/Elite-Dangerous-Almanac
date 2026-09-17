@@ -6060,24 +6060,7 @@
               "required": ["expected", "module", "ship", "slot"]
             },
             "incompatibleModule": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "expected": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "code": { "type": "string" },
-                    "constraint": { "type": "string" },
-                    "params": { "$ref": "#/definitions/shared8d1c2fa65d38" }
-                  },
-                  "required": ["code", "constraint", "params"]
-                },
-                "module": { "type": "string" },
-                "ship": { "type": "string" },
-                "slot": { "type": "string" }
-              },
-              "required": ["expected", "module", "ship", "slot"]
+              "$ref": "#/definitions/shared75e08f7e8d62"
             },
             "moduleLimitExceeded": {
               "type": "object",
@@ -6129,6 +6112,9 @@
               },
               "required": ["expected", "input", "slot"]
             },
+            "undersizedScoDrive": {
+              "$ref": "#/definitions/shared75e08f7e8d62"
+            },
             "wrongHullArmour": {
               "type": "object",
               "additionalProperties": false,
@@ -6179,6 +6165,7 @@
             "incompatibleModule",
             "moduleLimitExceeded",
             "requiredSlot",
+            "undersizedScoDrive",
             "wrongHullArmour"
           ]
         },
@@ -11062,6 +11049,17 @@
       "type": "array",
       "items": { "$ref": "#/definitions/shared463ee6a0fb9c" }
     },
+    "shared75e08f7e8d62": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expected": { "$ref": "#/definitions/sharedf9204b4dacaf" },
+        "module": { "type": "string" },
+        "ship": { "type": "string" },
+        "slot": { "type": "string" }
+      },
+      "required": ["expected", "module", "ship", "slot"]
+    },
     "shared76b50319dd2c": {
       "type": "object",
       "additionalProperties": false,
@@ -11632,6 +11630,16 @@
         "Ship": { "type": "string" }
       },
       "required": ["Modules", "Ship"]
+    },
+    "sharedf9204b4dacaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string" },
+        "constraint": { "type": "string" },
+        "params": { "$ref": "#/definitions/shared8d1c2fa65d38" }
+      },
+      "required": ["code", "constraint", "params"]
     },
     "sharedfbeeff3a79e6": {
       "type": "object",

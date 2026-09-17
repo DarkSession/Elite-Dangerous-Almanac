@@ -438,13 +438,19 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     article's symbol does not always let them do. Stored as a sparse flag rather than a
     `true`/`false` pair on every drive, following `alwaysPowered` and
     `guardianZoneResistance`.
-  - **Nothing else is derived from it.** The two lines share every jump constant this
-    catalogue carries (`optMass`, `maxFuel`, `fuelMul`, `fuelPower`, and the
-    `fsdHeatRate`, which is a function of a drive's size alone — 10, 14, 18, 27, 37, 43
-    and 50 for sizes 2 to 8, identical on the plain and SCO lines at every size), so no
-    calculation reads the flag; the
-    overcharged supercruise behaviour the drives are named for has no published figures
-    and none are stored.
+  - **No stat is derived from it, and one fitting rule is.** The two lines share every
+    jump constant this catalogue carries (`optMass`, `maxFuel`, `fuelMul`, `fuelPower`,
+    and the `fsdHeatRate`, which is a function of a drive's size alone — 10, 14, 18, 27,
+    37, 43 and 50 for sizes 2 to 8, identical on the plain and SCO lines at every size),
+    so no stat calculation reads the flag; the overcharged supercruise behaviour the
+    drives are named for has no published figures and none are stored. What the flag does
+    decide is which mount a drive fits: **an SCO drive cannot be underfitted.** A class-4
+    SCO drive does not go in a class-5 mount, where a class-4 plain drive does, and the
+    game offers no SCO article below the size of the mount being outfitted. The flag is
+    what a fitting rule reads for this, which is the second reason it is a datum here
+    rather than a symbol match. Note that the SCO line runs to size 8 where the plain
+    line stops at 7, so a class-8 frame shift drive mount takes an SCO drive or an
+    underfitted plain one and nothing else.
 - **`cabinCapacity` — a passenger cabin's berths.** The `passengerCabins` records
   carry it; every other record in all four catalogues omits it, and no cabin carries a
   zero. It is the module's own seat count, not the ship's.

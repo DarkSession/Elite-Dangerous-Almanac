@@ -109,6 +109,9 @@ public enum ModuleFitConstraint
 
     /// <summary>The module is larger than the mount.</summary>
     Oversized,
+
+    /// <summary>The module takes the mount of its own size and no larger one.</summary>
+    ExactSizeRequired,
 }
 
 /// <summary>Why a module does not fit a mount, and the figures behind the reason.</summary>

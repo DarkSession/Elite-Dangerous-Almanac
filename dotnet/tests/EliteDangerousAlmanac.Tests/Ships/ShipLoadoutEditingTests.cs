@@ -99,6 +99,31 @@ public class ShipLoadoutEditingTests
     }
 
     [Fact]
+    public void AFrameShiftDriveMountRefusesAnSCODriveBelowItsOwnClass()
+    {
+        // An ordinary drive may be underfitted to save mass. An SCO drive may not: the game
+        // sells one per mount size and offers none below the mount it is being fitted to.
+        EditorErrorCaseFixture expected = Fixture.EditorErrors.UndersizedScoDrive;
+        ShipLoadout build = ShipLoadout.Default(expected.Ship);
+
+        LoadoutEditException refusal = Assert.Throws<LoadoutEditException>(
+            () => build.SetModule(expected.Slot, Article(expected.Module)));
+
+        AssertRefusal(refusal, expected.Expected);
+
+        // The ordinary drive of that same class still fits, and so does the SCO drive of
+        // the mount's own class.
+        Assert.Equal(
+            5,
+            build.SetModule(expected.Slot, Article("Int_Hyperdrive_Size5_Class5"))
+                .FittedModuleAt(expected.Slot)!.Stats!.Class);
+        Assert.Equal(
+            6,
+            build.SetModule(expected.Slot, Article("Int_Hyperdrive_Overcharge_Size6_Class5"))
+                .FittedModuleAt(expected.Slot)!.Stats!.Class);
+    }
+
+    [Fact]
     public void NoMountTakesTheCargoHatchTheHullAlreadyCarries()
     {
         EditorErrorCaseFixture expected = Fixture.EditorErrors.BuiltInHullModule;
