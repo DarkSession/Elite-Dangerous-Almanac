@@ -761,7 +761,7 @@ test('verified damage components reproduce scalar damage and their compatibility
             weapon.symbol,
         );
     }
-    assert.equal(checked, 33);
+    assert.equal(checked, statsFixture.inGameAudit.componentRecords);
 });
 
 test('projectile boundary parameters appear on exactly the ten verified hardpoints', () => {

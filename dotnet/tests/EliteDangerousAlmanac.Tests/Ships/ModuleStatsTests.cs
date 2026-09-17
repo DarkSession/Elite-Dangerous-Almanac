@@ -198,6 +198,10 @@ public class ModuleStatsTests
             Assert.True(Enum.TryParse(entry.Key, ignoreCase: true, out ModuleStat stat));
             Assert.Equal(entry.Value, ModuleCatalogue.All.Count(module => module.Stats.Has(stat)));
         }
+
+        Assert.Equal(
+            audit.ComponentRecords,
+            ModuleCatalogue.All.Count(module => module.DamageComponents is not null));
     }
 
     [Fact]

@@ -18,6 +18,7 @@ Referred to throughout by source name; the pin is here, once.
 | Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                          | 2026-08-14 UTC |
 | Elite Dangerous in-game purchase capture                                                        | no game version recorded; nine `ModuleBuyAndStore` journal entries from market `128666762`, 17:34-17:37, at a 10% and a 2.5% outfitting discount                            | 2026-08-30 UTC |
 | Elite Dangerous in-game outfitting observation                                                  | no game version recorded; direct in-game observation that outfitting offers no non-SCO size-8 frame shift drive                                                             | 2026-08-30 UTC |
+| Elite Dangerous in-game SCO outfitting observation                                              | no game version recorded; direct in-game observation that outfitting offers no SCO frame shift drive below the size of the mount being outfitted                    | 2026-09-17 UTC |
 | Elite Dangerous Large Planetary Vehicle Hangar readings                                         | **unreleased** — observation of the modules an unreleased update adds, plus outfitting and journal `ModuleBuy` readings at a 10% and 2.5% discount                          | 2026-09-02 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
@@ -434,23 +435,29 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     in the symbol and the display name.
   - **Derivation:** the symbol family is the classification, exactly as it is for `slot`
     above, and it is applied once here so that consumers read a datum instead of
-    matching `Int_Hyperdrive_Overcharge` themselves — which a pre-engineered or fitted
-    article's symbol does not always let them do. Stored as a sparse flag rather than a
-    `true`/`false` pair on every drive, following `alwaysPowered` and
-    `guardianZoneResistance`.
-  - **No stat is derived from it, and one fitting rule is.** The two lines share every
-    jump constant this catalogue carries (`optMass`, `maxFuel`, `fuelMul`, `fuelPower`,
-    and the `fsdHeatRate`, which is a function of a drive's size alone — 10, 14, 18, 27,
-    37, 43 and 50 for sizes 2 to 8, identical on the plain and SCO lines at every size),
-    so no stat calculation reads the flag; the overcharged supercruise behaviour the
-    drives are named for has no published figures and none are stored. What the flag does
-    decide is which mount a drive fits: **an SCO drive cannot be underfitted.** A class-4
-    SCO drive does not go in a class-5 mount, where a class-4 plain drive does, and the
-    game offers no SCO article below the size of the mount being outfitted. The flag is
-    what a fitting rule reads for this, which is the second reason it is a datum here
-    rather than a symbol match. Note that the SCO line runs to size 8 where the plain
-    line stops at 7, so a class-8 frame shift drive mount takes an SCO drive or an
-    underfitted plain one and nothing else.
+    matching `Int_Hyperdrive_Overcharge` themselves. Every record carrying the flag has
+    `Overcharge` in its symbol today and no other record does, so the two agree; stating
+    the capability keeps that agreement from being something a consumer has to rely on.
+    Stored as a sparse flag rather than a `true`/`false` pair on every drive, following
+    `alwaysPowered` and `guardianZoneResistance`.
+  - **The two lines share every jump constant this catalogue carries** — `optMass`,
+    `maxFuel`, `fuelMul`, `fuelPower`, and the `fsdHeatRate`, which is a function of a
+    drive's size alone: 10, 14, 18, 27, 37, 43 and 50 for sizes 2 to 8, and where both
+    lines offer a size they state the same value. The overcharged supercruise behaviour
+    the drives are named for has no published figures and none are stored. The plain line
+    runs from size 2 to 7 and the SCO line from 2 to 8, so size 8 is stated on the SCO
+    line alone.
+  - **An SCO drive is sold only at the size of the mount being outfitted.** Outfitting
+    offers a class-4 SCO drive for a class-4 frame shift drive mount and not for a
+    class-5 one, where it does offer a class-4 plain drive — an SCO drive cannot be
+    underfitted.
+    - **Source:** Elite Dangerous in-game SCO outfitting observation, pinned above.
+    - **Derivation:** none; the observation is recorded as stated. No catalogue field
+      carries it — the drives are exactly the records `supercruiseOvercharge` already
+      marks, and every one of them states a `class` matching the `Size` token in its
+      symbol, so the flag and the class are together sufficient to state the rule.
+      Neither registry source carries a field stating such a restriction, so the
+      observation is the only evidence for it.
 - **`cabinCapacity` — a passenger cabin's berths.** The `passengerCabins` records
   carry it; every other record in all four catalogues omits it, and no cabin carries a
   zero. It is the module's own seat count, not the ship's.
@@ -912,7 +919,7 @@ caustic, and the catalogue's own vocabulary says so twice over: Frontier's symbo
 weapon is `Hpt_CausticMissile_Fixed_Medium`, and the enzyme it delivers is the damage the
 Caustic Sink Launcher exists to shed. This is not the Mk II's situation above. Caustic is
 a type the defensive side of the catalogue already names — `causticResistance` on the
-armour and hull records meets it, and it is one of the four resistances a build carries —
+armour and hull reinforcement records meets it, and it is one of the four resistances a build carries —
 so the spelling decides whether a defender's caustic resistance reaches this weapon's
 minor channel at all. `unclassified` would have kept it out of that arithmetic on a point
 the game does settle.

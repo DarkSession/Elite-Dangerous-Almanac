@@ -19,6 +19,7 @@ import {
 import { getModuleBySymbol, type OutfittingModuleStats } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { effectiveModule, weaponStatsFor } from './internal/loadout-metrics.js';
+import { scaleDamageComponents } from './internal/damage-components.js';
 import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
@@ -244,6 +245,18 @@ test('every fitted-stat view scales exact damage components with effective damag
             expected.symbol,
         );
     }
+});
+
+test('scaling an amount whose type is unestablished keeps it in step with the rest', () => {
+    // No catalogue record states an `unclassified` amount today, so the fixture cases
+    // above cannot reach this branch — they name real weapons. The member stays public as
+    // the escape hatch for an amount in-game verification has not typed, and an amount
+    // that did not scale with the weapon's damage would be a silent arithmetic error, so
+    // exercise it on a record built for the purpose.
+    assert.deepEqual(scaleDamageComponents({ explosive: 4, unclassified: [1, 3] }, 8, 4), {
+        explosive: 2,
+        unclassified: [0.5, 1.5],
+    });
 });
 
 test('splitDamage treats an unknown distribution as absolute damage', () => {

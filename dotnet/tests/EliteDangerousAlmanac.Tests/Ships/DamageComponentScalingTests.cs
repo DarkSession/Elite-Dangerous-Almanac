@@ -46,6 +46,23 @@ public class DamageComponentScalingTests
             Sorted(covered));
     }
 
+    [Fact]
+    public void ScalingAnAmountWhoseTypeIsUnestablishedKeepsItInStepWithTheRest()
+    {
+        // No catalogue record states an unclassified amount today, so the fixture cases cannot
+        // reach this branch — they name real weapons. The member stays public as the escape
+        // hatch for an amount in-game verification has not typed, and an amount that did not
+        // scale with the weapon's damage would be a silent arithmetic error, so exercise it on
+        // a record built for the purpose.
+        DamageComponents scaled = DamageComponentScaling.Scale(
+            new DamageComponents(Explosive: 4, Unclassified: [1, 3]),
+            baseDamage: 8,
+            effectiveDamage: 4);
+
+        Assert.Equal(2, scaled.Explosive);
+        Assert.Equal([0.5, 1.5], scaled.Unclassified);
+    }
+
     [Theory]
     [MemberData(nameof(Weapons))]
     public void AStockWeaponCarriesTheExactAmountsTheFixtureStates(string symbol)

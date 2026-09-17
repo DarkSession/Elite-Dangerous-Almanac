@@ -232,7 +232,8 @@ export function moduleFitProblem(
     // mount that would take more. An SCO frame shift drive may not: the game sells one
     // per mount size and offers none below the mount it is being fitted to. Read the
     // record's own capability flag rather than matching `Int_Hyperdrive_Overcharge` on
-    // the symbol, which a pre-engineered article does not always carry.
+    // the symbol; the capability is the catalogue's to state, so the rule holds for any
+    // article flagged with it whatever Frontier names that article.
     if (module.supercruiseOvercharge === true && module.class < slot.size) {
         return problem(
             'exactSizeRequired',

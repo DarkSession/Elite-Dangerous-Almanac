@@ -571,8 +571,8 @@ export interface OutfittingModuleStats {
      * {@link OutfittingModule.engineHeatRate}. It is what Faster Boot Sequence trades
      * away, what Shielded improves, and the whole of the Deep Charge / Thermal Spread
      * (`special_fsd_cooled`) experimental effect. A drive's size sets it — every rating
-     * of a size shares one value, and a supercruise-assist (SCO) drive matches the plain
-     * drive of the same size.
+     * of a size shares one value, and a Supercruise Overcharge (SCO) drive matches the
+     * plain drive of the same size.
      */
     readonly fsdHeatRate?: number;
     /**
@@ -583,8 +583,8 @@ export interface OutfittingModuleStats {
      * A sparse capability flag on the Overcharge drives and absent everywhere else,
      * including on the ordinary drives of the same sizes and ratings. Read it rather
      * than matching `Int_Hyperdrive_Overcharge` on the symbol: the capability is the
-     * record's to state, and a pre-engineered or fitted article carries the flag
-     * through while its symbol is not always the one you looked up.
+     * record's to state, so a consumer that reads the flag stays correct for any
+     * article the catalogue flags, whatever Frontier names it.
      *
      * The two lines share every jump constant this library models, so the flag changes
      * no jump calculation; it is what an outfitting list filters and labels on, and it

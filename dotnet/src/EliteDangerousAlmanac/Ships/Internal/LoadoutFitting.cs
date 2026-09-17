@@ -145,8 +145,9 @@ internal static class LoadoutFitting
         // An ordinary module may be underfitted — a smaller, lighter, cheaper article in a
         // mount that would take more. An SCO frame shift drive may not: the game sells one per
         // mount size and offers none below the mount it is being fitted to. Read the record's
-        // own capability flag rather than matching the overcharge symbol, which a
-        // pre-engineered article does not always carry.
+        // own capability flag rather than matching the overcharge symbol; the capability is the
+        // catalogue's to state, so the rule holds for any article flagged with it whatever
+        // Frontier names that article.
         return module.SupercruiseOvercharge && module.Class < slot.Size
             ? new ModuleFitProblem(
                 ModuleFitConstraint.ExactSizeRequired,

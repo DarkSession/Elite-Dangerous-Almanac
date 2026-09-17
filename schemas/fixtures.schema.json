@@ -5212,6 +5212,7 @@
               "required": ["bootTime", "powerDraw"]
             },
             "catalogueIdentities": { "type": "integer" },
+            "componentRecords": { "type": "integer" },
             "identityMatches": { "type": "integer" },
             "note": { "type": "string" },
             "numericModulesVerified": { "type": "integer" },
@@ -5225,6 +5226,7 @@
             "armourModulesOutsideNumericVerification",
             "catalogueFieldCounts",
             "catalogueIdentities",
+            "componentRecords",
             "identityMatches",
             "note",
             "numericModulesVerified",
@@ -7469,6 +7471,7 @@
           "additionalProperties": false,
           "properties": {
             "mercenaryWithResolvedStats": { "type": "integer" },
+            "withAnacondaMount": { "type": "integer" },
             "withMercCoinCost": { "type": "integer" },
             "withModifiers": { "type": "integer" },
             "withStatedRateOfFire": { "type": "integer" },
@@ -7476,6 +7479,7 @@
           },
           "required": [
             "mercenaryWithResolvedStats",
+            "withAnacondaMount",
             "withMercCoinCost",
             "withModifiers",
             "withStatedRateOfFire",

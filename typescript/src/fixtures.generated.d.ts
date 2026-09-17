@@ -3737,6 +3737,7 @@ type FixtureShipsModuleStats = {
             powerDraw: number;
         };
         catalogueIdentities: number;
+        componentRecords: number;
         identityMatches: number;
         note: string;
         numericModulesVerified: number;
@@ -4987,6 +4988,7 @@ type FixtureShipsPreEngineered = {
     }[];
     modifierCounts: {
         mercenaryWithResolvedStats: number;
+        withAnacondaMount: number;
         withMercCoinCost: number;
         withModifiers: number;
         withStatedRateOfFire: number;

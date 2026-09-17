@@ -6461,6 +6461,7 @@ test('a fitted article resolves the rate of fire its own block states', () => {
     // keeps its catalogue cadence rather than acquiring a recomputed one.
     let stated = 0;
     let fittedCount = 0;
+    let anacondaMounts = 0;
     const mountFor = (build: ShipLoadout, symbol: string) =>
         build
             .slots()
@@ -6470,11 +6471,16 @@ test('a fitted article resolves the rate of fire its own block states', () => {
                     .some((module) => module.symbol.toLowerCase() === symbol.toLowerCase()),
             )?.key;
     for (const variant of PRE_ENGINEERED_MODULES) {
-        // The Anaconda takes most of these. The ones it cannot take go on the first hull
-        // that can: an SCO drive takes the mount of its own class and no larger one, so
-        // five of the six pre-engineered drives have no Anaconda mount at all.
+        // The Anaconda takes most of these, and how many is pinned below: an article that
+        // stops reaching an Anaconda mount is a fitting regression, and counting only the
+        // ones that fit somewhere would not see it. The rest go on the first hull that
+        // can take them. Of the ten pre-engineered drives, six are SCO ones that take the
+        // mount of their own class and no larger, and the Anaconda's drive mount is a
+        // size 6, so only the size-6 SCO drive reaches it; the size-7 article was already
+        // oversized for that mount before any of this.
         let build = ShipLoadout.empty('Anaconda');
         let slot = mountFor(build, variant.symbol);
+        if (slot !== undefined) anacondaMounts++;
         for (const hull of SHIPS) {
             if (slot !== undefined) break;
             build = ShipLoadout.empty(hull.symbol);
@@ -6500,6 +6506,7 @@ test('a fitted article resolves the rate of fire its own block states', () => {
     }
     // Every catalogued article reaches a mount on some hull, so none goes unchecked.
     assert.equal(fittedCount, PRE_ENGINEERED_MODULES.length);
+    assert.equal(anacondaMounts, preEngineeredFixture.modifierCounts.withAnacondaMount);
     assert.equal(stated, preEngineeredFixture.modifierCounts.withStatedRateOfFire);
 });
 
