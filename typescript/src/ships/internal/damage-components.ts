@@ -22,6 +22,7 @@ export function scaleDamageComponents(
         ...(components.kinetic === undefined ? {} : { kinetic: components.kinetic * scale }),
         ...(components.thermal === undefined ? {} : { thermal: components.thermal * scale }),
         ...(components.explosive === undefined ? {} : { explosive: components.explosive * scale }),
+        ...(components.caustic === undefined ? {} : { caustic: components.caustic * scale }),
         ...(components.absolute === undefined ? {} : { absolute: components.absolute * scale }),
         ...(components.antiXeno === undefined ? {} : { antiXeno: components.antiXeno * scale }),
         ...(components.unclassified === undefined

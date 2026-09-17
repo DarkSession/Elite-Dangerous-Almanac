@@ -194,7 +194,7 @@ test('damage splits by type, and anti-xeno overlays rather than partitions', () 
     assert.equal(mkII.damageByType.unclassified, undefined);
 });
 
-test('exact components preserve Guardian and unclassified damage without double-counting AX', () => {
+test('exact components preserve Guardian and caustic damage without double-counting AX', () => {
     const gauss = weaponMetrics(
         getModuleBySymbol('Hpt_Guardian_GaussCannon_Fixed_Medium', HARDPOINT_MODULES)!,
     );
@@ -205,12 +205,9 @@ test('exact components preserve Guardian and unclassified damage without double-
         getModuleBySymbol('Hpt_CausticMissile_Fixed_Medium', HARDPOINT_MODULES)!,
     );
     assert.ok(near(enzyme.damageByType.explosive, 2));
-    assert.ok(near(enzyme.damageByType.unclassified ?? 0, 0.5));
+    assert.ok(near(enzyme.damageByType.caustic, 0.5));
     assert.ok(
-        near(
-            enzyme.damageByType.explosive + (enzyme.damageByType.unclassified ?? 0),
-            enzyme.damagePerSecond,
-        ),
+        near(enzyme.damageByType.explosive + enzyme.damageByType.caustic, enzyme.damagePerSecond),
     );
 });
 
@@ -254,6 +251,7 @@ test('splitDamage treats an unknown distribution as absolute damage', () => {
         kinetic: 0,
         thermal: 0,
         explosive: 0,
+        caustic: 0,
         absolute: 10,
         antiXeno: 0,
     });
@@ -261,6 +259,7 @@ test('splitDamage treats an unknown distribution as absolute damage', () => {
         kinetic: 20,
         thermal: 40,
         explosive: 0,
+        caustic: 0,
         absolute: 0,
         antiXeno: 0,
     });
@@ -357,6 +356,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 8,
                 thermal: 9,
                 explosive: 10,
+                caustic: 105,
                 absolute: 11,
                 unclassified: 12,
                 antiXeno: 13,
@@ -365,6 +365,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 14,
                 thermal: 15,
                 explosive: 16,
+                caustic: 165,
                 absolute: 17,
                 unclassified: 18,
                 antiXeno: 19,
@@ -387,6 +388,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 90,
                 thermal: 100,
                 explosive: 110,
+                caustic: 115,
                 absolute: 120,
                 unclassified: 130,
                 antiXeno: 140,
@@ -395,6 +397,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
                 kinetic: 150,
                 thermal: 160,
                 explosive: 170,
+                caustic: 175,
                 absolute: 180,
                 unclassified: 190,
                 antiXeno: 200,
@@ -416,6 +419,7 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
             kinetic: 98,
             thermal: 109,
             explosive: 120,
+            caustic: 220,
             absolute: 131,
             unclassified: 142,
             antiXeno: 153,
@@ -424,13 +428,21 @@ test('sumWeaponMetrics adds every totals field and has a complete zero value', (
             kinetic: 164,
             thermal: 175,
             explosive: 186,
+            caustic: 340,
             absolute: 197,
             unclassified: 208,
             antiXeno: 219,
         },
     });
 
-    const zeroSplit = { kinetic: 0, thermal: 0, explosive: 0, absolute: 0, antiXeno: 0 };
+    const zeroSplit = {
+        kinetic: 0,
+        thermal: 0,
+        explosive: 0,
+        caustic: 0,
+        absolute: 0,
+        antiXeno: 0,
+    };
     assert.deepEqual(sumWeaponMetrics([]), {
         damagePerSecond: 0,
         sustainedDamagePerSecond: 0,

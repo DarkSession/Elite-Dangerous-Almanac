@@ -717,6 +717,7 @@ test("a weapon's conventional damage shares sum to one", () => {
             (split.kinetic ?? 0) +
             (split.thermal ?? 0) +
             (split.explosive ?? 0) +
+            (split.caustic ?? 0) +
             (split.absolute ?? 0) +
             (split.unclassified ?? 0);
         assert.ok(Math.abs(physical - 1) < 1e-9, `${weapon.symbol}: ${String(physical)}`);
@@ -734,11 +735,12 @@ test('verified damage components reproduce scalar damage and their compatibility
             (components.kinetic ?? 0) +
             (components.thermal ?? 0) +
             (components.explosive ?? 0) +
+            (components.caustic ?? 0) +
             (components.absolute ?? 0) +
             unclassified;
         assert.equal(weapon.damage, conventional, weapon.symbol);
         assert.ok(weapon.damageDistribution, weapon.symbol);
-        for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
+        for (const type of ['kinetic', 'thermal', 'explosive', 'caustic', 'absolute'] as const) {
             assert.ok(
                 Math.abs(
                     (weapon.damageDistribution[type] ?? 0) * conventional - (components[type] ?? 0),

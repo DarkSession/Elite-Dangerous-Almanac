@@ -107,12 +107,11 @@ internal sealed class DamageComponentsFixture
 
     public double? Explosive { get; set; }
 
+    public double? Caustic { get; set; }
+
     public double? Absolute { get; set; }
 
     public double? AntiXeno { get; set; }
-
-    /// <summary>Amounts the record states without naming a type.</summary>
-    public List<double>? Unclassified { get; set; }
 }
 
 /// <summary>Which recipes the availability gate lets reach a module.</summary>

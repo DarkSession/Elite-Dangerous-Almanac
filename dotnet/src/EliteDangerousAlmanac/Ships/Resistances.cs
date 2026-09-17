@@ -8,8 +8,8 @@ namespace EliteDangerousAlmanac.Ships;
 /// <remarks>
 /// This is the defensive set: what a shield or a hull resists. Absolute damage is absent because
 /// nothing resists it. A weapon's output is broken down over a different set,
-/// <see cref="DamageDistribution"/>, which carries absolute and anti-xeno shares and no caustic
-/// share. The two are not interchangeable.
+/// <see cref="DamageDistribution"/>, which shares these four names but also carries absolute,
+/// anti-xeno and unclassified shares. The two are not interchangeable.
 /// </remarks>
 public enum DamageType
 {

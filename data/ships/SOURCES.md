@@ -732,11 +732,11 @@ the armour modules, blueprint grade rolls and crafting costs remain unverified t
 It also did not unambiguously settle the shield-generator resistances, shield-booster
 properties or probe radius. Those values are not changed on guesswork. For the
 anti-xeno, Guardian and special weapons whose damage observed in-game does not reduce honestly
-to one conventional scalar, `damageComponents` preserves the exact amounts. The Enzyme
-Missile Rack's minor channel, the one channel type in-game verification does not
-establish, remains `unclassified`. The projectile-limited hardpoints carry their boundary
-parameters observed in-game in `projectileRange`; those parameters are not presented as
-effective ranges.
+to one conventional scalar, `damageComponents` preserves the exact amounts. It read the
+Enzyme Missile Rack's two channels as amounts without settling the minor one's type; that
+type is caustic, and the note below records the correction. The projectile-limited
+hardpoints carry their boundary parameters observed in-game in `projectileRange`; those
+parameters are not presented as effective ranges.
 
 **A journal capture is a third source, and it reaches fields in-game verification does
 not.** Every engineered module in a `Loadout` states its own _unmodified_ value beside
@@ -897,6 +897,19 @@ Its `damageComponents` record goes with the `unclassified` spelling it replaces.
 `damageComponents` preserves amounts a fractional split cannot state honestly — an
 anti-xeno overlay, or a channel whose type is not established — and one conventional type
 at the full scalar is neither.
+
+**The Enzyme Missile Rack's minor damage channel is Caustic.** Of the 5 damage its round
+carries, 4 are explosive and 1 is caustic. The amounts are what in-game verification
+established; the minor channel's type it did not, and the share was stored as
+`unclassified` for exactly as long as that was the whole of what was known. The type is
+caustic, and the catalogue's own vocabulary says so twice over: Frontier's symbol for the
+weapon is `Hpt_CausticMissile_Fixed_Medium`, and the enzyme it delivers is the damage the
+Caustic Sink Launcher exists to shed. This is not the Mk II's situation above. Caustic is
+a type the defensive side of the catalogue already names — `causticResistance` on the
+armour and hull records meets it, and it is one of the four resistances a build carries —
+so the spelling decides whether a defender's caustic resistance reaches this weapon's
+minor channel at all. `unclassified` would have kept it out of that arithmetic on a point
+the game does settle.
 
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"

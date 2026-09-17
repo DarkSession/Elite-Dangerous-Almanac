@@ -3414,7 +3414,7 @@
                 "additionalProperties": false,
                 "properties": {
                   "baseComponents": {
-                    "$ref": "#/definitions/shared2350c6a3558c"
+                    "$ref": "#/definitions/sharedeb9ffe121aa9"
                   },
                   "baseDamage": { "type": "number" },
                   "effectiveDamage": { "type": "number" },
@@ -3424,13 +3424,10 @@
                     "properties": {
                       "absolute": { "type": "integer" },
                       "antiXeno": { "type": "number" },
+                      "caustic": { "type": "number" },
                       "explosive": { "type": "integer" },
                       "kinetic": { "type": "integer" },
-                      "thermal": { "type": "number" },
-                      "unclassified": {
-                        "type": "array",
-                        "items": { "type": "number" }
-                      }
+                      "thermal": { "type": "number" }
                     }
                   },
                   "symbol": { "type": "string" }
@@ -5262,7 +5259,7 @@
               "clipSize": { "type": "integer" },
               "damage": { "type": "number" },
               "damageComponents": {
-                "$ref": "#/definitions/shared2350c6a3558c"
+                "$ref": "#/definitions/sharedeb9ffe121aa9"
               },
               "damageDistribution": {
                 "type": "object",
@@ -5270,10 +5267,10 @@
                 "properties": {
                   "absolute": { "type": "integer" },
                   "antiXeno": { "type": "number" },
+                  "caustic": { "type": "number" },
                   "explosive": { "type": "number" },
                   "kinetic": { "type": "integer" },
-                  "thermal": { "type": "integer" },
-                  "unclassified": { "type": "number" }
+                  "thermal": { "type": "integer" }
                 }
               },
               "distributorDraw": { "type": "number" },
@@ -10592,18 +10589,6 @@
         "UnladenMass"
       ]
     },
-    "shared2350c6a3558c": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "absolute": { "type": "number" },
-        "antiXeno": { "type": "number" },
-        "explosive": { "type": "integer" },
-        "kinetic": { "type": "number" },
-        "thermal": { "type": "number" },
-        "unclassified": { "type": "array", "items": { "type": "integer" } }
-      }
-    },
     "shared28704cd9e15a": {
       "type": "object",
       "additionalProperties": false,
@@ -11531,6 +11516,18 @@
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
+    },
+    "sharedeb9ffe121aa9": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "absolute": { "type": "number" },
+        "antiXeno": { "type": "number" },
+        "caustic": { "type": "integer" },
+        "explosive": { "type": "integer" },
+        "kinetic": { "type": "number" },
+        "thermal": { "type": "number" }
+      }
     },
     "sharededdcd265e39e": {
       "type": "object",

@@ -1855,20 +1855,20 @@ type FixtureShipsEngineering = {
             baseComponents: {
                 absolute?: number;
                 antiXeno?: number;
+                caustic?: number;
                 explosive?: number;
                 kinetic?: number;
                 thermal?: number;
-                unclassified?: number[];
             };
             baseDamage: number;
             effectiveDamage: number;
             expectedComponents: {
                 absolute?: number;
                 antiXeno?: number;
+                caustic?: number;
                 explosive?: number;
                 kinetic?: number;
                 thermal?: number;
-                unclassified?: number[];
             };
             symbol: string;
         }[];
@@ -3759,18 +3759,18 @@ type FixtureShipsModuleStats = {
         damageComponents?: {
             absolute?: number;
             antiXeno?: number;
+            caustic?: number;
             explosive?: number;
             kinetic?: number;
             thermal?: number;
-            unclassified?: number[];
         };
         damageDistribution?: {
             absolute?: number;
             antiXeno?: number;
+            caustic?: number;
             explosive?: number;
             kinetic?: number;
             thermal?: number;
-            unclassified?: number;
         };
         distributorDraw?: number;
         falloffRange?: number;

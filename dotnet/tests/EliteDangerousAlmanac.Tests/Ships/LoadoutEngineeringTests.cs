@@ -324,7 +324,7 @@ public class LoadoutEngineeringTests
         List<EngineeringModifier> modifiers = [];
 
         LoadoutEngineering.AppendDamageShares(
-            modifiers, multicannon, new DamageDistribution(0.4, 0.6, null, null));
+            modifiers, multicannon, new DamageDistribution(Kinetic: 0.4, Thermal: 0.6));
 
         EngineeringModifier thermal = Assert.Single(
             modifiers, modifier => modifier.Label == "$Thermal;");

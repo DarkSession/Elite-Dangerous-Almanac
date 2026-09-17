@@ -547,7 +547,7 @@
     }
   },
   "damageComponentScaling": {
-    "description": "Exact per-type damage amounts follow the same post-engineering ratio as total damage. Real Anti-Xeno, caustic and Guardian weapons cover every component field, increases, a reduction and a zero result. Anti-Xeno damage remains an overlay rather than part of the conventional total.",
+    "description": "Exact per-type damage amounts follow the same post-engineering ratio as total damage. Real Anti-Xeno, caustic and Guardian weapons cover every component field the catalogue states, increases, a reduction and a zero result. Anti-Xeno damage remains an overlay rather than part of the conventional total.",
     "cases": [
       {
         "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
@@ -560,8 +560,8 @@
         "symbol": "Hpt_CausticMissile_Fixed_Medium",
         "baseDamage": 5,
         "effectiveDamage": 2.5,
-        "baseComponents": { "explosive": 4, "unclassified": [1] },
-        "expectedComponents": { "explosive": 2, "unclassified": [0.5] }
+        "baseComponents": { "explosive": 4, "caustic": 1 },
+        "expectedComponents": { "explosive": 2, "caustic": 0.5 }
       },
       {
         "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",

@@ -137,6 +137,8 @@ export interface DamageSplit {
     readonly thermal: number;
     /** Explosive share. */
     readonly explosive: number;
+    /** Caustic share. */
+    readonly caustic: number;
     /** Absolute share — the part no resistance reduces. */
     readonly absolute: number;
     /** Damage unclassified by in-game verification. Absent when zero. */
@@ -281,6 +283,7 @@ const ZERO_SPLIT: DamageSplit = {
     kinetic: 0,
     thermal: 0,
     explosive: 0,
+    caustic: 0,
     absolute: 0,
     antiXeno: 0,
 };
@@ -306,6 +309,7 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
         kinetic: damage * (distribution.kinetic ?? 0),
         thermal: damage * (distribution.thermal ?? 0),
         explosive: damage * (distribution.explosive ?? 0),
+        caustic: damage * (distribution.caustic ?? 0),
         absolute: damage * (distribution.absolute ?? 0),
         ...((distribution.unclassified ?? 0) === 0
             ? {}
@@ -320,6 +324,7 @@ function splitComponents(damage: number, components: DamageComponents): DamageSp
         (components.kinetic ?? 0) +
         (components.thermal ?? 0) +
         (components.explosive ?? 0) +
+        (components.caustic ?? 0) +
         (components.absolute ?? 0) +
         unclassified;
     if (conventional <= 0) return Object.freeze({ ...ZERO_SPLIT, absolute: damage });
@@ -328,6 +333,7 @@ function splitComponents(damage: number, components: DamageComponents): DamageSp
         kinetic: (components.kinetic ?? 0) * scale,
         thermal: (components.thermal ?? 0) * scale,
         explosive: (components.explosive ?? 0) * scale,
+        caustic: (components.caustic ?? 0) * scale,
         absolute: (components.absolute ?? 0) * scale,
         ...(unclassified === 0 ? {} : { unclassified: unclassified * scale }),
         antiXeno: (components.antiXeno ?? 0) * scale,
@@ -584,19 +590,29 @@ interface DamageSplitAccumulator {
     kinetic: number;
     thermal: number;
     explosive: number;
+    caustic: number;
     absolute: number;
     unclassified: number;
     antiXeno: number;
 }
 
 function emptyDamageSplitAccumulator(): DamageSplitAccumulator {
-    return { kinetic: 0, thermal: 0, explosive: 0, absolute: 0, unclassified: 0, antiXeno: 0 };
+    return {
+        kinetic: 0,
+        thermal: 0,
+        explosive: 0,
+        caustic: 0,
+        absolute: 0,
+        unclassified: 0,
+        antiXeno: 0,
+    };
 }
 
 function addDamageSplit(total: DamageSplitAccumulator, split: DamageSplit): void {
     total.kinetic += split.kinetic;
     total.thermal += split.thermal;
     total.explosive += split.explosive;
+    total.caustic += split.caustic;
     total.absolute += split.absolute;
     total.unclassified += split.unclassified ?? 0;
     total.antiXeno += split.antiXeno;

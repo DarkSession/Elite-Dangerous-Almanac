@@ -147,12 +147,13 @@ export interface ModuleLimitIncrease {
  * The conventional shares — {@link DamageDistribution.kinetic | kinetic},
  * {@link DamageDistribution.thermal | thermal},
  * {@link DamageDistribution.explosive | explosive},
+ * {@link DamageDistribution.caustic | caustic},
  * {@link DamageDistribution.absolute | absolute}, and any
  * {@link DamageDistribution.unclassified | unclassified} share — partition the damage and sum to
- * `1`; a type a weapon does not deal is absent rather than `0`. Kinetic, thermal and
- * explosive damage meet the defender's resistance of the same name. No shield or hull
- * resistance reduces absolute damage; the type and mitigation of unclassified damage
- * are not established by in-game verification.
+ * `1`; a type a weapon does not deal is absent rather than `0`. Kinetic, thermal,
+ * explosive and caustic damage meet the defender's resistance of the same name. No
+ * shield or hull resistance reduces absolute damage; the type and mitigation of
+ * unclassified damage are not established by in-game verification.
  *
  * A weapon the game gives the **Plasma** damage type carries its share under
  * {@link DamageDistribution.absolute | absolute}, as the Mk II Plasma Shock Accelerator
@@ -172,6 +173,8 @@ export interface DamageDistribution {
     readonly thermal?: number;
     /** Explosive share of one shot's damage, `0`–`1`. */
     readonly explosive?: number;
+    /** Caustic share of one shot's damage, `0`–`1`. */
+    readonly caustic?: number;
     /** Absolute share — damage no resistance reduces — of one shot's damage, `0`–`1`. */
     readonly absolute?: number;
     /** Share unclassified by in-game verification, `0`–`1`. */
@@ -187,7 +190,7 @@ export interface DamageDistribution {
  * Exact damage amounts carried by one round, or one second of continuous fire.
  *
  * @remarks
- * Every amount is non-negative. Kinetic, thermal, explosive, absolute and all
+ * Every amount is non-negative. Kinetic, thermal, explosive, caustic, absolute and all
  * `unclassified` entries sum to the module's conventional {@link OutfittingModule.damage}.
  * `antiXeno` overlays that conventional amount and is not added to it. The exact amounts
  * are authoritative when present; {@link DamageDistribution} remains the compatible
@@ -207,6 +210,8 @@ export interface DamageComponents {
     readonly thermal?: number;
     /** Non-negative explosive damage. */
     readonly explosive?: number;
+    /** Non-negative caustic damage. */
+    readonly caustic?: number;
     /** Non-negative absolute damage, which no resistance reduces. */
     readonly absolute?: number;
     /** Non-negative damage effective against Thargoid targets, overlaid on conventional damage. */

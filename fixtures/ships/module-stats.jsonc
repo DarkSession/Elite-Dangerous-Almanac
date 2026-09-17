@@ -1955,11 +1955,11 @@
       "damage": 5,
       "damageDistribution": {
         "explosive": 0.8,
-        "unclassified": 0.2
+        "caustic": 0.2
       },
       "damageComponents": {
         "explosive": 4,
-        "unclassified": [1]
+        "caustic": 1
       }
     },
     {

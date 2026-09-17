@@ -186,6 +186,7 @@ internal static class ModuleCatalogueReader
         Number(element, "kinetic"),
         Number(element, "thermal"),
         Number(element, "explosive"),
+        Number(element, "caustic"),
         Number(element, "absolute"),
         Number(element, "unclassified"),
         Number(element, "antiXeno"));
@@ -204,6 +205,7 @@ internal static class ModuleCatalogueReader
             Number(element, "kinetic"),
             Number(element, "thermal"),
             Number(element, "explosive"),
+            Number(element, "caustic"),
             Number(element, "absolute"),
             Number(element, "antiXeno"),
             unclassified);

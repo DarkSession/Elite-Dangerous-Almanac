@@ -133,6 +133,7 @@ public sealed record WeaponStats
 /// <param name="Kinetic">The kinetic share.</param>
 /// <param name="Thermal">The thermal share.</param>
 /// <param name="Explosive">The explosive share.</param>
+/// <param name="Caustic">The caustic share.</param>
 /// <param name="Absolute">The absolute share, which no resistance reduces.</param>
 /// <param name="AntiXeno">
 /// The part effective against Thargoids. It overlays conventional damage rather than partitioning
@@ -143,6 +144,7 @@ public sealed record DamageSplit(
     double Kinetic = 0,
     double Thermal = 0,
     double Explosive = 0,
+    double Caustic = 0,
     double Absolute = 0,
     double AntiXeno = 0,
     double Unclassified = 0);
@@ -258,6 +260,7 @@ public static class Weapons
             Kinetic: damage * (distribution.Kinetic ?? 0),
             Thermal: damage * (distribution.Thermal ?? 0),
             Explosive: damage * (distribution.Explosive ?? 0),
+            Caustic: damage * (distribution.Caustic ?? 0),
             Absolute: damage * (distribution.Absolute ?? 0),
             AntiXeno: damage * (distribution.AntiXeno ?? 0),
             Unclassified: damage * (distribution.Unclassified ?? 0));
@@ -538,6 +541,7 @@ public static class Weapons
         double conventional = (components.Kinetic ?? 0)
             + (components.Thermal ?? 0)
             + (components.Explosive ?? 0)
+            + (components.Caustic ?? 0)
             + (components.Absolute ?? 0)
             + unclassified;
         if (conventional <= 0) return new DamageSplit(Absolute: damage);
@@ -547,6 +551,7 @@ public static class Weapons
             Kinetic: (components.Kinetic ?? 0) * scale,
             Thermal: (components.Thermal ?? 0) * scale,
             Explosive: (components.Explosive ?? 0) * scale,
+            Caustic: (components.Caustic ?? 0) * scale,
             Absolute: (components.Absolute ?? 0) * scale,
             AntiXeno: (components.AntiXeno ?? 0) * scale,
             Unclassified: unclassified * scale);
@@ -558,6 +563,7 @@ public static class Weapons
         private double kinetic;
         private double thermal;
         private double explosive;
+        private double caustic;
         private double absolute;
         private double antiXeno;
         private double unclassified;
@@ -567,12 +573,13 @@ public static class Weapons
             kinetic += split.Kinetic;
             thermal += split.Thermal;
             explosive += split.Explosive;
+            caustic += split.Caustic;
             absolute += split.Absolute;
             antiXeno += split.AntiXeno;
             unclassified += split.Unclassified;
         }
 
         internal DamageSplit Finish() =>
-            new(kinetic, thermal, explosive, absolute, antiXeno, unclassified);
+            new(kinetic, thermal, explosive, caustic, absolute, antiXeno, unclassified);
     }
 }

@@ -165,10 +165,10 @@ public sealed record ModuleLimitIncrease(ModuleLimitGroup Group, int Amount);
 
 /// <summary>How a weapon's damage splits across the damage types, as fractions of one shot.</summary>
 /// <remarks>
-/// The conventional shares — kinetic, thermal, explosive, absolute and any unclassified share —
-/// partition the damage and sum to 1; a type a weapon does not deal is absent rather than zero.
-/// Kinetic, thermal and explosive damage meet the defender's resistance of the same name. No
-/// shield or hull resistance reduces absolute damage, and in-game verification does not
+/// The conventional shares — kinetic, thermal, explosive, caustic, absolute and any unclassified
+/// share — partition the damage and sum to 1; a type a weapon does not deal is absent rather than
+/// zero. Kinetic, thermal, explosive and caustic damage meet the defender's resistance of the same
+/// name. No shield or hull resistance reduces absolute damage, and in-game verification does not
 /// establish the type or the mitigation of unclassified damage.
 /// <para>
 /// A weapon the game gives the <b>Plasma</b> damage type carries its share under the absolute
@@ -185,6 +185,7 @@ public sealed record ModuleLimitIncrease(ModuleLimitGroup Group, int Amount);
 /// <param name="Kinetic">Kinetic share of one shot's damage.</param>
 /// <param name="Thermal">Thermal share of one shot's damage.</param>
 /// <param name="Explosive">Explosive share of one shot's damage.</param>
+/// <param name="Caustic">Caustic share of one shot's damage.</param>
 /// <param name="Absolute">Absolute share — damage no resistance reduces.</param>
 /// <param name="Unclassified">Share that in-game verification does not classify.</param>
 /// <param name="AntiXeno">
@@ -194,20 +195,22 @@ public sealed record DamageDistribution(
     double? Kinetic = null,
     double? Thermal = null,
     double? Explosive = null,
+    double? Caustic = null,
     double? Absolute = null,
     double? Unclassified = null,
     double? AntiXeno = null);
 
 /// <summary>Exact damage amounts carried by one round, or by one second of continuous fire.</summary>
 /// <remarks>
-/// Every amount is at or above zero. Kinetic, thermal, explosive, absolute and all unclassified
-/// entries sum to the module's conventional damage. The anti-xeno amount overlays that
+/// Every amount is at or above zero. Kinetic, thermal, explosive, caustic, absolute and all
+/// unclassified entries sum to the module's conventional damage. The anti-xeno amount overlays that
 /// conventional amount and is not added to it. The exact amounts are authoritative when
 /// present; the fractional distribution remains the compatible projection.
 /// </remarks>
 /// <param name="Kinetic">Kinetic damage.</param>
 /// <param name="Thermal">Thermal damage.</param>
 /// <param name="Explosive">Explosive damage.</param>
+/// <param name="Caustic">Caustic damage.</param>
 /// <param name="Absolute">Absolute damage, which no resistance reduces.</param>
 /// <param name="AntiXeno">Damage effective against Thargoid targets.</param>
 /// <param name="Unclassified">Damage amounts in-game verification does not classify.</param>
@@ -215,6 +218,7 @@ public sealed record DamageComponents(
     double? Kinetic = null,
     double? Thermal = null,
     double? Explosive = null,
+    double? Caustic = null,
     double? Absolute = null,
     double? AntiXeno = null,
     IReadOnlyList<double>? Unclassified = null);

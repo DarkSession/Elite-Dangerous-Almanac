@@ -37,6 +37,7 @@ internal static class DamageComponentScaling
             components.Kinetic * scale,
             components.Thermal * scale,
             components.Explosive * scale,
+            components.Caustic * scale,
             components.Absolute * scale,
             components.AntiXeno * scale,
             unclassified);
