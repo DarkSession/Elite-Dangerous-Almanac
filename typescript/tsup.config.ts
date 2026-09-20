@@ -8,11 +8,14 @@ interface PackageExportTarget {
 }
 
 const manifest = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8')) as {
-    readonly exports: Readonly<Record<string, PackageExportTarget | null>>;
+    readonly exports: Readonly<Record<string, PackageExportTarget | string | null>>;
 };
 
 const entries = Object.entries(manifest.exports).flatMap(([subpath, target]) => {
-    if (target === null) return [];
+    // A string target is a static package file the build never produces: the asset
+    // pattern points straight at the copied `assets/` tree. Only the conditional
+    // targets name a module this build has to emit.
+    if (target === null || typeof target === 'string') return [];
     const match = /^\.\/dist\/(.+)\.js$/.exec(target.import);
     if (!match?.[1]) {
         throw new Error(`Public export ${subpath} has an invalid import target: ${target.import}`);

@@ -49,6 +49,7 @@
         "typescript"
     ],
     "exports": {
+        "./assets/*": "./assets/*",
         "./astro": {
             "types": "./dist/astro/index.d.ts",
             "import": "./dist/astro/index.js"

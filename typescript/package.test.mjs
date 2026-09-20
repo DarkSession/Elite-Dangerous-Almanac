@@ -887,7 +887,18 @@ test('every internal source module is outside the package export map', async () 
 
 test('every runtime entry has one explicit public subpath', async () => {
     const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
-    const publicExports = Object.entries(pkg.exports).filter(([, target]) => target !== null);
+    // A string target is a static package file, not a module, so it carries no `types`
+    // and no build entry. Pinning the list keeps that exemption to the assets row: a
+    // module row written as a bare string would otherwise skip every check below.
+    assert.deepEqual(
+        Object.entries(pkg.exports)
+            .filter(([, target]) => typeof target === 'string')
+            .map(([subpath]) => subpath),
+        ['./assets/*'],
+    );
+    const publicExports = Object.entries(pkg.exports).filter(
+        ([, target]) => target !== null && typeof target !== 'string',
+    );
     for (const [subpath, target] of publicExports) {
         assert.ok(!subpath.includes('*'), `public export ${subpath} is a wildcard`);
         assert.ok('types' in target, `public export ${subpath} has no declarations`);
@@ -1218,7 +1229,7 @@ test('types are exposed by owning runtime entries, not type-only subpaths', asyn
     }
 
     for (const [subpath, target] of Object.entries(pkg.exports)) {
-        if (target === null) continue;
+        if (target === null || typeof target === 'string') continue;
         await assert.doesNotReject(
             readFile(new URL(target.types, import.meta.url)),
             `${subpath} has no declaration artifact at ${target.types}`,
@@ -1473,4 +1484,28 @@ test('the npm package contains byte-identical galaxy-map assets', async () => {
     }
 
     assert.deepEqual(await packedPaths('assets/galaxy-map/'), canonicalFiles);
+});
+
+test('the packaged assets resolve as package subpaths', async () => {
+    // `exports` makes every unnamed subpath unreachable, so the `./assets/*` row is the
+    // only thing that lets a consumer name a file the tarball already carries. Without
+    // it the artwork ships and nobody can import one file of it.
+    for (const directory of ['ships', 'galaxy-map']) {
+        const root = new URL(`./assets/${directory}/`, import.meta.url);
+        const [relative] = await relativeFiles(root);
+        const resolved = import.meta.resolve(
+            `@elite-dangerous-almanac/core/assets/${directory}/${relative}`,
+        );
+        assert.equal(resolved, new URL(relative, root).href);
+        // The pattern expands a name whether or not it exists, so read the file too.
+        await assert.doesNotReject(readFile(new URL(resolved)));
+    }
+
+    // The row reaches the packed artwork and nothing beside it.
+    assert.throws(
+        () => import.meta.resolve('@elite-dangerous-almanac/core/assets/../package.json'),
+        {
+            code: 'ERR_INVALID_MODULE_SPECIFIER',
+        },
+    );
 });

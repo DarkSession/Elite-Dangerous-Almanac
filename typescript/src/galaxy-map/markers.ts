@@ -2,8 +2,9 @@
  * The galaxy map's location markers and the colours the game draws them in.
  *
  * @remarks
- * Each marker's `symbol` also names its vector asset, `assets/galaxy-map/<symbol>.svg`,
- * whose root `<svg>` carries the same `color` this catalogue reports.
+ * Each marker's `symbol` also names its vector asset, which the package exports as
+ * `@elite-dangerous-almanac/core/assets/galaxy-map/<symbol>.svg` and whose root
+ * `<svg>` carries the same `color` this catalogue reports.
  *
  * Read from the in-game galaxy map; see
  * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)

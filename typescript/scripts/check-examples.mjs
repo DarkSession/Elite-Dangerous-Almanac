@@ -23,7 +23,7 @@
 
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { readdir, readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -128,13 +128,16 @@ function localiseImports(code) {
         (match, quote, subpath) => {
             const specifier = `.${subpath ?? ''}`;
             const resolved = resolveExport(specifier);
+            // A static file keeps the specifier the reader wrote: the snippet quotes the
+            // path, it does not import it.
+            if (resolved === STATIC_FILE) return match;
             if (resolved === null) {
                 // Resolving against `src/` rather than the `exports` map would let a
                 // snippet import a path no consumer can reach — the private
                 // `./internal/*` subpaths especially — and call it verified.
                 problems.push({
                     code: 'TSX001',
-                    message: `${match.slice(1, -1)} is not a published entry point (see package.json "exports")`,
+                    message: `${match.slice(1, -1)} is not a published entry point or packaged file (see package.json "exports")`,
                 });
                 return match;
             }
@@ -145,10 +148,17 @@ function localiseImports(code) {
 }
 
 /**
+ * A published subpath that names a static package file, such as an SVG under
+ * `assets/`, rather than a module the scratch program can import.
+ */
+const STATIC_FILE = Symbol('static package file');
+
+/**
  * Resolve a public subpath through the package's own `exports` map.
  *
  * @param specifier - The subpath as `exports` spells it, e.g. `.` or `./ships/slef`.
- * @returns The absolute source path, or `null` when `exports` does not publish it.
+ * @returns The absolute source path, {@link STATIC_FILE} for a published static file,
+ *   or `null` when `exports` does not publish the subpath at all.
  */
 function resolveExport(specifier) {
     let best = null;
@@ -180,6 +190,15 @@ function resolveExport(specifier) {
     // `import.meta.resolve` with a target of `./d/*/*.js`, which resolves to `./d/a/a.js`.
     // The replacement is a callback so a `$` in the subpath cannot be read as `$&` & co.
     const filled = best.fill === null ? dist : dist.replaceAll('*', () => best.fill);
+    // A target outside `dist/` is published, but it is artwork rather than a module, so
+    // there is nothing to localise and nothing to compile. The file still has to exist.
+    // A suffix such as `?url` is the consumer's bundler syntax, not part of the name,
+    // and `typescript/assets/` is a build artifact this runs before, so strip the suffix
+    // and probe the committed shared tree that the build copies from.
+    if (!filled.startsWith('./dist/')) {
+        const file = join(packageRoot, '..', filled.replace(/[?#].*$/, ''));
+        return existsSync(file) && statSync(file).isFile() ? STATIC_FILE : null;
+    }
     // `./dist/ships/index.js` → `<src>/ships/index.ts`
     const relativeToSrc = filled.replace(/^\.\/dist\//, '').replace(/\.d\.ts$|\.js$/, '');
     const asFile = join(sourceRoot, `${relativeToSrc}.ts`);

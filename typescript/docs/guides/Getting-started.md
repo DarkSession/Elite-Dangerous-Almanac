@@ -159,11 +159,11 @@ carry a second copy of its source.
 ## What the package weighs on disk
 
 `npm pack --dry-run` reports about 70 MB unpacked and about 18 MB as a compressed
-npm archive. The ship art in `assets/` is about 67 MB of it: four SVG files per hull,
-shipped as static package files rather than as subpath exports. Everything a bundler can
-reach is the roughly 3 MB of
-`dist/`, which is the JavaScript, the type declarations and the source maps above,
-and no import of this package pulls an SVG into an application bundle.
+npm archive. The ship art in `assets/` is about 67 MB of it: four SVG files per hull.
+The package exports those paths, so an application that renders a hull names the one
+file it draws and its bundler emits that file alone. No module in `dist/` imports an
+SVG, so an application that renders no hull reaches only the roughly 3 MB of JavaScript,
+type declarations and source maps above.
 
 So the install is large and the import graph is not: an application that never renders
 a hull pays for the art on disk, and never in its bundle.
