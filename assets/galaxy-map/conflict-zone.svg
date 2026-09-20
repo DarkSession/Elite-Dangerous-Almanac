@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" color="#FFAE00" role="img">
+  <title>Conflict zone</title>
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4"/>
+  <defs>
+    <path id="cz-sword" d="M32 2.4 L34.95 11.5 L35.2 44.5 Q39.8 45.4 41.1 49.2 L33.75 49.2 L33.75 58.8 L32 60.4 L30.25 58.8 L30.25 49.2 L22.9 49.2 Q24.2 45.4 28.8 44.5 L29.05 11.5 Z"/>
+    <mask id="cz-cut">
+      <rect width="64" height="64" fill="#fff"/>
+      <use href="#cz-sword" transform="rotate(-45 32 32)" fill="#000" stroke="#000" stroke-width="6.4" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <g fill="currentColor">
+    <g mask="url(#cz-cut)"><use href="#cz-sword" transform="rotate(45 32 32)"/></g>
+    <use href="#cz-sword" transform="rotate(-45 32 32)"/>
+  </g>
+</svg>

@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents (e.g. Claude Code) when working 
 
 ## Project Purpose
 
-**Elite Dangerous Almanac** is a library of static data and calculations for Elite Dangerous community app developers and researchers: astronomy, ships and outfitting, personal equipment, engineering materials, localized display text and market commodities. §Repository Status lists the feature areas.
+**Elite Dangerous Almanac** is a library of static data and calculations for Elite Dangerous community app developers and researchers: astronomy, ships and outfitting, personal equipment, engineering materials, localized display text, market commodities and galaxy-map markers. §Repository Status lists the feature areas.
 
 ## Pre-1.0: breaking changes are acceptable
 
@@ -51,7 +51,7 @@ Consumers (community apps, often web-based) must only pay for what they import. 
 - **Small modules**: one class/interface/feature area per file. No god-modules.
 - **ESM output** with `"sideEffects": false` in `package.json`; no side effects at module top level (no registration-on-import, no mutable module state, no self-executing code).
 - **Named exports only** — no default exports, no namespace-object re-export patterns (`export * as X`) that defeat tree-shaking.
-- **Subpath exports** (`exports` map in `package.json`) per feature area, so consumers import only the slice they need. The published package is `@elite-dangerous-almanac/core`, exposing `./astro`, `./commodities`, `./equipment`, `./i18n`, `./materials` and `./ships` plus one subpath per runtime module inside each (`./ships/ship-loadout`, `./astro/nebulae-real`, …). The public half of the map is enumerated, with no wildcard, and `tsup.config.ts` derives its entry list from the `import` targets, so a new module under `src/` is unreachable and unbuilt until its entry is added with both `types` and `import`. `pnpm run test:package` rejects any non-null export lacking either target. Export a type-only module's symbols through the runtime entry that owns them; do not create a declaration-only subpath, so that a specifier resolves the same for ordinary and type-only imports. The only patterns in the map are the per-area `./<area>/internal/*` keys, each mapped to **`null`**, which makes every internal deep import a resolution error with no per-file manifest exception. Root-wide helpers belong in `src/internal/`, which has no entry at all. Follow that layout for anything marked `@internal`.
+- **Subpath exports** (`exports` map in `package.json`) per feature area, so consumers import only the slice they need. The published package is `@elite-dangerous-almanac/core`, exposing `./astro`, `./commodities`, `./equipment`, `./galaxy-map`, `./i18n`, `./materials` and `./ships` plus one subpath per runtime module inside each (`./ships/ship-loadout`, `./astro/nebulae-real`, …). The public half of the map is enumerated, with no wildcard, and `tsup.config.ts` derives its entry list from the `import` targets, so a new module under `src/` is unreachable and unbuilt until its entry is added with both `types` and `import`. `pnpm run test:package` rejects any non-null export lacking either target. Export a type-only module's symbols through the runtime entry that owns them; do not create a declaration-only subpath, so that a specifier resolves the same for ordinary and type-only imports. The only patterns in the map are the per-area `./<area>/internal/*` keys, each mapped to **`null`**, which makes every internal deep import a resolution error with no per-file manifest exception. Root-wide helpers belong in `src/internal/`, which has no entry at all. Follow that layout for anything marked `@internal`.
 - **Prefer pure functions over stateful classes**; when classes are used, avoid static registries or cross-class coupling that drags unrelated code into the bundle.
 - **Static data is the biggest bundle risk**: never expose one monolithic data import. Split `data/` consumption into per-domain (and where sensible per-entity-group) modules so importing one ship's stats doesn't bundle the whole galaxy.
 - **Usability outranks tree-shaking when the two collide.** A registry lookup takes an *optional* catalogue argument defaulting to the whole registry (`getMaterialByName('iron')`): a journal line hands the caller a symbol and nothing else, so asking them to identify the category first solves the library's problem with the user's time. The price is that a default is a static import, so the data cannot be dropped even when an explicit catalogue is passed. Decide by measuring the module's import graph in `dist/` as a consumer's bundler ships it, fully minified (the library's own build only compacts whitespace, see §Commands): materials ~17 KiB, micro resources ~13 KiB and commodities ~30 KiB are noise; `ships/modules` at ~337 KiB (~33 KiB gzipped) is named in its own docs; `ALL_NEBULAE` at ~432 KiB is the counter-example, so `astro/nebulae` keeps its argument required. Default to the whole registry unless that would cost more than the rest of the library, say which way you went in the module's own docs, and do not reverse either decision without a fresh measurement.
@@ -225,16 +225,17 @@ Closing a gap means closing its issue in the same change that fixes it, and drop
 
 ## Repository Status
 
-Six feature areas exist in TypeScript, all under `typescript/src/`:
+These feature areas exist in TypeScript, all under `typescript/src/`:
 
 - **`astro/`** — procedural system names and id64 addresses, sectors and galactic regions, nebulae, permit locks, and scanned-body physics.
 - **`commodities/`** — standard and rare market commodities.
 - **`equipment/`** — Odyssey suits, handheld weapons, suit tools, upgrades, modifications, and journal suit loadouts.
+- **`galaxy-map/`** — the galaxy map's location markers and the colours the game draws them in.
 - **`i18n/`** — localized catalogue names, descriptions, labels, and diagnostics.
 - **`materials/`** — engineering materials and micro-resources.
 - **`ships/`** — ship and outfitting catalogues, engineering (blueprints, experimental effects, pre-engineered variants), loadouts, and build metrics: power, shields, armour, resistances, weapons, jump range.
 
-Every one of those areas exists in .NET under `dotnet/src/EliteDangerousAlmanac/`, one namespace each: `Astronomy`, `Commodities`, `Equipment`, `Localization` (the `i18n` area), `Materials` and `Ships`. The library targets .NET Standard 2.1 and its tests run on .NET 10. It reads the shared catalogues as embedded resources keyed by their repository path, so `data/` stays the one copy.
+Every one of those areas exists in .NET under `dotnet/src/EliteDangerousAlmanac/`, one namespace each: `Astronomy`, `Commodities`, `Equipment`, `GalaxyMap`, `Localization` (the `i18n` area), `Materials` and `Ships`. The library targets .NET Standard 2.1 and its tests run on .NET 10. It reads the shared catalogues as embedded resources keyed by their repository path, so `data/` stays the one copy.
 
 `python/` does not exist yet. When it lands it consumes the same `data/` and `fixtures/` and must reach parity.
 

@@ -20,6 +20,7 @@ import { COMPONENT_MICRO_RESOURCES } from './materials/micro-resources-component
 import { CONSUMABLE_MICRO_RESOURCES } from './materials/micro-resources-consumable.js';
 import { DATA_MICRO_RESOURCES } from './materials/micro-resources-data.js';
 import { ITEM_MICRO_RESOURCES } from './materials/micro-resources-item.js';
+import { GALAXY_MAP_MARKERS } from './galaxy-map/markers.js';
 import { SUITS } from './equipment/suits.js';
 import { PERSONAL_TOOLS } from './equipment/tools.js';
 import { PERSONAL_WEAPONS } from './equipment/weapons.js';
@@ -78,6 +79,7 @@ test('every published catalogue and all of its nested records are frozen', () =>
         ['CONSUMABLE_MICRO_RESOURCES', CONSUMABLE_MICRO_RESOURCES],
         ['DATA_MICRO_RESOURCES', DATA_MICRO_RESOURCES],
         ['ITEM_MICRO_RESOURCES', ITEM_MICRO_RESOURCES],
+        ['GALAXY_MAP_MARKERS', GALAXY_MAP_MARKERS],
         ['SUITS', SUITS],
         ['PERSONAL_TOOLS', PERSONAL_TOOLS],
         ['PERSONAL_WEAPONS', PERSONAL_WEAPONS],

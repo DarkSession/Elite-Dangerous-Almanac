@@ -34,6 +34,7 @@ There is no root namespace to import: every area is its own namespace under
 | [Localization](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization) | Display names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and equipment |
 | [Materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Materials) | Ship engineering materials and Odyssey micro resources |
 | [Commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Commodities) | Market commodities, standard and rare |
+| [GalaxyMap](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.GalaxyMap) | The galaxy map's location markers and the colours the game draws them in |
 
 **Why the names differ from the TypeScript package.** Each implementation is written the
 way its own language reads, so `astro` is `Astronomy` here and `i18n` is `Localization`.

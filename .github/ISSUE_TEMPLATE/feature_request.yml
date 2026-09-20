@@ -35,6 +35,7 @@ body:
         - i18n / Localization
         - materials / Materials
         - commodities / Commodities
+        - galaxy-map / GalaxyMap
         - Shared data or schemas
         - Package build, exports, subpaths or namespaces
         - New feature area

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" color="#9418FF" role="img">
+  <title>Front line</title>
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#4A00B5" stroke-width="4"/>
+  <g fill="none" stroke="currentColor">
+    <path stroke-width="3" stroke-opacity="0.5" d="M32.6,11.2 35.75,14.5 M32.5,52.6 36.2,49.75"/>
+    <path stroke-width="4.6" stroke-opacity="0.167" d="M31.35,16.45 28.8,21.8 M28.8,42.4 31.3,48.1"/>
+    <path stroke-width="2.5" stroke-opacity="0.167" d="M25,25.7 29.95,25.9 M25.1,38.5 29.6,38.1"/>
+  </g>
+  <path fill="currentColor" d="M11.25,34.64 14.1,29.67 H41 V28.2 L39.8,25.2 50.73,32 39.8,38.8 41,35.8 V34.64 Z"/>
+</svg>

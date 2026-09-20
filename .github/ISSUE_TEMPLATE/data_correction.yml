@@ -20,6 +20,7 @@ body:
         - data/astro
         - data/commodities
         - data/equipment
+        - data/galaxy-map
         - data/i18n
         - data/materials
         - data/ships

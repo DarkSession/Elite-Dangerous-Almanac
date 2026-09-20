@@ -868,6 +868,22 @@ declare module '*/fixtures/equipment/suit-loadouts.jsonc' {
     export default value;
 }
 
+type FixtureGalaxyMapMarkers = {
+    count: number;
+    distinctColors: string[];
+    framedDifferently: string[];
+    records: {
+        color: string;
+        frameColor: string;
+        symbol: string;
+    }[];
+};
+
+declare module '*/fixtures/galaxy-map/markers.jsonc' {
+    const value: FixtureGalaxyMapMarkers;
+    export default value;
+}
+
 type FixtureI18nDisplayText = {
     diagnostics: {
         diagnostic: {

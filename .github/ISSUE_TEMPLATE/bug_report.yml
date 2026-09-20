@@ -38,6 +38,7 @@ body:
         - i18n / Localization
         - materials / Materials
         - commodities / Commodities
+        - galaxy-map / GalaxyMap
         - Package build, exports, subpaths or namespaces
         - Not sure
     validations:

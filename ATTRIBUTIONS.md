@@ -156,7 +156,8 @@ a verbatim copy produced at build time — edit this file, never the copy.
   **CC BY-SA 3.0**) — how the Corrosion Resistant Cargo Racks are obtained, which is why
   two of them carry no list price.
 - **Frontier Developments plc** — the game itself, the ship models represented by the
-  shared vector illustrations, the official
+  shared vector illustrations, the galaxy-map marker artwork redrawn as the shared
+  vector markers in `assets/galaxy-map/`, the official
   [Elite Dangerous Gamestore](https://www.elitedangerous.com/store/) product names used
   to correct the four Karma and three TK handheld weapons, and its published statements:
   the [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/)

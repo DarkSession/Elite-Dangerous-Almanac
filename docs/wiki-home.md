@@ -3,7 +3,7 @@
 Static Elite Dangerous data and calculations for community applications and research —
 procedural system names and `id64` addresses, galactic regions and nebulae, ships and
 outfitting with build metrics, personal equipment and engineering materials, localized
-display text, and market commodities.
+display text, market commodities, and the galaxy map's location markers.
 
 The same data and the same behaviour are published for two languages. Pick the one you
 are writing in; each has its own guides, its own reference and its own navigation.
@@ -57,6 +57,7 @@ Both packages carry every one. Each is a TypeScript subpath and a .NET namespace
 | Localization | `i18n` | `Localization` | Sparse localized module, blueprint, effect, material, micro-resource, commodity and personal-equipment display text |
 | Materials | `materials` | `Materials` | Ship engineering materials and Odyssey micro resources |
 | Commodities | `commodities` | `Commodities` | Standard and rare market commodities |
+| Galaxy map | `galaxy-map` | `GalaxyMap` | The galaxy map's location markers and the colours the game draws them in |
 
 The two packages do not carry the same names: each is written the way its own language
 reads. What they share is the behaviour, which the fixtures under `fixtures/` prove for

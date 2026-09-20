@@ -1,7 +1,7 @@
 {
     "name": "@elite-dangerous-almanac/core",
     "version": "0.2.0",
-    "description": "Elite Dangerous static data and calculations: astronomy, ships and outfitting, personal equipment and engineering, materials, and market commodities.",
+    "description": "Elite Dangerous static data and calculations: astronomy, ships and outfitting, personal equipment and engineering, materials, market commodities, localized display text and galaxy-map markers.",
     "type": "module",
     "sideEffects": false,
     "engines": {
@@ -33,6 +33,7 @@
         "engineering",
         "materials",
         "commodities",
+        "galaxy-map",
         "trading",
         "slef",
         "journal",
@@ -207,6 +208,15 @@
             "import": "./dist/equipment/weapons.js"
         },
         "./equipment/internal/*": null,
+        "./galaxy-map": {
+            "types": "./dist/galaxy-map/index.d.ts",
+            "import": "./dist/galaxy-map/index.js"
+        },
+        "./galaxy-map/internal/*": null,
+        "./galaxy-map/markers": {
+            "types": "./dist/galaxy-map/markers.d.ts",
+            "import": "./dist/galaxy-map/markers.js"
+        },
         "./i18n": {
             "types": "./dist/i18n/index.d.ts",
             "import": "./dist/i18n/index.js"
@@ -519,7 +529,7 @@
         "generate:i18n-coverage": "node scripts/i18n-coverage.mjs",
         "lint": "eslint .",
         "prepublishOnly": "pnpm run check && pnpm run build && pnpm run test:package",
-        "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/equipment/**/*.ts\" --test-coverage-include=\"src/i18n/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
+        "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/equipment/**/*.ts\" --test-coverage-include=\"src/i18n/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-include=\"src/galaxy-map/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
         "docs": "typedoc && node ../scripts/wiki/build.mjs",
         "test:wiki": "node --test ../scripts/wiki/*.test.mjs",

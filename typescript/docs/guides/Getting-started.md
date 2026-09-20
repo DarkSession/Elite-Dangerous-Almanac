@@ -106,6 +106,7 @@ symbols you are most likely to reach for first:
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |
 | `getMicroResourceByName` | `core/materials/micro-resources` |
 | `getCommodityByName` | `core/commodities/commodities` |
+| `getGalaxyMapMarkerColor` | `core/galaxy-map/markers` |
 
 ## What it costs to import
 

@@ -9,7 +9,7 @@ title: TypeScript
 Static Elite Dangerous data and calculations for community applications and research —
 procedural system names and `id64` addresses, galactic regions and nebulae, ships and
 outfitting with build metrics, personal equipment and engineering materials, localized
-display text, and market commodities.
+display text, market commodities, and the galaxy map's location markers.
 
 ```bash
 npm install @elite-dangerous-almanac/core
@@ -61,6 +61,7 @@ function jumpRangeOf(journalLine: string) {
 | [i18n](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/i18n) | `@elite-dangerous-almanac/core/i18n` | Sparse localized module, blueprint, effect, material, micro-resource, commodity and personal-equipment display text |
 | [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
 | [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
+| [galaxy-map](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/galaxy-map) | `@elite-dangerous-almanac/core/galaxy-map` | The galaxy map's location markers and the colours the game draws them in |
 
 The bulk data catalogues live on their own subpaths and are listed in full on the
 [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules).
