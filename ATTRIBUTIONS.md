@@ -223,15 +223,15 @@ Projects that redistribute this data should include the same notice.
 
 This file credits. What was taken from each source, when, from which revision, how it was
 derived and every manual correction are recorded with the data itself, in
-[`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md),
-[`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md),
-[`data/equipment/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/equipment/SOURCES.md),
-[`data/i18n/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/i18n/SOURCES.md),
-[`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
+[`data/astro/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/astro/SOURCES.md),
+[`data/materials/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/materials/SOURCES.md),
+[`data/equipment/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/equipment/SOURCES.md),
+[`data/i18n/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/i18n/SOURCES.md),
+[`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md)
 and
-[`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),
+[`data/commodities/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/commodities/SOURCES.md),
 with the rules those files follow in
-[`data/SNAPSHOTS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md).
+[`data/SNAPSHOTS.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/SNAPSHOTS.md).
 The npm package includes matching copies under `PROVENANCE/` (without the `data/`
 prefix); the links above are absolute so they resolve from inside the package too.
 

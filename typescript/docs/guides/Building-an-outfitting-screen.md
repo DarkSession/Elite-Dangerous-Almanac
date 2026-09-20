@@ -252,7 +252,7 @@ business on the other.
 
 The game's statistics panel counts the reserve tank in the current mass it displays;
 nothing here does, so add `fuelCapacity.reserve` if you are reproducing that reading.
-[Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)
+[Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Build-metrics)
 covers the mass curve those three thruster figures describe.
 
 `powerBudget().bands` is what drives a priority-group table: a group is powered when its
@@ -275,7 +275,7 @@ validation.issues; // what specifically, with a stable code per issue
 
 Branch on each issue's `code`, not on its `severity` — the codes are the stable contract,
 and one severity covers problems that belong in different places on the panel.
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
 explains the codes and covers the `…Result` methods for mobility, shields and
 shield recovery. On an imported build, read `build.importOutcomes` alongside the issues:
 validation says nothing about normalization, so an empty mount on your panel may be one
@@ -307,6 +307,6 @@ rather than on the thruster mount — the fix is usually to carry less, not to r
 
 ## Next
 
-- [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Working-with-SLEF)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

@@ -2,13 +2,13 @@
 title: Building an outfitting screen
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Building an outfitting screen
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Building an outfitting screen
 
 # Building an outfitting screen
 
 Everything a shipyard screen shows, end to end: enumerate the hull's mounts, offer only
 what fits, fit it, and report what the build now does. All of it hangs off
-[ShipLoadout](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.ShipLoadout).
+[ShipLoadout](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.ShipLoadout).
 
 ## Start from a hull, or from a capture
 
@@ -91,7 +91,7 @@ source registry files it with the optional internals, which is where
 `ModuleCatalogue.Internal` carries it, but the hull is built with one and the fixed
 `CargoHatch` mount is the only place it goes — so no mount your screen can edit offers or
 accepts it. Fitting one anywhere else raises a
-[LoadoutEditException](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.LoadoutEditException) whose `Constraint` is
+[LoadoutEditException](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.LoadoutEditException) whose `Constraint` is
 `ModuleFitConstraint.BuiltInHullModule`.
 
 ## Group the offer into collapsible families
@@ -101,7 +101,7 @@ Every module carries a `FamilyId`, core modules included, so the whole result of
 Bi-Weave and Prismatic generators are all `ShieldGenerators`, and a pre-engineered or
 Powerplay weapon stays with its base weapon.
 
-[OutfittingFamilies](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.OutfittingFamilies) gives the canonical English
+[OutfittingFamilies](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.OutfittingFamilies) gives the canonical English
 heading for a family, as an extension method on the id itself.
 
 ```csharp
@@ -118,7 +118,7 @@ foreach (IGrouping<OutfittingFamilyId, OutfittingModule> family in
 }
 ```
 
-[DisplayText](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization.Class.DisplayText) gives a localized heading, keyed
+[DisplayText](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Localization.Class.DisplayText) gives a localized heading, keyed
 by the family's identifier as the shared data spells it. It answers `null` where the
 sources carry no label for that locale, so your application chooses the fallback rather
 than being handed English dressed up as a translation.
@@ -181,7 +181,7 @@ purchase before treating a Mercenary candidate as applicable.
 
 ## Report what the build does
 
-Each metric is one call on a [BuildMetrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.BuildMetrics) attached
+Each metric is one call on a [BuildMetrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.BuildMetrics) attached
 to the build with `BuildMetrics.Of(build)`. The figures below are one build's — a Federal
 Corvette.
 
@@ -280,7 +280,7 @@ cabins of the same class, so `D` is economy on one line and business on the othe
 
 The game's statistics panel counts the reserve tank in the current mass it displays;
 nothing here does, so add `FuelCapacity.Reserve` if you are reproducing that reading.
-[Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics) covers the mass curve those three
+[Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Build-metrics) covers the mass curve those three
 thruster figures describe.
 
 `PowerBudget().Bands` is what drives a priority-group table: a group is powered when its
@@ -302,7 +302,7 @@ IReadOnlyList<LoadoutIssue> issues = validation.Issues; // what, with a stable c
 
 Branch on each issue's `Code`, not on its `Severity` — the codes are the stable contract,
 and one severity covers problems that belong in different places on the panel.
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model) explains the codes and covers the
+[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model) explains the codes and covers the
 `…Result` methods for mobility, shields and shield recovery. On an imported build, read
 `ImportOutcomes` alongside the issues: validation says nothing about normalization, so an
 empty mount on your panel may be one the player left empty or one import emptied for them.
@@ -335,6 +335,6 @@ the fix is usually to carry less, not to refit.
 
 ## Next
 
-- [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF)
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Working-with-SLEF)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

@@ -2,8 +2,8 @@
  * Data-free shield collapse, regeneration and cell-bank aggregation calculations.
  *
  * Recovery timing is ported from EDCD/Coriolis at the revision recorded in
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md);
- * see [`ATTRIBUTIONS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md);
+ * see [`ATTRIBUTIONS.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */

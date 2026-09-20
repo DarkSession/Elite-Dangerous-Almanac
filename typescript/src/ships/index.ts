@@ -88,7 +88,7 @@
  *
  * Identity primarily from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`), with
  * supplemental module identities documented in the source record; stats and slot
- * layouts from EDCD/coriolis-data and EDSY. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * layouts from EDCD/coriolis-data and EDSY. See [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @example
  * **The whole-build layer.** {@link ShipLoadout} reads a capture and answers the

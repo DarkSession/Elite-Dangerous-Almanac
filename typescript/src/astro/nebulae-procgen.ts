@@ -7,7 +7,7 @@
  * catalogue identity. About 16 KiB bundled; the far larger planetary class lives in
  * `./nebulae-planetary`.
  *
- * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
+ * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation
  */

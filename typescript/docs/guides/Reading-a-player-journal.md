@@ -106,7 +106,7 @@ These views are snapshots, not live handles. After `setModule` or `removeModule`
 
 A journal's purchase figures remain separate from catalogue retail. For the source record,
 export options and edit behavior, see
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid).
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid).
 
 ## `SuitLoadout` → a suit and its weapons
 
@@ -235,7 +235,7 @@ nearestNebulae(position, REAL_NEBULAE, 1)[0]?.name; // -> 'Pleiades'
 ### Permit locks
 
 Pass `StarSystem` to the permit-lock lookup described in
-[Systems, sectors and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions#permit-locks).
+[Systems, sectors and regions](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Systems-and-regions#permit-locks).
 
 ## `Scan` → a body
 
@@ -346,7 +346,7 @@ and `rebuy` read `null`, since nothing records what the discarded module cost;
 `sourcePurchase` still reports the captured figures. A bulkhead, cargo hatch or approach
 suite stocked from *absence* is the exception and leaves the totals standing, while an
 absent core internal stocked from the defaults invalidates them like any other change.
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid)
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid)
 covers why, and what the captured figures are worth.
 
 `build.validation()` therefore reports the fit that remains: optional, hardpoint and
@@ -371,7 +371,7 @@ build.fittedModuleAt('Slot01_Size5'); // -> null if its imported symbol was unkn
 build.importOutcomes; // exact import changes for display or logging
 ```
 
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
 sets the validation and calculation patterns out in full.
 
 A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
@@ -379,7 +379,7 @@ A journal line is one `Loadout` event, and it is taken whole or refused: bad JSO
 case, say — throws `TypeError` from `fromLoadout`. Catch both when the bytes come from
 somewhere you do not control. A SLEF *file* holds several builds and can be part-good,
 which is its own question —
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Working-with-SLEF)
 covers `parseSlef` against `inspectSlef` and what each does with a bad entry.
 
 A suit loadout follows the same two rules. The suit itself has to resolve, because the
@@ -394,6 +394,6 @@ mount the event wrote, or `null` for a modification on the suit itself.
 
 ## Next
 
-- [Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Getting-started)
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [Getting started](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Getting-started)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

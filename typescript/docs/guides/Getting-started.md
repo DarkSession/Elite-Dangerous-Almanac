@@ -168,7 +168,7 @@ and no import of this package pulls an SVG into an application bundle.
 So the install is large and the import graph is not, which is a poor trade for
 applications that never render a hull. Moving the art into a package of its own is
 tracked as
-[issue #354](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/354).
+[issue #354](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/354).
 
 ## First calls
 
@@ -207,12 +207,12 @@ The one thing to know before your first call: **`null` is an ordinary answer, no
 error.** A lookup returns it when nothing matches, including a journal symbol absent from
 the catalogues. Malformed and out-of-range input throw instead.
 
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
 sets out all four outcomes, the `try…` variants that convert a throw into a `null`, and
 the diagnostic results returned by aggregate figures that may be unavailable.
 
 ## Next
 
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

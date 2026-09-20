@@ -6,7 +6,7 @@ import { join } from "node:path";
 
 import { checkLinks } from "./check-links.mjs";
 
-const wikiUrl = "https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki";
+const wikiUrl = "https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki";
 
 async function wiki(pages) {
   const wikiDir = await mkdtemp(join(tmpdir(), "check-links-"));

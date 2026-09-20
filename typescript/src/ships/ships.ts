@@ -11,7 +11,7 @@
  * Symbols and entitlements come from EDCD FDevIDs (`shipyard.csv`), with exact English
  * display names and stat corrections verified in-game. The remaining stats and slot
  * layout come primarily from EDCD/coriolis-data, joined on `symbol`; see
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

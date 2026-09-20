@@ -34,7 +34,7 @@
  * system-level flag would be wrong for them.
  *
  * Sourced from the community "Elite Dangerous Permit Database" spreadsheet via
- * canonn-signals; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
+ * canonn-signals; see [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @example
  * ```ts

@@ -2,7 +2,7 @@
 title: Working with SLEF
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Working with SLEF
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Working with SLEF
 
 # Working with SLEF
 
@@ -21,13 +21,13 @@ string hull = entries[0].Data.Ship;      // the hull symbol
 string tool = entries[0].Header.AppName; // which tool wrote it
 ```
 
-[Slef](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Slef) reads JSON text or a `JsonElement` you already parsed,
+[Slef](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Slef) reads JSON text or a `JsonElement` you already parsed,
 and it accepts three shapes in order of leniency: the standard array of envelopes, a
 single envelope, and a bare journal `Loadout` event, which is given an empty header of its
 own. A journal line pasted straight in is a valid input, not a special case.
 
 To go from a payload to something you can ask questions of, hand it to
-[ShipLoadout](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.ShipLoadout) instead:
+[ShipLoadout](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.ShipLoadout) instead:
 
 ```csharp
 using EliteDangerousAlmanac.Ships;
@@ -55,8 +55,8 @@ IReadOnlyList<SlefDiagnostic> rejected = seen.Diagnostics; // one per rejected e
 Use `Parse` when the payload is yours and a malformed entry is a bug you want to hear
 about. Use `Inspect` when you are importing a file a user handed you and would rather show
 them which of their five builds failed than reject all five. Each
-[SlefDiagnostic](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.SlefDiagnostic) carries the entry's `Index`, a
-[SlefDiagnosticCode](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Enumeration.SlefDiagnosticCode), the `Path` to the
+[SlefDiagnostic](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.SlefDiagnostic) carries the entry's `Index`, a
+[SlefDiagnosticCode](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Enumeration.SlefDiagnosticCode), the `Path` to the
 offending field and the constraint it broke — branch on those rather than on the English
 `Message`.
 
@@ -156,11 +156,11 @@ not make. Three stocked-from-absence articles are the exception and leave the to
 a bulkhead and a cargo hatch, which cost nothing, and a planetary approach suite, which
 costs too little to void a purchase record over — so a source total may understate the fit
 by that much, and by no more. `build.ImportOutcomes` says which — see
-[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
+[Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 
 One limit: what a capture never priced, it also never explains, so losing an unpriced
 module, to a removal or a replacement, cannot be detected.
-[LoadoutExportOptions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.LoadoutExportOptions) records that and the
+[LoadoutExportOptions](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.LoadoutExportOptions) records that and the
 other boundary cases.
 
 ## Mount-key spelling survives a round trip
@@ -185,7 +185,7 @@ the same blueprint at the same grade as one of its craftable recipes:
   it. That is what nearly every such block is, and a fixed article of the same module
   carrying that blueprint does not change the reading. It does make the reading a choice,
   though, so `ImportOutcomes` carries an
-  [EngineeringAmbiguous](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringAmbiguous) for that mount with
+  [EngineeringAmbiguous](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringAmbiguous) for that mount with
   the article it passed over in `PreEngineeredVariant`. Hand that straight to
   `ShipLoadout.SetPreEngineeredVariant` to take the other reading.
 - **The menu does not offer it** — no ordinary roll could have written the block, so a
@@ -193,7 +193,7 @@ the same blueprint at the same grade as one of its craftable recipes:
   and its fixed stats stand.
 
 Where neither answers, the module keeps unengineered figures and says so: `ImportOutcomes`
-carries an [EngineeringUnresolved](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringUnresolved) naming the
+carries an [EngineeringUnresolved](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringUnresolved) naming the
 mount, the module and the recipe.
 
 A block that *does* state `Modifiers` is the source's own account of the module and is kept
@@ -201,7 +201,7 @@ verbatim — its figures are what the game reported, and outrank anything the li
 recompute. The exception is a block that moves nothing: every label naming a stat the
 module has no value for, or no labels at all. Such a block describes some other module, so
 the recipe stated beside it is rolled in its place and `ImportOutcomes` reports the mount
-with an [EngineeringRerolled](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringRerolled).
+with an [EngineeringRerolled](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringRerolled).
 
 ```csharp
 using EliteDangerousAlmanac.Ships;
@@ -222,6 +222,6 @@ double? reload = build.FittedModuleAt("TinyHardpoint4")
 
 ## Next
 
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal)
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Building-an-outfitting-screen)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Reading-a-player-journal)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

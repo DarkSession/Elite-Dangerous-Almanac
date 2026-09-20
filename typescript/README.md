@@ -306,9 +306,9 @@ that same id.
   `ShipLoadout.fromSlef` throw `TypeError`, not `RangeError`, and `inspectSlef` reports it
   as a diagnostic.
 
-The [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
+The [repository README](https://github.com/Elite-Dangerous-Almanac/Almanac-Core#readme)
 contains the project guide. The generated
-[TypeScript wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
+[TypeScript wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/TypeScript)
 contains the guides and the complete API reference.
 
 ## Data and credits

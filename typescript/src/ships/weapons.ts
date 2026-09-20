@@ -25,7 +25,7 @@
  * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Module.js` (`getDps`,
  * `getSustainedFactor`, `getEps`, `getHps`), commit
  * `68c042ca6e3db62372cbbb2077cf972345511712`; cross-checked against EDSY. The algorithm is
- * ported as fact, not code; credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * ported as fact, not code; credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts

@@ -11,7 +11,7 @@
  *
  * Identity primarily from EDCD FDevIDs (`outfitting.csv`), with the bundle-granted
  * Vessel Hangar variants from a public CAPI capture; stats from EDCD/coriolis-data and
- * EDSY, joined on `symbol`. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * EDSY, joined on `symbol`. See [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

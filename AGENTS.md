@@ -213,7 +213,7 @@ python/        # (future) Python library — same features, same fixtures
 ## Tracking known gaps
 
 **Open gaps live in GitHub issues**, one issue per gap on
-`DarkSession/Elite-Dangerous-Almanac`.
+`Elite-Dangerous-Almanac/Almanac-Core`.
 
 When a change uncovers a gap it cannot fix in scope:
 
@@ -400,7 +400,7 @@ If npm succeeds but tag or GitHub Release creation fails, use **Re-run failed jo
 Setup this needs once, in repository settings, **before the first release**:
 
 1. Create an environment named `npm` (Settings → Environments), restrict its deployment branches to the default branch, and add required reviewers if publishing should need a second human approval.
-2. On npm, configure a GitHub Actions trusted publisher for `@elite-dangerous-almanac/core`: owner `DarkSession`, repository `Elite-Dangerous-Almanac`, workflow `publish-npm.yml`, environment `npm`. The workflow needs no long-lived npm token.
+2. On npm, configure a GitHub Actions trusted publisher for `@elite-dangerous-almanac/core`: owner `Elite-Dangerous-Almanac`, repository `Almanac-Core`, workflow `publish-npm.yml`, environment `npm`. The workflow needs no long-lived npm token.
 
 ## How the shared assets flow into TypeScript
 

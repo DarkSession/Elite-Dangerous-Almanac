@@ -7,7 +7,7 @@
  * `ships/experimental-effects`.
  *
  * Data from EDSY (`eddb.js` `expeffect`), with combat-effect costs from the Inara
- * registry; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * registry; see [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

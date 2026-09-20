@@ -13,8 +13,8 @@
     <Description>Static Elite Dangerous data and calculations: astronomy, ships and outfitting, Odyssey equipment, materials, commodities, localized display text and galaxy-map markers.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageProjectUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Elite-Dangerous-Almanac/Almanac-Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Elite-Dangerous-Almanac/Almanac-Core</RepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

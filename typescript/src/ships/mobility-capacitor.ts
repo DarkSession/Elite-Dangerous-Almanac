@@ -22,7 +22,7 @@
  * @remarks
  * Reference implementations: EDCD/Coriolis and EDSY; the algorithm is ported as fact,
  * not code, and credit and licence terms are in
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */

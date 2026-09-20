@@ -24,7 +24,7 @@ const FAMILY_NAMES = /* @__PURE__ */ createLocalizedNameIndex(familyNamesData as
  * `ShipLoadout.modulesForSlot()` returns from this lookup alone. The table bundles no
  * module stats. Missing translations never silently fall back to English: some
  * families have no source-backed label in any locale, tracked by
- * [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
+ * [#320](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/320).
  * @throws {TypeError} If `familyId` is present and not a string, or `locale` is not a
  * string. A nullish `familyId` is a lookup miss and returns `null`.
  * @example

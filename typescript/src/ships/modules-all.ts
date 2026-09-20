@@ -11,7 +11,7 @@
  *
  * Identity primarily from EDCD FDevIDs (`outfitting.csv`), with supplemental module
  * identities documented in the source record; stats from EDCD/coriolis-data and EDSY,
- * joined on `symbol`. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * joined on `symbol`. See [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

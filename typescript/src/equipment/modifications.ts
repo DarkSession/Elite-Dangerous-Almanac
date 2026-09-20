@@ -55,7 +55,7 @@ export interface PersonalModification {
      * weapon's two reload times are on its own `reloadTime`. Faster Handling, Improved
      * Hip Fire Accuracy, Stability and Improved Jump Assist do change stats, ones the
      * personal stats panel does not put a number on; see
-     * [`data/equipment/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/equipment/SOURCES.md).
+     * [`data/equipment/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/equipment/SOURCES.md).
      */
     readonly modifiers: readonly PersonalModifier[];
 }

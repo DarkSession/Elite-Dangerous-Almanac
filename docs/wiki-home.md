@@ -8,7 +8,7 @@ display text, market commodities, and the galaxy map's location markers.
 The same data and the same behaviour are published for two languages. Pick the one you
 are writing in; each has its own guides, its own reference and its own navigation.
 
-## [TypeScript](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
+## [TypeScript](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/TypeScript)
 
 ```bash
 npm install @elite-dangerous-almanac/core
@@ -22,10 +22,10 @@ import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural
 ProceduralSystem.fromName('Synuefe EN-H d11-96')?.systemAddress; // -> 3309179996515n
 ```
 
-**[Open the TypeScript wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)**
+**[Open the TypeScript wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/TypeScript)**
 — install, guides, and the complete API reference.
 
-## [.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)
+## [.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet)
 
 ```bash
 cd dotnet
@@ -42,7 +42,7 @@ ProceduralSystem? system = ProceduralSystem.FromName("Synuefai XU-M d8-79");
 ulong address = system!.SystemAddress;
 ```
 
-**[Open the .NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)**
+**[Open the .NET wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet)**
 — install, guides, and the complete API reference.
 
 ## Feature areas
@@ -67,6 +67,6 @@ each of them.
 
 The bundled game and community data has source-specific licensing, including
 non-commercial terms. Review
-[LICENSE](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/LICENSE) and
-[ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+[LICENSE](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/LICENSE) and
+[ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
 before redistribution or commercial use.

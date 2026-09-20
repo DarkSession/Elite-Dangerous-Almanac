@@ -9,7 +9,7 @@
  * in-game category check, and from two readings of the running game's own commodity
  * registry, whose difference is a batch of mineral, metal and chemical goods the FDevIDs
  * snapshot does not carry; see
- * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
+ * [`data/commodities/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/commodities/SOURCES.md).
  *
  * @packageDocumentation
  */

@@ -2,7 +2,7 @@
 title: Systems and regions
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Systems and regions
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Systems and regions
 
 # Systems and regions
 
@@ -12,7 +12,7 @@ covers the `id64` round trip that most tools need first.
 
 ## Names and addresses
 
-[ProceduralSystem](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Class.ProceduralSystem) is the handle that ties a
+[ProceduralSystem](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Class.ProceduralSystem) is the handle that ties a
 procedural name to its `id64` and back.
 
 ```csharp
@@ -35,7 +35,7 @@ procedural name raises `ArgumentOutOfRangeException`.
 An address is a `ulong`, which is the range the game's own `id64` occupies, so no address
 needs a wider type or a conversion. A decimal string — a query parameter, a configuration
 file, a column read as text — becomes one through
-[SystemAddress](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Class.SystemAddress).
+[SystemAddress](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Class.SystemAddress).
 
 ```csharp
 using EliteDangerousAlmanac.Astronomy;
@@ -59,10 +59,10 @@ SectorGridPosition grid = decoded.SectorGridPosition; // (39, 31, 18)
 
 Both are three numbers. The type names are what stop you mixing them up.
 
-- **[GalacticPosition](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.GalacticPosition)** is `X`, `Y`, `Z` in
+- **[GalacticPosition](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Record.GalacticPosition)** is `X`, `Y`, `Z` in
   **light-years**, Sol at the origin. This is what the journal's `StarPos`, EDSM and
   Spansh give you.
-- **[SectorGridPosition](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.SectorGridPosition)** is `SectorX`,
+- **[SectorGridPosition](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Record.SectorGridPosition)** is `SectorX`,
   `SectorY`, `SectorZ` — integer indices on the naming grid, whose cell edge is
   `GalaxyGrid.SectorEdgeLy`.
 
@@ -104,12 +104,12 @@ double? corner = NamingRegionOrigins.Resolve("Synuefai")?.X; // 1556480         
 `CodexRegionMap.FindAt` reads only the X and Z axes, because the codex map is an X/Z
 projection. Its overload taking a `GalacticPosition` accepts one as it comes and ignores
 the `Y`; the overload taking a
-[GalacticPlanePosition](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.GalacticPlanePosition) says the same
+[GalacticPlanePosition](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Record.GalacticPlanePosition) says the same
 thing in the type.
 
 `CodexRegion.Name` is the canonical English name. To show the region in the player's
 language, pass the identifier to
-[DisplayText.CodexRegionName](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization.Class.DisplayText),
+[DisplayText.CodexRegionName](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Localization.Class.DisplayText),
 which reads a separate catalogue so a region lookup never loads six languages:
 
 ```csharp
@@ -179,6 +179,6 @@ region-level flag only; individually locked systems are hand-named and so never 
 
 ## Next
 
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal)
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Reading-a-player-journal)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

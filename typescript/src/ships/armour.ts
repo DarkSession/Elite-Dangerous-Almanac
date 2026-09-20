@@ -19,7 +19,7 @@
  * @remarks
  * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Calculations.js`
  * (`armourMetrics`), commit `68c042ca6e3db62372cbbb2077cf972345511712`. The algorithm
- * is ported as fact, not code; credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * is ported as fact, not code; credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts

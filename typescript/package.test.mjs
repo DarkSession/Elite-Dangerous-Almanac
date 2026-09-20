@@ -1290,9 +1290,9 @@ test('the publication manifest includes consumer assets, documentation and notic
     assert.equal(pkg.license, 'SEE LICENSE IN LICENSE');
     assert.equal(
         pkg.repository.url,
-        'git+https://github.com/DarkSession/Elite-Dangerous-Almanac.git',
+        'git+https://github.com/Elite-Dangerous-Almanac/Almanac-Core.git',
     );
-    assert.equal(pkg.homepage, 'https://github.com/DarkSession/Elite-Dangerous-Almanac#readme');
+    assert.equal(pkg.homepage, 'https://github.com/Elite-Dangerous-Almanac/Almanac-Core#readme');
     assert.deepEqual(
         ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'PROVENANCE', 'assets'].map((name) => [
             name,

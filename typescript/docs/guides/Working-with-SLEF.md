@@ -142,7 +142,7 @@ alone: a bulkhead, a cargo hatch the capture left unpriced or priced at zero, an
 planetary approach suite, whose 500 Cr is too little to drop a purchase record over — so
 a source total may understate the fit by that much, and by no more.
 `build.importOutcomes` says which — see
-[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
+[Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown).
 
 One limit: what a capture never priced, it also never explains, so losing an unpriced
 module, to a removal or a replacement, cannot be detected.
@@ -207,6 +207,6 @@ build.fittedModuleAt('TinyHardpoint4')?.effectiveStats?.reloadTime; // -> 15
 
 ## Next
 
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Building-an-outfitting-screen)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

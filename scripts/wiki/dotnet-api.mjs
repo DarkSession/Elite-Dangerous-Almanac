@@ -216,7 +216,7 @@ function headingOf(member, type) {
 
 /** The `Defined in:` line, which points at the declaration in the repository. */
 function definedIn(file, line, commit) {
-  const url = `https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/${commit}/${file}#L${line}`;
+  const url = `https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/${commit}/${file}#L${line}`;
   return `Defined in: [${file}:${line}](${url})`;
 }
 

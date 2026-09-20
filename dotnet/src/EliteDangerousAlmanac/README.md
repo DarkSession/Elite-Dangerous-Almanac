@@ -30,7 +30,7 @@ The package carries game and community data under source-specific terms. Read
 redistribute it or use it commercially.
 
 The
-[.NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)
+[.NET wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet)
 carries the guides and the complete API reference: every namespace, type and member,
 generated from the documentation comments in the C# source.
 
@@ -116,7 +116,7 @@ The repository holds a gunsight, an illustration and two schematics for every ca
 hull, under `assets/ships/<symbol>/`, where the symbol is the one the ships catalogue
 answers with. They are not in this package, which would take it from a few megabytes to
 tens of them for files no call reads. Copy them from the
-[repository](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/ships).
+[repository](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/tree/main/assets/ships).
 
 ## Galaxy-map marker assets
 
@@ -141,7 +141,7 @@ can inline all of them. This content guarantee applies to the unmodified package
 
 ## Data provenance
 
-[ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+[ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
 names every source once, with its licence terms. Each data file names its own source in
 a comment header. The code and the documentation are under the MIT licence. The game and
 third-party data keeps its own terms, and the MIT licence does not extend to it.

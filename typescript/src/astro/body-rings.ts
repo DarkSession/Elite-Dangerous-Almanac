@@ -19,7 +19,7 @@
  * The maths is ported from the Canonn Research Group's
  * [canonn-signals](https://github.com/canonn-science/canonn-signals), whose ring model is
  * their own observational research; see
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts

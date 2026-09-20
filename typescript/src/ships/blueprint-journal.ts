@@ -35,7 +35,7 @@ import { requireString, requireStringIfPresent } from '../internal/argument-guar
  * The clip penalty is folded only where a module's menu offers the multi-cannon recipe —
  * anti-xeno multi-cannons have no ordinary menu, and cannons, fragment cannons and plasma
  * accelerators take no clip leg. See
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
+ * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md)
  * § "Multi-cannon Overcharged" for the captures.
  *
  * Only the module can settle it, which is why this takes one, and it resolves **into** a

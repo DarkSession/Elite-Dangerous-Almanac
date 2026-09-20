@@ -1,8 +1,8 @@
 The icons the galaxy map draws over a system, and the colours it draws them in.
 
-[GalaxyMapMarkerCatalogue](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.GalaxyMap.Class.GalaxyMapMarkerCatalogue)
+[GalaxyMapMarkerCatalogue](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.GalaxyMap.Class.GalaxyMapMarkerCatalogue)
 holds every marker, each a
-[GalaxyMapMarker](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.GalaxyMap.Record.GalaxyMapMarker)
+[GalaxyMapMarker](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.GalaxyMap.Record.GalaxyMapMarker)
 carrying its symbol, its glyph colour and its frame colour. Both colours are uppercase
 `#RRGGBB` strings, so a caller hands either straight to a colour parser or a brush.
 

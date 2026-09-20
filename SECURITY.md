@@ -10,7 +10,7 @@ are not maintained as separate support lines.
 Do not open a public issue for a suspected vulnerability. Use GitHub's private
 vulnerability reporting for this repository:
 
-<https://github.com/DarkSession/Elite-Dangerous-Almanac/security/advisories/new>
+<https://github.com/Elite-Dangerous-Almanac/Almanac-Core/security/advisories/new>
 
 Include the affected API or workflow, a minimal reproduction, the impact and any
 suggested mitigation. Remove commander names, account identifiers, credentials and

@@ -194,7 +194,7 @@ read from a `Loadout` event reports the game's `UnladenMass`, `CargoCapacity` an
 the hull defaults, it drops the capture's aggregates too: mass, cargo and fuel are recomputed
 from the normalized fit, while `modulesValue` and `rebuy` read `null`, because nothing
 records what the discarded article cost.
-[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown)
+[Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal#when-the-game-hands-you-something-unknown)
 names the stocked mounts that are exempt.
 
 **Absent is not zero, anywhere in the library** — and it is never a plausible-looking
@@ -300,6 +300,6 @@ megajoules — unless a symbol's own name says otherwise.
 
 ## Next
 
-- [Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Getting-started)
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [Getting started](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Getting-started)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

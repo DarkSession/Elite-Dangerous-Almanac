@@ -9,7 +9,7 @@
  * (`./nebulae-real`, `./nebulae-planetary`, `./nebulae-procgen`) and nothing else
  * gets bundled.
  *
- * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
+ * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation
  */
