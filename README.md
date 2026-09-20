@@ -28,6 +28,7 @@ by its .NET namespace.
 | `i18n`        | `Localization` | Sparse localized names and descriptions for modules, blueprints, effects, materials, micro resources, commodities, personal equipment and galactic codex regions |
 | `materials`   | `Materials`    | Ship engineering materials and Odyssey micro resources                                                                                                           |
 | `commodities` | `Commodities`  | Standard and rare market commodities                                                                                                                             |
+| `galaxy-map`  | `GalaxyMap`    | The galaxy map's location markers and the colours the game draws them in                                                                                         |
 
 ## TypeScript package
 
@@ -97,6 +98,10 @@ Ship gunsights, illustrations, and schematics live under `assets/ships/<symbol>/
 directory is the single source of truth; the TypeScript build copies it into the npm
 package under the same `assets/ships/` path.
 
+Galaxy-map markers live under `assets/galaxy-map/<symbol>.svg`, where `<symbol>` is the
+exact marker symbol from the shared catalogue. They are repository files; no package
+copies them.
+
 ## Development
 
 ### .NET
@@ -161,6 +166,7 @@ derivation and manual corrections live with the data:
 - [Localized-name sources](data/i18n/SOURCES.md)
 - [Material sources](data/materials/SOURCES.md)
 - [Commodity sources](data/commodities/SOURCES.md)
+- [Galaxy-map sources](data/galaxy-map/SOURCES.md)
 
 [data/SNAPSHOTS.md](data/SNAPSHOTS.md) defines the required provenance metadata. A test
 fixture is documented in its own header comment instead, which is where a captured build

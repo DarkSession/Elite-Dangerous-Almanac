@@ -42,6 +42,7 @@
       "definition": "equipmentSuitLoadouts",
       "files": ["equipment/suit-loadouts.jsonc"]
     },
+    { "definition": "galaxyMapMarkers", "files": ["galaxy-map/markers.jsonc"] },
     { "definition": "i18nDisplayText", "files": ["i18n/display-text.jsonc"] },
     { "definition": "i18nNames", "files": ["i18n/names.jsonc"] },
     {
@@ -1911,6 +1912,29 @@
         }
       },
       "required": ["capture", "imports", "recipeSpelling", "refusals"]
+    },
+    "galaxyMapMarkers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "count": { "type": "integer" },
+        "distinctColors": { "type": "array", "items": { "type": "string" } },
+        "framedDifferently": { "type": "array", "items": { "type": "string" } },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "color": { "type": "string" },
+              "frameColor": { "type": "string" },
+              "symbol": { "type": "string" }
+            },
+            "required": ["color", "frameColor", "symbol"]
+          }
+        }
+      },
+      "required": ["count", "distinctColors", "framedDifferently", "records"]
     },
     "i18nDisplayText": {
       "type": "object",

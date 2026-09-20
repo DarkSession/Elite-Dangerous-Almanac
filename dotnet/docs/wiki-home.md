@@ -4,8 +4,8 @@
 
 Static Elite Dangerous data and calculations for .NET applications — procedural system
 names and system addresses, galactic regions and nebulae, ships and outfitting with build
-metrics, personal equipment and engineering materials, localized display text, and market
-commodities.
+metrics, personal equipment and engineering materials, localized display text, market
+commodities, and the galaxy map's location markers.
 
 The package is not on NuGet yet, so it is built from the repository:
 
@@ -62,6 +62,7 @@ Every area is one namespace under `EliteDangerousAlmanac`.
 | [Localization](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization) | Display names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and personal equipment |
 | [Materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Materials) | Ship engineering materials and Odyssey micro resources |
 | [Commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Commodities) | Market commodities, standard and rare |
+| [GalaxyMap](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.GalaxyMap) | The galaxy map's location markers and the colours the game draws them in |
 
 **[Browse the complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)**
 — every namespace, type and member, generated from the source documentation.
@@ -73,6 +74,19 @@ hull, under `assets/ships/<symbol>/`, where the symbol is the one the ships cata
 answers with. They are not in the package, which would take it from a few megabytes to
 tens of them for files no call reads. Copy them from the
 [repository](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/ships).
+
+## Galaxy-map marker assets
+
+The repository holds one SVG per galaxy-map marker, under `assets/galaxy-map/<symbol>.svg`,
+where the symbol is the one `GalaxyMapMarkerCatalogue` answers with. They are not in the
+package either. Copy them from the
+[repository](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/galaxy-map).
+
+Every shape in an asset paints with `currentColor`, and the root `<svg>` carries the
+marker's own colour. A host that embeds the file inline therefore recolours it with one
+CSS `color` declaration, and one that loads it with `<img>` keeps the game's colour.
+`front-line.svg` is the exception: its frame holds the frame colour as a literal, which
+no `color` declaration reaches.
 
 ## Licensing
 

@@ -29,7 +29,7 @@ public class SharedDataFilesTests
     {
         IReadOnlyList<string> paths = DataPaths();
         Assert.NotEmpty(paths);
-        foreach (string domain in new[] { "astro", "commodities", "equipment", "i18n", "materials", "ships" })
+        foreach (string domain in new[] { "astro", "commodities", "equipment", "galaxy-map", "i18n", "materials", "ships" })
         {
             Assert.Contains(paths, path => path.StartsWith($"data/{domain}/", StringComparison.Ordinal));
         }

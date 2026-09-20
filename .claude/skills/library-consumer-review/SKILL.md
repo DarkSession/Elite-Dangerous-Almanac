@@ -188,7 +188,7 @@ Answer the user's three questions directly, in this order:
 
 ## What ships today
 
-Two packages, six feature areas each, both backed by the same shared `data/` and
+Two packages carrying the same feature areas, both backed by the same shared `data/` and
 `fixtures/`. TypeScript publishes one subpath per area, .NET one namespace:
 **`./astro`** / **`Astronomy`** (procedural names, id64 addresses, regions,
 nebulae, permit locks, body physics), **`./ships`** / **`Ships`** (ship and
@@ -196,7 +196,8 @@ outfitting catalogues, engineering, loadouts, and build metrics — power, shiel
 armour, resistances, weapons, jump range), **`./equipment`** / **`Equipment`**
 (Odyssey suits, handheld weapons, upgrades, modifications), **`./i18n`** /
 **`Localization`** (localized display text), **`./materials`** / **`Materials`**,
-and **`./commodities`** / **`Commodities`**.
+**`./commodities`** / **`Commodities`**, and **`./galaxy-map`** / **`GalaxyMap`**
+(the galaxy map's location markers and their colours).
 
 The TypeScript package is on npm; the .NET package is built from the repository and
 targets .NET Standard 2.1. `python/` does not exist yet.

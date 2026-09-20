@@ -1,0 +1,44 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the galaxy-map marker catalogue (data/galaxy-map/markers.jsonc).
+ * `count` pins the size of the catalogue. `records` pins every marker's glyph and
+ * frame colours, read from captures of the in-game galaxy map. `distinctColors` pins
+ * the palette the markers draw from, because several markers share one colour.
+ * `framedDifferently` names every marker whose frame colour differs from its glyph
+ * colour; each colour is an uppercase seven-character `#RRGGBB` string.
+ */
+{
+  "count": 16,
+  "records": [
+    { "symbol": "bookmark", "color": "#FF2800", "frameColor": "#FF2800" },
+    { "symbol": "community-goal", "color": "#FF9A00", "frameColor": "#FF9A00" },
+    { "symbol": "conflict-zone", "color": "#FFAE00", "frameColor": "#FFAE00" },
+    { "symbol": "destination", "color": "#FF2800", "frameColor": "#FF2800" },
+    { "symbol": "engineer", "color": "#FF2800", "frameColor": "#FF2800" },
+    { "symbol": "fleet-carrier", "color": "#FF2800", "frameColor": "#FF2800" },
+    { "symbol": "front-line", "color": "#9418FF", "frameColor": "#4A00B5" },
+    { "symbol": "mission", "color": "#005DFF", "frameColor": "#005DFF" },
+    { "symbol": "squadron-carrier", "color": "#63FFF7", "frameColor": "#63FFF7" },
+    { "symbol": "starter-zone", "color": "#FF2800", "frameColor": "#FF2800" },
+    { "symbol": "station-abandoned", "color": "#211C21", "frameColor": "#211C21" },
+    { "symbol": "station-damaged", "color": "#FF3400", "frameColor": "#FF3400" },
+    { "symbol": "station-repairing", "color": "#FF9210", "frameColor": "#FF9210" },
+    { "symbol": "station-under-attack", "color": "#FF0000", "frameColor": "#FF0000" },
+    { "symbol": "titan", "color": "#FF0000", "frameColor": "#FF0000" },
+    { "symbol": "waypoint", "color": "#FF2800", "frameColor": "#FF2800" }
+  ],
+  "distinctColors": [
+    "#005DFF",
+    "#211C21",
+    "#63FFF7",
+    "#9418FF",
+    "#FF0000",
+    "#FF2800",
+    "#FF3400",
+    "#FF9210",
+    "#FF9A00",
+    "#FFAE00"
+  ],
+  "framedDifferently": ["front-line"]
+}

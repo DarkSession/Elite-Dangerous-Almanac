@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" color="#FF9A00" role="img">
+  <title>Community goal</title>
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4"/>
+  <defs><path id="community-goal-point" d="M41.39,49.66 L22.61,49.66 L32,40.8 Z"/></defs>
+  <g fill="currentColor">
+    <use href="#community-goal-point"/>
+    <use href="#community-goal-point" transform="rotate(72 32 32)"/>
+    <use href="#community-goal-point" transform="rotate(144 32 32)"/>
+    <use href="#community-goal-point" transform="rotate(216 32 32)"/>
+    <use href="#community-goal-point" transform="rotate(288 32 32)"/>
+  </g>
+</svg>

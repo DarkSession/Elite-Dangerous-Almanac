@@ -31,7 +31,7 @@ Use a feature barrel when a bundler will tree-shake it:
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro';
 ```
 
-There is no package-wide root entry; choose one of the six feature areas or a leaf.
+There is no package-wide root entry; choose a feature area or a leaf.
 
 Use leaf subpaths to avoid evaluating unrelated data modules in native ESM:
 
@@ -43,7 +43,7 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 The heavyweight module registries, planetary/combined nebula catalogues and codex-region
 coordinate lookup are only exported from their leaf subpaths, not the feature barrels.
 
-The package has six feature areas:
+The package covers these feature areas:
 
 - `astro`: procedural names, id64 addresses, regions, nebulae, permit locks, and scanned
   bodies with their physics;
@@ -53,7 +53,9 @@ The package has six feature areas:
 - `i18n`: sparse localized catalogue names, descriptions, slot labels and structured
   diagnostic messages;
 - `materials`: ship engineering materials and Odyssey micro resources;
-- `commodities`: standard and rare market goods.
+- `commodities`: standard and rare market goods;
+- `galaxy-map`: the galaxy map's location markers and the colours the game draws them
+  in.
 
 ## Ship assets
 
@@ -97,6 +99,20 @@ The schematic documents are safe to embed inline as supplied: they contain only 
 foreign or media elements, links, external references, or CSS `url()` values. This
 content guarantee applies to the unmodified package files; applications remain
 responsible for any transformations or user-supplied replacements.
+
+## Galaxy-map marker assets
+
+The `galaxy-map` catalogue reports each marker's colours, and one SVG per marker holds
+the icon. The package does not carry those files. They live in the repository, at
+[`assets/galaxy-map/<symbol>.svg`](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/galaxy-map),
+where `<symbol>` is the exact symbol the catalogue returns. Copy them into your own
+asset directory.
+
+Every shape in an asset paints with `currentColor`, and the root `<svg>` carries the
+marker's own colour. A host that embeds the file inline therefore recolours it with one
+CSS `color` declaration, and one that loads it with `<img>` keeps the game's colour.
+`front-line.svg` is the exception: its frame holds the frame colour as a literal, which
+no `color` declaration reaches.
 
 ## Examples
 

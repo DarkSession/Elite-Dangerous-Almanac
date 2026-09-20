@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" color="#FF2800" role="img">
+  <title>Bookmark</title>
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4"/>
+  <path fill="currentColor" d="M21,14 H43 V50 L32,40 21,50 Z"/>
+</svg>

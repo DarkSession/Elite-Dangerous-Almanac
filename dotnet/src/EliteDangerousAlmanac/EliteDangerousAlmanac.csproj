@@ -10,7 +10,7 @@
       the API is still open to change.
     -->
     <Version>0.2.0</Version>
-    <Description>Static Elite Dangerous data and calculations: astronomy, materials, commodities, Odyssey equipment and localized display text.</Description>
+    <Description>Static Elite Dangerous data and calculations: astronomy, ships and outfitting, Odyssey equipment, materials, commodities, localized display text and galaxy-map markers.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</PackageProjectUrl>
