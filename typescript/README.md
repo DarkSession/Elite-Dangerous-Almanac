@@ -68,9 +68,19 @@ assets/ships/<symbol>/schematic-top.svg
 assets/ships/<symbol>/schematic-bottom.svg
 ```
 
-`<symbol>` is the exact ship symbol returned by the ships catalogue. These are static
-package files rather than JavaScript subpath exports, so applications can copy them from
-the installed package into their own public or bundled asset directory.
+`<symbol>` is the exact ship symbol returned by the ships catalogue. The package exports
+every asset path under `@elite-dangerous-almanac/core/assets/`, so an application names
+the file the catalogue names and lets its own bundler emit it:
+
+```text
+import illustration from '@elite-dangerous-almanac/core/assets/ships/SideWinder/illustration.svg?url';
+```
+
+The `?url` suffix is Vite's syntax, not the package's. Another bundler reaches the same
+path through its own asset rule — webpack 5 takes a plain import against an
+`asset/resource` rule, or `new URL('<path>', import.meta.url)`. TypeScript needs an
+ambient declaration for whichever form you use, such as `vite/client` or your own
+`declare module '*.svg?url'`; the package ships none, because the form is the bundler's.
 
 `gunsight.svg` is a `600 × 600` frontal plot of the fixed-weapon aim points at a nominal
 1,000-metre target range. Each weapon group under `#weapon-dots` carries the same
@@ -109,9 +119,12 @@ holds one SVG per marker:
 assets/galaxy-map/<symbol>.svg
 ```
 
-`<symbol>` is the exact symbol the catalogue returns. These are static package files
-rather than JavaScript subpath exports, so applications can copy them from the installed
-package into their own public or bundled asset directory.
+`<symbol>` is the exact symbol the catalogue returns, and the package exports that path,
+so the catalogue and the artwork stay one source:
+
+```text
+import titan from '@elite-dangerous-almanac/core/assets/galaxy-map/titan.svg?url';
+```
 
 A marker is safe to embed inline as supplied: it holds only static `svg`, `title`,
 `defs`, `mask`, `filter`, `feGaussianBlur`, `g`, `use`, `path`, `rect`, `circle` and

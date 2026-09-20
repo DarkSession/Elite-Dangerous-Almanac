@@ -11,8 +11,8 @@
  * GALAXY_MAP_MARKERS[0].symbol;             // -> 'bookmark'
  * ```
  *
- * A symbol also names the marker's vector asset, which the package carries under
- * `assets/galaxy-map/`, so one string gives both the colour and the file:
+ * A symbol also names the marker's vector asset, so one string gives both the colour
+ * and the file:
  *
  * ```ts
  * import { getGalaxyMapMarker } from '@elite-dangerous-almanac/core/galaxy-map';
@@ -20,6 +20,11 @@
  * const symbol = getGalaxyMapMarker('titan')?.symbol ?? 'unknown';
  * `assets/galaxy-map/${symbol}.svg`; // -> 'assets/galaxy-map/titan.svg'
  * ```
+ *
+ * The package exports that path under `@elite-dangerous-almanac/core/assets/`. A
+ * bundler resolves an asset import statically, so write the whole specifier as a
+ * literal — `@elite-dangerous-almanac/core/assets/galaxy-map/titan.svg` — rather than
+ * building it from a symbol at run time.
  *
  * Every shape in an asset paints with `currentColor`, and the root `<svg>` carries the
  * marker's own colour. A host that embeds the file inline therefore recolours it with
