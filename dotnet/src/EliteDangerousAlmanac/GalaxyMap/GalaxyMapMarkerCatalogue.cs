@@ -14,9 +14,9 @@ namespace EliteDangerousAlmanac.GalaxyMap;
 /// is consistent about, and this catalogue reports it.
 /// </para>
 /// <para>
-/// A marker's <see cref="GalaxyMapMarker.Symbol"/> also names its vector asset under
-/// <c>assets/galaxy-map/</c>, whose root <c>&lt;svg&gt;</c> carries the same colour. The
-/// assets are shared repository files rather than package content.
+/// A marker's <see cref="GalaxyMapMarker.Symbol"/> also names its vector asset, which the
+/// package carries under <c>assets/galaxy-map/</c>. Its root <c>&lt;svg&gt;</c> carries
+/// the same colour.
 /// </para>
 /// <para>
 /// The colours are read from the in-game galaxy map. See

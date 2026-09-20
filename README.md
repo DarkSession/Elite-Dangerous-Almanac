@@ -99,8 +99,8 @@ directory is the single source of truth; the TypeScript build copies it into the
 package under the same `assets/ships/` path.
 
 Galaxy-map markers live under `assets/galaxy-map/<symbol>.svg`, where `<symbol>` is the
-exact marker symbol from the shared catalogue. They are repository files; no package
-copies them.
+exact marker symbol from the shared catalogue. Both builds copy them into their
+packages under the same path.
 
 ## Development
 

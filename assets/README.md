@@ -33,6 +33,9 @@ file is named with the exact `symbol` from `data/galaxy-map/markers.jsonc`:
 assets/galaxy-map/<symbol>.svg
 ```
 
+Both builds copy `galaxy-map/` byte-for-byte into their packages, under the same
+`assets/galaxy-map/` path.
+
 Each marker is a hand-drawn vector recreation of the in-game icon on a `64 × 64`
 canvas, built from geometric shapes rather than traced from the bitmap. Every file
 holds one `<title>`, the square frame, and the glyph inside it.

@@ -77,16 +77,24 @@ tens of them for files no call reads. Copy them from the
 
 ## Galaxy-map marker assets
 
-The repository holds one SVG per galaxy-map marker, under `assets/galaxy-map/<symbol>.svg`,
-where the symbol is the one `GalaxyMapMarkerCatalogue` answers with. They are not in the
-package either. Copy them from the
-[repository](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/galaxy-map).
+The package carries one SVG per galaxy-map marker, at `assets/galaxy-map/<symbol>.svg`,
+where the symbol is the one `GalaxyMapMarkerCatalogue` answers with. NuGet extracts them
+to `~/.nuget/packages/elitedangerousalmanac/<version>/assets/galaxy-map/`.
+A `PackageReference` does not copy them into your build, so copy the ones you draw into
+your application's own asset directory.
 
 Every shape in an asset paints with `currentColor`, and the root `<svg>` carries the
 marker's own colour. A host that embeds the file inline therefore recolours it with one
 CSS `color` declaration, and one that loads it with `<img>` keeps the game's colour.
 `front-line.svg` is the exception: its frame holds the frame colour as a literal, which
 no `color` declaration reaches.
+
+A marker is safe to embed inline as supplied: it holds only static `svg`, `title`,
+`defs`, `mask`, `filter`, `feGaussianBlur`, `g`, `use`, `path`, `rect`, `circle` and
+`ellipse` elements, and every `href`, `mask` and `filter` points inside the same file.
+There are no scripts, styles, event-handler attributes, foreign or media elements,
+links or external references. Every definition id is unique across the set, so a page
+can inline all of them. This content guarantee applies to the unmodified package files.
 
 ## Licensing
 
