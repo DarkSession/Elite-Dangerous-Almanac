@@ -7,7 +7,7 @@
  * a base module `symbol` (joins to the module catalogues) with the journal `blueprintSymbol` identity
  * baked in, the `grade` already applied, and an optional `experimentalEffectSymbol`. The three festive event
  * rewards carry grade-5 `Decorative_*` identities. `engineeringLocked` marks final articles that
- * accept no further engineering: the seven Guardian-weapon variants and the five fixed Enzyme/AX
+ * accept no further engineering: the Guardian-weapon variants and the fixed Enzyme/AX
  * variants. No narrower key than the (symbol, blueprintSymbol, grade, experimentalEffectSymbol)
  * tuple is unique across the catalogue — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the

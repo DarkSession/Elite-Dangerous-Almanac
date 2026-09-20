@@ -14,12 +14,14 @@ immutable identifier for its interface artwork, so the captures are the evidence
   `assets/galaxy-map/`. `color` is the exact RGB value of the capture's dominant opaque
   glyph pixel, written as uppercase `#RRGGBB`. `frameColor` is the same measurement taken
   on the square border.
-- **The captures are not retained, and they carry no checksum.** They are
-  Frontier's artwork, and the media-usage rules in `ATTRIBUTIONS.md` cover the redrawn
-  vectors this repository ships, not a redistributed copy of the source bitmaps. The
-  vectors are drawn from geometric shapes rather than traced, so a capture is not
-  recoverable from one. `data/SNAPSHOTS.md` asks for a checksum where the content itself
-  cannot be kept, so this is a gap: #59 records what would close it.
+- **The captures are not retained in this repository, and no checksum was taken.**
+  They are Frontier's artwork, and the media-usage rules in `ATTRIBUTIONS.md` cover the
+  redrawn vectors this repository ships, not a redistributed copy of the source
+  bitmaps. The vectors are drawn from geometric shapes rather than traced, so a capture
+  is not recoverable from one. `data/SNAPSHOTS.md` asks for a checksum where the
+  content itself cannot be kept, so this is a gap. Recording each capture's SHA-256
+  here closes it, so that a reader holding the same file can confirm every colour
+  against it.
 
 ### Measuring a capture
 

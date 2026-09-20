@@ -151,11 +151,6 @@ export interface PreEngineeredVariant {
 /**
  * Every pre-engineered module variant, whether purchased, unlocked or awarded.
  *
- * @remarks
- * This catalogue omits pre-engineered Guardian module rewards whose variant details have
- * no traceable source. The gap is tracked at
- * https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/224.
- *
  * @example
  * ```ts
  * import { PRE_ENGINEERED_MODULES } from '@elite-dangerous-almanac/core/ships/pre-engineered';

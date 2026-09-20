@@ -22,9 +22,9 @@ const FAMILY_NAMES = /* @__PURE__ */ createLocalizedNameIndex(familyNamesData as
  * @remarks
  * Every module carries a family, so an outfitting list can group and label every choice
  * `ShipLoadout.modulesForSlot()` returns from this lookup alone. The table bundles no
- * module stats. Missing translations never silently fall back to English: some
- * families have no source-backed label in any locale, tracked by
- * [#320](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/320).
+ * module stats. Missing translations never silently fall back to English: a family the
+ * game does not name separately in its outfitting menu carries its canonical English
+ * alone, until a source publishes the other five locales.
  * @throws {TypeError} If `familyId` is present and not a string, or `locale` is not a
  * string. A nullish `familyId` is a lookup miss and returns `null`.
  * @example

@@ -120,10 +120,6 @@ public static class PreEngineeredCatalogue
     private static readonly Lazy<IReadOnlyList<PreEngineeredVariant>> Variants = new(Load);
 
     /// <summary>Every pre-engineered module variant, whether purchased, unlocked or awarded.</summary>
-    /// <remarks>
-    /// It omits the pre-engineered Guardian module rewards whose variant details have no
-    /// traceable source.
-    /// </remarks>
     public static IReadOnlyList<PreEngineeredVariant> All => Variants.Value;
 
     /// <summary>Every pre-engineered variant of one base module.</summary>

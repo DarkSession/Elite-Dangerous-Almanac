@@ -103,9 +103,8 @@ tag follows the rule above, so `pt-PT` resolves to Brazilian Portuguese.
   shape in the shipped Mk II Vessel Hangar and Mk II Cargo Rack, which suffix `Mk II`;
   **German does not** — Frontier writes `Mk-II-Schiffshangar` for the hangar and
   `Frachtgestell für Mk II` for the rack, so the German value here matches neither and is
-  the likeliest of the five to be wrong. All five are to be replaced by a real
-  localisation reading on release, and none should be treated as evidence of what
-  Frontier publishes. #16 tracks them with the records themselves.
+  the likeliest of the five to be wrong. A real localisation reading on release replaces
+  all five; none is evidence of what Frontier publishes.
 
 ## `blueprint-names.jsonc`
 
@@ -634,9 +633,8 @@ record in this repository is keyed by them.
   otherwise own, so a consumer that needs a field label supplies its own. The weapon-mount
   rows are outside this conclusion: `Suit.mounts` carries Frontier's own journal
   `SlotName` for each one, so a mount row names a record this repository holds and its
-  localization is a gap rather than an invented key. **This is not the ship slot and
-  restriction gap of [#320](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/320)**,
-  which is about labels no source translates at all.
+  localization is a gap rather than an invented key. **The slot and restriction labels
+  are a separate gap**: no source translates them at all. §Known gaps records both.
 
 ## Known gaps
 
@@ -645,13 +643,13 @@ stored locale. A language absent from every catalogue is the locale decision
 recorded above rather than a gap. The accepted sources carry only canonical English for
 the outfitting-family labels listed above, slot and restriction labels, the suit
 weapon-mount labels, fixed reward names, and structured loadout, calculation, SLEF and
-edit messages. A missing source-backed translation that has no issue of its own
-remains tracked by
-[#320](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/320).
+edit messages. An accepted source that publishes the missing values closes each of
+those gaps, except the last: the structured messages are this library's own English
+text, which no source publishes.
 
 Every suit, handheld weapon, tool and modification the personal-equipment catalogues
 hold is complete in all six locales. That area carries these gaps:
 
 - **The suit weapon-mount labels are English only.** The game publishes all six locales
-  for them, so the values exist to be read. The gap is tracked by
-  [#26](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/26).
+  for them, so the values exist to be read. A reading of the in-game localisation table
+  for the five non-English locales closes it.

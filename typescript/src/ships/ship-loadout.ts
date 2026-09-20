@@ -866,9 +866,7 @@ export class ShipLoadout {
         const requested = requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol');
         const ship = getShipBySymbol(requested);
         if (!ship) {
-            // Truncated so this method's two failures agree; messages elsewhere still
-            // quote a caller's string in full —
-            // https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/213.
+            // Truncated so this method's two failures agree.
             throw new TypeError(
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
