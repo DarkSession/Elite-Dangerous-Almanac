@@ -538,21 +538,21 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
-        "@jridgewell/sourcemap-codec": "^1.5.5",
-        "@types/node": "^26.1.2",
+        "@jridgewell/sourcemap-codec": "^1.6.0",
+        "@types/node": "^26.5.1",
         "ajv": "^8.20.0",
         "es-module-lexer": "2.3.2",
         "esbuild": "0.28.2",
-        "eslint": "^10.8.0",
-        "globals": "^17.9.0",
+        "eslint": "^10.10.0",
+        "globals": "^17.12.0",
         "prettier": "^3.9.6",
-        "terser": "^5.49.2",
+        "terser": "^5.51.2",
         "tsup": "^8.5.1",
-        "tsx": "^4.23.8",
+        "tsx": "^4.23.13",
         "typedoc": "^0.28.20",
-        "typedoc-github-wiki-theme": "^2.1.0",
-        "typedoc-plugin-markdown": "^4.12.0",
+        "typedoc-github-wiki-theme": "^2.1.1",
+        "typedoc-plugin-markdown": "^4.13.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.66.0"
+        "typescript-eslint": "^8.70.0"
     }
 }
