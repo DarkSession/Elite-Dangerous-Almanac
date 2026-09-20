@@ -207,8 +207,9 @@ Developments plc — see the notice below.
 
 ## Elite Dangerous game data and imagery (Frontier media-usage notice)
 
-The ship and module stat values and the ship illustrations are the property of
-**Frontier Developments plc** and are used under Frontier's
+The ship and module stat values, the ship illustrations, and the galaxy-map marker
+colours and vectors are the property of **Frontier Developments plc** and are used
+under Frontier's
 [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/):
 
 > Elite Dangerous Almanac was created using assets and imagery from Elite
@@ -227,9 +228,10 @@ derived and every manual correction are recorded with the data itself, in
 [`data/materials/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/materials/SOURCES.md),
 [`data/equipment/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/equipment/SOURCES.md),
 [`data/i18n/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/i18n/SOURCES.md),
-[`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md)
+[`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md),
+[`data/commodities/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/commodities/SOURCES.md)
 and
-[`data/commodities/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/commodities/SOURCES.md),
+[`data/galaxy-map/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/galaxy-map/SOURCES.md),
 with the rules those files follow in
 [`data/SNAPSHOTS.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/SNAPSHOTS.md).
 The npm package includes matching copies under `PROVENANCE/` (without the `data/`
