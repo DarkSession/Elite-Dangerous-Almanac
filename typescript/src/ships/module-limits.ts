@@ -3,7 +3,7 @@
  *
  * The base allowances and fitted increases reproduce EDSY's `limit` / `unlimit`
  * model. See
- * [`ATTRIBUTIONS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+ * [`ATTRIBUTIONS.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
  * for source credit and licence details.
  *
  * @packageDocumentation
@@ -59,7 +59,7 @@ export interface ModuleLimitUsage {
  *
  * @remarks
  * This calculation reproduces EDSY's per-ship `limit` / `unlimit` model; see
- * [`ATTRIBUTIONS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [`ATTRIBUTIONS.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @param modules - Fitted modules reduced to their optional limit metadata. Every entry
  * carrying `limitGroup` consumes one place; every `limitIncrease` raises the named

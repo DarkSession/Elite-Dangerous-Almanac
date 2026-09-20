@@ -17,7 +17,7 @@
  *
  * Ported and restructured from the EDTS reference algorithm (`edtslib/pgdata.py`), via
  * the canonn-signals TypeScript port. Credit and licence terms, including the BSD
- * 3-Clause text EDTS requires be reproduced, are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * 3-Clause text EDTS requires be reproduced, are in [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */

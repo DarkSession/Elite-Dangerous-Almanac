@@ -2,7 +2,7 @@
 title: Reading a player journal
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Reading a player journal
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Reading a player journal
 
 # Reading a player journal
 
@@ -57,7 +57,7 @@ Every record the library reads from the wire carries the journal's own field nam
 ## `Loadout` → a fitted ship
 
 A bare journal `Loadout` event is one of the shapes
-[Slef](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Slef) accepts, so the line goes straight in.
+[Slef](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Slef) accepts, so the line goes straight in.
 `ShipLoadout.FromLoadout` takes the same event as a typed record, for a capture you
 already read.
 
@@ -114,7 +114,7 @@ These views are snapshots, not live handles. After `SetModule` or `RemoveModule`
 
 A journal's purchase figures remain separate from catalogue retail. For the source record,
 export options and edit behaviour, see
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid).
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid).
 
 ## `SuitLoadout` → a suit and its weapons
 
@@ -192,7 +192,7 @@ to compute what it does.
 Greater Range, Headshot Damage and Improved Hip Fire Accuracy each carry a Kinetic, a
 Laser and a Plasma recipe whose material costs differ, and the journal writes one symbol
 for all three. The weapon at the mount settles which one, so each
-[FittedPersonalModification](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Equipment.Record.FittedPersonalModification)
+[FittedPersonalModification](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Equipment.Record.FittedPersonalModification)
 reports both spellings: `JournalSymbol` as the event wrote it, and `Symbol` as the
 modification and cost catalogues key it. Every symbol an event writes — a mount, a weapon,
 a recipe — is matched with its case and surrounding whitespace ignored, and the loadout
@@ -224,7 +224,7 @@ stored address that reaches you as text goes through `SystemAddress.Parse` or
 
 `FSDJump` carries `StarPos` as `[x, y, z]` light-years. Reshape it before use — the
 library takes a
-[GalacticPosition](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.GalacticPosition) so the two coordinate
+[GalacticPosition](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Record.GalacticPosition) so the two coordinate
 spaces cannot be confused.
 
 ```csharp
@@ -241,12 +241,12 @@ string nearest = NebulaCatalogue.Nearest(position, NebulaCatalogue.Real, 1)[0].N
 ### Permit locks
 
 Pass `StarSystem` to the permit-lock lookup described in
-[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-and-regions#permit-locks).
+[Systems and regions](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Systems-and-regions#permit-locks).
 
 ## `Scan` → a body
 
 There is nothing to convert.
-[BodyScanEvent](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.BodyScanEvent) **is** the `Scan` event — the
+[BodyScanEvent](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Record.BodyScanEvent) **is** the `Scan` event — the
 journal's own field names, capitalisation and units — so a deserialized line is already
 the right type.
 
@@ -267,7 +267,7 @@ treat a missing field as "not written for this body", never as a zero.
 ### Working out what it means
 
 The calculations take a
-[BodyProperties](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy.Record.BodyProperties) — the physical half of the
+[BodyProperties](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy.Record.BodyProperties) — the physical half of the
 event, with none of the journal's bookkeeping required — and `BodyScanEvent` is one, so
 the scan goes straight in, and so does a record you rebuilt from a database.
 
@@ -353,7 +353,7 @@ sold one. Every hull leaves the shipyard carrying the advanced suite, which is w
 and draws no power, so no build gains by shedding it — and an exporter that models no such
 mount, as Inara does not, writes no entry for it either. So an event that names none
 imports carrying the hull's own `Int_PlanetApproachSuite_Advanced`, reported as a
-[ModuleDefaulted](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.ModuleDefaulted) like any other stocked mount.
+[ModuleDefaulted](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.ModuleDefaulted) like any other stocked mount.
 Unlike armour and the core internals it stays removable, so a build that really does fly
 without one is a `RemoveModule` away.
 
@@ -363,23 +363,23 @@ cargo and fuel capacity are recomputed from the fit that remains, while `Modules
 `SourcePurchase` still reports the captured figures. A bulkhead, cargo hatch or approach
 suite stocked from *absence* is the exception and leaves the totals standing, while an
 absent core internal stocked from the defaults invalidates them like any other change.
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid)
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid)
 covers why, and what the captured figures are worth.
 
 `Validation` therefore reports the fit that remains: optional, hardpoint and utility
 modules leave empty mounts and need no diagnostic, while required armour and core mounts
 remain complete through their stock replacements. `ImportOutcomes` is the read-only,
 machine-readable account of each change, one record per mount:
-[ModuleEmptied](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.ModuleEmptied) where an unresolvable article was
+[ModuleEmptied](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.ModuleEmptied) where an unresolvable article was
 discarded and `ModuleDefaulted` where a stock one was fitted, each naming the source
 symbol the capture gave and, for the second, the replacement. It also reports what the
 import made of each module's stated engineering:
-[EngineeringRerolled](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringRerolled), where a stated modifier
+[EngineeringRerolled](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringRerolled), where a stated modifier
 block moved no stat the module carries and the recipe beside it was rolled in its place;
-[EngineeringUnresolved](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringUnresolved), for a module whose
+[EngineeringUnresolved](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringUnresolved), for a module whose
 source stated a recipe and no modifiers that neither a craftable recipe nor a catalogued
 article answers to — that module alone keeps the figures of an unengineered one; and
-[EngineeringAmbiguous](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringAmbiguous), where such a block had
+[EngineeringAmbiguous](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringAmbiguous), where such a block had
 two legitimate readings and the roll was taken, carrying the catalogued article passed over
 so you can fit it instead.
 
@@ -392,7 +392,7 @@ FittedModule? optional = build.FittedModuleAt("Slot01_Size5"); // null if its sy
 IReadOnlyList<LoadoutImportOutcome> changes = build.ImportOutcomes; // for display or logging
 ```
 
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model) sets the validation and
+[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model) sets the validation and
 calculation patterns out in full.
 
 A journal line is one `Loadout` event, and it is taken whole or refused. Bad JSON raises
@@ -402,7 +402,7 @@ differing only in case, say — is refused by whichever reader meets it first:
 `FromLoadout` raises `ArgumentException` for the duplicate, while `FromSlef` reads the
 text through `Slef.Parse` and so raises `FormatException` with a `DuplicateSlot`
 diagnostic. Catch them when the bytes come from somewhere you do not control. A SLEF *file* holds several builds and can be part-good, which is its own
-question — [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF) covers `Slef.Parse`
+question — [Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Working-with-SLEF) covers `Slef.Parse`
 against `Slef.Inspect` and what each does with a bad entry.
 
 A suit loadout follows the same two rules. The suit itself has to resolve, because the
@@ -417,6 +417,6 @@ mount the event wrote, or `null` for a modification on the suit itself.
 
 ## Next
 
-- [Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Getting-started)
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [Getting started](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Getting-started)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

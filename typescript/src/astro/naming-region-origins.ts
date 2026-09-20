@@ -11,10 +11,10 @@
  * size.
  *
  * The catalogue derives from the EDTS reference implementation and community procedural-naming
- * research, cross-checked against EDSM/Spansh; see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md) for
+ * research, cross-checked against EDSM/Spansh; see [`data/astro/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/astro/SOURCES.md) for
  * provenance.
  *
- * The catalogue is loaded once from shared JSON ([`data/astro/`](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/data/astro)); the lookup map is
+ * The catalogue is loaded once from shared JSON ([`data/astro/`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/tree/main/data/astro)); the lookup map is
  * an immutable module constant.
  *
  * @packageDocumentation

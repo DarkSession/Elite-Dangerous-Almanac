@@ -101,7 +101,7 @@ const MOUNT_LABELS: Readonly<Record<PersonalMountKey, string>> = /* @__PURE__ */
  * a suit's primary mounts from each other. A consumer needs no table of its own.
  *
  * No locale but English answers, although the game itself publishes all six:
- * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26
+ * https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/26
  * @example
  * ```ts
  * import { getSuitByFamily } from '@elite-dangerous-almanac/core/equipment/suits';

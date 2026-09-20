@@ -16,7 +16,7 @@
  * about a helper they did not call.
  *
  * Reference implementations: EDCD/Coriolis and EDSY; credit and licence terms are in
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @internal
  */

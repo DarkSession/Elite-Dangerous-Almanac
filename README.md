@@ -42,7 +42,7 @@ every module as side-effect free.
 See the [package README](typescript/README.md) for installation and import guidance,
 the [Getting started guide](typescript/docs/guides/Getting-started.md) for first-use
 examples, and the
-[TypeScript wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
+[TypeScript wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/TypeScript)
 for the guides and the complete API reference.
 
 ## .NET package
@@ -64,7 +64,7 @@ carries the shared catalogues inside the assembly.
 
 See the [package README](dotnet/src/EliteDangerousAlmanac/README.md) for the areas and
 first-use examples, and the
-[.NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) for the
+[.NET wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) for the
 guides and the complete API reference. The XML documentation ships with the package, so
 an editor shows the same guidance those pages do.
 
@@ -99,8 +99,8 @@ directory is the single source of truth; the TypeScript build copies it into the
 package under the same `assets/ships/` path.
 
 Galaxy-map markers live under `assets/galaxy-map/<symbol>.svg`, where `<symbol>` is the
-exact marker symbol from the shared catalogue. They are repository files; no package
-copies them.
+exact marker symbol from the shared catalogue. Both builds copy them into their
+packages under the same path.
 
 ## Development
 
@@ -144,11 +144,11 @@ the build and package tests.
 
 API documentation is generated from source comments — TSDoc for TypeScript, XML
 documentation comments for C# — and `pnpm run docs` assembles both into the
-[wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki), which is published
+[wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki), which is published
 from `main`. It needs Node alone; the .NET pages are read from the C# source, not from a
 compiled assembly. Catalogue provenance belongs in the matching
 `data/<domain>/SOURCES.md`; open data gaps are tracked in
-[GitHub issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues). See
+[GitHub issues](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues). See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the complete development and pull-request guide.
 Report suspected vulnerabilities privately as described in
 [SECURITY.md](SECURITY.md).

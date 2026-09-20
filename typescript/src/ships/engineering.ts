@@ -72,7 +72,7 @@ export interface BlueprintFeature {
      * These are the journal's own labels, with one deliberate exception: the recipes
      * that shorten a weapon's fire interval carry `"BurstInterval"`, the stat they
      * change, where a journal reports the resulting `"RateOfFire"` instead. See
-     * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+     * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
      * `"GuardianModuleResistance"` is the other non-scalar case: it grants the
      * `guardianZoneResistance` capability, and its displayed bounds are not arithmetic.
      */

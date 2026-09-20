@@ -11,7 +11,7 @@
  * @remarks
  * The SYS and WEP curves follow EDCD/Coriolis; the ENG curve is cross-checked
  * against EDSY's boost-frequency calculation. Credit and licence terms are in
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */

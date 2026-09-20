@@ -190,7 +190,7 @@ What still applies, every time:
 - **Scrub the person, keep the game** (see §Commit Identity), and store the capture verbatim otherwise, with its source checksum.
 - **Builds only.** Code, stat tables and derived catalogues are held to the licence they ship under, unchanged.
 
-> **Do not write a second copy of the credits or the licence.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` and `typescript/LICENSE` are **generated, git-ignored** verbatim copies of the root `ATTRIBUTIONS.md` and `LICENSE`: npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `typescript/PROVENANCE/` is generated the same way from `data/SNAPSHOTS.md` and every `data/<domain>/SOURCES.md`, so an installed version carries its exact data currency offline, and `typescript/assets/` is a copy of the shared `assets/ships/`. `pnpm run build` writes them all (§What `pnpm run build` runs) and `package.test.mjs` asserts that the copies are complete and byte-identical to their sources. Edit the root files; never the copies. Because the root `LICENSE` is packed verbatim, keep its wording readable from inside a consumer's `node_modules` as well as from the repository.
+> **Do not write a second copy of the credits or the licence.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` and `typescript/LICENSE` are **generated, git-ignored** verbatim copies of the root `ATTRIBUTIONS.md` and `LICENSE`: npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `typescript/PROVENANCE/` is generated the same way from `data/SNAPSHOTS.md` and every `data/<domain>/SOURCES.md`, so an installed version carries its exact data currency offline, and `typescript/assets/` is a copy of the shared `assets/ships/` and `assets/galaxy-map/`. `pnpm run build` writes them all (§What `pnpm run build` runs) and `package.test.mjs` asserts that the copies are complete and byte-identical to their sources. Edit the root files; never the copies. Because the root `LICENSE` is packed verbatim, keep its wording readable from inside a consumer's `node_modules` as well as from the repository.
 
 ## Repository Layout
 
@@ -213,7 +213,7 @@ python/        # (future) Python library — same features, same fixtures
 ## Tracking known gaps
 
 **Open gaps live in GitHub issues**, one issue per gap on
-`DarkSession/Elite-Dangerous-Almanac`.
+`Elite-Dangerous-Almanac/Almanac-Core`.
 
 When a change uncovers a gap it cannot fix in scope:
 
@@ -351,7 +351,7 @@ node --import tsx --import ./scripts/register-jsonc.mjs --test src/ships/weapons
 Six steps, not just `tsup`. A change to any of them is a change to what consumers receive, so `package.test.mjs` checks each one's result against the built package; run it (`pnpm run test:package`) after touching any of them:
 
 1. **`scripts/copy-notices.mjs`** writes the generated, git-ignored `THIRD_PARTY_NOTICES.md` and `LICENSE` copies that npm packs (see §Attribution), plus `PROVENANCE/SNAPSHOTS.md` and one verbatim `PROVENANCE/<domain>/SOURCES.md` for every shared data domain. The latter lets an installed package state its exact data currency without network access.
-2. **`scripts/copy-assets.mjs`** replaces the git-ignored `typescript/assets/` with a byte-identical copy of the shared `assets/ships/`, so the SVG ship assets pack with the npm package.
+2. **`scripts/copy-assets.mjs`** replaces the git-ignored `typescript/assets/` with a byte-identical copy of the shared `assets/ships/` and `assets/galaxy-map/`, so the SVG assets pack with the npm package. It names the directories it packs, so a new shared asset directory stays out until it is added there.
 3. **`tsup`** bundles ESM to `dist/` — one entry per public module, declarations, source maps, and the shared `data/` JSONC inlined through the `jsonc` esbuild plugin. Terser then strips whitespace with compression and mangling disabled: real minification stays the consuming application's bundler's job, and that is why the size figures above are measured as §Build & Tree-Shaking Requirements describes rather than by reading `dist/` byte counts. Whitespace is compacted because esbuild's pretty-printed catalogue literals otherwise dominate the package; the compact JavaScript is about 2 MB while function names remain intact. `format.preserve_annotations` keeps every `/* @__PURE__ */` marker for downstream tree-shaking, and Terser's generated map is chained onto esbuild's map so `--enable-source-maps` can resolve compact output to its original source.
 4. **`scripts/prune-sourcemap-sources.mjs`** removes the generated-code fallback segments that Terser's map names with tsup's absolute output path, then drops mappings into inlined JSONC data literals because those cannot produce consumer stack frames and otherwise dominate the maps. The remaining mappings point only at portable `src/**/*.ts` paths; package artifacts therefore retain TypeScript debugging without disclosing their build workspace or spending package weight on static-data positions.
 5. **`scripts/prune-barrel-imports.mjs`** blanks the redundant bare imports esbuild leaves in per-module entry files — the package is side-effect-free, so downstream bundlers discard them but warn while doing so — and removes the now-unreachable zero-code shared chunks that declaration-only dependencies can produce. It blanks rather than deletes entry imports so tsup's source maps stay valid, using **`scripts/strip-bare-imports.mjs`**, the same helper `package.test.mjs` imports to assert the shipped entries carry no bare imports.
@@ -400,7 +400,7 @@ If npm succeeds but tag or GitHub Release creation fails, use **Re-run failed jo
 Setup this needs once, in repository settings, **before the first release**:
 
 1. Create an environment named `npm` (Settings → Environments), restrict its deployment branches to the default branch, and add required reviewers if publishing should need a second human approval.
-2. On npm, configure a GitHub Actions trusted publisher for `@elite-dangerous-almanac/core`: owner `DarkSession`, repository `Elite-Dangerous-Almanac`, workflow `publish-npm.yml`, environment `npm`. The workflow needs no long-lived npm token.
+2. On npm, configure a GitHub Actions trusted publisher for `@elite-dangerous-almanac/core`: owner `Elite-Dangerous-Almanac`, repository `Almanac-Core`, workflow `publish-npm.yml`, environment `npm`. The workflow needs no long-lived npm token.
 
 ## How the shared assets flow into TypeScript
 

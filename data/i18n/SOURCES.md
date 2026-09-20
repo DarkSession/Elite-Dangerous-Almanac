@@ -635,7 +635,7 @@ record in this repository is keyed by them.
   rows are outside this conclusion: `Suit.mounts` carries Frontier's own journal
   `SlotName` for each one, so a mount row names a record this repository holds and its
   localization is a gap rather than an invented key. **This is not the ship slot and
-  restriction gap of [#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320)**,
+  restriction gap of [#320](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/320)**,
   which is about labels no source translates at all.
 
 ## Known gaps
@@ -647,11 +647,11 @@ the outfitting-family labels listed above, slot and restriction labels, the suit
 weapon-mount labels, fixed reward names, and structured loadout, calculation, SLEF and
 edit messages. A missing source-backed translation that has no issue of its own
 remains tracked by
-[#320](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/320).
+[#320](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/320).
 
 Every suit, handheld weapon, tool and modification the personal-equipment catalogues
 hold is complete in all six locales. That area carries these gaps:
 
 - **The suit weapon-mount labels are English only.** The game publishes all six locales
   for them, so the values exist to be read. The gap is tracked by
-  [#26](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/26).
+  [#26](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/26).

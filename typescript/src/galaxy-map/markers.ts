@@ -6,7 +6,7 @@
  * whose root `<svg>` carries the same `color` this catalogue reports.
  *
  * Read from the in-game galaxy map; see
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
  * for credit and licence terms.
  *
  * @packageDocumentation

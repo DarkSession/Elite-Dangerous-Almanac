@@ -2,7 +2,7 @@
 title: Getting started
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Getting started
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Getting started
 
 # Getting started
 
@@ -28,13 +28,13 @@ There is no root namespace to import: every area is its own namespace under
 
 | Namespace | Reads |
 | --- | --- |
-| [Astronomy](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Astronomy) | Procedural system names, system addresses, sectors, regions, nebulae, permit locks and the physics of a scanned body |
-| [Ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships) | Hulls, modules, builds, engineering, jump range, power, shields, armour and weapon figures |
-| [Equipment](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Equipment) | Odyssey suits, handheld weapons, suit tools, grade upgrades, engineer modifications and the suit a journal reports |
-| [Localization](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization) | Display names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and equipment |
-| [Materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Materials) | Ship engineering materials and Odyssey micro resources |
-| [Commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Commodities) | Market commodities, standard and rare |
-| [GalaxyMap](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.GalaxyMap) | The galaxy map's location markers and the colours the game draws them in |
+| [Astronomy](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Astronomy) | Procedural system names, system addresses, sectors, regions, nebulae, permit locks and the physics of a scanned body |
+| [Ships](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships) | Hulls, modules, builds, engineering, jump range, power, shields, armour and weapon figures |
+| [Equipment](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Equipment) | Odyssey suits, handheld weapons, suit tools, grade upgrades, engineer modifications and the suit a journal reports |
+| [Localization](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Localization) | Display names and descriptions for modules, blueprints, effects, materials, micro resources, commodities and equipment |
+| [Materials](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Materials) | Ship engineering materials and Odyssey micro resources |
+| [Commodities](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Commodities) | Market commodities, standard and rare |
+| [GalaxyMap](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.GalaxyMap) | The galaxy map's location markers and the colours the game draws them in |
 
 **Why the names differ from the TypeScript package.** Each implementation is written the
 way its own language reads, so `astro` is `Astronomy` here and `i18n` is `Localization`.
@@ -84,7 +84,7 @@ double laden = jump.Laden;
 ```
 
 A build can also start empty, or be read from a journal `Loadout` event or a SLEF export.
-[ShipLoadout](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.ShipLoadout)
+[ShipLoadout](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.ShipLoadout)
 has the whole set.
 
 ## Read a suit
@@ -123,19 +123,19 @@ rather than having one imposed on you.
 
 ## Where to go next
 
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Reading-a-player-journal)
   — `Loadout`, `SuitLoadout`, `FSDJump` and `Scan` as library objects.
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Building-an-outfitting-screen)
   — mounts, what fits, and every metric a shipyard shows.
-- [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics)
+- [Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Build-metrics)
   — power, shields, armour, weapons, heat, mass and range.
-- [Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Engineering)
+- [Engineering](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Engineering)
   — what a recipe may go on, what it rolls, and what a roll costs.
-- [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF)
+- [Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Working-with-SLEF)
   — loadout exports, and retail against captured credits.
-- [Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Systems-and-regions)
+- [Systems and regions](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Systems-and-regions)
   — the `id64` round trip and the four meanings of "region".
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model)
   — `null`, the exceptions, and `CalculationResult<T>`.
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)
   — every namespace, type and member.

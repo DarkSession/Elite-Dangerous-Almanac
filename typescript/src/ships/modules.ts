@@ -487,7 +487,7 @@ export interface OutfittingModuleIdentity {
      * articles, the Community Goal Corrosion Resistant Cargo Racks, which no station
      * sells but which are not free, and the 1B shield generator. Treat `undefined` as
      * "unknown", never as free; see
-     * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+     * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
      */
     readonly cost?: number;
 }

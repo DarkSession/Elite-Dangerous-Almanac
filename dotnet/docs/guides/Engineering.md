@@ -2,7 +2,7 @@
 title: Engineering
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Engineering
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Engineering
 
 # Engineering
 
@@ -15,7 +15,7 @@ cannot give different answers.
 Availability is a property of the **module**, not of the blueprint. A Pulse Laser accepts
 the Efficient blueprint and a Rail Gun does not, and two modules whose blueprints overlap
 may still offer different experimental effects. So
-[EngineeringOptions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.EngineeringOptions) groups the modules and each
+[EngineeringOptions](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.EngineeringOptions) groups the modules and each
 group lists what it offers.
 
 ```csharp
@@ -84,7 +84,7 @@ base). Two behaviours apply on top of those methods:
 
 - **Percentages of a multiplier.** Hull boost, shield boost and the four resistances
   compound on their multiplier rather than on the stat, whichever method the recipe names.
-  [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics) works through what that does to a
+  [Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Build-metrics) works through what that does to a
   figure.
 - **A capability rather than a number.** Anti-Guardian Zone Resistance produces a modifier
   whose `Label` is `GuardianModuleResistance` and whose `ValueStr` is `Active`; its
@@ -122,7 +122,7 @@ Decorative transformations occupy the journal's `Engineering` field at grade 5 b
 craftable blueprint recipes: they have no material cost or applying engineer. They are
 fixed variants of the awarded Remote Release Flak Launcher, not transformations a caller
 may apply to any damage-bearing module. Find one in
-[PreEngineeredCatalogue](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.PreEngineeredCatalogue) and fit it with
+[PreEngineeredCatalogue](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.PreEngineeredCatalogue) and fit it with
 `ShipLoadout.SetPreEngineeredVariant`. The emitted journal or SLEF block states the
 blueprint name, `Level` 5, `Quality` 1 and the modifiers.
 
@@ -148,7 +148,7 @@ ModuleEngineering? block = festive
     .Engineering; // BlueprintName, Level 5, Quality 1 and Modifiers
 ```
 
-[PreEngineeredStats](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.PreEngineeredStats) resolves the same record for
+[PreEngineeredStats](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.PreEngineeredStats) resolves the same record for
 callers working with plain module data: `Resolve` for the fitted stats, `Modifiers` and
 `JournalModifiers` for the two modifier readings, and `Identify` to recognise a fixed
 article a capture named. The catalogue binds each `Decorative_*` identity to the only
@@ -170,7 +170,7 @@ The gate makes exactly three allowances beyond the menu. They are applied in a f
 first can change *which* recipe an accepted identifier names.
 
 **The journal spelling of a menu entry.** Where the game writes one `BlueprintName` for two
-different recipes, [BlueprintJournal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.BlueprintJournal) reads that
+different recipes, [BlueprintJournal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.BlueprintJournal) reads that
 identifier against the fitted module's menu and resolves it to the entry the menu lists:
 `Sensor_LongRange` on a utility scanner becomes `Scanner_LongRange`, and
 `Weapon_Overcharged` on a multi-cannon becomes `MC_Overcharged`. The map is pinned data in
@@ -202,8 +202,8 @@ at cannot be reproduced through this route.
 ## What a roll costs
 
 **Costs are a separate catalogue from mechanics**, so one can be priced without the other:
-[BlueprintCatalogue](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.BlueprintCatalogue) answers what a recipe
-*does*; [BlueprintCosts](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.BlueprintCosts) answers what it *takes*.
+[BlueprintCatalogue](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.BlueprintCatalogue) answers what a recipe
+*does*; [BlueprintCosts](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.BlueprintCosts) answers what it *takes*.
 `BuildMetrics` reads both, because it prices a whole fit — see
 [Pricing a whole build](#pricing-a-whole-build).
 
@@ -286,8 +286,8 @@ article was never rolled from the recipe it names, so it costs no materials at a
 
 ## Next
 
-- [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics)
+- [Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Build-metrics)
   — what these modifiers do to power, shields, armour, weapons and range.
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Reading-a-player-journal)
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Building-an-outfitting-screen)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Reading-a-player-journal)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

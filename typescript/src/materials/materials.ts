@@ -45,7 +45,7 @@
  * one is `.filter()` on the result or on the subset you already imported.
  *
  * Data originates from EDCD FDevIDs, with Thargoid materials absent from that
- * pinned source supplied by INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
+ * pinned source supplied by INARA; see [`data/materials/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/materials/SOURCES.md).
  *
  * @example
  * ```ts

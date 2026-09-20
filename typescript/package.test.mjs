@@ -1290,9 +1290,9 @@ test('the publication manifest includes consumer assets, documentation and notic
     assert.equal(pkg.license, 'SEE LICENSE IN LICENSE');
     assert.equal(
         pkg.repository.url,
-        'git+https://github.com/DarkSession/Elite-Dangerous-Almanac.git',
+        'git+https://github.com/Elite-Dangerous-Almanac/Almanac-Core.git',
     );
-    assert.equal(pkg.homepage, 'https://github.com/DarkSession/Elite-Dangerous-Almanac#readme');
+    assert.equal(pkg.homepage, 'https://github.com/Elite-Dangerous-Almanac/Almanac-Core#readme');
     assert.deepEqual(
         ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'PROVENANCE', 'assets'].map((name) => [
             name,
@@ -1409,6 +1409,28 @@ test('the publication manifest includes consumer assets, documentation and notic
     assert.match(licenseProse, /before redistributing the data or using it commercially/);
 });
 
+/** What the tarball holds. Packing it is slow, so every reader shares one run. */
+let packedReport;
+
+/** Every path the tarball carries under one directory, relative to it and sorted. */
+async function packedPaths(prefix) {
+    packedReport ??= (async () => {
+        const packed = spawnSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
+            cwd: fileURLToPath(new URL('.', import.meta.url)),
+            encoding: 'utf8',
+        });
+        assert.equal(packed.status, 0, `${packed.stdout}${packed.stderr}`);
+        const report = JSON.parse(packed.stdout);
+        assert.equal(report.length, 1);
+        return report[0].files.map((file) => file.path);
+    })();
+
+    return (await packedReport)
+        .filter((path) => path.startsWith(prefix))
+        .map((path) => path.slice(prefix.length))
+        .sort();
+}
+
 test('the npm package contains byte-identical ship assets', async () => {
     const canonicalRoot = new URL('../assets/ships/', import.meta.url);
     const packagedRoot = new URL('./assets/ships/', import.meta.url);
@@ -1431,19 +1453,24 @@ test('the npm package contains byte-identical ship assets', async () => {
         assert.deepEqual(packaged, canonical, `assets/ships/${relative} is stale`);
     }
 
-    const packed = spawnSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
-        cwd: fileURLToPath(new URL('.', import.meta.url)),
-        encoding: 'utf8',
-    });
-    assert.equal(packed.status, 0, `${packed.stdout}${packed.stderr}`);
-    const report = JSON.parse(packed.stdout);
-    assert.equal(report.length, 1);
-    const tarballAssets = report[0].files
-        .map((file) => file.path)
-        .filter((path) => path.startsWith('assets/ships/'))
-        .sort();
-    assert.deepEqual(
-        tarballAssets,
-        canonicalFiles.map((relative) => `assets/ships/${relative}`),
-    );
+    assert.deepEqual(await packedPaths('assets/ships/'), canonicalFiles);
+});
+
+test('the npm package contains byte-identical galaxy-map assets', async () => {
+    const canonicalRoot = new URL('../assets/galaxy-map/', import.meta.url);
+    const packagedRoot = new URL('./assets/galaxy-map/', import.meta.url);
+    const canonicalFiles = await relativeFiles(canonicalRoot);
+
+    assert.ok(canonicalFiles.length > 0);
+    assert.ok(canonicalFiles.every((relative) => relative.endsWith('.svg')));
+    assert.deepEqual(await relativeFiles(packagedRoot), canonicalFiles);
+    for (const relative of canonicalFiles) {
+        const [canonical, packaged] = await Promise.all([
+            readFile(new URL(relative, canonicalRoot)),
+            readFile(new URL(relative, packagedRoot)),
+        ]);
+        assert.deepEqual(packaged, canonical, `assets/galaxy-map/${relative} is stale`);
+    }
+
+    assert.deepEqual(await packedPaths('assets/galaxy-map/'), canonicalFiles);
 });

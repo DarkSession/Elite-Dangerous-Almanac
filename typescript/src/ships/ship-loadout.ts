@@ -868,7 +868,7 @@ export class ShipLoadout {
         if (!ship) {
             // Truncated so this method's two failures agree; messages elsewhere still
             // quote a caller's string in full —
-            // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213.
+            // https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/213.
             throw new TypeError(
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );

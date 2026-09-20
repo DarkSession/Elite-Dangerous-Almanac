@@ -11,12 +11,12 @@
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/DarkSession/Elite-Dangerous-Almanac.git",
+        "url": "git+https://github.com/Elite-Dangerous-Almanac/Almanac-Core.git",
         "directory": "typescript"
     },
-    "homepage": "https://github.com/DarkSession/Elite-Dangerous-Almanac#readme",
+    "homepage": "https://github.com/Elite-Dangerous-Almanac/Almanac-Core#readme",
     "bugs": {
-        "url": "https://github.com/DarkSession/Elite-Dangerous-Almanac/issues"
+        "url": "https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues"
     },
     "keywords": [
         "elite-dangerous",

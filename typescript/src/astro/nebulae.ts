@@ -26,7 +26,7 @@
  *
  * Positions are galactic light-years with Sol at the origin — the same frame the
  * journal, EDSM and Spansh use. Catalogue data originates from EDAstro; see
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
  * for credit and licence terms.
  *
  * @example

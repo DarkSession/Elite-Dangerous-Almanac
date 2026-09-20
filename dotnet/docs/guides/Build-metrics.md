@@ -2,7 +2,7 @@
 title: Build metrics
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / Build metrics
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / Build metrics
 
 # Build metrics
 
@@ -16,13 +16,13 @@ no single symbol owns.
 Every metric exists twice, and the difference is where the numbers come from rather than
 what the maths does.
 
-The **calculation classes** — [Power](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Power),
-[Shields](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Shields), [Armour](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Armour),
-[Resistances](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Resistances),
-[Weapons](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Weapons),
-[Ammunition](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Ammunition), [Heat](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Heat),
-[JumpRange](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.JumpRange) and
-[Mobility](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Mobility) — are data-free. You hand them the constants
+The **calculation classes** — [Power](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Power),
+[Shields](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Shields), [Armour](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Armour),
+[Resistances](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Resistances),
+[Weapons](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Weapons),
+[Ammunition](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Ammunition), [Heat](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Heat),
+[JumpRange](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.JumpRange) and
+[Mobility](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Mobility) — are data-free. You hand them the constants
 and they hand back a figure, reading no catalogue at all, so they are the right layer for
 a what-if tool that is not modelling a real build.
 
@@ -37,11 +37,11 @@ double deployed = Power.Budget(20.4, new[]
 }).Deployed; // 8.65
 ```
 
-The [BuildMetrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.BuildMetrics) methods of the same name gather
+The [BuildMetrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.BuildMetrics) methods of the same name gather
 those constants out of a real build — the fitted modules, the hull, and whatever
 engineering each module carries — and call the function for you. This is what an
 outfitting screen wants. Attach one to a
-[ShipLoadout](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.ShipLoadout) with `BuildMetrics.Of(build)`.
+[ShipLoadout](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.ShipLoadout) with `BuildMetrics.Of(build)`.
 
 ```csharp
 using EliteDangerousAlmanac.Ships;
@@ -76,7 +76,7 @@ the game is the authority on a build it exported, and a recomputation that disag
 silently replace a fact with a model. The library recomputes only what it rolled itself,
 through `ShipLoadout.ApplyBlueprint` — which includes a block that states a recipe and
 *no* modifiers, since there is then no fact to replace. See
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Working-with-SLEF#a-recipe-stated-without-its-modifiers-is-rolled)
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Working-with-SLEF#a-recipe-stated-without-its-modifiers-is-rolled)
 for what such a block resolves to.
 
 **Four stats are percentages of a multiplier, not of the stat.** Hull boost, shield boost
@@ -85,7 +85,7 @@ apply method the recipe names. A `+80%` bulkhead engineered by a `+32%` blueprin
 `137.6%`, not `105.6%`, because `1.8 × 1.32 − 1 = 1.376`; a `−20%` kinetic resistance with
 `+5%` becomes `−14%`, because the multipliers `1.2 × 0.95` multiply. This is Frontier's own
 convention and it is why those four stats look wrong if you read them as ordinary
-percentages. [Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Engineering) states the rule; every metric
+percentages. [Engineering](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Engineering) states the rule; every metric
 below inherits it.
 
 ## Power
@@ -119,7 +119,7 @@ budget uses; passive and zero-draw fittings are absent.
 
 Strength and hit points are separate calculations, but the four resistances that decide
 what they are worth stack by one shared rule, in
-[Resistances](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Resistances).
+[Resistances](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Resistances).
 
 Sources stack **multiplicatively on the damage multiplier**, not additively on the
 resistance: two 20% resisters leave `0.8 × 0.8 = 0.64`, which is 36% resisted, not 40%.
@@ -460,7 +460,7 @@ double factor = metrics.FrameShiftDriveMassFactor();
 ```
 
 The model is the community-standard hyperspace one, and
-[JumpRange](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.JumpRange) holds it as data-free functions if you want a
+[JumpRange](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.JumpRange) holds it as data-free functions if you want a
 single jump rather than a summary. Guardian FSD boosters and the drive's own engineering
 are already folded in by the time `ShipLoadout` calls them. A frame shift drive has no
 thruster-style three-point mass curve: its mass term is the direct
@@ -472,7 +472,7 @@ The shield generator may be absent, and any fitted record may omit a stat a metr
 Do not treat an unavailable metric as zero:
 
 - The `…Result` methods answer a
-  [CalculationResult&lt;T&gt;](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.CalculationResult-1). One that is
+  [CalculationResult&lt;T&gt;](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.CalculationResult-1). One that is
   incomplete carries no value and its `Issues` name what was missing, switched off or
   shed. Each issue's `Reason` is `Missing`, `Unresolved`, `Disabled`, `Shed` or `Invalid`;
   use it instead of parsing the message.
@@ -480,7 +480,7 @@ Do not treat an unavailable metric as zero:
   not nullable and have no diagnostic result: no article a build can hold is unweighable,
   so they always answer. `Thrusters` is nullable — it reports the fitted article's curve,
   and `MobilityMetricsResult` is what explains an unusable one.
-  [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model) covers that split, and how it
+  [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model) covers that split, and how it
   differs from the exceptions a malformed input raises.
 - `ArmourMetrics` always has the known hull's base figures.
 - A caller-supplied power plant without a usable capacity makes every power-dependent
@@ -498,30 +498,30 @@ Do not treat an unavailable metric as zero:
 **On an imported build, every figure here describes the fit that remains.** Import
 discards a module in a removable mount and stocks armour, a core internal, the cargo hatch
 and the planetary approach suite from the hull defaults, and neither the figures nor
-`Validation` say so — [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model) says why.
+`Validation` say so — [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model) says why.
 What normalization can still do is leave a result incomplete for an ordinary reason:
 discard the only shield generator and `ShieldMetricsResult` reports `ShieldGenerator` /
 `Missing`, exactly as an empty mount would; stock a plant over an engineered one and the
 mobility, shield and recovery results report `Shed`.
 
 `ImportOutcomes` is the account, and it is the entries that matter, not the length. A
-[ModuleDefaulted](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.ModuleDefaulted) whose `SourceSymbol` is `null`
+[ModuleDefaulted](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.ModuleDefaulted) whose `SourceSymbol` is `null`
 marks a mount the capture named nothing for, which import stocks from the hull defaults. A
 stocked bulkhead or approach suite moves no metric at all, and a stocked cargo hatch only
 its own 0.6 MW draw — most third-party exports name neither the hatch nor an
 approach-suite mount, so most produce exactly those two entries. Every other entry means
 the figures are the normalized fit's — except two that mean the opposite.
-[EngineeringUnresolved](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringUnresolved) says nothing was
+[EngineeringUnresolved](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringUnresolved) says nothing was
 changed and that module's figures are the unengineered ones its source only claimed to
-engineer. [EngineeringAmbiguous](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.EngineeringAmbiguous) says the fit
+engineer. [EngineeringAmbiguous](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.EngineeringAmbiguous) says the fit
 is one of two legitimate readings of an identity-only block: these figures are the roll,
 and its `PreEngineeredVariant` is the catalogued article that would give a different set.
 
 ## Next
 
-- [Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Engineering)
+- [Engineering](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Engineering)
   — what a recipe may go on, and what it does to the stats above.
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Building-an-outfitting-screen)
   — the screen these metrics feed.
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.The-failure-model)
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.The-failure-model)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

@@ -43,7 +43,7 @@
  * narrowing it is `.filter()` on the result or on the subset you already imported.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`), in-game verification and
- * Inara; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
+ * Inara; see [`data/materials/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/materials/SOURCES.md).
  *
  * @example
  * ```ts

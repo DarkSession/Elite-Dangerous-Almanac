@@ -30,7 +30,7 @@ The package carries game and community data under source-specific terms. Read
 redistribute it or use it commercially.
 
 The
-[.NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)
+[.NET wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet)
 carries the guides and the complete API reference: every namespace, type and member,
 generated from the documentation comments in the C# source.
 
@@ -116,14 +116,15 @@ The repository holds a gunsight, an illustration and two schematics for every ca
 hull, under `assets/ships/<symbol>/`, where the symbol is the one the ships catalogue
 answers with. They are not in this package, which would take it from a few megabytes to
 tens of them for files no call reads. Copy them from the
-[repository](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/ships).
+[repository](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/tree/main/assets/ships).
 
 ## Galaxy-map marker assets
 
-The repository holds one SVG per galaxy-map marker, under `assets/galaxy-map/<symbol>.svg`,
-where the symbol is the one `GalaxyMapMarkerCatalogue` answers with. They are not in this
-package either. Copy them from the
-[repository](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/galaxy-map).
+The package carries one SVG per galaxy-map marker, at `assets/galaxy-map/<symbol>.svg`,
+where the symbol is the one `GalaxyMapMarkerCatalogue` answers with. NuGet extracts them
+to `~/.nuget/packages/elitedangerousalmanac/<version>/assets/galaxy-map/`.
+A `PackageReference` does not copy them into your build, so copy the ones you draw into
+your application's own asset directory.
 
 Every shape in an asset paints with `currentColor`, and the root `<svg>` carries the
 marker's own colour. A host that embeds the file inline therefore recolours it with one
@@ -131,9 +132,16 @@ CSS `color` declaration, and one that loads it with `<img>` keeps the game's col
 `front-line.svg` is the exception: its frame holds the frame colour as a literal, which
 no `color` declaration reaches.
 
+A marker is safe to embed inline as supplied: it holds only static `svg`, `title`,
+`defs`, `mask`, `filter`, `feGaussianBlur`, `g`, `use`, `path`, `rect`, `circle` and
+`ellipse` elements, and every `href`, `mask` and `filter` points inside the same file.
+There are no scripts, styles, event-handler attributes, foreign or media elements,
+links or external references. Every definition id is unique across the set, so a page
+can inline all of them. This content guarantee applies to the unmodified package files.
+
 ## Data provenance
 
-[ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+[ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
 names every source once, with its licence terms. Each data file names its own source in
 a comment header. The code and the documentation are under the MIT licence. The game and
 third-party data keeps its own terms, and the MIT licence does not extend to it.

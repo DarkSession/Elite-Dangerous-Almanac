@@ -45,9 +45,9 @@
  * the model was reverse-engineered in. Frontier publishes no heat formula and shows a
  * player no dissipation figure, so both the model and the per-hull `heatDissipation` it
  * reads are community measurements of the game rather than stats the game states — see
- * [data/ships/SOURCES.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * [data/ships/SOURCES.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  * The algorithm is ported as fact, not code; credit and licence terms are in
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts

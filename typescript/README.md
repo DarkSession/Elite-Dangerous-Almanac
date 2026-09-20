@@ -102,11 +102,24 @@ responsible for any transformations or user-supplied replacements.
 
 ## Galaxy-map marker assets
 
-The `galaxy-map` catalogue reports each marker's colours, and one SVG per marker holds
-the icon. The package does not carry those files. They live in the repository, at
-[`assets/galaxy-map/<symbol>.svg`](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/assets/galaxy-map),
-where `<symbol>` is the exact symbol the catalogue returns. Copy them into your own
-asset directory.
+The `galaxy-map` catalogue reports each marker's colours, and the installed package
+holds one SVG per marker:
+
+```text
+assets/galaxy-map/<symbol>.svg
+```
+
+`<symbol>` is the exact symbol the catalogue returns. These are static package files
+rather than JavaScript subpath exports, so applications can copy them from the installed
+package into their own public or bundled asset directory.
+
+A marker is safe to embed inline as supplied: it holds only static `svg`, `title`,
+`defs`, `mask`, `filter`, `feGaussianBlur`, `g`, `use`, `path`, `rect`, `circle` and
+`ellipse` elements, and every `href`, `mask` and `filter` points inside the same file.
+There are no scripts, styles, event-handler attributes, foreign or media elements,
+links or external references. Every definition id is unique across the set, so a page
+can inline all of them. This content guarantee applies to the unmodified package
+files.
 
 Every shape in an asset paints with `currentColor`, and the root `<svg>` carries the
 marker's own colour. A host that embeds the file inline therefore recolours it with one
@@ -293,9 +306,9 @@ that same id.
   `ShipLoadout.fromSlef` throw `TypeError`, not `RangeError`, and `inspectSlef` reports it
   as a diagnostic.
 
-The [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
+The [repository README](https://github.com/Elite-Dangerous-Almanac/Almanac-Core#readme)
 contains the project guide. The generated
-[TypeScript wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/TypeScript)
+[TypeScript wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/TypeScript)
 contains the guides and the complete API reference.
 
 ## Data and credits

@@ -8,7 +8,7 @@
  *
  * Stock builds come from EDSY, with coriolis-data and captured Frontier journal
  * loadouts supplying or corroborating the advanced planetary approach suite and cargo
- * hatches; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * hatches; see [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

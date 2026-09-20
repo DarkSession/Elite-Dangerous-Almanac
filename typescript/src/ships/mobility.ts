@@ -7,7 +7,7 @@
  * four-pip ones before the same curves are applied.
  *
  * Ported from EDCD/Coriolis and cross-checked against EDSY's mass-curve calculation;
- * see [`ATTRIBUTIONS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * see [`ATTRIBUTIONS.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */

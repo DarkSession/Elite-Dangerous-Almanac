@@ -11,8 +11,8 @@
  * GALAXY_MAP_MARKERS[0].symbol;             // -> 'bookmark'
  * ```
  *
- * A symbol also names the marker's vector asset, so a consumer that ships the
- * shared `assets/galaxy-map/` directory builds the path from the same string:
+ * A symbol also names the marker's vector asset, which the package carries under
+ * `assets/galaxy-map/`, so one string gives both the colour and the file:
  *
  * ```ts
  * import { getGalaxyMapMarker } from '@elite-dangerous-almanac/core/galaxy-map';
@@ -26,6 +26,13 @@
  * one CSS `color` declaration, and one that loads it with `<img>` keeps the game's
  * colour. `front-line.svg` is the exception: its frame holds the literal
  * {@link GalaxyMapMarker.frameColor}, which no `color` declaration reaches.
+ *
+ * A marker is safe to embed inline as supplied: it holds only static `svg`, `title`,
+ * `defs`, `mask`, `filter`, `feGaussianBlur`, `g`, `use`, `path`, `rect`, `circle` and
+ * `ellipse` elements, and every `href`, `mask` and `filter` points inside the same
+ * file. There are no scripts, styles, event-handler attributes, foreign or media
+ * elements, links or external references. Every definition id is unique across the
+ * set, so a page can inline all of them.
  *
  * The catalogue carries no display name. Each asset's `<title>` holds the English
  * label, which is also what a screen reader announces for an inline-embedded marker.

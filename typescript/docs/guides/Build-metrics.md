@@ -66,7 +66,7 @@ authority on a build it exported, and a recomputation that disagreed would silen
 replace a fact with a model. The library recomputes only what it rolled itself, through
 {@link ships!ShipLoadout.applyBlueprint | applyBlueprint} — which includes a block that
 states a recipe and *no* `Modifiers`, since there is then no fact to replace. See
-[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#a-recipe-stated-without-its-modifiers-is-rolled)
+[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Working-with-SLEF#a-recipe-stated-without-its-modifiers-is-rolled)
 for what such a block resolves to.
 
 **Four stats are percentages of a multiplier, not of the stat.** Hull boost, shield boost
@@ -457,7 +457,7 @@ Do not treat an unavailable metric as zero:
   are not nullable and have no diagnostic result: no article a build can hold is
   unweighable, so they always answer. `thrusters` is nullable — it reports the
   fitted article's curve, and `mobilityMetricsResult()` is what explains an unusable one.
-  [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+  [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
   covers that split, and how it differs from the errors a malformed input raises.
 - `armourMetrics()` always has the known hull's base figures.
 - A caller-supplied power plant without a usable capacity makes every power-dependent
@@ -476,7 +476,7 @@ Do not treat an unavailable metric as zero:
 discards a module in a removable mount and stocks armour, a core internal, the cargo hatch
 and the planetary approach suite from the hull defaults, and neither the figures nor
 `validation` say so —
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
 says why. What normalization can still do is leave a result incomplete for an ordinary
 reason: discard the only shield generator and `shieldMetricsResult` reports
 `shieldGenerator` / `missing`, exactly as an empty mount would; stock a plant over an
@@ -496,9 +496,9 @@ catalogued article that would give a different set.
 
 ## Next
 
-- [Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Engineering)
+- [Engineering](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Engineering)
   — what a recipe may go on, and what it does to the stats above.
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Building-an-outfitting-screen)
   — the screen these metrics feed.
-- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

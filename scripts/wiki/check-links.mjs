@@ -6,7 +6,7 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 
-const wikiUrl = "https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/";
+const wikiUrl = "https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/";
 
 export async function checkLinks(wikiDir) {
   const files = (
@@ -37,13 +37,17 @@ export async function checkLinks(wikiDir) {
     // about a path it cannot copy. Those links are outside the check above, so a page
     // renamed by its front-matter title — a comma in a title is enough — would break
     // them silently. Hold them to the same standard.
+    // Any GitHub wiki host is matched, not this one alone: a link left pointing at a
+    // repository the project has moved away from resolves through a redirect today and
+    // stops resolving the day the old name is taken, so it is a failure here.
     for (const match of fixed.matchAll(
-      new RegExp(
-        `\\]\\(${wikiUrl.replaceAll(".", "\\.")}([^#)]+)(?:#[^)]+)?\\)`,
-        "g",
-      ),
+      /\]\((https:\/\/github\.com\/[^/)]+\/[^/)]+\/wiki\/)([^#)]+)(?:#[^)]+)?\)/g,
     )) {
-      const target = decodeURIComponent(match[1]);
+      if (match[1] !== wikiUrl) {
+        throw new Error(`${file}: absolute wiki link names another repository`);
+      }
+
+      const target = decodeURIComponent(match[2]);
       if (!pageNames.has(target)) {
         throw new Error(
           `${file}: absolute wiki link targets missing page "${target}"`,

@@ -6,7 +6,7 @@
  * Search it with the query functions in `./materials`.
  *
  * Data from EDCD FDevIDs, with Thargoid materials absent from that pinned source
- * graded by INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
+ * graded by INARA; see [`data/materials/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/materials/SOURCES.md).
  *
  * @packageDocumentation
  */

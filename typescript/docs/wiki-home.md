@@ -2,7 +2,7 @@
 title: TypeScript
 ---
 
-[Elite Dangerous Almanac](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Home) / TypeScript
+[Elite Dangerous Almanac](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Home) / TypeScript
 
 # @elite-dangerous-almanac/core
 
@@ -34,46 +34,46 @@ function jumpRangeOf(journalLine: string) {
 
 ## Guides
 
-- **[Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Getting-started)**
+- **[Getting started](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Getting-started)**
   — install, which import to use, and the symbol-to-subpath map.
-- **[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)**
+- **[Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal)**
   — turning `Loadout` and `FSDJump` events into library objects.
-- **[Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)**
+- **[Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Building-an-outfitting-screen)**
   — mounts, what fits, fitting it, and every metric a shipyard shows.
-- **[Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)**
+- **[Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Build-metrics)**
   — how power, shields, armour, weapons, ammunition and range are computed.
-- **[Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Engineering)**
+- **[Engineering](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Engineering)**
   — what a recipe may go on, what it rolls, and what a roll costs.
-- **[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)**
+- **[Working with SLEF](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Working-with-SLEF)**
   — reading and writing loadout exports, and retail against captured credits.
-- **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions)**
+- **[Systems and regions](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Systems-and-regions)**
   — the `id64` round trip, both coordinate spaces, and the four meanings of "region".
-- **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)**
+- **[The failure model](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.The-failure-model)**
   — `null` against the three errors, and diagnostic results for unavailable metrics.
 
 ## Feature areas
 
 | Area | Import | Provides |
 | --- | --- | --- |
-| [astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/astro) | `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
-| [ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/ships) | `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
-| [equipment](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/equipment) | `@elite-dangerous-almanac/core/equipment` | Odyssey suits, handheld weapons, grade upgrades, engineer modifications and journal suit loadouts |
-| [i18n](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/i18n) | `@elite-dangerous-almanac/core/i18n` | Sparse localized module, blueprint, effect, material, micro-resource, commodity and personal-equipment display text |
-| [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
-| [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
-| [galaxy-map](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/galaxy-map) | `@elite-dangerous-almanac/core/galaxy-map` | The galaxy map's location markers and the colours the game draws them in |
+| [astro](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/astro) | `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
+| [ships](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/ships) | `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
+| [equipment](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/equipment) | `@elite-dangerous-almanac/core/equipment` | Odyssey suits, handheld weapons, grade upgrades, engineer modifications and journal suit loadouts |
+| [i18n](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/i18n) | `@elite-dangerous-almanac/core/i18n` | Sparse localized module, blueprint, effect, material, micro-resource, commodity and personal-equipment display text |
+| [materials](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
+| [commodities](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
+| [galaxy-map](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/galaxy-map) | `@elite-dangerous-almanac/core/galaxy-map` | The galaxy map's location markers and the colours the game draws them in |
 
 The bulk data catalogues live on their own subpaths and are listed in full on the
-[API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules).
+[API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules).
 
-**[Browse the complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)**
+**[Browse the complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)**
 — every module, class, function and type, generated from the source documentation.
 
 ## Writing C# instead?
 
 The same data and the same behaviour are published as a .NET package, with guides, a
 reference and navigation of its own:
-**[the .NET wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet)**.
+**[the .NET wiki](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet)**.
 The names differ — each package is written the way its own language reads — but the
 behaviour does not, and the fixtures under `fixtures/` prove it for both.
 
@@ -81,6 +81,6 @@ behaviour does not, and the fixtures under `fixtures/` prove it for both.
 
 The bundled game and community data has source-specific licensing, including
 non-commercial terms. Review
-[LICENSE](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/LICENSE) and
-[ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+[LICENSE](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/LICENSE) and
+[ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md)
 before redistribution or commercial use.

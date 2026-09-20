@@ -13,8 +13,8 @@
     <Description>Static Elite Dangerous data and calculations: astronomy, ships and outfitting, Odyssey equipment, materials, commodities, localized display text and galaxy-map markers.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageProjectUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/DarkSession/Elite-Dangerous-Almanac</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Elite-Dangerous-Almanac/Almanac-Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Elite-Dangerous-Almanac/Almanac-Core</RepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
@@ -45,5 +45,24 @@
     <None Include="$(RepositoryRoot)ATTRIBUTIONS.md" Pack="true" PackagePath="/THIRD_PARTY_NOTICES.md" Visible="false" />
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
+
+  <!--
+    The galaxy-map markers, packed as content a consumer copies out. The ship art stays
+    in the repository instead: it is tens of megabytes for files no call reads.
+  -->
+  <ItemGroup>
+    <MarkerAsset Include="$(RepositoryRoot)assets/galaxy-map/*.svg" />
+    <None Include="@(MarkerAsset)" Pack="true" PackagePath="/assets/galaxy-map/" Visible="false" />
+  </ItemGroup>
+
+  <!--
+    A glob that matches nothing packs silently, so the pack fails instead. It runs before
+    `GenerateNuspec`, which writes the archive: `BeforeTargets="Pack"` would leave a
+    marker-less package on disk beside the error.
+  -->
+  <Target Name="RequireMarkerAssets" BeforeTargets="GenerateNuspec">
+    <Error Condition="'@(MarkerAsset)' == ''"
+           Text="No galaxy-map marker assets found under $(RepositoryRoot)assets/galaxy-map/." />
+  </Target>
 
 </Project>

@@ -7,7 +7,7 @@
  * tangents suitable for a renderer.
  *
  * The offsets are observed in-game; see
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

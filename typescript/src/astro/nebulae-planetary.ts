@@ -8,7 +8,7 @@
  * real-world nebulae use `./nebulae-real` instead (~16 KiB). Because each catalogue
  * is its own module, importing that one never pulls this one in.
  *
- * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
+ * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation
  */

@@ -2,7 +2,7 @@
  * Scale a distributor's rated four-pip recharge to one pip allocation.
  *
  * Reference models: EDCD/Coriolis for SYS and WEP, and EDSY for ENG. Credit and licence terms are in
- * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
+ * [ATTRIBUTIONS.md](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/ATTRIBUTIONS.md).
  *
  * @param ratedRecharge - Recharge at four pips, in energy per second.
  * @param pips - Validated capacitor allocation in `[0, 4]`.

@@ -154,7 +154,7 @@ export interface PreEngineeredVariant {
  * @remarks
  * This catalogue omits pre-engineered Guardian module rewards whose variant details have
  * no traceable source. The gap is tracked at
- * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/224.
+ * https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/224.
  *
  * @example
  * ```ts

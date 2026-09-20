@@ -2131,7 +2131,7 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
 - **File:** `pre-engineered.jsonc`. Three grade-5 records pair
   `Hpt_FlakMortar_Turret_Medium` with `Decorative_Green`, `Decorative_Red` or
   `Decorative_Yellow`, the same fixed-variant relation used by the other records.
-- **Source:** [issue #53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53)
+- **Source:** [issue #53](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/53)
   preserves the three relevant lines from a repository-owner `StoredModules` capture
   (521 stored modules, 2026-08-07 UTC): one medium turreted Remote Release Flak Launcher
   per colour, carrying `Decorative_Green`, `Decorative_Red` or `Decorative_Yellow` in

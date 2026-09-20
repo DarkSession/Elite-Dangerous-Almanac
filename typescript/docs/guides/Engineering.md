@@ -82,7 +82,7 @@ the base). Two behaviors apply on top of those methods:
 
 - **Percentages of a multiplier.** Hull boost, shield boost and the four resistances
   compound on their multiplier rather than on the stat, whichever method the recipe names.
-  [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)
+  [Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Build-metrics)
   works through what that does to a figure.
 - **A capability rather than a number.** Anti-Guardian Zone Resistance produces
   `{ Label: 'GuardianModuleResistance', ValueStr: 'Active' }`; its displayed `+100%` is not
@@ -297,8 +297,8 @@ reward article was never rolled from the recipe it names, so it costs no materia
 
 ## Next
 
-- [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)
+- [Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Build-metrics)
   — what these modifiers do to power, shields, armour, weapons and range.
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)
-- [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)
-- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Building-an-outfitting-screen)
+- [Reading a player journal](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/Document.Reading-a-player-journal)
+- [Complete API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/modules)

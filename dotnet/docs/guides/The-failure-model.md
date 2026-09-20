@@ -2,7 +2,7 @@
 title: The failure model
 ---
 
-[.NET](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet) / The failure model
+[.NET](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet) / The failure model
 
 # The failure model
 
@@ -14,7 +14,7 @@ you know the three you can write a consumer that never guesses.
 | --- | --- |
 | `null` | Nothing matched, or the scan did not state the field |
 | An exception | The argument or the payload could not be used at all |
-| [CalculationResult&lt;T&gt;](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.CalculationResult-1) | The build is missing an input the metric needs |
+| [CalculationResult&lt;T&gt;](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.CalculationResult-1) | The build is missing an input the metric needs |
 
 ## `null` is an ordinary answer
 
@@ -39,12 +39,12 @@ is an `ArgumentOutOfRangeException`; one that is the wrong shape is an `Argument
 
 Wire data that cannot be read raises where it is read: a payload that is not JSON raises
 `JsonException`, and one that is JSON but not the format claimed raises `FormatException`.
-[Slef.Parse](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.Slef)
+[Slef.Parse](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.Slef)
 is the entry point that shows both.
 
 An edit a build cannot accept — a module in a mount that does not take it, a limit the
 hull already reached — raises a
-[LoadoutEditException](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.LoadoutEditException).
+[LoadoutEditException](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.LoadoutEditException).
 It is an `ArgumentException`, and it carries a stable code and the constraint that refused
 the edit, so an application reacts to those rather than to the English message.
 
@@ -56,9 +56,9 @@ from, and the caller asked anyway.
 
 Most ship figures are ordinary calculations that answer a value. The ones whose result
 depends on what the build carries answer a
-[CalculationResult&lt;T&gt;](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.CalculationResult-1)
+[CalculationResult&lt;T&gt;](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.CalculationResult-1)
 instead — they are the
-[BuildMetrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Class.BuildMetrics)
+[BuildMetrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Class.BuildMetrics)
 methods whose names end in `Result`. Each one carries either the figure or the inputs that
 stopped it.
 
@@ -89,22 +89,22 @@ the figure exists.
 **Why not `null` here.** "No shield generator fitted", "the generator is switched off" and
 "the priority budget sheds it" are three different answers an outfitting screen wants to
 show differently, and `null` collapses them into one.
-[CalculationIssue](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Record.CalculationIssue)
+[CalculationIssue](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Record.CalculationIssue)
 keeps them apart, with a
-[CalculationField](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Enumeration.CalculationField)
+[CalculationField](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Enumeration.CalculationField)
 naming the input and a
-[CalculationIssueReason](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Ships.Enumeration.CalculationIssueReason)
+[CalculationIssueReason](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Ships.Enumeration.CalculationIssueReason)
 naming the kind of unavailability.
 
 The English reading beside each issue is for a log or a validation panel. The stable codes
 are what an application should branch on, and
-[DisplayText](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Localization.Class.DisplayText)
+[DisplayText](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Localization.Class.DisplayText)
 turns one into a message when you want to show it.
 
 ## Next
 
-- [Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Build-metrics)
+- [Build metrics](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Build-metrics)
   — which figures answer a `CalculationResult<T>`, and what each issue means.
-- [Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.Document.Building-an-outfitting-screen)
+- [Building an outfitting screen](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.Document.Building-an-outfitting-screen)
   — validation issues, and where each one belongs on a panel.
-- [API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/DotNet.API)
+- [API reference](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/wiki/DotNet.API)

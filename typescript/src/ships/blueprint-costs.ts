@@ -12,7 +12,7 @@
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`), with Operations and
  * Anti-Guardian recipes from the Inara registry and Frontier update notes; see
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * [`data/ships/SOURCES.md`](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */
