@@ -165,10 +165,8 @@ reach is the roughly 3 MB of
 `dist/`, which is the JavaScript, the type declarations and the source maps above,
 and no import of this package pulls an SVG into an application bundle.
 
-So the install is large and the import graph is not, which is a poor trade for
-applications that never render a hull. Moving the art into a package of its own is
-tracked as
-[issue #354](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/354).
+So the install is large and the import graph is not: an application that never renders
+a hull pays for the art on disk, and never in its bundle.
 
 ## First calls
 

@@ -100,8 +100,7 @@ const MOUNT_LABELS: Readonly<Record<PersonalMountKey, string>> = /* @__PURE__ */
  * The label reads the Frontier journal `SlotName` the mount carries, so it distinguishes
  * a suit's primary mounts from each other. A consumer needs no table of its own.
  *
- * No locale but English answers, although the game itself publishes all six:
- * https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/26
+ * No locale but English answers, although the game itself publishes all six.
  * @example
  * ```ts
  * import { getSuitByFamily } from '@elite-dangerous-almanac/core/equipment/suits';

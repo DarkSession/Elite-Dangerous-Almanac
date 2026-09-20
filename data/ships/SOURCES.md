@@ -1249,8 +1249,8 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
   No registry carries any of the nine, and the game cannot be asked about most of them
   until the update ships, so none is registry-confirmed and all are outside in-game
   *verification* as this file uses the term — including the size-4 Mk II record, which a
-  journal does carry. #16 tracks the verification and lists what closes it; a reading on
-  release that disagrees wins outright, symbols included.
+  journal does carry. A reading on release settles each record; where it disagrees with
+  what is stored here, the reading wins outright, symbols included.
   - **The observed line's identity is settled.** The symbol is `Int_LargeBuggyBay_`, not
     the `Int_BuggyBay_…_Class3` this catalogue first guessed — the same `Large` prefix
     Frontier uses for `Int_LargeCargoRack_Size{7,8}_Class1`, whose display name is "Mk II
@@ -1453,7 +1453,7 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     release rather than after; §"Records sourced outside the baseline registries" says
     which are observed, which are reported and which are guessed. The exception closes
     the moment the update ships: either a real source confirms them, and they become
-    ordinary records, or it does not, and they come out — #16. It is not a precedent for
+    ordinary records, or it does not, and they come out. It is not a precedent for
     carrying any other unreleased identity.
 
 ## Engineering (blueprints and experimental effects)
@@ -2131,16 +2131,18 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
 - **File:** `pre-engineered.jsonc`. Three grade-5 records pair
   `Hpt_FlakMortar_Turret_Medium` with `Decorative_Green`, `Decorative_Red` or
   `Decorative_Yellow`, the same fixed-variant relation used by the other records.
-- **Source:** [issue #53](https://github.com/Elite-Dangerous-Almanac/Almanac-Core/issues/53)
-  preserves the three relevant lines from a repository-owner `StoredModules` capture
-  (521 stored modules, 2026-08-07 UTC): one medium turreted Remote Release Flak Launcher
-  per colour, carrying `Decorative_Green`, `Decorative_Red` or `Decorative_Yellow` in
-  `EngineerModifications`. The full capture is not checked into this repository. The
-  repository owner's direct in-game reading supplies grade 5. Those three are the only
-  ones of the capture's 46 distinct spellings reported not to name a recipe; every other
-  spelling, down to the lower-case `weapon_longrange` written on a Guardian Shard Cannon,
-  resolves against the blueprint catalogue. The festive identities have no material cost
-  or applying engineer, so they are fixed transformations rather than craftable recipes.
+- **Source:** three lines of a repository-owner `StoredModules` capture (521 stored
+  modules, 2026-08-07 UTC): one medium turreted Remote Release Flak Launcher per colour,
+  carrying `Decorative_Green`, `Decorative_Red` or `Decorative_Yellow` in
+  `EngineerModifications`. The repository owner's direct in-game reading supplies grade
+  5. Those three are the only ones of the capture's 46 distinct spellings the repository
+  owner reports as naming no recipe; every other spelling, down to the lower-case
+  `weapon_longrange` written on a Guardian Shard Cannon, resolves against the blueprint
+  catalogue. The festive identities have no material cost or applying engineer, so they
+  are fixed transformations rather than craftable recipes. The capture is not retained
+  here and carries no checksum, so nothing outside this file can re-check these three
+  records. That is a gap: a fixture under `fixtures/ships/` holding the three scrubbed
+  lines, with the capture's SHA-256 in its header, closes it.
 - **They are not cosmetic-only: each carries a −99% `Damage` modifier.** A festive launcher
   fires fireworks rather than flak. The repository owner's outfitting panel reads −99.0%,
   0.3 damage and 0.2 damage/s. The medium turreted launcher's 34 base damage becomes 0.34,
@@ -2152,7 +2154,7 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
   account, not a field in the capture.
 - **The records bind the transformation to what has been observed.** The medium turreted
   Remote Release Flak Launcher (`Hpt_FlakMortar_Turret_Medium`) is the only module the
-  public capture excerpt shows carrying one, so it is the only base symbol paired with these identities.
+  capture shows carrying one, so it is the only base symbol paired with these identities.
   Nothing in the evidence supports applying `Decorative_*` to an arbitrary damage-bearing
   module.
 - **`name` pairs the festive naming with the launcher and the id's colour.** No registry
@@ -2164,7 +2166,7 @@ base module's name: the Mining Laser and the size-5 Frame Shift Drive.
 - **Guardian coverage is complete.** There are no pre-engineered Guardian power plant,
   distributor, hull-reinforcement, module-reinforcement, shield-reinforcement or
   FSD-booster reward variants, so the absence of an `Int_Guardian*` row is deliberate. The
-  catalogue's seven Guardian rows are all weapons (Gauss, Plasma and Shard), each with a
+  catalogue's Guardian rows are all weapons (Gauss, Plasma and Shard), each with a
   `blueprintSymbol` and no `experimentalEffectSymbol`. Source: maintainer confirmation
   recorded 2026-08-12
   UTC; there is no immutable upstream revision.
