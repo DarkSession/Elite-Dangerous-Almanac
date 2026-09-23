@@ -11,7 +11,7 @@
 // call on a local variable, and a static call on a type this library does not publish —
 // `JsonSerializer.Deserialize` has to pass, so a misspelt `ShipCatalog` does too.
 //
-// An example reaches the wiki from two places: a ```csharp fence in a Markdown page, and a
+// An example reaches a reader from a ```csharp fence in a Markdown page, or from a C#
 // `<code>` block in a `///` comment, which `xml-doc.mjs` renders as the same fence. Both
 // are read here, the second from the C# source so a finding names the line to fix.
 
@@ -89,7 +89,7 @@ async function markdownFiles(directory) {
 
 /**
  * Reads every C# example — each ```csharp fence in a Markdown page under `docsRoots`, and
- * each `<code>` block in a documentation comment under `sourceRoots` — and answers one
+ * each C# `<code>` block in a documentation comment under `sourceRoots` — and answers one
  * finding per reference the published surface does not carry.
  *
  * @param {Map<string, object>} namespaces The published API, from `readDotnetApi`.
