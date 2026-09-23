@@ -10,20 +10,24 @@
 // because nothing here can tell them apart from a name that is simply not the library's: a
 // call on a local variable, and a static call on a type this library does not publish —
 // `JsonSerializer.Deserialize` has to pass, so a misspelt `ShipCatalog` does too.
+//
+// An example reaches the wiki from two places: a ```csharp fence in a Markdown page, and a
+// `<code>` block in a `///` comment, which `xml-doc.mjs` renders as the same fence. Both
+// are read here, the second from the C# source so a finding names the line to fix.
 
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 const rootNamespace = "EliteDangerousAlmanac";
 
-/** Every fenced C# block on a page, with the line its fence opens on. */
+/** Every fenced C# block on a page, with the line its first line of code sits on. */
 function csharpFences(markdown) {
   const found = [];
   let fence = null;
   for (const [index, line] of markdown.split("\n").entries()) {
     if (fence === null) {
       if (/^```(csharp|cs|c#)\s*$/i.test(line.trim())) {
-        fence = { line: index + 1, body: [] };
+        fence = { line: index + 2, body: [] };
       }
       continue;
     }
@@ -37,6 +41,38 @@ function csharpFences(markdown) {
   return found;
 }
 
+const entities = new Map([
+  ["lt", "<"],
+  ["gt", ">"],
+  ["amp", "&"],
+  ["quot", '"'],
+  ["apos", "'"],
+]);
+
+/**
+ * Every `<code>` block in a C# file's documentation comments, with the line its first
+ * line of code sits on. Each line that is not a `///` comment is read as an empty one,
+ * so a block's line numbers are the file's.
+ */
+function docCommentCode(source) {
+  const comments = source
+    .split("\n")
+    .map((line) => /^\s*\/\/\/ ?(.*)$/.exec(line)?.[1] ?? "")
+    .join("\n");
+  const found = [];
+  for (const match of comments.matchAll(/<code\b[^>]*>([\s\S]*?)<\/code>/g)) {
+    const opens = match.index + match[0].indexOf(">") + 1;
+    found.push({
+      line: comments.slice(0, opens).split("\n").length,
+      code: match[1].replace(
+        /&(\w+);/g,
+        (whole, name) => entities.get(name) ?? whole,
+      ),
+    });
+  }
+  return found;
+}
+
 /** A snippet with its comments and string literals blanked, every line left where it was. */
 function code(snippet) {
   return snippet.replace(
@@ -45,25 +81,27 @@ function code(snippet) {
   );
 }
 
-async function markdownFiles(directory) {
+async function filesEndingIn(directory, extension) {
   const entries = await readdir(directory, {
     recursive: true,
     withFileTypes: true,
   });
   return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .filter((entry) => entry.isFile() && entry.name.endsWith(extension))
     .map((entry) => join(entry.parentPath, entry.name))
     .sort();
 }
 
 /**
- * Reads every C# example under `docsRoot` and answers one finding per reference the
- * published surface does not carry.
+ * Reads every C# example — each ```csharp fence in a Markdown page under `docsRoots`, and
+ * each `<code>` block in a documentation comment under `sourceRoots` — and answers one
+ * finding per reference the published surface does not carry.
  *
  * @param {Map<string, object>} namespaces The published API, from `readDotnetApi`.
  */
 export async function findUnknownReferences({
-  docsRoot,
+  docsRoots = [],
+  sourceRoots = [],
   repositoryRoot,
   namespaces,
 }) {
@@ -80,14 +118,31 @@ export async function findUnknownReferences({
   }
   const areas = new Set(namespaces.keys());
 
+  const examples = [];
+  for (const root of docsRoots) {
+    for (const file of await filesEndingIn(root, ".md")) {
+      examples.push({
+        file,
+        snippets: csharpFences(await readFile(file, "utf8")),
+      });
+    }
+  }
+  for (const root of sourceRoots) {
+    for (const file of await filesEndingIn(root, ".cs")) {
+      examples.push({
+        file,
+        snippets: docCommentCode(await readFile(file, "utf8")),
+      });
+    }
+  }
+
   const findings = [];
-  for (const file of await markdownFiles(docsRoot)) {
+  for (const { file, snippets } of examples) {
     const where = relative(repositoryRoot, file);
-    const markdown = await readFile(file, "utf8");
-    for (const fence of csharpFences(markdown)) {
-      for (const [offset, line] of code(fence.code).split("\n").entries()) {
+    for (const snippet of snippets) {
+      for (const [offset, line] of code(snippet.code).split("\n").entries()) {
         const at = (message) =>
-          findings.push(`${where}:${fence.line + offset + 1}: ${message}`);
+          findings.push(`${where}:${snippet.line + offset}: ${message}`);
 
         for (const match of line.matchAll(
           new RegExp(`\\busing\\s+${rootNamespace}\\.(\\w+)\\s*;`, "g"),

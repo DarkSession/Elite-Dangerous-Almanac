@@ -32,11 +32,23 @@ async function findings(markdown, namespaces) {
   const docsRoot = await mkdtemp(join(tmpdir(), "dotnet-examples-"));
   await writeFile(join(docsRoot, "Page.md"), markdown);
   const found = await findUnknownReferences({
-    docsRoot,
+    docsRoots: [docsRoot],
     repositoryRoot: docsRoot,
     namespaces,
   });
   return found.map((one) => one.replace(/^Page\.md:/, ""));
+}
+
+/** Runs the checker over the documentation comments of one C# file. */
+async function sourceFindings(source, namespaces) {
+  const sourceRoot = await mkdtemp(join(tmpdir(), "dotnet-examples-"));
+  await writeFile(join(sourceRoot, "Type.cs"), source);
+  const found = await findUnknownReferences({
+    sourceRoots: [sourceRoot],
+    repositoryRoot: sourceRoot,
+    namespaces,
+  });
+  return found.map((one) => one.replace(/^Type\.cs:/, ""));
 }
 
 const ships = surface("Ships", { ShipCatalogue: ["FindBySymbol"] });
@@ -115,21 +127,89 @@ test("ignores a block written in another language", async () => {
   );
 });
 
+test("reports a member named in a documentation comment's <code> block, at its source line", async () => {
+  assert.deepEqual(
+    await sourceFindings(
+      [
+        "/// <summary>Finds a hull.</summary>",
+        "/// <example>",
+        "/// <code>",
+        '/// var hull = ShipCatalogue.FindBySymbol("anaconda");',
+        "/// var other = ShipCatalogue.FindByHull(hull);",
+        "/// </code>",
+        "/// </example>",
+        "public static class ShipCatalogue { }",
+      ].join("\n"),
+      ships,
+    ),
+    ["5: ShipCatalogue has no member FindByHull"],
+  );
+});
+
+test("reads a <code> block that opens and closes on one line, and one carrying attributes", async () => {
+  assert.deepEqual(
+    await sourceFindings(
+      [
+        "/// <code>ShipCatalogue.FindByHull(x);</code>",
+        '/// <code language="csharp">',
+        "/// ShipCatalogue.FindByName(x);",
+        "/// </code>",
+      ].join("\n"),
+      ships,
+    ),
+    [
+      "1: ShipCatalogue has no member FindByHull",
+      "3: ShipCatalogue has no member FindByName",
+    ],
+  );
+});
+
+test("reads a <code> block's XML entities as the characters the wiki shows", async () => {
+  // Decoded, `&quot;` opens a string literal, which names nothing.
+  assert.deepEqual(
+    await sourceFindings(
+      [
+        "/// <code>",
+        "/// var text = &quot;ShipCatalogue.Invented&quot;;",
+        "/// var hulls = new List&lt;Hull&gt;(ShipCatalogue.FindByHull(x));",
+        "/// </code>",
+      ].join("\n"),
+      ships,
+    ),
+    ["3: ShipCatalogue has no member FindByHull"],
+  );
+});
+
+test("reads no example out of the code itself, nor out of a plain comment", async () => {
+  assert.deepEqual(
+    await sourceFindings(
+      [
+        "// <code>ShipCatalogue.FindByHull(x);</code>",
+        "/// <c>ShipCatalogue.FindByName</c>",
+        "var hull = ShipCatalogue.FindByHull(x);",
+      ].join("\n"),
+      ships,
+    ),
+    [],
+  );
+});
+
 test("every C# example in the documentation names a published symbol", async () => {
-  const namespaces = await readDotnetApi({
-    sourceRoot: join(repositoryRoot, "dotnet/src/EliteDangerousAlmanac"),
-    repositoryRoot,
-  });
-  // The .NET guides, and the shared wiki landing page, which also carries one.
-  for (const docsRoot of ["dotnet/docs", "docs"]) {
-    assert.deepEqual(
-      await findUnknownReferences({
-        docsRoot: join(repositoryRoot, docsRoot),
-        repositoryRoot,
-        namespaces,
-      }),
-      [],
-      docsRoot,
-    );
-  }
+  const sourceRoot = join(repositoryRoot, "dotnet/src/EliteDangerousAlmanac");
+  const namespaces = await readDotnetApi({ sourceRoot, repositoryRoot });
+  assert.deepEqual(
+    await findUnknownReferences({
+      // The .NET guides and namespace pages, and the shared wiki landing page, which
+      // also carries one.
+      docsRoots: [
+        join(repositoryRoot, "dotnet/docs"),
+        join(repositoryRoot, "docs"),
+      ],
+      // The examples in the documentation comments, which the reference pages carry.
+      sourceRoots: [sourceRoot],
+      repositoryRoot,
+      namespaces,
+    }),
+    [],
+  );
 });
