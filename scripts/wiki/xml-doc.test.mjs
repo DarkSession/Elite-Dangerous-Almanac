@@ -59,6 +59,19 @@ test("renders <code> as a fenced C# block, without its comment indentation", () 
   );
 });
 
+test("fences <code> in the language its language attribute names", () => {
+  assert.deepEqual(
+    renderDoc(
+      readDocComment(
+        '<example>\n<code language="json">\n{ "a": 1 }\n</code>\n</example>',
+        "Test",
+      ).example,
+      name,
+    ),
+    ['```json\n{ "a": 1 }\n```'],
+  );
+});
+
 test("renders a <list> as bullets, with a term where one is given", () => {
   assert.deepEqual(
     summary(

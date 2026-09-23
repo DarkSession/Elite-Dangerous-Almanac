@@ -17,6 +17,8 @@
 
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
+import { sourceFiles } from "./dotnet-source.mjs";
+import { decodeEntities } from "./xml-doc.mjs";
 
 const rootNamespace = "EliteDangerousAlmanac";
 
@@ -41,33 +43,26 @@ function csharpFences(markdown) {
   return found;
 }
 
-const entities = new Map([
-  ["lt", "<"],
-  ["gt", ">"],
-  ["amp", "&"],
-  ["quot", '"'],
-  ["apos", "'"],
-]);
-
 /**
- * Every `<code>` block in a C# file's documentation comments, with the line its first
- * line of code sits on. Each line that is not a `///` comment is read as an empty one,
- * so a block's line numbers are the file's.
+ * Every C# `<code>` block in a source file's documentation comments, with the line its
+ * text starts on: the line of the `<code>` tag, so a block written below the tag counts
+ * from there. Each line that is not a `///` comment is read as an empty one, so a block's
+ * line numbers are the file's. A block whose `language` names another language is left
+ * alone, as `xml-doc.mjs` fences it in that language.
  */
 function docCommentCode(source) {
   const comments = source
-    .split("\n")
+    .split(/\r?\n/)
     .map((line) => /^\s*\/\/\/ ?(.*)$/.exec(line)?.[1] ?? "")
     .join("\n");
   const found = [];
-  for (const match of comments.matchAll(/<code\b[^>]*>([\s\S]*?)<\/code>/g)) {
+  for (const match of comments.matchAll(/<code\b([^>]*)>([\s\S]*?)<\/code>/g)) {
+    const language = /\blanguage\s*=\s*"([^"]*)"/.exec(match[1])?.[1];
+    if (language !== undefined && !/^(csharp|cs|c#)$/i.test(language)) continue;
     const opens = match.index + match[0].indexOf(">") + 1;
     found.push({
       line: comments.slice(0, opens).split("\n").length,
-      code: match[1].replace(
-        /&(\w+);/g,
-        (whole, name) => entities.get(name) ?? whole,
-      ),
+      code: decodeEntities(match[2]),
     });
   }
   return found;
@@ -81,13 +76,13 @@ function code(snippet) {
   );
 }
 
-async function filesEndingIn(directory, extension) {
+async function markdownFiles(directory) {
   const entries = await readdir(directory, {
     recursive: true,
     withFileTypes: true,
   });
   return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(extension))
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
     .map((entry) => join(entry.parentPath, entry.name))
     .sort();
 }
@@ -118,31 +113,32 @@ export async function findUnknownReferences({
   }
   const areas = new Set(namespaces.keys());
 
-  const examples = [];
+  const sources = [];
   for (const root of docsRoots) {
-    for (const file of await filesEndingIn(root, ".md")) {
-      examples.push({
+    for (const file of await markdownFiles(root)) {
+      sources.push({
         file,
-        snippets: csharpFences(await readFile(file, "utf8")),
+        examples: csharpFences(await readFile(file, "utf8")),
       });
     }
   }
   for (const root of sourceRoots) {
-    for (const file of await filesEndingIn(root, ".cs")) {
-      examples.push({
+    // The files the reference itself is read from, so the two see the same comments.
+    for (const file of await sourceFiles(root)) {
+      sources.push({
         file,
-        snippets: docCommentCode(await readFile(file, "utf8")),
+        examples: docCommentCode(await readFile(file, "utf8")),
       });
     }
   }
 
   const findings = [];
-  for (const { file, snippets } of examples) {
+  for (const { file, examples } of sources) {
     const where = relative(repositoryRoot, file);
-    for (const snippet of snippets) {
-      for (const [offset, line] of code(snippet.code).split("\n").entries()) {
+    for (const example of examples) {
+      for (const [offset, line] of code(example.code).split("\n").entries()) {
         const at = (message) =>
-          findings.push(`${where}:${snippet.line + offset}: ${message}`);
+          findings.push(`${where}:${example.line + offset}: ${message}`);
 
         for (const match of line.matchAll(
           new RegExp(`\\busing\\s+${rootNamespace}\\.(\\w+)\\s*;`, "g"),

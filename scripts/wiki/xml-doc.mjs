@@ -52,7 +52,7 @@ const entities = new Map([
   ["apos", "'"],
 ]);
 
-function decodeEntities(text) {
+export function decodeEntities(text) {
   return text.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (whole, body) => {
     if (body.startsWith("#x") || body.startsWith("#X")) {
       return String.fromCodePoint(Number.parseInt(body.slice(2), 16));
@@ -261,7 +261,9 @@ export function renderDoc(nodes, resolve) {
 
 /**
  * A `<code>` block keeps its source layout, so the shared indentation the doc comment
- * carried is stripped and nothing else is touched.
+ * carried is stripped and nothing else is touched. A block is C# unless its `language`
+ * attribute names another, which is how a data format shown in a remark is kept from
+ * reading as code.
  */
 function codeBlock(node) {
   const text = node.children
@@ -272,9 +274,12 @@ function codeBlock(node) {
     .filter((line) => line.trim().length > 0)
     .map((line) => /^ */.exec(line)[0].length);
   const shared = indents.length > 0 ? Math.min(...indents) : 0;
-  return ["```csharp", ...lines.map((line) => line.slice(shared)), "```"].join(
-    "\n",
-  );
+  const language = node.attributes.language ?? "csharp";
+  return [
+    `\`\`\`${language}`,
+    ...lines.map((line) => line.slice(shared)),
+    "```",
+  ].join("\n");
 }
 
 function list(node, resolve) {

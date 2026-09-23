@@ -80,6 +80,16 @@ test("reports a member a published type does not carry", async () => {
   );
 });
 
+test("reports a finding at the page's own line, below prose and deeper in a fence", async () => {
+  assert.deepEqual(
+    await findings(
+      "# Title\n\nProse.\n\n```csharp\nvar a = 1;\nShipCatalogue.FindByHull(x);\n```\n",
+      ships,
+    ),
+    ["7: ShipCatalogue has no member FindByHull"],
+  );
+});
+
 test("reports a fully qualified type the library does not publish", async () => {
   assert.deepEqual(
     await findings(
@@ -131,18 +141,35 @@ test("reports a member named in a documentation comment's <code> block, at its s
   assert.deepEqual(
     await sourceFindings(
       [
-        "/// <summary>Finds a hull.</summary>",
-        "/// <example>",
-        "/// <code>",
-        '/// var hull = ShipCatalogue.FindBySymbol("anaconda");',
-        "/// var other = ShipCatalogue.FindByHull(hull);",
-        "/// </code>",
-        "/// </example>",
-        "public static class ShipCatalogue { }",
+        "namespace EliteDangerousAlmanac.Ships;",
+        "",
+        "public static class ShipCatalogue",
+        "{",
+        "    /// <summary>Finds a hull.</summary>",
+        "    /// <example>",
+        "    /// <code>",
+        '    /// var hull = ShipCatalogue.FindBySymbol("anaconda");',
+        "    /// var other = ShipCatalogue.FindByHull(hull);",
+        "    /// </code>",
+        "    /// </example>",
+        "    public static Hull? FindBySymbol(string symbol) => null;",
+        "}",
       ].join("\n"),
       ships,
     ),
-    ["5: ShipCatalogue has no member FindByHull"],
+    ["9: ShipCatalogue has no member FindByHull"],
+  );
+});
+
+test("reads a source file written with Windows line endings", async () => {
+  assert.deepEqual(
+    await sourceFindings(
+      ["/// <code>", "/// ShipCatalogue.FindByHull(x);", "/// </code>"].join(
+        "\r\n",
+      ),
+      ships,
+    ),
+    ["2: ShipCatalogue has no member FindByHull"],
   );
 });
 
@@ -171,16 +198,29 @@ test("reads a <code> block's XML entities as the characters the wiki shows", asy
       [
         "/// <code>",
         "/// var text = &quot;ShipCatalogue.Invented&quot;;",
-        "/// var hulls = new List&lt;Hull&gt;(ShipCatalogue.FindByHull(x));",
         "/// </code>",
       ].join("\n"),
       ships,
     ),
-    ["3: ShipCatalogue has no member FindByHull"],
+    [],
   );
 });
 
-test("reads no example out of the code itself, nor out of a plain comment", async () => {
+test("leaves a <code> block in another language alone", async () => {
+  assert.deepEqual(
+    await sourceFindings(
+      [
+        '/// <code language="json">',
+        "/// ShipCatalogue.FindByHull",
+        "/// </code>",
+      ].join("\n"),
+      ships,
+    ),
+    [],
+  );
+});
+
+test("reads no example out of code, a plain comment or a <c> span", async () => {
   assert.deepEqual(
     await sourceFindings(
       [
@@ -199,11 +239,12 @@ test("every C# example in the documentation names a published symbol", async () 
   const namespaces = await readDotnetApi({ sourceRoot, repositoryRoot });
   assert.deepEqual(
     await findUnknownReferences({
-      // The .NET guides and namespace pages, and the shared wiki landing page, which
-      // also carries one.
+      // The .NET guides and namespace pages, the shared wiki landing page, which also
+      // carries one, and the package README beside the source, which NuGet shows.
       docsRoots: [
         join(repositoryRoot, "dotnet/docs"),
         join(repositoryRoot, "docs"),
+        sourceRoot,
       ],
       // The examples in the documentation comments, which the reference pages carry.
       sourceRoots: [sourceRoot],
