@@ -20,7 +20,7 @@ namespace EliteDangerousAlmanac.Ships;
 /// others all read and write. It is the game journal's <c>Loadout</c> event wrapped in an
 /// envelope that records which application exported it:
 /// </para>
-/// <code>
+/// <code language="json">
 /// [{ "header": { "appName": "EDSY", "appVersion": "..." },
 ///    "data":   { "event": "Loadout", "Ship": "explorer_nx", "Modules": [ ... ] } }]
 /// </code>

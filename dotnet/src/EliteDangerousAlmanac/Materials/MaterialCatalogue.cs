@@ -86,7 +86,7 @@ public static class MaterialCatalogue
     /// <returns>The material, or <see langword="null"/> when no material has that symbol.</returns>
     /// <example>
     /// <code>
-    /// MaterialCatalogue.FindBySymbol("temperedalloys")?.Name; // "Tempered Alloys"
+    /// string? name = MaterialCatalogue.FindBySymbol("temperedalloys")?.Name; // "Tempered Alloys"
     /// </code>
     /// </example>
     public static Material? FindBySymbol(string? symbol, IReadOnlyList<Material>? materials = null) =>
